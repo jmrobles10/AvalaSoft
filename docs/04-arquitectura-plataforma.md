@@ -73,7 +73,7 @@ flowchart LR
 | `Catalogo` | Tipos de documento canónicos (plataforma, versionados) y por tenant, **esquemas de formulario** (canónico + campos privados), **catálogo de tipos de identificación por país** con validador, áreas, motivos base + propios, flujos y `FlujoVersion`, reglas de exigencia, `ReglaFrescura`, `NivelRevision`, `CamposCriticos` adicionales | Documentos Marten (plataforma/tenant) con auditoría diff |
 | `Terceros` | Tercero global (clave `país + tipo + número normalizado`), atributos, contactos, **relaciones entre terceros** (representantes, socios, UBO, miembros: personas naturales con bóveda propia, ADR-0010), **cuentas bancarias globales**, consentimientos (plataforma e IA externa) | Documentos Marten en `boveda` |
 | `Documentos` | Agregado `Documento` (versiones inmutables), compartición, hechos compartidos, almacenamiento S3, previews | Event-sourced en `boveda` + S3 |
-| `Verificacion` | Adaptadores `IVerificador` (IA, antivirus, listas restrictivas, estudio de cumplimiento, ERP); **motor de decisión automática** | Sin estado propio; emite eventos a `Documentos`/`Expedientes` |
+| `Verificacion` | Adaptadores `IVerificador` (IA, antivirus, listas restrictivas, estudio de cumplimiento, **fuentes oficiales RUES y DIAN** `IFuenteOficial`, ERP); **motor de decisión automática** | Sin estado propio; emite eventos a `Documentos`/`Expedientes` |
 | `Expedientes` | Agregados `Vinculo` (por **empresa interna**: `tenantId + empresaId + terceroId + tipoVinculo`), `Expediente`; saga `ProcesoDeValidacion`; revalidaciones; `CuentaDesignada` por vínculo (la elige el tercero, la aprueba la empresa con 4 ojos); bloqueo privado por empresa | Event-sourced en `validacion` (conjoined + `empresa_id`) |
 | `Certificados` | Agregado `Certificado` por vínculo (folio raíz + sufijo por reemisión), PDF/A-2b, hash, sello de plataforma, verificación pública | Event-sourced en `validacion` |
 | `Vencimientos` | Proyección `VencimientoProgramado`, `FrescuraDocumentoTercero`, job diario, avisos consolidados | Proyecciones async |
@@ -88,6 +88,35 @@ flowchart LR
 3. Ninguna consulta a `validacion` sin `TenantId` **y**, para vínculos, expedientes, aceptaciones, decisiones, certificados y bandejas, sin `EmpresaId`: el `IDocumentSession` se abre siempre por el middleware de tenant; la empresa activa llega en el token (claim `empresa`), en la cabecera `X-Empresa` (usuarios con rol en varias empresas; T-5) o en el alcance de la API key; un `IAuthorizationHandler` verifica que el usuario tenga rol en esa empresa y toda lectura de `validacion` pasa por `ISesionDeEmpresa` (un `IQuerySession` envuelto que añade el predicado `empresa_id`, T-3); un recurso de otro tenant o empresa responde **404** (T-4). `boveda` se consulta por `TerceroId` y el acceso a versiones pasa por `comparticion_version` (que apunta a un **vínculo**, es decir, a una empresa).
 4. Todo proceso periódico es un *scheduled message* o un job del `Worker`; ningún endpoint HTTP dispara trabajo recurrente.
 5. La IA es un `IVerificador` más: si está deshabilitada, el pipeline de hechos "sin IA" (§7.3) sigue funcionando y las decisiones caen en nivel `Manual`.
+6. Las fuentes oficiales (RUES y DIAN) son verificaciones del expediente como las listas: un puerto `IFuenteOficial` en `Aplicacion`, adaptadores en `Infraestructura` y el mismo cortacircuito (ver §2.1).
+
+### 2.1 Fuentes oficiales: RUES y DIAN (FO-1…FO-8)
+
+Corroboran los datos del tercero contra el registro mercantil (RUES, Confecámaras) y el estado del RUT (DIAN). Decisiones FO-1…FO-8 del [registro](decisiones/registro.md), contrato en [05 §2.7](05-api-contratos-y-webhooks.md).
+
+```mermaid
+flowchart LR
+  F["Flujo (por tipo de vínculo)<br/>Rues · Dian: bloqueante o informativa"] --> E["Expediente: VerificacionDeExpediente<br/>Pendiente → consulta al pasar a revisión"]
+  E --> P["ProcesadorDeVerificaciones (líder)<br/>TareasDeFuentesOficiales"]
+  P --> C["ConsultaDeFuentesOficiales<br/>proveedor + credenciales + ControlDeProveedores"]
+  C --> A["IFuenteOficial<br/>DatosAbiertos · Contrato · Simulado"]
+  C --> X["Cotejo puro (CruceConFuenteOficial)<br/>vs ficha maestra y vs IA de Cámara/RUT"]
+  X --> R["FuenteOficialConsultada<br/>diferencias para el revisor + constancia con hash"]
+  R --> M["MonitoreoDeFuentesOficiales<br/>(opcional, vínculos activos)"]
+```
+
+| Pieza | Dónde | Qué hace |
+|---|---|---|
+| `IFuenteOficial` (`Fuente`, `Proveedor`, `ConsultarAsync`) | `Aplicacion/FuentesOficiales` | Un adaptador por (fuente, proveedor); un fallo es `FuenteOficialNoDisponibleException` |
+| `ConsultaDeFuentesOficiales` | `Aplicacion/FuentesOficiales` | Resuelve proveedor y credenciales (empresa → plataforma → instalación; sandbox siempre simulado), consulta con `ControlDeProveedores` (concurrencia, tiempo de espera y cortacircuito **por empresa y proveedor**, los de las listas), cotea y guarda la evidencia |
+| `RUES · DatosAbiertos` | `Infraestructura/FuentesOficiales` | API SODA pública de datos.gov.co (conjunto `c82u-588k` de Confecámaras); gratis, sin contrato, **actualización mensual**, un solo representante legal; es la única API oficial del RUES que se confirmó accesible |
+| `Contrato` | `Infraestructura/FuentesOficiales` | La API que se contrate (RUES completo con Confecámaras o un autorizado; **la única vía para la DIAN**, que no publica una API del estado del RUT). Ruta, parámetros, autenticación y claves de la respuesta son **configuración** más un lector tolerante, porque el contrato no se pudo confirmar sin firmarlo |
+| `Simulado` | `Infraestructura/FuentesOficiales` | Determinista, para sandbox y pruebas: devuelve lo declarado salvo palabras de prueba en el nombre (`caida`, `noregistrado`, `cancelad`, `suspendid`, `sinrenovar`, `otranombre`, `otrorepresentante`, `otradireccion`) |
+| `CruceConFuenteOficial` | `Dominio/FuentesOficiales` | Función pura: cada campo de la fuente frente a la ficha, a los documentos que la IA analizó (solo los que la empresa recibió, IA-11) y a su propio estado; solo lo que discrepa pide decisión |
+| `FuentesOficialesDePlataforma` · `FuentesOficialesEmpresa` | `plataforma` · `validacion` | Credenciales (clave cifrada: maestra / clave del grupo), proveedor por fuente y reconsulta periódica |
+| `MonitoreoDeFuentesOficiales` | `validacion` (id = vínculo) | Reconsulta periódica opcional bajo el líder de procesos y el reclamo de trabajo (OC-4) |
+
+**Nada de scraping.** La consulta pública de la DIAN (muisca.dian.gov.co) va con captcha y la del RUES con sus propios controles: no se automatizan. Si una fuente no tiene API accesible, el adaptador queda detrás de la interfaz con lo que falta documentado (contrato y usuario) y el simulado cubre sandbox y pruebas.
 
 ---
 

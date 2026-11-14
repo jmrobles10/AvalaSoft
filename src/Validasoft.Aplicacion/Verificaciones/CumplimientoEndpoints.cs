@@ -149,7 +149,14 @@ public static class InformeCumplimientoEndpoints
         return Results.File(bytes, HojaDeCalculo.TipoContenido, $"informe-sagrilaft-{informe.Desde:yyyyMMdd}-{informe.Hasta:yyyyMMdd}.xlsx");
     }
 
-    private static string Nombre(string tipo) => tipo == nameof(TipoVerificacion.ListasRestrictivas) ? "Listas restrictivas" : "Estudio de cumplimiento";
+    /// <summary>Nombre de la verificación en el Excel y las pantallas del informe (las fuentes oficiales, FO-1, también salen en él).</summary>
+    internal static string Nombre(string tipo) => tipo switch
+    {
+        nameof(TipoVerificacion.ListasRestrictivas) => "Listas restrictivas",
+        nameof(TipoVerificacion.Rues) => "Registro mercantil (RUES)",
+        nameof(TipoVerificacion.Dian) => "Estado del RUT (DIAN)",
+        _ => "Estudio de cumplimiento"
+    };
 
     public static async Task<InformeCumplimientoDto> CalcularAsync(SesionDeEmpresa empresa, DateOnly? desde, DateOnly? hasta, DateTimeOffset ahora,
         CancellationToken ct)
@@ -172,9 +179,10 @@ public static class InformeCumplimientoEndpoints
                     continue;
                 var estudio = v.Estudio?.Datos;
                 filas.Add(new FilaInformeCumplimientoDto(e.Id, e.Folio, e.TerceroNombre, e.TerceroIdentificacion, e.TipoVinculoNombre, e.Estado.ToString(),
-                    v.Tipo.ToString(), v.Proveedor, v.Estado.ToString(), v.Resultado?.ToString(), v.RegistradaEn, v.Personas.Count, v.Coincidencias.Count,
-                    v.Coincidencias.Count(c => c.Resolucion?.Decision == DecisionCoincidencia.Confirmada),
-                    v.Coincidencias.Count(c => c.Resolucion?.Decision == DecisionCoincidencia.Descartada), estudio?.NivelRiesgo, estudio?.ConflictoDeInteres,
+                    v.Tipo.ToString(), v.Proveedor, v.Estado.ToString(), v.Resultado?.ToString(), v.RegistradaEn, v.Personas.Count,
+                    v.Coincidencias.Count + (v.FuenteOficial?.Diferencias.Count() ?? 0),
+                    v.Coincidencias.Count(c => c.Resolucion?.Decision == DecisionCoincidencia.Confirmada) + (v.FuenteOficial?.Campos.Count(c => c.Resolucion?.Decision == DecisionCoincidencia.Confirmada) ?? 0),
+                    v.Coincidencias.Count(c => c.Resolucion?.Decision == DecisionCoincidencia.Descartada) + (v.FuenteOficial?.Campos.Count(c => c.Resolucion?.Decision == DecisionCoincidencia.Descartada) ?? 0), estudio?.NivelRiesgo, estudio?.ConflictoDeInteres,
                     estudio?.DebidaDiligencia.ToString(), estudio?.Concepto.ToString(), v.VigenteHasta));
             }
         }

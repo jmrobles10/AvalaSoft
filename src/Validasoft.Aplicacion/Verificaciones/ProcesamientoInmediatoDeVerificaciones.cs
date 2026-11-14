@@ -18,15 +18,17 @@ public static class ProcesamientoInmediatoDeVerificacionesEndpoints
     /// </summary>
     [WolverinePost("/api/v1/plataforma/verificaciones/revisar")]
     [Authorize(Policy = Permisos.PlataformaTenants)]
-    public static async Task<ResultadoRevisionVerificacionesDto> Revisar(RevisarVerificacionesDto dto, TareasDeVerificaciones tareas, IHostEnvironment entorno,
-        CancellationToken ct)
+    public static async Task<ResultadoRevisionVerificacionesDto> Revisar(RevisarVerificacionesDto dto, TareasDeVerificaciones tareas,
+        FuentesOficiales.TareasDeFuentesOficiales fuentes, IHostEnvironment entorno, CancellationToken ct)
     {
         if (dto.Fecha is not null && !entorno.IsDevelopment())
             throw ReglaDeNegocioException.Validacion("fecha-simulada-no-permitida", "La fecha simulada solo se admite en Development.");
 
         var procesador = dto.Fecha is { } fecha ? tareas.ConReloj(new RelojFijo(fecha)) : tareas;
         var resultado = await procesador.ProcesarPendientesAsync(ct, dto.TenantId);
-        return new ResultadoRevisionVerificacionesDto(resultado.Consultas, resultado.Expiraciones, resultado.Monitoreos);
+        // También las fuentes oficiales (RUES, DIAN): sus consultas pendientes y la reconsulta periódica de los vínculos activos.
+        var oficiales = await (dto.Fecha is { } simulada ? fuentes.ConReloj(new RelojFijo(simulada)) : fuentes).ProcesarPendientesAsync(ct, dto.TenantId);
+        return new ResultadoRevisionVerificacionesDto(resultado.Consultas, resultado.Expiraciones, resultado.Monitoreos, oficiales.Consultas, oficiales.Monitoreos);
     }
 
     private sealed class RelojFijo(DateTimeOffset ahora) : TimeProvider

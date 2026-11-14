@@ -8,6 +8,8 @@ import { useAvisos } from '../../../shared/useAvisos';
 import { useAccionVerificacion } from '../api';
 import { accionesDeVerificacion } from '../modelo';
 import { DialogoRechazoCumplimiento } from './DialogoRechazoCumplimiento';
+import { FuenteOficial } from '../../fuentesOficiales/components/FuenteOficial';
+import { FUENTES } from '../../fuentesOficiales/modelo';
 import { EstudioDeCumplimiento } from './EstudioDeCumplimiento';
 import { ListasRestrictivas } from './ListasRestrictivas';
 
@@ -57,6 +59,10 @@ export function PanelVerificaciones({ expediente, empresaId, scopes, nombres }: 
     >
       <Stack spacing={2}>
         {listas && <ListasRestrictivas expediente={expediente} empresaId={empresaId} verificacion={listas} acciones={acciones} nombres={nombres} />}
+        {FUENTES.map((fuente) => {
+          const verificacion = verificaciones.find((v) => v.tipo === fuente);
+          return verificacion ? <FuenteOficial key={fuente} expediente={expediente} empresaId={empresaId} fuente={fuente} verificacion={verificacion} acciones={acciones} nombres={nombres} /> : null;
+        })}
         {estudio && (
           <EstudioDeCumplimiento
             expediente={expediente}

@@ -9,4 +9,6 @@ export interface ResultadoRevisionVerificacionesDto {
   consultas: number;
   expiraciones: number;
   monitoreos: number;
+  consultasOficiales?: number;
+  monitoreosOficiales?: number;
 }

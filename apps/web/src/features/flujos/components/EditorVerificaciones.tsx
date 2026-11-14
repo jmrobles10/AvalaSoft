@@ -66,7 +66,7 @@ export function EditorVerificaciones({ verificaciones, onCambiar, errores, soloL
                   label={t('flujos.editor.verificaciones.bloqueante')}
                   sx={{ mx: 0, mt: 0.5 }}
                 />
-                {tipo === 'EstudioDeCumplimiento' ? (
+                {tipo !== 'ListasRestrictivas' ? (
                   <CampoNumero
                     etiqueta={t('flujos.editor.verificaciones.vigenciaDias')}
                     valor={v.vigenciaDias}

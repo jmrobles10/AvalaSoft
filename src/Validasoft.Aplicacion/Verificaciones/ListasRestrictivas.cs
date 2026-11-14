@@ -46,7 +46,7 @@ public interface IVerificadorDeListas
     Task<RespuestaDeListas> ConsultarAsync(SolicitudDeListas solicitud, CancellationToken ct);
 }
 
-public sealed class ProveedorDeListasNoDisponibleException(string mensaje, Exception? causa = null) : Exception(mensaje, causa);
+public class ProveedorDeListasNoDisponibleException(string mensaje, Exception? causa = null) : Exception(mensaje, causa);
 
 /// <summary>Datos del PDF de evidencia que genera Validasoft (VE-10): qué, a quién, con qué criterio, cuándo y quién.</summary>
 public sealed record DatosEvidenciaDeListas(

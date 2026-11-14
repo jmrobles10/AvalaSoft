@@ -9,6 +9,7 @@ import type { ConsultaAnteriorDto } from './consultaAnteriorDto';
 import type { EstadoVerificacion } from './estadoVerificacion';
 import type { EstudioCumplimientoDto } from './estudioCumplimientoDto';
 import type { EvidenciaVerificacionDto } from './evidenciaVerificacionDto';
+import type { FuenteOficialDto } from './fuenteOficialDto';
 import type { PersonaConsultadaDto } from './personaConsultadaDto';
 import type { TipoVerificacion } from './tipoVerificacion';
 
@@ -42,4 +43,5 @@ export interface VerificacionDto {
   vigenciaDias: number | null;
   /** @nullable */
   frecuenciaReconsultaMeses: number | null;
+  fuenteOficial?: null | FuenteOficialDto;
 }

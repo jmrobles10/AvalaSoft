@@ -54,7 +54,7 @@ function textoDeRetiro(datos: Record<string, unknown>, documento: string | null,
 
 
 function tipoDeVerificacion(tipo: string, t: TFunction): string {
-  return tipo === 'EstudioDeCumplimiento' ? t('cumplimiento.tipos.EstudioDeCumplimiento') : t('cumplimiento.tipos.ListasRestrictivas');
+  return tipo === 'EstudioDeCumplimiento' || tipo === 'Rues' || tipo === 'Dian' ? t(`cumplimiento.tipos.${tipo}`) : t('cumplimiento.tipos.ListasRestrictivas');
 }
 
 /** Convierte el stream del expediente en la entrada de `LineaDeTiempo`. */
@@ -226,6 +226,22 @@ export function eventoExpedienteATimeline(
           personas: String(lista(campo(datos, 'personas')).length),
           count: lista(campo(datos, 'coincidencias')).length,
         }),
+      };
+    // Fuentes oficiales (FO-4): qué fuente se consultó, con qué proveedor y cuántas diferencias dejó; el detalle está en el panel de verificaciones.
+    case 'fuente_oficial_consultada':
+      return {
+        ...base,
+        detalle: t('expedientes.historial.consultaFuente', {
+          fuente: tipoDeVerificacion(texto(campo(datos, 'tipo')) ?? '', t),
+          proveedor: texto(campo(datos, 'proveedor')) ?? '',
+          count: lista(campo(datos, 'campos')).filter((c) => c && typeof c === 'object' && campo(c as Record<string, unknown>, 'resultado') === 'Discrepa' && !campo(c as Record<string, unknown>, 'heredada')).length,
+        }),
+      };
+    case 'diferencia_de_fuente_resuelta':
+      return {
+        ...base,
+        detalle: `${tipoDeVerificacion(texto(campo(datos, 'tipo')) ?? '', t)} · ${t(`cumplimiento.decisiones.${campo(datos, 'decision') === 'Confirmada' ? 'Confirmada' : 'Descartada'}`)}`,
+        motivo: texto(campo(datos, 'justificacion')),
       };
     case 'coincidencia_resuelta':
       return {
