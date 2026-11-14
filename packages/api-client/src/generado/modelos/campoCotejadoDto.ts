@@ -4,7 +4,6 @@
  * Validasoft.Api | v1
  * OpenAPI spec version: 1.0.0
  */
-import type { DecisionCoincidencia } from './decisionCoincidencia';
 import type { OrigenDelCotejo } from './origenDelCotejo';
 import type { ResultadoDeCotejo } from './resultadoDeCotejo';
 
@@ -23,7 +22,8 @@ export interface CampoCotejadoDto {
   critico: boolean;
   /** @nullable */
   detalle: string | null;
-  decision: DecisionCoincidencia;
+  /** @nullable */
+  decision: string | null;
   /** @nullable */
   justificacion: string | null;
   /** @nullable */

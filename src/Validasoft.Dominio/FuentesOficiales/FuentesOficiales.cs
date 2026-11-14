@@ -271,7 +271,7 @@ public static class ReglasDeFuente
     /// <summary>El último año de renovación que debe tener la matrícula hoy: se renueva hasta el 31 de marzo (en enero a marzo aún vale el año anterior).</summary>
     public static int AnoDeRenovacionEsperado(DateOnly hoy) => hoy.Month >= 4 ? hoy.Year : hoy.Year - 1;
 
-    public static string Fecha(DateOnly fecha) => fecha.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+    public static string Fecha(DateOnly fecha) => fecha.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 }
 
 /// <summary>Resultado de una consulta a una fuente, listo para registrarse (sin ids de campo todavía).</summary>

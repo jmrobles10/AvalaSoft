@@ -239,10 +239,10 @@ public sealed class FuentesOficialesAdaptadoresTests
         var fuente = new ConsultaPorContrato(TipoVerificacion.Dian, new FabricaDeClientes(manejador));
 
         await fuente.ConsultarAsync(Solicitud(TipoVerificacion.Dian, DeProveedor(TipoVerificacion.Dian, "Contrato",
-            new() { ["Ruta"] = "rut/estado", ["ParametroNit"] = "identificacion", ["ParametroTipoDocumento"] = "tipo" }), Contrato), CancellationToken.None);
+            new() { ["Ruta"] = "rut/estado", ["ParametroNit"] = "identificacion", ["ParametroTipoDocumento"] = "tipo", ["ParametrosFijos"] = "category=RM" }), Contrato), CancellationToken.None);
 
         var peticion = manejador.Peticiones.ShouldHaveSingleItem();
-        peticion.Uri.AbsoluteUri.ShouldBe("https://api.proveedor.example/v2/rut/estado?identificacion=900123456&tipo=NIT");
+        peticion.Uri.AbsoluteUri.ShouldBe("https://api.proveedor.example/v2/rut/estado?identificacion=900123456&tipo=NIT&category=RM");
         (peticion.Autorizacion!.Scheme, peticion.Autorizacion.Parameter).ShouldBe(("Bearer", "clave-del-contrato"));
     }
 

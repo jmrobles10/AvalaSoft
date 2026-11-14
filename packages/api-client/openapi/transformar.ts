@@ -637,7 +637,6 @@ const PROPIEDADES_ENUM: Record<string, string> = {
   'DatosOficialesDto.estadoNormalizado': 'EstadoOficial',
   'CampoCotejadoDto.contra': 'OrigenDelCotejo',
   'CampoCotejadoDto.resultado': 'ResultadoDeCotejo',
-  'CampoCotejadoDto.decision': 'DecisionCoincidencia',
   'EstudioCumplimientoDto.debidaDiligencia': 'DebidaDiligencia',
   'EstudioCumplimientoDto.concepto': 'ConceptoCumplimiento',
   'RegistrarEstudioCumplimientoDto.debidaDiligencia': 'DebidaDiligencia',

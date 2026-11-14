@@ -19,6 +19,7 @@ import { inicio } from './es-CO-inicio';
 import { erroresInvitaciones, invitaciones } from './es-CO-invitaciones';
 import { erroresLotes, flujoPlazo, flujoReintento, lotes, plazoCargue } from './es-CO-lotes';
 import { exenciones } from './es-CO-exenciones';
+import { erroresFuentesOficiales, fuentesOficiales } from './es-CO-fuentes-oficiales';
 import { erroresVigencias, flujoVigencia, vigenciaVinculo } from './es-CO-vigencias';
 import { matrizRiesgo } from './es-CO-matriz-riesgo';
 import { erroresSla, sla } from './es-CO-sla';
@@ -63,6 +64,7 @@ export const esCO = {
     'uso-ia': 'Plan y uso de IA',
     'revision-automatica': 'Revisión automática',
     'listas-restrictivas': 'Listas restrictivas',
+    'fuentes-oficiales': 'Fuentes oficiales (RUES y DIAN)',
     'matriz-riesgo': 'Matriz de riesgo',
     'tipos-documento': 'Tipos de documento',
     areas: 'Áreas',
@@ -369,6 +371,7 @@ export const esCO = {
   vencimientos,
   exenciones,
   cumplimiento,
+  fuentesOficiales,
   matrizRiesgo,
   lotes,
   invitaciones,
@@ -773,6 +776,7 @@ export const esCO = {
     ...erroresRevalidaciones,
     ...erroresCuentas,
     ...erroresCumplimiento,
+    ...erroresFuentesOficiales,
     ...erroresFichaEmpresa,
     ...erroresLotes,
     ...erroresInvitaciones,

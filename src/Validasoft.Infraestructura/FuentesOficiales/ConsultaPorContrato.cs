@@ -41,7 +41,10 @@ public sealed class ConsultaPorContrato(TipoVerificacion fuente, IHttpClientFact
         var parametroNit = opciones.Extra("ParametroNit", "nit");
         var parametroTipo = opciones.Extra("ParametroTipoDocumento", string.Empty);
         var numero = Uri.EscapeDataString(new string(solicitud.Numero.Where(char.IsLetterOrDigit).ToArray()));
-        var consulta = $"{ruta}?{parametroNit}={numero}" + (parametroTipo.Length == 0 ? string.Empty : $"&{parametroTipo}={Uri.EscapeDataString(solicitud.TipoIdentificacion)}");
+        // Parámetros constantes que el contrato exija (p. ej. «category=RM»): vienen de la configuración, nunca del tercero.
+        var fijos = opciones.Extra("ParametrosFijos", string.Empty);
+        var consulta = $"{ruta}?{parametroNit}={numero}" + (parametroTipo.Length == 0 ? string.Empty : $"&{parametroTipo}={Uri.EscapeDataString(solicitud.TipoIdentificacion)}") +
+                       (fijos.Length == 0 ? string.Empty : $"&{fijos.TrimStart('&')}");
         var uri = new Uri(ClienteDeFuentes.Base(direccion), consulta.TrimStart('/'));
         var autenticacion = opciones.Extra("Autenticacion", "Bearer");
 
