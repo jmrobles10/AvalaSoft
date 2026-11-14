@@ -49,7 +49,8 @@ public sealed class CrucesDelExpediente
     {
         if (!expediente.ConRequisitos)
             return Vacio;
-        var porDocumento = expediente.Requisitos.Where(r => !r.EsSeccion && MapaDeRespaldo.RespaldaAlguna(r.TipoCanonico)).ToList();
+        // El documento de una persona relacionada (ADR-0010) no respalda las secciones del tercero: es de otra bóveda.
+        var porDocumento = expediente.Requisitos.Where(r => !r.EsSeccion && !r.EsDePersona && MapaDeRespaldo.RespaldaAlguna(r.TipoCanonico)).ToList();
         var porSeccion = expediente.Requisitos.Where(r => r.EsSeccion && r.Seccion is not null).ToList();
         if (porDocumento.Count == 0 && porSeccion.Count == 0)
             return Vacio;

@@ -158,7 +158,11 @@ public static class GuardadoDeSecciones
                 await mensajes.PublishAsync(new CruzarFichaConDocumentos(terceroId));
             // CU-15: una versión nueva de la ficha legal puede traer otro representante, suplente, socio o PEP: las listas ya consultadas se reevalúan.
             if (mensajes is not null && definicion.Codigo == CodigosDeSeccion.Legal)
+            {
                 await mensajes.PublishAsync(new Verificaciones.PersonasDeFichaCambiaron(terceroId));
+                // ADR-0010: las personas de la sección legal son terceros con bóveda propia unidos al tercero por sus relaciones (idempotente).
+                await mensajes.PublishAsync(new Personas.SincronizarPersonasDeFicha(terceroId));
+            }
             await sesion.SaveChangesAsync(ct);
             return new Resultado(proyectada, true, estado, tercero.TipoPersona);
         }, mensajes);
@@ -192,7 +196,7 @@ public static class GuardadoDeSecciones
     /// Una versión nueva de la sección: cada vínculo aceptado del tercero (de cualquier tenant) pide poner al día su expediente
     /// (RQ-2) o abrir la actualización (RV-1). El manejador es idempotente y solo actúa si el flujo pide la sección.
     /// </summary>
-    private static async Task PedirSincronizacionAsync(IDocumentSession sesion, Guid terceroId, IMessageBus mensajes, string actorTipo, string actorId,
+    internal static async Task PedirSincronizacionAsync(IDocumentSession sesion, Guid terceroId, IMessageBus mensajes, string actorTipo, string actorId,
         CancellationToken ct)
     {
         var vinculos = (await sesion.Query<Vinculo>().Where(v => v.AnyTenant() && v.TerceroId == terceroId && v.InvitacionAceptada).ToListAsync(ct))

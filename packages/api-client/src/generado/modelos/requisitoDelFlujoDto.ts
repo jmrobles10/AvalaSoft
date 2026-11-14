@@ -30,4 +30,7 @@ export interface RequisitoDelFlujoDto {
   vigenciaDias?: number | null;
   /** @nullable */
   diasRevalidacion?: number | null;
+  /** @nullable */
+  dePersonaRelacionada?: string | null;
+  todasLasRelaciones?: boolean;
 }

@@ -27,6 +27,15 @@ public sealed class RequisitoDeExpediente
 
     public AmbitoDocumento Ambito { get; set; }
 
+    /// <summary>
+    /// Nulo en el documento del propio tercero. Con valor (ADR-0010), el documento es de una persona relacionada: la que cumple el rol o, mientras nadie lo cumple, ninguna
+    /// (<see cref="PersonaDelRequisito.SinPersona"/>). La versión que lo cubre sale de la bóveda de esa persona, no de la del tercero.
+    /// </summary>
+    public PersonaDelRequisito? Persona { get; set; }
+
+    [JsonIgnore]
+    public bool EsDePersona => Persona is not null;
+
     public bool Obligatorio { get; set; }
 
     /// <summary>Áreas que lo revisan, ya resueltas al abrir (vacío en el flujo ⇒ todas).</summary>
@@ -330,6 +339,85 @@ public sealed partial class Expediente
         }, ahora);
     }
 
+    /// <summary>
+    /// Pone al día las personas de los requisitos <c>DePersonaRelacionada</c> de un expediente <b>abierto</b> (ADR-0010: «se resuelve al abrir o recalcular»).
+    /// <paramref name="deseados"/> es lo que el flujo del expediente pide hoy contra las relaciones vigentes: por cada requisito del flujo, un requisito por persona que cumple
+    /// el rol (la principal, o todas con <c>TodasLasRelaciones</c>) o, si nadie lo cumple, uno <b>sin persona</b>. Aquí se decide qué cambia, sin tocar lo que ya está bien:
+    /// <list type="bullet">
+    /// <item>un requisito sin persona que ya tiene a quién pedírsela la recibe (<see cref="PersonaDeRequisitoResuelta"/>), conservando su id y sus áreas;</item>
+    /// <item>una persona nueva sin requisito (otro suplente, un representante nuevo, un socio con «todas») entra como un requisito más
+    /// (<see cref="RequisitosDePersonaAgregados"/>), ya cubierto si su documento está compartido con el vínculo;</item>
+    /// <item>el requisito de una persona que ya no cumple el rol, mientras no esté aprobado, queda eximido por el sistema (su documento ya no se exige); si ya estaba
+    /// aprobado se conserva como lo que la empresa aceptó.</item>
+    /// </list>
+    /// Idempotente: sin diferencias no emite nada. Si no hay ninguna persona para un requisito del flujo, el expediente no cambia (el requisito sin persona espera).
+    /// </summary>
+    public IReadOnlyList<object> ResolverPersonas(IReadOnlyList<RequisitoCalculado> deseados, DateTimeOffset ahora)
+    {
+        if (!EstaAbierto || !ConRequisitos)
+            return [];
+
+        var resueltas = new List<PersonaDeRequisitoResuelta>();
+        var nuevos = new List<RequisitoCalculado>();
+        var sobrantes = new List<RequisitoDeExpediente>();
+        foreach (var grupo in deseados.Where(d => d.Persona is not null).GroupBy(d => d.Persona!.RequisitoDelFlujoId))
+        {
+            var existentes = Requisitos.Where(r => r.Persona?.RequisitoDelFlujoId == grupo.Key).ToList();
+            var conPersona = grupo.Where(d => d.Persona!.PersonaId is not null).DistinctBy(d => d.Persona!.PersonaId).ToList();
+            if (conPersona.Count == 0)
+            {
+                // El flujo pide el rol y nadie lo cumple todavía: queda (o nace) el requisito sin persona.
+                if (existentes.Count == 0 && grupo.FirstOrDefault() is { } marcador)
+                    nuevos.Add(marcador);
+                continue;
+            }
+
+            var sinPersona = existentes.Where(r => r.Persona!.SinPersona).ToList();
+            var yaCubiertas = existentes.Where(r => !r.Persona!.SinPersona).Select(r => r.Persona!.PersonaId!.Value).ToHashSet();
+            foreach (var deseado in conPersona.Where(d => !yaCubiertas.Contains(d.Persona!.PersonaId!.Value)))
+            {
+                if (sinPersona.Count > 0)
+                {
+                    resueltas.Add(new PersonaDeRequisitoResuelta(sinPersona[0].Id, deseado.Persona!, ahora));
+                    sinPersona.RemoveAt(0);
+                }
+                else
+                {
+                    nuevos.Add(deseado);
+                }
+            }
+
+            var deseadas = conPersona.Select(d => d.Persona!.PersonaId!.Value).ToHashSet();
+            sobrantes.AddRange(existentes.Where(r => !r.Persona!.SinPersona && !deseadas.Contains(r.Persona.PersonaId!.Value) && !r.Eximido &&
+                                                    r.Estado != EstadoRequisito.Aprobado));
+        }
+
+        nuevos = [.. nuevos.Where(n => BuscarRequisito(n.RequisitoId) is null).DistinctBy(n => n.RequisitoId)];
+        if (resueltas.Count == 0 && nuevos.Count == 0 && sobrantes.Count == 0)
+            return [];
+
+        var areas = Etapas.OrderBy(e => e.Orden).SelectMany(e => e.Areas).Select(a => a.AreaId).ToList();
+        return Simular(s =>
+        {
+            foreach (var resuelta in resueltas)
+                s.Emitir(resuelta);
+            if (nuevos.Count > 0)
+                s.Emitir(new RequisitosDePersonaAgregados(ResolverAlcance(nuevos, areas), ahora));
+            foreach (var sobrante in sobrantes)
+                s.Emitir(new RequisitoEximido(sobrante.Id, ExencionPorCambioDePersona.Por, ExencionPorCambioDePersona.Justificacion, ahora, null));
+            if (s.Estado is { Estado: EstadoExpediente.Observado, EtapaActiva: { } etapa } && etapa.Areas.All(a => a.Estado != EstadoAreaExpediente.Observada))
+                s.Emitir(new RevisionReanudada(Guid.Empty, ahora));
+        }, ahora);
+    }
+
+    /// <summary>Quién y por qué exime el sistema el requisito de una persona que dejó de cumplir el rol (ADR-0010).</summary>
+    public static class ExencionPorCambioDePersona
+    {
+        public const string Por = "sistema";
+
+        public const string Justificacion = "La persona ya no cumple ese rol ante el tercero: su documento dejó de exigirse.";
+    }
+
     /// <summary>¿La etapa del área ya se aprobó? Sus veredictos quedan cerrados (no los invalida una versión nueva).</summary>
     private bool EtapaCerrada(Guid areaId) => EtapaDe(areaId) is { Estado: EstadoEtapa.Aprobada };
 
@@ -370,6 +458,24 @@ public sealed partial class Expediente
         ActualizadoEn = e.Fecha;
     }
 
+    public void Apply(RequisitosDePersonaAgregados e)
+    {
+        var nuevos = e.Requisitos.Select(DeCalculado).ToList();
+        Requisitos = [.. Requisitos, .. nuevos];
+        var reabiertas = ReabrirEtapasDe(nuevos);
+        RecalcularRequisitos(e.Fecha);
+        foreach (var area in reabiertas.SelectMany(etapa => etapa.Areas).Where(a => a.Estado == EstadoAreaExpediente.Pendiente))
+            area.ReiniciarSla(e.Fecha);
+        ActualizadoEn = e.Fecha;
+    }
+
+    public void Apply(PersonaDeRequisitoResuelta e)
+    {
+        BuscarRequisito(e.RequisitoId)!.Persona = e.Persona;
+        RecalcularRequisitos(e.Fecha);
+        ActualizadoEn = e.Fecha;
+    }
+
     private static RequisitoDeExpediente DeCalculado(RequisitoCalculado r) => new()
     {
         Id = r.RequisitoId,
@@ -397,7 +503,8 @@ public sealed partial class Expediente
         EximidoPor = r.Exencion?.Por,
         JustificacionExencion = r.Exencion?.Justificacion,
         EximidoEn = r.Exencion?.Fecha,
-        ExencionDeVinculoId = r.Exencion?.ExencionId
+        ExencionDeVinculoId = r.Exencion?.ExencionId,
+        Persona = r.Persona
     };
 
     /// <summary>

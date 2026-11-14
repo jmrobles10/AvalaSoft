@@ -139,6 +139,8 @@ public sealed partial class Expediente
         FlujoSeleccionado e => e.Fecha,
         RequisitosCalculados e => e.Fecha,
         RequisitosAgregados e => e.Fecha,
+        RequisitosDePersonaAgregados e => e.Fecha,
+        PersonaDeRequisitoResuelta e => e.Fecha,
         VersionAdjuntadaARequisito e => e.Fecha,
         VeredictosInvalidadosPorNuevaVersion e => e.Fecha,
         VeredictoDeRequisitoEmitido e => e.Fecha,

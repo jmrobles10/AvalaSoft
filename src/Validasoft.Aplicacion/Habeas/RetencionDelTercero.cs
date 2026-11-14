@@ -85,11 +85,16 @@ public sealed class RetencionDelTercero(ISesiones sesiones, IDocumentStore store
         await using var global = sesiones.ConsultaGlobal();
         await using var boveda = sesiones.ConsultaBoveda();
 
-        // Lo que referencia al tercero en los tenants de las empresas: certificados, expedientes, aceptaciones de la ficha y vínculos.
-        var certificados = await global.Query<Certificado>().Where(c => c.AnyTenant() && c.TerceroId == terceroId).ToListAsync(ct);
-        var expedientes = await global.Query<Expediente>().Where(e => e.AnyTenant() && e.TerceroId == terceroId).ToListAsync(ct);
+        // Lo que referencia al tercero en los tenants de las empresas: certificados, expedientes, aceptaciones de la ficha y vínculos. Y lo que referencia a los terceros a los que
+        // esta persona se relaciona (ADR-0010): sus certificados, expedientes y vínculos guardan versiones de los documentos de la bóveda de la persona (su cédula, sus
+        // antecedentes). La base legal de conservarlos se deriva de la relación: mientras el tercero al que se relaciona los use, no se suprimen.
+        var destinos = (await global.Query<RelacionEntreTerceros>().Where(r => r.AnyTenant() && r.OrigenId == terceroId).ToListAsync(ct))
+            .Select(r => r.DestinoId).Distinct().ToArray();
+        var terceros = new[] { terceroId }.Concat(destinos).ToArray();
+        var certificados = await global.Query<Certificado>().Where(c => c.AnyTenant() && c.TerceroId.IsOneOf(terceros)).ToListAsync(ct);
+        var expedientes = await global.Query<Expediente>().Where(e => e.AnyTenant() && e.TerceroId.IsOneOf(terceros)).ToListAsync(ct);
         var aceptadas = await global.Query<SeccionAceptada>().Where(a => a.AnyTenant() && a.TerceroId == terceroId).ToListAsync(ct);
-        var vinculos = (await global.Query<Vinculo>().Where(v => v.AnyTenant() && v.TerceroId == terceroId).ToListAsync(ct)).ToDictionary(v => v.Id);
+        var vinculos = (await global.Query<Vinculo>().Where(v => v.AnyTenant() && v.TerceroId.IsOneOf(terceros)).ToListAsync(ct)).ToDictionary(v => v.Id);
 
         DateOnly? FinDelVinculo(Guid vinculoId) =>
             vinculos.TryGetValue(vinculoId, out var v) && v.Estado is EstadoVinculo.Desvinculado or EstadoVinculo.Anulado

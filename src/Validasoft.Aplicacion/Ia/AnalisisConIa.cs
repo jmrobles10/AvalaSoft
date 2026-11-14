@@ -59,12 +59,13 @@ public static class AnalisisConIa
 
 public static class AnalizarIaDelVinculoHandler
 {
-    /// <summary>Pide el análisis (o el consumo) de cada documento del tercero cuya versión actual está compartida con el vínculo.</summary>
+    /// <summary>Pide el análisis (o el consumo) de cada documento del tercero (y de sus personas relacionadas, ADR-0010) cuya versión actual está compartida con el vínculo.</summary>
     public static async Task Handle(AnalizarIaDelVinculo mensaje, ISesiones sesiones, IMessageContext mensajes, CancellationToken ct)
     {
         var terceroId = mensaje.TerceroId;
         await using var consulta = sesiones.ConsultaBoveda();
-        var documentos = await consulta.Query<Documento>().Where(d => d.TerceroId == terceroId).ToListAsync(ct);
+        var vinculoId = mensaje.VinculoId;
+        var documentos = await consulta.Query<Documento>().Where(d => d.TerceroId == terceroId || d.Comparticiones.Any(c => c.VinculoId == vinculoId)).ToListAsync(ct);
         foreach (var documento in documentos.Where(d => d.VersionActual is { } n && d.EstaCompartida(n, mensaje.VinculoId)))
             await AnalisisConIa.PedirAsync(mensajes, documento);
     }
@@ -225,6 +226,9 @@ public static class AnalizarVersionConIaHandler
         // F5: con los hechos nuevos, se cruzan las secciones que el documento respalda (hecho compartido, sin otra llamada).
         if (analisis is not null && registrado && Dominio.Ficha.MapaDeRespaldo.RespaldaAlguna(documento.TipoCanonico))
             await mensajes.PublishAsync(new Validasoft.Aplicacion.Ficha.CruzarFichaConDocumentos(documento.TerceroId));
+        // ADR-0010: lo que la IA leyó de la Cámara (representantes) se reconcilia con las relaciones del tercero: una diferencia es una propuesta, no un cambio.
+        if (analisis is not null && registrado && documento.Ambito == Dominio.Documentos.AmbitoDocumento.Global && documento.TipoCanonico == "CAMARA_COMERCIO")
+            await mensajes.PublishAsync(new Validasoft.Aplicacion.Personas.ReconciliarRelacionesConCamara(documento.TerceroId, documento.Id, version.Numero));
         // El correo del RUT o de la Cámara de comercio (hechos nuevos) puede verificar a un contacto del tercero (decisión AV): se pone al día quién tiene acceso.
         if (analisis is not null && registrado && documento.Ambito == Dominio.Documentos.AmbitoDocumento.Global && documento.TipoCanonico is "RUT" or "CAMARA_COMERCIO")
             await mensajes.PublishAsync(new Validasoft.Aplicacion.Interesado.SincronizarAccesoDelTercero(documento.TerceroId));

@@ -419,6 +419,7 @@ public class AccesoAisladoTests
     [InlineData(GrupoDeAcceso.Ficha, false)]
     [InlineData(GrupoDeAcceso.Privacidad, false)]
     [InlineData(GrupoDeAcceso.Cuenta, false)]
+    [InlineData(GrupoDeAcceso.Personas, false)]
     public void Una_sesion_aislada_solo_alcanza_lo_de_su_relacion(GrupoDeAcceso grupo, bool permitido)
     {
         var principal = Principal(aislada: true);
@@ -447,6 +448,9 @@ public class AccesoAisladoTests
     [InlineData(ComponentesEmbebibles.Expediente, GrupoDeAcceso.Boveda, false)]
     [InlineData(ComponentesEmbebibles.Expediente, GrupoDeAcceso.Privacidad, false)]
     [InlineData(ComponentesEmbebibles.Expediente, GrupoDeAcceso.Cuenta, false)]
+    [InlineData(ComponentesEmbebibles.Expediente, GrupoDeAcceso.Personas, false)]
+    [InlineData(ComponentesEmbebibles.Boveda, GrupoDeAcceso.Personas, false)]
+    [InlineData(ComponentesEmbebibles.Ficha, GrupoDeAcceso.Personas, false)]
     [InlineData(ComponentesEmbebibles.Expediente, GrupoDeAcceso.Subida, true)]
     [InlineData(ComponentesEmbebibles.Expediente, GrupoDeAcceso.Relacion, true)]
     [InlineData(ComponentesEmbebibles.Expediente, GrupoDeAcceso.Ficha, true)]

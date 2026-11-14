@@ -27,6 +27,44 @@ function editor(requisitos: RequisitoEnEditor[], onCambiar = vi.fn(), tipos = [t
   );
 }
 
+describe('EditorRequisitos: documento de una persona relacionada', () => {
+  const cedula = { id: 'ced', codigo: 'CEDULA', nombre: 'Cédula de ciudadanía', clase: 'Archivo', activo: true, tipoCanonico: 'CEDULA' } as TipoDocumentoTenantDto;
+
+  it('«Documento de» elige entre el propio tercero y cada rol; al elegir uno se pide el de la persona principal', () => {
+    const onCambiar = vi.fn();
+    editor([requisitoNuevo('ced')], onCambiar, [cedula]);
+
+    expect(screen.queryByRole('switch', { name: 'De todas las personas con ese rol' })).not.toBeInTheDocument();
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Documento de' }));
+    const opciones = within(screen.getByRole('listbox'));
+    expect(opciones.getAllByRole('option').map((o) => o.textContent)).toEqual([
+      'El propio tercero',
+      'Representante legal',
+      'Suplente del representante legal',
+      'Socio o accionista',
+      'Beneficiario final',
+      'Miembro del consorcio',
+    ]);
+    fireEvent.click(opciones.getByRole('option', { name: 'Socio o accionista' }));
+    expect(onCambiar).toHaveBeenCalledWith([expect.objectContaining({ dePersonaRelacionada: 'Socio', todasLasRelaciones: false })]);
+  });
+
+  it('con un rol ofrece «todas» y explica cuándo se resuelve; volver al propio tercero apaga «todas»', () => {
+    const onCambiar = vi.fn();
+    editor([{ ...requisitoNuevo('ced'), dePersonaRelacionada: 'Socio' }], onCambiar, [cedula]);
+
+    expect(screen.getByText(/Se resuelve al abrir o recalcular el expediente/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('switch', { name: 'De todas las personas con ese rol' }));
+    expect(onCambiar).toHaveBeenCalledWith([expect.objectContaining({ dePersonaRelacionada: 'Socio', todasLasRelaciones: true })]);
+  });
+
+  it('un documento que no es de una persona (el RUT) no ofrece rol', () => {
+    editor([requisitoNuevo('rut')], vi.fn(), [tipoRut]);
+
+    expect(screen.queryByRole('combobox', { name: 'Documento de' })).not.toBeInTheDocument();
+  });
+});
+
 describe('EditorRequisitos', () => {
   it('«Lo revisan» muestra las áreas como chips en una sola línea: dos a la vista y el resto en «+N»', () => {
     editor([{ ...requisitoNuevo('rut'), areasQueRevisan: ['compras', 'cumplimiento', 'juridica', 'tesoreria'] }]);

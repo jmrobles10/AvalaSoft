@@ -79,20 +79,20 @@ public static class MatrizEndpoints
     /// </summary>
     [WolverinePost("/api/v1/expedientes/{id}/cumplimiento/matriz/calcular")]
     [Authorize(Policy = Permisos.CumplimientoDecidir)]
-    public static async Task<ResultadoDeMatrizDto> Calcular(Guid id, CalcularMatrizDto dto, SesionDeEmpresa empresa, CancellationToken ct)
+    public static async Task<ResultadoDeMatrizDto> Calcular(Guid id, CalcularMatrizDto dto, SesionDeEmpresa empresa, TimeProvider reloj, CancellationToken ct)
     {
         var matriz = await empresa.Sesion.LoadAsync<MatrizDeRiesgoEmpresa>(empresa.EmpresaId, ct);
         if (matriz is not { Activa: true })
             throw ReglaDeNegocioException.Validacion("matriz-no-activa", "La empresa no tiene una matriz de riesgo activa (Configuración › Matriz de riesgo).");
         var expediente = await empresa.CargarExpedienteAsync(id, ct);
-        return (await CalcularAsync(empresa, matriz, expediente, dto.Respuestas, ct)).ADto();
+        return (await CalcularAsync(empresa, matriz, expediente, dto.Respuestas, CalculadoraDeVigencia.Fecha(reloj.GetUtcNow()), ct)).ADto();
     }
 
     /// <summary>Aplica la matriz a un expediente: los factores automáticos con lo que ya hay (listas, ficha legal, identificación) y los manuales con las respuestas.</summary>
     internal static async Task<ResultadoDeMatriz> CalcularAsync(SesionDeEmpresa empresa, MatrizDeRiesgoEmpresa matriz, Expediente expediente,
-        IReadOnlyList<RespuestaDeMatrizDto>? respuestas, CancellationToken ct)
+        IReadOnlyList<RespuestaDeMatrizDto>? respuestas, DateOnly hoy, CancellationToken ct)
     {
-        var personas = await ConsultaDeListas.PersonasAsync(empresa.Sesion, expediente.TerceroId, ct);
+        var personas = await ConsultaDeListas.PersonasAsync(empresa.Sesion, expediente.TerceroId, hoy, ct);
         var automaticos = FactoresAutomaticos.Evaluar(expediente.TerceroIdentificacion, expediente.BuscarVerificacion(TipoVerificacion.ListasRestrictivas),
             personas.Select(p => p.AConsultada()));
         return matriz.Calcular([.. (respuestas ?? []).Select(r => new RespuestaDeFactor(r.Factor, r.Opcion))], automaticos);
@@ -202,10 +202,10 @@ public static class AdjuntosDeCumplimientoEndpoints
     /// <summary>Las personas que cubre hoy una consulta de listas (el tercero, sus representantes, socios y PEP), para reportar sobre ellas lo que dio la consulta hecha por fuera.</summary>
     [WolverineGet("/api/v1/expedientes/{id}/verificaciones/ListasRestrictivas/personas")]
     [Authorize(Policy = Permisos.VerificacionesEscribir)]
-    public static async Task<PersonasParaConsultaDto> Personas(Guid id, SesionDeEmpresa empresa, CancellationToken ct)
+    public static async Task<PersonasParaConsultaDto> Personas(Guid id, SesionDeEmpresa empresa, TimeProvider reloj, CancellationToken ct)
     {
         var expediente = await empresa.CargarExpedienteAsync(id, ct);
-        var personas = await ConsultaDeListas.PersonasAsync(empresa.Sesion, expediente.TerceroId, ct);
+        var personas = await ConsultaDeListas.PersonasAsync(empresa.Sesion, expediente.TerceroId, CalculadoraDeVigencia.Fecha(reloj.GetUtcNow()), ct);
         return new PersonasParaConsultaDto([.. personas.Select(p => new PersonaConsultadaDto(p.Rol, p.Nombre, $"{p.TipoIdentificacion} {p.Numero}"))],
             [.. personas.Select(p => p.Clave)]);
     }
@@ -231,7 +231,7 @@ public static class AdjuntosDeCumplimientoEndpoints
             var stream = await empresa.ExpedienteParaEscribirAsync(id, Peticiones.VersionEsperada(http), ct);
             var expediente = stream.Aggregate!;
             var oficial = await VerificacionesEndpoints.OficialAsync(empresa, contexto, ct);
-            var personas = await ConsultaDeListas.PersonasAsync(empresa.Sesion, expediente.TerceroId, ct);
+            var personas = await ConsultaDeListas.PersonasAsync(empresa.Sesion, expediente.TerceroId, CalculadoraDeVigencia.Fecha(reloj.GetUtcNow()), ct);
             var adjunto = expediente.BuscarAdjuntoDeCumplimiento(dto.AdjuntoId)
                           ?? throw ReglaDeNegocioException.Validacion("adjunto-invalido", "Sube primero el PDF de la consulta.");
             var coincidencias = new List<CoincidenciaHallada>();

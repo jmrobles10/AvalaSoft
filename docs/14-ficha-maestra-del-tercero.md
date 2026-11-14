@@ -71,7 +71,7 @@ Casi todo es **global del tercero**: una sola verdad compartida por todas las co
 - **El documento como fuente de las secciones** (FM-5, FM-13). La relación es de muchos a muchos y está a nivel de campo (§5.1): un mismo RUT respalda General y Tributaria. La versión de la sección guarda `respaldadaPor[]: { documentoId, version, campos[] }`.
 - **Personas relacionadas** (FM-7):
   - **Fase 1:** la sección `LEGAL` guarda filas tipadas: rol `RepresentanteLegal` / `Suplente` / `Apoderado` / `Socio` / `JuntaDirectiva` / `RevisorFiscal` / `Contador`, identificación, porcentaje y PEP.
-  - **Fase 2:** cada persona se vuelve un tercero persona natural con bóveda propia (ADR-0010) y su cédula se valida una sola vez.
+  - **Fase 2 (implementada, ADR-0010 y registro `5-septiessexagies`):** cada persona se vuelve un tercero persona natural con bóveda propia y su cédula se valida una sola vez; la sección `LEGAL` sigue funcionando igual y las crea y mantiene sola.
 - **Ya cubierto, no cambia:**
   - **Bancaria:** cuentas globales y cuenta designada por vínculo con 4 ojos (CB-1..CB-3); se agrega el cruce con la certificación.
   - **Contactos:** se mantienen en el tercero; el cargo por empresa queda para después.
@@ -223,7 +223,7 @@ Producto pidió (2026-11-09) **primero la paridad con el SRM, sin IA**: los sect
 | F3 | **Integración con el SRM:** evento `seccion.aceptada` y `GET /api/v1/vinculos/{id}/ficha`, para que el SRM aplique en AyF lo aceptado (General, Tributaria, representante legal y cuenta designada). |
 | F4 | **Importador** desde las tablas `Ter*` del Portal y **sincronizador** de coexistencia. |
 | F5 | **IA:** cruce sección ↔ documento, la opción «Usar como soporte» con cruce automático en los requisitos de documento y la **actualización desde el documento** (§5.2, §5.3, §6). **Terminada (2026-11-10, FM-48…FM-55):** además de lo anterior, la actualización abierta se amplía con lo que cambia después. **Pendientes cerrados el 2026-11-11 (FD-1…FD-9):** la cédula respalda también la Legal, la certificación bancaria respalda las cuentas y un cambio sin documento nuevo se marca «sin soporte». |
-| F6 | Personas relacionadas con bóveda propia (fase 2) y cargo de los contactos por empresa. |
+| F6 | Personas relacionadas con bóveda propia (fase 2, **hecha**: registro `5-septiessexagies`) y cargo de los contactos por empresa. |
 
 ## Decisiones abiertas
 1. ~~¿Las 13 calidades tributarias se exponen al SRM como hoy (S/N) además de los códigos DIAN?~~ Resuelta en FM-33: sí, derivadas de los códigos, y `null` en las que no se pueden derivar.

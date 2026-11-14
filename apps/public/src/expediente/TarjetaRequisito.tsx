@@ -1,11 +1,12 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@validasoft/api-client';
 import { ChipEstado, formatearFecha } from '@validasoft/ui';
-import { FileText, PencilLine, Upload } from 'lucide-react';
+import { FileText, PencilLine, Upload, UsersRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { modoDe, reglasDe, textoReglas } from '../tipoDocumento/reglas';
 import { Plantilla } from '../tipoDocumento/Plantilla';
+import { esRol } from '../personas/modelo';
 import { requiereAtencion } from '../vigencia/vigencia';
 import { AvisoVigencia, LineaVigencia } from '../vigencia/ChipVigencia';
 import { ConfirmarRatificacion } from './ConfirmarRatificacion';
@@ -24,6 +25,9 @@ export function TarjetaRequisito({ requisito, expediente, enlace }: { requisito:
   const version = requisito.versionActual;
   const tipo = requisito.tipoDocumento;
   const modo = modoDe(tipo);
+  // El documento de una persona relacionada (ADR-0010): de quién es, o que aún no hay quien cumpla el rol y toca registrarla.
+  const persona = requisito.persona ?? null;
+  const rolDePersona = persona ? (esRol(persona.rol) ? t(`personas.roles.${persona.rol}`) : persona.rol) : '';
   // Le toca subirlo (o renovarlo porque vence): entonces se dice qué admite y se ofrece la plantilla.
   const teToca = Boolean(accion && enlace) && (accion !== 'reemplazar' || requiereAtencion(version?.vigencia));
 
@@ -37,6 +41,13 @@ export function TarjetaRequisito({ requisito, expediente, enlace }: { requisito:
           <Typography component="h4" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>
             {tipo.nombre}
           </Typography>
+          {persona && (
+            <Typography sx={{ fontSize: 13, lineHeight: '18px' }}>
+              {persona.sinPersona
+                ? t('personas.expediente.sinPersona', { rol: rolDePersona.toLowerCase() })
+                : t('personas.expediente.de', { nombre: persona.nombre ?? '', rol: rolDePersona })}
+            </Typography>
+          )}
           <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
             {requisito.ratificadoEn
               ? t('expediente.ratificar.ratificado', { fecha: formatearFecha(requisito.ratificadoEn) })
@@ -86,6 +97,12 @@ export function TarjetaRequisito({ requisito, expediente, enlace }: { requisito:
           sx={{ mt: 1, ml: accion === 'reemplazar' ? 2.25 : 3.25 }}
         >
           {t(modo === 'Formulario' ? `expediente.documentos.accionesFormulario.${accion}` : `expediente.documentos.acciones.${accion}`)}
+        </Button>
+      )}
+
+      {persona?.sinPersona && (
+        <Button component={RouterLink} to="/personas" variant="contained" startIcon={<UsersRound size={16} aria-hidden />} sx={{ mt: 1, ml: 3.25 }}>
+          {t('personas.expediente.agregarPersona')}
         </Button>
       )}
 

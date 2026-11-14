@@ -104,7 +104,7 @@ public sealed record ConfirmacionPlantillaDto(bool Duplicado, PlantillaVersionDt
 /// </remarks>
 public sealed record IniciarCargaDto(
     string NombreArchivo, long TamanoBytes, string TipoMime, string? TipoCanonico = null, Guid? TipoDocumentoTenantId = null,
-    Guid? VinculoId = null, string? Sha256 = null, IReadOnlyDictionary<string, JsonElement>? Datos = null);
+    Guid? VinculoId = null, string? Sha256 = null, IReadOnlyDictionary<string, JsonElement>? Datos = null, Guid? TerceroRelacionadoId = null);
 
 /// <summary>
 /// Versión solo de formulario (<c>POST /public/v1/boveda/formularios</c>, TD-4): el tipo del tenant (por id, o el

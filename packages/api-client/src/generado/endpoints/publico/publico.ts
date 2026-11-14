@@ -44,6 +44,7 @@ import type {
   ContactosDelTerceroDto,
   CrearSolicitudHabeasDto,
   CuentaBancariaPublicaDto,
+  DeclararRelacionDto,
   DescargaDto,
   DescargarCertificadoVerificadoParams,
   DescargarDeclaracionPepPropiaParams,
@@ -77,6 +78,7 @@ import type {
   RechazarAccesoDto,
   ReenviarExpedienteDto,
   RegistrarCuentaBancariaDto,
+  RelacionEntreTercerosDto,
   ResponderEvaluacionDto,
   RetirarVersionDto,
   RetiroDto,
@@ -448,6 +450,329 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getDesignarCuentaMutationOptions(options), queryClient);
+    }
+    export const listarRelacionesDelTercero = (
+
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<RelacionEntreTercerosDto[]>(
+      {url: `/public/v1/tercero/relaciones`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getListarRelacionesDelTerceroQueryKey = () => {
+    return [
+    `/public/v1/tercero/relaciones`
+    ] as const;
+    }
+
+
+export const getListarRelacionesDelTerceroQueryOptions = <TData = Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListarRelacionesDelTerceroQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarRelacionesDelTercero>>> = ({ signal }) => listarRelacionesDelTercero(requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListarRelacionesDelTerceroQueryResult = NonNullable<Awaited<ReturnType<typeof listarRelacionesDelTercero>>>
+export type ListarRelacionesDelTerceroQueryError = ErrorType<void>
+
+
+export function useListarRelacionesDelTercero<TData = Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError = ErrorType<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarRelacionesDelTercero>>,
+          TError,
+          Awaited<ReturnType<typeof listarRelacionesDelTercero>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarRelacionesDelTercero<TData = Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarRelacionesDelTercero>>,
+          TError,
+          Awaited<ReturnType<typeof listarRelacionesDelTercero>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarRelacionesDelTercero<TData = Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarRelacionesDelTercero<TData = Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarRelacionesDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListarRelacionesDelTerceroQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const declararRelacionDelTercero = (
+    declararRelacionDto: BodyType<DeclararRelacionDto>,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<RelacionEntreTercerosDto>(
+      {url: `/public/v1/tercero/relaciones`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: declararRelacionDto, signal
+    },
+      options);
+    }
+
+
+
+
+export const getDeclararRelacionDelTerceroMutationKey = () => ['declararRelacionDelTercero'] as const;
+
+export const getDeclararRelacionDelTerceroMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof declararRelacionDelTercero>>, TError,DeclararRelacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof declararRelacionDelTercero>>, TError,DeclararRelacionDelTerceroMutationVariables, TContext> => {
+
+const mutationKey = getDeclararRelacionDelTerceroMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof declararRelacionDelTercero>>, DeclararRelacionDelTerceroMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  declararRelacionDelTercero(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeclararRelacionDelTerceroMutationResult = NonNullable<Awaited<ReturnType<typeof declararRelacionDelTercero>>>
+    export type DeclararRelacionDelTerceroMutationBody = BodyType<DeclararRelacionDto>
+    export type DeclararRelacionDelTerceroMutationError = ErrorType<unknown>
+    export type DeclararRelacionDelTerceroMutationVariables = {data: BodyType<DeclararRelacionDto>}
+
+    export const useDeclararRelacionDelTercero = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof declararRelacionDelTercero>>, TError,DeclararRelacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof declararRelacionDelTercero>>,
+        TError,
+        DeclararRelacionDelTerceroMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeclararRelacionDelTerceroMutationOptions(options), queryClient);
+    }
+    export const confirmarRelacionDelTercero = (
+    id: string,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<RelacionEntreTercerosDto>(
+      {url: `/public/v1/tercero/relaciones/${id}/confirmar`, method: 'POST', signal
+    },
+      options);
+    }
+
+
+
+
+export const getConfirmarRelacionDelTerceroMutationKey = () => ['confirmarRelacionDelTercero'] as const;
+
+export const getConfirmarRelacionDelTerceroMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmarRelacionDelTercero>>, TError,ConfirmarRelacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof confirmarRelacionDelTercero>>, TError,ConfirmarRelacionDelTerceroMutationVariables, TContext> => {
+
+const mutationKey = getConfirmarRelacionDelTerceroMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirmarRelacionDelTercero>>, ConfirmarRelacionDelTerceroMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  confirmarRelacionDelTercero(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConfirmarRelacionDelTerceroMutationResult = NonNullable<Awaited<ReturnType<typeof confirmarRelacionDelTercero>>>
+
+    export type ConfirmarRelacionDelTerceroMutationError = ErrorType<void>
+    export type ConfirmarRelacionDelTerceroMutationVariables = {id: string}
+
+    export const useConfirmarRelacionDelTercero = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmarRelacionDelTercero>>, TError,ConfirmarRelacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof confirmarRelacionDelTercero>>,
+        TError,
+        ConfirmarRelacionDelTerceroMutationVariables,
+        TContext
+      > => {
+      return useMutation(getConfirmarRelacionDelTerceroMutationOptions(options), queryClient);
+    }
+    export const descartarRelacionDelTercero = (
+    id: string,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<void>(
+      {url: `/public/v1/tercero/relaciones/${id}/descartar`, method: 'POST', signal
+    },
+      options);
+    }
+
+
+
+
+export const getDescartarRelacionDelTerceroMutationKey = () => ['descartarRelacionDelTercero'] as const;
+
+export const getDescartarRelacionDelTerceroMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof descartarRelacionDelTercero>>, TError,DescartarRelacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof descartarRelacionDelTercero>>, TError,DescartarRelacionDelTerceroMutationVariables, TContext> => {
+
+const mutationKey = getDescartarRelacionDelTerceroMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof descartarRelacionDelTercero>>, DescartarRelacionDelTerceroMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  descartarRelacionDelTercero(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DescartarRelacionDelTerceroMutationResult = NonNullable<Awaited<ReturnType<typeof descartarRelacionDelTercero>>>
+
+    export type DescartarRelacionDelTerceroMutationError = ErrorType<unknown>
+    export type DescartarRelacionDelTerceroMutationVariables = {id: string}
+
+    export const useDescartarRelacionDelTercero = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof descartarRelacionDelTercero>>, TError,DescartarRelacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof descartarRelacionDelTercero>>,
+        TError,
+        DescartarRelacionDelTerceroMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDescartarRelacionDelTerceroMutationOptions(options), queryClient);
+    }
+    export const terminarRelacionDelTercero = (
+    id: string,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<void>(
+      {url: `/public/v1/tercero/relaciones/${id}`, method: 'DELETE', signal
+    },
+      options);
+    }
+
+
+
+
+export const getTerminarRelacionDelTerceroMutationKey = () => ['terminarRelacionDelTercero'] as const;
+
+export const getTerminarRelacionDelTerceroMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof terminarRelacionDelTercero>>, TError,TerminarRelacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof terminarRelacionDelTercero>>, TError,TerminarRelacionDelTerceroMutationVariables, TContext> => {
+
+const mutationKey = getTerminarRelacionDelTerceroMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof terminarRelacionDelTercero>>, TerminarRelacionDelTerceroMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  terminarRelacionDelTercero(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TerminarRelacionDelTerceroMutationResult = NonNullable<Awaited<ReturnType<typeof terminarRelacionDelTercero>>>
+
+    export type TerminarRelacionDelTerceroMutationError = ErrorType<unknown>
+    export type TerminarRelacionDelTerceroMutationVariables = {id: string}
+
+    export const useTerminarRelacionDelTercero = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof terminarRelacionDelTercero>>, TError,TerminarRelacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof terminarRelacionDelTercero>>,
+        TError,
+        TerminarRelacionDelTerceroMutationVariables,
+        TContext
+      > => {
+      return useMutation(getTerminarRelacionDelTerceroMutationOptions(options), queryClient);
     }
     export const listarNotificacionesTercero = (
     params?: ListarNotificacionesTerceroParams,

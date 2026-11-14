@@ -85,7 +85,13 @@ public enum GrupoDeAcceso
     Privacidad,
 
     /// <summary>Lo que es del tercero entero: sus preferencias de notificación, sus sesiones y las solicitudes de acceso de otros correos.</summary>
-    Cuenta
+    Cuenta,
+
+    /// <summary>
+    /// Sus personas relacionadas (ADR-0010): declararlas, confirmar lo que detectó la IA y subir los documentos de cada una a <b>su</b> bóveda. Es de un contacto del
+    /// tercero (sesión completa): una sesión aislada no toca datos de personas de un tercero que aún no la aprobó, y los tokens embebidos no alcanzan este grupo.
+    /// </summary>
+    Personas
 }
 
 /// <summary>

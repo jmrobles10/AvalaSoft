@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5080/"
+      "url": "http://localhost/"
     }
   ],
   "paths": {
@@ -4601,6 +4601,214 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ContactoDelTerceroDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/tercero/relaciones": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Personas.PersonasRelacionadasEndpoints"
+        ],
+        "summary": "GET_public_v1_tercero_relaciones",
+        "description": "GET_public_v1_tercero_relaciones",
+        "operationId": "GET_public_v1_tercero_relaciones",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RelacionEntreTercerosDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Personas.PersonasRelacionadasEndpoints"
+        ],
+        "summary": "POST_public_v1_tercero_relaciones",
+        "description": "POST_public_v1_tercero_relaciones",
+        "operationId": "POST_public_v1_tercero_relaciones",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeclararRelacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/tercero/relaciones/{id}/confirmar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Personas.PersonasRelacionadasEndpoints"
+        ],
+        "summary": "POST_public_v1_tercero_relaciones_id_confirmar",
+        "description": "POST_public_v1_tercero_relaciones_id_confirmar",
+        "operationId": "POST_public_v1_tercero_relaciones_id_confirmar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelacionEntreTercerosDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/tercero/relaciones/{id}/descartar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Personas.PersonasRelacionadasEndpoints"
+        ],
+        "summary": "POST_public_v1_tercero_relaciones_id_descartar",
+        "description": "POST_public_v1_tercero_relaciones_id_descartar",
+        "operationId": "POST_public_v1_tercero_relaciones_id_descartar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/tercero/relaciones/{id}": {
+      "delete": {
+        "tags": [
+          "Validasoft.Aplicacion.Personas.PersonasRelacionadasEndpoints"
+        ],
+        "summary": "DELETE_public_v1_tercero_relaciones_id",
+        "description": "DELETE_public_v1_tercero_relaciones_id",
+        "operationId": "DELETE_public_v1_tercero_relaciones_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/vinculos/{id}/personas-relacionadas": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Personas.PersonasDelVinculoEndpoints"
+        ],
+        "summary": "GET_api_v1_vinculos_id_personas_relacionadas",
+        "description": "GET_api_v1_vinculos_id_personas_relacionadas",
+        "operationId": "GET_api_v1_vinculos_id_personas_relacionadas",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PersonaDelVinculoDto"
+                  }
                 }
               }
             }
@@ -25160,6 +25368,44 @@
           }
         }
       },
+      "DeclararRelacionDto": {
+        "required": [
+          "identificacion",
+          "nombre",
+          "tipo"
+        ],
+        "type": "object",
+        "properties": {
+          "identificacion": {
+            "$ref": "#/components/schemas/IdentificacionDto"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "principal": {
+            "type": "boolean",
+            "default": false
+          },
+          "participacion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "cargo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "DefinicionDeCuestionarioDto": {
         "required": [
           "secciones",
@@ -25677,6 +25923,58 @@
             "items": {
               "$ref": "#/components/schemas/ComparticionPublicaDto"
             }
+          }
+        }
+      },
+      "DocumentoDePersonaDto": {
+        "required": [
+          "tipoCanonico",
+          "nombre",
+          "documentoId",
+          "version",
+          "estado",
+          "cargadaEn"
+        ],
+        "type": "object",
+        "properties": {
+          "tipoCanonico": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "documentoId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "estado": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cargadaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "pedido": {
+            "type": "boolean",
+            "default": false
           }
         }
       },
@@ -31421,7 +31719,7 @@
               "string"
             ]
           },
-          "archivo": {},
+          "archivo": { },
           "unidades": {
             "type": [
               "null",
@@ -32076,6 +32374,13 @@
               "null",
               "object"
             ]
+          },
+          "terceroRelacionadoId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           }
         }
       },
@@ -32410,7 +32715,7 @@
       "IResult": {
         "type": "object"
       },
-      "JsonElement": {},
+      "JsonElement": { },
       "JustificacionDto": {
         "required": [
           "justificacion"
@@ -34215,7 +34520,7 @@
               "$ref": "#/components/schemas/CuentaDeIngresoDto"
             }
           },
-          "opciones": {},
+          "opciones": { },
           "sesion": {
             "oneOf": [
               {
@@ -34373,6 +34678,113 @@
           },
           "identificacion": {
             "type": "string"
+          }
+        }
+      },
+      "PersonaDelRequisitoDto": {
+        "required": [
+          "rol",
+          "todasLasRelaciones",
+          "sinPersona"
+        ],
+        "type": "object",
+        "properties": {
+          "rol": {
+            "type": "string"
+          },
+          "todasLasRelaciones": {
+            "type": "boolean"
+          },
+          "sinPersona": {
+            "type": "boolean"
+          },
+          "personaId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "relacionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "nombre": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "identificacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PersonaDelVinculoDto": {
+        "required": [
+          "relacionId",
+          "personaId",
+          "identificacion",
+          "nombre",
+          "tipo",
+          "principal",
+          "participacion",
+          "cargo",
+          "vigenteDesde",
+          "documentos"
+        ],
+        "type": "object",
+        "properties": {
+          "relacionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "personaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "identificacion": {
+            "$ref": "#/components/schemas/IdentificacionDto"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "principal": {
+            "type": "boolean"
+          },
+          "participacion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "cargo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "vigenteDesde": {
+            "type": "string",
+            "format": "date"
+          },
+          "documentos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentoVistaEmpresaDto"
+            }
           }
         }
       },
@@ -35376,7 +35788,7 @@
               "$ref": "#/components/schemas/CampoPropuestoDto"
             }
           },
-          "datos": {}
+          "datos": { }
         }
       },
       "ProveedorDeFuenteDto": {
@@ -36156,6 +36568,26 @@
           }
         }
       },
+      "ReemplazaRelacionDto": {
+        "required": [
+          "relacionId",
+          "nombre",
+          "identificacion"
+        ],
+        "type": "object",
+        "properties": {
+          "relacionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "identificacion": {
+            "$ref": "#/components/schemas/IdentificacionDto"
+          }
+        }
+      },
       "ReenviarExpedienteDto": {
         "type": "object",
         "properties": {
@@ -36762,6 +37194,116 @@
           }
         }
       },
+      "RelacionEntreTercerosDto": {
+        "required": [
+          "id",
+          "personaId",
+          "identificacion",
+          "nombre",
+          "tipo",
+          "principal",
+          "participacion",
+          "cargo",
+          "vigenteDesde",
+          "vigenteHasta",
+          "estado",
+          "fuente",
+          "deFicha",
+          "confianza",
+          "confirmadaEn",
+          "documentos"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "personaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "identificacion": {
+            "$ref": "#/components/schemas/IdentificacionDto"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "principal": {
+            "type": "boolean"
+          },
+          "participacion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "cargo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "vigenteDesde": {
+            "type": "string",
+            "format": "date"
+          },
+          "vigenteHasta": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "fuente": {
+            "type": "string"
+          },
+          "deFicha": {
+            "type": "boolean"
+          },
+          "confianza": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "confirmadaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "documentos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentoDePersonaDto"
+            }
+          },
+          "reemplaza": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ReemplazaRelacionDto"
+              }
+            ]
+          }
+        }
+      },
       "RenombrarPasskeyDto": {
         "required": [
           "nombre"
@@ -37064,6 +37606,16 @@
               "string"
             ],
             "format": "int32"
+          },
+          "dePersonaRelacionada": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "todasLasRelaciones": {
+            "type": "boolean",
+            "default": false
           }
         }
       },
@@ -37169,6 +37721,16 @@
             "items": {
               "$ref": "#/components/schemas/RevisionAutomaticaDto"
             }
+          },
+          "persona": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PersonaDelRequisitoDto"
+              }
+            ]
           }
         }
       },
@@ -37234,6 +37796,16 @@
               },
               {
                 "$ref": "#/components/schemas/SeccionDeRequisitoDto"
+              }
+            ]
+          },
+          "persona": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PersonaDelRequisitoDto"
               }
             ]
           }
@@ -39844,7 +40416,7 @@
               "$ref": "#/components/schemas/AceptacionDeSeccionDto"
             }
           },
-          "prellenado": {},
+          "prellenado": { },
           "sinSoporte": {
             "oneOf": [
               {
@@ -44332,6 +44904,12 @@
     },
     {
       "name": "Validasoft.Aplicacion.Plataforma.SolicitudesDeAccesoDeLaPlataformaEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Personas.PersonasRelacionadasEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Personas.PersonasDelVinculoEndpoints"
     },
     {
       "name": "Validasoft.Aplicacion.Notificaciones.EventosEndpoints"

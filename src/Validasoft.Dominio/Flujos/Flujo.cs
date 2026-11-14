@@ -4,6 +4,7 @@ using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Configuracion;
 using Validasoft.Dominio.Documentos;
 using Validasoft.Dominio.Evaluaciones;
+using Validasoft.Dominio.Terceros;
 
 namespace Validasoft.Dominio.Flujos;
 
@@ -45,14 +46,20 @@ public sealed record EtapaDeFlujo(int Orden, IReadOnlyList<AreaDeEtapa> Areas);
 /// En una sección, <see cref="VigenciaDias"/> (opcional) es cuántos días vale lo que la empresa aceptó: pasados, la sección vence y
 /// entra a la renovación del vínculo para que el tercero la ratifique o la actualice (VV-1); <see cref="DiasRevalidacion"/>
 /// (opcional) es el plazo para resolver una actualización que la incluye (RV-4; en un documento lo da su tipo).
+/// Con <see cref="DePersonaRelacionada"/> el documento no es del tercero sino de la persona natural que cumple ese rol ante él (ADR-0010): se resuelve contra la
+/// relación principal vigente al abrir o recalcular el expediente, o contra todas las vigentes del rol con <see cref="TodasLasRelaciones"/>.
 /// </summary>
 public sealed record RequisitoDelFlujo(
     Guid Id, Guid TipoDocumentoTenantId, string CodigoTipo, bool Obligatorio, IReadOnlyList<Guid> AreasQueRevisan, int? AprobadoresRequeridos,
     CondicionDeExigencia? Condicion = null, string? Seccion = null, int? Periodos = null, bool ExigeSoporte = false, bool? UsarComoSoporte = null,
-    int? VigenciaDias = null, int? DiasRevalidacion = null)
+    int? VigenciaDias = null, int? DiasRevalidacion = null, TipoRelacionTerceros? DePersonaRelacionada = null, bool TodasLasRelaciones = false)
 {
     [JsonIgnore]
     public bool EsSeccion => Seccion is not null;
+
+    /// <summary>¿Pide el documento de una persona relacionada (ADR-0010) y no el del propio tercero?</summary>
+    [JsonIgnore]
+    public bool EsDePersona => DePersonaRelacionada is not null;
 
     /// <summary>
     /// «Usar como soporte de las secciones» (F5, FM-13): un requisito de documento cuyo tipo canónico respalda secciones de la
@@ -60,7 +67,7 @@ public sealed record RequisitoDelFlujo(
     /// por omisión (<see cref="UsarComoSoporte"/> nulo); la empresa la apaga con <c>false</c>.
     /// </summary>
     public bool UsaComoSoporte(string? tipoCanonico) =>
-        !EsSeccion && UsarComoSoporte != false && Ficha.MapaDeRespaldo.RespaldaAlguna(tipoCanonico);
+        !EsSeccion && !EsDePersona && UsarComoSoporte != false && Ficha.MapaDeRespaldo.RespaldaAlguna(tipoCanonico);
 }
 
 /// <summary>
@@ -257,7 +264,7 @@ public sealed record DefinicionDeFlujo(
             return [];
 
         var areasDelFlujo = etapas.SelectMany(e => e.Areas).Select(a => a.AreaId).ToHashSet();
-        var tiposVistos = new HashSet<Guid>();
+        var tiposVistos = new HashSet<(Guid, TipoRelacionTerceros?)>();
         var seccionesVistas = new HashSet<string>(StringComparer.Ordinal);
         var idsVistos = new HashSet<Guid>();
         var resultado = new List<RequisitoDelFlujo>();
@@ -284,8 +291,10 @@ public sealed record DefinicionDeFlujo(
                 if (!tipo.CargaSoportada)
                     throw ReglaDeNegocioException.Validacion("clase-no-soportada",
                         $"{tipo.Codigo} es un formulario sin campos (o global); defínele campos y déjalo PorVinculo para pedirlo en un flujo.");
-                if (!tiposVistos.Add(tipo.Id))
-                    throw ReglaDeNegocioException.Validacion("requisito-duplicado", $"El flujo ya pide {tipo.Codigo}.");
+                ValidarDePersona(requisito, tipo);
+                if (!tiposVistos.Add((tipo.Id, requisito.DePersonaRelacionada)))
+                    throw ReglaDeNegocioException.Validacion("requisito-duplicado",
+                        $"El flujo ya pide {tipo.Codigo}{(requisito.EsDePersona ? $" de {requisito.DePersonaRelacionada}" : string.Empty)}.");
 
                 var id = requisito.Id == Guid.Empty ? Guid.CreateVersion7() : requisito.Id;
                 if (!idsVistos.Add(id))
@@ -327,6 +336,30 @@ public sealed record DefinicionDeFlujo(
                 $"El área {sinRequisitos} no revisa ningún requisito: con requisitos, cada área aprueba los de su alcance.");
 
         return resultado;
+    }
+
+    /// <summary>
+    /// Un requisito de persona relacionada (ADR-0010) debe ser de un tipo cuyo canónico es de la persona (cédula, pasaporte, antecedentes, beneficiario final) y con un rol
+    /// que exista (422 <c>persona-no-aplica</c>, <c>rol-invalido</c>); <c>todasLasRelaciones</c> solo con un rol (<c>todas-sin-rol</c>).
+    /// </summary>
+    private static void ValidarDePersona(RequisitoDelFlujo requisito, TipoDocumentoTenant tipo)
+    {
+        if (requisito.DePersonaRelacionada is not { } rol)
+        {
+            if (requisito.TodasLasRelaciones)
+                throw ReglaDeNegocioException.Validacion("todas-sin-rol", "«Todas las relaciones» necesita el rol de la persona relacionada que se pide.");
+            return;
+        }
+
+        if (!Enum.IsDefined(rol))
+            throw ReglaDeNegocioException.Validacion("rol-invalido",
+                "El rol de la persona relacionada no existe (RepresentanteLegal, Suplente, Socio, BeneficiarioFinal, MiembroDe).");
+        if (tipo.TipoCanonico is not { } canonico || CatalogoCanonico.Buscar(canonico) is not { DePersonaRelacionada: true })
+            throw ReglaDeNegocioException.Validacion("persona-no-aplica",
+                $"{tipo.Nombre} no es un documento de una persona relacionada: solo se pide por rol la cédula, el pasaporte, los antecedentes y el beneficiario final.");
+        if (tipo.Ambito != AmbitoDocumento.Global)
+            throw ReglaDeNegocioException.Validacion("persona-no-aplica",
+                $"{tipo.Nombre} es un documento por vínculo: el de una persona relacionada vive en su propia bóveda, que es global.");
     }
 
     private static ReglaDeNegocioException ConRequisito(ReglaDeNegocioException ex, int indice)

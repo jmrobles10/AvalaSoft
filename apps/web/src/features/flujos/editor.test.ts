@@ -196,6 +196,38 @@ describe('requisitos del flujo (RQ-1)', () => {
       { id: 'r1', tipoDocumentoTenantId: 'rut', tipoDocumento: null, obligatorio: true, areasQueRevisan: [], aprobadoresRequeridos: 2, condicion: null },
     ]);
   });
+
+  it('el documento de una persona relacionada (ADR-0010) va y vuelve con su rol y «todas»; el del propio tercero no manda nada', () => {
+    const version: FlujoVersionDto = {
+      id: 'v2',
+      version: 1,
+      estado: 'Borrador',
+      politicaDevolucion: 'Inmediata',
+      separacionDeFunciones: false,
+      creadaEn: '2026-11-06T12:00:00Z',
+      publicadaEn: null,
+      retiradaEn: null,
+      etapas: [{ orden: 1, areas: [{ areaId: 'juridica', aprobadoresRequeridos: 1, puedeRechazarExpediente: false, automatica: false, slaHoras: null }] }],
+      requisitos: [
+        { id: 'r1', tipoDocumentoTenantId: 'cedula', tipoDocumento: 'CEDULA', obligatorio: true, areasQueRevisan: [], aprobadoresRequeridos: null, dePersonaRelacionada: 'Socio', todasLasRelaciones: true },
+        { id: 'r2', tipoDocumentoTenantId: 'cedula', tipoDocumento: 'CEDULA', obligatorio: true, areasQueRevisan: [], aprobadoresRequeridos: null },
+      ],
+    };
+    const b = borradorDesdeVersion({ codigo: 'P', nombre: 'P', tipoVinculo: 'PROVEEDOR' }, version);
+
+    expect(b.requisitos.map((r) => [r.dePersonaRelacionada, r.todasLasRelaciones])).toEqual([['Socio', true], [null, false]]);
+    const dto = requisitosADto(b.requisitos);
+    expect(dto[0]).toMatchObject({ dePersonaRelacionada: 'Socio', todasLasRelaciones: true });
+    expect(dto[1]).not.toHaveProperty('dePersonaRelacionada');
+  });
+
+  it('la misma cédula se puede pedir a roles distintos, pero no dos veces al mismo', () => {
+    const errores = (requisitos: RequisitoEnEditor[]) => validarFlujo(borrador({ requisitos }), AREAS, false, TIPOS).map((e) => `${e.codigo}@${e.campo}`);
+    const cedula = (rol: string | null): RequisitoEnEditor => ({ ...requisitoNuevo('rut'), dePersonaRelacionada: rol });
+
+    expect(errores([cedula(null), cedula('RepresentanteLegal'), cedula('Socio')])).toEqual([]);
+    expect(errores([cedula('Socio'), cedula('Socio')])).toEqual(['requisito-duplicado@requisito.1']);
+  });
 });
 
 describe('evaluaciones del flujo (CE-7)', () => {
