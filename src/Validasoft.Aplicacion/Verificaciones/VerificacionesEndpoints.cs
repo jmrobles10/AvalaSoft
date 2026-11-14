@@ -6,6 +6,7 @@ using Validasoft.Aplicacion.Documentos;
 using Validasoft.Aplicacion.Expedientes;
 using Validasoft.Contratos;
 using Validasoft.Dominio.Comun;
+using Validasoft.Dominio.Documentos;
 using Validasoft.Dominio.Cumplimiento;
 using Validasoft.Dominio.Expedientes;
 using Validasoft.Dominio.Identidad;
@@ -100,7 +101,7 @@ public static class VerificacionesEndpoints
             var oficial = await OficialAsync(empresa, contexto, ct);
             // Con la matriz de la empresa activa (CU-17) el nivel y la debida diligencia salen del cálculo; el oficial solo puede ajustarlos con justificación.
             var calculo = matriz is { Activa: true }
-                ? await MatrizEndpoints.CalcularAsync(empresa, matriz, expediente, dto.Respuestas, ct)
+                ? await MatrizEndpoints.CalcularAsync(empresa, matriz, expediente, dto.Respuestas, CalculadoraDeVigencia.Fecha(reloj.GetUtcNow()), ct)
                 : null;
             var nivel = dto.NivelRiesgo ?? calculo?.Nivel
                         ?? throw ReglaDeNegocioException.Validacion("nivel-riesgo-requerido", "Indica el nivel de riesgo (1 a 3).");

@@ -8,6 +8,7 @@ using Validasoft.Dominio.Expedientes;
 using Validasoft.Dominio.Flujos;
 using Validasoft.Dominio.Plataforma;
 using Validasoft.Dominio.Revision;
+using Validasoft.Dominio.Terceros;
 
 namespace Validasoft.Aplicacion.Comun;
 
@@ -30,7 +31,8 @@ public static class MapeosDeValidacion
                 ? new RequisitoDelFlujoDto(r.Id, null, null, r.Obligatorio, r.AreasQueRevisan, r.AprobadoresRequeridos, r.Condicion?.ADto(), r.Seccion,
                     r.Periodos, r.ExigeSoporte, VigenciaDias: r.VigenciaDias, DiasRevalidacion: r.DiasRevalidacion)
                 : new RequisitoDelFlujoDto(r.Id, r.TipoDocumentoTenantId, r.CodigoTipo, r.Obligatorio, r.AreasQueRevisan,
-                    r.AprobadoresRequeridos, r.Condicion?.ADto(), UsarComoSoporte: r.UsarComoSoporte))],
+                    r.AprobadoresRequeridos, r.Condicion?.ADto(), UsarComoSoporte: r.UsarComoSoporte, DePersonaRelacionada: r.DePersonaRelacionada?.ToString(),
+                    TodasLasRelaciones: r.TodasLasRelaciones))],
             [.. v.Verificaciones.Select(x => new VerificacionRequeridaDto(x.Tipo.ToString(), x.Bloqueante, x.VigenciaDias, x.FrecuenciaReconsultaMeses))],
             v.PlazoEfectivo().ADto(), v.ReintentoEfectivo().ADto(), v.VigenciaEfectiva().ADto(), RecordatorioADto(v.RecordatorioObservacionesDias),
             v.Seleccion?.ADto());
@@ -110,6 +112,8 @@ public static class MapeosDeValidacion
                 throw ReglaDeNegocioException.Validacion("requisito-invalido", "Un requisito pide un documento o una sección de la ficha, no ambos.");
             if (r.UsarComoSoporte is not null)
                 throw ReglaDeNegocioException.Validacion("soporte-no-aplica", "«Usar como soporte» es de los requisitos de documento, no de las secciones.");
+            if (!string.IsNullOrWhiteSpace(r.DePersonaRelacionada) || r.TodasLasRelaciones)
+                throw ReglaDeNegocioException.Validacion("persona-no-aplica", "El rol de una persona relacionada es de los requisitos de documento, no de las secciones.");
             var seccion = r.Seccion.Trim().ToUpperInvariant();
             return new RequisitoDelFlujo(r.Id ?? Guid.Empty, Guid.Empty, seccion, r.Obligatorio, [.. r.AreasQueRevisan ?? []], r.AprobadoresRequeridos,
                 r.Condicion?.ADominio(), seccion, r.Periodos, r.ExigeSoporte, VigenciaDias: r.VigenciaDias, DiasRevalidacion: r.DiasRevalidacion);
@@ -121,9 +125,20 @@ public static class MapeosDeValidacion
         var tipoId = r.TipoDocumentoTenantId ?? tipos.FirstOrDefault(t => t.Codigo == codigo)?.Id ?? Guid.Empty;
         if (tipoId == Guid.Empty && codigo.Length == 0)
             throw ReglaDeNegocioException.Validacion("requisito-invalido", "Cada requisito necesita el tipo de documento (id o código).");
+        // El documento de una persona relacionada (ADR-0010): el rol por nombre; el dominio valida que el tipo sea de una persona (422 persona-no-aplica).
+        TipoRelacionTerceros? rol = string.IsNullOrWhiteSpace(r.DePersonaRelacionada)
+            ? null
+            : Enum.TryParse<TipoRelacionTerceros>(r.DePersonaRelacionada.Trim(), true, out var parseado) && Enum.IsDefined(parseado)
+                ? parseado
+                : throw ReglaDeNegocioException.Validacion("rol-invalido",
+                    $"«{r.DePersonaRelacionada}» no es un rol ({string.Join(", ", Enum.GetNames<TipoRelacionTerceros>())}).");
         return new RequisitoDelFlujo(r.Id ?? Guid.Empty, tipoId, codigo, r.Obligatorio, [.. r.AreasQueRevisan ?? []], r.AprobadoresRequeridos,
-            r.Condicion?.ADominio(), UsarComoSoporte: r.UsarComoSoporte, VigenciaDias: r.VigenciaDias, DiasRevalidacion: r.DiasRevalidacion);
+            r.Condicion?.ADominio(), UsarComoSoporte: r.UsarComoSoporte, VigenciaDias: r.VigenciaDias, DiasRevalidacion: r.DiasRevalidacion,
+            DePersonaRelacionada: rol, TodasLasRelaciones: r.TodasLasRelaciones);
     }
+
+    public static PersonaDelRequisitoDto ADto(this PersonaDelRequisito p) =>
+        new(p.Rol.ToString(), p.TodasLasRelaciones, p.SinPersona, p.PersonaId, p.RelacionId, p.Nombre, p.Identificacion);
 
     public static FlujoDto ADto(this Flujo f, TipoVinculo? tipo, bool esPorDefecto) =>
         new(f.Id, f.EmpresaId, f.Codigo, f.Nombre,
@@ -184,7 +199,7 @@ public static class MapeosDeValidacion
                     new AreaDeRequisitoDto(x.Id, x.Area!.Codigo, EstadoEnArea(r, x.Area, e), r.AprobadoresPara(x.Area), r.AprobacionesDe(x.Area),
                         [.. r.Veredictos.Where(v => v.AreaId == x.Id).Select(ADto)]))
             ], r.TipoRequisito.ToString(), r.DetalleDeSeccion(documentacion), documentacion?.Cruces?.DeDocumento(r.Id),
-            r.Retiro is { } retiro ? new RetiroDeVersionDto(retiro.Numero, retiro.Motivo, retiro.Fecha) : null, r.RevisionesDto(e));
+            r.Retiro is { } retiro ? new RetiroDeVersionDto(retiro.Numero, retiro.Motivo, retiro.Fecha) : null, r.RevisionesDto(e), r.Persona?.ADto());
 
     /// <summary>Lo que la revisión automática registró del documento para su versión vigente (nulo si no registró nada, ADR-0012).</summary>
     private static IReadOnlyList<RevisionAutomaticaDto>? RevisionesDto(this RequisitoDeExpediente r, Expediente e)
@@ -278,7 +293,7 @@ public static class MapeosDeValidacion
                     e.Estado == EstadoExpediente.Observado
                         ? [.. r.Veredictos.Where(v => v.Vigente && v.Veredicto == Veredicto.Observado).OrderBy(v => v.Fecha).Select(v => v.APublica(r.Codigo))]
                         : [],
-                    PuedeRatificar(e, r), r.Ratificado ? r.Ratificacion!.Fecha : null, r.TipoRequisito.ToString(), r.DetalleDeSeccion(documentacion)))
+                    PuedeRatificar(e, r), r.Ratificado ? r.Ratificacion!.Fecha : null, r.TipoRequisito.ToString(), r.DetalleDeSeccion(documentacion), r.Persona?.ADto()))
             ],
             e.Requisitos.Count(r => r.Obligatorio && r.Estado == EstadoRequisito.Pendiente), e.Tipo.ToString(), e.PlazoCargueHasta, e.EsperandoCuentaDesignada);
 

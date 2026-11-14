@@ -1,5 +1,6 @@
 using Marten;
 using Validasoft.Aplicacion.Comun;
+using Validasoft.Aplicacion.Documentos;
 using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Configuracion;
 using Validasoft.Dominio.Documentos;
@@ -26,9 +27,11 @@ public static class RequisitosDeExpediente
     /// RQ-12), con su tipo del tenant y en el orden del flujo.
     /// </summary>
     public static async Task<IReadOnlyList<RequisitoPedido>> DelFlujoAsync(IQuerySession sesionDelTenant, FlujoVersion version,
-        ContextoDeExigencia contexto, CancellationToken ct)
+        ContextoDeExigencia contexto, CancellationToken ct, bool incluirPersonas = false)
     {
-        var aplican = EvaluadorDeExigencia.Filtrar(version.Requisitos.Where(r => !r.EsSeccion), contexto);
+        // Los requisitos de una persona relacionada (ADR-0010) piden el documento de OTRA bóveda: solo los calcula quien los pide (apertura y recálculo del expediente).
+        // Todo lo demás (compartir lo del tercero, vigencias, renovaciones…) los ignora, así nunca confunde la cédula del representante con la del tercero.
+        var aplican = EvaluadorDeExigencia.Filtrar(version.Requisitos.Where(r => !r.EsSeccion && (incluirPersonas || !r.EsDePersona)), contexto);
         if (aplican.Count == 0)
             return [];
 
@@ -92,6 +95,137 @@ public static class RequisitosDeExpediente
         return new RequisitoCalculado(pedido.Requisito.Id, tipo.Id, tipo.Codigo, tipo.Nombre, tipo.TipoCanonico, tipo.Ambito,
             pedido.Requisito.Obligatorio, pedido.Requisito.AreasQueRevisan, pedido.Requisito.AprobadoresRequeridos,
             Cubre(tipo.Id, tipo.TipoCanonico, tipo.Ambito, documentos, vinculoId), DiasRevalidacion: tipo.DiasRevalidacion);
+    }
+
+    // ---------- Requisitos de persona relacionada (ADR-0010) ----------
+
+    /// <summary>Las personas a las que un requisito del flujo les pide su documento, ya resueltas contra las relaciones vigentes.</summary>
+    public sealed record PersonasDelPedido(RequisitoPedido Pedido, IReadOnlyList<PersonaDelRequisito> Personas);
+
+    /// <summary>
+    /// Resuelve cada requisito de persona del flujo contra las relaciones vigentes del tercero (ADR-0010, regla 4): la relación <b>principal</b> del rol o, con
+    /// <c>TodasLasRelaciones</c>, todas las vigentes del rol. Un tercero persona natural es su propio representante legal (la regla del ERP: el propio tercero), sin necesidad
+    /// de una relación. Sin nadie que cumpla el rol, la lista va vacía (el requisito nace sin persona y espera a que se declare).
+    /// </summary>
+    public static async Task<IReadOnlyList<PersonasDelPedido>> ResolverPersonasAsync(IQuerySession consulta, Tercero tercero, IReadOnlyList<RequisitoPedido> pedidos,
+        DateOnly hoy, CancellationToken ct)
+    {
+        if (pedidos.Count == 0)
+            return [];
+
+        var terceroId = tercero.Id;
+        var relaciones = await consulta.Query<RelacionEntreTerceros>().Where(r => r.AnyTenant() && r.DestinoId == terceroId).ToListAsync(ct);
+        var ids = relaciones.Where(r => r.EsVigente(hoy)).Select(r => r.OrigenId).Distinct().ToArray();
+        var personas = ids.Length == 0 ? new Dictionary<Guid, Tercero>() : (await consulta.LoadManyAsync<Tercero>(ct, ids)).ToDictionary(t => t.Id);
+
+        var resultado = new List<PersonasDelPedido>();
+        foreach (var pedido in pedidos)
+        {
+            var rol = pedido.Requisito.DePersonaRelacionada!.Value;
+            var elegidas = RelacionesDeTercero.Resolver(relaciones, rol, pedido.Requisito.TodasLasRelaciones, hoy)
+                .Where(r => personas.ContainsKey(r.OrigenId))
+                .Select(r => new PersonaDelRequisito(pedido.Requisito.Id, rol, pedido.Requisito.TodasLasRelaciones, r.OrigenId, r.Id,
+                    personas[r.OrigenId].Nombre, personas[r.OrigenId].Identificacion.Clave.Replace('|', ' ')))
+                .ToList();
+            if (elegidas.Count == 0 && rol == TipoRelacionTerceros.RepresentanteLegal && tercero.TipoPersona == TipoPersona.Natural)
+                elegidas.Add(new PersonaDelRequisito(pedido.Requisito.Id, rol, pedido.Requisito.TodasLasRelaciones, tercero.Id, null, tercero.Nombre,
+                    tercero.Identificacion.Clave.Replace('|', ' ')));
+            resultado.Add(new PersonasDelPedido(pedido, elegidas));
+        }
+
+        return resultado;
+    }
+
+    /// <summary>
+    /// Lo que piden los requisitos de persona: por cada uno, un requisito por persona que cumple el rol y, si nadie lo cumple, uno <b>sin persona</b> (nace pendiente).
+    /// Cada uno trae la versión que ya lo cubre (el documento de esa persona, si está compartido con el vínculo). Con el vínculo aceptado y la bóveda disponible, antes
+    /// comparte con él los documentos que se le piden a cada persona (los de su bóveda, solo esos): así una persona que ya validó su cédula con otra empresa o
+    /// en otro tercero no la sube de nuevo.
+    /// </summary>
+    public static async Task<PersonasCalculadas> CalcularDePersonasAsync(IDocumentSession sesion, Vinculo vinculo, Tercero tercero, Guid tenantId,
+        IReadOnlyList<RequisitoPedido> pedidos, DateTimeOffset ahora, CancellationToken ct)
+    {
+        if (pedidos.Count == 0)
+            return new PersonasCalculadas([], 0);
+
+        var hoy = CalculadoraDeVigencia.Fecha(ahora);
+        var resueltos = await ResolverPersonasAsync(sesion, tercero, pedidos, hoy, ct);
+        IReadOnlyList<Documento> documentos = [];
+        var compartidos = 0;
+        if (vinculo is { InvitacionAceptada: true, BovedaDisponible: true })
+        {
+            var pedidas = resueltos.SelectMany(r => r.Personas.Where(p => p.PersonaId is not null)
+                    .Select(p => (PersonaId: p.PersonaId!.Value, Codigo: r.Pedido.Tipo.TipoCanonico)))
+                .Where(x => x.Codigo is not null)
+                .GroupBy(x => x.PersonaId)
+                .Select(g => new PersonaPedida(g.Key, g.Select(x => x.Codigo!).ToHashSet(StringComparer.Ordinal)))
+                .ToList();
+            var compartido = await ComparticionDeDocumentos.CompartirPersonasConVinculoAsync(sesion, vinculo, tenantId, pedidas, OrigenComparticion.Automatica, ahora, ct);
+            documentos = compartido.DocumentosDePersonas ?? [];
+            compartidos = compartido.Compartidos.Count;
+        }
+
+        var calculados = new List<RequisitoCalculado>();
+        foreach (var resuelto in resueltos)
+        {
+            var requisito = resuelto.Pedido.Requisito;
+            // Sin nadie que cumpla el rol: un requisito sin persona (nace pendiente) en vez de callar que el flujo lo pide.
+            var personasDelRequisito = resuelto.Personas.Count > 0
+                ? resuelto.Personas
+                : [new PersonaDelRequisito(requisito.Id, requisito.DePersonaRelacionada!.Value, requisito.TodasLasRelaciones)];
+            calculados.AddRange(personasDelRequisito.Select(p => CalcularDePersona(resuelto.Pedido, p, documentos, vinculo)));
+        }
+
+        return new PersonasCalculadas(calculados, compartidos);
+    }
+
+    /// <summary>Lo que calculan los requisitos de persona (ADR-0010) y cuántos documentos de personas se compartieron con el vínculo al calcularlos.</summary>
+    public sealed record PersonasCalculadas(IReadOnlyList<RequisitoCalculado> Requisitos, int Compartidos);
+
+    /// <summary>Qué cambió al recalcular las personas de un expediente: los eventos y si se compartió algún documento de una persona con el vínculo (hay que calcular su vigencia y su IA).</summary>
+    public sealed record RecalculoDePersonas(IReadOnlyList<object> Eventos, bool Compartio)
+    {
+        public static readonly RecalculoDePersonas Nada = new([], false);
+    }
+
+    /// <summary>
+    /// El requisito de una persona: con persona, su id es determinista por (requisito del flujo, persona) y la versión sale solo de los documentos de <b>esa</b> persona
+    /// compartidos con el vínculo; sin persona, conserva el id del requisito del flujo y nace pendiente.
+    /// </summary>
+    internal static RequisitoCalculado CalcularDePersona(RequisitoPedido pedido, PersonaDelRequisito persona, IEnumerable<Documento> documentos, Vinculo vinculo)
+    {
+        var tipo = pedido.Tipo;
+        var id = persona.PersonaId is { } personaId ? PersonaDelRequisito.IdDeRequisito(pedido.Requisito.Id, personaId) : pedido.Requisito.Id;
+        var version = persona.PersonaId is { } dueno
+            ? Cubre(tipo.Id, tipo.TipoCanonico, tipo.Ambito, documentos.Where(d => d.TerceroId == dueno), vinculo.Id)
+            : null;
+        return new RequisitoCalculado(id, tipo.Id, tipo.Codigo, tipo.Nombre, tipo.TipoCanonico, tipo.Ambito, pedido.Requisito.Obligatorio,
+            pedido.Requisito.AreasQueRevisan, pedido.Requisito.AprobadoresRequeridos, version, DiasRevalidacion: tipo.DiasRevalidacion, Persona: persona);
+    }
+
+    /// <summary>
+    /// Recalcula las personas de los requisitos de persona de un expediente abierto contra las relaciones de hoy (ADR-0010: «al abrir o recalcular»): resuelve de nuevo
+    /// el flujo del expediente y deja que el expediente decida qué cambia (<see cref="Expediente.ResolverPersonas"/>). Vacío si el flujo no pide personas.
+    /// </summary>
+    public static async Task<RecalculoDePersonas> RecalcularPersonasAsync(IDocumentSession sesion, Vinculo vinculo, Expediente expediente, Guid tenantId,
+        DateTimeOffset ahora, CancellationToken ct)
+    {
+        if (!expediente.EstaAbierto || !expediente.ConRequisitos || expediente.Flujo is not { } delFlujo)
+            return RecalculoDePersonas.Nada;
+        var flujo = await sesion.LoadAsync<Flujo>(delFlujo.FlujoId, ct);
+        if (flujo?.Versiones.FirstOrDefault(v => v.Id == delFlujo.FlujoVersionId) is not { } version || !version.Requisitos.Any(r => r.EsDePersona))
+            return RecalculoDePersonas.Nada;
+
+        var tercero = await sesion.LoadAsync<Tercero>(vinculo.TerceroId, ct);
+        if (tercero is null)
+            return RecalculoDePersonas.Nada;
+        var pedidos = (await DelFlujoAsync(sesion, version, await ContextoAsync(sesion, vinculo, ct), ct, incluirPersonas: true))
+            .Where(p => p.Requisito.EsDePersona).ToList();
+        if (pedidos.Count == 0)
+            return RecalculoDePersonas.Nada;
+
+        var deseados = await CalcularDePersonasAsync(sesion, vinculo, tercero, tenantId, pedidos, ahora, ct);
+        return new RecalculoDePersonas(expediente.ResolverPersonas(deseados.Requisitos, ahora), deseados.Compartidos > 0);
     }
 
     /// <summary>
@@ -179,16 +313,32 @@ public static class RequisitosDeExpediente
             return [];
 
         var terceroId = expediente.TerceroId;
-        var documentos = await sesionDelTenant.ForTenant(TenantsTecnicos.Boveda).Query<Documento>().Where(d => d.TerceroId == terceroId).ToListAsync(ct);
+        var boveda = sesionDelTenant.ForTenant(TenantsTecnicos.Boveda);
+        var documentos = await boveda.Query<Documento>().Where(d => d.TerceroId == terceroId).ToListAsync(ct);
+        // Los documentos de las personas relacionadas que piden los requisitos (ADR-0010): de otra bóveda, cada uno solo cubre el requisito de su persona.
+        var personaIds = expediente.Requisitos.Where(r => r.Persona?.PersonaId is { } p && p != terceroId).Select(r => r.Persona!.PersonaId!.Value).Distinct().ToArray();
+        var deLasPersonas = personaIds.Length == 0
+            ? []
+            : await boveda.Query<Documento>().Where(d => d.TerceroId.IsOneOf(personaIds) && d.Ambito == AmbitoDocumento.Global).ToListAsync(ct);
         var disponibles = new Dictionary<Guid, VersionDeRequisito>();
         foreach (var requisito in expediente.Requisitos.Where(r => !r.EsSeccion))
         {
+            if (requisito.Persona is { } persona)
+            {
+                if (persona.PersonaId is not { } dueno)
+                    continue;
+                var delDueno = dueno == terceroId ? documentos : [.. deLasPersonas.Where(d => d.TerceroId == dueno)];
+                if (Cubre(requisito.TipoDocumentoTenantId, requisito.TipoCanonico, requisito.Ambito, delDueno, expediente.VinculoId) is { } deLaPersona)
+                    disponibles[requisito.Id] = deLaPersona;
+                continue;
+            }
+
             if (Cubre(requisito.TipoDocumentoTenantId, requisito.TipoCanonico, requisito.Ambito, documentos, expediente.VinculoId) is { } version)
                 disponibles[requisito.Id] = version;
         }
 
         return expediente.SincronizarVersiones(disponibles, ahora, await EvaluarSeccionesAsync(sesionDelTenant, expediente, ct),
-            Revalidacion.RetiradasDe(documentos, ahora));
+            Revalidacion.RetiradasDe([.. documentos, .. deLasPersonas], ahora));
     }
 
     /// <summary>
@@ -231,7 +381,9 @@ public static class RequisitosDeExpediente
         var expedientes = await consulta.Query<Expediente>().Where(e => e.AnyTenant() && e.VinculoId.IsOneOf(ids)).ToListAsync(ct);
         foreach (var expediente in expedientes.Where(e => e.EstaAbierto))
         {
-            if (expediente.Requisitos.Any(r => r.Ambito == AmbitoDocumento.Global && r.TipoCanonico == codigo))
+            // El requisito de otra persona (ADR-0010) no pide el documento del tercero; el de una persona natural que es su propio representante, sí.
+            if (expediente.Requisitos.Any(r => r.Ambito == AmbitoDocumento.Global && r.TipoCanonico == codigo &&
+                                               (r.Persona is null || r.Persona.PersonaId == expediente.TerceroId)))
                 piden.Add(expediente.VinculoId);
         }
 
@@ -263,8 +415,67 @@ public static class RequisitosDeExpediente
             var contexto = ContextoDeExigencia.De(tercero, tiposVinculo.GetValueOrDefault(vinculo.TipoVinculoId)?.Codigo ?? string.Empty, vinculo.Atributos);
             if (ProcesoDeValidacion.FlujoVigente(vinculo, flujos, porDefecto, contexto) is not { } version)
                 continue;
-            if (EvaluadorDeExigencia.Filtrar(version.Requisitos.Where(r => delCodigo.Contains(r.TipoDocumentoTenantId)), contexto).Count > 0)
+            if (EvaluadorDeExigencia.Filtrar(version.Requisitos.Where(r => !r.EsDePersona && delCodigo.Contains(r.TipoDocumentoTenantId)), contexto).Count > 0)
                 piden.Add(vinculo.Id);
+        }
+
+        return piden;
+    }
+
+    /// <summary>
+    /// Vínculos (de cualquier tenant) a los que hay que compartir el documento <paramref name="codigo"/> de la persona <paramref name="personaId"/> (ADR-0010): su expediente
+    /// abierto ya tiene un requisito de ese documento para esa persona, o su flujo vigente lo pide por un rol que esa persona cumple hoy ante el tercero del vínculo (la
+    /// relación principal vigente del rol, o cualquiera con «todas las relaciones»). Lo que otro tercero, otra empresa o la propia persona tengan no entra: solo lo que
+    /// el flujo de ese vínculo pide por esa relación.
+    /// </summary>
+    public static async Task<IReadOnlySet<Guid>> VinculosQuePidenPersonaAsync(IQuerySession consulta, IReadOnlyList<Vinculo> vinculos, Guid personaId, string codigo,
+        DateOnly hoy, CancellationToken ct)
+    {
+        var piden = new HashSet<Guid>();
+        if (vinculos.Count == 0)
+            return piden;
+
+        var ids = vinculos.Select(v => v.Id).ToArray();
+        var expedientes = await consulta.Query<Expediente>().Where(e => e.AnyTenant() && e.VinculoId.IsOneOf(ids)).ToListAsync(ct);
+        foreach (var expediente in expedientes.Where(e => e.EstaAbierto))
+        {
+            if (expediente.Requisitos.Any(r => r.Persona?.PersonaId == personaId && r.TipoCanonico == codigo))
+                piden.Add(expediente.VinculoId);
+        }
+
+        var flujos = await ProcesoDeValidacion.CargarFlujosDeLosVinculosAsync(consulta, vinculos, ct);
+        if (flujos.Count == 0)
+            return piden;
+        var claves = vinculos.Select(v => FlujoPorDefecto.Clave(v.EmpresaId, v.TipoVinculoId)).Distinct().ToArray();
+        var porDefecto = await consulta.Query<FlujoPorDefecto>().Where(p => p.AnyTenant() && p.Id.IsOneOf(claves)).ToListAsync(ct);
+        var tipoIds = flujos.SelectMany(f => f.VersionPublicada?.Requisitos ?? []).Where(r => r.EsDePersona).Select(r => r.TipoDocumentoTenantId).Distinct().ToArray();
+        if (tipoIds.Length == 0)
+            return piden;
+
+        var delCodigo = (await consulta.Query<TipoDocumentoTenant>().Where(t => t.AnyTenant() && t.Id.IsOneOf(tipoIds)).ToListAsync(ct))
+            .Where(t => t.Ambito == AmbitoDocumento.Global && t.TipoCanonico == codigo).Select(t => t.Id).ToHashSet();
+        if (delCodigo.Count == 0)
+            return piden;
+
+        var terceroIds = vinculos.Select(v => v.TerceroId).Distinct().ToArray();
+        var terceros = (await consulta.LoadManyAsync<Tercero>(ct, terceroIds)).ToDictionary(t => t.Id);
+        var relaciones = (await consulta.Query<RelacionEntreTerceros>().Where(r => r.AnyTenant() && r.DestinoId.IsOneOf(terceroIds)).ToListAsync(ct))
+            .GroupBy(r => r.DestinoId).ToDictionary(g => g.Key, g => (IReadOnlyList<RelacionEntreTerceros>)[.. g]);
+        var tiposVinculo = (await consulta.Query<TipoVinculo>().Where(t => t.AnyTenant() && t.Id.IsOneOf(vinculos.Select(v => v.TipoVinculoId).Distinct().ToArray())).ToListAsync(ct))
+            .ToDictionary(t => t.Id);
+        foreach (var vinculo in vinculos)
+        {
+            if (!terceros.TryGetValue(vinculo.TerceroId, out var tercero))
+                continue;
+            var contexto = ContextoDeExigencia.De(tercero, tiposVinculo.GetValueOrDefault(vinculo.TipoVinculoId)?.Codigo ?? string.Empty, vinculo.Atributos);
+            if (ProcesoDeValidacion.FlujoVigente(vinculo, flujos, porDefecto, contexto) is not { } version)
+                continue;
+            var delTercero = relaciones.GetValueOrDefault(vinculo.TerceroId) ?? [];
+            foreach (var requisito in EvaluadorDeExigencia.Filtrar(version.Requisitos.Where(r => r.EsDePersona && delCodigo.Contains(r.TipoDocumentoTenantId)), contexto))
+            {
+                if (RelacionesDeTercero.Resolver(delTercero, requisito.DePersonaRelacionada!.Value, requisito.TodasLasRelaciones, hoy).Any(r => r.OrigenId == personaId))
+                    piden.Add(vinculo.Id);
+            }
         }
 
         return piden;

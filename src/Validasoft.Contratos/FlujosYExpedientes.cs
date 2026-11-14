@@ -45,7 +45,8 @@ public sealed record EtapaDto(int Orden, IReadOnlyList<AreaDeEtapaDto> Areas);
 public sealed record RequisitoDelFlujoDto(
     Guid? Id = null, Guid? TipoDocumentoTenantId = null, string? TipoDocumento = null, bool Obligatorio = true,
     IReadOnlyList<Guid>? AreasQueRevisan = null, int? AprobadoresRequeridos = null, CondicionDto? Condicion = null, string? Seccion = null,
-    int? Periodos = null, bool ExigeSoporte = false, bool? UsarComoSoporte = null, int? VigenciaDias = null, int? DiasRevalidacion = null);
+    int? Periodos = null, bool ExigeSoporte = false, bool? UsarComoSoporte = null, int? VigenciaDias = null, int? DiasRevalidacion = null,
+    string? DePersonaRelacionada = null, bool TodasLasRelaciones = false);
 
 /// <summary>
 /// «Se pide cuando» (docs/03 §12, RQ-12). <see cref="Tipo"/>: <c>Y</c>|<c>O</c>|<c>No</c> combinan <see cref="Nodos"/>
@@ -239,7 +240,7 @@ public sealed record RequisitoExpedienteDto(
     Guid Id, TipoDocumentoRequisitoDto TipoDocumento, bool Obligatorio, string Estado, VersionRequisitoDto? VersionActual, int Reenvios,
     ExencionDto? Exencion, IReadOnlyList<AreaDeRequisitoDto> Areas, string TipoRequisito = "Documento", SeccionDeRequisitoDto? Seccion = null,
     SoporteDeSeccionesDto? SoporteDeSecciones = null, RetiroDeVersionDto? Retiro = null,
-    IReadOnlyList<RevisionAutomaticaDto>? RevisionesAutomaticas = null);
+    IReadOnlyList<RevisionAutomaticaDto>? RevisionesAutomaticas = null, PersonaDelRequisitoDto? Persona = null);
 
 /// <summary>
 /// Cambio de un campo o fila entre la versión que la empresa aceptó y la nueva (las Actualizaciones del SRM, F2):
@@ -400,7 +401,7 @@ public sealed record ObservacionPublicaDto(IReadOnlyList<MotivoPublicoDto> Motiv
 public sealed record RequisitoPublicoDto(
     Guid Id, TipoDocumentoRequisitoDto TipoDocumento, bool Obligatorio, string Estado, VersionRequisitoDto? VersionActual,
     IReadOnlyList<ObservacionPublicaDto> Observaciones, bool PuedeRatificar = false, DateTimeOffset? RatificadoEn = null,
-    string TipoRequisito = "Documento", SeccionDeRequisitoDto? Seccion = null);
+    string TipoRequisito = "Documento", SeccionDeRequisitoDto? Seccion = null, PersonaDelRequisitoDto? Persona = null);
 
 /// <summary>
 /// Lo que el tercero ve de su expediente: estado, observaciones vigentes y los documentos que le piden

@@ -163,11 +163,13 @@ public sealed record Comparticion(int Numero, Guid TenantId, Guid EmpresaId, Gui
 /// <summary>
 /// Vínculo candidato a recibir la versión actual, con lo que la aplicación resolvió fuera del agregado: si el tercero
 /// aceptó la invitación, el estado del vínculo y si su flujo vigente o su expediente abierto pide el tipo
-/// (<see cref="ExigeElTipo"/>; RQ-3, antes las exigencias por tipo de BO-3).
+/// (<see cref="ExigeElTipo"/>; RQ-3, antes las exigencias por tipo de BO-3). Con <see cref="ViaPersonaRelacionada"/> el documento es de una persona natural
+/// relacionada con el tercero del vínculo (ADR-0010), no del tercero mismo: <see cref="TerceroId"/> es el del vínculo, y el documento se comparte con él porque su flujo pide
+/// el documento de esa persona.
 /// </summary>
 public sealed record VinculoCandidato(
     Guid VinculoId, Guid TenantId, Guid EmpresaId, Guid TerceroId, bool InvitacionAceptada, EstadoVinculo Estado, bool ExigeElTipo,
-    bool BovedaDisponible = true)
+    bool BovedaDisponible = true, bool ViaPersonaRelacionada = false)
 {
     /// <summary>Desvinculado, bloqueado o anulado: la compartición hacia adelante está congelada (docs/02 §6.1, B-5).</summary>
     public bool Congelado => Estado is EstadoVinculo.Bloqueado or EstadoVinculo.Desvinculado or EstadoVinculo.Anulado;
@@ -534,7 +536,7 @@ public sealed class Documento
     /// </summary>
     public VersionCompartida? Compartir(VinculoCandidato vinculo, OrigenComparticion origen, DateTimeOffset ahora)
     {
-        if (vinculo.TerceroId != TerceroId)
+        if (vinculo.TerceroId != TerceroId && !(vinculo.ViaPersonaRelacionada && Ambito == AmbitoDocumento.Global))
             throw new InvalidOperationException("El vínculo es de otro tercero.");
 
         if (VersionActual is not { } actual || !vinculo.InvitacionAceptada || vinculo.Congelado)

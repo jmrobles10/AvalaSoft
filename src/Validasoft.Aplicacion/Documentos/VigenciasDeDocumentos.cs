@@ -182,12 +182,13 @@ public static class CalcularVigenciasDelDocumentoHandler
 
 public static class CalcularVigenciasDelVinculoHandler
 {
-    /// <summary>Pide el cálculo de cada documento del tercero cuya versión actual está compartida con el vínculo.</summary>
+    /// <summary>Pide el cálculo de cada documento del tercero (y de sus personas relacionadas, ADR-0010) cuya versión actual está compartida con el vínculo.</summary>
     public static async Task Handle(CalcularVigenciasDelVinculo mensaje, ISesiones sesiones, IMessageContext mensajes, CancellationToken ct)
     {
         var terceroId = mensaje.TerceroId;
         await using var consulta = sesiones.ConsultaBoveda();
-        var documentos = await consulta.Query<Documento>().Where(d => d.TerceroId == terceroId).ToListAsync(ct);
+        var vinculoId = mensaje.VinculoId;
+        var documentos = await consulta.Query<Documento>().Where(d => d.TerceroId == terceroId || d.Comparticiones.Any(c => c.VinculoId == vinculoId)).ToListAsync(ct);
         foreach (var documento in documentos.Where(d => d.VersionActual is { } n && d.EstaCompartida(n, mensaje.VinculoId)))
             await mensajes.PublishAsync(new CalcularVigenciasDelDocumento(documento.Id));
     }

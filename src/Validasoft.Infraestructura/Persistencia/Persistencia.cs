@@ -92,6 +92,9 @@ public static class ConfiguracionMarten
                 opts.Schema.For<HistorialDeContactos>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.TerceroId);
                 // Migraciones de datos ya corridas (una fila por migración): la de los vínculos aceptados antes del acceso aislado corre una sola vez.
                 opts.Schema.For<Validasoft.Aplicacion.Interesado.MigracionDeDatosEjecutada>().DatabaseSchemaName("plataforma");
+                // Relaciones entre terceros (ADR-0010): una persona natural (con bóveda propia) es representante, suplente, socio, beneficiario final o miembro de
+                // otro tercero. Un stream por (destino, persona, tipo) en el tenant técnico «boveda» (snapshot inline), como la ficha y el habeas data.
+                opts.Schema.For<RelacionEntreTerceros>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.DestinoId).Index(x => x.OrigenId);
                 // Cuentas bancarias del tercero (CB-1): en la bóveda, como sus documentos globales.
                 opts.Schema.For<Validasoft.Dominio.Terceros.CuentaBancaria>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.TerceroId);
                 opts.Schema.For<CargaDeDocumento>().DatabaseSchemaName("boveda")
@@ -315,6 +318,7 @@ public static class ConfiguracionMarten
                 opts.Projections.Snapshot<Documento>(SnapshotLifecycle.Inline);
                 opts.Projections.Snapshot<SolicitudDeAcceso>(SnapshotLifecycle.Inline);
                 opts.Projections.Snapshot<HistorialDeContactos>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<RelacionEntreTerceros>(SnapshotLifecycle.Inline);
                 opts.Projections.Snapshot<Validasoft.Dominio.Ficha.SeccionDeFicha>(SnapshotLifecycle.Inline);
                 opts.Projections.Snapshot<Certificado>(SnapshotLifecycle.Inline);
                 opts.Projections.Snapshot<SecuenciaDeFolios>(SnapshotLifecycle.Inline);

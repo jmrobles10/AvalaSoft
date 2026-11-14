@@ -243,9 +243,11 @@ public sealed class ConsultaDeListas(
 
     /// <summary>
     /// El tercero y, de su ficha legal vigente, representantes legales, suplentes, socios y quien se declaró PEP (sin repetir
-    /// identificación). Las filas sin nombre o sin número no se consultan.
+    /// identificación). Las filas sin nombre o sin número no se consultan. Además, las <b>personas relacionadas vigentes</b> del tercero (ADR-0010) que la ficha no
+    /// trae: beneficiarios finales, miembros de un consorcio y lo que se declaró fuera de la ficha o importó un sistema de origen. Una persona que figura en las dos
+    /// (la ficha y su relación) se consulta una sola vez; la de una relación terminada, propuesta o descartada ya no.
     /// </summary>
-    public static async Task<IReadOnlyList<PersonaAConsultar>> PersonasAsync(IDocumentSession sesion, Guid terceroId, CancellationToken ct)
+    public static async Task<IReadOnlyList<PersonaAConsultar>> PersonasAsync(IDocumentSession sesion, Guid terceroId, DateOnly hoy, CancellationToken ct)
     {
         var tercero = await sesion.LoadAsync<Tercero>(terceroId, ct)
                       ?? throw ReglaDeNegocioException.NoEncontrado("tercero-no-encontrado", "El tercero del expediente no existe.");
@@ -278,6 +280,25 @@ public sealed class ConsultaDeListas(
             }
         }
 
+        // Las personas relacionadas vigentes (ADR-0010) que aún no están: se identifican por tipo y número (la ficha las clave con la nacionalidad).
+        var relaciones = RelacionesDeTercero.Vigentes(
+            await sesion.Query<RelacionEntreTerceros>().Where(r => r.AnyTenant() && r.DestinoId == terceroId).ToListAsync(ct), hoy);
+        if (relaciones.Count > 0)
+        {
+            var ids = relaciones.Select(r => r.OrigenId).Distinct().ToArray();
+            var terceros = (await sesion.Query<Tercero>().Where(t => t.Id.IsOneOf(ids)).ToListAsync(ct)).ToDictionary(t => t.Id);
+            foreach (var relacion in relaciones)
+            {
+                if (!terceros.TryGetValue(relacion.OrigenId, out var persona))
+                    continue;
+                var id = persona.Identificacion;
+                if (personas.Any(p => string.Equals(p.TipoIdentificacion, id.Tipo, StringComparison.OrdinalIgnoreCase) &&
+                                      string.Equals(p.Numero, id.Numero, StringComparison.OrdinalIgnoreCase)))
+                    continue;
+                personas.Add(new PersonaAConsultar(id.Clave, relacion.Tipo.ToString(), persona.Nombre, id.Pais, id.Tipo, id.Numero));
+            }
+        }
+
         return personas;
     }
 
@@ -291,7 +312,7 @@ public sealed class ConsultaDeListas(
     {
         var configuracion = await sesion.LoadAsync<ListasRestrictivasEmpresa>(empresaId, ct);
         var proveedor = Resolver(configuracion, await PlataformaAsync(ct), await entornos.EsSandboxAsync(tenantId, ct));
-        var personas = await PersonasAsync(sesion, terceroId, ct);
+        var personas = await PersonasAsync(sesion, terceroId, CalculadoraDeVigencia.Fecha(reloj.GetUtcNow()), ct);
         var ahora = reloj.GetUtcNow();
         var mes = UsoMensualListas.MesDe(CalculadoraDeVigencia.Fecha(ahora));
 

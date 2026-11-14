@@ -843,6 +843,8 @@ public sealed partial class Expediente
             case FlujoSeleccionado e: Apply(e); break;
             case RequisitosCalculados e: Apply(e); break;
             case RequisitosAgregados e: Apply(e); break;
+            case RequisitosDePersonaAgregados e: Apply(e); break;
+            case PersonaDeRequisitoResuelta e: Apply(e); break;
             case VersionAdjuntadaARequisito e: Apply(e); break;
             case VeredictosInvalidadosPorNuevaVersion e: Apply(e); break;
             case VeredictoDeRequisitoEmitido e: Apply(e); break;

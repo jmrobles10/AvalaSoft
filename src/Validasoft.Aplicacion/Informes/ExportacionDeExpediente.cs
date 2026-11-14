@@ -242,6 +242,8 @@ public static partial class ExportacionDeExpedienteEndpoints
         FlujoSeleccionado f => $"Flujo {f.Nombre} (versión {f.Version})",
         RequisitosCalculados r => $"Se piden {r.Requisitos.Count} requisitos",
         RequisitosAgregados r => $"Se agregan a la actualización: {string.Join(", ", r.Requisitos.Select(x => x.Nombre))}",
+        RequisitosDePersonaAgregados r => $"Se piden los documentos de más personas relacionadas: {string.Join(", ", r.Requisitos.Select(x => x.Nombre))}",
+        PersonaDeRequisitoResuelta p => $"Una persona relacionada cumple el rol de {p.Persona.Rol} y se le pide su documento",
         VersionAdjuntadaARequisito { Retiro: { } retiro } v => $"El tercero retiró la versión {retiro.Numero} (motivo: {retiro.Motivo}); vuelve la versión {v.Version.Numero}",
         VersionAdjuntadaARequisito v => $"Versión {v.Version.Numero} recibida",
         VeredictosInvalidadosPorNuevaVersion => "Versión nueva: se invalidan las decisiones previas",

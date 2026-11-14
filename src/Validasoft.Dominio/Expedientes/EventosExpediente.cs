@@ -1,6 +1,7 @@
 using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Documentos;
 using Validasoft.Dominio.Flujos;
+using Validasoft.Dominio.Terceros;
 
 namespace Validasoft.Dominio.Expedientes;
 
@@ -203,7 +204,37 @@ public sealed record RequisitoCalculado(
     RetiroDeVersion? Retiro = null,
     bool ExigeRatificacion = false,
     int? DiasRevalidacion = null,
-    ExencionAplicada? Exencion = null);
+    ExencionAplicada? Exencion = null,
+    PersonaDelRequisito? Persona = null);
+
+/// <summary>
+/// De quién es el documento de un requisito <c>DePersonaRelacionada</c> (ADR-0010): el requisito del flujo que lo pide (<see cref="RequisitoDelFlujoId"/>), el rol que
+/// exige y, si ya hay una relación vigente con ese rol, la persona (<see cref="PersonaId"/>, su <see cref="RelacionId"/>, nombre e identificación para mostrarla). Sin
+/// <see cref="PersonaId"/> el requisito queda <b>sin persona</b>: nace pendiente y se resuelve cuando el tercero declare a quien cumple el rol. La persona y su relación
+/// se resuelven al abrir o recalcular el expediente; <see cref="TodasLasRelaciones"/> pide el documento de todas las vigentes del rol.
+/// </summary>
+public sealed record PersonaDelRequisito(Guid RequisitoDelFlujoId, TipoRelacionTerceros Rol, bool TodasLasRelaciones, Guid? PersonaId = null, Guid? RelacionId = null,
+    string? Nombre = null, string? Identificacion = null)
+{
+    /// <summary>Id del requisito del expediente para esta persona: determinista por (requisito del flujo, persona), así recalcular no duplica.</summary>
+    public static Guid IdDeRequisito(Guid requisitoDelFlujoId, Guid personaId) =>
+        new(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes($"validasoft:requisito-de-persona:{requisitoDelFlujoId:N}:{personaId:N}"))[..16]);
+
+    public bool SinPersona => PersonaId is null;
+}
+
+/// <summary>
+/// Una persona relacionada pasó a cumplir el rol de un requisito que estaba <b>sin persona</b> (ADR-0010): el requisito conserva su id y sus áreas y ahora pide el
+/// documento de esa persona. Lo emite el recálculo cuando el tercero declara (o confirma) a quien cumple el rol.
+/// </summary>
+public sealed record PersonaDeRequisitoResuelta(Guid RequisitoId, PersonaDelRequisito Persona, DateTimeOffset Fecha);
+
+/// <summary>
+/// El recálculo de un expediente abierto encontró personas relacionadas de más para un requisito <c>DePersonaRelacionada</c> (otro suplente, otro socio con
+/// <c>todasLasRelaciones</c>, un representante nuevo): cada una entra como un requisito más, con el documento que ya tenga compartido con el vínculo. A diferencia de
+/// <see cref="RequisitosAgregados"/> (la ampliación de una actualización) vale en cualquier expediente abierto y no avisa a nadie por sí solo.
+/// </summary>
+public sealed record RequisitosDePersonaAgregados(IReadOnlyList<RequisitoCalculado> Requisitos, DateTimeOffset Fecha);
 
 /// <summary>
 /// El vínculo tenía una exención vigente que cubre este requisito (EX-3): nace <c>Eximido</c> citándola. <see cref="Justificacion"/> es la de la exención

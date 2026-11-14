@@ -52,7 +52,19 @@ public static class SincronizarRequisitosDelVinculoHandler
             return;
 
         var ahora = reloj.GetUtcNow();
-        var eventos = (await RequisitosDeExpediente.SincronizarAsync(sesion, expediente, ahora, ct)).ToList();
+        // Primero las personas de los requisitos de persona relacionada (ADR-0010: se resuelven «al abrir o recalcular»: una persona nueva, un representante que cambió) y
+        // luego las versiones, sobre el expediente ya con ellas.
+        var personas = await RequisitosDeExpediente.RecalcularPersonasAsync(sesion, vinculo, expediente, mensaje.TenantId, ahora, ct);
+        var eventos = personas.Eventos.ToList();
+        // El documento de una persona que acaba de compartirse con el vínculo necesita su vigencia (para esta empresa) y la validación de IA, como cualquier versión compartida.
+        if (personas.Compartio)
+        {
+            await mensajes.PublishAsync(new Documentos.CalcularVigenciasDelVinculo(vinculo.TerceroId, vinculo.Id));
+            await mensajes.PublishAsync(new Ia.AnalizarIaDelVinculo(vinculo.TerceroId, vinculo.Id));
+        }
+
+        var conPersonas = eventos.Count == 0 ? expediente : Expediente.Reproducir(expediente, eventos);
+        eventos.AddRange(await RequisitosDeExpediente.SincronizarAsync(sesion, conPersonas, ahora, ct));
         // Una actualización abierta amplía su alcance con lo que cambió después de abrirse (la sincronización ya está aplicada).
         var ampliacion = await Revalidacion.AmpliarAsync(sesion, Expediente.Reproducir(expediente, eventos), ahora, ct);
         if (ampliacion is not null)

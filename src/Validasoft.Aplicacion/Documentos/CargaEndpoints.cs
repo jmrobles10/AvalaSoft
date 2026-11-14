@@ -43,7 +43,8 @@ public static class CargaEndpoints
     public static async Task<IResult> Iniciar(IniciarCargaDto dto, HttpContext http, ISesiones sesiones, IAlmacenDeArchivos almacen,
         ReglasDeCarga reglas, Validasoft.Aplicacion.Plataforma.ControlDePlan plan, TimeProvider reloj, CancellationToken ct)
     {
-        var tercero = SesionDeTercero.De(http.User, GrupoDeAcceso.Subida);
+        // El documento de una persona relacionada (ADR-0010) es un grupo aparte: solo un contacto del tercero, nunca una sesión aislada ni un token embebido.
+        var tercero = SesionDeTercero.De(http.User, dto.TerceroRelacionadoId is null ? GrupoDeAcceso.Subida : GrupoDeAcceso.Personas);
         // Un token embebido de un expediente solo sube para el vínculo con el que se emitió.
         tercero.ExigirVinculoDelToken(dto.VinculoId);
         var nombre = CargaDeDocumento.NormalizarNombre(dto.NombreArchivo);
@@ -53,7 +54,9 @@ public static class CargaEndpoints
         if (dto.TamanoBytes <= 0)
             throw ReglaDeNegocioException.Validacion("tamano-invalido", "Indica el tamaño del archivo en bytes.");
 
-        var destino = await ResolverDestinoAsync(dto.TipoCanonico, dto.TipoDocumentoTenantId, dto.VinculoId, tercero, sesiones, reglas, ct);
+        var destino = dto.TerceroRelacionadoId is { } personaId
+            ? await ResolverDestinoDePersonaAsync(personaId, dto.TipoCanonico, tercero, sesiones, reglas, reloj, ct)
+            : await ResolverDestinoAsync(dto.TipoCanonico, dto.TipoDocumentoTenantId, dto.VinculoId, tercero, sesiones, reglas, ct);
         destino.Reglas.ValidarDeclarado(mime, dto.TamanoBytes);
         // Un documento propio de una empresa (o el que está en su cuarentena) cuenta para el almacenamiento de su grupo: con el bloqueo suave y el límite alcanzado no se cargan más (OD-17).
         if ((destino.Tipo is { Ambito: AmbitoDocumento.PorVinculo } || destino.EnCuarentena) &&
@@ -135,7 +138,9 @@ public static class CargaEndpoints
 
         await using var sesion = sesiones.Boveda(mensajes);
         var stream = await sesion.Events.FetchForExclusiveWriting<Documento>(documentoId, ct);
-        var documento = BovedaEndpoints.DelTercero(stream.Aggregate, tercero, paraSubida: true);
+        var documento = stream.Aggregate is { } hallado && hallado.TerceroId != tercero.TerceroId
+            ? await DePersonaRelacionadaAsync(hallado, http, sesiones, reloj, ct)
+            : BovedaEndpoints.DelTercero(stream.Aggregate, tercero, paraSubida: true);
 
         var carga = await sesion.Query<CargaDeDocumento>()
             .Where(c => c.DocumentoId == documentoId && c.Numero == numero && c.Estado == EstadoCarga.Pendiente)
@@ -212,6 +217,50 @@ public static class CargaEndpoints
         await almacen.EliminarAsync(carga.Bucket, carga.ClaveTemporal, ct);
 
         return new ConfirmacionCargaDto(false, proyectado.VersionRequerida(numero).ADto(documento.Id, null, reloj.Hoy()), compartidos);
+    }
+
+    /// <summary>
+    /// Dónde va el documento de una persona relacionada (ADR-0010): su bóveda, no la del tercero que lo sube. Solo un canónico marcado <c>dePersonaRelacionada</c> (cédula,
+    /// pasaporte, antecedentes; 422 <c>documento-no-es-de-persona</c>) y solo de una persona con relación vigente con el tercero de la sesión (404 <c>persona-no-encontrada</c>:
+    /// la bóveda de quien no se relaciona con él no se abre). El archivo queda en la bóveda global de la persona y se comparte con las empresas cuyo flujo lo pide por esa relación.
+    /// </summary>
+    internal static async Task<DestinoDeCarga> ResolverDestinoDePersonaAsync(Guid personaId, string? tipoCanonico, SesionDeTercero tercero, ISesiones sesiones,
+        ReglasDeCarga reglas, TimeProvider reloj, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(tipoCanonico))
+            throw ReglaDeNegocioException.Validacion("tipo-documento-requerido", "Indica el tipo de documento de la persona (CEDULA, PASAPORTE o CERTIFICADO_ANTECEDENTES).");
+        var canonico = CatalogoCanonico.Requerido(tipoCanonico);
+        if (!canonico.DePersonaRelacionada || canonico.Ambito != AmbitoDocumento.Global)
+            throw ReglaDeNegocioException.Validacion("documento-no-es-de-persona", $"{canonico.Nombre} no es un documento de una persona relacionada.");
+        Documento.AsegurarClaseSoportada(canonico.Clase, canonico.Codigo);
+
+        await using (var consulta = sesiones.ConsultaGlobal())
+            await Personas.PersonasDelTercero.ExigirRelacionAsync(consulta, tercero.TerceroId, personaId, reloj.Hoy(), ct);
+
+        return new DestinoDeCarga(Documento.ClaveGlobal(personaId, canonico.Codigo), ahora => Documento.CrearGlobal(personaId, canonico, ahora),
+            ClavesDeAlmacen.BucketBoveda, null, ReglasDeArchivo.Efectivas(canonico, null, reglas.TamanoMaximoBytes, reglas.MaximoPaginas), null);
+    }
+
+    /// <summary>
+    /// El documento es de una persona relacionada con el tercero de la sesión (ADR-0010): solo un contacto (grupo <see cref="GrupoDeAcceso.Personas"/>), solo un documento global y
+    /// solo de una persona con relación vigente con el tercero. Cualquier otro documento ajeno responde 404, como siempre.
+    /// </summary>
+    private static async Task<Documento> DePersonaRelacionadaAsync(Documento documento, HttpContext http, ISesiones sesiones, TimeProvider reloj, CancellationToken ct)
+    {
+        var tercero = SesionDeTercero.De(http.User, GrupoDeAcceso.Personas);
+        if (documento.Ambito != AmbitoDocumento.Global)
+            throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento en tu bóveda.");
+        try
+        {
+            await using var consulta = sesiones.ConsultaGlobal();
+            await Personas.PersonasDelTercero.ExigirRelacionAsync(consulta, tercero.TerceroId, documento.TerceroId, reloj.Hoy(), ct);
+        }
+        catch (ReglaDeNegocioException)
+        {
+            throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento en tu bóveda.");
+        }
+
+        return documento;
     }
 
     /// <summary>

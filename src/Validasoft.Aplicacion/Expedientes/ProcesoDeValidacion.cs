@@ -257,9 +257,12 @@ public static class ProcesoDeValidacion
         Guid tenantId, FlujoVersion version, ContextoDeExigencia exigencia, IReadOnlySet<Guid>? soloRequisitos, DocumentosDelVinculo? documentos,
         DateTimeOffset ahora, CancellationToken ct, IReadOnlyDictionary<Guid, RetiroDeVersion>? retiros = null, bool exigirRatificacion = false)
     {
-        var pedidos = (await RequisitosDeExpediente.DelFlujoAsync(sesion, version, exigencia, ct))
+        var todosLosPedidos = (await RequisitosDeExpediente.DelFlujoAsync(sesion, version, exigencia, ct, incluirPersonas: true))
             .Where(p => soloRequisitos is null || soloRequisitos.Contains(p.Requisito.Id))
             .ToList();
+        var pedidos = todosLosPedidos.Where(p => !p.Requisito.EsDePersona).ToList();
+        // Los de una persona relacionada (ADR-0010) se resuelven contra las relaciones vigentes y piden el documento de la bóveda de cada persona.
+        var deLasPersonas = todosLosPedidos.Where(p => p.Requisito.EsDePersona).ToList();
         var secciones = RequisitosDeExpediente.SeccionesDelFlujo(version, exigencia, CalculadoraDeVigencia.Fecha(ahora))
             .Where(s => soloRequisitos is null || soloRequisitos.Contains(s.RequisitoId))
             .ToList();
@@ -277,6 +280,12 @@ public static class ProcesoDeValidacion
             .Concat(secciones.Select(s => (s.Requisito.Id, Calculado: ConRatificacion(RequisitosDeExpediente.CalcularSeccion(s, tercero.Id, ficha,
                 RequisitosDeExpediente.Aceptada(aceptadas, vinculo.Id, s)), exigirRatificacion))))
             .ToList();
+        if (deLasPersonas.Count > 0)
+        {
+            var dePersonas = await RequisitosDeExpediente.CalcularDePersonasAsync(sesion, vinculo, tercero, tenantId, deLasPersonas, ahora, ct);
+            calculados.AddRange(dePersonas.Requisitos.Select(c => (c.Persona!.RequisitoDelFlujoId, Calculado: c)));
+        }
+
         // En el orden del flujo (los periodos de la financiera, del más reciente al más antiguo).
         var orden = version.Requisitos.Select(r => r.Id).ToList();
         var ordenados = await RequisitosDeExpediente.ConAprobacionesPreviasAsync(sesion, vinculo,

@@ -7,6 +7,7 @@ using Validasoft.Aplicacion.Comun;
 using Validasoft.Aplicacion.Expedientes;
 using Validasoft.Aplicacion.Notificaciones;
 using Validasoft.Dominio.Comun;
+using Validasoft.Dominio.Documentos;
 using Validasoft.Dominio.Expedientes;
 using Validasoft.Dominio.Identidad;
 using Validasoft.Dominio.Integraciones;
@@ -162,7 +163,7 @@ public sealed class TareasDeVerificaciones(IDocumentStore store, ConsultaDeLista
     private async Task ExpirarListasDeExpedienteAsync(Guid tenantId, Guid expedienteId, Guid terceroId, CancellationToken ct)
     {
         await using var sesion = SesionDeSistema(tenantId);
-        var claves = (await ConsultaDeListas.PersonasAsync(sesion, terceroId, ct)).Select(p => p.Clave).ToList();
+        var claves = (await ConsultaDeListas.PersonasAsync(sesion, terceroId, CalculadoraDeVigencia.Fecha(reloj.GetUtcNow()), ct)).Select(p => p.Clave).ToList();
         var ahora = reloj.GetUtcNow();
         var stream = await sesion.Events.FetchForExclusiveWriting<Expediente>(expedienteId, ct);
         if (stream.Aggregate is not { } expediente)
@@ -180,7 +181,7 @@ public sealed class TareasDeVerificaciones(IDocumentStore store, ConsultaDeLista
         var monitoreo = await sesion.LoadAsync<MonitoreoDeListas>(vinculoId, ct);
         if (monitoreo is null)
             return;
-        var claves = (await ConsultaDeListas.PersonasAsync(sesion, terceroId, ct)).Select(p => p.Clave).ToList();
+        var claves = (await ConsultaDeListas.PersonasAsync(sesion, terceroId, CalculadoraDeVigencia.Fecha(reloj.GetUtcNow()), ct)).Select(p => p.Clave).ToList();
         if (!monitoreo.ReconsultarPorCambioDePersonas(claves, reloj.GetUtcNow()))
             return;
         sesion.Store(monitoreo);

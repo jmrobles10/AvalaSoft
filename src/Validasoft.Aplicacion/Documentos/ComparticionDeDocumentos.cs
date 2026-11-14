@@ -5,6 +5,7 @@ using Validasoft.Aplicacion.Expedientes;
 using Validasoft.Contratos;
 using Validasoft.Dominio.Documentos;
 using Validasoft.Dominio.Plataforma;
+using Validasoft.Dominio.Terceros;
 using Validasoft.Dominio.Vinculos;
 using Wolverine;
 
@@ -12,9 +13,14 @@ namespace Validasoft.Aplicacion.Documentos;
 
 /// <summary>
 /// Documentos del tercero que tocan a un vínculo (globales que pide su flujo y los <c>PorVinculo</c> del vínculo) ya con
-/// las comparticiones nuevas aplicadas, y las comparticiones que se registraron.
+/// las comparticiones nuevas aplicadas, y las comparticiones que se registraron. <see cref="DocumentosDePersonas"/> son los de las personas
+/// relacionadas que el flujo pide (ADR-0010), ya compartidos con el vínculo: de otra bóveda, aparte de los del tercero.
 /// </summary>
-public sealed record DocumentosDelVinculo(IReadOnlyList<CompartidoDto> Compartidos, IReadOnlyList<Documento> Documentos);
+public sealed record DocumentosDelVinculo(IReadOnlyList<CompartidoDto> Compartidos, IReadOnlyList<Documento> Documentos,
+    IReadOnlyList<Documento>? DocumentosDePersonas = null);
+
+/// <summary>Qué documentos globales (canónicos) pide el flujo de una persona relacionada para un vínculo (ADR-0010).</summary>
+public sealed record PersonaPedida(Guid PersonaId, IReadOnlySet<string> Codigos);
 
 /// <summary>
 /// Compartición de la bóveda con las empresas (B-1, ADR-0009, A-8). Nada se comparte antes de que el tercero acepte la
@@ -78,6 +84,56 @@ public static class ComparticionDeDocumentos
     }
 
     /// <summary>
+    /// Comparte con el vínculo (aceptado) la versión actual de los documentos globales de las personas relacionadas que su flujo pide (ADR-0010, PR-3): cada
+    /// <see cref="PersonaPedida"/> trae el id de la persona y los canónicos que se le piden. Solo eso: del resto de la bóveda de la persona, y de la de cualquier otra
+    /// persona, no se comparte nada. Misma mecánica que <see cref="CompartirConVinculoAsync"/> (concurrencia optimista por stream; el llamador reintenta). Devuelve los
+    /// documentos pedidos ya con las comparticiones nuevas y las comparticiones que se registraron.
+    /// </summary>
+    public static async Task<DocumentosDelVinculo> CompartirPersonasConVinculoAsync(IDocumentSession sesionDelTenant, Vinculo vinculo, Guid tenantId,
+        IReadOnlyList<PersonaPedida> personas, OrigenComparticion origen, DateTimeOffset ahora, CancellationToken ct)
+    {
+        if (personas.Count == 0)
+            return new DocumentosDelVinculo([], [], []);
+
+        var boveda = sesionDelTenant.ForTenant(TenantsTecnicos.Boveda);
+        var ids = personas.Select(p => p.PersonaId).Distinct().ToArray();
+        var documentos = await boveda.Query<Documento>().Where(d => d.TerceroId.IsOneOf(ids) && d.Ambito == AmbitoDocumento.Global).ToListAsync(ct);
+
+        var compartidos = new List<CompartidoDto>();
+        var resultado = new List<Documento>();
+        foreach (var candidato in documentos.OrderBy(d => d.CreadoEn))
+        {
+            var pedido = candidato.TipoCanonico is { } codigo && personas.Any(p => p.PersonaId == candidato.TerceroId && p.Codigos.Contains(codigo));
+            if (!pedido)
+                continue;
+
+            // La propia persona natural que es el tercero (su representante soy yo): no es «vía una relación», es su bóveda.
+            var destino = new VinculoCandidato(vinculo.Id, tenantId, vinculo.EmpresaId, vinculo.TerceroId, InvitacionAceptada: true, vinculo.Estado,
+                ExigeElTipo: true, vinculo.BovedaDisponible, ViaPersonaRelacionada: candidato.TerceroId != vinculo.TerceroId);
+            if (candidato.Compartir(destino, origen, ahora) is null)
+            {
+                resultado.Add(candidato);
+                continue;
+            }
+
+            var stream = await boveda.Events.FetchForWriting<Documento>(candidato.Id, ct);
+            var documento = stream.Aggregate!;
+            if (documento.Compartir(destino, origen, ahora) is { } evento)
+            {
+                stream.AppendOne(evento);
+                compartidos.Add(evento.ADto(documento));
+                resultado.Add(documento.Proyectar([evento]));
+            }
+            else
+            {
+                resultado.Add(documento);
+            }
+        }
+
+        return new DocumentosDelVinculo(compartidos, [], resultado);
+    }
+
+    /// <summary>
     /// La versión actual de <paramref name="proyectado"/> (el documento con los eventos nuevos ya aplicados) se comparte con
     /// cada vínculo aceptado que la pida. Se llama con el stream ya tomado con bloqueo: los vínculos se leen después, así
     /// una aceptación simultánea o la ve en su propia transacción o la ve esta. Con <paramref name="mensajes"/> (sesión
@@ -90,7 +146,7 @@ public static class ComparticionDeDocumentos
         if (proyectado.VersionActual is null)
             return [];
 
-        var candidatos = await CandidatosAsync(sesionBoveda, proyectado, ct);
+        var candidatos = await CandidatosAsync(sesionBoveda, proyectado, CalculadoraDeVigencia.Fecha(ahora), ct);
         var eventos = proyectado.CompartirActual(candidatos, origen, ahora);
         foreach (var evento in eventos)
             stream.AppendOne(evento);
@@ -117,7 +173,44 @@ public static class ComparticionDeDocumentos
             await mensajes.PublishAsync(new SincronizarRequisitosDelVinculo(tenantId, vinculoId, contexto.ActorTipo.ToString(), contexto.ActorId));
     }
 
-    private static async Task<IReadOnlyList<VinculoCandidato>> CandidatosAsync(IQuerySession consulta, Documento documento, CancellationToken ct)
+    private static async Task<IReadOnlyList<VinculoCandidato>> CandidatosAsync(IQuerySession consulta, Documento documento, DateOnly hoy, CancellationToken ct)
+    {
+        var propios = await CandidatosDelDuenoAsync(consulta, documento, ct);
+        if (documento.Ambito != AmbitoDocumento.Global)
+            return propios;
+        // ADR-0010: si el dueño es una persona natural relacionada con otros terceros, sus documentos también van a los vínculos de esos terceros cuyo flujo se los pide.
+        return [.. propios, .. await CandidatosPorRelacionAsync(consulta, documento, hoy, ct)];
+    }
+
+    /// <summary>
+    /// Los vínculos de los terceros a los que la persona dueña del documento se relaciona (representante, suplente, socio…) y cuyo flujo (o expediente abierto) le pide ese
+    /// documento por su rol. Solo relaciones vigentes: una relación terminada, propuesta o descartada no comparte nada nuevo.
+    /// </summary>
+    private static async Task<IReadOnlyList<VinculoCandidato>> CandidatosPorRelacionAsync(IQuerySession consulta, Documento documento, DateOnly hoy, CancellationToken ct)
+    {
+        var personaId = documento.TerceroId;
+        var relaciones = RelacionesDeTercero.Vigentes(
+            await consulta.Query<RelacionEntreTerceros>().Where(r => r.AnyTenant() && r.OrigenId == personaId).ToListAsync(ct), hoy);
+        if (relaciones.Count == 0 || documento.TipoCanonico is not { } codigo)
+            return [];
+
+        var destinos = relaciones.Select(r => r.DestinoId).Distinct().ToArray();
+        var vinculos = await consulta.Query<Vinculo>().Where(v => v.AnyTenant() && v.TerceroId.IsOneOf(destinos) && v.InvitacionAceptada).ToListAsync(ct);
+        if (vinculos.Count == 0)
+            return [];
+
+        var empresas = (await consulta.LoadManyAsync<Empresa>(ct, vinculos.Select(v => v.EmpresaId).Distinct().ToArray())).ToDictionary(e => e.Id);
+        var piden = await RequisitosDeExpediente.VinculosQuePidenPersonaAsync(consulta, vinculos, personaId, codigo, hoy, ct);
+        return
+        [
+            .. vinculos
+                .Where(v => empresas.ContainsKey(v.EmpresaId) && piden.Contains(v.Id))
+                .Select(v => new VinculoCandidato(v.Id, empresas[v.EmpresaId].TenantId, v.EmpresaId, v.TerceroId, v.InvitacionAceptada, v.Estado, true,
+                    v.BovedaDisponible, ViaPersonaRelacionada: true))
+        ];
+    }
+
+    private static async Task<IReadOnlyList<VinculoCandidato>> CandidatosDelDuenoAsync(IQuerySession consulta, Documento documento, CancellationToken ct)
     {
         var terceroId = documento.TerceroId;
         if (documento.Ambito == AmbitoDocumento.PorVinculo)

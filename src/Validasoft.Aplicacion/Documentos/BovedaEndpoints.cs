@@ -221,7 +221,7 @@ public static class DocumentosDeVinculoEndpoints
         var vinculo = await empresa.CargarVinculoAsync(id, ct);
         await using var consulta = sesiones.ConsultaBoveda();
         var documento = await consulta.LoadAsync<Documento>(documentoId, ct);
-        if (!Visible(vinculo) || documento is null || documento.TerceroId != vinculo.TerceroId)
+        if (!Visible(vinculo) || documento is null || !EsDelVinculo(documento, vinculo))
             throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento para el vínculo.");
         return Vista(documento, id, reloj.Hoy(), await ValidacionesDeIaAsync(empresa, [documento], ct))
                ?? throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento para el vínculo.");
@@ -258,7 +258,7 @@ public static class DocumentosDeVinculoEndpoints
             await using var sesion = sesiones.Boveda();
             var stream = await sesion.Events.FetchForExclusiveWriting<Documento>(documentoId, ct);
             var encontrado = stream.Aggregate;
-            if (encontrado is null || encontrado.TerceroId != vinculo.TerceroId)
+            if (encontrado is null || !EsDelVinculo(encontrado, vinculo))
                 throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento para el vínculo.");
             stream.AppendOne(encontrado.RegistrarAcceso(numero, destino, contexto.ActorTipo.ToString(), contexto.ActorId, BovedaEndpoints.Ip(http),
                 BovedaEndpoints.UserAgent(http), "Descarga", reloj.GetUtcNow()));
@@ -267,6 +267,14 @@ public static class DocumentosDeVinculoEndpoints
         });
         return await BovedaEndpoints.UrlDeDescargaAsync(almacen, reglas, documento.VersionRequerida(numero), ct);
     }
+
+    /// <summary>
+    /// El documento es del tercero del vínculo o, si es global de otra persona (una persona relacionada con él, ADR-0010), se compartió con este vínculo: solo así lo
+    /// ve la empresa. Una bóveda de otra persona que nadie compartió con el vínculo responde 404 como cualquier documento ajeno.
+    /// </summary>
+    internal static bool EsDelVinculo(Documento documento, Dominio.Vinculos.Vinculo vinculo) =>
+        documento.TerceroId == vinculo.TerceroId ||
+        (documento.Ambito == AmbitoDocumento.Global && documento.Comparticiones.Any(c => c.VinculoId == vinculo.Id));
 
     /// <summary>docs/07 §5.2: invitación aceptada y vínculo no anulado (desvinculado o bloqueado conserva lo ya compartido).</summary>
     internal static bool Visible(Dominio.Vinculos.Vinculo vinculo) =>

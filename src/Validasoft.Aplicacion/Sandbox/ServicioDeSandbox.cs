@@ -323,11 +323,16 @@ public sealed class ServicioDeSandbox(ISesiones sesiones, IDocumentStore store, 
             await using var boveda = store.LightweightSession(TenantsTecnicos.Boveda);
             var documentos = await boveda.Query<Documento>().Where(d => d.TerceroId.IsOneOf(terceros)).Select(d => d.Id).ToListAsync(ct);
             var secciones = await boveda.Query<SeccionDeFicha>().Where(s => s.TerceroId.IsOneOf(terceros)).Select(s => s.Id).ToListAsync(ct);
+            // Las relaciones (ADR-0010) de los terceros de pruebas, de un lado o del otro (la persona o el tercero al que se relaciona).
+            var relaciones = await boveda.Query<RelacionEntreTerceros>().Where(r => r.DestinoId.IsOneOf(terceros) || r.OrigenId.IsOneOf(terceros))
+                .Select(r => r.Id).ToListAsync(ct);
             flujos.UnionWith(documentos);
             flujos.UnionWith(secciones);
+            flujos.UnionWith(relaciones);
 
             boveda.DeleteWhere<Documento>(d => d.TerceroId.IsOneOf(terceros));
             boveda.DeleteWhere<SeccionDeFicha>(s => s.TerceroId.IsOneOf(terceros));
+            boveda.DeleteWhere<RelacionEntreTerceros>(r => r.DestinoId.IsOneOf(terceros) || r.OrigenId.IsOneOf(terceros));
             boveda.DeleteWhere<EstadoDeFicha>(e => e.Id.IsOneOf(terceros));
             boveda.DeleteWhere<CuentaBancaria>(c => c.TerceroId.IsOneOf(terceros));
             boveda.DeleteWhere<AvisoDeVencimiento>(a => a.TerceroId.IsOneOf(terceros));
