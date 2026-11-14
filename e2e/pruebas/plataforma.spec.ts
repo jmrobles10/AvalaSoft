@@ -41,7 +41,7 @@ test('Alta de una empresa nueva desde la consola, su plan de IA con llave y su p
   await consola.getByRole('button', { name: 'Crear grupo' }).click();
 
   // 2. Las llaves se muestran una sola vez: la del sistema la usa su backend.
-  await expect(consola.getByRole('heading', { level: 1, name: `Grupo ${grupo} creado` })).toBeVisible();
+  await expect(consola.getByRole('heading', { level: 1, name: `${grupo} creado` })).toBeVisible();
   const llaveSistema = (await consola.getByLabel('API key del sistema ERP', { exact: true }).textContent())?.trim() ?? '';
   expect(llaveSistema).toMatch(/^vsk_dev_grupo-andino-/);
 
