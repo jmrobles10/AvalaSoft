@@ -18,8 +18,8 @@ public sealed class MapeadorDeVerificaciones : IMapeadorDeEventos
 
     public static readonly IReadOnlyList<TipoEventoPublicoDto> Tipos =
     [
-        new(Registrada, "Se registró una verificación del expediente: consulta de listas restrictivas o estudio de cumplimiento."),
-        new(CoincidenciaResuelta, "Cumplimiento descartó o confirmó una coincidencia en listas."),
+        new(Registrada, "Se registró una verificación del expediente: consulta de listas restrictivas, estudio de cumplimiento o consulta a una fuente oficial (RUES, DIAN)."),
+        new(CoincidenciaResuelta, "Cumplimiento descartó o confirmó una coincidencia en listas o una diferencia con una fuente oficial."),
         new(Expirada, "Venció una verificación con el expediente abierto (las listas se reconsultan; el estudio se repite).")
     ];
 
@@ -27,7 +27,8 @@ public sealed class MapeadorDeVerificaciones : IMapeadorDeEventos
 
     public async ValueTask<EventoPublicoMapeado?> MapearAsync(IEvent evento, IContextoDeEventos contexto, CancellationToken ct)
     {
-        if (evento.Data is not (VerificacionExternaRegistrada or EstudioDeCumplimientoRegistrado or Dominio.Expedientes.CoincidenciaResuelta or VerificacionExpirada) ||
+        if (evento.Data is not (VerificacionExternaRegistrada or EstudioDeCumplimientoRegistrado or FuenteOficialConsultada or DiferenciaDeFuenteResuelta or
+                Dominio.Expedientes.CoincidenciaResuelta or VerificacionExpirada) ||
             !Guid.TryParse(evento.TenantId, out var tenantId) || await contexto.ExpedienteAsync(tenantId, evento.StreamId, ct) is not { } expediente)
             return null;
 
@@ -46,6 +47,13 @@ public sealed class MapeadorDeVerificaciones : IMapeadorDeEventos
                 (e.Estudio.Concepto == ConceptoCumplimiento.Favorable ? ResultadoVerificacion.Aprobado : ResultadoVerificacion.Rechazado).ToString(),
                 (e.Estudio.Concepto == ConceptoCumplimiento.Favorable ? EstadoVerificacion.Satisfecha : EstadoVerificacion.Fallida).ToString(),
                 Bloqueante(TipoVerificacion.EstudioDeCumplimiento), e.VigenteHasta, 0, 0, NivelRiesgo: e.Estudio.NivelRiesgo)),
+            FuenteOficialConsultada f => (Registrada, new DatosVerificacionDto(expediente.Id, expediente.Folio, expediente.VinculoId, referencias,
+                f.Tipo.ToString(), f.Proveedor,
+                (f.Campos.Any(c => c.Resultado == Dominio.Ficha.ResultadoDeCruce.Discrepa) ? ResultadoVerificacion.ConDiferencias : ResultadoVerificacion.Conforme).ToString(),
+                (f.Campos.Any(c => c.Resultado == Dominio.Ficha.ResultadoDeCruce.Discrepa && c.Heredada is null) ? EstadoVerificacion.CoincidenciaPorAnalizar : EstadoVerificacion.Satisfecha).ToString(),
+                Bloqueante(f.Tipo), f.VigenteHasta, f.Campos.Count(c => c.Resultado == Dominio.Ficha.ResultadoDeCruce.Discrepa),
+                f.Campos.Count(c => c.Resultado == Dominio.Ficha.ResultadoDeCruce.Discrepa && c.Heredada is null))),
+            DiferenciaDeFuenteResuelta d => (CoincidenciaResuelta, Datos(d.Tipo, d.Decision.ToString())),
             Dominio.Expedientes.CoincidenciaResuelta c => (CoincidenciaResuelta, Datos(c.Tipo, c.Decision.ToString())),
             VerificacionExpirada x => (Expirada, Datos(x.Tipo, null) with { Estado = nameof(EstadoVerificacion.Expirada), VigenteHasta = x.VencioEn }),
             _ => throw new InvalidOperationException()
@@ -57,7 +65,8 @@ public sealed class MapeadorDeVerificaciones : IMapeadorDeEventos
             var v = expediente.BuscarVerificacion(tipo);
             return new DatosVerificacionDto(expediente.Id, expediente.Folio, expediente.VinculoId, referencias, tipo.ToString(), v?.Proveedor,
                 v?.Resultado?.ToString(), (v?.Estado ?? EstadoVerificacion.Pendiente).ToString(), v?.Bloqueante ?? false, v?.VigenteHasta,
-                v?.Coincidencias.Count ?? 0, v?.Coincidencias.Count(c => !c.Resuelta) ?? 0, decision);
+                v?.FuenteOficial?.Diferencias.Count() ?? v?.Coincidencias.Count ?? 0,
+                v?.FuenteOficial is { } oficial ? oficial.Campos.Count(c => c.PorRevisar) : v?.Coincidencias.Count(c => !c.Resuelta) ?? 0, decision);
         }
     }
 }

@@ -163,6 +163,8 @@ public static class ConfiguracionMarten
                 // Configuración global de la instalación que cambia la consola (PI-17).
                 opts.Schema.For<ConfiguracionDePlataforma>().DatabaseSchemaName("plataforma");
                 opts.Schema.For<ListasRestrictivasDePlataforma>().DatabaseSchemaName("plataforma");
+                // Cuenta de la plataforma con los proveedores de las fuentes oficiales, RUES y DIAN (FO-5): un solo documento global.
+                opts.Schema.For<Validasoft.Dominio.FuentesOficiales.FuentesOficialesDePlataforma>().DatabaseSchemaName("plataforma");
 
                 // Textos legales versionados (aviso de la plataforma y textos de cada empresa): globales e inmutables.
                 opts.Schema.For<TextoLegal>().DatabaseSchemaName("plataforma")
@@ -205,6 +207,7 @@ public static class ConfiguracionMarten
                     .Index(x => x.VinculoId)
                     .Index(x => x.AbiertoEn)
                     .Index(x => x.ProximaConsultaDeListas)
+                    .Index(x => x.ProximaConsultaOficial)
                     .Index(x => x.ProximoVencimientoDeVerificacion)
                     // Barrido del job de plazos de cargue (LT-4): solo los que tienen algo pendiente llevan valor.
                     .Index(x => x.ProximaRevisionDePlazo)
@@ -223,6 +226,9 @@ public static class ConfiguracionMarten
                 // Reclamo (arrendamiento) de un trabajo que se factura, por trabajo y tenant (OC-4): solo una réplica pide cada consulta de listas.
                 opts.Schema.For<ReclamoDeTrabajo>().MultiTenanted().UseOptimisticConcurrency(true);
                 opts.Schema.For<MonitoreoDeListas>().MultiTenanted().Index(x => x.EmpresaId).Index(x => x.ProximaConsulta);
+                // Fuentes oficiales (FO-5, FO-7): proveedor y credenciales propias por empresa (id = empresa) y reconsulta periódica por vínculo activo (id = vínculo).
+                opts.Schema.For<Validasoft.Dominio.FuentesOficiales.FuentesOficialesEmpresa>().MultiTenanted();
+                opts.Schema.For<Validasoft.Dominio.FuentesOficiales.MonitoreoDeFuentesOficiales>().MultiTenanted().Index(x => x.EmpresaId).Index(x => x.ProximaConsulta);
                 // Lo aceptado de cada sección de la ficha por vínculo (F2, FM-29): privado de la empresa, en su tenant.
                 opts.Schema.For<Validasoft.Dominio.Ficha.SeccionAceptada>().MultiTenanted()
                     .Index(x => x.VinculoId)

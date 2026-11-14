@@ -11,4 +11,6 @@ export type TipoVerificacion = typeof TipoVerificacion[keyof typeof TipoVerifica
 export const TipoVerificacion = {
   ListasRestrictivas: 'ListasRestrictivas',
   EstudioDeCumplimiento: 'EstudioDeCumplimiento',
+  Rues: 'Rues',
+  Dian: 'Dian',
 } as const;

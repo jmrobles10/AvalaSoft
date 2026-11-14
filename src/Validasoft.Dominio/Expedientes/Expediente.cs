@@ -873,6 +873,8 @@ public sealed partial class Expediente
             case AdjuntoDeCumplimientoSubido e: Apply(e); break;
             case ConsultaDeVerificacionFallida e: Apply(e); break;
             case EvidenciaDeVerificacionDescargada e: Apply(e); break;
+            case FuenteOficialConsultada e: Apply(e); break;
+            case DiferenciaDeFuenteResuelta e: Apply(e); break;
             case RecordatorioDeCargueEnviado e: Apply(e); break;
             case ExpedienteCaducado e: Apply(e); break;
             case ExpedienteReabierto e: Apply(e); break;

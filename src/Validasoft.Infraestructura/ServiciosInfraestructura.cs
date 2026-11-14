@@ -260,6 +260,22 @@ public static class ServiciosInfraestructura
         servicios.AddHttpClient(Verificaciones.VerificadorInfolaft.Cliente);
         servicios.AddHttpClient(Verificaciones.VerificadorStradata.Cliente);
         servicios.AddHttpClient(Verificaciones.VerificadorCompliance.Cliente);
+        // Fuentes oficiales, RUES y DIAN (FO-1…FO-7): los mismos control de concurrencia, tiempo de espera y cortacircuito que las listas, adaptadores apagados por
+        // omisión (el simulado solo con PermitirSimulado) y las consultas pendientes dentro del procesador de verificaciones.
+        servicios.AddSingleton<Aplicacion.FuentesOficiales.OpcionesDeFuentesOficiales>();
+        servicios.AddSingleton<Aplicacion.FuentesOficiales.IFuenteOficial, FuentesOficiales.ConsultaRuesDatosAbiertos>();
+        servicios.AddSingleton<Aplicacion.FuentesOficiales.IFuenteOficial>(proveedor => new FuentesOficiales.ConsultaPorContrato(Dominio.Expedientes.TipoVerificacion.Rues,
+            proveedor.GetRequiredService<IHttpClientFactory>()));
+        servicios.AddSingleton<Aplicacion.FuentesOficiales.IFuenteOficial>(proveedor => new FuentesOficiales.ConsultaPorContrato(Dominio.Expedientes.TipoVerificacion.Dian,
+            proveedor.GetRequiredService<IHttpClientFactory>()));
+        servicios.AddSingleton<Aplicacion.FuentesOficiales.IFuenteOficial>(proveedor => new FuentesOficiales.FuenteOficialSimulada(Dominio.Expedientes.TipoVerificacion.Rues,
+            proveedor.GetRequiredService<TimeProvider>()));
+        servicios.AddSingleton<Aplicacion.FuentesOficiales.IFuenteOficial>(proveedor => new FuentesOficiales.FuenteOficialSimulada(Dominio.Expedientes.TipoVerificacion.Dian,
+            proveedor.GetRequiredService<TimeProvider>()));
+        servicios.AddSingleton<Aplicacion.FuentesOficiales.ConsultaDeFuentesOficiales>();
+        servicios.AddSingleton<Aplicacion.FuentesOficiales.TareasDeFuentesOficiales>();
+        servicios.AddHttpClient(FuentesOficiales.ConsultaRuesDatosAbiertos.Cliente);
+        servicios.AddHttpClient(FuentesOficiales.ConsultaPorContrato.Cliente);
         // Plazos de cargue del expediente inicial (P-4-2, LT-4): barrido periódico (Validasoft:PlazosDeCargue:Intervalo).
         servicios.AgregarProcesoDelLider<ProgramadorDePlazosDeCargue>();
         // Vigencia periódica del vínculo y fin de los bloqueos con fecha (VV-1…VV-5): barrido periódico (Validasoft:VigenciasDeVinculos:Intervalo).
