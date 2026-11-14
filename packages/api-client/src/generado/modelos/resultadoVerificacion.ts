@@ -13,4 +13,6 @@ export const ResultadoVerificacion = {
   Coincidencias: 'Coincidencias',
   Aprobado: 'Aprobado',
   Rechazado: 'Rechazado',
+  Conforme: 'Conforme',
+  ConDiferencias: 'ConDiferencias',
 } as const;

@@ -260,6 +260,11 @@ public sealed partial class PlanificadorDeNotificaciones
             case VerificacionExternaRegistrada registrada when registrada.Coincidencias.Any(c => c.Heredada is null):
                 return await ACumplimientoAsync(evento, contexto, TiposNotificacion.CoincidenciaListas, "Coincidencia en listas restrictivas",
                     t => $"La consulta de listas de {t} encontró {registrada.Coincidencias.Count(c => c.Heredada is null)} coincidencia(s) por analizar.", orden, ct);
+            case FuenteOficialConsultada oficial when oficial.Campos.Any(c => c.Resultado == Dominio.Ficha.ResultadoDeCruce.Discrepa && c.Heredada is null):
+                // Las diferencias con RUES o DIAN van a la misma bandeja y al mismo tipo de aviso que las coincidencias de listas (FO-4): las atiende Cumplimiento.
+                return await ACumplimientoAsync(evento, contexto, TiposNotificacion.CoincidenciaListas, $"Diferencias con {Dominio.FuentesOficiales.CatalogoDeFuentes.Nombre(oficial.Tipo)}",
+                    t => $"La consulta a {Dominio.FuentesOficiales.CatalogoDeFuentes.Nombre(oficial.Tipo)} de {t} encontró " +
+                         $"{oficial.Campos.Count(c => c.Resultado == Dominio.Ficha.ResultadoDeCruce.Discrepa && c.Heredada is null)} diferencia(s) por revisar.", orden, ct);
             case ExpedienteEnviadoARevision:
                 return await EstudioPendienteAsync(evento, contexto, orden, ct);
             case CuentaDesignadaPropuesta propuesta:
@@ -278,7 +283,9 @@ public sealed partial class PlanificadorDeNotificaciones
                 return await ACumplimientoAsync(evento, contexto, TiposNotificacion.VerificacionExpirada, "Verificación vencida",
                     t => expirada.Tipo == TipoVerificacion.ListasRestrictivas
                         ? $"Venció la consulta de listas de {t}: se reconsulta sola."
-                        : $"Venció el estudio de cumplimiento de {t}: hay que volver a hacerlo antes de cerrar el expediente.", orden, ct);
+                        : Dominio.FuentesOficiales.CatalogoDeFuentes.EsFuente(expirada.Tipo)
+                            ? $"Venció la consulta a {Dominio.FuentesOficiales.CatalogoDeFuentes.Nombre(expirada.Tipo)} de {t}: se reconsulta sola."
+                            : $"Venció el estudio de cumplimiento de {t}: hay que volver a hacerlo antes de cerrar el expediente.", orden, ct);
             default:
                 return PlanDeNotificaciones.Vacio;
         }

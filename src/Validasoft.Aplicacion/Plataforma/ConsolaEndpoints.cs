@@ -224,6 +224,24 @@ public static class SecretosEndpoints
                 cambios = true;
             }
 
+            // Las credenciales propias de la empresa con las fuentes oficiales (FO-5) se cuentan con las de listas: mismos proveedores, misma clave del grupo.
+            foreach (var configuracion in await sesion.Query<Dominio.FuentesOficiales.FuentesOficialesEmpresa>().ToListAsync(ct))
+            {
+                var cambioFuentes = false;
+                foreach (var credenciales in configuracion.Credenciales.Values)
+                {
+                    if (listas.Procesar(credenciales.ClaveProtegida, protector, simular, tenantId) is not { } recifrada)
+                        continue;
+                    credenciales.ClaveProtegida = recifrada;
+                    cambioFuentes = true;
+                }
+
+                if (!cambioFuentes)
+                    continue;
+                sesion.Store(configuracion);
+                cambios = true;
+            }
+
             foreach (var suscripcion in await sesion.Query<SuscripcionWebhook>().ToListAsync(ct))
             {
                 var vigente = webhooks.Procesar(suscripcion.SecretoProtegido, protector, simular);
@@ -262,6 +280,25 @@ public static class SecretosEndpoints
                 if (cambioCuenta)
                 {
                     global.Store(cuentaDeListas);
+                    await global.SaveChangesAsync(ct);
+                }
+            }
+
+            // Y la de las fuentes oficiales (FO-5): también con la clave maestra.
+            if (await global.LoadAsync<Dominio.FuentesOficiales.FuentesOficialesDePlataforma>(Dominio.FuentesOficiales.FuentesOficialesDePlataforma.IdUnico, ct) is { } cuentaDeFuentes)
+            {
+                var cambioFuentes = false;
+                foreach (var credenciales in cuentaDeFuentes.Credenciales.Values)
+                {
+                    if (listas.Procesar(credenciales.ClaveProtegida, protector, simular) is not { } recifrada)
+                        continue;
+                    credenciales.ClaveProtegida = recifrada;
+                    cambioFuentes = true;
+                }
+
+                if (cambioFuentes)
+                {
+                    global.Store(cuentaDeFuentes);
                     await global.SaveChangesAsync(ct);
                 }
             }

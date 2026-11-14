@@ -10444,6 +10444,328 @@
         }
       }
     },
+    "/api/v1/expedientes/{id}/verificaciones/{tipo}/diferencias/{campoId}/resolver": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesEndpoints"
+        ],
+        "summary": "POST_api_v1_expedientes_id_verificaciones_tipo_diferencias_campoId_resolver",
+        "description": "POST_api_v1_expedientes_id_verificaciones_tipo_diferencias_campoId_resolver",
+        "operationId": "POST_api_v1_expedientes_id_verificaciones_tipo_diferencias_campoId_resolver",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolverCoincidenciaDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpedienteDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/configuracion/fuentes-oficiales": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesEndpoints"
+        ],
+        "summary": "GET_api_v1_configuracion_fuentes_oficiales",
+        "description": "GET_api_v1_configuracion_fuentes_oficiales",
+        "operationId": "GET_api_v1_configuracion_fuentes_oficiales",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FuentesOficialesConfigDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesEndpoints"
+        ],
+        "summary": "PUT_api_v1_configuracion_fuentes_oficiales",
+        "description": "PUT_api_v1_configuracion_fuentes_oficiales",
+        "operationId": "PUT_api_v1_configuracion_fuentes_oficiales",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarFuentesOficialesDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FuentesOficialesConfigDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/vinculos/{id}/monitoreo-fuentes-oficiales": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesEndpoints"
+        ],
+        "summary": "GET_api_v1_vinculos_id_monitoreo_fuentes_oficiales",
+        "description": "GET_api_v1_vinculos_id_monitoreo_fuentes_oficiales",
+        "operationId": "GET_api_v1_vinculos_id_monitoreo_fuentes_oficiales",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitoreoFuentesOficialesDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/vinculos/{id}/monitoreo-fuentes-oficiales/{tipo}/diferencias/{campoId}/resolver": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesEndpoints"
+        ],
+        "summary": "POST_api_v1_vinculos_id_monitoreo_fuentes_oficiales_tipo_diferencias_campoId_resolver",
+        "description": "POST_api_v1_vinculos_id_monitoreo_fuentes_oficiales_tipo_diferencias_campoId_resolver",
+        "operationId": "POST_api_v1_vinculos_id_monitoreo_fuentes_oficiales_tipo_diferencias_campoId_resolver",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolverCoincidenciaDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonitoreoFuentesOficialesDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/vinculos/{id}/monitoreo-fuentes-oficiales/{tipo}/evidencia/descarga": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesEndpoints"
+        ],
+        "summary": "POST_api_v1_vinculos_id_monitoreo_fuentes_oficiales_tipo_evidencia_descarga",
+        "description": "POST_api_v1_vinculos_id_monitoreo_fuentes_oficiales_tipo_evidencia_descarga",
+        "operationId": "POST_api_v1_vinculos_id_monitoreo_fuentes_oficiales_tipo_evidencia_descarga",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DescargaEvidenciaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/plataforma/fuentes-oficiales": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesDePlataformaEndpoints"
+        ],
+        "summary": "GET_api_v1_plataforma_fuentes_oficiales",
+        "description": "GET_api_v1_plataforma_fuentes_oficiales",
+        "operationId": "GET_api_v1_plataforma_fuentes_oficiales",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FuentesDePlataformaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesDePlataformaEndpoints"
+        ],
+        "summary": "PUT_api_v1_plataforma_fuentes_oficiales",
+        "description": "PUT_api_v1_plataforma_fuentes_oficiales",
+        "operationId": "PUT_api_v1_plataforma_fuentes_oficiales",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarFuentesDePlataformaDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FuentesDePlataformaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/v1/flujos": {
       "post": {
         "tags": [
@@ -18357,6 +18679,63 @@
           }
         }
       },
+      "ActualizarFuentesDePlataformaDto": {
+        "type": "object",
+        "properties": {
+          "credenciales": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CredencialesFuenteDto"
+              }
+            ]
+          },
+          "predeterminados": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/EleccionDeProveedorDto"
+            }
+          }
+        }
+      },
+      "ActualizarFuentesOficialesDto": {
+        "type": "object",
+        "properties": {
+          "elecciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/EleccionDeProveedorDto"
+            }
+          },
+          "credenciales": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CredencialesFuenteDto"
+              }
+            ]
+          },
+          "diasMonitoreo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "ActualizarListasDePlataformaDto": {
         "required": [
           "credenciales"
@@ -20028,6 +20407,107 @@
               "string"
             ],
             "format": "int64"
+          }
+        }
+      },
+      "CampoCotejadoDto": {
+        "required": [
+          "id",
+          "campo",
+          "etiqueta",
+          "contra",
+          "referencia",
+          "oficial",
+          "comparado",
+          "resultado",
+          "critico",
+          "detalle",
+          "decision",
+          "justificacion",
+          "resueltaPor",
+          "resueltaEn",
+          "vigenteHasta",
+          "heredada"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "campo": {
+            "type": "string"
+          },
+          "etiqueta": {
+            "type": "string"
+          },
+          "contra": {
+            "type": "string"
+          },
+          "referencia": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "oficial": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "comparado": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "resultado": {
+            "type": "string"
+          },
+          "critico": {
+            "type": "boolean"
+          },
+          "detalle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "decision": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "justificacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "resueltaPor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "resueltaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "vigenteHasta": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "heredada": {
+            "type": "boolean"
           }
         }
       },
@@ -23773,6 +24253,45 @@
           }
         }
       },
+      "CredencialesFuenteDto": {
+        "required": [
+          "fuente",
+          "proveedor"
+        ],
+        "type": "object",
+        "properties": {
+          "fuente": {
+            "type": "string"
+          },
+          "proveedor": {
+            "type": "string"
+          },
+          "usuario": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "clave": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "urlBase": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notas": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CredencialesListasDto": {
         "required": [
           "proveedor"
@@ -24468,6 +24987,147 @@
           },
           "valor": {
             "type": "string"
+          }
+        }
+      },
+      "DatosOficialesDto": {
+        "required": [
+          "encontrado",
+          "nit",
+          "dv",
+          "razonSocial",
+          "estado",
+          "estadoNormalizado",
+          "matricula",
+          "camara",
+          "tipoOrganizacion",
+          "ultimoAnoRenovado",
+          "fechaMatricula",
+          "fechaRenovacion",
+          "fechaCancelacion",
+          "representantes",
+          "direccion",
+          "municipio",
+          "actividadPrincipal",
+          "responsabilidades",
+          "actualizadoEnLaFuente"
+        ],
+        "type": "object",
+        "properties": {
+          "encontrado": {
+            "type": "boolean"
+          },
+          "nit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dv": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "razonSocial": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "estado": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "estadoNormalizado": {
+            "type": "string"
+          },
+          "matricula": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "camara": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tipoOrganizacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ultimoAnoRenovado": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "fechaMatricula": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "fechaRenovacion": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "fechaCancelacion": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "representantes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepresentanteOficialDto"
+            }
+          },
+          "direccion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "municipio": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "actividadPrincipal": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "responsabilidades": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actualizadoEnLaFuente": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           }
         }
       },
@@ -25568,6 +26228,24 @@
             }
           },
           "descripcion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "EleccionDeProveedorDto": {
+        "required": [
+          "fuente",
+          "proveedor"
+        ],
+        "type": "object",
+        "properties": {
+          "fuente": {
+            "type": "string"
+          },
+          "proveedor": {
             "type": [
               "null",
               "string"
@@ -30245,6 +30923,158 @@
           }
         }
       },
+      "FuenteOficialConfigDto": {
+        "required": [
+          "fuente",
+          "nombre",
+          "descripcion",
+          "proveedor",
+          "proveedorEfectivo",
+          "proveedores"
+        ],
+        "type": "object",
+        "properties": {
+          "fuente": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "proveedor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "proveedorEfectivo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "proveedores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProveedorDeFuenteDto"
+            }
+          }
+        }
+      },
+      "FuenteOficialDto": {
+        "required": [
+          "datos",
+          "campos"
+        ],
+        "type": "object",
+        "properties": {
+          "datos": {
+            "$ref": "#/components/schemas/DatosOficialesDto"
+          },
+          "campos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampoCotejadoDto"
+            }
+          }
+        }
+      },
+      "FuentePlataformaDto": {
+        "required": [
+          "fuente",
+          "nombre",
+          "descripcion",
+          "predeterminado",
+          "proveedores"
+        ],
+        "type": "object",
+        "properties": {
+          "fuente": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "predeterminado": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "proveedores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProveedorDePlataformaFuenteDto"
+            }
+          }
+        }
+      },
+      "FuentesDePlataformaDto": {
+        "required": [
+          "fuentes",
+          "actualizadaEn",
+          "actualizadaPor"
+        ],
+        "type": "object",
+        "properties": {
+          "fuentes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FuentePlataformaDto"
+            }
+          },
+          "actualizadaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "actualizadaPor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FuentesOficialesConfigDto": {
+        "required": [
+          "fuentes",
+          "diasMonitoreo",
+          "vigenciaDias"
+        ],
+        "type": "object",
+        "properties": {
+          "fuentes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FuenteOficialConfigDto"
+            }
+          },
+          "diasMonitoreo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vigenciaDias": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "GrupoDto": {
         "required": [
           "tenant",
@@ -32240,6 +33070,51 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          }
+        }
+      },
+      "MonitoreoFuentesOficialesDto": {
+        "required": [
+          "vinculoId",
+          "expedienteId",
+          "folio",
+          "frecuenciaDias",
+          "proximaConsulta",
+          "fuentes"
+        ],
+        "type": "object",
+        "properties": {
+          "vinculoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expedienteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "folio": {
+            "type": "string"
+          },
+          "frecuenciaDias": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "proximaConsulta": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "fuentes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VerificacionDto"
             }
           }
         }
@@ -34504,6 +35379,65 @@
           "datos": {}
         }
       },
+      "ProveedorDeFuenteDto": {
+        "required": [
+          "nombre",
+          "real",
+          "habilitadoEnInstalacion",
+          "credencialesPropias",
+          "credencialesDeLaPlataforma",
+          "usuario",
+          "ultimosCuatroClave",
+          "urlBase",
+          "notas",
+          "disponible"
+        ],
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "real": {
+            "type": "boolean"
+          },
+          "habilitadoEnInstalacion": {
+            "type": "boolean"
+          },
+          "credencialesPropias": {
+            "type": "boolean"
+          },
+          "credencialesDeLaPlataforma": {
+            "type": "boolean"
+          },
+          "usuario": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ultimosCuatroClave": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "urlBase": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notas": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "disponible": {
+            "type": "boolean"
+          }
+        }
+      },
       "ProveedorDePlataformaDto": {
         "required": [
           "nombre",
@@ -34582,6 +35516,61 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "ProveedorDePlataformaFuenteDto": {
+        "required": [
+          "nombre",
+          "habilitadoEnInstalacion",
+          "configurado",
+          "usuario",
+          "ultimosCuatroClave",
+          "urlBase",
+          "notas",
+          "actualizadasEn"
+        ],
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "habilitadoEnInstalacion": {
+            "type": "boolean"
+          },
+          "configurado": {
+            "type": "boolean"
+          },
+          "usuario": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ultimosCuatroClave": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "urlBase": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notas": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "actualizadasEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           }
         }
       },
@@ -35898,6 +36887,34 @@
           }
         }
       },
+      "RepresentanteOficialDto": {
+        "required": [
+          "nombre",
+          "identificacion",
+          "cargo"
+        ],
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "identificacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cargo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "RequisitoDelCertificadoDto": {
         "required": [
           "codigo",
@@ -36933,6 +37950,24 @@
               "string"
             ],
             "format": "int32"
+          },
+          "consultasOficiales": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32",
+            "default": 0
+          },
+          "monitoreosOficiales": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32",
+            "default": 0
           }
         }
       },
@@ -41998,6 +43033,16 @@
               "string"
             ],
             "format": "int32"
+          },
+          "fuenteOficial": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/FuenteOficialDto"
+              }
+            ]
           }
         }
       },
@@ -43407,6 +44452,12 @@
     },
     {
       "name": "Validasoft.Aplicacion.Habeas.SolicitudesHabeasDeLaPlataformaEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.FuentesOficiales.FuentesOficialesDePlataformaEndpoints"
     },
     {
       "name": "Validasoft.Aplicacion.Flujos.FlujosEndpoints"

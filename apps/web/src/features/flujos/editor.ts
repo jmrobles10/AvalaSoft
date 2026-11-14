@@ -81,7 +81,7 @@ export interface VerificacionEnEditor {
   frecuenciaReconsultaMeses: number | null;
 }
 
-export const TIPOS_VERIFICACION: readonly TipoVerificacion[] = ['ListasRestrictivas', 'EstudioDeCumplimiento'];
+export const TIPOS_VERIFICACION: readonly TipoVerificacion[] = ['ListasRestrictivas', 'EstudioDeCumplimiento', 'Rues', 'Dian'];
 export const MAXIMO_VIGENCIA_DIAS = 3650;
 export const MAXIMO_MESES_RECONSULTA = 60;
 

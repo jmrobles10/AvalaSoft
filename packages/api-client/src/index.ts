@@ -63,6 +63,8 @@ export * from './generado/endpoints/webhooks/webhooks';
 export * from './generado/endpoints/verificaciones/verificaciones';
 export * from './generado/endpoints/listas-de-plataforma/listas-de-plataforma';
 export * from './generado/endpoints/listas-restrictivas/listas-restrictivas';
+export * from './generado/endpoints/fuentes-oficiales/fuentes-oficiales';
+export * from './generado/endpoints/fuentes-oficiales-de-plataforma/fuentes-oficiales-de-plataforma';
 export * from './generado/endpoints/informe-cumplimiento/informe-cumplimiento';
 export * from './generado/endpoints/lotes/lotes';
 export * from './generado/endpoints/invitaciones-por-aprobar/invitaciones-por-aprobar';

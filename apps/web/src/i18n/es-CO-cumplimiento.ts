@@ -8,6 +8,8 @@ export const cumplimiento = {
   tipos: {
     ListasRestrictivas: 'Listas restrictivas',
     EstudioDeCumplimiento: 'Estudio de cumplimiento',
+    Rues: 'Registro mercantil (RUES)',
+    Dian: 'Estado del RUT (DIAN)',
   },
   estados: {
     Pendiente: 'Pendiente',
@@ -21,6 +23,8 @@ export const cumplimiento = {
     Coincidencias: 'Con coincidencias',
     Aprobado: 'Favorable',
     Rechazado: 'Desfavorable',
+    Conforme: 'Conforme',
+    ConDiferencias: 'Con diferencias',
   },
   roles: {
     Tercero: 'Tercero',
@@ -173,7 +177,12 @@ export const cumplimiento = {
     ayuda:
       'El rechazo es definitivo: el expediente se cierra, el vínculo vuelve a Invitado y el tercero recibe por correo los textos de los motivos que elijas.',
     hallazgo: 'Hallazgo que lo permite: {{hallazgo}}.',
-    hallazgos: { ListasRestrictivas: 'una coincidencia confirmada en listas restrictivas', EstudioDeCumplimiento: 'un estudio de cumplimiento desfavorable' },
+    hallazgos: {
+      ListasRestrictivas: 'una coincidencia confirmada en listas restrictivas',
+      EstudioDeCumplimiento: 'un estudio de cumplimiento desfavorable',
+      Rues: 'una diferencia confirmada con el registro mercantil (RUES)',
+      Dian: 'una diferencia confirmada con el RUT (DIAN)',
+    },
     motivos: 'Motivos',
     motivosAyuda: 'El tercero lee el texto que aparece debajo de cada motivo.',
     justificacion: 'Justificación',
@@ -443,14 +452,14 @@ export const erroresCumplimiento = {
   'url-invalida': 'La dirección debe empezar por https://.',
   'cuota-invalida': 'La cuota va de 1 a 1.000.000 búsquedas, o vacía.',
   'modo-busqueda-invalido': 'Elige cómo buscar.',
-  'verificacion-no-disponible': 'El proveedor de listas no está disponible ahora. La consulta automática lo reintenta; revisa la configuración de listas si persiste.',
+  'verificacion-no-disponible': 'El proveedor de la consulta (listas restrictivas, RUES o DIAN) no está disponible ahora. La consulta automática lo reintenta; revisa su configuración si persiste.',
   'cuota-listas-agotada': 'La empresa llegó a la cuota mensual de búsquedas del proveedor de listas.',
   'credenciales-requeridas': 'Falta la cuenta del proveedor de listas: la empresa no cargó las suyas (Configuración › Listas restrictivas) o la plataforma aún no configuró la de Infolaft.',
   'credenciales-de-plataforma': 'Las credenciales de Infolaft las administra la plataforma: las empresas no las cargan.',
   'coincidencia-ya-resuelta': 'Esa coincidencia ya se resolvió; recargamos el expediente.',
   'coincidencia-no-encontrada': 'Esa coincidencia ya no está en la consulta vigente; recargamos el expediente.',
   'evidencia-no-encontrada': 'Esa verificación no tiene evidencia guardada.',
-  'monitoreo-no-encontrado': 'El vínculo no tiene monitoreo de listas.',
+  'monitoreo-no-encontrado': 'El vínculo no tiene ese monitoreo (listas restrictivas o fuentes oficiales).',
   'debida-diligencia-ampliada-requerida': 'Con riesgo alto la debida diligencia debe ser intensificada.',
   'observaciones-requeridas': 'Explica el conflicto de interés o el concepto desfavorable en las observaciones.',
 } as const;

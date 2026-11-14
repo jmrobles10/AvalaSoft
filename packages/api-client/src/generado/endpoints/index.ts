@@ -34,6 +34,8 @@ export * from './ficha-aceptada-del-vinculo/ficha-aceptada-del-vinculo';
 export * from './ficha-del-vinculo/ficha-del-vinculo';
 export * from './ficha-tercero/ficha-tercero';
 export * from './flujos/flujos';
+export * from './fuentes-oficiales/fuentes-oficiales';
+export * from './fuentes-oficiales-de-plataforma/fuentes-oficiales-de-plataforma';
 export * from './gestion-de-ingreso/gestion-de-ingreso';
 export * from './importacion/importacion';
 export * from './informe-cumplimiento/informe-cumplimiento';

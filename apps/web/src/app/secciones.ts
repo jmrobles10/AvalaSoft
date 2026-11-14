@@ -9,6 +9,7 @@ import {
   FileText,
   IdCard,
   KeyRound,
+  Landmark,
   Layers,
   Link2,
   LogIn,
@@ -49,6 +50,7 @@ export interface SeccionConfiguracion {
     | 'uso-ia'
     | 'revision-automatica'
     | 'listas-restrictivas'
+    | 'fuentes-oficiales'
     | 'matriz-riesgo'
     | 'accesos-soporte'
     | 'delegaciones'
@@ -90,6 +92,8 @@ export const SECCIONES_CONFIGURACION: readonly SeccionConfiguracion[] = [
   { ruta: 'revision-automatica', scope: SCOPES.configuracionLeer, icono: ClipboardCheck, alcance: 'empresa' },
   // Proveedor de listas restrictivas, credenciales de la empresa y consumo del mes (VE-7, VE-11).
   { ruta: 'listas-restrictivas', scope: SCOPES.configuracionLeer, icono: ShieldCheck, alcance: 'empresa' },
+  // Proveedor y credenciales con las que se consulta el RUES y la DIAN, y la reconsulta periódica de los vínculos activos (FO-5, FO-7).
+  { ruta: 'fuentes-oficiales', scope: SCOPES.configuracionLeer, icono: Landmark, alcance: 'empresa' },
   // Factores, límites y niveles con los que se calcula el riesgo SAGRILAFT en el estudio de cumplimiento (CU-17).
   { ruta: 'matriz-riesgo', scope: SCOPES.configuracionLeer, icono: Gauge, alcance: 'empresa' },
   // Solicitudes de consulta, corrección y supresión de los terceros (Ley 1581, OD-1…OD-8); los avisos de plazo enlazan a `/e/{empresa}/habeas-data`.

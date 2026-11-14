@@ -1,3 +1,4 @@
+using Validasoft.Aplicacion.FuentesOficiales;
 using Validasoft.Contratos;
 using Validasoft.Dominio.Cumplimiento;
 using Validasoft.Dominio.Expedientes;
@@ -43,7 +44,7 @@ public static class MapeosDeVerificaciones
                     [.. (estudio.Datos.Adjuntos ?? []).Select(id => adjuntos?.FirstOrDefault(a => a.Id == id)).OfType<AdjuntoDeCumplimiento>().Select(a => a.ADto())])
                 : null,
             [.. v.Anteriores.Select(a => new ConsultaAnteriorDto(a.Proveedor, a.ReferenciaExterna, a.Resultado.ToString(), a.Fecha, a.Coincidencias, a.Evidencia is not null))],
-            v.UltimoError, v.ReintentarDesde, v.VigenciaDias, v.FrecuenciaReconsultaMeses);
+            v.UltimoError, v.ReintentarDesde, v.VigenciaDias, v.FrecuenciaReconsultaMeses, v.FuenteOficial?.ADto());
     }
 
     public static MonitoreoListasDto ADto(this MonitoreoDeListas m) =>

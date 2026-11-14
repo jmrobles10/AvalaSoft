@@ -445,6 +445,13 @@ public static class ProcesoDeValidacion
             if (cierre == ResultadoExpediente.Aprobado &&
                 MonitoreoDeListas.Iniciar(estado, await sesion.LoadAsync<MonitoreoDeListas>(estado.VinculoId, ct), DiasMonitoreoDeListas, ahora) is { } monitoreo)
                 sesion.Store(monitoreo);
+
+            // Aprobado con fuentes oficiales consultadas y la reconsulta periódica encendida por la empresa (opcional) ⇒ el vínculo queda en monitoreo (FO-7).
+            if (cierre == ResultadoExpediente.Aprobado && estado.Verificaciones.Any(v => Dominio.FuentesOficiales.CatalogoDeFuentes.EsFuente(v.Tipo)) &&
+                await sesion.LoadAsync<Dominio.FuentesOficiales.FuentesOficialesEmpresa>(estado.EmpresaId, ct) is { DiasMonitoreo: > 0 } fuentes &&
+                Dominio.FuentesOficiales.MonitoreoDeFuentesOficiales.Iniciar(estado,
+                    await sesion.LoadAsync<Dominio.FuentesOficiales.MonitoreoDeFuentesOficiales>(estado.VinculoId, ct), fuentes.DiasMonitoreo, ahora) is { } deFuentes)
+                sesion.Store(deFuentes);
         }
 
         if (correo is not null && eventos.OfType<ExpedienteObservado>().Any())
