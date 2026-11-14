@@ -62,12 +62,19 @@ public sealed record ContextoDeExigencia(
     string TipoIdentificacion,
     bool EsExtranjero,
     string TipoVinculo,
-    IReadOnlyDictionary<string, JsonElement> Atributos)
+    IReadOnlyDictionary<string, JsonElement> Atributos,
+    IReadOnlyDictionary<string, JsonElement>? Respuestas = null)
 {
     public static ContextoDeExigencia De(Tercero tercero, string tipoVinculo, IReadOnlyDictionary<string, JsonElement>? atributos) =>
         new(tercero.TipoPersona, tercero.Identificacion.Pais, tercero.Identificacion.Tipo, tercero.EsExtranjero, tipoVinculo,
             atributos ?? new Dictionary<string, JsonElement>());
 }
+
+/// <summary>
+/// Atributo <c>respuesta.{clave}</c> que puede mirar la condición de visibilidad de una pregunta de un cuestionario de evaluación (CE-6): la
+/// respuesta a otra pregunta, con el tipo de valor que esa pregunta produce y, si es de opciones, los códigos admitidos.
+/// </summary>
+public sealed record AtributoDeRespuesta(string Clave, TipoAtributo Tipo, IReadOnlyList<string>? Opciones);
 
 /// <summary>
 /// Catálogo de atributos que puede mirar una condición y validación de las condiciones al guardar el flujo (422
@@ -83,25 +90,30 @@ public static class AtributosDeExigencia
     public const string TipoVinculo = "vinculo.tipo";
     public const string PrefijoAtributos = "vinculo.atributos.";
 
+    /// <summary>Respuestas a preguntas anteriores de un cuestionario de evaluación (CE-6): solo valen en las condiciones del cuestionario.</summary>
+    public const string PrefijoRespuestas = "respuesta.";
+
     public const int ProfundidadMaxima = 4;
     public const int PredicadosMaximos = 20;
 
     private static readonly string[] TiposDePersona = Enum.GetNames<TipoPersona>();
 
     /// <summary>Valida y normaliza (valores sin espacios; país y códigos en mayúsculas; tipo de persona con su nombre exacto).</summary>
-    public static CondicionDeExigencia? Validar(CondicionDeExigencia? condicion, TipoVinculo? tipoDelFlujo, string documento)
+    public static CondicionDeExigencia? Validar(CondicionDeExigencia? condicion, TipoVinculo? tipoDelFlujo, string documento,
+        IReadOnlyList<AtributoDeRespuesta>? respuestas = null)
     {
         if (condicion is null || (condicion.Tipo is TipoNodoCondicion.Y && (condicion.Nodos?.Count ?? 0) == 0))
             return null;
 
         var predicados = 0;
-        var normalizada = Validar(condicion, tipoDelFlujo, documento, 1, ref predicados);
+        var normalizada = Validar(condicion, tipoDelFlujo, documento, respuestas, 1, ref predicados);
         if (predicados > PredicadosMaximos)
             throw Invalida(documento, $"admite hasta {PredicadosMaximos} comparaciones.");
         return normalizada;
     }
 
-    private static CondicionDeExigencia Validar(CondicionDeExigencia nodo, TipoVinculo? tipo, string documento, int profundidad, ref int predicados)
+    private static CondicionDeExigencia Validar(CondicionDeExigencia nodo, TipoVinculo? tipo, string documento, IReadOnlyList<AtributoDeRespuesta>? respuestas,
+        int profundidad, ref int predicados)
     {
         if (profundidad > ProfundidadMaxima)
             throw Invalida(documento, $"admite hasta {ProfundidadMaxima} niveles de agrupación.");
@@ -114,25 +126,26 @@ public static class AtributosDeExigencia
                     throw Invalida(documento, "un grupo «Y»/«O» necesita al menos una condición.");
                 var normalizados = new List<CondicionDeExigencia>();
                 foreach (var hijo in hijos)
-                    normalizados.Add(Validar(hijo, tipo, documento, profundidad + 1, ref predicados));
+                    normalizados.Add(Validar(hijo, tipo, documento, respuestas, profundidad + 1, ref predicados));
                 return new CondicionDeExigencia(nodo.Tipo, normalizados);
             }
             case TipoNodoCondicion.No:
                 if (nodo.Nodos is not { Count: 1 } unico)
                     throw Invalida(documento, "«No» niega exactamente una condición.");
-                return new CondicionDeExigencia(TipoNodoCondicion.No, [Validar(unico[0], tipo, documento, profundidad + 1, ref predicados)]);
+                return new CondicionDeExigencia(TipoNodoCondicion.No, [Validar(unico[0], tipo, documento, respuestas, profundidad + 1, ref predicados)]);
             case TipoNodoCondicion.Predicado:
                 predicados++;
-                return ValidarPredicado(nodo, tipo, documento);
+                return ValidarPredicado(nodo, tipo, documento, respuestas);
             default:
                 throw Invalida(documento, "tiene un nodo desconocido.");
         }
     }
 
-    private static CondicionDeExigencia ValidarPredicado(CondicionDeExigencia nodo, TipoVinculo? tipo, string documento)
+    private static CondicionDeExigencia ValidarPredicado(CondicionDeExigencia nodo, TipoVinculo? tipo, string documento,
+        IReadOnlyList<AtributoDeRespuesta>? respuestas)
     {
         var atributo = (nodo.Atributo ?? string.Empty).Trim();
-        var clase = ClaseDe(atributo, tipo, documento);
+        var clase = ClaseDe(atributo, tipo, documento, respuestas);
         if (nodo.Operador is not { } operador)
             throw Invalida(documento, $"falta el operador de «{atributo}».");
         if (!clase.Operadores.Contains(operador))
@@ -167,7 +180,7 @@ public static class AtributosDeExigencia
         [OperadorCondicion.Igual, OperadorCondicion.Distinto, OperadorCondicion.Mayor, OperadorCondicion.Menor, OperadorCondicion.Entre];
     private static readonly HashSet<OperadorCondicion> DeLista = [OperadorCondicion.ContieneAlguno, OperadorCondicion.ContieneTodos];
 
-    private static Clase ClaseDe(string atributo, TipoVinculo? tipo, string documento)
+    private static Clase ClaseDe(string atributo, TipoVinculo? tipo, string documento, IReadOnlyList<AtributoDeRespuesta>? respuestas = null)
     {
         switch (atributo)
         {
@@ -179,15 +192,26 @@ public static class AtributosDeExigencia
                 return new Clase(TipoAtributo.Booleano, DeBooleano, NormalizarBooleano);
         }
 
+        if (respuestas is not null && atributo.StartsWith(PrefijoRespuestas, StringComparison.Ordinal))
+        {
+            var pregunta = respuestas.FirstOrDefault(r => r.Clave == atributo[PrefijoRespuestas.Length..])
+                           ?? throw Invalida(documento, $"«{atributo}» no es una pregunta anterior del cuestionario.");
+            return ClaseDeAtributo(pregunta.Tipo, pregunta.Opciones ?? [], pregunta.Clave, documento);
+        }
+
         if (!atributo.StartsWith(PrefijoAtributos, StringComparison.Ordinal))
             throw Invalida(documento, $"«{atributo}» no es un atributo que se pueda usar en una condición.");
 
         var clave = atributo[PrefijoAtributos.Length..];
         var permitido = tipo?.AtributosPermitidos.FirstOrDefault(a => a.Clave == clave)
                         ?? throw Invalida(documento, $"el tipo de vínculo {tipo?.Codigo ?? "del flujo"} no tiene el atributo «{clave}».");
+        return ClaseDeAtributo(permitido.Tipo, permitido.Opciones ?? [], clave, documento);
+    }
+
+    private static Clase ClaseDeAtributo(TipoAtributo tipo, IReadOnlyList<string> opciones, string clave, string documento)
+    {
         var conExiste = (HashSet<OperadorCondicion> baseOps) => new HashSet<OperadorCondicion>(baseOps) { OperadorCondicion.Existe };
-        var opciones = permitido.Opciones ?? [];
-        return permitido.Tipo switch
+        return tipo switch
         {
             TipoAtributo.Texto => new Clase(TipoAtributo.Texto, conExiste(DeTexto), v => v.Length == 0 ? null : v),
             TipoAtributo.Opcion => new Clase(TipoAtributo.Opcion, conExiste(DeTexto), v => opciones.FirstOrDefault(o => o == v)),
@@ -295,9 +319,17 @@ public static class EvaluadorDeExigencia
                 return (true, new Valor(c.EsExtranjero ? "true" : "false", null, null));
         }
 
-        if (!atributo.StartsWith(AtributosDeExigencia.PrefijoAtributos, StringComparison.Ordinal) ||
-            !c.Atributos.TryGetValue(atributo[AtributosDeExigencia.PrefijoAtributos.Length..], out var json))
+        JsonElement json;
+        if (atributo.StartsWith(AtributosDeExigencia.PrefijoRespuestas, StringComparison.Ordinal))
+        {
+            if (c.Respuestas is null || !c.Respuestas.TryGetValue(atributo[AtributosDeExigencia.PrefijoRespuestas.Length..], out json))
+                return (false, new Valor(null, null, null));
+        }
+        else if (!atributo.StartsWith(AtributosDeExigencia.PrefijoAtributos, StringComparison.Ordinal) ||
+                 !c.Atributos.TryGetValue(atributo[AtributosDeExigencia.PrefijoAtributos.Length..], out json))
+        {
             return (false, new Valor(null, null, null));
+        }
 
         return json.ValueKind switch
         {
