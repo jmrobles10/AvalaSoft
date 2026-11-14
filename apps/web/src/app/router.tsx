@@ -64,6 +64,10 @@ export function crearRouter() {
           lazy: () => import('../features/plataforma/PaginaListasPlataforma').then((m) => ({ Component: m.PaginaListasPlataforma })),
         },
         {
+          path: 'fuentes',
+          lazy: () => import('../features/plataforma/PaginaFuentesPlataforma').then((m) => ({ Component: m.PaginaFuentesPlataforma })),
+        },
+        {
           path: 'mi-cuenta',
           lazy: () => import('../features/cuenta/PaginaMiCuenta').then((m) => ({ Component: m.PaginaMiCuenta })),
         },
@@ -206,6 +210,11 @@ export function crearRouter() {
                   path: 'listas-restrictivas',
                   lazy: () =>
                     import('../features/configuracion/listasRestrictivas/PaginaListasRestrictivas').then((m) => ({ Component: m.PaginaListasRestrictivas })),
+                },
+                {
+                  path: 'fuentes-oficiales',
+                  lazy: () =>
+                    import('../features/configuracion/fuentesOficiales/PaginaFuentesOficiales').then((m) => ({ Component: m.PaginaFuentesOficiales })),
                 },
                 {
                   path: 'matriz-riesgo',

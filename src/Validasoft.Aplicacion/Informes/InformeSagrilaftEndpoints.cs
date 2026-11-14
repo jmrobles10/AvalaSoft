@@ -89,7 +89,7 @@ public static class InformeSagrilaftEndpoints
         ];
         var filasVerificaciones = verificaciones.Filas.Select(f => (IReadOnlyList<object?>)
         [
-            f.Folio, f.Tercero, f.Identificacion, f.Verificacion == nameof(TipoVerificacion.ListasRestrictivas) ? "Listas restrictivas" : "Estudio de cumplimiento",
+            f.Folio, f.Tercero, f.Identificacion, InformeCumplimientoEndpoints.Nombre(f.Verificacion),
             f.Proveedor, f.Estado, f.Resultado, Fecha(f.Fecha), f.Personas, f.Coincidencias, f.Confirmadas, f.Descartadas, f.NivelRiesgo,
             f.ConflictoDeInteres is { } c ? (c ? "Sí" : "No") : null, f.DebidaDiligencia, f.Concepto, Fecha(f.VigenteHasta)
         ]);

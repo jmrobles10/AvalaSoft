@@ -412,6 +412,42 @@ public sealed class PlataformaApiTests(ApiFixture fixture)
         }
     }
 
+    [Fact]
+    public async Task Las_cuentas_de_las_fuentes_oficiales_se_cifran_con_la_clave_maestra_y_el_recifrado_de_secretos_las_cuenta()
+    {
+        var (token, _, _) = await SesionDeOperadorAsync("op-fo-1");
+        var operador = new Credencial(null, Bearer: token);
+        const string url = "/api/v1/plataforma/fuentes-oficiales";
+        var protector = Host.Services.GetRequiredService<Validasoft.Aplicacion.Comun.IProtectorDeSecretos>();
+        var quitar = new ActualizarFuentesDePlataformaDto(new CredencialesFuenteDto("Dian", "Contrato", Clave: ""));
+
+        try
+        {
+            var antes = (await EnviarAsync<EstadoDeSecretosDto>("GET", "/api/v1/plataforma/secretos", operador, esperado: 200)).PorTipo.Single(t => t.Tipo == "credenciales-listas");
+            await EnviarAsync<FuentesDePlataformaDto>("PUT", url, operador,
+                new ActualizarFuentesDePlataformaDto(new CredencialesFuenteDto("Dian", "Contrato", "convenio-dian", "clave-fuentes-4321", "https://api.proveedor-dian.example/")), esperado: 200);
+
+            // La clave queda cifrada con la maestra vigente y el recorrido de secretos la cuenta entre las credenciales de proveedores.
+            await using (var consulta = Store.QuerySession())
+            {
+                var guardada = (await consulta.LoadAsync<Validasoft.Dominio.FuentesOficiales.FuentesOficialesDePlataforma>(Validasoft.Dominio.FuentesOficiales.FuentesOficialesDePlataforma.IdUnico))!
+                    .Credenciales["Dian:Contrato"].ClaveProtegida!;
+                guardada.ShouldStartWith($"vs1.{protector.ClaveVigente}.");
+                protector.Desproteger(guardada).ShouldBe("clave-fuentes-4321");
+            }
+
+            var despues = (await EnviarAsync<EstadoDeSecretosDto>("GET", "/api/v1/plataforma/secretos", operador, esperado: 200)).PorTipo.Single(t => t.Tipo == "credenciales-listas");
+            (despues.Total - antes.Total).ShouldBe(1);
+            (despues.Vigentes - antes.Vigentes).ShouldBe(1);
+            var recifrado = (await EnviarAsync<EstadoDeSecretosDto>("POST", "/api/v1/plataforma/secretos/recifrar", operador, esperado: 200)).PorTipo.Single(t => t.Tipo == "credenciales-listas");
+            recifrado.Fallidos.ShouldBe(0);
+        }
+        finally
+        {
+            await EnviarAsync<FuentesDePlataformaDto>("PUT", url, operador, quitar, esperado: 200);
+        }
+    }
+
     private Task<PaginaDto<GrupoDto>> GruposAsync(Credencial credencial, string? q = null, int? limite = null, string? cursor = null)
     {
         var consulta = new List<string>();

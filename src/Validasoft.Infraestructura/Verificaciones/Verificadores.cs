@@ -128,8 +128,8 @@ public sealed class VerificadorCompliance(IHttpClientFactory clientes) : IVerifi
 /// expiraciones y el monitoreo de vínculos activos (VE-12). Lo pendiente vive en los propios expedientes y monitoreos, así que
 /// una caída no pierde nada.
 /// </summary>
-public sealed class ProcesadorDeVerificaciones(TareasDeVerificaciones tareas, OpcionesDeVerificaciones opciones, TimeProvider reloj,
-    ILogger<ProcesadorDeVerificaciones> logger) : BackgroundService
+public sealed class ProcesadorDeVerificaciones(TareasDeVerificaciones tareas, Aplicacion.FuentesOficiales.TareasDeFuentesOficiales fuentes, OpcionesDeVerificaciones opciones,
+    TimeProvider reloj, ILogger<ProcesadorDeVerificaciones> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -143,6 +143,16 @@ public sealed class ProcesadorDeVerificaciones(TareasDeVerificaciones tareas, Op
             catch (Exception e) when (e is not OperationCanceledException)
             {
                 logger.LogWarning(e, "No se pudieron procesar las verificaciones pendientes; se reintenta en {Intervalo}", opciones.IntervaloProceso);
+            }
+
+            // Las fuentes oficiales (RUES, DIAN) comparten el procesador y el intervalo, pero no el fallo: una no frena a la otra.
+            try
+            {
+                await fuentes.ProcesarPendientesAsync(stoppingToken);
+            }
+            catch (Exception e) when (e is not OperationCanceledException)
+            {
+                logger.LogWarning(e, "No se pudieron procesar las fuentes oficiales pendientes; se reintenta en {Intervalo}", opciones.IntervaloProceso);
             }
         }
     }

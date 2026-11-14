@@ -1,13 +1,16 @@
 namespace Validasoft.Dominio.Expedientes;
 
 /// <summary>
-/// Comprobación externa del expediente (docs/03 §2, §13): listas restrictivas (del tercero y de sus personas relacionadas)
-/// y el estudio del Oficial de Cumplimiento (SAGRILAFT). No son hechos del documento: son juicios sobre el expediente.
+/// Comprobación externa del expediente (docs/03 §2, §13): listas restrictivas (del tercero y de sus personas relacionadas),
+/// el estudio del Oficial de Cumplimiento (SAGRILAFT) y la corroboración con fuentes oficiales: el registro mercantil
+/// (<c>Rues</c>) y el estado del RUT (<c>Dian</c>, FO-1). No son hechos del documento: son juicios sobre el expediente.
 /// </summary>
 public enum TipoVerificacion
 {
     ListasRestrictivas,
-    EstudioDeCumplimiento
+    EstudioDeCumplimiento,
+    Rues,
+    Dian
 }
 
 /// <summary>
@@ -29,7 +32,13 @@ public enum ResultadoVerificacion
     SinCoincidencias,
     Coincidencias,
     Aprobado,
-    Rechazado
+    Rechazado,
+
+    /// <summary>Fuente oficial: lo que dice la fuente coincide con la ficha y los documentos (FO-4).</summary>
+    Conforme,
+
+    /// <summary>Fuente oficial: hay diferencias con la ficha, los documentos o el estado de la fuente.</summary>
+    ConDiferencias
 }
 
 /// <summary>Lo que decide Cumplimiento sobre una coincidencia (P-9-4): descartarla (homónimo) o confirmarla (f-4).</summary>
@@ -159,6 +168,20 @@ public sealed record AdjuntoDeCumplimientoSubido(AdjuntoDeCumplimiento Adjunto);
 /// <summary>La consulta automática al proveedor falló (no disponible, sin credenciales…); se reintenta desde <see cref="ReintentarDesde"/>.</summary>
 public sealed record ConsultaDeVerificacionFallida(TipoVerificacion Tipo, string Proveedor, string Error, DateTimeOffset ReintentarDesde,
     DateTimeOffset Fecha);
+
+/// <summary>
+/// Resultado de una consulta a una fuente oficial, RUES o DIAN (FO-4): lo que dice la fuente, su cotejo con la ficha y los documentos y la
+/// evidencia guardada. Idempotente por (expediente, tipo, <see cref="ReferenciaExterna"/>). Diferencias sin decisión vigente ⇒
+/// <c>CoincidenciaPorAnalizar</c> (diferencias por revisar); sin ellas ⇒ <c>Satisfecha</c> hasta <see cref="VigenteHasta"/>. Una reconsulta
+/// reemplaza el resultado (el anterior queda en el historial con su evidencia).
+/// </summary>
+public sealed record FuenteOficialConsultada(
+    TipoVerificacion Tipo, string Proveedor, string ReferenciaExterna, FuentesOficiales.DatosOficiales Datos, IReadOnlyList<FuentesOficiales.CampoCotejado> Campos,
+    EvidenciaDeVerificacion? Evidencia, DateTimeOffset VigenteHasta, string Por, DateTimeOffset Fecha);
+
+/// <summary>Un revisor aceptó (descartó) o confirmó una diferencia con la fuente oficial (FO-4); la decisión vale 12 meses para las reconsultas.</summary>
+public sealed record DiferenciaDeFuenteResuelta(TipoVerificacion Tipo, Guid CampoId, DecisionCoincidencia Decision, string Justificacion, string Por,
+    DateTimeOffset VigenteHasta, DateTimeOffset Fecha);
 
 /// <summary>Alguien descargó la evidencia de una consulta (auditoría de acceso, como la descarga del certificado).</summary>
 public sealed record EvidenciaDeVerificacionDescargada(TipoVerificacion Tipo, string ReferenciaExterna, string ActorTipo, string ActorId, string? Ip,

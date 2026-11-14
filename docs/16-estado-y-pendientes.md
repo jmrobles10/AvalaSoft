@@ -19,7 +19,7 @@ mejora. El checklist de paridad es [01 §10](01-analisis-legado-srm-portal.md). 
 - vigencias de documentos y del vínculo, avisos, vencimientos, renovación y ratificación;
 - actualizaciones posteriores a la aprobación, revisadas por cada empresa;
 - la ficha del tercero por secciones con sus soportes (lo que hoy es el «wizard» del Portal);
-- listas restrictivas y estudio SAGRILAFT del oficial de cumplimiento como condición de cierre;
+- listas restrictivas y estudio SAGRILAFT del oficial de cumplimiento como condición de cierre, y la corroboración del tercero contra el RUES y la DIAN con diferencias para el revisor (FO-1…FO-10; los datos abiertos del RUES funcionan hoy, la DIAN y el RUES completo esperan contrato: [registro](decisiones/registro.md) FO-2 y FO-10);
 - certificado verificable, informes y exportes, y auditoría;
 - integración con el SRM, el Portal y Marco durante la coexistencia (incluida la aplicación en AyF), e importación de
   lo existente.

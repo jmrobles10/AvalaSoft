@@ -31,6 +31,39 @@ describe('Verificaciones del flujo (VE-6)', () => {
   });
 });
 
+describe('Fuentes oficiales en el flujo (FO-1)', () => {
+  it('el RUES y la DIAN se piden por tipo de vínculo: bloqueantes o informativas, con su vigencia y sin reconsulta de listas', () => {
+    const dto = verificacionesADto([
+      { tipo: 'Dian', bloqueante: false, vigenciaDias: 90, frecuenciaReconsultaMeses: 6 },
+      { tipo: 'Rues', bloqueante: true, vigenciaDias: null, frecuenciaReconsultaMeses: 6 },
+      { tipo: 'EstudioDeCumplimiento', bloqueante: true, vigenciaDias: null, frecuenciaReconsultaMeses: null },
+    ]);
+
+    expect(dto).toEqual([
+      { tipo: 'EstudioDeCumplimiento', bloqueante: true, vigenciaDias: null, frecuenciaReconsultaMeses: null },
+      { tipo: 'Rues', bloqueante: true, vigenciaDias: null, frecuenciaReconsultaMeses: null },
+      { tipo: 'Dian', bloqueante: false, vigenciaDias: 90, frecuenciaReconsultaMeses: null },
+    ]);
+    expect(verificacionNueva('Rues')).toEqual({ tipo: 'Rues', bloqueante: true, vigenciaDias: null, frecuenciaReconsultaMeses: null });
+  });
+
+  it('valida la vigencia de una fuente como la de las demás y la lleva al editor', () => {
+    expect(validarVerificaciones([{ ...verificacionNueva('Dian'), vigenciaDias: 3651 }])).toEqual([{ codigo: 'vigencia-invalida', campo: 'verificacion.Dian' }]);
+    expect(validarVerificaciones([{ ...verificacionNueva('Rues'), vigenciaDias: 30 }])).toEqual([]);
+
+    const version = {
+      politicaDevolucion: 'Inmediata',
+      separacionDeFunciones: false,
+      etapas: [],
+      requisitos: [],
+      verificaciones: [{ tipo: 'Rues', bloqueante: false, vigenciaDias: 15, frecuenciaReconsultaMeses: null }],
+    } as unknown as FlujoVersionDto;
+    expect(borradorDesdeVersion({ codigo: 'HAB', nombre: 'Habilitación', tipoVinculo: 'PROVEEDOR' }, version).verificaciones).toEqual([
+      { tipo: 'Rues', bloqueante: false, vigenciaDias: 15, frecuenciaReconsultaMeses: null },
+    ]);
+  });
+});
+
 describe('Credenciales de listas de la empresa (VE-7)', () => {
   const proveedor = {
     nombre: 'Infolaft', real: true, principal: true, habilitadoEnInstalacion: false, configurado: true, usuario: 'sinco', ultimosCuatroClave: '9876',

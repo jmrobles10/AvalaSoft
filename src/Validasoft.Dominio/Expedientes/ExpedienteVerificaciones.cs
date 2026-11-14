@@ -80,6 +80,9 @@ public sealed class VerificacionDeExpediente
 
     public EstudioRegistrado? Estudio { get; set; }
 
+    /// <summary>Fuentes oficiales (RUES, DIAN): lo que dijo la fuente y su cotejo con la ficha y los documentos (FO-4). Nulo en las demás verificaciones.</summary>
+    public FuentesOficiales.ResultadoDeFuenteOficial? FuenteOficial { get; set; }
+
     public List<ConsultaAnterior> Anteriores { get; set; } = [];
 
     /// <summary>Consultas automáticas fallidas seguidas (se reinicia al registrar un resultado).</summary>
@@ -413,6 +416,7 @@ public sealed partial class Expediente
         ProximoVencimientoDeVerificacion = abierto
             ? Verificaciones.Where(v => v.Estado == EstadoVerificacion.Satisfecha && v.VigenteHasta is not null).Select(v => v.VigenteHasta).Min()
             : null;
+        RecalcularConsultaOficial();
     }
 }
 

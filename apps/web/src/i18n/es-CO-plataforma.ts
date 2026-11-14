@@ -17,6 +17,7 @@ export const plataforma = {
     ingresos: 'Ingresos',
     secretos: 'Secretos',
     listas: 'Listas restrictivas',
+    fuentes: 'Fuentes oficiales',
   },
   /** Solicitudes de acceso a terceros sin contactos verificados (decisión AV): la cola de la consola. */
   accesos: {

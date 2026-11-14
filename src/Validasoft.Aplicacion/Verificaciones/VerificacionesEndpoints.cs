@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Validasoft.Aplicacion.Comun;
 using Validasoft.Aplicacion.Documentos;
 using Validasoft.Aplicacion.Expedientes;
+using Validasoft.Aplicacion.FuentesOficiales;
 using Validasoft.Contratos;
 using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Documentos;
@@ -32,10 +33,14 @@ public static class VerificacionesEndpoints
     [WolverinePost("/api/v1/expedientes/{id}/verificaciones/{tipo}/consultar")]
     [Authorize(Policy = Permisos.VerificacionesEscribir)]
     public static async Task<ExpedienteDto> Consultar(Guid id, string tipo, SesionDeEmpresa empresa, IContextoSolicitud contexto, HttpContext http,
-        ConsultaDeListas consulta, IMessageBus mensajes, IProtectorDeSecretos protector, TimeProvider reloj, CancellationToken ct)
+        ConsultaDeListas consulta, ConsultaDeFuentesOficiales fuentes, IMessageBus mensajes, IProtectorDeSecretos protector, TimeProvider reloj, CancellationToken ct)
     {
-        if (LeerTipo(tipo) != TipoVerificacion.ListasRestrictivas)
-            throw ReglaDeNegocioException.Validacion("tipo-no-consultable", "Solo las listas restrictivas se consultan; el estudio lo registra el oficial.");
+        var verificacion = LeerTipo(tipo);
+        // El RUES y la DIAN se consultan por el mismo camino (FO-1): el proveedor y las credenciales son los de su propia configuración.
+        if (Dominio.FuentesOficiales.CatalogoDeFuentes.EsFuente(verificacion))
+            return await FuentesOficialesEndpoints.ConsultarAsync(id, verificacion, empresa, contexto, http, fuentes, mensajes, protector, reloj, ct);
+        if (verificacion != TipoVerificacion.ListasRestrictivas)
+            throw ReglaDeNegocioException.Validacion("tipo-no-consultable", "Solo las listas restrictivas y las fuentes oficiales (RUES, DIAN) se consultan; el estudio lo registra el oficial.");
         empresa.UsarMensajeria(mensajes);
         var expediente = await empresa.CargarExpedienteAsync(id, ct);
         if (!expediente.EstaAbierto)
@@ -157,12 +162,19 @@ public static class VerificacionesEndpoints
         var expedientes = await empresa.Expedientes().Where(e => e.PendienteDeCumplimiento).OrderBy(e => e.AbiertoEn).Take(500).ToListAsync(ct);
         var monitoreos = await empresa.Sesion.Query<MonitoreoDeListas>().Where(m => m.EmpresaId == empresaId && m.PendienteDeCumplimiento)
             .Take(500).ToListAsync(ct);
+        var deFuentes = await empresa.Sesion.Query<Dominio.FuentesOficiales.MonitoreoDeFuentesOficiales>().Where(m => m.EmpresaId == empresaId && m.PendienteDeCumplimiento)
+            .Take(500).ToListAsync(ct);
 
         var filas = expedientes.Select(e => new FilaCumplimientoDto("Expediente", e.Id, e.Folio, e.VinculoId,
                 new TerceroResumenDto(e.TerceroId, e.TerceroNombre, e.TerceroIdentificacion), e.TipoVinculoNombre, e.Estado.ToString(),
                 [.. e.Verificaciones.Where(v => v.RequiereAtencion).Select(v => new VerificacionPendienteDto(v.Tipo.ToString(), v.Estado.ToString(), v.Bloqueante))],
-                e.Verificaciones.Sum(v => v.Coincidencias.Count(x => !x.Resuelta)), e.EsperandoVerificaciones,
+                e.Verificaciones.Sum(v => v.Coincidencias.Count(x => !x.Resuelta) + (v.FuenteOficial?.Campos.Count(x => x.PorRevisar) ?? 0)), e.EsperandoVerificaciones,
                 e.Verificaciones.Where(v => v.RequiereAtencion).Select(v => v.ExpiroEn ?? v.RegistradaEn ?? e.AbiertoEn).Min()))
+            .Concat(deFuentes.Select(m => new FilaCumplimientoDto("Monitoreo", null, m.Folio, m.VinculoId,
+                new TerceroResumenDto(m.TerceroId, m.TerceroNombre, m.TerceroIdentificacion), null, null,
+                [.. m.Fuentes.Where(f => f.FuenteOficial?.TieneDiferenciasPorRevisar == true).Select(f => new VerificacionPendienteDto(f.Tipo.ToString(), f.Estado.ToString(), false))],
+                m.Fuentes.Sum(f => f.FuenteOficial?.Campos.Count(x => x.PorRevisar) ?? 0), false,
+                m.Fuentes.Where(f => f.FuenteOficial?.TieneDiferenciasPorRevisar == true).Select(f => f.RegistradaEn ?? m.ActualizadoEn).Min())))
             .Concat(monitoreos.Select(m => new FilaCumplimientoDto("Monitoreo", null, m.Folio, m.VinculoId,
                 new TerceroResumenDto(m.TerceroId, m.TerceroNombre, m.TerceroIdentificacion), null, null,
                 [new VerificacionPendienteDto(nameof(TipoVerificacion.ListasRestrictivas), m.Listas.Estado.ToString(), false)],

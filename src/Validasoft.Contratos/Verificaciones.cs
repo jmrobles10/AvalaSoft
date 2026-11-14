@@ -4,7 +4,7 @@ namespace Validasoft.Contratos;
 
 /// <summary>
 /// Verificación que pide el flujo (<c>VerificacionRequeridaDto</c> de docs/05 §4). <see cref="Tipo"/>:
-/// <c>ListasRestrictivas|EstudioDeCumplimiento</c>. <see cref="VigenciaDias"/> nula = la de la configuración (estudio: 30;
+/// <c>ListasRestrictivas|EstudioDeCumplimiento|Rues|Dian</c> (las dos últimas son fuentes oficiales, FO-1). <see cref="VigenciaDias"/> nula = la de la configuración (estudio: 30;
 /// listas: <see cref="FrecuenciaReconsultaMeses"/>, 12 por omisión). El proveedor de listas no va en el flujo: es el que la
 /// empresa configuró (VE-7).
 /// </summary>
@@ -44,7 +44,7 @@ public sealed record EvidenciaEstudioDto(Guid DocumentoId, int Version, string? 
 /// <summary>
 /// Verificación del expediente (<c>VerificacionDto</c> de docs/05 §4). <see cref="Estado"/>:
 /// <c>Pendiente|CoincidenciaPorAnalizar|Satisfecha|Fallida|Expirada</c>; <see cref="Resultado"/>:
-/// <c>SinCoincidencias|Coincidencias|Aprobado|Rechazado</c> (nulo si aún no se consulta). <see cref="UltimoError"/>: por qué
+/// <c>SinCoincidencias|Coincidencias|Aprobado|Rechazado|Conforme|ConDiferencias</c> (nulo si aún no se consulta; las dos últimas, fuentes oficiales). <see cref="UltimoError"/>: por qué
 /// falló la última consulta automática (se reintenta desde <see cref="ReintentarDesde"/>).
 /// </summary>
 public sealed record VerificacionDto(
@@ -52,7 +52,7 @@ public sealed record VerificacionDto(
     DateTimeOffset? RegistradaEn, string? RegistradaPor, DateTimeOffset? VigenteHasta, EvidenciaVerificacionDto? Evidencia,
     IReadOnlyList<PersonaConsultadaDto> Personas, IReadOnlyList<CoincidenciaDto> Coincidencias, EstudioCumplimientoDto? Estudio,
     IReadOnlyList<ConsultaAnteriorDto> Anteriores, string? UltimoError, DateTimeOffset? ReintentarDesde, int? VigenciaDias,
-    int? FrecuenciaReconsultaMeses);
+    int? FrecuenciaReconsultaMeses, FuenteOficialDto? FuenteOficial = null);
 
 /// <summary><see cref="Decision"/>: <c>Descartada|Confirmada</c>; la justificación es obligatoria (docs/05 §4).</summary>
 public sealed record ResolverCoincidenciaDto(string Decision, string Justificacion);
@@ -190,4 +190,4 @@ public sealed record DatosVerificacionDto(
 public sealed record RevisarVerificacionesDto(Guid? TenantId = null, DateTimeOffset? Fecha = null);
 
 /// <summary>Lo que atendió el procesamiento: consultas automáticas de listas, expiraciones de lo vencido y monitoreos de vínculos activos.</summary>
-public sealed record ResultadoRevisionVerificacionesDto(int Consultas, int Expiraciones, int Monitoreos);
+public sealed record ResultadoRevisionVerificacionesDto(int Consultas, int Expiraciones, int Monitoreos, int ConsultasOficiales = 0, int MonitoreosOficiales = 0);
