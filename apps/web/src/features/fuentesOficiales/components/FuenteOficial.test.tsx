@@ -33,7 +33,7 @@ afterEach(() => {
 });
 
 describe('Fuente oficial del expediente (FO-4)', () => {
-  it('muestra lo que dijo la fuente, deja primero la diferencia por revisar y marca lo crítico', async () => {
+  it('muestra lo que dijo la fuente, deja primero la diferencia por revisar y marca lo crítico', () => {
     montar(rues());
 
     const seccion = within(screen.getByRole('region', { name: 'Registro mercantil (RUES)' }));
