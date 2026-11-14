@@ -54,7 +54,8 @@ public static class CargaEndpoints
         if (dto.TamanoBytes <= 0)
             throw ReglaDeNegocioException.Validacion("tamano-invalido", "Indica el tamaño del archivo en bytes.");
 
-        var destino = dto.TerceroRelacionadoId is { } personaId
+        // La propia persona natural que es el tercero (su representante soy yo) sube a su bóveda de siempre: no es «otra» persona.
+        var destino = dto.TerceroRelacionadoId is { } personaId && personaId != tercero.TerceroId
             ? await ResolverDestinoDePersonaAsync(personaId, dto.TipoCanonico, tercero, sesiones, reglas, reloj, ct)
             : await ResolverDestinoAsync(dto.TipoCanonico, dto.TipoDocumentoTenantId, dto.VinculoId, tercero, sesiones, reglas, ct);
         destino.Reglas.ValidarDeclarado(mime, dto.TamanoBytes);

@@ -54,6 +54,7 @@ export * from './motivos/motivos';
 export * from './notificaciones/notificaciones';
 export * from './operadores-de-plataforma/operadores-de-plataforma';
 export * from './operadores-directos/operadores-directos';
+export * from './personas-del-vinculo/personas-del-vinculo';
 export * from './plan-del-grupo/plan-del-grupo';
 export * from './plan-ia/plan-ia';
 export * from './plantillas/plantillas';

@@ -19,6 +19,7 @@ import { inicio } from './es-CO-inicio';
 import { erroresInvitaciones, invitaciones } from './es-CO-invitaciones';
 import { erroresLotes, flujoPlazo, flujoReintento, lotes, plazoCargue } from './es-CO-lotes';
 import { exenciones } from './es-CO-exenciones';
+import { personasRelacionadas } from './es-CO-personas';
 import { erroresVigencias, flujoVigencia, vigenciaVinculo } from './es-CO-vigencias';
 import { matrizRiesgo } from './es-CO-matriz-riesgo';
 import { erroresSla, sla } from './es-CO-sla';
@@ -368,6 +369,7 @@ export const esCO = {
   revalidaciones,
   vencimientos,
   exenciones,
+  personasRelacionadas,
   cumplimiento,
   matrizRiesgo,
   lotes,

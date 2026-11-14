@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { claveVersion, hechosPorVersion, useDocumentosVinculo } from '../../documentos/api';
+import { documentosDePersonas, usePersonasDelVinculo } from '../../personas/api';
 import { VisorDocumento, type DocumentoEnVisor } from '../../documentos/VisorDocumento';
 import type { ContextoRevisor, DialogoExpediente } from '../reglas';
 import { enFaseDeCarga, requisitosDe, requisitosFaltantes } from '../requisitos';
@@ -34,7 +35,9 @@ export function PanelRequisitos({
   const faltantes = requisitosFaltantes(expediente);
   const puedeVer = contexto(null).scopes.has(SCOPES.documentosDescargar);
   const documentos = useDocumentosVinculo(expediente.empresaId, expediente.vinculoId, contexto(null).scopes.has(SCOPES.documentosLeer));
-  const hechos = useMemo(() => hechosPorVersion(documentos.data ?? []), [documentos.data]);
+  // Los hechos de IA del documento de una persona relacionada (ADR-0010) también se ven al revisar: son de otra bóveda, pero se compartieron con este vínculo.
+  const personas = usePersonasDelVinculo(expediente.empresaId, expediente.vinculoId, contexto(null).scopes.has(SCOPES.documentosLeer));
+  const hechos = useMemo(() => hechosPorVersion([...(documentos.data ?? []), ...documentosDePersonas(personas.data)]), [documentos.data, personas.data]);
   if (requisitos.length === 0) return null;
 
   return (

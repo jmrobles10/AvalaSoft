@@ -157,6 +157,25 @@ export function eventoExpedienteATimeline(
         .filter((n): n is string => n !== null);
       return { ...base, titulo: t('expedientes.historial.agregados', { documentos: nombres.join(', ') }) };
     }
+    case 'requisitos_de_persona_agregados': {
+      // Una persona relacionada nueva (otro suplente, un representante que cambió, un socio con «todas») suma su documento a un expediente abierto (ADR-0010).
+      const nombres = lista(campo(datos, 'requisitos'))
+        .map((r) => {
+          if (!r || typeof r !== 'object') return null;
+          const fila = r as Record<string, unknown>;
+          const persona = campo(fila, 'persona');
+          const de = persona && typeof persona === 'object' ? texto(campo(persona as Record<string, unknown>, 'nombre')) : null;
+          const documento = texto(campo(fila, 'nombre'));
+          return documento === null ? null : de === null ? documento : `${documento} (${de})`;
+        })
+        .filter((n): n is string => n !== null);
+      return { ...base, titulo: t('expedientes.historial.personasAgregadas', { documentos: nombres.join(', ') }) };
+    }
+    case 'persona_de_requisito_resuelta': {
+      const persona = campo(datos, 'persona');
+      const nombre = persona && typeof persona === 'object' ? texto(campo(persona as Record<string, unknown>, 'nombre')) : null;
+      return { ...base, titulo: t('expedientes.historial.personaResuelta', { documento: requisito(campo(datos, 'requisitoId')), persona: nombre ?? '' }) };
+    }
     case 'version_adjuntada_a_requisito': {
       const version = campo(datos, 'version');
       const n = version && typeof version === 'object' ? numero(campo(version as Record<string, unknown>, 'numero')) : '';

@@ -7,7 +7,7 @@ import { fichaEmpresa } from '../../../i18n/es-CO-ficha-empresa';
 import { resumenTipo } from '../../configuracion/tiposDocumento/resumen';
 import { nombreSeccion, seccionFicha } from '../../terceros/ficha/secciones';
 import { atajoDe, describirCondicion } from '../condiciones';
-import { requisitoDeSeccionNuevo, requisitoNuevo, sePuedePedir, type ErrorFlujo, type EtapaEnEditor, type RequisitoEnEditor } from '../editor';
+import { admitePersona, requisitoDeSeccionNuevo, requisitoNuevo, ROLES_DE_PERSONA, sePuedePedir, type ErrorFlujo, type EtapaEnEditor, type RequisitoEnEditor } from '../editor';
 import { seccionesQueRespalda } from '../requisitosDeSeccion';
 import { OpcionesSeccion, SelectorSeccion } from './CamposRequisitoSeccion';
 import { SelectorAreasRequisito } from './SelectorAreasRequisito';
@@ -144,7 +144,41 @@ export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, on
                 errorRevalidacion={eRevalidacion ? textoError(eRevalidacion, true) : null}
               />
             )}
-            {tipo && seccionesQueRespalda(tipo.tipoCanonico).length > 0 && (
+            {tipo && admitePersona(tipo.tipoCanonico) && (
+              <Box sx={{ mt: 1 }}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: { sm: 'center' } }}>
+                  <TextField
+                    select
+                    size="small"
+                    label={t('personasRelacionadas.editor.documentoDe')}
+                    value={r.dePersonaRelacionada ?? ''}
+                    onChange={(ev) => cambiar(k, { dePersonaRelacionada: ev.target.value === '' ? null : ev.target.value, todasLasRelaciones: ev.target.value === '' ? false : r.todasLasRelaciones })}
+                    disabled={soloLectura}
+                    sx={{ minWidth: 260 }}
+                  >
+                    <MenuItem value="">{t('personasRelacionadas.editor.delTercero')}</MenuItem>
+                    {ROLES_DE_PERSONA.map((rol) => (
+                      <MenuItem key={rol} value={rol}>
+                        {t(`personasRelacionadas.roles.${rol}`)}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  {r.dePersonaRelacionada !== null && (
+                    <FormControlLabel
+                      control={<Switch checked={r.todasLasRelaciones} onChange={(ev) => cambiar(k, { todasLasRelaciones: ev.target.checked })} disabled={soloLectura} />}
+                      label={t('personasRelacionadas.editor.todas')}
+                      sx={{ mx: 0 }}
+                    />
+                  )}
+                </Stack>
+                {r.dePersonaRelacionada !== null && (
+                  <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>
+                    {t('personasRelacionadas.editor.ayuda')}
+                  </Typography>
+                )}
+              </Box>
+            )}
+            {tipo && seccionesQueRespalda(tipo.tipoCanonico).length > 0 && r.dePersonaRelacionada === null && (
               <Box sx={{ mt: 0.5 }}>
                 <FormControlLabel
                   control={<Switch checked={r.usarComoSoporte !== false} onChange={(ev) => cambiar(k, { usarComoSoporte: ev.target.checked })} disabled={soloLectura} />}

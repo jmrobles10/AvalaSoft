@@ -31,6 +31,7 @@ import { TarjetaContactos } from '../contactos/TarjetaContactos';
 import { TarjetaCuentaDesignada } from '../cuentaDesignada/TarjetaCuentaDesignada';
 import { TarjetaMonitoreoListas } from '../../cumplimiento/components/TarjetaMonitoreoListas';
 import { ChipExento } from '../exenciones/ChipExento';
+import { TarjetaPersonasRelacionadas } from '../../personas/TarjetaPersonasRelacionadas';
 import { TarjetaExenciones } from '../exenciones/TarjetaExenciones';
 import { identificacionDe } from '../tercero';
 import { eventoATimeline } from '../historial';
@@ -107,6 +108,7 @@ export function DetalleVinculo() {
           <TarjetaMonitoreoListas vinculoId={vinculo.id} empresaId={empresa.id} />
           <TarjetaFichaAceptadaEnVinculo vinculo={vinculo} />
           <TarjetaCertificado vinculo={vinculo} />
+          <TarjetaPersonasRelacionadas vinculo={vinculo} empresaId={empresa.id} />
           <TarjetaExenciones vinculo={vinculo} empresaId={empresa.id} />
           <TarjetaContactos vinculo={vinculo} />
           <TarjetaCuentaDesignada vinculo={vinculo} />

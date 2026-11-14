@@ -4,6 +4,7 @@ import { Building2, FolderCheck, IdCard, Landmark, LogOut, ShieldCheck } from 'l
 import { useTranslation } from 'react-i18next';
 import { Outlet, Link as RouterLink, useLocation } from 'react-router';
 import { AvisoDeAccesoAislado, AvisoDeAccesosPorAprobar } from '../accesos/AvisosDeAcceso';
+import { AvisoDePropuestasDePersonas } from '../personas/AvisoDePropuestas';
 import { Campana } from '../notificaciones/Campana';
 import { MODO_EMBEBIDO } from '../embebido/modo';
 import { usePuenteEmbebido } from '../embebido/usePuenteEmbebido';
@@ -111,6 +112,7 @@ function ShellNormal() {
       <Box component="main" sx={{ flex: 1, width: '100%', maxWidth: ancha ? 1160 : 880, mx: 'auto', px: { xs: 1.5, sm: 3 }, pt: { xs: 1.5, sm: 2.5 }, pb: activa ? { xs: 12, md: 4 } : 4 }}>
         {activa && <AvisoDeAccesoAislado />}
         {activa && <AvisoDeAccesosPorAprobar />}
+        {activa && <AvisoDePropuestasDePersonas />}
         <Outlet />
       </Box>
 

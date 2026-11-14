@@ -9,6 +9,8 @@ import { Shell } from './Shell';
 vi.mock('../notificaciones/Campana', () => ({ Campana: () => null }));
 // El aviso de «accesos por aprobar» pregunta a la API (se prueba aparte, con su propio cliente).
 vi.mock('../accesos/AvisosDeAcceso', async (original) => ({ ...(await original<typeof import('../accesos/AvisosDeAcceso')>()), AvisoDeAccesosPorAprobar: () => null }));
+// Lo mismo el aviso de «personas por confirmar»: pregunta a la API y se prueba en `personas/`.
+vi.mock('../personas/AvisoDePropuestas', () => ({ AvisoDePropuestasDePersonas: () => null }));
 vi.mock('../embebido/usePuenteEmbebido', () => ({ usePuenteEmbebido: () => undefined }));
 
 function montar(ruta: string) {

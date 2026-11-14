@@ -70,7 +70,9 @@ public static class SincronizacionDePersonas
                 return ResultadoDeSincronizacionDePersonas.SinCambios;
 
             var (personaDe, nuevas) = await AsegurarPersonasAsync(sesion, tercero, declaradas, ahora, ct);
-            var cambios = ConciliacionDeRelaciones.Calcular(terceroId, declaradas, personaDe, existentes, hoy, ahora, terceroId.ToString());
+            // De dónde vienen las personas: la ficha que diligenció el tercero es una declaración suya; la que trajo un importador o un sistema de origen, una importación.
+            var fuente = legal?.Vigente?.Origen is null or OrigenDeSeccion.Tercero ? FuenteDeRelacion.Declarada : FuenteDeRelacion.Importacion;
+            var cambios = ConciliacionDeRelaciones.Calcular(terceroId, declaradas, personaDe, existentes, hoy, ahora, terceroId.ToString(), fuente);
             foreach (var cambio in cambios)
             {
                 if (cambio.EsNueva)

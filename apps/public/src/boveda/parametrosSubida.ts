@@ -7,6 +7,9 @@ export function destinoFijo(parametros: URLSearchParams): { destino: DestinoCarg
   const vinculoId = parametros.get('vinculoId');
   if (tipoDocumentoTenantId && vinculoId) return { destino: { tipoDocumentoTenantId, vinculoId }, nombre };
   const tipo = parametros.get('tipo');
+  // El documento de una persona relacionada (ADR-0010) va a la bóveda de la persona; sin vínculo de contexto: no es de una empresa.
+  const persona = parametros.get('persona');
+  if (tipo && persona && nombre) return { destino: { tipoCanonico: tipo, terceroRelacionadoId: persona }, nombre };
   if (tipo && nombre) return { destino: vinculoId ? { tipoCanonico: tipo, vinculoId } : { tipoCanonico: tipo }, nombre };
   return null;
 }

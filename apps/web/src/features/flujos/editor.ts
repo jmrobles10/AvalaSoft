@@ -68,7 +68,22 @@ export interface RequisitoEnEditor {
   vigenciaDias: number | null;
   /** Solo en secciones (RV-4): plazo para resolver una actualización que la incluya. `null` = el por omisión (15 días). */
   diasRevalidacion: number | null;
+  /**
+   * Documento de una persona relacionada con el tercero (ADR-0010), no el suyo: el rol de quien lo entrega (`RepresentanteLegal`, `Suplente`, `Socio`,
+   * `BeneficiarioFinal`, `MiembroDe`). Se resuelve contra la relación principal vigente al abrir o recalcular el expediente. `null` = el del propio tercero.
+   */
+  dePersonaRelacionada: string | null;
+  /** Con un rol: pide el documento de todas las personas vigentes de ese rol y no solo de la principal. */
+  todasLasRelaciones: boolean;
 }
+
+/** Roles con los que una persona se relaciona con un tercero (ADR-0010). */
+export const ROLES_DE_PERSONA = ['RepresentanteLegal', 'Suplente', 'Socio', 'BeneficiarioFinal', 'MiembroDe'] as const;
+
+/** Canónicos que pueden vivir en la bóveda de una persona relacionada (cédula, pasaporte, antecedentes y beneficiario final). */
+export const CANONICOS_DE_PERSONA: readonly string[] = ['CEDULA', 'PASAPORTE', 'CERTIFICADO_ANTECEDENTES', 'BENEFICIARIO_FINAL'];
+
+export const admitePersona = (tipoCanonico: string | null | undefined): boolean => tipoCanonico != null && CANONICOS_DE_PERSONA.includes(tipoCanonico);
 
 /**
  * Verificación externa que pide el flujo (VE-6): listas restrictivas o estudio de cumplimiento. `null` en vigencia o
@@ -197,6 +212,8 @@ export function requisitoNuevo(tipoDocumentoTenantId = ''): RequisitoEnEditor {
     usarComoSoporte: null,
     vigenciaDias: null,
     diasRevalidacion: null,
+    dePersonaRelacionada: null,
+    todasLasRelaciones: false,
   };
 }
 
@@ -268,6 +285,8 @@ export function borradorDesdeVersion(base: { codigo: string; nombre: string; tip
       usarComoSoporte: r.usarComoSoporte ?? null,
       vigenciaDias: r.vigenciaDias ?? null,
       diasRevalidacion: r.diasRevalidacion ?? null,
+      dePersonaRelacionada: r.dePersonaRelacionada ?? null,
+      todasLasRelaciones: r.todasLasRelaciones ?? false,
     })),
     verificaciones: (version.verificaciones ?? []).map((v) => ({
       tipo: v.tipo,
@@ -390,8 +409,10 @@ export function validarRequisitos(borrador: Pick<BorradorFlujo, 'etapas' | 'requ
     } else if (!r.tipoDocumentoTenantId) {
       errores.push({ codigo: 'requisito-sin-tipo', campo });
     } else {
-      if (tipos.has(r.tipoDocumentoTenantId)) errores.push({ codigo: 'requisito-duplicado', campo });
-      tipos.add(r.tipoDocumentoTenantId);
+      // El mismo documento puede pedirse a roles distintos (la cédula del representante y la de los socios), pero no dos veces al mismo.
+      const llave = `${r.tipoDocumentoTenantId}|${r.dePersonaRelacionada ?? ''}`;
+      if (tipos.has(llave)) errores.push({ codigo: 'requisito-duplicado', campo });
+      tipos.add(llave);
       const tipo = tiposDocumento.find((t) => t.id === r.tipoDocumentoTenantId);
       if (tiposDocumento.length > 0 && !(tipo && sePuedePedir(tipo))) errores.push({ codigo: 'requisito-invalido', campo });
     }
@@ -425,6 +446,7 @@ export function requisitosADto(requisitos: readonly RequisitoEnEditor[]): Requis
     aprobadoresRequeridos: r.aprobadoresRequeridos,
     condicion: r.condicion,
     ...(r.usarComoSoporte === null ? {} : { usarComoSoporte: r.usarComoSoporte }),
+    ...(r.dePersonaRelacionada === null ? {} : { dePersonaRelacionada: r.dePersonaRelacionada, todasLasRelaciones: r.todasLasRelaciones }),
   }));
 }
 

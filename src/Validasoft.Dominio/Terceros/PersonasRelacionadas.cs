@@ -161,7 +161,7 @@ public static class DeteccionDeRelaciones
                 continue;
             var suplente = Ficha.Normalizacion.Texto(persona.Cargo).Contains("SUPLENTE", StringComparison.Ordinal);
             var tipo = suplente ? TipoRelacionTerceros.Suplente : TipoRelacionTerceros.RepresentanteLegal;
-            if (vigentes.Any(r => r.Relacion.Tipo == tipo && Ficha.CruceConDocumento.MismaPersona(persona.Nombre, persona.Identificacion, r.Nombre, r.Identificacion.Numero)))
+            if (vigentes.Any(r => r.Relacion.Tipo == tipo && Ficha.CruceConDocumento.MismaPersona(persona.Nombre, identificacion.Numero, r.Nombre, r.Identificacion.Numero)))
                 continue;
             if (resultado.Any(r => r.Tipo == tipo && r.Clave == identificacion.Clave))
                 continue;
@@ -239,14 +239,18 @@ public static class ConciliacionDeRelaciones
             }
 
             var eventos = new List<object>();
+            // Terminada por otra causa que salir de la ficha (el tercero confirmó a quien la reemplaza): la ficha, que puede seguir desactualizada, no la revive sola;
+            // solo se restablece al volver a declararla de forma explícita.
+            if (relacion.Estado == EstadoDeRelacion.Finalizada && relacion.MotivoDeTermino != MotivoDeSalida)
+                continue;
             if (relacion.Estado == EstadoDeRelacion.Propuesta)
             {
                 // Lo que la IA propuso y el tercero ahora declara en su ficha: la declaración es la confirmación.
-                eventos.Add(relacion.Confirmar(por, ViaDeConfirmacionDeRelacion.Tercero, hoy, ahora)!);
+                eventos.Add(relacion.Confirmar(por, ViaDeConfirmacionDeRelacion.Tercero, hoy, ahora, deFicha: true)!);
                 var confirmada = relacion.Proyectar(eventos);
                 AjustarDatos(confirmada, persona, ahora, eventos);
             }
-            else if (relacion.Restablecer(hoy, persona.Principal, persona.Participacion, persona.Cargo, por, ahora) is { } restablecida)
+            else if (relacion.Restablecer(hoy, persona.Principal, persona.Participacion, persona.Cargo, por, ahora, deFicha: true) is { } restablecida)
             {
                 eventos.Add(restablecida);
             }

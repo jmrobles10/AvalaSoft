@@ -18,9 +18,12 @@ export const ACEPTA_ARCHIVOS = TIPOS_PERMITIDOS.join(',');
 
 /**
  * A qué documento va la versión: un canónico global de la bóveda, o un tipo de la empresa en un vínculo. En un canónico
- * global, el `vinculoId` es solo contexto: la API aplica las reglas de archivo que configuró esa empresa (TD-1).
+ * global, el `vinculoId` es solo contexto: la API aplica las reglas de archivo que configuró esa empresa (TD-1). Con `terceroRelacionadoId` (ADR-0010) el
+ * documento es de una persona relacionada con el tercero: va a la bóveda de la persona, no a la suya.
  */
-export type DestinoCarga = { tipoCanonico: string; vinculoId?: string } | { tipoDocumentoTenantId: string; vinculoId: string };
+export type DestinoCarga =
+  | { tipoCanonico: string; vinculoId?: string; terceroRelacionadoId?: string }
+  | { tipoDocumentoTenantId: string; vinculoId: string };
 
 /** Lo que admite un tipo de documento: formatos (MIME), tamaño y páginas (estas solo se revisan en el servidor). */
 export interface ReglasArchivo {

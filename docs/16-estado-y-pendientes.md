@@ -228,9 +228,8 @@ empresa (NT-11) y la guardia de edición en otros formularios que no sean la fic
 (RN-1); el aviso de vigencia aún no es una plantilla personalizable (PL-1); los vínculos con vigencia o bloqueo anteriores
 al cambio se indexan con su próximo evento (o reconstruyendo la proyección del vínculo).
 
-### 4.2 F6 — sin empezar
-- Personas relacionadas (representantes, socios) con **bóveda propia**: su cédula y sus documentos se comparten entre
-  las empresas como los del tercero.
+### 4.2 F6 — personas relacionadas: hecho (cargo de los contactos por empresa, ya resuelto en IO-4)
+- ~~Personas relacionadas (representantes, socios) con **bóveda propia**: su cédula y sus documentos se comparten entre las empresas como los del tercero.~~ **Implementado** (ADR-0010, registro `5-septiessexagies`, PR-1…PR-10): relaciones event-sourced, sincronización idempotente desde la ficha legal, requisito `DePersonaRelacionada`, listas restrictivas, propuesta de la IA que el tercero confirma, API y pantallas. **Pendiente** (PR-10): confirmación del revisor y automática de lo que la IA lee en la Cámara, revalidación y renovación por el documento de una persona, notificación y evento público de las relaciones, que la empresa proponga relaciones, el esquema de formulario de `BENEFICIARIO_FINAL` y que el SARLAFT lo referencie, el cruce de la cédula de la persona con su fila de la ficha y los derechos de datos de una persona con sesión propia.
 - ~~**Cargo del contacto por empresa**: el mismo tercero tiene contactos distintos para cada empresa.~~ Resuelto en `feature/integracion-abierta` (IO-4): contactos por vínculo con cargo, correo, teléfono y rol.
 
 ### 4.3 Ficha — pendientes (FM-38, FM-55)

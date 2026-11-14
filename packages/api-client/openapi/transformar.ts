@@ -345,6 +345,13 @@ const NOMBRES: Record<string, string> = {
   'GET /api/v1/vinculos/{id}/ficha-aceptada': 'obtenerFichaAceptadaDelVinculo',
   'POST /api/v1/vinculos/{id}/cuenta-designada/aprobar': 'aprobarCuentaDesignada',
   'POST /api/v1/vinculos/{id}/cuenta-designada/rechazar': 'rechazarCuentaDesignada',
+  // Personas relacionadas con bóveda propia (ADR-0010): las del tercero y, para la empresa, las que su flujo involucra en un vínculo.
+  'GET /public/v1/tercero/relaciones': 'listarRelacionesDelTercero',
+  'POST /public/v1/tercero/relaciones': 'declararRelacionDelTercero',
+  'POST /public/v1/tercero/relaciones/{id}/confirmar': 'confirmarRelacionDelTercero',
+  'POST /public/v1/tercero/relaciones/{id}/descartar': 'descartarRelacionDelTercero',
+  'DELETE /public/v1/tercero/relaciones/{id}': 'terminarRelacionDelTercero',
+  'GET /api/v1/vinculos/{id}/personas-relacionadas': 'listarPersonasDelVinculo',
   'GET /public/v1/boveda': 'obtenerBoveda',
   'GET /public/v1/boveda/documentos/{documentoId}': 'obtenerDocumentoBoveda',
   'POST /public/v1/boveda/documentos': 'iniciarCargaDocumento',
@@ -509,6 +516,9 @@ const RESPUESTAS_REALES: Record<string, Record<string, string | null>> = {
   // 201 con el enlace cuando salió; 202 cuando el tipo exige aprobación y la invitación quedó retenida (AI).
   invitarVinculo: { '201': 'EnlaceInvitacionDto', '202': 'InvitacionPorAprobarDto' },
   eximirVinculo: { '201': 'ExencionDeVinculoDto' },
+  declararRelacionDelTercero: { '201': 'RelacionEntreTercerosDto' },
+  descartarRelacionDelTercero: { '204': null },
+  terminarRelacionDelTercero: { '204': null },
   crearTenant: { '201': 'TenantCreadoDto' },
   crearSistema: { '201': 'SistemaIntegradoDto' },
   crearWebhook: { '201': 'WebhookDto' },

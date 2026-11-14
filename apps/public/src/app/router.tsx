@@ -33,6 +33,8 @@ const rutas: RouteObject[] = [
               { path: 'ficha', lazy: () => import('../ficha/PaginaFicha').then((m) => ({ Component: m.PaginaFicha })) },
               { path: 'ficha/:seccion', lazy: () => import('../ficha/PaginaSeccion').then((m) => ({ Component: m.PaginaSeccion })) },
               { path: 'cuentas', lazy: () => import('../cuentas/PaginaCuentas').then((m) => ({ Component: m.PaginaCuentas })) },
+              // Representantes, socios y beneficiarios finales con su bóveda propia (ADR-0010).
+              { path: 'personas', lazy: () => import('../personas/PaginaPersonas').then((m) => ({ Component: m.PaginaPersonas })) },
               // Habeas data y exportación firmada de la bóveda (OD-1, OD-9), y sus sesiones abiertas.
               { path: 'privacidad', lazy: () => import('../privacidad/PaginaPrivacidad').then((m) => ({ Component: m.PaginaPrivacidad })) },
             ],

@@ -20,4 +20,6 @@ export interface IniciarCargaDto {
   sha256?: string | null;
   /** @nullable */
   datos?: IniciarCargaDtoDatos;
+  /** @nullable */
+  terceroRelacionadoId?: string | null;
 }

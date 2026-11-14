@@ -4,6 +4,7 @@ import { ChipEstado, formatearFecha } from '@validasoft/ui';
 import { ClipboardList, Clock, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { hashCorto } from '../../documentos/api';
+import { textoDelRequisito } from '../../personas/modelo';
 import { RevisionesAutomaticasDelRequisito } from '../../revisionAutomatica/components/RevisionesAutomaticasDelRequisito';
 import { etiquetaDeRuta } from '../../terceros/ficha/secciones';
 import { ResumenVersion } from '../../documentos/ResumenVersion';
@@ -70,6 +71,12 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
           <Typography component="h4" sx={{ fontWeight: 600, fontSize: 14, lineHeight: '20px' }}>
             {documento}
           </Typography>
+          {/* El documento de una persona relacionada (ADR-0010): de quién es, o que nadie cumple todavía el rol. */}
+          {textoDelRequisito(requisito.persona, t) && (
+            <Typography sx={{ fontSize: 13, lineHeight: '18px', fontWeight: 500 }} data-persona-del-requisito="">
+              {textoDelRequisito(requisito.persona, t)}
+            </Typography>
+          )}
           <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
             {requisito.obligatorio ? t('expedientes.requisitos.obligatorio') : t('expedientes.requisitos.opcional')}
             {version && (

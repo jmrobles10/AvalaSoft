@@ -6,6 +6,7 @@
  */
 import type { EstadoRequisito } from './estadoRequisito';
 import type { ObservacionPublicaDto } from './observacionPublicaDto';
+import type { PersonaDelRequisitoDto } from './personaDelRequisitoDto';
 import type { SeccionDeRequisitoDto } from './seccionDeRequisitoDto';
 import type { TipoDocumentoRequisitoDto } from './tipoDocumentoRequisitoDto';
 import type { TipoRequisito } from './tipoRequisito';
@@ -23,4 +24,5 @@ export interface RequisitoPublicoDto {
   ratificadoEn?: string | null;
   tipoRequisito?: TipoRequisito;
   seccion?: null | SeccionDeRequisitoDto;
+  persona?: null | PersonaDelRequisitoDto;
 }

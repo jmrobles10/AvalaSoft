@@ -304,6 +304,68 @@ public sealed class RelacionesEntreTercerosTests
         ConciliacionDeRelaciones.Calcular(_destino, cambio, mapa, existentes, Hoy.AddDays(1), Ahora, "t").ShouldBeEmpty();
     }
 
+    // ---------- lo que la IA lee de la Cámara ----------
+
+    private RelacionConPersona Con(RelacionEntreTerceros relacion, string nombre, string numero) => new(relacion, nombre, Identificacion.Crear("CO", "CC", numero));
+
+    [Fact]
+    public void La_camara_con_otro_representante_propone_el_cambio_y_no_toca_lo_vigente()
+    {
+        var actual = Con(Declarada(_juan), "Juan Pérez", "1000");
+        var extraidas = new[]
+        {
+            new PersonaExtraida("Juan Pérez", "CC 1.000", "Representante legal"),        // ya es el representante
+            new PersonaExtraida("María Gómez", "CC 80.123.456", "Representante legal"),  // otro
+            new PersonaExtraida("Luis Suárez", "90123456", "Suplente del representante") // otro suplente
+        };
+
+        var propuestas = DeteccionDeRelaciones.Distintas(extraidas, [actual], Hoy, Guid.NewGuid(), 1);
+
+        propuestas.Select(p => (p.Nombre, p.Tipo, p.Principal, p.Identificacion.Numero)).ShouldBe(
+        [
+            ("María Gómez", TipoRelacionTerceros.RepresentanteLegal, true, "80123456"),
+            ("Luis Suárez", TipoRelacionTerceros.Suplente, false, "90123456")
+        ]);
+    }
+
+    [Fact]
+    public void Sin_representante_vigente_la_camara_no_propone_nada_porque_eso_lo_cubre_la_propuesta_de_la_ficha()
+    {
+        DeteccionDeRelaciones.Distintas([new PersonaExtraida("María Gómez", "80123456", "Representante legal")], [], Hoy, null, null).ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void No_se_propone_lo_ya_propuesto_ni_lo_descartado_con_ese_mismo_documento_pero_si_con_uno_nuevo()
+    {
+        var documento = Guid.NewGuid();
+        var vigente = Con(Declarada(_juan), "Juan Pérez", "1000");
+        var detectada = RelacionEntreTerceros.Detectar(_maria, _destino, TipoRelacionTerceros.RepresentanteLegal, true, null, null, 0.9m, documento, 1, Ahora);
+        var pendiente = Con(RelacionEntreTerceros.Create(detectada), "María Gómez", "80123456");
+        var extraidas = new[] { new PersonaExtraida("María Gómez", "80123456", "Representante legal") };
+
+        DeteccionDeRelaciones.Distintas(extraidas, [vigente, pendiente], Hoy, documento, 1).ShouldBeEmpty(); // ya hay una propuesta pendiente
+
+        var descartada = pendiente.Relacion.Proyectar([pendiente.Relacion.Descartar("t", Ahora)!]);
+        DeteccionDeRelaciones.Distintas(extraidas, [vigente, pendiente with { Relacion = descartada }], Hoy, documento, 1).ShouldBeEmpty();
+        DeteccionDeRelaciones.Distintas(extraidas, [vigente, pendiente with { Relacion = descartada }], Hoy, Guid.NewGuid(), 1).ShouldHaveSingleItem();
+
+        // Y la relación descartada vuelve a ser una propuesta, con lo que lee la IA del documento nuevo.
+        var otra = Guid.NewGuid();
+        var nueva = descartada.Redetectar(true, null, "Gerente", 0.97m, otra, 2, Ahora)!;
+        var vuelta = descartada.Proyectar([nueva]);
+        (vuelta.Estado, vuelta.Confianza, vuelta.DocumentoId, vuelta.VersionDelDocumento).ShouldBe((EstadoDeRelacion.Propuesta, 0.97m, otra, 2));
+        descartada.Redetectar(true, null, null, 0.9m, documento, 1, Ahora).ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData("CC 80.123.456", "CO|CC|80123456")]
+    [InlineData("80123456", "CO|CC|80123456")]
+    [InlineData("C.E. 3456789", "CO|CE|3456789")]
+    [InlineData("CE 3456789", "CO|CE|3456789")]
+    [InlineData("sin número", null)]
+    public void La_identificacion_que_lee_la_ia_se_normaliza_o_se_descarta(string texto, string? clave) =>
+        DeteccionDeRelaciones.Identificar(texto)?.Clave.ShouldBe(clave);
+
     [Fact]
     public void Conciliar_confirma_la_propuesta_que_la_ficha_ahora_declara()
     {
@@ -316,5 +378,32 @@ public sealed class RelacionesEntreTercerosTests
         var eventos = cambios.ShouldHaveSingleItem().Eventos;
         eventos[0].ShouldBeOfType<RelacionConfirmada>();
         eventos.Skip(1).ShouldAllBe(e => e is RelacionActualizada); // el cargo y la participación son los de la ficha
+    }
+
+    [Fact]
+    public void Lo_que_la_ficha_confirma_o_restablece_pasa_a_ser_de_la_ficha_y_termina_si_la_persona_sale_de_ella()
+    {
+        var mapa = Mapa(("2000", _maria));
+        var declaradas = Declaradas((_maria, "2000", TipoRelacionTerceros.RepresentanteLegal, true, null));
+
+        // La propuesta de la IA la confirma la ficha: desde ahora la mantiene la ficha.
+        var propuesta = Detectada(_maria);
+        propuesta.DeFicha.ShouldBeFalse();
+        var existentes = Aplicar([propuesta], ConciliacionDeRelaciones.Calcular(_destino, declaradas, mapa, [propuesta], Hoy, Ahora, "t"));
+        existentes.ShouldHaveSingleItem().DeFicha.ShouldBeTrue();
+
+        // Sale de la ficha: la relación termina.
+        var sinNadie = Declaradas();
+        var salida = ConciliacionDeRelaciones.Calcular(_destino, sinNadie, mapa, existentes, Hoy.AddDays(3), Ahora.AddDays(3), "t");
+        salida.ShouldHaveSingleItem().Eventos.ShouldHaveSingleItem().ShouldBeOfType<RelacionTerminada>();
+        existentes = Aplicar(existentes, salida);
+        existentes.Single().Estado.ShouldBe(EstadoDeRelacion.Finalizada);
+
+        // Una propuesta descartada que la ficha vuelve a declarar se restablece como de la ficha.
+        var descartada = Detectada(_maria);
+        descartada = descartada.Proyectar([descartada.Descartar("t", Ahora)!]);
+        var restablecida = ConciliacionDeRelaciones.Calcular(_destino, declaradas, mapa, [descartada], Hoy.AddDays(10), Ahora, "t");
+        restablecida.ShouldHaveSingleItem().Eventos.ShouldContain(e => e is RelacionRestablecida);
+        Aplicar([descartada], restablecida).ShouldHaveSingleItem().DeFicha.ShouldBeTrue();
     }
 }

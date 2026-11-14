@@ -3,6 +3,7 @@ import { ficha } from './es-CO-ficha';
 import { camposFicha, fichaObservada, ratificarSeccion, seccionEnExpediente } from './es-CO-ficha-empresas';
 import { declaracionPep } from './es-CO-ficha-pep';
 import { notificaciones } from './es-CO-notificaciones';
+import { personas } from './es-CO-personas';
 import { erroresPrivacidad, privacidad } from './es-CO-privacidad';
 
 /** Textos de la app del tercero (es-CO, tuteo, siguiente paso en cada error: docs/06 §2.3). */
@@ -540,6 +541,7 @@ export const esCO = {
   },
   ficha: { ...ficha, observada: fichaObservada, campos: camposFicha, pep: declaracionPep },
   privacidad,
+  personas,
   notificaciones,
   accesoAislado,
   sesiones,

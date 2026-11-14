@@ -66,6 +66,13 @@ export function observacionesDeRequisito(requisito: RequisitoPublicoDto, expedie
  */
 export function enlaceDeSubida(requisito: RequisitoPublicoDto, vinculoId: string | null, expedienteId: string): string | null {
   const parametros = new URLSearchParams({ nombre: requisito.tipoDocumento.nombre, volver: `/expediente/${expedienteId}`, expediente: expedienteId, requisito: requisito.id });
+  // El documento de una persona relacionada (ADR-0010) se sube a la bóveda de esa persona; sin persona todavía no hay a quién subírselo.
+  if (requisito.persona) {
+    if (!requisito.persona.personaId || !requisito.tipoDocumento.tipoCanonico) return null;
+    parametros.set('tipo', requisito.tipoDocumento.tipoCanonico);
+    parametros.set('persona', requisito.persona.personaId);
+    return `/boveda/subir?${parametros.toString()}`;
+  }
   if (requisito.tipoDocumento.tipoCanonico && requisito.tipoDocumento.ambito === 'Global') {
     parametros.set('tipo', requisito.tipoDocumento.tipoCanonico);
     if (vinculoId) parametros.set('vinculoId', vinculoId);

@@ -64,7 +64,7 @@ public sealed record CambioDeRelacionDetectado(Guid RelacionId, Guid OrigenId, G
     string? Cargo, decimal Confianza, Guid? DocumentoId, int? Version, DateTimeOffset Fecha);
 
 /// <summary>La propuesta pasó a ser relación vigente: la confirmó el tercero, un revisor o el sistema.</summary>
-public sealed record RelacionConfirmada(Guid RelacionId, string Por, ViaDeConfirmacionDeRelacion Via, DateOnly VigenteDesde, DateTimeOffset Fecha);
+public sealed record RelacionConfirmada(Guid RelacionId, string Por, ViaDeConfirmacionDeRelacion Via, DateOnly VigenteDesde, DateTimeOffset Fecha, bool? DeFicha = null);
 
 /// <summary>El tercero (o quien decide) descartó lo que detectó la IA: la relación nunca fue vigente.</summary>
 public sealed record CambioDeRelacionDescartado(Guid RelacionId, string Por, DateTimeOffset Fecha);
@@ -80,7 +80,7 @@ public sealed record RelacionTerminada(Guid RelacionId, DateOnly VigenteHasta, s
 
 /// <summary>Una relación terminada o descartada vuelve a declararse: vigente otra vez, con los datos de ahora.</summary>
 public sealed record RelacionRestablecida(Guid RelacionId, DateOnly VigenteDesde, bool Principal, decimal? Participacion, string? Cargo, string Por,
-    DateTimeOffset Fecha);
+    DateTimeOffset Fecha, bool? DeFicha = null);
 
 /// <summary>
 /// Relación entre dos terceros (ADR-0010): una <b>persona natural</b> (<see cref="OrigenId"/>, con bóveda propia) es representante legal, suplente, socio, beneficiario
@@ -197,13 +197,13 @@ public sealed class RelacionEntreTerceros
     /// Confirma una propuesta: pasa a vigente desde <paramref name="hoy"/>. Ya confirmada ⇒ nulo (idempotente); finalizada o descartada ⇒ 409
     /// <c>relacion-no-propuesta</c>.
     /// </summary>
-    public RelacionConfirmada? Confirmar(string por, ViaDeConfirmacionDeRelacion via, DateOnly hoy, DateTimeOffset ahora)
+    public RelacionConfirmada? Confirmar(string por, ViaDeConfirmacionDeRelacion via, DateOnly hoy, DateTimeOffset ahora, bool? deFicha = null)
     {
         if (Estado == EstadoDeRelacion.Confirmada)
             return null;
         if (Estado != EstadoDeRelacion.Propuesta)
             throw ReglaDeNegocioException.Conflicto("relacion-no-propuesta", "Esa relación ya no es una propuesta pendiente de confirmar.");
-        return new RelacionConfirmada(Id, por, via, hoy, ahora);
+        return new RelacionConfirmada(Id, por, via, hoy, ahora, deFicha);
     }
 
     /// <summary>Descarta una propuesta. Ya descartada ⇒ nulo; vigente o terminada ⇒ 409 <c>relacion-no-propuesta</c> (una vigente se termina, no se descarta).</summary>
@@ -246,12 +246,12 @@ public sealed class RelacionEntreTerceros
     }
 
     /// <summary>Vuelve a declarar una relación terminada o descartada. Solo en esos estados (en los demás ⇒ nulo).</summary>
-    public RelacionRestablecida? Restablecer(DateOnly desde, bool principal, decimal? participacion, string? cargo, string por, DateTimeOffset ahora)
+    public RelacionRestablecida? Restablecer(DateOnly desde, bool principal, decimal? participacion, string? cargo, string por, DateTimeOffset ahora, bool? deFicha = null)
     {
         if (Estado is not (EstadoDeRelacion.Finalizada or EstadoDeRelacion.Descartada))
             return null;
         Validar(OrigenId, DestinoId, Tipo, participacion, cargo);
-        return new RelacionRestablecida(Id, desde, principal, participacion, Texto(cargo), por, ahora);
+        return new RelacionRestablecida(Id, desde, principal, participacion, Texto(cargo), por, ahora, deFicha);
     }
 
     private static void Validar(Guid origenId, Guid destinoId, TipoRelacionTerceros tipo, decimal? participacion, string? cargo)
@@ -333,6 +333,8 @@ public sealed class RelacionEntreTerceros
         ConfirmadaPor = e.Por;
         ConfirmadaVia = e.Via;
         ConfirmadaEn = e.Fecha;
+        if (e.DeFicha is { } deFichaConfirmada)
+            DeFicha = deFichaConfirmada;
         ActualizadaEn = e.Fecha;
     }
 
@@ -378,6 +380,8 @@ public sealed class RelacionEntreTerceros
         ConfirmadaPor = e.Por;
         ConfirmadaVia = ViaDeConfirmacionDeRelacion.Tercero;
         ConfirmadaEn = e.Fecha;
+        if (e.DeFicha is { } deFichaRestablecida)
+            DeFicha = deFichaRestablecida;
         ActualizadaEn = e.Fecha;
     }
 

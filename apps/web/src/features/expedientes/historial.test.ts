@@ -63,6 +63,28 @@ describe('historial: ampliación de la actualización abierta', () => {
   });
 });
 
+describe('historial: personas relacionadas en los documentos que se piden (ADR-0010)', () => {
+  const evento = (tipo: string, datos: Record<string, unknown>): EventoHistorialDto => ({
+    version: 12, tipo, fecha: '2026-11-14T12:00:00Z', actorTipo: 'Sistema', actorId: 'sincronizacion-de-personas', sistema: null, datos,
+  });
+
+  it('«requisitos_de_persona_agregados» dice de quién es cada documento que se suma', () => {
+    const entrada = eventoExpedienteATimeline(
+      evento('requisitos_de_persona_agregados', { requisitos: [{ requisitoId: 'r1', nombre: 'Cédula de ciudadanía', persona: { nombre: 'María Gómez' } }, { requisitoId: 'r2', nombre: 'Pasaporte' }] }),
+      contexto,
+      t,
+    );
+
+    expect(entrada.titulo).toBe('Se piden los documentos de más personas relacionadas: Cédula de ciudadanía (María Gómez), Pasaporte');
+  });
+
+  it('«persona_de_requisito_resuelta» dice quién entrega ahora el documento', () => {
+    const entrada = eventoExpedienteATimeline(evento('persona_de_requisito_resuelta', { requisitoId: 'r1', persona: { nombre: 'Juan Pérez' } }), contexto, t);
+
+    expect(entrada.titulo).toContain('ahora lo entrega Juan Pérez');
+  });
+});
+
 describe('historial: el tercero retiró una versión (RT-3)', () => {
   const evento = (tipo: string, datos: Record<string, unknown>): EventoHistorialDto => ({
     version: 11,

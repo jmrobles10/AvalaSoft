@@ -75,6 +75,20 @@ export function PaginaFicha() {
           <FilaSeccion key={`${fila.seccion}-${String(fila.periodo)}`} fila={fila} porRatificar={deLaSeccion(ratificaciones, fila.seccion, fila.periodo ?? null)} />
         ))}
       </Paper>
+      {/* Los representantes, socios y beneficiarios finales son personas con su propia bóveda (ADR-0010): su cédula y antecedentes se suben ahí. */}
+      <Paper variant="outlined" sx={{ mt: 2, p: { xs: 1.5, sm: 2 } }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: { sm: 'center' } }}>
+          <Box sx={{ flex: 1 }}>
+            <Typography component="h2" variant="h4">
+              {t('personas.enlaceDesdeFicha')}
+            </Typography>
+            <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('personas.enlaceDesdeFichaTexto')}</Typography>
+          </Box>
+          <Button component={RouterLink} to="/personas" variant="outlined" endIcon={<ChevronRight size={18} aria-hidden />}>
+            {t('personas.enlaceDesdeFicha')}
+          </Button>
+        </Stack>
+      </Paper>
     </>
   );
 }
