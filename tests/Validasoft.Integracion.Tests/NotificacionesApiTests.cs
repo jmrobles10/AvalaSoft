@@ -377,8 +377,10 @@ public sealed partial class NotificacionesApiTests(ApiFixture fixture)
         // 25 del proceso de validación (3 de cuenta designada, CB-3; caducado y reabierto, LT-2/LT-3; vinculo.reintegrado y
         // expediente.desaprobado, DS-7) + 7 del certificado (NW-13, RV-3) + seccion.aceptada (FM-32) + invitaciones.lote_terminado
         // (LT-9) + 3 de verificaciones (VE-13) + vinculo.por_vencer y vinculo.vencido (VV-6) + 6 de la aprobación antes de invitar (AI): 3 de la
-        // invitación retenida y 3 del lote por aprobar. La exención del vínculo (EX) no crea tipos públicos: al restablecerse reutiliza vinculo.activado.
-        tipos.Count.ShouldBe(48);
+        // invitación retenida y 3 del lote por aprobar. La exención del vínculo (EX) no crea tipos públicos: al restablecerse reutiliza vinculo.activado. Y
+        // evaluacion.calificada (CE-12), de las evaluaciones del proveedor.
+        tipos.Count.ShouldBe(49);
+        tipos.Select(t => t.Tipo).ShouldContain("evaluacion.calificada");
         tipos.Select(t => t.Tipo).ShouldContain("expediente.desaprobado");
         tipos.Select(t => t.Tipo).ShouldContain("vinculo.reintegrado");
         tipos.Select(t => t.Tipo).ShouldContain("vinculo.por_vencer");
