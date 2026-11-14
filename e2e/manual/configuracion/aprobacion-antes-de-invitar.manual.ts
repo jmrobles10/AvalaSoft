@@ -1,3 +1,4 @@
+import { irASeccion } from '../../soporte/empresa';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { crearEscenario, nuevaPersonaNatural, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
@@ -68,7 +69,7 @@ recorrido(
     await expect(panel).toBeHidden();
 
     // 3. Una invitación por lote queda por aprobar.
-    await app.getByRole('link', { name: 'Vínculos' }).first().click();
+    await irASeccion(app, 'Vínculos');
     await app.getByRole('button', { name: 'Invitar por lote' }).click();
     await app.getByRole('button', { name: 'Nuevo lote' }).click();
     await app.locator('input[type="file"]').setInputFiles({ name: 'lote.csv', mimeType: 'text/csv', buffer: Buffer.from(CSV(persona), 'utf8') });
