@@ -46,7 +46,7 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   await consola.getByRole('textbox', { name: 'Clave pública (PEM)' }).fill(claves.publica);
   await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar Validasoft (opcional)' }).fill(ORIGEN_SISTEMA);
   await consola.getByRole('button', { name: 'Crear grupo' }).click();
-  await expect(consola.getByRole('heading', { level: 1, name: `Grupo ${grupo} creado` })).toBeVisible();
+  await expect(consola.getByRole('heading', { level: 1, name: `${grupo} creado` })).toBeVisible();
   const llave = (await consola.getByLabel('API key del sistema ERP', { exact: true }).textContent())?.trim() ?? '';
   expect(llave).toMatch(/^vsk_dev_/);
 
@@ -67,6 +67,14 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   ] as const) {
     await llamar('PUT', `/api/v1/empresas/${empresaId}/textos-legales/${tipo}`, { ...comoAdmin, delegado: delegado(), cuerpo: { contenido } });
   }
+  // PROVEEDOR nace exigiendo una cuenta bancaria designada y aprobada por dos personas (CB-4): sin ella el expediente espera en revisión aunque el área
+  // apruebe. Esta empresa nueva, con una sola administradora, no la exige (como los escenarios sembrados, `e2e/soporte/semilla.ts`): aquí se prueba
+  // el camino de la certificación; la espera por la cuenta se prueba en `CuentaDesignadaDelExpedienteTests` y `RequisitosApiTests.Cuentas`.
+  const tipos = await llamar<{ id: string; codigo: string; activo: boolean }[]>('GET', '/api/v1/tipos-vinculo', { ...comoAdmin, delegado: delegado() });
+  const proveedorTipo = tipos.find((t) => t.codigo === 'PROVEEDOR');
+  expect(proveedorTipo).toBeDefined();
+  const { id: tipoId, activo: _activo, ...tipoActual } = proveedorTipo!;
+  await llamar('PUT', `/api/v1/tipos-vinculo/${tipoId}`, { ...comoAdmin, delegado: delegado(), cuerpo: { ...tipoActual, exigeCuentaDesignada: false } });
   const usuarios = await llamar<{ id: string; correo: string }[]>('GET', '/api/v1/usuarios', { ...comoAdmin, delegado: delegado() });
   const administradora = usuarios.find((u) => u.correo === admin.correo);
   expect(administradora).toBeDefined();

@@ -71,8 +71,11 @@ test('El detalle del vínculo muestra el correo sin cortes feos y su historial d
   expect(titulos.filter((t) => t !== t.charAt(0).toLocaleUpperCase('es-CO') + t.slice(1))).toEqual([]);
 
   // «Datos del vínculo»: el correo de contacto (largo) no se parte a mitad de línea; si no cabe, se parte en la «@» y se ve entero al pasar el cursor.
-  const correo = detalle.locator('dt', { hasText: /^Contacto$/ }).locator('xpath=following-sibling::dd[1]');
-  await expect(correo).toContainText(tercero.correo);
+  // Se mide solo el texto del correo (el `ValorLargo`), no el `dd` entero: junto al correo va el chip de verificación (decisión AV), que cae en otra línea
+  // y haría contar como «salto» la última letra del correo.
+  const contacto = detalle.locator('dt', { hasText: /^Contacto$/ }).locator('xpath=following-sibling::dd[1]');
+  const correo = contacto.getByText(tercero.correo);
+  await expect(correo).toBeVisible();
   expect((await letrasAntesDeUnSalto(correo)).filter((letra) => letra !== '@')).toEqual([]);
   for (const ancho of [1280, 1024, 700]) {
     await ventana.setViewportSize({ width: ancho, height: 900 });
