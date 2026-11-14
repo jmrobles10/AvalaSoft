@@ -954,6 +954,7 @@ Respuesta `200`:
 | `vinculoId` | uuid o null | no |  |
 | `sha256` | texto o null | no |  |
 | `datos` | objeto libre o null | no |  |
+| `terceroRelacionadoId` | uuid o null | no |  |
 
 **Respuestas**
 
@@ -996,7 +997,7 @@ Campos de la respuesta `201`:
 curl -X POST "https://{host}/public/v1/boveda/documentos" \
   -H "Authorization: Bearer $TOKEN_DE_LA_SESION_DEL_TERCERO" \
   -H "Content-Type: application/json" \
-  -d '{"nombreArchivo":"Nombre de ejemplo","tamanoBytes":1,"tipoMime":"texto","tipoCanonico":"texto","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","vinculoId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","datos":{}}'
+  -d '{"nombreArchivo":"Nombre de ejemplo","tamanoBytes":1,"tipoMime":"texto","tipoCanonico":"texto","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","vinculoId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","datos":{},"terceroRelacionadoId":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}'
 ```
 
 Respuesta `200`:

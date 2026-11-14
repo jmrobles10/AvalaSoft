@@ -239,6 +239,15 @@ Campos de la respuesta `200`:
 | `flujo.nombre` | texto | sí |  |
 | `flujo.version` | entero | sí |  |
 | `flujo.origen` | OrigenFlujo (texto) | sí | valores: Explicito · Regla · PorDefecto |
+| `flujo.regla` | SeleccionPorReglaDto o null | no |  |
+| `flujo.regla.prioridad` | entero | sí |  |
+| `flujo.regla.condicion` | CondicionDto | sí |  |
+| `flujo.regla.condicion.tipo` | texto | sí |  |
+| `flujo.regla.condicion.nodos` | lista de CondicionDto o null | no | recursivo: ver CondicionDto |
+| `flujo.regla.condicion.atributo` | texto o null | no |  |
+| `flujo.regla.condicion.operador` | texto o null | no |  |
+| `flujo.regla.condicion.valores` | lista de texto o null | no |  |
+| `flujo.regla.reglasEvaluadas` | entero | sí |  |
 | `politicaDevolucion` | PoliticaDevolucion (texto) | sí | valores: Inmediata · AlCerrarArea |
 | `separacionDeFunciones` | booleano | sí |  |
 | `etapaActual` | entero o null | no |  |
@@ -349,6 +358,7 @@ Campos de la respuesta `200`:
 | `requisitos[].exencion.por` | texto | sí |  |
 | `requisitos[].exencion.justificacion` | texto | sí |  |
 | `requisitos[].exencion.fecha` | fecha y hora | sí |  |
+| `requisitos[].exencion.exencionDeVinculoId` | uuid o null | no |  |
 | `requisitos[].areas` | lista de AreaDeRequisitoDto | sí |  |
 | `requisitos[].areas[].areaId` | uuid | sí |  |
 | `requisitos[].areas[].codigo` | texto | sí |  |
@@ -446,8 +456,16 @@ Campos de la respuesta `200`:
 | `requisitos[].revisionesAutomaticas[].resueltaPor` | texto o null | no |  |
 | `requisitos[].revisionesAutomaticas[].resueltaEn` | fecha y hora o null | no |  |
 | `requisitos[].revisionesAutomaticas[].justificacionResolucion` | texto o null | no |  |
+| `requisitos[].persona` | PersonaDelRequisitoDto o null | no |  |
+| `requisitos[].persona.rol` | texto | sí |  |
+| `requisitos[].persona.todasLasRelaciones` | booleano | sí |  |
+| `requisitos[].persona.sinPersona` | booleano | sí |  |
+| `requisitos[].persona.personaId` | uuid o null | no |  |
+| `requisitos[].persona.relacionId` | uuid o null | no |  |
+| `requisitos[].persona.nombre` | texto o null | no |  |
+| `requisitos[].persona.identificacion` | texto o null | no |  |
 | `verificaciones` | lista de VerificacionDto o null | no |  |
-| `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento |
+| `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `verificaciones[].estado` | EstadoVerificacion (texto) | sí | valores: Pendiente · CoincidenciaPorAnalizar · Satisfecha · Fallida · Expirada |
 | `verificaciones[].bloqueante` | booleano | sí |  |
 | `verificaciones[].requeridaPorElFlujo` | booleano | sí |  |
@@ -500,24 +518,7 @@ Campos de la respuesta `200`:
 | `verificaciones[].estudio.matriz` | ResultadoDeMatrizDto o null | no |  |
 | `verificaciones[].estudio.matriz.puntaje` | number \| string | sí | patrón ^-?(?:0\|[1-9]\d*)(?:\.\d+)?$ |
 | `verificaciones[].estudio.matriz.nivel` | entero | sí |  |
-| `verificaciones[].estudio.matriz.nivelPorPuntaje` | entero | sí |  |
-| `verificaciones[].estudio.matriz.forzadoPor` | texto o null | no |  |
-| `verificaciones[].estudio.matriz.debidaDiligencia` | DebidaDiligencia (texto) | sí | valores: Simple · Ordinaria · Ampliada |
-| `verificaciones[].estudio.matriz.mesesRevision` | entero | sí |  |
-| `verificaciones[].estudio.matriz.versionMatriz` | entero | sí |  |
-| `verificaciones[].estudio.matriz.desglose` | lista de DesgloseDeMatrizDto | sí |  |
-| `verificaciones[].estudio.matriz.desglose[].factor` | texto | sí |  |
-| `verificaciones[].estudio.matriz.desglose[].factorNombre` | texto | sí |  |
-| `verificaciones[].estudio.matriz.desglose[].origen` | OrigenDelFactor (texto) | sí | valores: Manual · Automatico |
-| `verificaciones[].estudio.matriz.desglose[].peso` | entero | sí |  |
-| `verificaciones[].estudio.matriz.desglose[].opcion` | texto | sí |  |
-| `verificaciones[].estudio.matriz.desglose[].opcionNombre` | texto | sí |  |
-| `verificaciones[].estudio.matriz.desglose[].puntaje` | entero | sí |  |
-| `verificaciones[].estudio.matriz.desglose[].nivelMinimo` | entero o null | no |  |
-| `verificaciones[].estudio.justificacionDeNivel` | texto o null | no |  |
-| `verificaciones[].estudio.adjuntos` | lista de AdjuntoDeCumplimientoDto o null | no |  |
-| `verificaciones[].estudio.adjuntos[].id` | uuid | sí |  |
-| `verificaciones[].estudio.adjuntos[].nombre` | texto | sí |  |
+| `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
@@ -563,7 +564,22 @@ Respuesta `200`:
     "codigo": "CODIGO_EJEMPLO",
     "nombre": "Constructora Norte S.A.S.",
     "version": 1,
-    "origen": "Explicito"
+    "origen": "Explicito",
+    "regla": {
+      "prioridad": 1,
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "reglasEvaluadas": 1
+    }
   },
   "politicaDevolucion": "Inmediata",
   "separacionDeFunciones": true,
@@ -708,7 +724,8 @@ Respuesta `200`:
       "exencion": {
         "por": "texto",
         "justificacion": "Texto de ejemplo.",
-        "fecha": "2026-11-12T15:00:00Z"
+        "fecha": "2026-11-12T15:00:00Z",
+        "exencionDeVinculoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
       },
       "areas": [
         {
@@ -873,7 +890,16 @@ Respuesta `200`:
           "resueltaEn": "2026-11-12T15:00:00Z",
           "justificacionResolucion": "Texto de ejemplo."
         }
-      ]
+      ],
+      "persona": {
+        "rol": "texto",
+        "todasLasRelaciones": true,
+        "sinPersona": true,
+        "personaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "nombre": "Constructora Norte S.A.S.",
+        "identificacion": "900123456"
+      }
     }
   ],
   "verificaciones": [
@@ -986,7 +1012,58 @@ Respuesta `200`:
       "ultimoError": "texto",
       "reintentarDesde": "2026-11-12T15:00:00Z",
       "vigenciaDias": 1,
-      "frecuenciaReconsultaMeses": 1
+      "frecuenciaReconsultaMeses": 1,
+      "fuenteOficial": {
+        "datos": {
+          "encontrado": true,
+          "nit": "900123456",
+          "dv": "texto",
+          "razonSocial": "Constructora Norte S.A.S.",
+          "estado": "texto",
+          "estadoNormalizado": "Desconocido",
+          "matricula": "texto",
+          "camara": "texto",
+          "tipoOrganizacion": "texto",
+          "ultimoAnoRenovado": 1,
+          "fechaMatricula": "2026-11-12",
+          "fechaRenovacion": "2026-11-12",
+          "fechaCancelacion": "2026-11-12",
+          "representantes": [
+            {
+              "nombre": null,
+              "identificacion": null,
+              "cargo": null
+            }
+          ],
+          "direccion": "Calle 45 # 12-08",
+          "municipio": "texto",
+          "actividadPrincipal": "texto",
+          "responsabilidades": [
+            "texto"
+          ],
+          "actualizadoEnLaFuente": "2026-11-12"
+        },
+        "campos": [
+          {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "campo": "texto",
+            "etiqueta": "texto",
+            "contra": "Fuente",
+            "referencia": "REF-0001",
+            "oficial": "texto",
+            "comparado": "texto",
+            "resultado": "Coincide",
+            "critico": true,
+            "detalle": "Texto de ejemplo.",
+            "decision": "texto",
+            "justificacion": "Texto de ejemplo.",
+            "resueltaPor": "texto",
+            "resueltaEn": "2026-11-12T15:00:00Z",
+            "vigenteHasta": "2026-11-12T15:00:00Z",
+            "heredada": true
+          }
+        ]
+      }
     }
   ],
   "esperandoVerificaciones": false,
@@ -1027,7 +1104,20 @@ Respuesta `200`:
       "fecha": "2026-11-12T15:00:00Z"
     }
   ],
-  "esperandoCuentaDesignada": false
+  "esperandoCuentaDesignada": false,
+  "evaluaciones": [
+    {
+      "evaluacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "codigo": "CODIGO_EJEMPLO",
+      "nombre": "Constructora Norte S.A.S.",
+      "responde": "Tercero",
+      "efecto": "Observar",
+      "estado": "Pendiente",
+      "puntaje": 1,
+      "actualizadaEn": "2026-11-12T15:00:00Z"
+    }
+  ],
+  "esperandoEvaluaciones": false
 }
 ```
 

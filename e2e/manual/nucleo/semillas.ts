@@ -156,3 +156,19 @@ export async function exigirAprobacionParaInvitar(e: Escenario, rol: 'OficialCum
     },
   });
 }
+
+/**
+ * Una API key del mismo sistema integrado con además los scopes de cuestionarios y evaluaciones (CE-13): la llave del escenario se creó
+ * antes de existir esos permisos. Es lo que el sistema de la empresa le daría a quien gestiona los cuestionarios.
+ */
+export async function llaveConCuestionarios(e: Escenario): Promise<string> {
+  const llaves = await llamar<{ nombre: string; scopes: string[]; sistemaId: string }[]>('GET', '/api/v1/api-keys', { llave: e.admin });
+  const base = llaves.find((k) => k.nombre === 'E2E embebido');
+  if (!base) throw new Error('No encontré la API key del escenario.');
+  const extra = ['cuestionarios:leer', 'cuestionarios:escribir', 'evaluaciones:leer', 'evaluaciones:responder', 'evaluaciones:recalificar'];
+  const nueva = await llamar<{ valor: string }>('POST', '/api/v1/api-keys', {
+    llave: e.admin,
+    cuerpo: { nombre: 'E2E cuestionarios', scopes: [...new Set([...base.scopes, ...extra])], empresas: null, expiraEn: null, sandbox: false, sistemaId: base.sistemaId },
+  });
+  return nueva.valor;
+}

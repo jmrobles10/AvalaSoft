@@ -1,10 +1,10 @@
 # API · Flujos
 
-9 operaciones en 1 recurso.
+10 operaciones en 1 recurso.
 
 ## Flujos
 
-Flujos aprobatorios versionados de la empresa activa (`X-Empresa`): etapas en secuencia, áreas en paralelo, aprobadores por área, áreas automáticas, política de devolución y los documentos que pide (requisitos, RQ-1: se editan en el borrador y se congelan al publicar). Todo cambio deja registro de auditoría (R-1).
+Flujos aprobatorios versionados de la empresa activa (`X-Empresa`): etapas en secuencia, áreas en paralelo, aprobadores por área, áreas automáticas, política de devolución y los documentos que pide (requisitos, RQ-1: se editan en el borrador y se congelan al publicar) y, opcionalmente, la regla con la que se escoge solo (condición y prioridad, FR-1). Todo cambio deja registro de auditoría (R-1).
 
 ### `GET /api/v1/flujos`
 
@@ -73,8 +73,10 @@ Campos de la respuesta `200`:
 | `[].publicada.requisitos[].usarComoSoporte` | booleano o null | no |  |
 | `[].publicada.requisitos[].vigenciaDias` | entero o null | no |  |
 | `[].publicada.requisitos[].diasRevalidacion` | entero o null | no |  |
+| `[].publicada.requisitos[].dePersonaRelacionada` | texto o null | no |  |
+| `[].publicada.requisitos[].todasLasRelaciones` | booleano | no | por omisión false |
 | `[].publicada.verificaciones` | lista de VerificacionRequeridaDto o null | no |  |
-| `[].publicada.verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento |
+| `[].publicada.verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `[].publicada.verificaciones[].bloqueante` | booleano | no | por omisión true |
 | `[].publicada.verificaciones[].vigenciaDias` | entero o null | no |  |
 | `[].publicada.verificaciones[].frecuenciaReconsultaMeses` | entero o null | no |  |
@@ -91,6 +93,12 @@ Campos de la respuesta `200`:
 | `[].publicada.recordatorioObservaciones` | RecordatorioDeFlujoDto o null | no |  |
 | `[].publicada.recordatorioObservaciones.modo` | texto | no | por omisión "Empresa" |
 | `[].publicada.recordatorioObservaciones.cadaDias` | entero o null | no |  |
+| `[].publicada.seleccion` | SeleccionDeFlujoDto o null | no |  |
+| `[].publicada.seleccion.condicion` | CondicionDto o null | no | mismos campos que `[].publicada.requisitos[].condicion` |
+| `[].publicada.seleccion.prioridad` | entero o null | no |  |
+| `[].publicada.evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
+| `[].publicada.evaluaciones[].cuestionarioId` | uuid | sí |  |
+| `[].publicada.evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
 | `[].borrador` | FlujoVersionDto o null | no | mismos campos que `[].publicada` |
 | `[].creadoEn` | fecha y hora | sí |  |
 | `[].actualizadoEn` | fecha y hora | sí |  |
@@ -167,7 +175,9 @@ Respuesta `200`:
           "exigeSoporte": false,
           "usarComoSoporte": true,
           "vigenciaDias": 1,
-          "diasRevalidacion": 1
+          "diasRevalidacion": 1,
+          "dePersonaRelacionada": "texto",
+          "todasLasRelaciones": false
         }
       ],
       "verificaciones": [
@@ -198,7 +208,27 @@ Respuesta `200`:
       "recordatorioObservaciones": {
         "modo": "Empresa",
         "cadaDias": 1
-      }
+      },
+      "seleccion": {
+        "condicion": {
+          "tipo": "texto",
+          "nodos": [
+            {}
+          ],
+          "atributo": "texto",
+          "operador": "texto",
+          "valores": [
+            "texto"
+          ]
+        },
+        "prioridad": 1
+      },
+      "evaluaciones": [
+        {
+          "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "efecto": "Observar"
+        }
+      ]
     },
     "borrador": {
       "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -249,7 +279,9 @@ Respuesta `200`:
           "exigeSoporte": false,
           "usarComoSoporte": true,
           "vigenciaDias": 1,
-          "diasRevalidacion": 1
+          "diasRevalidacion": 1,
+          "dePersonaRelacionada": "texto",
+          "todasLasRelaciones": false
         }
       ],
       "verificaciones": [
@@ -280,7 +312,27 @@ Respuesta `200`:
       "recordatorioObservaciones": {
         "modo": "Empresa",
         "cadaDias": 1
-      }
+      },
+      "seleccion": {
+        "condicion": {
+          "tipo": "texto",
+          "nodos": [
+            {}
+          ],
+          "atributo": "texto",
+          "operador": "texto",
+          "valores": [
+            "texto"
+          ]
+        },
+        "prioridad": 1
+      },
+      "evaluaciones": [
+        {
+          "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "efecto": "Observar"
+        }
+      ]
     },
     "creadoEn": "2026-11-12T15:00:00Z",
     "actualizadoEn": "2026-11-12T15:00:00Z"
@@ -332,8 +384,10 @@ Respuesta `200`:
 | `requisitos[].usarComoSoporte` | booleano o null | no |  |
 | `requisitos[].vigenciaDias` | entero o null | no |  |
 | `requisitos[].diasRevalidacion` | entero o null | no |  |
+| `requisitos[].dePersonaRelacionada` | texto o null | no |  |
+| `requisitos[].todasLasRelaciones` | booleano | no | por omisión false |
 | `verificaciones` | lista de VerificacionRequeridaDto o null | no |  |
-| `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento |
+| `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `verificaciones[].bloqueante` | booleano | no | por omisión true |
 | `verificaciones[].vigenciaDias` | entero o null | no |  |
 | `verificaciones[].frecuenciaReconsultaMeses` | entero o null | no |  |
@@ -350,6 +404,12 @@ Respuesta `200`:
 | `recordatorioObservaciones` | RecordatorioDeFlujoDto o null | no |  |
 | `recordatorioObservaciones.modo` | texto | no | por omisión "Empresa" |
 | `recordatorioObservaciones.cadaDias` | entero o null | no |  |
+| `seleccion` | SeleccionDeFlujoDto o null | no |  |
+| `seleccion.condicion` | CondicionDto o null | no | mismos campos que `requisitos[].condicion` |
+| `seleccion.prioridad` | entero o null | no |  |
+| `evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
+| `evaluaciones[].cuestionarioId` | uuid | sí |  |
+| `evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
 
 **Respuestas**
 
@@ -404,8 +464,10 @@ Campos de la respuesta `201`:
 | `publicada.requisitos[].usarComoSoporte` | booleano o null | no |  |
 | `publicada.requisitos[].vigenciaDias` | entero o null | no |  |
 | `publicada.requisitos[].diasRevalidacion` | entero o null | no |  |
+| `publicada.requisitos[].dePersonaRelacionada` | texto o null | no |  |
+| `publicada.requisitos[].todasLasRelaciones` | booleano | no | por omisión false |
 | `publicada.verificaciones` | lista de VerificacionRequeridaDto o null | no |  |
-| `publicada.verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento |
+| `publicada.verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `publicada.verificaciones[].bloqueante` | booleano | no | por omisión true |
 | `publicada.verificaciones[].vigenciaDias` | entero o null | no |  |
 | `publicada.verificaciones[].frecuenciaReconsultaMeses` | entero o null | no |  |
@@ -422,6 +484,12 @@ Campos de la respuesta `201`:
 | `publicada.recordatorioObservaciones` | RecordatorioDeFlujoDto o null | no |  |
 | `publicada.recordatorioObservaciones.modo` | texto | no | por omisión "Empresa" |
 | `publicada.recordatorioObservaciones.cadaDias` | entero o null | no |  |
+| `publicada.seleccion` | SeleccionDeFlujoDto o null | no |  |
+| `publicada.seleccion.condicion` | CondicionDto o null | no | mismos campos que `publicada.requisitos[].condicion` |
+| `publicada.seleccion.prioridad` | entero o null | no |  |
+| `publicada.evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
+| `publicada.evaluaciones[].cuestionarioId` | uuid | sí |  |
+| `publicada.evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
 | `borrador` | FlujoVersionDto o null | no | mismos campos que `publicada` |
 | `creadoEn` | fecha y hora | sí |  |
 | `actualizadoEn` | fecha y hora | sí |  |
@@ -439,7 +507,7 @@ curl -X POST "https://{host}/api/v1/flujos" \
   -H "X-Empresa: $EMPRESA_ID" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
-  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","tipoVinculo":"texto","etapas":[{"orden":1,"areas":[{"areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","aprobadoresRequeridos":1,"puedeRechazarExpediente":false,"automatica":false,"slaHoras":1}]}],"politicaDevolucion":"texto","separacionDeFunciones":false,"requisitos":[{"id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumento":"texto","obligatorio":true,"areasQueRevisan":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"aprobadoresRequeridos":1,"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"seccion":"texto","periodos":1,"exigeSoporte":false,"usarComoSoporte":true,"vigenciaDias":1,"diasRevalidacion":1}],"verificaciones":[{"tipo":"ListasRestrictivas","bloqueante":true,"vigenciaDias":1,"frecuenciaReconsultaMeses":1}],"plazoCargue":{"dias":1,"recordatorios":[1]},"reintento":{"permitido":true,"diasEspera":0},"vigenciaVinculo":{"dias":1,"diasAviso":[1],"diasGracia":0},"recordatorioObservaciones":{"modo":"Empresa","cadaDias":1}}'
+  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","tipoVinculo":"texto","etapas":[{"orden":1,"areas":[{"areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","aprobadoresRequeridos":1,"puedeRechazarExpediente":false,"automatica":false,"slaHoras":1}]}],"politicaDevolucion":"texto","separacionDeFunciones":false,"requisitos":[{"id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumento":"texto","obligatorio":true,"areasQueRevisan":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"aprobadoresRequeridos":1,"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"seccion":"texto","periodos":1,"exigeSoporte":false,"usarComoSoporte":true,"vigenciaDias":1,"diasRevalidacion":1,"dePersonaRelacionada":"texto","todasLasRelaciones":false}],"verificaciones":[{"tipo":"ListasRestrictivas","bloqueante":true,"vigenciaDias":1,"frecuenciaReconsultaMeses":1}],"plazoCargue":{"dias":1,"recordatorios":[1]},"reintento":{"permitido":true,"diasEspera":0},"vigenciaVinculo":{"dias":1,"diasAviso":[1],"diasGracia":0},"recordatorioObservaciones":{"modo":"Empresa","cadaDias":1},"seleccion":{"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"prioridad":1},"evaluaciones":[{"cuestionarioId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","efecto":"Observar"}]}'
 ```
 
 Respuesta `201`:
@@ -505,7 +573,9 @@ Respuesta `201`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -536,7 +606,27 @@ Respuesta `201`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   },
   "borrador": {
     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -587,7 +677,9 @@ Respuesta `201`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -618,7 +710,27 @@ Respuesta `201`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   },
   "creadoEn": "2026-11-12T15:00:00Z",
   "actualizadoEn": "2026-11-12T15:00:00Z"
@@ -719,7 +831,9 @@ Respuesta `200`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -750,7 +864,27 @@ Respuesta `200`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   },
   "borrador": {
     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -801,7 +935,9 @@ Respuesta `200`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -832,7 +968,27 @@ Respuesta `200`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   },
   "creadoEn": "2026-11-12T15:00:00Z",
   "actualizadoEn": "2026-11-12T15:00:00Z"
@@ -887,8 +1043,10 @@ Respuesta `200`:
 | `requisitos[].usarComoSoporte` | booleano o null | no |  |
 | `requisitos[].vigenciaDias` | entero o null | no |  |
 | `requisitos[].diasRevalidacion` | entero o null | no |  |
+| `requisitos[].dePersonaRelacionada` | texto o null | no |  |
+| `requisitos[].todasLasRelaciones` | booleano | no | por omisión false |
 | `verificaciones` | lista de VerificacionRequeridaDto o null | no |  |
-| `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento |
+| `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `verificaciones[].bloqueante` | booleano | no | por omisión true |
 | `verificaciones[].vigenciaDias` | entero o null | no |  |
 | `verificaciones[].frecuenciaReconsultaMeses` | entero o null | no |  |
@@ -905,6 +1063,12 @@ Respuesta `200`:
 | `recordatorioObservaciones` | RecordatorioDeFlujoDto o null | no |  |
 | `recordatorioObservaciones.modo` | texto | no | por omisión "Empresa" |
 | `recordatorioObservaciones.cadaDias` | entero o null | no |  |
+| `seleccion` | SeleccionDeFlujoDto o null | no |  |
+| `seleccion.condicion` | CondicionDto o null | no | mismos campos que `requisitos[].condicion` |
+| `seleccion.prioridad` | entero o null | no |  |
+| `evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
+| `evaluaciones[].cuestionarioId` | uuid | sí |  |
+| `evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
 
 **Respuestas**
 
@@ -922,7 +1086,7 @@ curl -X PUT "https://{host}/api/v1/flujos/3fa85f64-5717-4562-b3fc-2c963f66afa6" 
   -H "X-Api-Key: $API_KEY" \
   -H "X-Empresa: $EMPRESA_ID" \
   -H "Content-Type: application/json" \
-  -d '{"nombre":"Constructora Norte S.A.S.","etapas":[{"orden":1,"areas":[{"areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","aprobadoresRequeridos":1,"puedeRechazarExpediente":false,"automatica":false,"slaHoras":1}]}],"politicaDevolucion":"texto","separacionDeFunciones":true,"requisitos":[{"id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumento":"texto","obligatorio":true,"areasQueRevisan":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"aprobadoresRequeridos":1,"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"seccion":"texto","periodos":1,"exigeSoporte":false,"usarComoSoporte":true,"vigenciaDias":1,"diasRevalidacion":1}],"verificaciones":[{"tipo":"ListasRestrictivas","bloqueante":true,"vigenciaDias":1,"frecuenciaReconsultaMeses":1}],"plazoCargue":{"dias":1,"recordatorios":[1]},"reintento":{"permitido":true,"diasEspera":0},"vigenciaVinculo":{"dias":1,"diasAviso":[1],"diasGracia":0},"recordatorioObservaciones":{"modo":"Empresa","cadaDias":1}}'
+  -d '{"nombre":"Constructora Norte S.A.S.","etapas":[{"orden":1,"areas":[{"areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","aprobadoresRequeridos":1,"puedeRechazarExpediente":false,"automatica":false,"slaHoras":1}]}],"politicaDevolucion":"texto","separacionDeFunciones":true,"requisitos":[{"id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumento":"texto","obligatorio":true,"areasQueRevisan":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"aprobadoresRequeridos":1,"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"seccion":"texto","periodos":1,"exigeSoporte":false,"usarComoSoporte":true,"vigenciaDias":1,"diasRevalidacion":1,"dePersonaRelacionada":"texto","todasLasRelaciones":false}],"verificaciones":[{"tipo":"ListasRestrictivas","bloqueante":true,"vigenciaDias":1,"frecuenciaReconsultaMeses":1}],"plazoCargue":{"dias":1,"recordatorios":[1]},"reintento":{"permitido":true,"diasEspera":0},"vigenciaVinculo":{"dias":1,"diasAviso":[1],"diasGracia":0},"recordatorioObservaciones":{"modo":"Empresa","cadaDias":1},"seleccion":{"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"prioridad":1},"evaluaciones":[{"cuestionarioId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","efecto":"Observar"}]}'
 ```
 
 Respuesta `200`:
@@ -988,7 +1152,9 @@ Respuesta `200`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -1019,7 +1185,27 @@ Respuesta `200`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   },
   "borrador": {
     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -1070,7 +1256,9 @@ Respuesta `200`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -1101,7 +1289,27 @@ Respuesta `200`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   },
   "creadoEn": "2026-11-12T15:00:00Z",
   "actualizadoEn": "2026-11-12T15:00:00Z"
@@ -1203,7 +1411,9 @@ Respuesta `200`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -1234,7 +1444,27 @@ Respuesta `200`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   },
   "borrador": {
     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -1285,7 +1515,9 @@ Respuesta `200`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -1316,7 +1548,27 @@ Respuesta `200`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   },
   "creadoEn": "2026-11-12T15:00:00Z",
   "actualizadoEn": "2026-11-12T15:00:00Z"
@@ -1382,8 +1634,10 @@ Campos de la respuesta `200`:
 | `[].requisitos[].usarComoSoporte` | booleano o null | no |  |
 | `[].requisitos[].vigenciaDias` | entero o null | no |  |
 | `[].requisitos[].diasRevalidacion` | entero o null | no |  |
+| `[].requisitos[].dePersonaRelacionada` | texto o null | no |  |
+| `[].requisitos[].todasLasRelaciones` | booleano | no | por omisión false |
 | `[].verificaciones` | lista de VerificacionRequeridaDto o null | no |  |
-| `[].verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento |
+| `[].verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `[].verificaciones[].bloqueante` | booleano | no | por omisión true |
 | `[].verificaciones[].vigenciaDias` | entero o null | no |  |
 | `[].verificaciones[].frecuenciaReconsultaMeses` | entero o null | no |  |
@@ -1400,6 +1654,12 @@ Campos de la respuesta `200`:
 | `[].recordatorioObservaciones` | RecordatorioDeFlujoDto o null | no |  |
 | `[].recordatorioObservaciones.modo` | texto | no | por omisión "Empresa" |
 | `[].recordatorioObservaciones.cadaDias` | entero o null | no |  |
+| `[].seleccion` | SeleccionDeFlujoDto o null | no |  |
+| `[].seleccion.condicion` | CondicionDto o null | no | mismos campos que `[].requisitos[].condicion` |
+| `[].seleccion.prioridad` | entero o null | no |  |
+| `[].evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
+| `[].evaluaciones[].cuestionarioId` | uuid | sí |  |
+| `[].evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -1462,7 +1722,9 @@ Respuesta `200`:
         "exigeSoporte": false,
         "usarComoSoporte": true,
         "vigenciaDias": 1,
-        "diasRevalidacion": 1
+        "diasRevalidacion": 1,
+        "dePersonaRelacionada": "texto",
+        "todasLasRelaciones": false
       }
     ],
     "verificaciones": [
@@ -1493,7 +1755,27 @@ Respuesta `200`:
     "recordatorioObservaciones": {
       "modo": "Empresa",
       "cadaDias": 1
-    }
+    },
+    "seleccion": {
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "prioridad": 1
+    },
+    "evaluaciones": [
+      {
+        "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "efecto": "Observar"
+      }
+    ]
   }
 ]
 ```
@@ -1557,8 +1839,10 @@ Campos de la respuesta `200`:
 | `requisitos[].usarComoSoporte` | booleano o null | no |  |
 | `requisitos[].vigenciaDias` | entero o null | no |  |
 | `requisitos[].diasRevalidacion` | entero o null | no |  |
+| `requisitos[].dePersonaRelacionada` | texto o null | no |  |
+| `requisitos[].todasLasRelaciones` | booleano | no | por omisión false |
 | `verificaciones` | lista de VerificacionRequeridaDto o null | no |  |
-| `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento |
+| `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `verificaciones[].bloqueante` | booleano | no | por omisión true |
 | `verificaciones[].vigenciaDias` | entero o null | no |  |
 | `verificaciones[].frecuenciaReconsultaMeses` | entero o null | no |  |
@@ -1575,6 +1859,12 @@ Campos de la respuesta `200`:
 | `recordatorioObservaciones` | RecordatorioDeFlujoDto o null | no |  |
 | `recordatorioObservaciones.modo` | texto | no | por omisión "Empresa" |
 | `recordatorioObservaciones.cadaDias` | entero o null | no |  |
+| `seleccion` | SeleccionDeFlujoDto o null | no |  |
+| `seleccion.condicion` | CondicionDto o null | no | mismos campos que `requisitos[].condicion` |
+| `seleccion.prioridad` | entero o null | no |  |
+| `evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
+| `evaluaciones[].cuestionarioId` | uuid | sí |  |
+| `evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
 
 **Errores de negocio que lanza**
 
@@ -1640,7 +1930,9 @@ Respuesta `200`:
       "exigeSoporte": false,
       "usarComoSoporte": true,
       "vigenciaDias": 1,
-      "diasRevalidacion": 1
+      "diasRevalidacion": 1,
+      "dePersonaRelacionada": "texto",
+      "todasLasRelaciones": false
     }
   ],
   "verificaciones": [
@@ -1671,7 +1963,27 @@ Respuesta `200`:
   "recordatorioObservaciones": {
     "modo": "Empresa",
     "cadaDias": 1
-  }
+  },
+  "seleccion": {
+    "condicion": {
+      "tipo": "texto",
+      "nodos": [
+        {}
+      ],
+      "atributo": "texto",
+      "operador": "texto",
+      "valores": [
+        "texto"
+      ]
+    },
+    "prioridad": 1
+  },
+  "evaluaciones": [
+    {
+      "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "efecto": "Observar"
+    }
+  ]
 }
 ```
 
@@ -1769,6 +2081,129 @@ Respuesta `200`:
   "tipoVinculoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "flujoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+```
+
+</details>
+
+### `POST /api/v1/flujos/seleccion/vista-previa`
+
+**Vista previa seleccion flujo.** «¿Qué flujo le tocaría a este tercero?» (FR-1): evalúa, sin abrir nada, las reglas de selección de los flujos publicados del tipo de vínculo con los datos del tercero (`terceroId`, visible para el tenant) y/o los indicados, y responde el flujo que escogería el sistema con su origen (`Regla` o `PorDefecto`) y todas las reglas con su resultado, en orden de evaluación. Es lo que usa el editor para probar una condición y lo que puede consultar el sistema integrado antes de crear el vínculo.
+
+**Permiso flujos:leer · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `vistaPreviaSeleccionFlujo`**
+
+**Cuerpo de la petición** (`application/json`, VistaPreviaDeSeleccionDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `tipoVinculo` | texto | sí |  |
+| `terceroId` | uuid o null | no |  |
+| `tipoPersona` | texto o null | no |  |
+| `pais` | texto o null | no |  |
+| `tipoIdentificacion` | texto o null | no |  |
+| `esExtranjero` | booleano o null | no |  |
+| `atributos` | objeto libre o null | no |  |
+
+**Respuestas**
+
+- `200` OK — SeleccionPrevistaDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `flujo` | FlujoDeExpedienteDto o null | no |  |
+| `flujo.id` | uuid | sí |  |
+| `flujo.versionId` | uuid | sí |  |
+| `flujo.codigo` | texto | sí |  |
+| `flujo.nombre` | texto | sí |  |
+| `flujo.version` | entero | sí |  |
+| `flujo.origen` | OrigenFlujo (texto) | sí | valores: Explicito · Regla · PorDefecto |
+| `flujo.regla` | SeleccionPorReglaDto o null | no |  |
+| `flujo.regla.prioridad` | entero | sí |  |
+| `flujo.regla.condicion` | CondicionDto | sí |  |
+| `flujo.regla.condicion.tipo` | texto | sí |  |
+| `flujo.regla.condicion.nodos` | lista de CondicionDto o null | no | recursivo: ver CondicionDto |
+| `flujo.regla.condicion.atributo` | texto o null | no |  |
+| `flujo.regla.condicion.operador` | texto o null | no |  |
+| `flujo.regla.condicion.valores` | lista de texto o null | no |  |
+| `flujo.regla.reglasEvaluadas` | entero | sí |  |
+| `reglas` | lista de ReglaDeSeleccionDto | sí |  |
+| `reglas[].flujoId` | uuid | sí |  |
+| `reglas[].versionId` | uuid | sí |  |
+| `reglas[].codigo` | texto | sí |  |
+| `reglas[].nombre` | texto | sí |  |
+| `reglas[].version` | entero | sí |  |
+| `reglas[].prioridad` | entero | sí |  |
+| `reglas[].condicion` | CondicionDto | sí | mismos campos que `flujo.regla.condicion` |
+| `reglas[].cumple` | booleano | sí |  |
+
+**Errores de negocio que lanza**
+
+- `422` `tipo-persona-invalido`
+- `422` `tipo-vinculo-invalido`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/flujos/seleccion/vista-previa" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"tipoVinculo":"texto","terceroId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoPersona":"texto","pais":"CO","tipoIdentificacion":"900123456","esExtranjero":true,"atributos":{}}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "flujo": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "versionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "codigo": "CODIGO_EJEMPLO",
+    "nombre": "Constructora Norte S.A.S.",
+    "version": 1,
+    "origen": "Explicito",
+    "regla": {
+      "prioridad": 1,
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "reglasEvaluadas": 1
+    }
+  },
+  "reglas": [
+    {
+      "flujoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "versionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "codigo": "CODIGO_EJEMPLO",
+      "nombre": "Constructora Norte S.A.S.",
+      "version": 1,
+      "prioridad": 1,
+      "condicion": {
+        "tipo": "texto",
+        "nodos": [
+          {}
+        ],
+        "atributo": "texto",
+        "operador": "texto",
+        "valores": [
+          "texto"
+        ]
+      },
+      "cumple": true
+    }
+  ]
 }
 ```
 

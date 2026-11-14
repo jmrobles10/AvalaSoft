@@ -1,6 +1,6 @@
 # API · Interesado
 
-9 operaciones en 5 recursos.
+16 operaciones en 8 recursos.
 
 ## Acceso por correo
 
@@ -45,6 +45,294 @@ Respuesta `202`:
 ```json
 {
   "mensaje": "Texto de ejemplo."
+}
+```
+
+</details>
+
+## Accesos solicitados
+
+### `GET /public/v1/accesos-solicitados`
+
+**Listar accesos solicitados.** Las solicitudes de acceso al tercero de la sesión, las pendientes primero y luego las más recientes.
+
+**Sesión del tercero · Portal del tercero (`/public/v1`) · SDK: `listarAccesosSolicitados`**
+
+**Respuestas**
+
+- `200` OK — lista de AccesoSolicitadoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `[]` | lista de AccesoSolicitadoDto | sí |  |
+| `[].id` | uuid | sí |  |
+| `[].correo` | texto | sí |  |
+| `[].estado` | texto | sí |  |
+| `[].desde` | fecha y hora | sí |  |
+| `[].empresas` | lista de EmpresaQueInvitoDto | sí |  |
+| `[].empresas[].empresa` | texto | sí |  |
+| `[].empresas[].fecha` | fecha y hora | sí |  |
+| `[].decididoPor` | texto o null | no |  |
+| `[].decididoEn` | fecha y hora o null | no |  |
+| `[].motivo` | texto o null | no |  |
+| `[].puedesDecidir` | booleano | no | por omisión true |
+| `[].decideLaPlataforma` | booleano | no | por omisión false |
+| `[].decididoVia` | texto o null | no |  |
+| `[].contactoDesplazado` | booleano | no | por omisión false |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/public/v1/accesos-solicitados" \
+  -H "Authorization: Bearer $TOKEN_DE_LA_SESION_DEL_TERCERO"
+```
+
+Respuesta `200`:
+
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "correo": "contacto@empresa.co",
+    "estado": "texto",
+    "desde": "2026-11-12T15:00:00Z",
+    "empresas": [
+      {
+        "empresa": "texto",
+        "fecha": "2026-11-12T15:00:00Z"
+      }
+    ],
+    "decididoPor": "texto",
+    "decididoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo.",
+    "puedesDecidir": true,
+    "decideLaPlataforma": false,
+    "decididoVia": "texto",
+    "contactoDesplazado": false
+  }
+]
+```
+
+</details>
+
+### `POST /public/v1/accesos-solicitados/{id}/aprobar`
+
+**Aprobar acceso solicitado.** Un contacto verificado aprueba el correo: pasa a ser contacto verificado del tercero (acceso completo en su próxima sesión), las empresas que lo invitaron reciben lo que el tercero ya compartiría con ellas y lo que ese correo subió para cada una se promueve a la bóveda del tercero. Repetir no cambia nada (idempotente). 404 `solicitud-no-encontrada` si no es de este tercero; 403 `acceso-propio` si la decide el mismo correo y `contacto-sin-verificar` si quien decide no está verificado.
+
+**Sesión del tercero · Portal del tercero (`/public/v1`) · SDK: `aprobarAccesoSolicitado`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — AccesoSolicitadoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `correo` | texto | sí |  |
+| `estado` | texto | sí |  |
+| `desde` | fecha y hora | sí |  |
+| `empresas` | lista de EmpresaQueInvitoDto | sí |  |
+| `empresas[].empresa` | texto | sí |  |
+| `empresas[].fecha` | fecha y hora | sí |  |
+| `decididoPor` | texto o null | no |  |
+| `decididoEn` | fecha y hora o null | no |  |
+| `motivo` | texto o null | no |  |
+| `puedesDecidir` | booleano | no | por omisión true |
+| `decideLaPlataforma` | booleano | no | por omisión false |
+| `decididoVia` | texto o null | no |  |
+| `contactoDesplazado` | booleano | no | por omisión false |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/public/v1/accesos-solicitados/3fa85f64-5717-4562-b3fc-2c963f66afa6/aprobar" \
+  -H "Authorization: Bearer $TOKEN_DE_LA_SESION_DEL_TERCERO"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "correo": "contacto@empresa.co",
+  "estado": "texto",
+  "desde": "2026-11-12T15:00:00Z",
+  "empresas": [
+    {
+      "empresa": "texto",
+      "fecha": "2026-11-12T15:00:00Z"
+    }
+  ],
+  "decididoPor": "texto",
+  "decididoEn": "2026-11-12T15:00:00Z",
+  "motivo": "Texto de ejemplo.",
+  "puedesDecidir": true,
+  "decideLaPlataforma": false,
+  "decididoVia": "texto",
+  "contactoDesplazado": false
+}
+```
+
+</details>
+
+### `POST /public/v1/accesos-solicitados/{id}/rechazar`
+
+**Rechazar acceso solicitado.** Un contacto verificado rechaza el correo: se cortan sus sesiones al instante, no vuelve a entrar a este tercero y la empresa ve el rechazo en su vínculo (puede invitar a otro correo). Repetir no cambia nada; un correo ya aprobado no se rechaza (409 `solicitud-ya-aprobada`); 403 `contacto-sin-verificar`.
+
+**Sesión del tercero · Portal del tercero (`/public/v1`) · SDK: `rechazarAccesoSolicitado`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, RechazarAccesoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `motivo` | texto o null | no |  |
+
+**Respuestas**
+
+- `200` OK — AccesoSolicitadoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `correo` | texto | sí |  |
+| `estado` | texto | sí |  |
+| `desde` | fecha y hora | sí |  |
+| `empresas` | lista de EmpresaQueInvitoDto | sí |  |
+| `empresas[].empresa` | texto | sí |  |
+| `empresas[].fecha` | fecha y hora | sí |  |
+| `decididoPor` | texto o null | no |  |
+| `decididoEn` | fecha y hora o null | no |  |
+| `motivo` | texto o null | no |  |
+| `puedesDecidir` | booleano | no | por omisión true |
+| `decideLaPlataforma` | booleano | no | por omisión false |
+| `decididoVia` | texto o null | no |  |
+| `contactoDesplazado` | booleano | no | por omisión false |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/public/v1/accesos-solicitados/3fa85f64-5717-4562-b3fc-2c963f66afa6/rechazar" \
+  -H "Authorization: Bearer $TOKEN_DE_LA_SESION_DEL_TERCERO" \
+  -H "Content-Type: application/json" \
+  -d '{"motivo":"Texto de ejemplo."}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "correo": "contacto@empresa.co",
+  "estado": "texto",
+  "desde": "2026-11-12T15:00:00Z",
+  "empresas": [
+    {
+      "empresa": "texto",
+      "fecha": "2026-11-12T15:00:00Z"
+    }
+  ],
+  "decididoPor": "texto",
+  "decididoEn": "2026-11-12T15:00:00Z",
+  "motivo": "Texto de ejemplo.",
+  "puedesDecidir": true,
+  "decideLaPlataforma": false,
+  "decididoVia": "texto",
+  "contactoDesplazado": false
+}
+```
+
+</details>
+
+### `GET /public/v1/contactos-del-tercero`
+
+**Obtener contactos del tercero.** Los contactos del tercero con su estado de verificación y el historial de cómo llegaron: quién puede decidir los accesos de otros correos (los verificados) y cuál es el correo de esta sesión.
+
+**Sesión del tercero · Portal del tercero (`/public/v1`) · SDK: `obtenerContactosDelTercero`**
+
+**Respuestas**
+
+- `200` OK — ContactosDelTerceroDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `contactos` | lista de ContactoDelTerceroDto | sí |  |
+| `contactos[].nombre` | texto | sí |  |
+| `contactos[].correo` | texto | sí |  |
+| `contactos[].rol` | texto | sí |  |
+| `contactos[].verificacion` | texto | sí |  |
+| `contactos[].medio` | texto o null | no |  |
+| `contactos[].verificadoEn` | fecha y hora o null | no |  |
+| `contactos[].esTuCorreo` | booleano | sí |  |
+| `contactos[].desplazado` | booleano | sí |  |
+| `historial` | lista de EntradaDeHistorialDeContactoDto | sí |  |
+| `historial[].fecha` | fecha y hora | sí |  |
+| `historial[].tipo` | texto | sí |  |
+| `historial[].correo` | texto | sí |  |
+| `historial[].detalle` | texto o null | no |  |
+| `puedesDecidir` | booleano | sí |  |
+| `decideLaPlataforma` | booleano | sí |  |
+
+**Errores de negocio que lanza**
+
+- `404` `tercero-no-encontrado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/public/v1/contactos-del-tercero" \
+  -H "Authorization: Bearer $TOKEN_DE_LA_SESION_DEL_TERCERO"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "contactos": [
+    {
+      "nombre": "Constructora Norte S.A.S.",
+      "correo": "contacto@empresa.co",
+      "rol": "texto",
+      "verificacion": "texto",
+      "medio": "texto",
+      "verificadoEn": "2026-11-12T15:00:00Z",
+      "esTuCorreo": true,
+      "desplazado": true
+    }
+  ],
+  "historial": [
+    {
+      "fecha": "2026-11-12T15:00:00Z",
+      "tipo": "texto",
+      "correo": "contacto@empresa.co",
+      "detalle": "Texto de ejemplo."
+    }
+  ],
+  "puedesDecidir": true,
+  "decideLaPlataforma": true
 }
 ```
 
@@ -145,6 +433,8 @@ Campos de la respuesta `200`:
 | `vinculos[].estado` | EstadoVinculo (texto) | sí | valores: Invitado · EnValidacion · Activo · PorVencer · Vencido · Bloqueado · Desvinculado · Anulado |
 | `expedienteOrigen` | uuid o null | no |  |
 | `vinculoOrigen` | uuid o null | no |  |
+| `aislada` | booleano | no | por omisión false |
+| `terceroEnmascarado` | texto o null | no |  |
 
 Campos de la respuesta `202`:
 
@@ -181,7 +471,9 @@ Respuesta `200`:
     }
   ],
   "expedienteOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "vinculoOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  "vinculoOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "aislada": false,
+  "terceroEnmascarado": "texto"
 }
 ```
 
@@ -244,7 +536,9 @@ Respuesta `200`:
     }
   ],
   "expedienteOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "vinculoOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  "vinculoOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "aislada": false,
+  "terceroEnmascarado": "texto"
 }
 ```
 
@@ -401,7 +695,7 @@ Respuesta `200`:
 
 ### `POST /public/v1/invitaciones/{vinculoId}/aceptar`
 
-**Aceptar invitación.** Registra `ConsentimientosRegistrados` y luego `InvitacionAceptada` en el stream del vínculo (actor = tercero) y comparte con la empresa la versión actual de cada documento global que piden los requisitos del flujo resuelto para el vínculo (RQ-3; más los `PorVinculo` ya cargados para él); la respuesta trae esos `compartidos`. Idempotente por su propia regla: repetir ⇒ 409 `invitacion-ya-aceptada`. En la misma transacción abre el expediente inicial con ese flujo (FL-5), con los requisitos cubiertos ya `Cargado`; si no hay flujo publicado no se comparte ningún global, la aceptación se registra igual y el vínculo queda con apertura pendiente (FL-6): nunca falla por configuración de la empresa.
+**Aceptar invitación.** Registra `ConsentimientosRegistrados` y luego `InvitacionAceptada` en el stream del vínculo (actor = tercero) y comparte con la empresa la versión actual de cada documento global que piden los requisitos del flujo resuelto para el vínculo (RQ-3; más los `PorVinculo` ya cargados para él); la respuesta trae esos `compartidos`. Idempotente por su propia regla: repetir ⇒ 409 `invitacion-ya-aceptada`. En la misma transacción abre el expediente inicial con ese flujo (FL-5), con los requisitos cubiertos ya `Cargado`; si no hay flujo publicado no se comparte ningún global, la aceptación se registra igual y el vínculo queda con apertura pendiente (FL-6): nunca falla por configuración de la empresa. Con acceso aislado (el correo no es contacto conocido del tercero) se acepta igual, pero **no se comparte nada de la bóveda global** ni se acepta el aviso de la plataforma por el tercero: la empresa solo recibe lo que esa persona suba para ella (cuarentena) hasta que un contacto lo apruebe.
 
 **Sesión del tercero · Portal del tercero (`/public/v1`) · SDK: `aceptarInvitacion`**
 
@@ -704,6 +998,53 @@ Respuesta `200`:
 
 </details>
 
+## Migracion de acceso aislado
+
+Ejecución inmediata de la migración (Plataforma): para repetirla a mano (es idempotente) y para operar.
+
+### `POST /api/v1/plataforma/acceso-aislado/migrar`
+
+**Migrar acceso aislado.** Corre ya la migración de los vínculos aceptados antes del acceso aislado y devuelve lo que hizo. Idempotente.
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `migrarAccesoAislado`**
+
+**Respuestas**
+
+- `200` OK — ResultadoDeMigracionDeAccesoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `tercerosRevisados` | entero | sí |  |
+| `contactosVerificados` | entero | sí |  |
+| `primerosContactos` | entero | sí |  |
+| `vinculosAislados` | entero | sí |  |
+| `tercerosSincronizados` | entero | sí |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/plataforma/acceso-aislado/migrar" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
+  -H "Idempotency-Key: $(uuidgen)"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "tercerosRevisados": 1,
+  "contactosVerificados": 1,
+  "primerosContactos": 1,
+  "vinculosAislados": 1,
+  "tercerosSincronizados": 1
+}
+```
+
+</details>
+
 ## Sesión pública
 
 ### `POST /public/v1/sesion/cerrar`
@@ -772,8 +1113,94 @@ Respuesta `200`:
     }
   ],
   "expedienteOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "vinculoOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  "vinculoOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "aislada": false,
+  "terceroEnmascarado": "texto"
 }
+```
+
+</details>
+
+## Sesiones del tercero
+
+«Mis sesiones»: las sesiones abiertas del tercero (una por navegador y correo) y el cierre individual de cada una. Cerrar una la revoca de inmediato: su token de acceso deja de valer en segundos y en todos los servidores, no al vencer los 30 minutos (`ICacheDeSesionesDeTercero`), y su cookie de refresco ya no renueva. Solo una sesión con acceso completo ve y cierra sesiones: una aislada no toca las del tercero entero.
+
+### `GET /public/v1/sesiones`
+
+**Listar sesiones del tercero.** Las sesiones abiertas del tercero (todas sus personas), la más reciente primero. `esActual` marca la de este token.
+
+**Sesión del tercero · Portal del tercero (`/public/v1`) · SDK: `listarSesionesDelTercero`**
+
+**Respuestas**
+
+- `200` OK — lista de SesionActivaDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `[]` | lista de SesionActivaDto | sí |  |
+| `[].id` | uuid | sí |  |
+| `[].correo` | texto | sí |  |
+| `[].creadaEn` | fecha y hora | sí |  |
+| `[].expiraEn` | fecha y hora | sí |  |
+| `[].ultimoUsoEn` | fecha y hora o null | no |  |
+| `[].dispositivo` | texto o null | no |  |
+| `[].ip` | texto o null | no |  |
+| `[].esActual` | booleano | sí |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/public/v1/sesiones" \
+  -H "Authorization: Bearer $TOKEN_DE_LA_SESION_DEL_TERCERO"
+```
+
+Respuesta `200`:
+
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "correo": "contacto@empresa.co",
+    "creadaEn": "2026-11-12T15:00:00Z",
+    "expiraEn": "2026-11-12T15:00:00Z",
+    "ultimoUsoEn": "2026-11-12T15:00:00Z",
+    "dispositivo": "texto",
+    "ip": "texto",
+    "esActual": true
+  }
+]
+```
+
+</details>
+
+### `POST /public/v1/sesiones/{id}/cerrar`
+
+**Cerrar sesión del tercero.** Cierra una sesión del tercero (204). Una que no es de este tercero responde 404; una ya cerrada o vencida, también (no hay nada que cerrar). Cerrar la propia sesión borra además su cookie.
+
+**Sesión del tercero · Portal del tercero (`/public/v1`) · SDK: `cerrarSesionDelTercero`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `204` Sin contenido
+
+**Errores de negocio que lanza**
+
+- `404` `sesion-no-encontrada`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/public/v1/sesiones/3fa85f64-5717-4562-b3fc-2c963f66afa6/cerrar" \
+  -H "Authorization: Bearer $TOKEN_DE_LA_SESION_DEL_TERCERO"
 ```
 
 </details>

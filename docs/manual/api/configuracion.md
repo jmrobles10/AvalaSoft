@@ -1815,6 +1815,10 @@ Campos de la respuesta `200`:
 | `[].exigeCuentaDesignada` | booleano | sí |  |
 | `[].activo` | booleano | sí |  |
 | `[].exigeOtpEnEnlace` | booleano | no | por omisión false |
+| `[].requiereAprobacionParaInvitar` | booleano | no | por omisión false |
+| `[].aprobadoresDeInvitacion` | AprobadoresDeInvitacionDto o null | no |  |
+| `[].aprobadoresDeInvitacion.tipo` | TipoDeAprobadores (texto) | sí | valores: Rol · Area |
+| `[].aprobadoresDeInvitacion.valor` | texto | sí |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -1843,7 +1847,12 @@ Respuesta `200`:
     ],
     "exigeCuentaDesignada": true,
     "activo": true,
-    "exigeOtpEnEnlace": false
+    "exigeOtpEnEnlace": false,
+    "requiereAprobacionParaInvitar": false,
+    "aprobadoresDeInvitacion": {
+      "tipo": "Rol",
+      "valor": "vsk_prueba_ejemplo"
+    }
   }
 ]
 ```
@@ -1869,6 +1878,10 @@ Respuesta `200`:
 | `atributosPermitidos[].opciones` | lista de texto o null | no |  |
 | `exigeCuentaDesignada` | booleano | sí |  |
 | `exigeOtpEnEnlace` | booleano | no | por omisión false |
+| `requiereAprobacionParaInvitar` | booleano | no | por omisión false |
+| `aprobadoresDeInvitacion` | AprobadoresDeInvitacionDto o null | no |  |
+| `aprobadoresDeInvitacion.tipo` | TipoDeAprobadores (texto) | sí | valores: Rol · Area |
+| `aprobadoresDeInvitacion.valor` | texto | sí |  |
 
 **Respuestas**
 
@@ -1889,6 +1902,10 @@ Campos de la respuesta `201`:
 | `exigeCuentaDesignada` | booleano | sí |  |
 | `activo` | booleano | sí |  |
 | `exigeOtpEnEnlace` | booleano | no | por omisión false |
+| `requiereAprobacionParaInvitar` | booleano | no | por omisión false |
+| `aprobadoresDeInvitacion` | AprobadoresDeInvitacionDto o null | no |  |
+| `aprobadoresDeInvitacion.tipo` | TipoDeAprobadores (texto) | sí | valores: Rol · Area |
+| `aprobadoresDeInvitacion.valor` | texto | sí |  |
 
 **Errores de negocio que lanza**
 
@@ -1901,7 +1918,7 @@ curl -X POST "https://{host}/api/v1/tipos-vinculo" \
   -H "X-Api-Key: $API_KEY" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
-  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","atributosPermitidos":[{"clave":"texto","tipo":"texto","obligatorio":true,"opciones":["texto"]}],"exigeCuentaDesignada":true,"exigeOtpEnEnlace":false}'
+  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","atributosPermitidos":[{"clave":"texto","tipo":"texto","obligatorio":true,"opciones":["texto"]}],"exigeCuentaDesignada":true,"exigeOtpEnEnlace":false,"requiereAprobacionParaInvitar":false,"aprobadoresDeInvitacion":{"tipo":"Rol","valor":"vsk_prueba_ejemplo"}}'
 ```
 
 Respuesta `201`:
@@ -1923,7 +1940,12 @@ Respuesta `201`:
   ],
   "exigeCuentaDesignada": true,
   "activo": true,
-  "exigeOtpEnEnlace": false
+  "exigeOtpEnEnlace": false,
+  "requiereAprobacionParaInvitar": false,
+  "aprobadoresDeInvitacion": {
+    "tipo": "Rol",
+    "valor": "vsk_prueba_ejemplo"
+  }
 }
 ```
 
@@ -1948,19 +1970,7 @@ Respuesta `201`:
 
 Campos de la respuesta `200`:
 
-| Campo | Tipo | Requerido | Detalle |
-|---|---|---|---|
-| `id` | uuid | sí |  |
-| `codigo` | texto | sí |  |
-| `nombre` | texto | sí |  |
-| `atributosPermitidos` | lista de AtributoPermitidoDto | sí |  |
-| `atributosPermitidos[].clave` | texto | sí |  |
-| `atributosPermitidos[].tipo` | texto | sí |  |
-| `atributosPermitidos[].obligatorio` | booleano | sí |  |
-| `atributosPermitidos[].opciones` | lista de texto o null | no |  |
-| `exigeCuentaDesignada` | booleano | sí |  |
-| `activo` | booleano | sí |  |
-| `exigeOtpEnEnlace` | booleano | no | por omisión false |
+Mismos campos de `TipoVinculoDto` que se detallan en `POST /api/v1/tipos-vinculo`.
 
 **Errores de negocio que lanza**
 
@@ -1992,7 +2002,12 @@ Respuesta `200`:
   ],
   "exigeCuentaDesignada": true,
   "activo": true,
-  "exigeOtpEnEnlace": false
+  "exigeOtpEnEnlace": false,
+  "requiereAprobacionParaInvitar": false,
+  "aprobadoresDeInvitacion": {
+    "tipo": "Rol",
+    "valor": "vsk_prueba_ejemplo"
+  }
 }
 ```
 
@@ -2000,7 +2015,7 @@ Respuesta `200`:
 
 ### `PUT /api/v1/tipos-vinculo/{id}`
 
-**Actualizar tipo vínculo.** El código es inmutable; se editan nombre, atributos, cuenta designada, OTP en el enlace y estado.
+**Actualizar tipo vínculo.** El código es inmutable; se editan nombre, atributos, cuenta designada, OTP en el enlace, la aprobación previa a invitar (AI) y estado.
 
 **Permiso configuracion:escribir · API (`/api/v1`) · SDK: `actualizarTipoVinculo`**
 
@@ -2024,6 +2039,10 @@ Respuesta `200`:
 | `atributosPermitidos[].opciones` | lista de texto o null | no |  |
 | `exigeCuentaDesignada` | booleano | sí |  |
 | `exigeOtpEnEnlace` | booleano | no | por omisión false |
+| `requiereAprobacionParaInvitar` | booleano | no | por omisión false |
+| `aprobadoresDeInvitacion` | AprobadoresDeInvitacionDto o null | no |  |
+| `aprobadoresDeInvitacion.tipo` | TipoDeAprobadores (texto) | sí | valores: Rol · Area |
+| `aprobadoresDeInvitacion.valor` | texto | sí |  |
 
 **Respuestas**
 
@@ -2032,19 +2051,7 @@ Respuesta `200`:
 
 Campos de la respuesta `200`:
 
-| Campo | Tipo | Requerido | Detalle |
-|---|---|---|---|
-| `id` | uuid | sí |  |
-| `codigo` | texto | sí |  |
-| `nombre` | texto | sí |  |
-| `atributosPermitidos` | lista de AtributoPermitidoDto | sí |  |
-| `atributosPermitidos[].clave` | texto | sí |  |
-| `atributosPermitidos[].tipo` | texto | sí |  |
-| `atributosPermitidos[].obligatorio` | booleano | sí |  |
-| `atributosPermitidos[].opciones` | lista de texto o null | no |  |
-| `exigeCuentaDesignada` | booleano | sí |  |
-| `activo` | booleano | sí |  |
-| `exigeOtpEnEnlace` | booleano | no | por omisión false |
+Mismos campos de `TipoVinculoDto` que se detallan en `POST /api/v1/tipos-vinculo`.
 
 **Errores de negocio que lanza**
 
@@ -2057,7 +2064,7 @@ Campos de la respuesta `200`:
 curl -X PUT "https://{host}/api/v1/tipos-vinculo/3fa85f64-5717-4562-b3fc-2c963f66afa6" \
   -H "X-Api-Key: $API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","atributosPermitidos":[{"clave":"texto","tipo":"texto","obligatorio":true,"opciones":["texto"]}],"exigeCuentaDesignada":true,"exigeOtpEnEnlace":false}'
+  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","atributosPermitidos":[{"clave":"texto","tipo":"texto","obligatorio":true,"opciones":["texto"]}],"exigeCuentaDesignada":true,"exigeOtpEnEnlace":false,"requiereAprobacionParaInvitar":false,"aprobadoresDeInvitacion":{"tipo":"Rol","valor":"vsk_prueba_ejemplo"}}'
 ```
 
 Respuesta `200`:
@@ -2079,7 +2086,12 @@ Respuesta `200`:
   ],
   "exigeCuentaDesignada": true,
   "activo": true,
-  "exigeOtpEnEnlace": false
+  "exigeOtpEnEnlace": false,
+  "requiereAprobacionParaInvitar": false,
+  "aprobadoresDeInvitacion": {
+    "tipo": "Rol",
+    "valor": "vsk_prueba_ejemplo"
+  }
 }
 ```
 

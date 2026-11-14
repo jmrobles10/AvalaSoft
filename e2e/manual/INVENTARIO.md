@@ -310,7 +310,7 @@ Las funciones que llegaron a main después de los lotes 1 a 4. Lo que está ✅ 
 | `revision/cotejo-con-fuentes-oficiales` ☐ | Revisor/área | Expediente con diferencia entre la ficha y RUES (FO-4, FO-9) | Resultado por fuente, cotejo campo por campo, resolver una diferencia, constancia con la respuesta cruda |
 | `acceso/cola-de-contactos-verificados` ☐ | Plataforma | Solicitudes de acceso aislado pendientes (AV, solo si cabe) | Cola de solicitudes de acceso en la consola de Plataforma |
 
-**Pendiente del lote 5 (esta corrida)**: los 10 recorridos de arriba no se han escrito. Los tres ✅ sí, y la «aprobación antes de invitar» del tipo de vínculo está cubierta en parte por `operacion/invitaciones-por-aprobar`.
+**Pendiente del lote 5 (esta corrida)**: los 10 recorridos de arriba no se han escrito, salvo los dos que están en `configuracion/` y que siguen rotos: `aprobacion-antes-de-invitar` (no encuentra el interruptor «Exige aprobación antes de invitar» en el panel del tipo; la sesión embebida se cerró durante la espera) y `cuestionario-de-evaluacion` (no encuentra la casilla «Eliminatoria» de la pregunta). Los tres ✅ sí pasan. La aprobación antes de invitar está cubierta en parte por `operacion/invitaciones-por-aprobar`.
 
 ### Cómo reportar
 
