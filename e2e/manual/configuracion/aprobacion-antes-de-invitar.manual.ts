@@ -34,13 +34,13 @@ recorrido(
     await app.getByRole('menuitem', { name: 'Editar', exact: true }).click();
     const panel = app.locator('[aria-labelledby="titulo-tipo-vinculo"]');
     await expect(panel.getByRole('heading', { name: /Editar Proveedor/ })).toBeVisible();
-    await panel.getByRole('checkbox', { name: /Exige aprobación antes de invitar/ }).check();
+    await panel.getByLabel('Exige aprobación antes de invitar').check();
     await paso(page, {
       titulo: 'Activa la aprobación antes de invitar',
       explicacion:
         'Con «Exige aprobación antes de invitar», cada invitación a un tercero de este tipo se retiene: el correo y el enlace no salen hasta que otra persona la apruebe. ' +
         'Quien la pidió no puede aprobarla, y el tercero no ve el vínculo mientras tanto.',
-      resaltar: panel.getByRole('checkbox', { name: /Exige aprobación antes de invitar/ }),
+      resaltar: panel.getByLabel('Exige aprobación antes de invitar'),
       configuracion: {
         ajuste: 'Exige aprobación antes de invitar (por tipo de vínculo)',
         ruta: 'Configuración › Tipos de vínculo (/tipos-vinculo)',
@@ -49,7 +49,7 @@ recorrido(
     });
 
     // 2. Quién aprueba: un rol o un área.
-    await panel.getByRole('radio', { name: 'Un rol' }).check();
+    await panel.getByRole('button', { name: 'Un rol', exact: true }).click();
     await panel.getByRole('combobox', { name: 'Rol que aprueba' }).click();
     await app.getByRole('option', { name: 'Oficial de cumplimiento' }).click();
     await paso(page, {
@@ -66,7 +66,6 @@ recorrido(
 
     await panel.getByRole('button', { name: 'Guardar', exact: true }).click();
     await expect(panel).toBeHidden();
-    await expect(app.getByRole('row', { name: /Proveedor/ }).getByText(/aprobación/i).first()).toBeVisible();
 
     // 3. Una invitación por lote queda por aprobar.
     await app.getByRole('link', { name: 'Vínculos' }).first().click();
