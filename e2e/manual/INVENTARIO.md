@@ -299,19 +299,19 @@ Las funciones que llegaron a main después de los lotes 1 a 4. Lo que está ✅ 
 
 | Archivo | Actor | Siembra | Pasos esperados |
 |---|---|---|---|
-| `configuracion/aprobacion-antes-de-invitar` ☐ | Administrador de empresa | Grupo base (AI-9) | Interruptor «Exige aprobación antes de invitar», «Un rol» o «Un área» en Tipos de vínculo, lote que queda «Por aprobar» |
+| `configuracion/aprobacion-antes-de-invitar` ✅ | Administrador de empresa | Grupo base (AI-9) | Interruptor «Exige aprobación antes de invitar», «Un rol» o «Un área» en Tipos de vínculo, lote que queda «Por aprobar» |
 | `configuracion/cuestionario-de-evaluacion` ☐ | Administrador de empresa | Grupo base (CE-14) | Crear un cuestionario, secciones y preguntas con puntaje, eliminatoria y umbral, publicar (la versión queda congelada) |
 | `tercero/autoevaluacion-del-proveedor` ☐ | Tercero | Cuestionario con «Quién responde: Tercero» asignado (CE-3) | Responder la autoevaluación sin ver puntajes ni umbral, enviar |
 | `revision/evaluacion-del-proveedor` ✅ | Oficial de cumplimiento | Cuestionario de evaluador con umbral 70 publicado por API y asignado al vínculo (`llaveConCuestionarios`) | Lista de evaluaciones, responder, enviar y resultado «reprobada» bajo el umbral |
 | `revision/evaluacion-bajo-el-umbral` ☐ | Revisor/área | Evaluación de evaluador interno con puntaje bajo el umbral (CE-5, CE-6) | Calificar, puntaje bajo el umbral que frena el cierre, recalificar, informe de evaluaciones (CE-12) |
-| `tercero/personas-relacionadas` ☐ | Tercero | Representante legal y socio sincronizados desde la ficha (PR-2) | Personas vigentes y propuestas, cédula de una persona relacionada, propuesta de la Cámara que confirma o descarta (PR-4, PR-9) |
+| `tercero/personas-relacionadas` ✅ | Tercero | Representante legal y socio sincronizados desde la ficha (PR-2) | Personas vigentes y propuestas, cédula de una persona relacionada, propuesta de la Cámara que confirma o descarta (PR-4, PR-9) |
 | `revision/documento-de-persona-relacionada` ☐ | Revisor/área | Persona relacionada con cédula subida (PR-8) | Lo que ve la empresa del documento de una persona relacionada y de dónde sale |
 | `plataforma/fuentes-oficiales` ☐ | Plataforma | Consola de Plataforma con credenciales simuladas (FO-5) | Configurar RUES y DIAN por proveedor, confirmar con passkey, no se ven las credenciales |
 | `configuracion/fuentes-oficiales-de-la-empresa` ☐ | Administrador de empresa | Flujo que pide RUES y DIAN (FO-1) | Pedir las verificaciones por tipo de vínculo, bloqueante o solo informar, vigencia, monitoreo |
 | `revision/cotejo-con-fuentes-oficiales` ☐ | Revisor/área | Expediente con diferencia entre la ficha y RUES (FO-4, FO-9) | Resultado por fuente, cotejo campo por campo, resolver una diferencia, constancia con la respuesta cruda |
 | `acceso/cola-de-contactos-verificados` ☐ | Plataforma | Solicitudes de acceso aislado pendientes (AV, solo si cabe) | Cola de solicitudes de acceso en la consola de Plataforma |
 
-**Pendiente del lote 5**: `configuracion/aprobacion-antes-de-invitar` sigue roto (el enlace «Vínculos» del paso del lote no es un enlace en la interfaz). `configuracion/cuestionario-de-evaluacion` sigue roto (tras guardar, no aparece el botón «Publicar versión 1»). Pasa `revision/evaluacion-del-proveedor`. Quedan sin escribir: personas relacionadas, fuentes oficiales RUES/DIAN y contactos verificados (AV). La aprobación antes de invitar está cubierta en parte por `operacion/invitaciones-por-aprobar`.
+**Pendiente del lote 5**: `configuracion/cuestionario-de-evaluacion` sigue roto: tras guardar el borrador, el editor sigue con «Guardar borrador» activo y no aparece «Publicar versión 1» (no confirmado si es defecto del producto). Quedan sin escribir: fuentes oficiales RUES/DIAN (FO) y contactos verificados (AV); la propuesta de personas desde la Cámara necesita IA activa y no está en el recorrido de personas relacionadas.
 
 ### Cómo reportar
 
