@@ -117,6 +117,11 @@ public sealed partial class ExpedientesApiTests
         (resuelta.Decision, resuelta.ResueltaPor, resuelta.Heredada).ShouldBe(("Descartada", e.Carlos.Usuario.Id.ToString(), false));
         resuelta.VigenteHasta!.Value.ShouldBe(resuelta.ResueltaEn!.Value.AddMonths(12));
         (await CodigoAsync(await ApiAsync("POST", ruta, Delegado(e, e.Carlos), new ResolverCoincidenciaDto("Confirmada", "x"), 409))).ShouldBe("estado-invalido");
+        // El informe de consultas y estudios las cuenta como las listas: una fila por fuente con sus diferencias y las que se aceptaron.
+        var informe = await ApiAsync<InformeCumplimientoDto>("GET", "/api/v1/informes/cumplimiento", Delegado(e, e.Carlos), null, 200);
+        var delInforme = informe.Filas.Single(f => f.Verificacion == "Rues");
+        (delInforme.Proveedor, delInforme.Estado, delInforme.Resultado, delInforme.Coincidencias, delInforme.Descartadas, delInforme.Confirmadas).ShouldBe(("Simulado", "Satisfecha", "ConDiferencias", 1, 1, 0));
+        informe.Verificaciones.Single(r => r.Tipo == "Rues").ConCoincidencias.ShouldBe(1);
         (await EsperarEventosAsync(e, "expediente.coincidencia_resuelta", 1)).Single().GetProperty("datos").GetProperty("tipo").GetString().ShouldBe("Rues");
     }
 
