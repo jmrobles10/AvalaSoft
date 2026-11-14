@@ -129,6 +129,73 @@ public static class PersonasDeLaFicha
     }
 }
 
+/// <summary>Una relación de un tercero con los datos de la persona (nombre e identificación) para compararla con lo que lee la IA de un documento.</summary>
+public sealed record RelacionConPersona(RelacionEntreTerceros Relacion, string Nombre, Identificacion Identificacion);
+
+/// <summary>
+/// Reconciliación de fuentes (ADR-0010, regla 5): qué representantes y suplentes lee la IA en la Cámara de comercio que <b>no</b> son los que el tercero tiene vigentes. Lo que
+/// devuelve es lo que se <b>propone</b> (nunca lo que se cambia): la relación cambia cuando el tercero lo confirma. Función pura.
+/// </summary>
+public static class DeteccionDeRelaciones
+{
+    private static readonly System.Text.RegularExpressions.Regex Documento =
+        new(@"^(?<tipo>CC|CE|TI|PPT|PA)?(?<numero>[0-9]{3,15})$", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// Las personas de la Cámara (<paramref name="extraidas"/>: nombre, identificación y cargo) que el tercero no tiene como representante legal o suplente vigente: cada una
+    /// con su tipo (suplente si el cargo lo dice; si no, representante legal) y como principal si es un representante legal. Solo compara contra un tercero que <b>ya tiene</b> un
+    /// representante legal vigente (sin ninguno, lo que la IA lee llega por la propuesta de la ficha, FM-13). Una persona sin un número de identificación válido no se propone
+    /// (no se puede crear su bóveda); una que ya es una propuesta pendiente, o que el tercero ya descartó con este mismo documento, tampoco.
+    /// </summary>
+    public static IReadOnlyList<PersonaDeclarada> Distintas(IReadOnlyList<PersonaExtraida> extraidas, IReadOnlyList<RelacionConPersona> delTercero, DateOnly hoy,
+        Guid? documentoId, int? version)
+    {
+        var vigentes = delTercero.Where(r => r.Relacion.EsVigente(hoy) && r.Relacion.Tipo is TipoRelacionTerceros.RepresentanteLegal or TipoRelacionTerceros.Suplente).ToList();
+        if (!vigentes.Any(r => r.Relacion.Tipo == TipoRelacionTerceros.RepresentanteLegal))
+            return [];
+
+        var resultado = new List<PersonaDeclarada>();
+        foreach (var persona in extraidas)
+        {
+            if (Identificar(persona.Identificacion) is not { } identificacion || string.IsNullOrWhiteSpace(persona.Nombre))
+                continue;
+            var suplente = Ficha.Normalizacion.Texto(persona.Cargo).Contains("SUPLENTE", StringComparison.Ordinal);
+            var tipo = suplente ? TipoRelacionTerceros.Suplente : TipoRelacionTerceros.RepresentanteLegal;
+            if (vigentes.Any(r => r.Relacion.Tipo == tipo && Ficha.CruceConDocumento.MismaPersona(persona.Nombre, persona.Identificacion, r.Nombre, r.Identificacion.Numero)))
+                continue;
+            if (resultado.Any(r => r.Tipo == tipo && r.Clave == identificacion.Clave))
+                continue;
+
+            var propia = delTercero.FirstOrDefault(r => r.Relacion.Tipo == tipo && r.Identificacion.Clave == identificacion.Clave);
+            if (propia is { Relacion: { Estado: EstadoDeRelacion.Propuesta } })
+                continue;
+            if (propia is { Relacion: { Estado: EstadoDeRelacion.Descartada } descartada } && descartada.DocumentoId == documentoId && descartada.VersionDelDocumento == version)
+                continue;
+
+            resultado.Add(new PersonaDeclarada(identificacion, persona.Nombre.Trim(), tipo, !suplente, null, string.IsNullOrWhiteSpace(persona.Cargo) ? null : persona.Cargo.Trim()));
+        }
+
+        return resultado;
+    }
+
+    /// <summary>Cédula de ciudadanía (o extranjería, tarjeta, PPT, pasaporte) a partir del texto que lee la IA («CC 80.123.456», «80123456»); sin prefijo es una cédula.</summary>
+    public static Identificacion? Identificar(string? texto)
+    {
+        var limpio = new string((texto ?? string.Empty).Where(char.IsLetterOrDigit).ToArray()).ToUpperInvariant();
+        var coincidencia = Documento.Match(limpio);
+        if (!coincidencia.Success)
+            return null;
+        try
+        {
+            return Identificacion.Crear("CO", coincidencia.Groups["tipo"].Success ? coincidencia.Groups["tipo"].Value : "CC", coincidencia.Groups["numero"].Value);
+        }
+        catch (ReglaDeNegocioException)
+        {
+            return null;
+        }
+    }
+}
+
 /// <summary>Lo que hay que escribir en el stream de una relación para que quede como lo declara la ficha: crear el stream o anexar eventos al existente.</summary>
 public sealed record CambioEnRelacion(Guid RelacionId, bool EsNueva, IReadOnlyList<object> Eventos);
 

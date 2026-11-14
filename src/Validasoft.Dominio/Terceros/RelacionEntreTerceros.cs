@@ -181,6 +181,19 @@ public sealed class RelacionEntreTerceros
     }
 
     /// <summary>
+    /// La IA vuelve a leer a la persona en un documento <b>distinto</b> al de la propuesta que se descartó (o de la relación que terminó): vuelve a ser una propuesta con los
+    /// datos de ahora. Una propuesta ya pendiente, una vigente o una descartada por este mismo documento y versión ⇒ nulo (no se insiste con lo que el tercero ya decidió).
+    /// </summary>
+    public CambioDeRelacionDetectado? Redetectar(bool principal, decimal? participacion, string? cargo, decimal confianza, Guid? documentoId, int? version, DateTimeOffset ahora)
+    {
+        if (Estado is EstadoDeRelacion.Propuesta or EstadoDeRelacion.Confirmada)
+            return null;
+        if (Estado == EstadoDeRelacion.Descartada && DocumentoId == documentoId && VersionDelDocumento == version)
+            return null;
+        return Detectar(OrigenId, DestinoId, Tipo, principal, participacion, cargo, confianza, documentoId, version, ahora);
+    }
+
+    /// <summary>
     /// Confirma una propuesta: pasa a vigente desde <paramref name="hoy"/>. Ya confirmada ⇒ nulo (idempotente); finalizada o descartada ⇒ 409
     /// <c>relacion-no-propuesta</c>.
     /// </summary>
@@ -295,6 +308,23 @@ public sealed class RelacionEntreTerceros
         ActualizadaEn = e.Fecha
     };
 
+    public void Apply(CambioDeRelacionDetectado e)
+    {
+        // La relación ya existía (terminada o descartada) y la IA la vuelve a proponer: otra vez una propuesta, con lo que la IA leyó ahora.
+        Estado = EstadoDeRelacion.Propuesta;
+        Fuente = FuenteDeRelacion.ExtraidaIa;
+        Principal = e.Principal;
+        Participacion = e.Participacion;
+        Cargo = e.Cargo;
+        Confianza = e.Confianza;
+        DocumentoId = e.DocumentoId;
+        VersionDelDocumento = e.Version;
+        VigenteHasta = null;
+        MotivoDeTermino = null;
+        DeFicha = false;
+        ActualizadaEn = e.Fecha;
+    }
+
     public void Apply(RelacionConfirmada e)
     {
         Estado = EstadoDeRelacion.Confirmada;
@@ -359,6 +389,7 @@ public sealed class RelacionEntreTerceros
         {
             switch (evento)
             {
+                case CambioDeRelacionDetectado e: copia.Apply(e); break;
                 case RelacionConfirmada e: copia.Apply(e); break;
                 case CambioDeRelacionDescartado e: copia.Apply(e); break;
                 case RelacionMarcadaPrincipal e: copia.Apply(e); break;

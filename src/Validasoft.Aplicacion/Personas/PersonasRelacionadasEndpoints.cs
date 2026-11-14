@@ -154,7 +154,9 @@ public static class PersonasRelacionadasEndpoints
         if (nombre.Length > 250)
             throw ReglaDeNegocioException.Validacion("nombre-demasiado-largo", "El nombre admite hasta 250 caracteres.");
         var identificacion = (dto.Identificacion ?? throw ReglaDeNegocioException.Validacion("identificacion-requerida", "Indica la identificación de la persona.")).ADominio();
-        if (CatalogoIdentificacion.Buscar(identificacion.Pais, identificacion.Tipo)?.AplicaA == AplicaA.Juridica)
+        // Persona natural: su documento de identidad (cédula, extranjería, pasaporte…). Un NIT, RUT o CUIT es de una sociedad (o de ambas): no es una persona relacionada.
+        if (CatalogoIdentificacion.Buscar(identificacion.Pais, identificacion.Tipo) is not { } tipoId ||
+            !(tipoId.AplicaA == AplicaA.Natural || tipoId.Codigo == "ID_FISCAL"))
             throw ReglaDeNegocioException.Validacion("persona-no-natural", "Una persona relacionada es una persona natural: usa su cédula, cédula de extranjería o pasaporte.");
 
         var terceroId = sesion.TerceroId;
@@ -359,11 +361,20 @@ public static class PersonasDelVinculoEndpoints
         await using var boveda = sesiones.ConsultaBoveda();
         var documentos = await boveda.Query<Documento>().Where(d => d.TerceroId.IsOneOf(personaIds) && d.Ambito == AmbitoDocumento.Global).ToListAsync(ct);
         var conIa = await DocumentosDeVinculoEndpoints.ValidacionesDeIaAsync(empresa, documentos, ct);
+
+        // La empresa ve a la persona solo si su flujo la involucra: un requisito de documento de esa persona en algún expediente del vínculo o un documento suyo ya
+        // compartido con el vínculo. Que el tercero tenga representantes no le da a una empresa cuyo flujo no los pide su nombre ni su cédula.
+        var expedientes = await empresa.Sesion.Query<Expediente>().Where(e => e.VinculoId == id).ToListAsync(ct);
+        var pedidas = expedientes.SelectMany(e => e.Requisitos).Where(r => r.Persona?.PersonaId is not null).Select(r => r.Persona!.PersonaId!.Value).ToHashSet();
         return
         [
-            .. relaciones.Where(r => personas.ContainsKey(r.OrigenId)).Select(r => new PersonaDelVinculoDto(r.Id, r.OrigenId, personas[r.OrigenId].Identificacion.ADto(),
-                personas[r.OrigenId].Nombre, r.Tipo.ToString(), r.Principal, r.Participacion, r.Cargo, r.VigenteDesde,
-                [.. documentos.Where(d => d.TerceroId == r.OrigenId).Select(d => DocumentosDeVinculoEndpoints.Vista(d, id, hoy, conIa)).OfType<DocumentoVistaEmpresaDto>()]))
+            .. relaciones.Where(r => personas.ContainsKey(r.OrigenId)).Select(r =>
+            {
+                var vistas = documentos.Where(d => d.TerceroId == r.OrigenId).Select(d => DocumentosDeVinculoEndpoints.Vista(d, id, hoy, conIa)).OfType<DocumentoVistaEmpresaDto>().ToList();
+                return (Relacion: r, Vistas: vistas, Visible: vistas.Count > 0 || pedidas.Contains(r.OrigenId));
+            }).Where(x => x.Visible).Select(x => new PersonaDelVinculoDto(x.Relacion.Id, x.Relacion.OrigenId, personas[x.Relacion.OrigenId].Identificacion.ADto(),
+                personas[x.Relacion.OrigenId].Nombre, x.Relacion.Tipo.ToString(), x.Relacion.Principal, x.Relacion.Participacion, x.Relacion.Cargo, x.Relacion.VigenteDesde,
+                x.Vistas))
         ];
     }
 }

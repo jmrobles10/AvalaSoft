@@ -61,6 +61,8 @@ public static class SincronizarRequisitosDelVinculoHandler
         {
             await mensajes.PublishAsync(new Documentos.CalcularVigenciasDelVinculo(vinculo.TerceroId, vinculo.Id));
             await mensajes.PublishAsync(new Ia.AnalizarIaDelVinculo(vinculo.TerceroId, vinculo.Id));
+            // La compartición se confirma con esta transacción: una pasada más (idempotente, la siguiente ya no comparte nada) adjunta lo que ahora está compartido.
+            await mensajes.PublishAsync(new SincronizarRequisitosDelVinculo(mensaje.TenantId, mensaje.VinculoId, mensaje.ActorTipo, mensaje.ActorId));
         }
 
         var conPersonas = eventos.Count == 0 ? expediente : Expediente.Reproducir(expediente, eventos);
