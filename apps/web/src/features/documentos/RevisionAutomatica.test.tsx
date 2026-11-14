@@ -50,8 +50,18 @@ const BASE: HechosDto = {
 
 const SIN_IA: HechosDto = { ...BASE, conIa: false, ia: null };
 
+const direccionDe = (entrada: RequestInfo | URL) => (typeof entrada === 'string' ? entrada : entrada instanceof URL ? entrada.href : entrada.url);
+
+/**
+ * `respuesta` es la de los documentos del vínculo. El panel del expediente también pide las personas relacionadas del vínculo (ADR-0010): esa ruta responde su propia
+ * lista (vacía), no los documentos, que no tienen la forma de una persona.
+ */
 function montar(contenido: ReactNode, respuesta?: unknown) {
-  const fetch = vi.fn((_entrada: RequestInfo | URL) => (respuesta === undefined ? new Promise<Response>(() => undefined) : Promise.resolve(new Response(JSON.stringify(respuesta), { status: 200, headers: { 'Content-Type': 'application/json' } }))));
+  const fetch = vi.fn((entrada: RequestInfo | URL) => {
+    if (respuesta === undefined) return new Promise<Response>(() => undefined);
+    const cuerpo = direccionDe(entrada).includes('/personas-relacionadas') ? [] : respuesta;
+    return Promise.resolve(new Response(JSON.stringify(cuerpo), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+  });
   configurarCliente({ fetch });
   render(
     <ThemeProvider theme={createValidasoftTheme('light')}>
@@ -145,8 +155,8 @@ describe('Revisión automática de una versión', () => {
     );
 
     const tarjeta = within(await screen.findByRole('region', { name: 'Revisión automática' }));
-    const entrada = fetch.mock.calls[0]?.[0];
-    expect(typeof entrada === 'string' ? entrada : entrada instanceof URL ? entrada.href : entrada?.url).toContain('/api/v1/vinculos/vin/documentos');
+    const direcciones = fetch.mock.calls.map(([entrada]) => direccionDe(entrada));
+    expect(direcciones.some((d) => d.includes('/api/v1/vinculos/vin/documentos'))).toBe(true);
     expect(tarjeta.queryByRole('alert')).not.toBeInTheDocument();
     expect(tarjeta.queryByText('G')).not.toBeInTheDocument();
     await userEvent.setup().click(tarjeta.getByRole('button', { name: 'Ver 1 dato más' }));
