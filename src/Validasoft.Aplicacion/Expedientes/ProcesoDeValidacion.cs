@@ -226,11 +226,15 @@ public static class ProcesoDeValidacion
             abiertoPor, await QuienesInvitaronAsync(sesion, vinculo.Id, ct),
             // Si el tipo de vínculo la exige, el expediente no se aprueba sin la cuenta designada aprobada (CB-4).
             ExigeCuentaDesignada: tipo?.ExigeCuentaDesignada == true, CuentaDesignadaAprobada: vinculo.CuentaDesignada is not null);
+        // Los cuestionarios de evaluación que pide el flujo (CE-7) solo frenan el expediente inicial: se toma la versión publicada de cada uno y se congela.
+        var evaluaciones = tipoExpediente == TipoExpediente.Inicial
+            ? await Evaluaciones.ProcesoDeEvaluaciones.PrepararAsync(sesion, vinculo.EmpresaId, flujo.Version, ct)
+            : [];
         var eventos = Expediente.Abrir(datos, new FlujoParaExpediente(flujo.Flujo.Id, flujo.Version.Id, flujo.Flujo.Codigo, flujo.Flujo.Nombre,
             flujo.Version.Version, flujo.Origen, etapas, flujo.Version.PoliticaDevolucion, flujo.Version.SeparacionDeFunciones,
             // Una actualización (un documento cambió) no repite las listas ni el estudio (VE-6).
             tipoExpediente == TipoExpediente.Actualizacion ? [] : flujo.Version.Verificaciones, flujo.Version.PlazoEfectivo(), flujo.Version.RecordatorioObservacionesDias,
-            flujo.Regla), ahora, requisitos);
+            flujo.Regla, [.. evaluaciones.Select(e => e.Requerida)]), ahora, requisitos);
 
         var expedienteId = ((ExpedienteAbierto)eventos[0]).ExpedienteId;
         var vinculado = vinculo.VincularExpediente(expedienteId, tipoExpediente, folio, ahora);
@@ -239,6 +243,7 @@ public static class ProcesoDeValidacion
             vinculo.Apply(vinculado); // El agregado del stream decide el cierre inmediato (todo automático) con el estado al día.
 
         sesion.Events.StartStream<Expediente>(expedienteId, eventos);
+        Evaluaciones.ProcesoDeEvaluaciones.Asignar(sesion, evaluaciones, vinculo, tercero, expedienteId, ahora);
         var estado = Expediente.Reproducir(null, eventos);
         await DespuesDeEscribirAsync(sesion, estado, eventos, vinculoStream, null, certificados, ahora, ct);
         return estado;
@@ -405,6 +410,10 @@ public static class ProcesoDeValidacion
             : eventos.OfType<ExpedienteAnulado>().Any() ? ResultadoExpediente.Anulado
             : eventos.OfType<ExpedienteCaducado>().Any() ? ResultadoExpediente.Caducado
             : null;
+
+        // Un expediente que se cierra sin aprobarse deja sin efecto las evaluaciones que esperaba (CE-8).
+        if (resultado is ResultadoExpediente.Rechazado or ResultadoExpediente.Anulado && estado.Evaluaciones.Count > 0)
+            await Evaluaciones.ProcesoDeEvaluaciones.AnularPendientesDelExpedienteAsync(sesion, estado, ahora, ct);
 
         if (resultado is { } cierre)
         {

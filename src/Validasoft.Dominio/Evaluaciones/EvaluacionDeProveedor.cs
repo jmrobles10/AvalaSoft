@@ -172,11 +172,11 @@ public sealed class EvaluacionDeProveedor
     /// <summary>Asigna la evaluación con la versión del cuestionario ya resuelta (422 <c>cuestionario-invalido</c> si no tiene preguntas).</summary>
     public static EvaluacionAsignada Asignar(Guid empresaId, Guid vinculoId, Guid? expedienteId, Guid terceroId, string terceroNombre, string terceroIdentificacion,
         MotivoDeEvaluacion motivo, CuestionarioDeLaEvaluacion cuestionario, DefinicionDeCuestionario definicion, EfectoDeLaEvaluacion efecto, Guid? anterior,
-        DateTimeOffset ahora)
+        DateTimeOffset ahora, Guid? evaluacionId = null)
     {
         if (definicion.Secciones.Count == 0)
             throw ReglaDeNegocioException.Validacion("cuestionario-invalido", "La versión del cuestionario no tiene preguntas.");
-        return new EvaluacionAsignada(Guid.CreateVersion7(), empresaId, vinculoId, expedienteId, terceroId, terceroNombre, terceroIdentificacion, motivo, cuestionario,
+        return new EvaluacionAsignada(evaluacionId ?? Guid.CreateVersion7(), empresaId, vinculoId, expedienteId, terceroId, terceroNombre, terceroIdentificacion, motivo, cuestionario,
             definicion, efecto, anterior, ahora);
     }
 
@@ -272,6 +272,22 @@ public sealed class EvaluacionDeProveedor
     }
 
     // ---------- Evolución (Marten) ----------
+
+    /// <summary>Aplica a este estado los eventos que acaba de producir una decisión (los guarda el stream; esto deja el agregado en memoria al día para leer el resultado).</summary>
+    public void Aplicar(IEnumerable<object> eventos)
+    {
+        foreach (var evento in eventos)
+            switch (evento)
+            {
+                case AdjuntoDeEvaluacionSubido e: Apply(e); break;
+                case EvaluacionRespondida e: Apply(e); break;
+                case EvaluacionRecalificada e: Apply(e); break;
+                case EvaluacionReabierta e: Apply(e); break;
+                case EvaluacionAnulada e: Apply(e); break;
+                case EvaluacionVencida e: Apply(e); break;
+                default: throw new InvalidOperationException($"Evento desconocido para la evaluación: {evento.GetType().Name}.");
+            }
+    }
 
     public static EvaluacionDeProveedor Create(EvaluacionAsignada e) => new()
     {

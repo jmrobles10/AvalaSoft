@@ -81,6 +81,9 @@ public static class ClavesDeAlmacen
     /// <summary>Archivo que sube el oficial de cumplimiento al expediente (CU-16): bucket del tenant, content-addressed.</summary>
     public static string AdjuntoDeCumplimiento(Guid empresaId, string sha256) => $"empresas/{empresaId:N}/cumplimiento/{sha256}";
 
+    /// <summary>Archivo de evidencia de una evaluación del proveedor (CE-2): bucket del tenant, por evaluación y content-addressed; privado de la empresa.</summary>
+    public static string AdjuntoDeEvaluacion(Guid empresaId, Guid evaluacionId, string sha256) => $"empresas/{empresaId:N}/evaluaciones/{evaluacionId:N}/{sha256}";
+
     /// <summary>ZIP de una exportación de la bóveda del tercero (OD-9): bucket global, por tercero y exportación.</summary>
     public static string ExportacionDeBoveda(Guid terceroId, Guid exportacionId) => $"exportaciones/{terceroId:N}/{exportacionId:N}.zip";
 

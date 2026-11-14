@@ -74,6 +74,14 @@ public sealed partial class Expediente
     [JsonIgnore]
     public bool EsperandoEvaluaciones => EsperandoVerificaciones && !EvaluacionesSatisfechas;
 
+    /// <summary>
+    /// Todas las áreas aprobaron y <b>solo</b> falta una evaluación: las verificaciones bloqueantes y la cuenta designada, si las hay, ya están satisfechas. Con esto la pantalla de la
+    /// empresa no dice «falta cumplimiento» cuando lo que falta es una evaluación.
+    /// </summary>
+    [JsonIgnore]
+    public bool EsperandoSoloLasEvaluaciones =>
+        EsperandoEvaluaciones && CuentaDesignadaSatisfecha && Verificaciones.Where(v => v.Bloqueante).All(v => v.Estado == EstadoVerificacion.Satisfecha);
+
     /// <summary>Hay una evaluación reprobada con efecto «observar» (a la vista, sin frenar).</summary>
     [JsonIgnore]
     public bool ConEvaluacionObservada => Evaluaciones.Any(e => e.Observada);

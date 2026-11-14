@@ -194,7 +194,50 @@ public static class CalculadoraDePuntaje
             secciones, calificadas);
     }
 
+    /// <summary>
+    /// Qué secciones y preguntas se muestran con las respuestas que hay hasta ahora (CE-6), sin exigir lo obligatorio ni rechazar una respuesta a medias (esa pregunta
+    /// simplemente no condiciona a las siguientes). Es lo que consulta la pantalla mientras se responde.
+    /// </summary>
+    public static (IReadOnlyList<string> Preguntas, IReadOnlyList<string> Secciones) Visibles(DefinicionDeCuestionario definicion,
+        IReadOnlyList<RespuestaDePregunta> respuestas, ContextoDeExigencia contexto)
+    {
+        var porPregunta = new Dictionary<string, RespuestaDePregunta>(StringComparer.Ordinal);
+        foreach (var respuesta in respuestas ?? [])
+            if (respuesta.Pregunta is not null)
+                porPregunta.TryAdd(respuesta.Pregunta, respuesta);
+
+        var vistas = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
+        var preguntas = new List<string>();
+        var secciones = new List<string>();
+        foreach (var seccion in definicion.Secciones)
+        {
+            if (!EvaluadorDeExigencia.Aplica(seccion.Condicion, ConRespuestas(contexto, vistas)))
+                continue;
+            secciones.Add(seccion.Codigo);
+            foreach (var pregunta in seccion.Preguntas)
+            {
+                if (!EvaluadorDeExigencia.Aplica(pregunta.Condicion, ConRespuestas(contexto, vistas)))
+                    continue;
+                preguntas.Add(pregunta.Codigo);
+                if (!porPregunta.TryGetValue(pregunta.Codigo, out var respuesta) || respuesta.EstaVacia)
+                    continue;
+                try
+                {
+                    if (Valorar(pregunta, respuesta).Valor is { } json)
+                        vistas[pregunta.Codigo] = json;
+                }
+                catch (ReglaDeNegocioException)
+                {
+                    // Una respuesta a medias no condiciona a las siguientes.
+                }
+            }
+        }
+
+        return (preguntas, secciones);
+    }
+
     /// <summary>Redondeo del cálculo (dos decimales, hacia arriba en el punto medio).</summary>
+
     public static decimal Redondear(decimal valor) => Math.Round(valor, Decimales, MidpointRounding.AwayFromZero);
 
     private static ContextoDeExigencia ConRespuestas(ContextoDeExigencia contexto, IReadOnlyDictionary<string, JsonElement> respuestas) =>

@@ -219,12 +219,20 @@ public class PermisosTests
     public void Mapea_cada_rol_a_sus_scopes()
     {
         Permisos.DeRol(Rol.Administrador).ShouldBe(Permisos.DelTenant);
-        Permisos.DeRol(Rol.Revisor).ShouldBe([.. Lecturas, Permisos.VinculosEscribir, Permisos.ExpedientesRevisar], ignoreOrder: true);
+        string[] deEvaluador = [Permisos.EvaluacionesLeer, Permisos.EvaluacionesResponder, Permisos.EvaluacionesRecalificar];
+        Permisos.DeRol(Rol.Revisor).ShouldBe([.. Lecturas, Permisos.VinculosEscribir, Permisos.ExpedientesRevisar, .. deEvaluador], ignoreOrder: true);
         Permisos.DeRol(Rol.OficialCumplimiento).ShouldBe(
             [.. Lecturas, Permisos.VinculosEscribir, Permisos.VinculosBloquear, Permisos.CuentasAprobar, Permisos.ExpedientesRevisar,
-                Permisos.ExpedientesExportar, Permisos.VerificacionesEscribir, Permisos.CumplimientoDecidir, Permisos.AuditoriaLeer, Permisos.SupresionesResolver],
+                Permisos.ExpedientesExportar, Permisos.VerificacionesEscribir, Permisos.CumplimientoDecidir, Permisos.AuditoriaLeer, Permisos.SupresionesResolver, .. deEvaluador],
             ignoreOrder: true);
-        Permisos.DeRol(Rol.Auditor).ShouldBe([.. Lecturas, Permisos.AuditoriaLeer, Permisos.AuditoriaExportar, Permisos.ExpedientesExportar], ignoreOrder: true);
+        Permisos.DeRol(Rol.Auditor).ShouldBe(
+            [.. Lecturas, Permisos.AuditoriaLeer, Permisos.AuditoriaExportar, Permisos.ExpedientesExportar, Permisos.EvaluacionesLeer], ignoreOrder: true);
+        // Los cuestionarios los configura solo el administrador (CE-1); quien revisa responde y recalifica, y el auditor lee.
+        Permisos.DeRol(Rol.Revisor).ShouldNotContain(Permisos.CuestionariosEscribir);
+        Permisos.DeRol(Rol.OficialCumplimiento).ShouldNotContain(Permisos.CuestionariosEscribir);
+        Permisos.DeRol(Rol.Auditor).ShouldNotContain(Permisos.EvaluacionesResponder);
+        Permisos.DeRol(Rol.Auditor).ShouldNotContain(Permisos.EvaluacionesRecalificar);
+        Permisos.DeSoporte.ShouldNotContain(Permisos.EvaluacionesLeer);
         Permisos.DeRol(Rol.Revisor).ShouldNotContain(Permisos.ExpedientesExportar);
         Permisos.DeSoporte.ShouldNotContain(Permisos.ExpedientesExportar);
     }

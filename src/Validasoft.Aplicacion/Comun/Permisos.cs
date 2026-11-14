@@ -91,6 +91,21 @@ public static class Permisos
     /// </summary>
     public const string SupresionesResolver = "supresiones:resolver";
 
+    /// <summary>Ver los cuestionarios de evaluación de la empresa y sus versiones (CE-1). Los edita y publica <see cref="CuestionariosEscribir"/>; solo el administrador.</summary>
+    public const string CuestionariosLeer = "cuestionarios:leer";
+
+    /// <summary>Crear, editar y publicar cuestionarios de evaluación (CE-1).</summary>
+    public const string CuestionariosEscribir = "cuestionarios:escribir";
+
+    /// <summary>Ver las evaluaciones de proveedores de la empresa, su resultado y el informe (CE-3, CE-12). Privadas de la empresa.</summary>
+    public const string EvaluacionesLeer = "evaluaciones:leer";
+
+    /// <summary>Responder como evaluador interno las evaluaciones cuyo cuestionario lo pide (CE-4): una persona de la empresa, nunca una llave sin usuario delegado.</summary>
+    public const string EvaluacionesResponder = "evaluaciones:responder";
+
+    /// <summary>Recalificar, reabrir y anular una evaluación con justificación (CE-10).</summary>
+    public const string EvaluacionesRecalificar = "evaluaciones:recalificar";
+
     /// <summary>Todo lo que puede tener una credencial de tenant (la de Plataforma no entra aquí).</summary>
     public static readonly IReadOnlyList<string> DelTenant =
     [
@@ -98,8 +113,11 @@ public static class Permisos
         TercerosLeer, TercerosEscribir, VinculosLeer, VinculosEscribir, VinculosBloquear, VinculosEximir, CuentasAprobar, AuditoriaLeer, AuditoriaExportar,
         FlujosLeer, FlujosEscribir, ExpedientesLeer, ExpedientesRevisar, ExpedientesAdministrar, ExpedientesExportar, DocumentosLeer, DocumentosDescargar,
         CertificadosLeer, EventosLeer, WebhooksAdministrar, ConsultasLeer, SesionesTerceroCrear, VerificacionesEscribir, CumplimientoDecidir, SandboxAdministrar,
-        SupresionesResolver
+        SupresionesResolver, CuestionariosLeer, CuestionariosEscribir, EvaluacionesLeer, EvaluacionesResponder, EvaluacionesRecalificar
     ];
+
+    /// <summary>Lo que hace con las evaluaciones quien revisa: ver, responder como evaluador interno y recalificar con justificación (CE-4, CE-10).</summary>
+    private static readonly string[] DeEvaluador = [EvaluacionesLeer, EvaluacionesResponder, EvaluacionesRecalificar];
 
     public static readonly IReadOnlyList<string> Todos = [PlataformaTenants, .. DelTenant];
 
@@ -128,11 +146,11 @@ public static class Permisos
     public static IReadOnlyList<string> DeRol(Rol rol) => rol switch
     {
         Rol.Administrador => DelTenant,
-        Rol.Revisor => [.. Lecturas, VinculosEscribir, ExpedientesRevisar],
+        Rol.Revisor => [.. Lecturas, VinculosEscribir, ExpedientesRevisar, .. DeEvaluador],
         Rol.OficialCumplimiento =>
             [.. Lecturas, VinculosEscribir, VinculosBloquear, CuentasAprobar, ExpedientesRevisar, ExpedientesExportar, VerificacionesEscribir,
-                CumplimientoDecidir, AuditoriaLeer, SupresionesResolver],
-        Rol.Auditor => [.. Lecturas, AuditoriaLeer, AuditoriaExportar, ExpedientesExportar],
+                CumplimientoDecidir, AuditoriaLeer, SupresionesResolver, .. DeEvaluador],
+        Rol.Auditor => [.. Lecturas, AuditoriaLeer, AuditoriaExportar, ExpedientesExportar, EvaluacionesLeer],
         _ => []
     };
 

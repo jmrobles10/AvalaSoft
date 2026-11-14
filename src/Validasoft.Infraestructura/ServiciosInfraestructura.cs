@@ -219,6 +219,7 @@ public static class ServiciosInfraestructura
         servicios.AddSingleton<IMapeadorDeEventos, MapeadorDeCertificados>(); // certificado.* (NW-13)
         servicios.AddSingleton<IMapeadorDeEventos, MapeadorDeLaFicha>(); // seccion.aceptada (FM-32)
         servicios.AddSingleton<IMapeadorDeEventos, MapeadorDeVerificaciones>(); // expediente.verificacion_* (VE-13)
+        servicios.AddSingleton<IMapeadorDeEventos, MapeadorDeEvaluaciones>(); // evaluacion.calificada (CE-12)
         servicios.AddSingleton<IMapeadorDeEventos, Aplicacion.Invitaciones.MapeadorDeLotes>(); // invitaciones.lote_terminado (LT-9)
         servicios.AddSingleton<CatalogoDeEventos>();
         servicios.AddSingleton<PlanificadorDeNotificaciones>();
@@ -264,6 +265,8 @@ public static class ServiciosInfraestructura
         servicios.AgregarProcesoDelLider<ProgramadorDePlazosDeCargue>();
         // Vigencia periódica del vínculo y fin de los bloqueos con fecha (VV-1…VV-5): barrido periódico (Validasoft:VigenciasDeVinculos:Intervalo).
         servicios.AgregarProcesoDelLider<Aplicacion.Vinculos.ProgramadorDeVigenciasDeVinculos>();
+        // Reevaluación periódica de las evaluaciones del proveedor (CE-11): barrido periódico (Validasoft:Reevaluaciones:Intervalo).
+        servicios.AgregarProcesoDelLider<Aplicacion.Evaluaciones.ProgramadorDeReevaluaciones>();
         // Análisis de documentos con OpenAI y cupo por empresa (ADR-0012): cada empresa trae su llave; aquí no hay secretos.
         servicios.AddSingleton<OpcionesDeIa>();
         // Revisión automática con IA (ADR-0012): Manual / Asistido / Automático por empresa, procesador periódico (SegundosProceso, 0 lo apaga).
@@ -443,6 +446,8 @@ public static class ServiciosInfraestructura
         opciones.PublishMessage<Aplicacion.Vinculos.RevisarVigenciasDeVinculos>().ToLocalQueue(ColaVigencias).UseDurableInbox();
         opciones.PublishMessage<Aplicacion.Vinculos.RevisarVigenciaDeVinculo>().ToLocalQueue(ColaVigencias).UseDurableInbox();
         opciones.PublishMessage<Aplicacion.Vinculos.DesbloquearAlLlegarLaFecha>().ToLocalQueue(ColaVigencias).UseDurableInbox();
+        opciones.PublishMessage<Aplicacion.Evaluaciones.RevisarReevaluaciones>().ToLocalQueue(ColaVigencias).UseDurableInbox();
+        opciones.PublishMessage<Aplicacion.Evaluaciones.ReevaluarEvaluacion>().ToLocalQueue(ColaVigencias).UseDurableInbox();
         opciones.PublishMessage<Aplicacion.Vinculos.CorreoDeVigenciaPendiente>().ToLocalQueue(ColaCorreo).UseDurableInbox();
         opciones.PublishMessage<CorreoDeRecordatorioDeObservacionesPendiente>().ToLocalQueue(ColaCorreo).UseDurableInbox();
         opciones.PublishMessage<RevisarRecordatoriosDeObservaciones>().ToLocalQueue(ColaPlazos).UseDurableInbox();
