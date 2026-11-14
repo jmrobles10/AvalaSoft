@@ -7,7 +7,7 @@ import { cuantasPestanasCaben, SEPARACION_PESTANAS, type MedidasPestanas } from 
 import { useMedidasPestanas } from './useMedidasPestanas';
 
 export interface Pestana {
-  clave: 'inicio' | 'bandeja' | 'excepciones' | 'revalidaciones' | 'vencimientos' | 'cumplimiento' | 'certificados' | 'vinculos' | 'informes' | 'auditoria';
+  clave: 'inicio' | 'bandeja' | 'excepciones' | 'revalidaciones' | 'evaluaciones' | 'vencimientos' | 'cumplimiento' | 'certificados' | 'vinculos' | 'informes' | 'auditoria';
   ruta: string;
   /** Rutas que marcan la pestaña como activa. */
   prefijos: readonly string[];

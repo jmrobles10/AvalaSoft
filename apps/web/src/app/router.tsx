@@ -127,6 +127,18 @@ export function crearRouter() {
               lazy: () => import('../features/informes/PaginaInformeSla').then((m) => ({ Component: m.PaginaInformeSla })),
             },
             {
+              path: 'informes/evaluaciones',
+              lazy: () => import('../features/informes/PaginaInformeEvaluaciones').then((m) => ({ Component: m.PaginaInformeEvaluaciones })),
+            },
+            {
+              path: 'evaluaciones',
+              lazy: () => import('../features/evaluaciones/PaginaEvaluaciones').then((m) => ({ Component: m.PaginaEvaluaciones })),
+            },
+            {
+              path: 'evaluaciones/:evaluacionId',
+              lazy: () => import('../features/evaluaciones/PaginaEvaluacion').then((m) => ({ Component: m.PaginaEvaluacion })),
+            },
+            {
               path: 'cumplimiento',
               lazy: () => import('../features/cumplimiento/PaginaCumplimiento').then((m) => ({ Component: m.PaginaCumplimiento })),
             },
@@ -222,6 +234,14 @@ export function crearRouter() {
                 {
                   path: 'flujos/:flujoId',
                   lazy: () => import('../features/flujos/pages/EditorFlujo').then((m) => ({ Component: m.EditorFlujo })),
+                },
+                {
+                  path: 'cuestionarios',
+                  lazy: () => import('../features/evaluaciones/cuestionario/PaginaCuestionarios').then((m) => ({ Component: m.PaginaCuestionarios })),
+                },
+                {
+                  path: 'cuestionarios/:cuestionarioId',
+                  lazy: () => import('../features/evaluaciones/cuestionario/EditorCuestionario').then((m) => ({ Component: m.EditorCuestionario })),
                 },
                 {
                   path: 'webhooks',

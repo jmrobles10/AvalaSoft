@@ -56,6 +56,8 @@ export function AppShell() {
   if (permisos.puede(SCOPES.cumplimientoDecidir) || permisos.puede(SCOPES.verificacionesEscribir)) {
     pestanas.push({ clave: 'cumplimiento', ruta: 'cumplimiento', prefijos: ['cumplimiento'] });
   }
+  // Evaluaciones de proveedores (CE-3): las que debe responder el evaluador interno y las que ya se calificaron.
+  if (permisos.puede(SCOPES.evaluacionesLeer)) pestanas.push({ clave: 'evaluaciones', ruta: 'evaluaciones', prefijos: ['evaluaciones'] });
   if (permisos.puede(SCOPES.certificadosLeer)) pestanas.push({ clave: 'certificados', ruta: 'certificados', prefijos: ['certificados'] });
   if (permisos.puede(SCOPES.vinculosLeer)) pestanas.push({ clave: 'vinculos', ruta: 'vinculos', prefijos: ['vinculos', 'terceros', 'invitaciones'] });
   if (permisos.puede(SCOPES.expedientesLeer) || permisos.puede(SCOPES.vinculosLeer))
