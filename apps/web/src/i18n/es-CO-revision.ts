@@ -384,6 +384,8 @@ export const expedientes = {
       verificaciones_requeridas: 'Verificaciones que pide el flujo',
       cuenta_designada_requerida: 'Exige cuenta bancaria designada',
       cuenta_designada_confirmada: 'Cuenta bancaria designada aprobada',
+      evaluaciones_requeridas: 'Evaluaciones que pide el flujo',
+      evaluacion_del_expediente_actualizada: 'Evaluación del proveedor',
       verificacion_externa_registrada: 'Listas restrictivas consultadas',
       coincidencia_resuelta: 'Coincidencia resuelta',
       fuente_oficial_consultada: 'Fuente oficial consultada',

@@ -60,7 +60,7 @@ public sealed class MiddlewareDeIdempotencia(RequestDelegate siguiente)
     private static readonly string[] RutasQueCrean =
     [
         "/api/v1/plataforma/tenants", "/api/v1/empresas", "/api/v1/api-keys", "/api/v1/sistemas", "/api/v1/usuarios", "/api/v1/tipos-vinculo",
-        "/api/v1/areas", "/api/v1/terceros", "/api/v1/vinculos", "/api/v1/motivos", "/api/v1/flujos", "/api/v1/tipos-documento"
+        "/api/v1/areas", "/api/v1/terceros", "/api/v1/vinculos", "/api/v1/motivos", "/api/v1/flujos", "/api/v1/tipos-documento", "/api/v1/cuestionarios"
     ];
 
     private static Regex RegexRuta(string patron) => new(patron, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));

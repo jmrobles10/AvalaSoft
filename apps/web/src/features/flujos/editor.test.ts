@@ -6,6 +6,7 @@ import {
   borradorDesdeVersion,
   borradorVacio,
   erroresBloqueantes,
+  evaluacionesADto,
   etapasADto,
   firmaBorrador,
   limpiarAreasDeRequisitos,
@@ -226,5 +227,46 @@ describe('requisitos del flujo (RQ-1)', () => {
 
     expect(errores([cedula(null), cedula('RepresentanteLegal'), cedula('Socio')])).toEqual([]);
     expect(errores([cedula('Socio'), cedula('Socio')])).toEqual(['requisito-duplicado@requisito.1']);
+  });
+});
+
+describe('evaluaciones del flujo (CE-7)', () => {
+  const version: FlujoVersionDto = {
+    id: 'v1',
+    version: 1,
+    estado: 'Publicada',
+    politicaDevolucion: 'Inmediata',
+    separacionDeFunciones: false,
+    creadaEn: '2026-11-06T12:00:00Z',
+    publicadaEn: null,
+    retiradaEn: null,
+    etapas: [{ orden: 1, areas: [{ areaId: 'juridica', aprobadoresRequeridos: 1, puedeRechazarExpediente: false, automatica: false, slaHoras: null }] }],
+    evaluaciones: [{ cuestionarioId: 'q1', efecto: 'Observar' }, { cuestionarioId: 'q2' }],
+  };
+  const cargar = () => borradorDesdeVersion({ codigo: 'P', nombre: 'P', tipoVinculo: 'PROVEEDOR' }, version);
+
+  it('un borrador nuevo no pide evaluaciones', () => {
+    expect(borradorVacio().evaluaciones).toEqual([]);
+    expect(evaluacionesADto([])).toEqual([]);
+  });
+
+  it('una versión con evaluaciones va y vuelve del editor; sin efecto bloquea el cierre, como en la API', () => {
+    expect(cargar().evaluaciones).toEqual([
+      { cuestionarioId: 'q1', efecto: 'Observar' },
+      { cuestionarioId: 'q2', efecto: 'Bloquear' },
+    ]);
+    expect(evaluacionesADto(cargar().evaluaciones)).toEqual([
+      { cuestionarioId: 'q1', efecto: 'Observar' },
+      { cuestionarioId: 'q2', efecto: 'Bloquear' },
+    ]);
+  });
+
+  it('agregar, quitar o cambiar el efecto de una evaluación cambia la firma (hay cambios sin guardar)', () => {
+    const original = cargar();
+    const base = firmaBorrador(original);
+    expect(firmaBorrador({ ...original, evaluaciones: [...original.evaluaciones, { cuestionarioId: 'q3', efecto: 'Bloquear' }] })).not.toBe(base);
+    expect(firmaBorrador({ ...original, evaluaciones: original.evaluaciones.slice(1) })).not.toBe(base);
+    expect(firmaBorrador({ ...original, evaluaciones: original.evaluaciones.map((e) => ({ ...e, efecto: 'Bloquear' as const })) })).not.toBe(base);
+    expect(firmaBorrador(cargar())).toBe(base);
   });
 });

@@ -194,6 +194,17 @@ public static class ConfiguracionMarten
                     .UniqueIndex(UniqueIndexType.Computed, "ux_flujo_codigo", TenancyScope.PerTenant, x => x.EmpresaId, x => x.Codigo)
                     .Index(x => x.EmpresaId);
                 opts.Schema.For<FlujoPorDefecto>().MultiTenanted().Index(x => x.EmpresaId);
+                // Cuestionarios de evaluación del proveedor (CE-1): versionados como los flujos, privados de la empresa; el código es único en la empresa.
+                opts.Schema.For<Validasoft.Dominio.Evaluaciones.Cuestionario>().MultiTenanted().UseOptimisticConcurrency(true)
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_cuestionario_codigo", TenancyScope.PerTenant, x => x.EmpresaId, x => x.Codigo)
+                    .Index(x => x.EmpresaId);
+                // Evaluaciones del proveedor (CE-3): un stream por evaluación con snapshot inline, privadas de la empresa. El barrido de reevaluación lee ProximaReevaluacion (CE-11).
+                opts.Schema.For<Validasoft.Dominio.Evaluaciones.EvaluacionDeProveedor>().MultiTenanted()
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.VinculoId)
+                    .Index(x => x.ExpedienteId)
+                    .Index(x => x.AsignadaEn)
+                    .Index(x => x.ProximaReevaluacion);
                 // Plantillas de notificación por empresa (PL-1): id determinista {empresa:N}:{evento}:{canal}.
                 opts.Schema.For<PlantillaNotificacion>().MultiTenanted().Index(x => x.EmpresaId);
 
@@ -330,6 +341,7 @@ public static class ConfiguracionMarten
                 opts.Projections.Snapshot<SecuenciaDeFolios>(SnapshotLifecycle.Inline);
                 opts.Projections.Snapshot<Validasoft.Dominio.Invitaciones.LoteDeInvitacion>(SnapshotLifecycle.Inline);
                 opts.Projections.Snapshot<Validasoft.Dominio.Campanias.CampaniaDeRenovacion>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Validasoft.Dominio.Evaluaciones.EvaluacionDeProveedor>(SnapshotLifecycle.Inline);
                 opts.Projections.Snapshot<Validasoft.Dominio.Habeas.SolicitudHabeas>(SnapshotLifecycle.Inline);
             })
             .UseLightweightSessions()

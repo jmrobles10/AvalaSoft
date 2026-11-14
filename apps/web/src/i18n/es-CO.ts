@@ -21,6 +21,7 @@ import { erroresLotes, flujoPlazo, flujoReintento, lotes, plazoCargue } from './
 import { exenciones } from './es-CO-exenciones';
 import { personasRelacionadas } from './es-CO-personas';
 import { erroresFuentesOficiales, fuentesOficiales } from './es-CO-fuentes-oficiales';
+import { evaluaciones } from './es-CO-evaluaciones';
 import { erroresVigencias, flujoVigencia, vigenciaVinculo } from './es-CO-vigencias';
 import { matrizRiesgo } from './es-CO-matriz-riesgo';
 import { erroresSla, sla } from './es-CO-sla';
@@ -53,6 +54,8 @@ export const esCO = {
     bandeja: 'Bandeja',
     excepciones: 'Excepciones',
     revalidaciones: 'Revalidaciones',
+    evaluaciones: 'Evaluaciones',
+    cuestionarios: 'Cuestionarios de evaluación',
     vencimientos: 'Vencimientos',
     cumplimiento: 'Cumplimiento',
     certificados: 'Certificados',
@@ -372,6 +375,7 @@ export const esCO = {
   vencimientos,
   exenciones,
   personasRelacionadas,
+  evaluaciones,
   cumplimiento,
   fuentesOficiales,
   matrizRiesgo,

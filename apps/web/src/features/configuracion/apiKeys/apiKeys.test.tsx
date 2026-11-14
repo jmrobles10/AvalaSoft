@@ -28,6 +28,7 @@ const DEL_TENANT = [
   'terceros:leer', 'terceros:escribir', 'vinculos:leer', 'vinculos:escribir', 'vinculos:bloquear', 'vinculos:eximir', 'cuentas:aprobar', 'auditoria:leer', 'auditoria:exportar',
   'flujos:leer', 'flujos:escribir', 'expedientes:leer', 'expedientes:revisar', 'expedientes:administrar', 'expedientes:exportar', 'documentos:leer', 'documentos:descargar',
   'certificados:leer', 'eventos:leer', 'webhooks:administrar', 'consultas:leer', 'sesiones-tercero:crear', 'sandbox:administrar', 'verificaciones:escribir', 'cumplimiento:decidir', 'supresiones:resolver',
+  'cuestionarios:leer', 'cuestionarios:escribir', 'evaluaciones:leer', 'evaluaciones:responder', 'evaluaciones:recalificar',
 ];
 
 const EMPRESAS = [

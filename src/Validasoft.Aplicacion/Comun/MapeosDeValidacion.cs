@@ -1,3 +1,4 @@
+using Validasoft.Aplicacion.Evaluaciones;
 using Validasoft.Aplicacion.Expedientes;
 using Validasoft.Aplicacion.Verificaciones;
 using Validasoft.Contratos;
@@ -35,7 +36,7 @@ public static class MapeosDeValidacion
                     TodasLasRelaciones: r.TodasLasRelaciones))],
             [.. v.Verificaciones.Select(x => new VerificacionRequeridaDto(x.Tipo.ToString(), x.Bloqueante, x.VigenciaDias, x.FrecuenciaReconsultaMeses))],
             v.PlazoEfectivo().ADto(), v.ReintentoEfectivo().ADto(), v.VigenciaEfectiva().ADto(), RecordatorioADto(v.RecordatorioObservacionesDias),
-            v.Seleccion?.ADto());
+            v.Seleccion?.ADto(), [.. v.Evaluaciones.Select(e => e.ADto())]);
 
     public static SeleccionDeFlujoDto ADto(this SeleccionDeFlujo s) => new(s.Condicion?.ADto(), s.Prioridad);
 
@@ -174,14 +175,17 @@ public static class MapeosDeValidacion
             e.MotivoAnulacion, e.AbiertoEn, e.CerradoEn, e.ActualizadoEn, e.Version,
             [.. e.Requisitos.Select(r => r.ADto(e, documentacion))],
             [.. e.Verificaciones.Select(v => v.ADto(e.AdjuntosDeCumplimiento))],
-            // «Falta cumplimiento» solo si hay una verificación sin satisfacer: si lo único que falta es la cuenta designada, lo dice EsperandoCuentaDesignada (CB-4).
-            e.EsperandoVerificaciones && !e.EsperandoSoloLaCuentaDesignada,
+            // «Falta cumplimiento» solo si hay una verificación bloqueante sin satisfacer: si lo único que falta es la cuenta designada o una evaluación, lo dicen
+            // EsperandoCuentaDesignada (CB-4) y EsperandoEvaluaciones (CE-8).
+            e.EsperandoVerificaciones && !e.EsperandoSoloLaCuentaDesignada && !e.EsperandoSoloLasEvaluaciones,
             e.PlazoDto(),
             e.Desaprobaciones,
             e.UltimaDesaprobacion?.ADto(),
             e.UltimoRecordatorioDeObservaciones is { } ultimo ? new RecordatorioObservacionesDto(ultimo, e.RecordatoriosDeObservaciones) : null,
             [.. e.AdjuntosDeCumplimiento.Select(a => a.ADto())],
-            e.EsperandoCuentaDesignada);
+            e.EsperandoCuentaDesignada,
+            [.. e.Evaluaciones.Select(x => x.ADto())],
+            e.EsperandoEvaluaciones);
 
     /// <summary>Plazo de cargue del expediente inicial (LT-2); nulo si no tiene (otros tipos, o un flujo sin plazo).</summary>
     public static PlazoCargueExpedienteDto? PlazoDto(this Expediente e) =>
@@ -295,7 +299,8 @@ public static class MapeosDeValidacion
                         : [],
                     PuedeRatificar(e, r), r.Ratificado ? r.Ratificacion!.Fecha : null, r.TipoRequisito.ToString(), r.DetalleDeSeccion(documentacion), r.Persona?.ADto()))
             ],
-            e.Requisitos.Count(r => r.Obligatorio && r.Estado == EstadoRequisito.Pendiente), e.Tipo.ToString(), e.PlazoCargueHasta, e.EsperandoCuentaDesignada);
+            e.Requisitos.Count(r => r.Obligatorio && r.Estado == EstadoRequisito.Pendiente), e.Tipo.ToString(), e.PlazoCargueHasta, e.EsperandoCuentaDesignada,
+            e.EvaluacionesPublicas());
 
     /// <summary>
     /// ¿Puede el tercero ratificar este requisito (RN-2, I-14)? En una renovación abierta, sobre un documento global sin

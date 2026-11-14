@@ -8,6 +8,7 @@ import type { AdjuntoDeCumplimientoDto } from './adjuntoDeCumplimientoDto';
 import type { DesaprobacionDto } from './desaprobacionDto';
 import type { EstadoExpediente } from './estadoExpediente';
 import type { EtapaExpedienteDto } from './etapaExpedienteDto';
+import type { EvaluacionDeExpedienteDto } from './evaluacionDeExpedienteDto';
 import type { FlujoDeExpedienteDto } from './flujoDeExpedienteDto';
 import type { PlazoCargueExpedienteDto } from './plazoCargueExpedienteDto';
 import type { PoliticaDevolucion } from './politicaDevolucion';
@@ -57,4 +58,7 @@ export interface ExpedienteDto {
   /** @nullable */
   adjuntosDeCumplimiento?: AdjuntoDeCumplimientoDto[] | null;
   esperandoCuentaDesignada?: boolean;
+  /** @nullable */
+  evaluaciones?: EvaluacionDeExpedienteDto[] | null;
+  esperandoEvaluaciones?: boolean;
 }

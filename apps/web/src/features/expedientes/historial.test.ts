@@ -163,4 +163,17 @@ describe('historial: cuenta bancaria designada (CB-4)', () => {
   it('la aprobación de la cuenta tiene su rótulo', () => {
     expect(eventoExpedienteATimeline(evento('cuenta_designada_confirmada', {}), contexto, t).titulo).toBe('Cuenta bancaria designada aprobada');
   });
+  it('las evaluaciones que pide el flujo se listan por nombre (CE-4)', () => {
+    const entrada = eventoExpedienteATimeline(evento('evaluaciones_requeridas', { evaluaciones: [{ nombre: 'Proveedor nuevo' }, { nombre: 'Riesgo' }] }), contexto, t);
+    expect(entrada.titulo).toBe('Evaluaciones que pide el flujo');
+    expect(entrada.detalle).toBe('Proveedor nuevo · Riesgo');
+  });
+
+  it('la evaluación del proveedor dice cómo quedó y su puntaje, y no inventa un estado que no conoce (CE-8)', () => {
+    const aprobada = eventoExpedienteATimeline(evento('evaluacion_del_expediente_actualizada', { estado: 'Aprobada', puntaje: 83.333 }), contexto, t);
+    expect(aprobada.titulo).toBe('Evaluación del proveedor');
+    expect(aprobada.detalle).toBe('Aprobada · Puntaje 83,33');
+    expect(eventoExpedienteATimeline(evento('evaluacion_del_expediente_actualizada', { estado: 'Anulada', puntaje: null }), contexto, t).detalle).toBe('Anulada');
+    expect(eventoExpedienteATimeline(evento('evaluacion_del_expediente_actualizada', { estado: 'Rara' }), contexto, t).detalle).toBeNull();
+  });
 });

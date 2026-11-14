@@ -13557,6 +13557,1374 @@
         }
       }
     },
+    "/api/v1/cuestionarios": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+        ],
+        "summary": "POST_api_v1_cuestionarios",
+        "description": "POST_api_v1_cuestionarios",
+        "operationId": "POST_api_v1_cuestionarios",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearCuestionarioDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+        ],
+        "summary": "GET_api_v1_cuestionarios",
+        "description": "GET_api_v1_cuestionarios",
+        "operationId": "GET_api_v1_cuestionarios",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CuestionarioDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/cuestionarios/{id}": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+        ],
+        "summary": "GET_api_v1_cuestionarios_id",
+        "description": "GET_api_v1_cuestionarios_id",
+        "operationId": "GET_api_v1_cuestionarios_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuestionarioDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+        ],
+        "summary": "PUT_api_v1_cuestionarios_id",
+        "description": "PUT_api_v1_cuestionarios_id",
+        "operationId": "PUT_api_v1_cuestionarios_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditarCuestionarioDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuestionarioDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/cuestionarios/{id}/publicar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+        ],
+        "summary": "POST_api_v1_cuestionarios_id_publicar",
+        "description": "POST_api_v1_cuestionarios_id_publicar",
+        "operationId": "POST_api_v1_cuestionarios_id_publicar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuestionarioDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/cuestionarios/{id}/versiones": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+        ],
+        "summary": "GET_api_v1_cuestionarios_id_versiones",
+        "description": "GET_api_v1_cuestionarios_id_versiones",
+        "operationId": "GET_api_v1_cuestionarios_id_versiones",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CuestionarioVersionDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/cuestionarios/{id}/versiones/{n}": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+        ],
+        "summary": "GET_api_v1_cuestionarios_id_versiones_n",
+        "description": "GET_api_v1_cuestionarios_id_versiones_n",
+        "operationId": "GET_api_v1_cuestionarios_id_versiones_n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "n",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuestionarioVersionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/cuestionarios/{id}/simular": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+        ],
+        "summary": "POST_api_v1_cuestionarios_id_simular",
+        "description": "POST_api_v1_cuestionarios_id_simular",
+        "operationId": "POST_api_v1_cuestionarios_id_simular",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimularCuestionarioDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulacionDeCuestionarioDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "GET_api_v1_evaluaciones",
+        "description": "GET_api_v1_evaluaciones",
+        "operationId": "GET_api_v1_evaluaciones",
+        "parameters": [
+          {
+            "name": "vinculoId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "expedienteId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cuestionarioId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "responde",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginaDtoOfEvaluacionResumenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "GET_api_v1_evaluaciones_id",
+        "description": "GET_api_v1_evaluaciones_id",
+        "operationId": "GET_api_v1_evaluaciones_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluacionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/vinculos/{vinculoId}/evaluaciones": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_vinculos_vinculoId_evaluaciones",
+        "description": "POST_api_v1_vinculos_vinculoId_evaluaciones",
+        "operationId": "POST_api_v1_vinculos_vinculoId_evaluaciones",
+        "parameters": [
+          {
+            "name": "vinculoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsignarEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}/visibilidad": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_evaluaciones_id_visibilidad",
+        "description": "POST_api_v1_evaluaciones_id_visibilidad",
+        "operationId": "POST_api_v1_evaluaciones_id_visibilidad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponderEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VisibilidadDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}/responder": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_evaluaciones_id_responder",
+        "description": "POST_api_v1_evaluaciones_id_responder",
+        "operationId": "POST_api_v1_evaluaciones_id_responder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponderEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluacionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}/recalificar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_evaluaciones_id_recalificar",
+        "description": "POST_api_v1_evaluaciones_id_recalificar",
+        "operationId": "POST_api_v1_evaluaciones_id_recalificar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecalificarEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluacionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}/reabrir": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_evaluaciones_id_reabrir",
+        "description": "POST_api_v1_evaluaciones_id_reabrir",
+        "operationId": "POST_api_v1_evaluaciones_id_reabrir",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JustificacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluacionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}/anular": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_evaluaciones_id_anular",
+        "description": "POST_api_v1_evaluaciones_id_anular",
+        "operationId": "POST_api_v1_evaluaciones_id_anular",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JustificacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluacionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}/adjuntos": {
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "PUT_api_v1_evaluaciones_id_adjuntos",
+        "description": "PUT_api_v1_evaluaciones_id_adjuntos",
+        "operationId": "PUT_api_v1_evaluaciones_id_adjuntos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IniciarAdjuntoDeEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CargaDeAdjuntoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}/adjuntos/{cargaId}/confirmar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_evaluaciones_id_adjuntos_cargaId_confirmar",
+        "description": "POST_api_v1_evaluaciones_id_adjuntos_cargaId_confirmar",
+        "operationId": "POST_api_v1_evaluaciones_id_adjuntos_cargaId_confirmar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cargaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmarAdjuntoDeEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdjuntoDeEvaluacionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/evaluaciones/{id}/adjuntos/{adjuntoId}/descarga": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_evaluaciones_id_adjuntos_adjuntoId_descarga",
+        "description": "POST_api_v1_evaluaciones_id_adjuntos_adjuntoId_descarga",
+        "operationId": "POST_api_v1_evaluaciones_id_adjuntos_adjuntoId_descarga",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "adjuntoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DescargaEvidenciaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/vinculos/{vinculoId}/evaluaciones": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesPublicasEndpoints"
+        ],
+        "summary": "GET_public_v1_vinculos_vinculoId_evaluaciones",
+        "description": "GET_public_v1_vinculos_vinculoId_evaluaciones",
+        "operationId": "GET_public_v1_vinculos_vinculoId_evaluaciones",
+        "parameters": [
+          {
+            "name": "vinculoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EvaluacionPublicaResumenDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/vinculos/{vinculoId}/evaluaciones/{id}": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesPublicasEndpoints"
+        ],
+        "summary": "GET_public_v1_vinculos_vinculoId_evaluaciones_id",
+        "description": "GET_public_v1_vinculos_vinculoId_evaluaciones_id",
+        "operationId": "GET_public_v1_vinculos_vinculoId_evaluaciones_id",
+        "parameters": [
+          {
+            "name": "vinculoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluacionPublicaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/vinculos/{vinculoId}/evaluaciones/{id}/visibilidad": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesPublicasEndpoints"
+        ],
+        "summary": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_visibilidad",
+        "description": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_visibilidad",
+        "operationId": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_visibilidad",
+        "parameters": [
+          {
+            "name": "vinculoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponderEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VisibilidadDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/vinculos/{vinculoId}/evaluaciones/{id}/responder": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesPublicasEndpoints"
+        ],
+        "summary": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_responder",
+        "description": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_responder",
+        "operationId": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_responder",
+        "parameters": [
+          {
+            "name": "vinculoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponderEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluacionPublicaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/vinculos/{vinculoId}/evaluaciones/{id}/adjuntos": {
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesPublicasEndpoints"
+        ],
+        "summary": "PUT_public_v1_vinculos_vinculoId_evaluaciones_id_adjuntos",
+        "description": "PUT_public_v1_vinculos_vinculoId_evaluaciones_id_adjuntos",
+        "operationId": "PUT_public_v1_vinculos_vinculoId_evaluaciones_id_adjuntos",
+        "parameters": [
+          {
+            "name": "vinculoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IniciarAdjuntoDeEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CargaDeAdjuntoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/public/v1/vinculos/{vinculoId}/evaluaciones/{id}/adjuntos/{cargaId}/confirmar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.EvaluacionesPublicasEndpoints"
+        ],
+        "summary": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_adjuntos_cargaId_confirmar",
+        "description": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_adjuntos_cargaId_confirmar",
+        "operationId": "POST_public_v1_vinculos_vinculoId_evaluaciones_id_adjuntos_cargaId_confirmar",
+        "parameters": [
+          {
+            "name": "vinculoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cargaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmarAdjuntoDeEvaluacionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdjuntoDeEvaluacionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/informes/evaluaciones": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.InformeDeEvaluacionesEndpoints"
+        ],
+        "summary": "GET_api_v1_informes_evaluaciones",
+        "description": "GET_api_v1_informes_evaluaciones",
+        "operationId": "GET_api_v1_informes_evaluaciones",
+        "parameters": [
+          {
+            "name": "desde",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "hasta",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cuestionarioId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "vinculoId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "terceroId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InformeEvaluacionesDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/informes/evaluaciones/excel": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.InformeDeEvaluacionesEndpoints"
+        ],
+        "summary": "GET_api_v1_informes_evaluaciones_excel",
+        "description": "GET_api_v1_informes_evaluaciones_excel",
+        "operationId": "GET_api_v1_informes_evaluaciones_excel",
+        "parameters": [
+          {
+            "name": "desde",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "hasta",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cuestionarioId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "vinculoId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "terceroId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/plataforma/reevaluaciones/revisar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Evaluaciones.ReevaluacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_plataforma_reevaluaciones_revisar",
+        "description": "POST_api_v1_plataforma_reevaluaciones_revisar",
+        "operationId": "POST_api_v1_plataforma_reevaluaciones_revisar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevisarReevaluacionesDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultadoRevisionReevaluacionesDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/v1/ayudas-de-documentos": {
       "get": {
         "tags": [
@@ -17312,6 +18680,28 @@
           }
         }
       },
+      "ActorDeEvaluacionDto": {
+        "required": [
+          "tipo",
+          "id",
+          "nombre"
+        ],
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "ActualizacionNoAprobadaDto": {
         "required": [
           "expedienteId",
@@ -18033,6 +19423,40 @@
           }
         }
       },
+      "AdjuntoDeEvaluacionDto": {
+        "required": [
+          "id",
+          "nombre",
+          "tipoContenido",
+          "tamano",
+          "fecha"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "tipoContenido": {
+            "type": "string"
+          },
+          "tamano": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "AdministradorInicialDto": {
         "required": [
           "nombre",
@@ -18062,6 +19486,30 @@
         "properties": {
           "dominio": {
             "type": "string"
+          }
+        }
+      },
+      "AjusteDto": {
+        "required": [
+          "pregunta"
+        ],
+        "type": "object",
+        "properties": {
+          "pregunta": {
+            "type": "string"
+          },
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "levantaEliminatoria": {
+            "type": "boolean",
+            "default": false
           }
         }
       },
@@ -18521,6 +19969,18 @@
           }
         }
       },
+      "AsignarEvaluacionDto": {
+        "required": [
+          "cuestionarioId"
+        ],
+        "type": "object",
+        "properties": {
+          "cuestionarioId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "AsignarRolesDto": {
         "required": [
           "roles"
@@ -18957,6 +20417,46 @@
           },
           "nota": {
             "type": "string"
+          }
+        }
+      },
+      "CalificacionDto": {
+        "required": [
+          "numero",
+          "origen",
+          "resultado",
+          "justificacion",
+          "por",
+          "fecha"
+        ],
+        "type": "object",
+        "properties": {
+          "numero": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "origen": {
+            "type": "string"
+          },
+          "resultado": {
+            "$ref": "#/components/schemas/ResultadoDeEvaluacionDto"
+          },
+          "justificacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "por": {
+            "$ref": "#/components/schemas/ActorDeEvaluacionDto"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -20531,6 +22031,17 @@
             "type": "string"
           },
           "proposito": {
+            "type": "string"
+          }
+        }
+      },
+      "ConfirmarAdjuntoDeEvaluacionDto": {
+        "required": [
+          "nombreArchivo"
+        ],
+        "type": "object",
+        "properties": {
+          "nombreArchivo": {
             "type": "string"
           }
         }
@@ -22123,6 +23634,25 @@
           }
         }
       },
+      "CrearCuestionarioDto": {
+        "required": [
+          "codigo",
+          "nombre",
+          "definicion"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "definicion": {
+            "$ref": "#/components/schemas/DefinicionDeCuestionarioDto"
+          }
+        }
+      },
       "CrearDelegacionDto": {
         "required": [
           "aUsuarioId",
@@ -22304,6 +23834,15 @@
                 "$ref": "#/components/schemas/SeleccionDeFlujoDto"
               }
             ]
+          },
+          "evaluaciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/EvaluacionRequeridaDto"
+            }
           }
         }
       },
@@ -23409,6 +24948,147 @@
           }
         }
       },
+      "CuestionarioDeEvaluacionDto": {
+        "required": [
+          "id",
+          "versionId",
+          "version",
+          "codigo",
+          "nombre"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          }
+        }
+      },
+      "CuestionarioDto": {
+        "required": [
+          "id",
+          "empresaId",
+          "codigo",
+          "nombre",
+          "publicada",
+          "borrador",
+          "creadoEn",
+          "actualizadoEn"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "empresaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "publicada": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CuestionarioVersionDto"
+              }
+            ]
+          },
+          "borrador": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CuestionarioVersionDto"
+              }
+            ]
+          },
+          "creadoEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actualizadoEn": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CuestionarioVersionDto": {
+        "required": [
+          "id",
+          "version",
+          "estado",
+          "definicion",
+          "creadaEn",
+          "publicadaEn",
+          "retiradaEn"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "definicion": {
+            "$ref": "#/components/schemas/DefinicionDeCuestionarioDto"
+          },
+          "creadaEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publicadaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "retiradaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
       "CumplimientoSlaDeAreaDto": {
         "required": [
           "areaId",
@@ -23719,6 +25399,48 @@
             "format": "double"
           },
           "cargo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "DefinicionDeCuestionarioDto": {
+        "required": [
+          "secciones",
+          "umbralDeAprobacion",
+          "responde"
+        ],
+        "type": "object",
+        "properties": {
+          "secciones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeccionDeCuestionarioDto"
+            }
+          },
+          "umbralDeAprobacion": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "responde": {
+            "type": "string"
+          },
+          "reevaluarCadaMeses": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "descripcion": {
             "type": [
               "null",
               "string"
@@ -24646,6 +26368,27 @@
           }
         }
       },
+      "EditarCuestionarioDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "definicion": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DefinicionDeCuestionarioDto"
+              }
+            ]
+          }
+        }
+      },
       "EditarFlujoDto": {
         "type": "object",
         "properties": {
@@ -24743,6 +26486,15 @@
                 "$ref": "#/components/schemas/SeleccionDeFlujoDto"
               }
             ]
+          },
+          "evaluaciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/EvaluacionRequeridaDto"
+            }
           }
         }
       },
@@ -25503,6 +27255,65 @@
           }
         }
       },
+      "EscalaDePreguntaDto": {
+        "required": [
+          "minimo",
+          "maximo"
+        ],
+        "type": "object",
+        "properties": {
+          "minimo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maximo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "minimoAceptable": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "EscalaPublicaDto": {
+        "required": [
+          "minimo",
+          "maximo"
+        ],
+        "type": "object",
+        "properties": {
+          "minimo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maximo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "EstadoDeReautenticacionDto": {
         "required": [
           "vigente",
@@ -25868,6 +27679,457 @@
             "items": {
               "$ref": "#/components/schemas/AreaExpedienteDto"
             }
+          }
+        }
+      },
+      "EvaluacionDeExpedienteDto": {
+        "required": [
+          "evaluacionId",
+          "codigo",
+          "nombre",
+          "responde",
+          "efecto",
+          "estado",
+          "puntaje",
+          "actualizadaEn"
+        ],
+        "type": "object",
+        "properties": {
+          "evaluacionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "responde": {
+            "type": "string"
+          },
+          "efecto": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "actualizadaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "EvaluacionDto": {
+        "required": [
+          "id",
+          "empresaId",
+          "vinculoId",
+          "expedienteId",
+          "folio",
+          "tercero",
+          "motivo",
+          "cuestionario",
+          "responde",
+          "efecto",
+          "estado",
+          "definicion",
+          "respuestas",
+          "resultado",
+          "calificaciones",
+          "ajustes",
+          "respondidaPor",
+          "respondidaEn",
+          "vigenteHasta",
+          "intentos",
+          "recalificaciones",
+          "justificacion",
+          "adjuntos",
+          "anterior",
+          "asignadaEn",
+          "actualizadaEn",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "empresaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vinculoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expedienteId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "folio": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tercero": {
+            "$ref": "#/components/schemas/TerceroResumenDto"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "cuestionario": {
+            "$ref": "#/components/schemas/CuestionarioDeEvaluacionDto"
+          },
+          "responde": {
+            "type": "string"
+          },
+          "efecto": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "definicion": {
+            "$ref": "#/components/schemas/DefinicionDeCuestionarioDto"
+          },
+          "respuestas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RespuestaDto"
+            }
+          },
+          "resultado": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ResultadoDeEvaluacionDto"
+              }
+            ]
+          },
+          "calificaciones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalificacionDto"
+            }
+          },
+          "ajustes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AjusteDto"
+            }
+          },
+          "respondidaPor": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ActorDeEvaluacionDto"
+              }
+            ]
+          },
+          "respondidaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "vigenteHasta": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "intentos": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "recalificaciones": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "justificacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "adjuntos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdjuntoDeEvaluacionDto"
+            }
+          },
+          "anterior": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "asignadaEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actualizadaEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "EvaluacionPublicaDto": {
+        "required": [
+          "id",
+          "vinculoId",
+          "cuestionario",
+          "descripcion",
+          "estado",
+          "secciones",
+          "respuestas",
+          "adjuntos",
+          "asignadaEn",
+          "respondidaEn"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vinculoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cuestionario": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "estado": {
+            "type": "string"
+          },
+          "secciones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeccionPublicaDto"
+            }
+          },
+          "respuestas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RespuestaDto"
+            }
+          },
+          "adjuntos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdjuntoDeEvaluacionDto"
+            }
+          },
+          "asignadaEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "respondidaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "EvaluacionPublicaResumenDto": {
+        "required": [
+          "id",
+          "cuestionario",
+          "estado",
+          "asignadaEn",
+          "respondidaEn"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cuestionario": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "asignadaEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "respondidaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "EvaluacionRequeridaDto": {
+        "required": [
+          "cuestionarioId"
+        ],
+        "type": "object",
+        "properties": {
+          "cuestionarioId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "efecto": {
+            "type": "string",
+            "default": "Bloquear"
+          }
+        }
+      },
+      "EvaluacionResumenDto": {
+        "required": [
+          "id",
+          "vinculoId",
+          "expedienteId",
+          "folio",
+          "tercero",
+          "cuestionario",
+          "versionCuestionario",
+          "estado",
+          "responde",
+          "efecto",
+          "motivo",
+          "puntaje",
+          "aprobada",
+          "asignadaEn",
+          "respondidaEn",
+          "vigenteHasta"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vinculoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expedienteId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "folio": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tercero": {
+            "$ref": "#/components/schemas/TerceroResumenDto"
+          },
+          "cuestionario": {
+            "type": "string"
+          },
+          "versionCuestionario": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "responde": {
+            "type": "string"
+          },
+          "efecto": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "aprobada": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "asignadaEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "respondidaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "vigenteHasta": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           }
         }
       },
@@ -26557,6 +28819,19 @@
           "esperandoCuentaDesignada": {
             "type": "boolean",
             "default": false
+          },
+          "evaluaciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/EvaluacionDeExpedienteDto"
+            }
+          },
+          "esperandoEvaluaciones": {
+            "type": "boolean",
+            "default": false
           }
         }
       },
@@ -26643,6 +28918,15 @@
           "esperandoCuentaDesignada": {
             "type": "boolean",
             "default": false
+          },
+          "evaluaciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/EvaluacionPublicaResumenDto"
+            }
           }
         }
       },
@@ -27914,6 +30198,139 @@
           }
         }
       },
+      "FilaInformeEvaluacionDto": {
+        "required": [
+          "id",
+          "vinculoId",
+          "expedienteId",
+          "folio",
+          "tercero",
+          "cuestionario",
+          "versionCuestionario",
+          "estado",
+          "responde",
+          "efecto",
+          "motivo",
+          "puntaje",
+          "aprobada",
+          "motivos",
+          "eliminatorias",
+          "respondidaPor",
+          "asignadaEn",
+          "respondidaEn",
+          "vigenteHasta",
+          "recalificaciones"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vinculoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expedienteId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "folio": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tercero": {
+            "$ref": "#/components/schemas/TerceroResumenDto"
+          },
+          "cuestionario": {
+            "type": "string"
+          },
+          "versionCuestionario": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "responde": {
+            "type": "string"
+          },
+          "efecto": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "aprobada": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "motivos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "eliminatorias": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "respondidaPor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "asignadaEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "respondidaEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "vigenteHasta": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "recalificaciones": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "FilaInformeVinculoDto": {
         "required": [
           "vinculoId",
@@ -28792,6 +31209,15 @@
                 "$ref": "#/components/schemas/SeleccionDeFlujoDto"
               }
             ]
+          },
+          "evaluaciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/EvaluacionRequeridaDto"
+            }
           }
         }
       },
@@ -29293,7 +31719,7 @@
               "string"
             ]
           },
-          "archivo": {},
+          "archivo": { },
           "unidades": {
             "type": [
               "null",
@@ -29562,6 +31988,31 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FilaEstadoExpedienteDto"
+            }
+          },
+          "siguienteCursor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "InformeEvaluacionesDto": {
+        "required": [
+          "resumen",
+          "filas",
+          "siguienteCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "resumen": {
+            "$ref": "#/components/schemas/ResumenEvaluacionesDto"
+          },
+          "filas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilaInformeEvaluacionDto"
             }
           },
           "siguienteCursor": {
@@ -29842,6 +32293,30 @@
             "type": "string"
           },
           "proposito": {
+            "type": "string"
+          }
+        }
+      },
+      "IniciarAdjuntoDeEvaluacionDto": {
+        "required": [
+          "nombreArchivo",
+          "tamanoBytes",
+          "tipoMime"
+        ],
+        "type": "object",
+        "properties": {
+          "nombreArchivo": {
+            "type": "string"
+          },
+          "tamanoBytes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "tipoMime": {
             "type": "string"
           }
         }
@@ -30240,7 +32715,7 @@
       "IResult": {
         "type": "object"
       },
-      "JsonElement": {},
+      "JsonElement": { },
       "JustificacionDto": {
         "required": [
           "justificacion"
@@ -31465,6 +33940,34 @@
           }
         }
       },
+      "OpcionDePreguntaDto": {
+        "required": [
+          "codigo",
+          "texto",
+          "puntaje"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "texto": {
+            "type": "string"
+          },
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "elimina": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
       "OpcionesDePasskeyDto": {
         "required": [
           "desafio",
@@ -31478,6 +33981,21 @@
           },
           "opciones": {
             "$ref": "#/components/schemas/JsonElement"
+          }
+        }
+      },
+      "OpcionPublicaDto": {
+        "required": [
+          "codigo",
+          "texto"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "texto": {
+            "type": "string"
           }
         }
       },
@@ -31631,6 +34149,27 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EntregaWebhookDto"
+            }
+          },
+          "siguienteCursor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PaginaDtoOfEvaluacionResumenDto": {
+        "required": [
+          "datos",
+          "siguienteCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "datos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvaluacionResumenDto"
             }
           },
           "siguienteCursor": {
@@ -31981,7 +34520,7 @@
               "$ref": "#/components/schemas/CuentaDeIngresoDto"
             }
           },
-          "opciones": {},
+          "opciones": { },
           "sesion": {
             "oneOf": [
               {
@@ -33014,6 +35553,185 @@
           }
         }
       },
+      "PreguntaCalificadaDto": {
+        "required": [
+          "codigo",
+          "visible",
+          "respondida",
+          "puntaje",
+          "elimina",
+          "ajustada"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "respondida": {
+            "type": "boolean"
+          },
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "elimina": {
+            "type": "boolean"
+          },
+          "ajustada": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PreguntaDeCuestionarioDto": {
+        "required": [
+          "codigo",
+          "texto",
+          "tipo",
+          "obligatoria",
+          "peso",
+          "eliminatoria"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "texto": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "obligatoria": {
+            "type": "boolean"
+          },
+          "peso": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "eliminatoria": {
+            "type": "boolean"
+          },
+          "opciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/OpcionDePreguntaDto"
+            }
+          },
+          "escala": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/EscalaDePreguntaDto"
+              }
+            ]
+          },
+          "rangos": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/RangoDeNumeroDto"
+            }
+          },
+          "condicion": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CondicionDto"
+              }
+            ]
+          },
+          "ayuda": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "permiteComentario": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "PreguntaPublicaDto": {
+        "required": [
+          "codigo",
+          "texto",
+          "tipo",
+          "obligatoria",
+          "ayuda",
+          "permiteComentario",
+          "opciones",
+          "escala"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "texto": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "obligatoria": {
+            "type": "boolean"
+          },
+          "ayuda": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "permiteComentario": {
+            "type": "boolean"
+          },
+          "opciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/OpcionPublicaDto"
+            }
+          },
+          "escala": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/EscalaPublicaDto"
+              }
+            ]
+          }
+        }
+      },
       "ProbarLlaveIaDto": {
         "type": "object",
         "properties": {
@@ -33070,7 +35788,7 @@
               "$ref": "#/components/schemas/CampoPropuestoDto"
             }
           },
-          "datos": {}
+          "datos": { }
         }
       },
       "ProveedorDeFuenteDto": {
@@ -33411,6 +36129,84 @@
           }
         }
       },
+      "PuntajeDeSeccionDto": {
+        "required": [
+          "codigo",
+          "nombre",
+          "peso",
+          "puntaje",
+          "aplica"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "peso": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "aplica": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RangoDeNumeroDto": {
+        "required": [
+          "desde",
+          "hasta",
+          "puntaje"
+        ],
+        "type": "object",
+        "properties": {
+          "desde": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "hasta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "elimina": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
       "ReabrirExpedienteDto": {
         "type": "object",
         "properties": {
@@ -33481,6 +36277,32 @@
             "items": {
               "$ref": "#/components/schemas/ReglaSeccionDto"
             }
+          }
+        }
+      },
+      "RecalificarEvaluacionDto": {
+        "required": [
+          "justificacion"
+        ],
+        "type": "object",
+        "properties": {
+          "justificacion": {
+            "type": "string"
+          },
+          "ajustes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AjusteDto"
+            }
+          },
+          "aprobada": {
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
@@ -35069,6 +37891,20 @@
           }
         }
       },
+      "ResponderEvaluacionDto": {
+        "required": [
+          "respuestas"
+        ],
+        "type": "object",
+        "properties": {
+          "respuestas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RespuestaDto"
+            }
+          }
+        }
+      },
       "RespuestaDeMatrizDto": {
         "required": [
           "factor",
@@ -35081,6 +37917,119 @@
           },
           "opcion": {
             "type": "string"
+          }
+        }
+      },
+      "RespuestaDto": {
+        "required": [
+          "pregunta"
+        ],
+        "type": "object",
+        "properties": {
+          "pregunta": {
+            "type": "string"
+          },
+          "opciones": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "numero": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "texto": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "adjuntos": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "comentario": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ResultadoDeEvaluacionDto": {
+        "required": [
+          "puntaje",
+          "umbral",
+          "aprobada",
+          "calculada",
+          "motivos",
+          "eliminatorias",
+          "secciones",
+          "preguntas"
+        ],
+        "type": "object",
+        "properties": {
+          "puntaje": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "umbral": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "aprobada": {
+            "type": "boolean"
+          },
+          "calculada": {
+            "type": "boolean"
+          },
+          "motivos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "eliminatorias": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "secciones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PuntajeDeSeccionDto"
+            }
+          },
+          "preguntas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreguntaCalificadaDto"
+            }
           }
         }
       },
@@ -35474,6 +38423,40 @@
           }
         }
       },
+      "ResultadoRevisionReevaluacionesDto": {
+        "required": [
+          "revisadas",
+          "vencidas",
+          "asignadas"
+        ],
+        "type": "object",
+        "properties": {
+          "revisadas": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vencidas": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "asignadas": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "ResultadoRevisionSlaDto": {
         "required": [
           "revisados",
@@ -35843,6 +38826,77 @@
             "items": {
               "$ref": "#/components/schemas/ResumenDeAreaDto"
             }
+          }
+        }
+      },
+      "ResumenEvaluacionesDto": {
+        "required": [
+          "total",
+          "pendientes",
+          "aprobadas",
+          "reprobadas",
+          "vencidas",
+          "anuladas",
+          "puntajePromedio"
+        ],
+        "type": "object",
+        "properties": {
+          "total": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pendientes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "aprobadas": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "reprobadas": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "vencidas": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "anuladas": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "puntajePromedio": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -36489,6 +39543,25 @@
           }
         }
       },
+      "RevisarReevaluacionesDto": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "fecha": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
       "RevisarSlaDto": {
         "type": "object",
         "properties": {
@@ -37077,6 +40150,56 @@
           }
         }
       },
+      "SeccionDeCuestionarioDto": {
+        "required": [
+          "codigo",
+          "nombre",
+          "peso",
+          "preguntas"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "peso": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "preguntas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreguntaDeCuestionarioDto"
+            }
+          },
+          "condicion": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CondicionDto"
+              }
+            ]
+          },
+          "descripcion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "SeccionDeRequisitoDto": {
         "required": [
           "seccion",
@@ -37293,7 +40416,7 @@
               "$ref": "#/components/schemas/AceptacionDeSeccionDto"
             }
           },
-          "prellenado": {},
+          "prellenado": { },
           "sinSoporte": {
             "oneOf": [
               {
@@ -37338,6 +40461,35 @@
           },
           "seccion": {
             "$ref": "#/components/schemas/SeccionFichaDto"
+          }
+        }
+      },
+      "SeccionPublicaDto": {
+        "required": [
+          "codigo",
+          "nombre",
+          "descripcion",
+          "preguntas"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "preguntas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreguntaPublicaDto"
+            }
           }
         }
       },
@@ -37769,6 +40921,62 @@
           "expira": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "SimulacionDeCuestionarioDto": {
+        "required": [
+          "version",
+          "estado",
+          "resultado"
+        ],
+        "type": "object",
+        "properties": {
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "resultado": {
+            "$ref": "#/components/schemas/ResultadoDeEvaluacionDto"
+          }
+        }
+      },
+      "SimularCuestionarioDto": {
+        "required": [
+          "respuestas"
+        ],
+        "type": "object",
+        "properties": {
+          "respuestas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RespuestaDto"
+            }
+          },
+          "tipoPersona": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "pais": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tipoVinculo": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -41191,6 +44399,27 @@
           }
         }
       },
+      "VisibilidadDto": {
+        "required": [
+          "preguntas",
+          "secciones"
+        ],
+        "type": "object",
+        "properties": {
+          "preguntas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "secciones": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "VistaPreviaCampaniaDto": {
         "required": [
           "filtro",
@@ -41870,6 +45099,21 @@
     },
     {
       "name": "Validasoft.Aplicacion.Expedientes.InformeSlaEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Evaluaciones.CuestionariosEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Evaluaciones.EvaluacionesEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Evaluaciones.EvaluacionesPublicasEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Evaluaciones.InformeDeEvaluacionesEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Evaluaciones.ReevaluacionesEndpoints"
     },
     {
       "name": "Validasoft.Aplicacion.Documentos.AyudasDeDocumentoEndpoints"

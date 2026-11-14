@@ -3,6 +3,7 @@ using Validasoft.Aplicacion.Certificados;
 using JasperFx.Events;
 using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Configuracion;
+using Validasoft.Dominio.Evaluaciones;
 using Validasoft.Dominio.Expedientes;
 using Validasoft.Dominio.Flujos;
 using Validasoft.Dominio.Vinculos;
@@ -140,6 +141,37 @@ public sealed class SesionDeEmpresa(ISesiones sesiones, IContextoSolicitud conte
             : throw ReglaDeNegocioException.NoEncontrado("flujo-no-encontrado", "No existe ese flujo en la empresa.");
     }
 
+    /// <summary>Cuestionarios de evaluación de la empresa activa (CE-1): privados, también dentro de un grupo.</summary>
+    public IQueryable<Cuestionario> Cuestionarios() => Delimitar(Sesion.Query<Cuestionario>(), EmpresaId);
+
+    public async Task<Cuestionario> CargarCuestionarioAsync(Guid id, CancellationToken ct)
+    {
+        var cuestionario = await Sesion.LoadAsync<Cuestionario>(id, ct);
+        return cuestionario is not null && cuestionario.EmpresaId == EmpresaId
+            ? cuestionario
+            : throw ReglaDeNegocioException.NoEncontrado("cuestionario-no-encontrado", "No existe ese cuestionario en la empresa.");
+    }
+
+    /// <summary>Evaluaciones de proveedores de la empresa activa (CE-3): privadas, también dentro de un grupo.</summary>
+    public IQueryable<EvaluacionDeProveedor> Evaluaciones() => Delimitar(Sesion.Query<EvaluacionDeProveedor>(), EmpresaId);
+
+    public async Task<EvaluacionDeProveedor> CargarEvaluacionAsync(Guid id, CancellationToken ct)
+    {
+        var evaluacion = await Sesion.LoadAsync<EvaluacionDeProveedor>(id, ct);
+        return evaluacion is not null && evaluacion.EmpresaId == EmpresaId
+            ? evaluacion
+            : throw ReglaDeNegocioException.NoEncontrado("evaluacion-no-encontrada", "No existe esa evaluación en la empresa.");
+    }
+
+    /// <summary>Stream de la evaluación para escribir, con bloqueo de fila: dos respuestas o recalificaciones simultáneas se serializan.</summary>
+    public async Task<IEventStream<EvaluacionDeProveedor>> EvaluacionParaEscribirAsync(Guid id, CancellationToken ct)
+    {
+        var stream = await Sesion.Events.FetchForExclusiveWriting<EvaluacionDeProveedor>(id, ct);
+        if (stream.Aggregate is null || stream.Aggregate.EmpresaId != EmpresaId)
+            throw ReglaDeNegocioException.NoEncontrado("evaluacion-no-encontrada", "No existe esa evaluación en la empresa.");
+        return stream;
+    }
+
     public IQueryable<Expediente> Expedientes() => Delimitar(Sesion.Query<Expediente>(), EmpresaId);
 
     public async Task<Expediente> CargarExpedienteAsync(Guid id, CancellationToken ct)
@@ -175,6 +207,10 @@ public sealed class SesionDeEmpresa(ISesiones sesiones, IContextoSolicitud conte
     private static IQueryable<Flujo> Delimitar(IQueryable<Flujo> consulta, Guid empresaId) => consulta.Where(x => x.EmpresaId == empresaId);
 
     private static IQueryable<Expediente> Delimitar(IQueryable<Expediente> consulta, Guid empresaId) => consulta.Where(x => x.EmpresaId == empresaId);
+
+    private static IQueryable<Cuestionario> Delimitar(IQueryable<Cuestionario> consulta, Guid empresaId) => consulta.Where(x => x.EmpresaId == empresaId);
+
+    private static IQueryable<EvaluacionDeProveedor> Delimitar(IQueryable<EvaluacionDeProveedor> consulta, Guid empresaId) => consulta.Where(x => x.EmpresaId == empresaId);
 
     public async ValueTask DisposeAsync()
     {

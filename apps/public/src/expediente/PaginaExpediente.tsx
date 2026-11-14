@@ -12,6 +12,7 @@ import { useAvisos } from '../shared/useAvisos';
 import { CabeceraPagina, ErrorRecuperable, EsqueletoTarjetas } from '../shared/componentes';
 import { MarcaDeEmpresa } from '../shared/MarcaDeEmpresa';
 import { mensajeDeError } from '../shared/errores';
+import { TarjetaEvaluaciones } from '../evaluaciones/TarjetaEvaluaciones';
 import { avanceDelTercero } from '../vinculos/avance';
 import { AvisoActualizacionNoAprobada } from '../vinculos/AvisoActualizacionNoAprobada';
 import { ChipAvance } from '../vinculos/ChipAvance';
@@ -139,6 +140,9 @@ export function PaginaExpediente() {
           {t('expediente.cuentaDesignada.texto', { empresa })}
         </Alert>
       )}
+
+      {/* Los cuestionarios de evaluación que la empresa le pide al tercero (CE-4): se responden en su propia página y no muestran resultado. */}
+      {vinculoId && situacion === 'vigente' && <TarjetaEvaluaciones evaluaciones={expediente.evaluaciones} vinculoId={vinculoId} empresa={empresa} />}
 
       {/* El aviso habla de documentos vencidos: una renovación periódica del vínculo que solo pide secciones de la ficha ya lo explica el resumen de arriba. */}
       {expediente.tipo === 'Renovacion' &&

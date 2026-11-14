@@ -2,6 +2,7 @@ import { accesoAislado, sesiones } from './es-CO-acceso';
 import { ficha } from './es-CO-ficha';
 import { camposFicha, fichaObservada, ratificarSeccion, seccionEnExpediente } from './es-CO-ficha-empresas';
 import { declaracionPep } from './es-CO-ficha-pep';
+import { evaluaciones } from './es-CO-evaluaciones';
 import { notificaciones } from './es-CO-notificaciones';
 import { personas } from './es-CO-personas';
 import { erroresPrivacidad, privacidad } from './es-CO-privacidad';
@@ -543,6 +544,7 @@ export const esCO = {
   privacidad,
   personas,
   notificaciones,
+  evaluaciones,
   accesoAislado,
   sesiones,
   dev: {

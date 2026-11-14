@@ -137,6 +137,14 @@ export interface BorradorFlujo {
   etapas: EtapaEnEditor[];
   requisitos: RequisitoEnEditor[];
   verificaciones: VerificacionEnEditor[];
+  /** Cuestionarios de evaluación que pide el flujo al abrir el expediente inicial (CE-7): el cuestionario y qué pasa si sale reprobado. */
+  evaluaciones: EvaluacionEnEditor[];
+}
+
+/** Un cuestionario que pide el flujo; el efecto de una evaluación reprobada: `Bloquear` el cierre del expediente o solo `Observar`. */
+export interface EvaluacionEnEditor {
+  cuestionarioId: string;
+  efecto: 'Observar' | 'Bloquear';
 }
 
 export type CodigoErrorFlujo =
@@ -241,6 +249,7 @@ export function borradorVacio(): BorradorFlujo {
     etapas: [{ clave: nuevaClave(), areas: [areaNueva()] }],
     requisitos: [],
     verificaciones: [],
+    evaluaciones: [],
   };
 }
 
@@ -294,6 +303,7 @@ export function borradorDesdeVersion(base: { codigo: string; nombre: string; tip
       vigenciaDias: v.vigenciaDias ?? null,
       frecuenciaReconsultaMeses: v.frecuenciaReconsultaMeses ?? null,
     })),
+    evaluaciones: (version.evaluaciones ?? []).map((e) => ({ cuestionarioId: e.cuestionarioId, efecto: e.efecto ?? 'Bloquear' })),
   };
 }
 
@@ -509,7 +519,13 @@ export function firmaBorrador(borrador: BorradorFlujo): string {
     etapas: etapasADto(borrador.etapas),
     requisitos: requisitosADto(borrador.requisitos).map((r) => ({ ...r, id: null })),
     verificaciones: verificacionesADto(borrador.verificaciones),
+    evaluaciones: evaluacionesADto(borrador.evaluaciones),
   });
+}
+
+/** Las evaluaciones del editor como las recibe la API (el editor no deja repetir un cuestionario). */
+export function evaluacionesADto(evaluaciones: readonly EvaluacionEnEditor[]): { cuestionarioId: string; efecto: 'Observar' | 'Bloquear' }[] {
+  return evaluaciones.map((e) => ({ cuestionarioId: e.cuestionarioId, efecto: e.efecto }));
 }
 
 /**

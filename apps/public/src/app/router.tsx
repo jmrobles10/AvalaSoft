@@ -22,6 +22,8 @@ const rutas: RouteObject[] = [
         children: [
           { path: 'empresas', lazy: () => import('../vinculos/PaginaEmpresas').then((m) => ({ Component: m.PaginaEmpresas })) },
           { path: 'empresas/:vinculoId', lazy: () => import('../invitacion/PaginaInvitacion').then((m) => ({ Component: m.PaginaInvitacion })) },
+          // La autoevaluación que la empresa le pide al tercero (CE-4): el cuestionario o, ya enviada, su confirmación.
+          { path: 'empresas/:vinculoId/evaluaciones/:id', lazy: () => import('../evaluaciones/PaginaEvaluacion').then((m) => ({ Component: m.PaginaEvaluacion })) },
           // Subir lo que pide una empresa es de la relación con ella: también lo alcanza una sesión aislada.
           { path: 'boveda/subir', lazy: () => import('../boveda/PaginaSubir').then((m) => ({ Component: m.PaginaSubir })) },
           {
