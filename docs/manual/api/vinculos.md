@@ -1,6 +1,6 @@
 # API · Vínculos
 
-36 operaciones en 13 recursos.
+42 operaciones en 15 recursos.
 
 ## Contactos de vínculo
 
@@ -79,6 +79,45 @@ Campos de la respuesta `200`:
 | `actualizacionNoAprobada.expedienteId` | uuid o null | no |  |
 | `actualizacionNoAprobada.resultado` | texto | sí |  |
 | `actualizacionNoAprobada.fecha` | fecha y hora o null | no |  |
+| `accesoDelCorreo` | AccesoDelCorreoDto o null | no |  |
+| `accesoDelCorreo.estado` | texto | sí |  |
+| `accesoDelCorreo.correo` | texto | sí |  |
+| `accesoDelCorreo.desde` | fecha y hora | sí |  |
+| `accesoDelCorreo.resueltoEn` | fecha y hora o null | no |  |
+| `accesoDelCorreo.motivo` | texto o null | no |  |
+| `verificacionDelCorreo` | VerificacionDelCorreoDto o null | no |  |
+| `verificacionDelCorreo.estado` | texto | sí |  |
+| `verificacionDelCorreo.medio` | texto o null | no |  |
+| `invitacionPorAprobar` | InvitacionPorAprobarDto o null | no |  |
+| `invitacionPorAprobar.estado` | EstadoAprobacionDeInvitacion (texto) | sí | valores: Pendiente · Aprobada · Rechazada |
+| `invitacionPorAprobar.correoDestino` | texto | sí |  |
+| `invitacionPorAprobar.vigenciaHoras` | entero | sí |  |
+| `invitacionPorAprobar.solicitadaEn` | fecha y hora | sí |  |
+| `invitacionPorAprobar.solicitadaPor` | texto | sí |  |
+| `invitacionPorAprobar.solicitadaPorNombre` | texto o null | no |  |
+| `invitacionPorAprobar.decididaPor` | texto o null | no |  |
+| `invitacionPorAprobar.decididaPorNombre` | texto o null | no |  |
+| `invitacionPorAprobar.decididaEn` | fecha y hora o null | no |  |
+| `invitacionPorAprobar.motivoDeRechazo` | texto o null | no |  |
+| `invitacionPorAprobar.puedesDecidir` | booleano o null | no |  |
+| `exenciones` | lista de ExencionDeVinculoDto o null | no |  |
+| `exenciones[].id` | uuid | sí |  |
+| `exenciones[].todos` | booleano | sí |  |
+| `exenciones[].objetivos` | lista de ObjetivoDeExencionDto | sí |  |
+| `exenciones[].objetivos[].tipo` | TipoRequisito (texto) | sí | valores: Documento · Seccion |
+| `exenciones[].objetivos[].tipoDocumentoTenantId` | uuid o null | no |  |
+| `exenciones[].objetivos[].seccion` | texto o null | no |  |
+| `exenciones[].objetivos[].codigo` | texto o null | no |  |
+| `exenciones[].objetivos[].nombre` | texto o null | no |  |
+| `exenciones[].justificacion` | texto | sí |  |
+| `exenciones[].hasta` | fecha o null | no |  |
+| `exenciones[].por` | texto | sí |  |
+| `exenciones[].creadaEn` | fecha y hora | sí |  |
+| `exenciones[].estado` | EstadoDeExencion (texto) | sí | valores: Vigente · Revocada · Vencida |
+| `exenciones[].revocadaPor` | texto o null | no |  |
+| `exenciones[].justificacionDeRevocacion` | texto o null | no |  |
+| `exenciones[].revocadaEn` | fecha y hora o null | no |  |
+| `exenciones[].vencidaEn` | fecha y hora o null | no |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -146,7 +185,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -778,6 +865,7 @@ Campos de la respuesta `201`:
 
 **Errores de negocio que lanza**
 
+- `403` `alcance-de-sesion`
 - `422` `banco-no-encontrado`
 
 <details><summary>Ejemplo de petición y respuesta</summary>
@@ -846,6 +934,7 @@ Mismos campos de `CuentaBancariaPublicaDto` que se detallan en `POST /public/v1/
 
 **Errores de negocio que lanza**
 
+- `403` `alcance-de-sesion`
 - `404` `cuenta-no-encontrada`
 - `409` `cuenta-en-uso`
 
@@ -919,6 +1008,7 @@ Mismos campos de `CuentaBancariaPublicaDto` que se detallan en `POST /public/v1/
 
 **Errores de negocio que lanza**
 
+- `403` `alcance-de-sesion`
 - `404` `cuenta-no-encontrada`
 - `404` `vinculo-no-encontrado`
 - `409` `cuenta-retirada`
@@ -962,6 +1052,250 @@ Respuesta `200`:
     "correo": "contacto@empresa.co",
     "telefono": "+57 601 555 1234"
   }
+}
+```
+
+</details>
+
+## Exenciones
+
+Endpoints de la exención del vínculo (EX-5): eximir y revocar piden `vinculos:eximir` (el administrador o una llave a la que se le marque); listar, `vinculos:leer`. Un vínculo de otra empresa responde 404 (T-4): la exención es privada de la empresa, también dentro de un mismo grupo.
+
+### `GET /api/v1/vinculos/{id}/exenciones`
+
+**Listar exenciones vínculo.** Las exenciones del vínculo (vigentes primero); `vigentes=true` solo las que rigen hoy.
+
+**Permiso vinculos:leer · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `listarExencionesVinculo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+| `vigentes` | query | booleano | no |  |
+
+**Respuestas**
+
+- `200` OK — lista de ExencionDeVinculoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `[]` | lista de ExencionDeVinculoDto | sí |  |
+| `[].id` | uuid | sí |  |
+| `[].todos` | booleano | sí |  |
+| `[].objetivos` | lista de ObjetivoDeExencionDto | sí |  |
+| `[].objetivos[].tipo` | TipoRequisito (texto) | sí | valores: Documento · Seccion |
+| `[].objetivos[].tipoDocumentoTenantId` | uuid o null | no |  |
+| `[].objetivos[].seccion` | texto o null | no |  |
+| `[].objetivos[].codigo` | texto o null | no |  |
+| `[].objetivos[].nombre` | texto o null | no |  |
+| `[].justificacion` | texto | sí |  |
+| `[].hasta` | fecha o null | no |  |
+| `[].por` | texto | sí |  |
+| `[].creadaEn` | fecha y hora | sí |  |
+| `[].estado` | EstadoDeExencion (texto) | sí | valores: Vigente · Revocada · Vencida |
+| `[].revocadaPor` | texto o null | no |  |
+| `[].justificacionDeRevocacion` | texto o null | no |  |
+| `[].revocadaEn` | fecha y hora o null | no |  |
+| `[].vencidaEn` | fecha y hora o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/api/v1/vinculos/3fa85f64-5717-4562-b3fc-2c963f66afa6/exenciones" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID"
+```
+
+Respuesta `200`:
+
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "todos": true,
+    "objetivos": [
+      {
+        "tipo": "Documento",
+        "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "seccion": "texto",
+        "codigo": "CODIGO_EJEMPLO",
+        "nombre": "Constructora Norte S.A.S."
+      }
+    ],
+    "justificacion": "Texto de ejemplo.",
+    "hasta": "2026-11-12",
+    "por": "texto",
+    "creadaEn": "2026-11-12T15:00:00Z",
+    "estado": "Vigente",
+    "revocadaPor": "texto",
+    "justificacionDeRevocacion": "Texto de ejemplo.",
+    "revocadaEn": "2026-11-12T15:00:00Z",
+    "vencidaEn": "2026-11-12T15:00:00Z"
+  }
+]
+```
+
+</details>
+
+### `POST /api/v1/vinculos/{id}/exenciones`
+
+**Eximir vínculo.** Exime al vínculo (201): de todo (`todos`) o de tipos de documento y secciones concretos, con justificación obligatoria y fecha final opcional. Lo que el vínculo tiene abierto y la exención cubre se exime en el acto (un expediente de renovación, por ejemplo, puede cerrarse aprobado). 409: `vinculo-bloqueado`, `estado-terminal`, `vinculo-sin-aprobacion`, `exencion-superpuesta`; 422: `justificacion-requerida`, `exencion-sin-alcance`, `exencion-alcance-invalido`, `objetivo-invalido`, `tipo-documento-invalido`, `seccion-invalida`, `fecha-invalida`.
+
+**Permiso vinculos:eximir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `eximirVinculo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, EximirVinculoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `todos` | booleano | sí |  |
+| `objetivos` | lista de ObjetivoDeExencionDto o null | no |  |
+| `objetivos[].tipo` | TipoRequisito (texto) | sí | valores: Documento · Seccion |
+| `objetivos[].tipoDocumentoTenantId` | uuid o null | no |  |
+| `objetivos[].seccion` | texto o null | no |  |
+| `objetivos[].codigo` | texto o null | no |  |
+| `objetivos[].nombre` | texto o null | no |  |
+| `justificacion` | texto | sí |  |
+| `hasta` | fecha o null | no |  |
+
+**Respuestas**
+
+- `201` Creado — ExencionDeVinculoDto
+
+Campos de la respuesta `201`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `todos` | booleano | sí |  |
+| `objetivos` | lista de ObjetivoDeExencionDto | sí |  |
+| `objetivos[].tipo` | TipoRequisito (texto) | sí | valores: Documento · Seccion |
+| `objetivos[].tipoDocumentoTenantId` | uuid o null | no |  |
+| `objetivos[].seccion` | texto o null | no |  |
+| `objetivos[].codigo` | texto o null | no |  |
+| `objetivos[].nombre` | texto o null | no |  |
+| `justificacion` | texto | sí |  |
+| `hasta` | fecha o null | no |  |
+| `por` | texto | sí |  |
+| `creadaEn` | fecha y hora | sí |  |
+| `estado` | EstadoDeExencion (texto) | sí | valores: Vigente · Revocada · Vencida |
+| `revocadaPor` | texto o null | no |  |
+| `justificacionDeRevocacion` | texto o null | no |  |
+| `revocadaEn` | fecha y hora o null | no |  |
+| `vencidaEn` | fecha y hora o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/vinculos/3fa85f64-5717-4562-b3fc-2c963f66afa6/exenciones" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"todos":true,"objetivos":[{"tipo":"Documento","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","seccion":"texto","codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S."}],"justificacion":"Texto de ejemplo.","hasta":"2026-11-12"}'
+```
+
+Respuesta `201`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "todos": true,
+  "objetivos": [
+    {
+      "tipo": "Documento",
+      "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "seccion": "texto",
+      "codigo": "CODIGO_EJEMPLO",
+      "nombre": "Constructora Norte S.A.S."
+    }
+  ],
+  "justificacion": "Texto de ejemplo.",
+  "hasta": "2026-11-12",
+  "por": "texto",
+  "creadaEn": "2026-11-12T15:00:00Z",
+  "estado": "Vigente",
+  "revocadaPor": "texto",
+  "justificacionDeRevocacion": "Texto de ejemplo.",
+  "revocadaEn": "2026-11-12T15:00:00Z",
+  "vencidaEn": "2026-11-12T15:00:00Z"
+}
+```
+
+</details>
+
+### `POST /api/v1/vinculos/{id}/exenciones/{exencionId}/revocar`
+
+**Revocar exencion vínculo.** Revoca una exención vigente con justificación (200): el vínculo vuelve a regirse por las vigencias desde ya (los documentos que vencieron mientras tanto vencen y abren su renovación). 404 `exencion-no-encontrada`; 409 `exencion-ya-revocada`, `exencion-vencida`, `estado-terminal`.
+
+**Permiso vinculos:eximir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `revocarExencionVinculo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+| `exencionId` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, JustificacionDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `justificacion` | texto | sí |  |
+
+**Respuestas**
+
+- `200` OK — ExencionDeVinculoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+Mismos campos de `ExencionDeVinculoDto` que se detallan en `POST /api/v1/vinculos/{id}/exenciones`.
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/vinculos/3fa85f64-5717-4562-b3fc-2c963f66afa6/exenciones/3fa85f64-5717-4562-b3fc-2c963f66afa6/revocar" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"justificacion":"Texto de ejemplo."}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "todos": true,
+  "objetivos": [
+    {
+      "tipo": "Documento",
+      "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "seccion": "texto",
+      "codigo": "CODIGO_EJEMPLO",
+      "nombre": "Constructora Norte S.A.S."
+    }
+  ],
+  "justificacion": "Texto de ejemplo.",
+  "hasta": "2026-11-12",
+  "por": "texto",
+  "creadaEn": "2026-11-12T15:00:00Z",
+  "estado": "Vigente",
+  "revocadaPor": "texto",
+  "justificacionDeRevocacion": "Texto de ejemplo.",
+  "revocadaEn": "2026-11-12T15:00:00Z",
+  "vencidaEn": "2026-11-12T15:00:00Z"
 }
 ```
 
@@ -1735,6 +2069,45 @@ Campos de la respuesta `200`:
 | `vinculos[].vinculo.actualizacionNoAprobada.expedienteId` | uuid o null | no |  |
 | `vinculos[].vinculo.actualizacionNoAprobada.resultado` | texto | sí |  |
 | `vinculos[].vinculo.actualizacionNoAprobada.fecha` | fecha y hora o null | no |  |
+| `vinculos[].vinculo.accesoDelCorreo` | AccesoDelCorreoDto o null | no |  |
+| `vinculos[].vinculo.accesoDelCorreo.estado` | texto | sí |  |
+| `vinculos[].vinculo.accesoDelCorreo.correo` | texto | sí |  |
+| `vinculos[].vinculo.accesoDelCorreo.desde` | fecha y hora | sí |  |
+| `vinculos[].vinculo.accesoDelCorreo.resueltoEn` | fecha y hora o null | no |  |
+| `vinculos[].vinculo.accesoDelCorreo.motivo` | texto o null | no |  |
+| `vinculos[].vinculo.verificacionDelCorreo` | VerificacionDelCorreoDto o null | no |  |
+| `vinculos[].vinculo.verificacionDelCorreo.estado` | texto | sí |  |
+| `vinculos[].vinculo.verificacionDelCorreo.medio` | texto o null | no |  |
+| `vinculos[].vinculo.invitacionPorAprobar` | InvitacionPorAprobarDto o null | no |  |
+| `vinculos[].vinculo.invitacionPorAprobar.estado` | EstadoAprobacionDeInvitacion (texto) | sí | valores: Pendiente · Aprobada · Rechazada |
+| `vinculos[].vinculo.invitacionPorAprobar.correoDestino` | texto | sí |  |
+| `vinculos[].vinculo.invitacionPorAprobar.vigenciaHoras` | entero | sí |  |
+| `vinculos[].vinculo.invitacionPorAprobar.solicitadaEn` | fecha y hora | sí |  |
+| `vinculos[].vinculo.invitacionPorAprobar.solicitadaPor` | texto | sí |  |
+| `vinculos[].vinculo.invitacionPorAprobar.solicitadaPorNombre` | texto o null | no |  |
+| `vinculos[].vinculo.invitacionPorAprobar.decididaPor` | texto o null | no |  |
+| `vinculos[].vinculo.invitacionPorAprobar.decididaPorNombre` | texto o null | no |  |
+| `vinculos[].vinculo.invitacionPorAprobar.decididaEn` | fecha y hora o null | no |  |
+| `vinculos[].vinculo.invitacionPorAprobar.motivoDeRechazo` | texto o null | no |  |
+| `vinculos[].vinculo.invitacionPorAprobar.puedesDecidir` | booleano o null | no |  |
+| `vinculos[].vinculo.exenciones` | lista de ExencionDeVinculoDto o null | no |  |
+| `vinculos[].vinculo.exenciones[].id` | uuid | sí |  |
+| `vinculos[].vinculo.exenciones[].todos` | booleano | sí |  |
+| `vinculos[].vinculo.exenciones[].objetivos` | lista de ObjetivoDeExencionDto | sí |  |
+| `vinculos[].vinculo.exenciones[].objetivos[].tipo` | TipoRequisito (texto) | sí | valores: Documento · Seccion |
+| `vinculos[].vinculo.exenciones[].objetivos[].tipoDocumentoTenantId` | uuid o null | no |  |
+| `vinculos[].vinculo.exenciones[].objetivos[].seccion` | texto o null | no |  |
+| `vinculos[].vinculo.exenciones[].objetivos[].codigo` | texto o null | no |  |
+| `vinculos[].vinculo.exenciones[].objetivos[].nombre` | texto o null | no |  |
+| `vinculos[].vinculo.exenciones[].justificacion` | texto | sí |  |
+| `vinculos[].vinculo.exenciones[].hasta` | fecha o null | no |  |
+| `vinculos[].vinculo.exenciones[].por` | texto | sí |  |
+| `vinculos[].vinculo.exenciones[].creadaEn` | fecha y hora | sí |  |
+| `vinculos[].vinculo.exenciones[].estado` | EstadoDeExencion (texto) | sí | valores: Vigente · Revocada · Vencida |
+| `vinculos[].vinculo.exenciones[].revocadaPor` | texto o null | no |  |
+| `vinculos[].vinculo.exenciones[].justificacionDeRevocacion` | texto o null | no |  |
+| `vinculos[].vinculo.exenciones[].revocadaEn` | fecha y hora o null | no |  |
+| `vinculos[].vinculo.exenciones[].vencidaEn` | fecha y hora o null | no |  |
 | `vinculos[].certificado` | CertificadoDelVinculoDto o null | no |  |
 | `vinculos[].certificado.vinculoId` | uuid | sí |  |
 | `vinculos[].certificado.actual` | CertificadoDto o null | no |  |
@@ -1934,19 +2307,9 @@ Campos de la respuesta `200`:
 | `secciones[].aceptaciones[].revalidacion` | RevalidacionDeSeccionDto o null | no |  |
 | `secciones[].aceptaciones[].revalidacion.expedienteId` | uuid | sí |  |
 | `secciones[].aceptaciones[].revalidacion.folio` | texto | sí |  |
-| `secciones[].aceptaciones[].revalidacion.estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido |
-| `secciones[].aceptaciones[].revalidacion.version` | entero o null | no |  |
-| `secciones[].aceptaciones[].revalidacion.plazoHasta` | fecha y hora | sí |  |
-| `secciones[].aceptaciones[].origen` | OrigenDeAceptacion (texto) | no | valores: Expediente · Importacion |
-| `secciones[].prellenado` | cualquiera | no |  |
-| `secciones[].sinSoporte` | SinSoporteDto o null | no |  |
-| `secciones[].sinSoporte.critico` | booleano | sí |  |
-| `secciones[].sinSoporte.cambios` | lista de CambioDeCampoDto | sí |  |
-| `secciones[].sinSoporte.cambios[].campo` | texto | sí |  |
-| `secciones[].sinSoporte.cambios[].etiqueta` | texto | sí |  |
-| `secciones[].sinSoporte.cambios[].anterior` | texto o null | no |  |
-| `secciones[].sinSoporte.cambios[].nuevo` | texto o null | no |  |
-| `secciones[].sinSoporte.cambios[].tipoCambio` | TipoCambio (texto) | sí | valores: Agregado · Quitado · Modificado |
+| `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
+| `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
+| `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 
 **Errores de negocio que lanza**
 
@@ -2041,7 +2404,49 @@ Respuesta `200`:
           "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
           "resultado": "texto",
           "fecha": "2026-11-12T15:00:00Z"
-        }
+        },
+        "accesoDelCorreo": {
+          "estado": "texto",
+          "correo": "contacto@empresa.co",
+          "desde": "2026-11-12T15:00:00Z",
+          "resueltoEn": "2026-11-12T15:00:00Z",
+          "motivo": "Texto de ejemplo."
+        },
+        "verificacionDelCorreo": {
+          "estado": "texto",
+          "medio": "texto"
+        },
+        "invitacionPorAprobar": {
+          "estado": "Pendiente",
+          "correoDestino": "contacto@empresa.co",
+          "vigenciaHoras": 1,
+          "solicitadaEn": "2026-11-12T15:00:00Z",
+          "solicitadaPor": "texto",
+          "solicitadaPorNombre": "Nombre de ejemplo",
+          "decididaPor": "texto",
+          "decididaPorNombre": "Nombre de ejemplo",
+          "decididaEn": "2026-11-12T15:00:00Z",
+          "motivoDeRechazo": "Texto de ejemplo.",
+          "puedesDecidir": true
+        },
+        "exenciones": [
+          {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "todos": true,
+            "objetivos": [
+              null
+            ],
+            "justificacion": "Texto de ejemplo.",
+            "hasta": "2026-11-12",
+            "por": "texto",
+            "creadaEn": "2026-11-12T15:00:00Z",
+            "estado": "Vigente",
+            "revocadaPor": "texto",
+            "justificacionDeRevocacion": "Texto de ejemplo.",
+            "revocadaEn": "2026-11-12T15:00:00Z",
+            "vencidaEn": "2026-11-12T15:00:00Z"
+          }
+        ]
       },
       "certificado": {
         "vinculoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -2339,6 +2744,392 @@ Respuesta `200`:
 
 </details>
 
+## Invitaciones por aprobar
+
+Aprobación antes de invitar (decisión AI, equivale al estado -5 del SRM): la bandeja de quienes aprueban y las decisiones sobre cada invitación retenida. Con el tipo de vínculo en `RequiereAprobacionParaInvitar` la invitación no sale al crear el vínculo: queda retenida hasta que otra persona —del rol o del área que el tipo designó— la apruebe (sale la invitación de siempre) o la rechace con un motivo (el vínculo queda `Anulado`). Los lotes se deciden completos en `LotesEndpoints`.
+
+### `GET /api/v1/invitaciones/por-aprobar`
+
+**Listar invitaciones por aprobar.** Las invitaciones retenidas de la empresa, de la más antigua a la más reciente (cursor opaco). `soloLasMias`: solo las que quien consulta puede decidir (aprueba el tipo y no las pidió él). Cada una dice `puedesDecidir`.
+
+**Permiso vinculos:leer · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `listarInvitacionesPorAprobar`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `soloLasMias` | query | booleano | no |  |
+| `limite` | query | entero | no |  |
+| `cursor` | query | texto | no |  |
+
+**Respuestas**
+
+- `200` OK — PaginaDtoOfInvitacionPorAprobarItemDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `datos` | lista de InvitacionPorAprobarItemDto | sí |  |
+| `datos[].vinculoId` | uuid | sí |  |
+| `datos[].terceroId` | uuid | sí |  |
+| `datos[].terceroNombre` | texto | sí |  |
+| `datos[].terceroIdentificacion` | IdentificacionDto | sí |  |
+| `datos[].terceroIdentificacion.pais` | texto | sí |  |
+| `datos[].terceroIdentificacion.tipo` | texto | sí |  |
+| `datos[].terceroIdentificacion.numero` | texto | sí |  |
+| `datos[].terceroIdentificacion.digitoVerificacion` | texto o null | no |  |
+| `datos[].tipoVinculo` | TipoVinculoResumenDto | sí |  |
+| `datos[].tipoVinculo.id` | uuid | sí |  |
+| `datos[].tipoVinculo.codigo` | texto | sí |  |
+| `datos[].tipoVinculo.nombre` | texto | sí |  |
+| `datos[].correoDestino` | texto | sí |  |
+| `datos[].solicitadaEn` | fecha y hora | sí |  |
+| `datos[].solicitadaPor` | texto | sí |  |
+| `datos[].solicitadaPorNombre` | texto o null | no |  |
+| `datos[].puedesDecidir` | booleano | sí |  |
+| `siguienteCursor` | texto o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/api/v1/invitaciones/por-aprobar" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "datos": [
+    {
+      "vinculoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "terceroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "terceroNombre": "Nombre de ejemplo",
+      "terceroIdentificacion": {
+        "pais": "CO",
+        "tipo": "texto",
+        "numero": "900123456",
+        "digitoVerificacion": "texto"
+      },
+      "tipoVinculo": {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "codigo": "CODIGO_EJEMPLO",
+        "nombre": "Constructora Norte S.A.S."
+      },
+      "correoDestino": "contacto@empresa.co",
+      "solicitadaEn": "2026-11-12T15:00:00Z",
+      "solicitadaPor": "texto",
+      "solicitadaPorNombre": "Nombre de ejemplo",
+      "puedesDecidir": true
+    }
+  ],
+  "siguienteCursor": "texto"
+}
+```
+
+</details>
+
+### `POST /api/v1/vinculos/{id}/invitacion/aprobar`
+
+**Aprobar invitación vínculo.** Aprueba la invitación retenida: en la misma transacción sale la invitación de siempre (enlace nuevo, correo por el outbox y la decisión del acceso del correo). Quien aprueba debe ser de quienes el tipo designó (403 `no-es-aprobador-de-invitaciones`), una persona (422 `usuario-delegado-requerido`) y no quien la pidió (403 `separacion-de-funciones`) ni tener la identificación del tercero (403 `conflicto-de-intereses`); 409 `sin-invitacion-por-aprobar`.
+
+**Permiso vinculos:escribir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `aprobarInvitacionVinculo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — VinculoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+Mismos campos de `VinculoDto` que se detallan en `PUT /api/v1/vinculos/{id}/contactos`.
+
+**Errores de negocio que lanza**
+
+- `404` `tercero-no-encontrado`
+- `404` `tipo-vinculo-no-encontrado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/vinculos/3fa85f64-5717-4562-b3fc-2c963f66afa6/invitacion/aprobar" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID" \
+  -H "Idempotency-Key: $(uuidgen)"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "terceroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "tipoVinculo": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "codigo": "CODIGO_EJEMPLO",
+    "nombre": "Constructora Norte S.A.S."
+  },
+  "flujoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "estado": "Invitado",
+  "atributos": {},
+  "correoTercero": "contacto@empresa.co",
+  "invitacion": {
+    "correoDestino": "contacto@empresa.co",
+    "expira": "2026-11-12T15:00:00Z",
+    "envios": 1
+  },
+  "invitacionAceptadaEn": "2026-11-12T15:00:00Z",
+  "requisitosCubribles": 1,
+  "bloqueo": {
+    "motivo": "Texto de ejemplo.",
+    "desde": "2026-11-12T15:00:00Z",
+    "hasta": "2026-11-12T15:00:00Z"
+  },
+  "referencias": [
+    {
+      "sistema": "texto",
+      "id": "texto"
+    }
+  ],
+  "origen": "Invitacion",
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z",
+  "version": 1,
+  "expedienteAbiertoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "aperturaDeExpedientePendiente": false,
+  "ultimoResultado": "texto",
+  "contactos": [
+    {
+      "nombre": "Constructora Norte S.A.S.",
+      "cargo": "texto",
+      "correo": "contacto@empresa.co",
+      "telefono": "+57 601 555 1234",
+      "rol": "texto"
+    }
+  ],
+  "vigenteHasta": "2026-11-12",
+  "enRevision": false,
+  "actualizacionNoAprobada": {
+    "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "resultado": "texto",
+    "fecha": "2026-11-12T15:00:00Z"
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
+}
+```
+
+</details>
+
+### `POST /api/v1/vinculos/{id}/invitacion/rechazar`
+
+**Rechazar invitación vínculo.** Rechaza la invitación retenida con un motivo (422 `motivo-requerido`): el vínculo queda `Anulado` con ese motivo y nunca se le escribió al tercero. Las mismas reglas de quién decide que al aprobarla.
+
+**Permiso vinculos:escribir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `rechazarInvitacionVinculo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, MotivoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `motivo` | texto | sí |  |
+
+**Respuestas**
+
+- `200` OK — VinculoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+Mismos campos de `VinculoDto` que se detallan en `PUT /api/v1/vinculos/{id}/contactos`.
+
+**Errores de negocio que lanza**
+
+- `404` `tercero-no-encontrado`
+- `404` `tipo-vinculo-no-encontrado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/vinculos/3fa85f64-5717-4562-b3fc-2c963f66afa6/invitacion/rechazar" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"motivo":"Texto de ejemplo."}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "terceroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "tipoVinculo": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "codigo": "CODIGO_EJEMPLO",
+    "nombre": "Constructora Norte S.A.S."
+  },
+  "flujoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "estado": "Invitado",
+  "atributos": {},
+  "correoTercero": "contacto@empresa.co",
+  "invitacion": {
+    "correoDestino": "contacto@empresa.co",
+    "expira": "2026-11-12T15:00:00Z",
+    "envios": 1
+  },
+  "invitacionAceptadaEn": "2026-11-12T15:00:00Z",
+  "requisitosCubribles": 1,
+  "bloqueo": {
+    "motivo": "Texto de ejemplo.",
+    "desde": "2026-11-12T15:00:00Z",
+    "hasta": "2026-11-12T15:00:00Z"
+  },
+  "referencias": [
+    {
+      "sistema": "texto",
+      "id": "texto"
+    }
+  ],
+  "origen": "Invitacion",
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z",
+  "version": 1,
+  "expedienteAbiertoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "aperturaDeExpedientePendiente": false,
+  "ultimoResultado": "texto",
+  "contactos": [
+    {
+      "nombre": "Constructora Norte S.A.S.",
+      "cargo": "texto",
+      "correo": "contacto@empresa.co",
+      "telefono": "+57 601 555 1234",
+      "rol": "texto"
+    }
+  ],
+  "vigenteHasta": "2026-11-12",
+  "enRevision": false,
+  "actualizacionNoAprobada": {
+    "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "resultado": "texto",
+    "fecha": "2026-11-12T15:00:00Z"
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
+}
+```
+
+</details>
+
 ## Referencias de tercero
 
 ### `GET /api/v1/terceros/{id}/referencias`
@@ -2601,7 +3392,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -2822,7 +3661,7 @@ Vencimientos de la empresa activa (VE-1..VE-3, docs/06 `/vencimientos`): por ví
 
 ### `GET /api/v1/vencimientos`
 
-**Listar vencimientos.** `dias`: los que vencen en los próximos N días más los que ya están en gracia o vencidos (30 por defecto; 0 = todos los que tienen fecha). `estado`: Vigente, PorVencer, EnGracia o Vencida.
+**Listar vencimientos.** `dias`: los que vencen en los próximos N días más los que ya están en gracia o vencidos (30 por defecto; 0 = todos los que tienen fecha). `estado`: Vigente, PorVencer, EnGracia o Vencida. `exento` (EX-6): `true` solo los que el vínculo tiene eximidos, `false` solo los que no; sin él, todos (cada fila trae su exención).
 
 **Permiso documentos:leer · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `listarVencimientos`**
 
@@ -2832,6 +3671,7 @@ Vencimientos de la empresa activa (VE-1..VE-3, docs/06 `/vencimientos`): por ví
 |---|---|---|---|---|
 | `dias` | query | entero | no |  |
 | `estado` | query | texto | no |  |
+| `exento` | query | booleano | no |  |
 
 **Respuestas**
 
@@ -2862,6 +3702,12 @@ Campos de la respuesta `200`:
 | `[].finDeGracia` | fecha o null | no |  |
 | `[].permiteRatificar` | booleano | sí |  |
 | `[].ultimoRecordatorio` | fecha y hora o null | no |  |
+| `[].exencion` | ExencionResumenDto o null | no |  |
+| `[].exencion.id` | uuid | sí |  |
+| `[].exencion.todos` | booleano | sí |  |
+| `[].exencion.justificacion` | texto | sí |  |
+| `[].exencion.hasta` | fecha o null | no |  |
+| `[].tipoDocumentoTenantId` | uuid o null | no |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -2896,7 +3742,14 @@ Respuesta `200`:
     "base": "texto",
     "finDeGracia": "2026-11-12",
     "permiteRatificar": true,
-    "ultimoRecordatorio": "2026-11-12T15:00:00Z"
+    "ultimoRecordatorio": "2026-11-12T15:00:00Z",
+    "exencion": {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12"
+    },
+    "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
   }
 ]
 ```
@@ -2915,6 +3768,7 @@ Respuesta `200`:
 |---|---|---|---|---|
 | `dias` | query | entero | no |  |
 | `estado` | query | texto | no |  |
+| `exento` | query | booleano | no |  |
 
 **Respuestas**
 
@@ -3050,8 +3904,6 @@ Respuesta `200`:
 
 ## Vínculos
 
-Vínculos de la empresa activa (cabecera `X-Empresa`). Cada vínculo es un stream de eventos `Vinculo-{id}`; la lectura sale de su proyección inline.
-
 ### `GET /api/v1/vinculos`
 
 **Listar vínculos.** Vínculos de la empresa, del más antiguo al más reciente. `estado` filtra por el estado del dominio (no cambia nunca por una actualización); `enRevision` (VR-1) por la situación derivada «en revisión por una actualización»: `true` solo los que tienen una actualización abierta, `false` excluye esos (así «Activo» en pantalla no repite lo que se ve «En revisión»).
@@ -3122,6 +3974,45 @@ Campos de la respuesta `200`:
 | `datos[].actualizacionNoAprobada.expedienteId` | uuid o null | no |  |
 | `datos[].actualizacionNoAprobada.resultado` | texto | sí |  |
 | `datos[].actualizacionNoAprobada.fecha` | fecha y hora o null | no |  |
+| `datos[].accesoDelCorreo` | AccesoDelCorreoDto o null | no |  |
+| `datos[].accesoDelCorreo.estado` | texto | sí |  |
+| `datos[].accesoDelCorreo.correo` | texto | sí |  |
+| `datos[].accesoDelCorreo.desde` | fecha y hora | sí |  |
+| `datos[].accesoDelCorreo.resueltoEn` | fecha y hora o null | no |  |
+| `datos[].accesoDelCorreo.motivo` | texto o null | no |  |
+| `datos[].verificacionDelCorreo` | VerificacionDelCorreoDto o null | no |  |
+| `datos[].verificacionDelCorreo.estado` | texto | sí |  |
+| `datos[].verificacionDelCorreo.medio` | texto o null | no |  |
+| `datos[].invitacionPorAprobar` | InvitacionPorAprobarDto o null | no |  |
+| `datos[].invitacionPorAprobar.estado` | EstadoAprobacionDeInvitacion (texto) | sí | valores: Pendiente · Aprobada · Rechazada |
+| `datos[].invitacionPorAprobar.correoDestino` | texto | sí |  |
+| `datos[].invitacionPorAprobar.vigenciaHoras` | entero | sí |  |
+| `datos[].invitacionPorAprobar.solicitadaEn` | fecha y hora | sí |  |
+| `datos[].invitacionPorAprobar.solicitadaPor` | texto | sí |  |
+| `datos[].invitacionPorAprobar.solicitadaPorNombre` | texto o null | no |  |
+| `datos[].invitacionPorAprobar.decididaPor` | texto o null | no |  |
+| `datos[].invitacionPorAprobar.decididaPorNombre` | texto o null | no |  |
+| `datos[].invitacionPorAprobar.decididaEn` | fecha y hora o null | no |  |
+| `datos[].invitacionPorAprobar.motivoDeRechazo` | texto o null | no |  |
+| `datos[].invitacionPorAprobar.puedesDecidir` | booleano o null | no |  |
+| `datos[].exenciones` | lista de ExencionDeVinculoDto o null | no |  |
+| `datos[].exenciones[].id` | uuid | sí |  |
+| `datos[].exenciones[].todos` | booleano | sí |  |
+| `datos[].exenciones[].objetivos` | lista de ObjetivoDeExencionDto | sí |  |
+| `datos[].exenciones[].objetivos[].tipo` | TipoRequisito (texto) | sí | valores: Documento · Seccion |
+| `datos[].exenciones[].objetivos[].tipoDocumentoTenantId` | uuid o null | no |  |
+| `datos[].exenciones[].objetivos[].seccion` | texto o null | no |  |
+| `datos[].exenciones[].objetivos[].codigo` | texto o null | no |  |
+| `datos[].exenciones[].objetivos[].nombre` | texto o null | no |  |
+| `datos[].exenciones[].justificacion` | texto | sí |  |
+| `datos[].exenciones[].hasta` | fecha o null | no |  |
+| `datos[].exenciones[].por` | texto | sí |  |
+| `datos[].exenciones[].creadaEn` | fecha y hora | sí |  |
+| `datos[].exenciones[].estado` | EstadoDeExencion (texto) | sí | valores: Vigente · Revocada · Vencida |
+| `datos[].exenciones[].revocadaPor` | texto o null | no |  |
+| `datos[].exenciones[].justificacionDeRevocacion` | texto o null | no |  |
+| `datos[].exenciones[].revocadaEn` | fecha y hora o null | no |  |
+| `datos[].exenciones[].vencidaEn` | fecha y hora o null | no |  |
 | `siguienteCursor` | texto o null | no |  |
 
 **Errores de negocio que lanza**
@@ -3194,7 +4085,55 @@ Respuesta `200`:
         "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "resultado": "texto",
         "fecha": "2026-11-12T15:00:00Z"
-      }
+      },
+      "accesoDelCorreo": {
+        "estado": "texto",
+        "correo": "contacto@empresa.co",
+        "desde": "2026-11-12T15:00:00Z",
+        "resueltoEn": "2026-11-12T15:00:00Z",
+        "motivo": "Texto de ejemplo."
+      },
+      "verificacionDelCorreo": {
+        "estado": "texto",
+        "medio": "texto"
+      },
+      "invitacionPorAprobar": {
+        "estado": "Pendiente",
+        "correoDestino": "contacto@empresa.co",
+        "vigenciaHoras": 1,
+        "solicitadaEn": "2026-11-12T15:00:00Z",
+        "solicitadaPor": "texto",
+        "solicitadaPorNombre": "Nombre de ejemplo",
+        "decididaPor": "texto",
+        "decididaPorNombre": "Nombre de ejemplo",
+        "decididaEn": "2026-11-12T15:00:00Z",
+        "motivoDeRechazo": "Texto de ejemplo.",
+        "puedesDecidir": true
+      },
+      "exenciones": [
+        {
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "todos": true,
+          "objetivos": [
+            {
+              "tipo": null,
+              "tipoDocumentoTenantId": null,
+              "seccion": null,
+              "codigo": null,
+              "nombre": null
+            }
+          ],
+          "justificacion": "Texto de ejemplo.",
+          "hasta": "2026-11-12",
+          "por": "texto",
+          "creadaEn": "2026-11-12T15:00:00Z",
+          "estado": "Vigente",
+          "revocadaPor": "texto",
+          "justificacionDeRevocacion": "Texto de ejemplo.",
+          "revocadaEn": "2026-11-12T15:00:00Z",
+          "vencidaEn": "2026-11-12T15:00:00Z"
+        }
+      ]
     }
   ],
   "siguienteCursor": "texto"
@@ -3323,7 +4262,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -3414,7 +4401,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -3514,7 +4549,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -3613,7 +4696,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -3714,7 +4845,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -3814,7 +4993,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -3914,7 +5141,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -3998,6 +5273,7 @@ Respuesta `200`:
 **Respuestas**
 
 - `201` Creado — EnlaceInvitacionDto
+- `202` Aceptado — InvitacionPorAprobarDto
 
 Campos de la respuesta `201`:
 
@@ -4007,8 +5283,25 @@ Campos de la respuesta `201`:
 | `expira` | fecha y hora | sí |  |
 | `envios` | entero | sí |  |
 
+Campos de la respuesta `202`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `estado` | EstadoAprobacionDeInvitacion (texto) | sí | valores: Pendiente · Aprobada · Rechazada |
+| `correoDestino` | texto | sí |  |
+| `vigenciaHoras` | entero | sí |  |
+| `solicitadaEn` | fecha y hora | sí |  |
+| `solicitadaPor` | texto | sí |  |
+| `solicitadaPorNombre` | texto o null | no |  |
+| `decididaPor` | texto o null | no |  |
+| `decididaPorNombre` | texto o null | no |  |
+| `decididaEn` | fecha y hora o null | no |  |
+| `motivoDeRechazo` | texto o null | no |  |
+| `puedesDecidir` | booleano o null | no |  |
+
 **Errores de negocio que lanza**
 
+- `404` `tercero-no-encontrado`
 - `404` `tipo-vinculo-no-encontrado`
 
 <details><summary>Ejemplo de petición y respuesta</summary>
@@ -4134,7 +5427,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -4277,7 +5618,55 @@ Respuesta `200`:
     "expedienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "resultado": "texto",
     "fecha": "2026-11-12T15:00:00Z"
-  }
+  },
+  "accesoDelCorreo": {
+    "estado": "texto",
+    "correo": "contacto@empresa.co",
+    "desde": "2026-11-12T15:00:00Z",
+    "resueltoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  },
+  "verificacionDelCorreo": {
+    "estado": "texto",
+    "medio": "texto"
+  },
+  "invitacionPorAprobar": {
+    "estado": "Pendiente",
+    "correoDestino": "contacto@empresa.co",
+    "vigenciaHoras": 1,
+    "solicitadaEn": "2026-11-12T15:00:00Z",
+    "solicitadaPor": "texto",
+    "solicitadaPorNombre": "Nombre de ejemplo",
+    "decididaPor": "texto",
+    "decididaPorNombre": "Nombre de ejemplo",
+    "decididaEn": "2026-11-12T15:00:00Z",
+    "motivoDeRechazo": "Texto de ejemplo.",
+    "puedesDecidir": true
+  },
+  "exenciones": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "todos": true,
+      "objetivos": [
+        {
+          "tipo": "Documento",
+          "tipoDocumentoTenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "seccion": "texto",
+          "codigo": "CODIGO_EJEMPLO",
+          "nombre": "Constructora Norte S.A.S."
+        }
+      ],
+      "justificacion": "Texto de ejemplo.",
+      "hasta": "2026-11-12",
+      "por": "texto",
+      "creadaEn": "2026-11-12T15:00:00Z",
+      "estado": "Vigente",
+      "revocadaPor": "texto",
+      "justificacionDeRevocacion": "Texto de ejemplo.",
+      "revocadaEn": "2026-11-12T15:00:00Z",
+      "vencidaEn": "2026-11-12T15:00:00Z"
+    }
+  ]
 }
 ```
 

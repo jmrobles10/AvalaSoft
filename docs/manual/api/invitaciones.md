@@ -1,6 +1,6 @@
 # API · Invitaciones
 
-11 operaciones en 1 recurso.
+13 operaciones en 1 recurso.
 
 ## Lotes
 
@@ -8,7 +8,7 @@ Invitación masiva por lote de la empresa activa (H8, paridad con `Features/Invi
 
 ### `GET /api/v1/invitaciones/lotes`
 
-**Listar lotes.** Lotes de la empresa, del más reciente al más antiguo; cursor opaco.
+**Listar lotes.** Lotes de la empresa, del más reciente al más antiguo; cursor opaco. `estado` filtra por el estado del lote (`PorAprobar` es la bandeja de quienes aprueban lotes, decisión AI); cada lote por aprobar dice `puedesDecidir`.
 
 **Permiso vinculos:leer · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `listarLotes`**
 
@@ -16,6 +16,7 @@ Invitación masiva por lote de la empresa activa (H8, paridad con `Features/Invi
 
 | Nombre | En | Tipo | Requerido | Detalle |
 |---|---|---|---|---|
+| `estado` | query | texto | no |  |
 | `limite` | query | entero | no |  |
 | `cursor` | query | texto | no |  |
 
@@ -32,7 +33,7 @@ Campos de la respuesta `200`:
 | `datos[].id` | uuid | sí |  |
 | `datos[].nombre` | texto | sí |  |
 | `datos[].archivo` | texto o null | no |  |
-| `datos[].estado` | EstadoLote (texto) | sí | valores: Procesando · Pausado · Completado · CompletadoConErrores · Cancelado |
+| `datos[].estado` | EstadoLote (texto) | sí | valores: Procesando · Pausado · Completado · CompletadoConErrores · Cancelado · PorAprobar |
 | `datos[].totales` | TotalesLoteDto | sí |  |
 | `datos[].totales.filas` | entero | sí |  |
 | `datos[].totales.procesadas` | entero | sí |  |
@@ -48,7 +49,16 @@ Campos de la respuesta `200`:
 | `datos[].terminadoEn` | fecha y hora o null | no |  |
 | `datos[].reintentos` | entero | sí |  |
 | `datos[].version` | entero | sí |  |
+| `datos[].tiposPorAprobar` | lista de texto o null | no |  |
+| `datos[].aprobadoPor` | texto o null | no |  |
+| `datos[].aprobadoEn` | fecha y hora o null | no |  |
+| `datos[].motivoDeRechazo` | texto o null | no |  |
+| `datos[].puedesDecidir` | booleano o null | no |  |
 | `siguienteCursor` | texto o null | no |  |
+
+**Errores de negocio que lanza**
+
+- `422` `estado-invalido`
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -83,7 +93,14 @@ Respuesta `200`:
       "actualizadoEn": "2026-11-12T15:00:00Z",
       "terminadoEn": "2026-11-12T15:00:00Z",
       "reintentos": 1,
-      "version": 1
+      "version": 1,
+      "tiposPorAprobar": [
+        "texto"
+      ],
+      "aprobadoPor": "texto",
+      "aprobadoEn": "2026-11-12T15:00:00Z",
+      "motivoDeRechazo": "Texto de ejemplo.",
+      "puedesDecidir": true
     }
   ],
   "siguienteCursor": "texto"
@@ -132,7 +149,7 @@ Campos de la respuesta `202`:
 | `id` | uuid | sí |  |
 | `nombre` | texto | sí |  |
 | `archivo` | texto o null | no |  |
-| `estado` | EstadoLote (texto) | sí | valores: Procesando · Pausado · Completado · CompletadoConErrores · Cancelado |
+| `estado` | EstadoLote (texto) | sí | valores: Procesando · Pausado · Completado · CompletadoConErrores · Cancelado · PorAprobar |
 | `totales` | TotalesLoteDto | sí |  |
 | `totales.filas` | entero | sí |  |
 | `totales.procesadas` | entero | sí |  |
@@ -148,6 +165,11 @@ Campos de la respuesta `202`:
 | `terminadoEn` | fecha y hora o null | no |  |
 | `reintentos` | entero | sí |  |
 | `version` | entero | sí |  |
+| `tiposPorAprobar` | lista de texto o null | no |  |
+| `aprobadoPor` | texto o null | no |  |
+| `aprobadoEn` | fecha y hora o null | no |  |
+| `motivoDeRechazo` | texto o null | no |  |
+| `puedesDecidir` | booleano o null | no |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -183,7 +205,14 @@ Respuesta `202`:
   "actualizadoEn": "2026-11-12T15:00:00Z",
   "terminadoEn": "2026-11-12T15:00:00Z",
   "reintentos": 1,
-  "version": 1
+  "version": 1,
+  "tiposPorAprobar": [
+    "texto"
+  ],
+  "aprobadoPor": "texto",
+  "aprobadoEn": "2026-11-12T15:00:00Z",
+  "motivoDeRechazo": "Texto de ejemplo.",
+  "puedesDecidir": true
 }
 ```
 
@@ -241,7 +270,80 @@ Respuesta `200`:
   "actualizadoEn": "2026-11-12T15:00:00Z",
   "terminadoEn": "2026-11-12T15:00:00Z",
   "reintentos": 1,
-  "version": 1
+  "version": 1,
+  "tiposPorAprobar": [
+    "texto"
+  ],
+  "aprobadoPor": "texto",
+  "aprobadoEn": "2026-11-12T15:00:00Z",
+  "motivoDeRechazo": "Texto de ejemplo.",
+  "puedesDecidir": true
+}
+```
+
+</details>
+
+### `POST /api/v1/invitaciones/lotes/{id}/aprobar`
+
+**Aprobar lote.** Aprueba el lote completo (una sola decisión para todas sus filas, decisión AI): pasa a `Procesando` y se encola la primera tanda; las invitaciones de sus filas salen sin pedir una aprobación por vínculo. Quien aprueba debe ser de quienes designó **cada** tipo que exige aprobación (403 `no-es-aprobador-de-invitaciones`), una persona (422 `usuario-delegado-requerido`) y no quien creó el lote (403 `separacion-de-funciones`); 409 `sin-lote-por-aprobar`.
+
+**Permiso vinculos:escribir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `aprobarLote`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — LoteDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+Mismos campos de `LoteDto` que se detallan en `POST /api/v1/invitaciones/lotes`.
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/invitaciones/lotes/3fa85f64-5717-4562-b3fc-2c963f66afa6/aprobar" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID" \
+  -H "Idempotency-Key: $(uuidgen)"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "nombre": "Constructora Norte S.A.S.",
+  "archivo": "texto",
+  "estado": "Procesando",
+  "totales": {
+    "filas": 1,
+    "procesadas": 1,
+    "pendientes": 1,
+    "exitosas": 1,
+    "fallidas": 1,
+    "duplicadas": 1,
+    "invalidas": 1
+  },
+  "vigenciaHoras": 1,
+  "creadoPor": "texto",
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z",
+  "terminadoEn": "2026-11-12T15:00:00Z",
+  "reintentos": 1,
+  "version": 1,
+  "tiposPorAprobar": [
+    "texto"
+  ],
+  "aprobadoPor": "texto",
+  "aprobadoEn": "2026-11-12T15:00:00Z",
+  "motivoDeRechazo": "Texto de ejemplo.",
+  "puedesDecidir": true
 }
 ```
 
@@ -300,7 +402,14 @@ Respuesta `200`:
   "actualizadoEn": "2026-11-12T15:00:00Z",
   "terminadoEn": "2026-11-12T15:00:00Z",
   "reintentos": 1,
-  "version": 1
+  "version": 1,
+  "tiposPorAprobar": [
+    "texto"
+  ],
+  "aprobadoPor": "texto",
+  "aprobadoEn": "2026-11-12T15:00:00Z",
+  "motivoDeRechazo": "Texto de ejemplo.",
+  "puedesDecidir": true
 }
 ```
 
@@ -479,7 +588,14 @@ Respuesta `200`:
   "actualizadoEn": "2026-11-12T15:00:00Z",
   "terminadoEn": "2026-11-12T15:00:00Z",
   "reintentos": 1,
-  "version": 1
+  "version": 1,
+  "tiposPorAprobar": [
+    "texto"
+  ],
+  "aprobadoPor": "texto",
+  "aprobadoEn": "2026-11-12T15:00:00Z",
+  "motivoDeRechazo": "Texto de ejemplo.",
+  "puedesDecidir": true
 }
 ```
 
@@ -538,7 +654,88 @@ Respuesta `200`:
   "actualizadoEn": "2026-11-12T15:00:00Z",
   "terminadoEn": "2026-11-12T15:00:00Z",
   "reintentos": 1,
-  "version": 1
+  "version": 1,
+  "tiposPorAprobar": [
+    "texto"
+  ],
+  "aprobadoPor": "texto",
+  "aprobadoEn": "2026-11-12T15:00:00Z",
+  "motivoDeRechazo": "Texto de ejemplo.",
+  "puedesDecidir": true
+}
+```
+
+</details>
+
+### `POST /api/v1/invitaciones/lotes/{id}/rechazar`
+
+**Rechazar lote.** Rechaza el lote completo con un motivo (422 `motivo-requerido`): queda `Cancelado`, ninguna fila se procesa y nunca se le escribió a ningún tercero. Las mismas reglas de quién decide que al aprobarlo.
+
+**Permiso vinculos:escribir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `rechazarLote`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, MotivoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `motivo` | texto | sí |  |
+
+**Respuestas**
+
+- `200` OK — LoteDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+Mismos campos de `LoteDto` que se detallan en `POST /api/v1/invitaciones/lotes`.
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/invitaciones/lotes/3fa85f64-5717-4562-b3fc-2c963f66afa6/rechazar" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"motivo":"Texto de ejemplo."}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "nombre": "Constructora Norte S.A.S.",
+  "archivo": "texto",
+  "estado": "Procesando",
+  "totales": {
+    "filas": 1,
+    "procesadas": 1,
+    "pendientes": 1,
+    "exitosas": 1,
+    "fallidas": 1,
+    "duplicadas": 1,
+    "invalidas": 1
+  },
+  "vigenciaHoras": 1,
+  "creadoPor": "texto",
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z",
+  "terminadoEn": "2026-11-12T15:00:00Z",
+  "reintentos": 1,
+  "version": 1,
+  "tiposPorAprobar": [
+    "texto"
+  ],
+  "aprobadoPor": "texto",
+  "aprobadoEn": "2026-11-12T15:00:00Z",
+  "motivoDeRechazo": "Texto de ejemplo.",
+  "puedesDecidir": true
 }
 ```
 
@@ -597,7 +794,14 @@ Respuesta `200`:
   "actualizadoEn": "2026-11-12T15:00:00Z",
   "terminadoEn": "2026-11-12T15:00:00Z",
   "reintentos": 1,
-  "version": 1
+  "version": 1,
+  "tiposPorAprobar": [
+    "texto"
+  ],
+  "aprobadoPor": "texto",
+  "aprobadoEn": "2026-11-12T15:00:00Z",
+  "motivoDeRechazo": "Texto de ejemplo.",
+  "puedesDecidir": true
 }
 ```
 

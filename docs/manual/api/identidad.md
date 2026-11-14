@@ -1762,6 +1762,8 @@ Campos de la respuesta `200`:
 | `vinculos[].estado` | EstadoVinculo (texto) | sí | valores: Invitado · EnValidacion · Activo · PorVencer · Vencido · Bloqueado · Desvinculado · Anulado |
 | `expedienteOrigen` | uuid o null | no |  |
 | `vinculoOrigen` | uuid o null | no |  |
+| `aislada` | booleano | no | por omisión false |
+| `terceroEnmascarado` | texto o null | no |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -1792,7 +1794,9 @@ Respuesta `200`:
     }
   ],
   "expedienteOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "vinculoOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  "vinculoOrigen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "aislada": false,
+  "terceroEnmascarado": "texto"
 }
 ```
 
@@ -1802,7 +1806,7 @@ Respuesta `200`:
 
 ### `POST /api/v1/sesiones-tercero`
 
-**Crear sesión tercero.** Abre la sesión (201). 403 `sistema-requerido` (la llave no es de un sistema integrador), `sistema-inactivo`, `origen-no-permitido` (el origen no está entre los del sistema) y `vinculo-ajeno` (el vínculo no lleva la referencia del sistema); 404 si el vínculo no es de la empresa; 409 `invitacion-no-aceptada` y `vinculo-anulado`; 422 `componente-invalido`, `vigencia-invalida` y `origen-invalido`.
+**Crear sesión tercero.** Abre la sesión (201). 403 `sistema-requerido` (la llave no es de un sistema integrador), `sistema-inactivo`, `origen-no-permitido` (el origen no está entre los del sistema) y `vinculo-ajeno` (el vínculo no lleva la referencia del sistema); 404 si el vínculo no es de la empresa; 409 `invitacion-no-aceptada`, `vinculo-anulado` y `acceso-rechazado`; 422 `componente-invalido`, `vigencia-invalida` y `origen-invalido`. Si el correo del vínculo no es contacto conocido del tercero (acceso aislado) la sesión nace aislada: ve y sube solo lo de ese vínculo, nada de la bóveda global, hasta que un contacto del tercero lo apruebe.
 
 **Permiso sesiones-tercero:crear · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `crearSesionTercero`**
 
@@ -1826,6 +1830,7 @@ Respuesta `200`:
 - `403` `sistema-inactivo`
 - `403` `sistema-requerido`
 - `403` `vinculo-ajeno`
+- `409` `acceso-rechazado`
 - `409` `invitacion-no-aceptada`
 - `409` `vinculo-anulado`
 - `422` `componente-invalido`

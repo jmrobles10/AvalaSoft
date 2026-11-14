@@ -1,6 +1,6 @@
 # API · Plataforma
 
-38 operaciones en 12 recursos.
+42 operaciones en 13 recursos.
 
 ## Auditoría de operadores
 
@@ -1998,6 +1998,401 @@ Respuesta `200`:
   "activo": true,
   "creadoEn": "2026-11-12T15:00:00Z",
   "actualizadoEn": "2026-11-12T15:00:00Z"
+}
+```
+
+</details>
+
+## Solicitudes de acceso de la plataforma
+
+Solicitudes de acceso a terceros en la consola de Plataforma (decisión AV del registro): cuando un correo que no es contacto de un tercero pide acceso y el tercero **no tiene ningún contacto verificado**, nadie del tercero puede decidir y la solicitud espera aquí, con la evidencia: las empresas (y grupos) que invitaron al correo, los contactos del tercero con su verificación y los correos del RUT y de la Cámara de comercio si el tercero los tiene. Un operador aprueba o rechaza; queda en la auditoría y en el historial de la solicitud. Un operador también puede verificar un contacto (medio `Plataforma`) —lo que devuelve la decisión a los contactos del tercero—.
+
+### `GET /api/v1/plataforma/solicitudes-de-acceso`
+
+**Listar solicitudes de acceso de plataforma.** Las solicitudes de acceso a terceros. `estado`: `cola` (por omisión: pendientes de terceros sin contactos verificados, las más antiguas primero), `pendientes` (todas las pendientes, también las que decide un contacto), `resueltas` o `todas` (las más recientes primero).
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `listarSolicitudesDeAccesoDePlataforma`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `estado` | query | texto | no |  |
+
+**Respuestas**
+
+- `200` OK — lista de SolicitudDeAccesoDePlataformaDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `[]` | lista de SolicitudDeAccesoDePlataformaDto | sí |  |
+| `[].id` | uuid | sí |  |
+| `[].terceroId` | uuid | sí |  |
+| `[].tercero` | texto | sí |  |
+| `[].identificacion` | texto | sí |  |
+| `[].correo` | texto | sí |  |
+| `[].estado` | texto | sí |  |
+| `[].desde` | fecha y hora | sí |  |
+| `[].empresas` | lista de EmpresaQueInvitoPlataformaDto | sí |  |
+| `[].empresas[].empresa` | texto | sí |  |
+| `[].empresas[].grupo` | texto | sí |  |
+| `[].empresas[].tenantId` | uuid | sí |  |
+| `[].empresas[].fecha` | fecha y hora | sí |  |
+| `[].contactos` | lista de ContactoDelTerceroDto | sí |  |
+| `[].contactos[].nombre` | texto | sí |  |
+| `[].contactos[].correo` | texto | sí |  |
+| `[].contactos[].rol` | texto | sí |  |
+| `[].contactos[].verificacion` | texto | sí |  |
+| `[].contactos[].medio` | texto o null | no |  |
+| `[].contactos[].verificadoEn` | fecha y hora o null | no |  |
+| `[].contactos[].esTuCorreo` | booleano | sí |  |
+| `[].contactos[].desplazado` | booleano | sí |  |
+| `[].correosOficiales` | lista de CorreoOficialDto | sí |  |
+| `[].correosOficiales[].correo` | texto | sí |  |
+| `[].correosOficiales[].documento` | texto | sí |  |
+| `[].correosOficiales[].version` | entero | sí |  |
+| `[].correosOficiales[].cargadoPor` | texto o null | no |  |
+| `[].correosOficiales[].respalda` | booleano | no | por omisión false |
+| `[].enCola` | booleano | sí |  |
+| `[].contactoDesplazado` | booleano | sí |  |
+| `[].decididoPor` | texto o null | no |  |
+| `[].decididoVia` | texto o null | no |  |
+| `[].decididoEn` | fecha y hora o null | no |  |
+| `[].motivo` | texto o null | no |  |
+
+**Errores de negocio que lanza**
+
+- `422` `estado-invalido`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/api/v1/plataforma/solicitudes-de-acceso" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA"
+```
+
+Respuesta `200`:
+
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "terceroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "tercero": "texto",
+    "identificacion": "900123456",
+    "correo": "contacto@empresa.co",
+    "estado": "texto",
+    "desde": "2026-11-12T15:00:00Z",
+    "empresas": [
+      {
+        "empresa": "texto",
+        "grupo": "texto",
+        "tenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "fecha": "2026-11-12T15:00:00Z"
+      }
+    ],
+    "contactos": [
+      {
+        "nombre": "Constructora Norte S.A.S.",
+        "correo": "contacto@empresa.co",
+        "rol": "texto",
+        "verificacion": "texto",
+        "medio": "texto",
+        "verificadoEn": "2026-11-12T15:00:00Z",
+        "esTuCorreo": true,
+        "desplazado": true
+      }
+    ],
+    "correosOficiales": [
+      {
+        "correo": "contacto@empresa.co",
+        "documento": "texto",
+        "version": 1,
+        "cargadoPor": "texto",
+        "respalda": false
+      }
+    ],
+    "enCola": true,
+    "contactoDesplazado": true,
+    "decididoPor": "texto",
+    "decididoVia": "texto",
+    "decididoEn": "2026-11-12T15:00:00Z",
+    "motivo": "Texto de ejemplo."
+  }
+]
+```
+
+</details>
+
+### `POST /api/v1/plataforma/solicitudes-de-acceso/{id}/aprobar`
+
+**Aprobar solicitud de acceso de plataforma.** Un operador aprueba el correo: pasa a ser contacto verificado del tercero (medio `Plataforma`), las empresas que lo invitaron reciben lo que ya les corresponde y lo que ese correo subió se promueve. Solo si el tercero no tiene contactos verificados (409 `decide-un-contacto`); idempotente. 404 `solicitud-no-encontrada`.
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `aprobarSolicitudDeAccesoDePlataforma`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — SolicitudDeAccesoDePlataformaDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `terceroId` | uuid | sí |  |
+| `tercero` | texto | sí |  |
+| `identificacion` | texto | sí |  |
+| `correo` | texto | sí |  |
+| `estado` | texto | sí |  |
+| `desde` | fecha y hora | sí |  |
+| `empresas` | lista de EmpresaQueInvitoPlataformaDto | sí |  |
+| `empresas[].empresa` | texto | sí |  |
+| `empresas[].grupo` | texto | sí |  |
+| `empresas[].tenantId` | uuid | sí |  |
+| `empresas[].fecha` | fecha y hora | sí |  |
+| `contactos` | lista de ContactoDelTerceroDto | sí |  |
+| `contactos[].nombre` | texto | sí |  |
+| `contactos[].correo` | texto | sí |  |
+| `contactos[].rol` | texto | sí |  |
+| `contactos[].verificacion` | texto | sí |  |
+| `contactos[].medio` | texto o null | no |  |
+| `contactos[].verificadoEn` | fecha y hora o null | no |  |
+| `contactos[].esTuCorreo` | booleano | sí |  |
+| `contactos[].desplazado` | booleano | sí |  |
+| `correosOficiales` | lista de CorreoOficialDto | sí |  |
+| `correosOficiales[].correo` | texto | sí |  |
+| `correosOficiales[].documento` | texto | sí |  |
+| `correosOficiales[].version` | entero | sí |  |
+| `correosOficiales[].cargadoPor` | texto o null | no |  |
+| `correosOficiales[].respalda` | booleano | no | por omisión false |
+| `enCola` | booleano | sí |  |
+| `contactoDesplazado` | booleano | sí |  |
+| `decididoPor` | texto o null | no |  |
+| `decididoVia` | texto o null | no |  |
+| `decididoEn` | fecha y hora o null | no |  |
+| `motivo` | texto o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/plataforma/solicitudes-de-acceso/3fa85f64-5717-4562-b3fc-2c963f66afa6/aprobar" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
+  -H "Idempotency-Key: $(uuidgen)"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "terceroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "tercero": "texto",
+  "identificacion": "900123456",
+  "correo": "contacto@empresa.co",
+  "estado": "texto",
+  "desde": "2026-11-12T15:00:00Z",
+  "empresas": [
+    {
+      "empresa": "texto",
+      "grupo": "texto",
+      "tenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "fecha": "2026-11-12T15:00:00Z"
+    }
+  ],
+  "contactos": [
+    {
+      "nombre": "Constructora Norte S.A.S.",
+      "correo": "contacto@empresa.co",
+      "rol": "texto",
+      "verificacion": "texto",
+      "medio": "texto",
+      "verificadoEn": "2026-11-12T15:00:00Z",
+      "esTuCorreo": true,
+      "desplazado": true
+    }
+  ],
+  "correosOficiales": [
+    {
+      "correo": "contacto@empresa.co",
+      "documento": "texto",
+      "version": 1,
+      "cargadoPor": "texto",
+      "respalda": false
+    }
+  ],
+  "enCola": true,
+  "contactoDesplazado": true,
+  "decididoPor": "texto",
+  "decididoVia": "texto",
+  "decididoEn": "2026-11-12T15:00:00Z",
+  "motivo": "Texto de ejemplo."
+}
+```
+
+</details>
+
+### `POST /api/v1/plataforma/solicitudes-de-acceso/{id}/rechazar`
+
+**Rechazar solicitud de acceso de plataforma.** Un operador rechaza el correo, con un motivo opcional: se cortan sus sesiones, no vuelve a entrar a este tercero y la empresa ve el rechazo en su vínculo. Solo si el tercero no tiene contactos verificados (409 `decide-un-contacto`); un correo ya aprobado no se rechaza (409 `solicitud-ya-aprobada`).
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `rechazarSolicitudDeAccesoDePlataforma`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, RechazarAccesoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `motivo` | texto o null | no |  |
+
+**Respuestas**
+
+- `200` OK — SolicitudDeAccesoDePlataformaDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+Mismos campos de `SolicitudDeAccesoDePlataformaDto` que se detallan en `POST /api/v1/plataforma/solicitudes-de-acceso/{id}/aprobar`.
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/plataforma/solicitudes-de-acceso/3fa85f64-5717-4562-b3fc-2c963f66afa6/rechazar" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"motivo":"Texto de ejemplo."}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "terceroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "tercero": "texto",
+  "identificacion": "900123456",
+  "correo": "contacto@empresa.co",
+  "estado": "texto",
+  "desde": "2026-11-12T15:00:00Z",
+  "empresas": [
+    {
+      "empresa": "texto",
+      "grupo": "texto",
+      "tenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "fecha": "2026-11-12T15:00:00Z"
+    }
+  ],
+  "contactos": [
+    {
+      "nombre": "Constructora Norte S.A.S.",
+      "correo": "contacto@empresa.co",
+      "rol": "texto",
+      "verificacion": "texto",
+      "medio": "texto",
+      "verificadoEn": "2026-11-12T15:00:00Z",
+      "esTuCorreo": true,
+      "desplazado": true
+    }
+  ],
+  "correosOficiales": [
+    {
+      "correo": "contacto@empresa.co",
+      "documento": "texto",
+      "version": 1,
+      "cargadoPor": "texto",
+      "respalda": false
+    }
+  ],
+  "enCola": true,
+  "contactoDesplazado": true,
+  "decididoPor": "texto",
+  "decididoVia": "texto",
+  "decididoEn": "2026-11-12T15:00:00Z",
+  "motivo": "Texto de ejemplo."
+}
+```
+
+</details>
+
+### `POST /api/v1/plataforma/terceros/{terceroId}/contactos/verificar`
+
+**Verificar contacto del tercero.** Un operador verifica el correo de un contacto del tercero (medio `Plataforma`): desde ahí decide los accesos aislados del tercero y desplaza a los contactos sin verificar (el verificado prevalece). Idempotente. 404 `contacto-no-encontrado` si ese correo no es contacto del tercero.
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `verificarContactoDelTercero`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `terceroId` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, VerificarContactoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `correo` | texto | sí |  |
+| `nota` | texto o null | no |  |
+
+**Respuestas**
+
+- `200` OK — ContactoDelTerceroDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `nombre` | texto | sí |  |
+| `correo` | texto | sí |  |
+| `rol` | texto | sí |  |
+| `verificacion` | texto | sí |  |
+| `medio` | texto o null | no |  |
+| `verificadoEn` | fecha y hora o null | no |  |
+| `esTuCorreo` | booleano | sí |  |
+| `desplazado` | booleano | sí |  |
+
+**Errores de negocio que lanza**
+
+- `404` `contacto-no-encontrado`
+- `404` `tercero-no-encontrado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/plataforma/terceros/3fa85f64-5717-4562-b3fc-2c963f66afa6/contactos/verificar" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"correo":"contacto@empresa.co","nota":"Texto de ejemplo."}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "nombre": "Constructora Norte S.A.S.",
+  "correo": "contacto@empresa.co",
+  "rol": "texto",
+  "verificacion": "texto",
+  "medio": "texto",
+  "verificadoEn": "2026-11-12T15:00:00Z",
+  "esTuCorreo": true,
+  "desplazado": true
 }
 ```
 

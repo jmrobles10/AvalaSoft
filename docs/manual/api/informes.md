@@ -113,6 +113,15 @@ Campos de la respuesta `200`:
 | `datos[].flujo.nombre` | texto | sí |  |
 | `datos[].flujo.version` | entero | sí |  |
 | `datos[].flujo.origen` | OrigenFlujo (texto) | sí | valores: Explicito · Regla · PorDefecto |
+| `datos[].flujo.regla` | SeleccionPorReglaDto o null | no |  |
+| `datos[].flujo.regla.prioridad` | entero | sí |  |
+| `datos[].flujo.regla.condicion` | CondicionDto | sí |  |
+| `datos[].flujo.regla.condicion.tipo` | texto | sí |  |
+| `datos[].flujo.regla.condicion.nodos` | lista de CondicionDto o null | no | recursivo: ver CondicionDto |
+| `datos[].flujo.regla.condicion.atributo` | texto o null | no |  |
+| `datos[].flujo.regla.condicion.operador` | texto o null | no |  |
+| `datos[].flujo.regla.condicion.valores` | lista de texto o null | no |  |
+| `datos[].flujo.regla.reglasEvaluadas` | entero | sí |  |
 | `datos[].abiertoEn` | fecha y hora | sí |  |
 | `datos[].cerradoEn` | fecha y hora o null | no |  |
 | `datos[].requisitos` | entero | sí |  |
@@ -207,7 +216,22 @@ Respuesta `200`:
         "codigo": "CODIGO_EJEMPLO",
         "nombre": "Constructora Norte S.A.S.",
         "version": 1,
-        "origen": "Explicito"
+        "origen": "Explicito",
+        "regla": {
+          "prioridad": 1,
+          "condicion": {
+            "tipo": "texto",
+            "nodos": [
+              null
+            ],
+            "atributo": "texto",
+            "operador": "texto",
+            "valores": [
+              null
+            ]
+          },
+          "reglasEvaluadas": 1
+        }
       },
       "abiertoEn": "2026-11-12T15:00:00Z",
       "cerradoEn": "2026-11-12T15:00:00Z",

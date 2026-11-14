@@ -57,6 +57,7 @@ Campos de la respuesta `200`:
 | `antiguedadSegundos` | entero o null | no |  |
 | `enRevision` | booleano | no | por omisión false |
 | `enVerificacion` | booleano | no | por omisión false |
+| `exento` | booleano | no | por omisión false |
 
 **Errores de negocio que lanza**
 
@@ -105,7 +106,8 @@ Respuesta `200`:
   "fuenteRespaldo": false,
   "antiguedadSegundos": 1,
   "enRevision": false,
-  "enVerificacion": false
+  "enVerificacion": false,
+  "exento": false
 }
 ```
 
