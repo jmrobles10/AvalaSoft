@@ -36,6 +36,11 @@ export const SCOPES = {
   verificacionesEscribir: 'verificaciones:escribir',
   cumplimientoDecidir: 'cumplimiento:decidir',
   supresionesResolver: 'supresiones:resolver',
+  cuestionariosLeer: 'cuestionarios:leer',
+  cuestionariosEscribir: 'cuestionarios:escribir',
+  evaluacionesLeer: 'evaluaciones:leer',
+  evaluacionesResponder: 'evaluaciones:responder',
+  evaluacionesRecalificar: 'evaluaciones:recalificar',
 } as const;
 
 export type Scope = (typeof SCOPES)[keyof typeof SCOPES];

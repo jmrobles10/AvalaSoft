@@ -6,6 +6,7 @@
  */
 import type { EmpresaPublicaDto } from './empresaPublicaDto';
 import type { EstadoExpediente } from './estadoExpediente';
+import type { EvaluacionPublicaResumenDto } from './evaluacionPublicaResumenDto';
 import type { ObservacionPublicaDto } from './observacionPublicaDto';
 import type { RequisitoPublicoDto } from './requisitoPublicoDto';
 import type { TipoVinculoResumenDto } from './tipoVinculoResumenDto';
@@ -27,4 +28,6 @@ export interface ExpedientePublicoDto {
   /** @nullable */
   plazoCargueHasta?: string | null;
   esperandoCuentaDesignada?: boolean;
+  /** @nullable */
+  evaluaciones?: EvaluacionPublicaResumenDto[] | null;
 }
