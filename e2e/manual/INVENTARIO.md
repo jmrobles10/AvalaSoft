@@ -302,6 +302,7 @@ Las funciones que llegaron a main después de los lotes 1 a 4. Lo que está ✅ 
 | `configuracion/aprobacion-antes-de-invitar` ☐ | Administrador de empresa | Grupo base (AI-9) | Interruptor «Exige aprobación antes de invitar», «Un rol» o «Un área» en Tipos de vínculo, lote que queda «Por aprobar» |
 | `configuracion/cuestionario-de-evaluacion` ☐ | Administrador de empresa | Grupo base (CE-14) | Crear un cuestionario, secciones y preguntas con puntaje, eliminatoria y umbral, publicar (la versión queda congelada) |
 | `tercero/autoevaluacion-del-proveedor` ☐ | Tercero | Cuestionario con «Quién responde: Tercero» asignado (CE-3) | Responder la autoevaluación sin ver puntajes ni umbral, enviar |
+| `revision/evaluacion-del-proveedor` ✅ | Oficial de cumplimiento | Cuestionario de evaluador con umbral 70 publicado por API y asignado al vínculo (`llaveConCuestionarios`) | Lista de evaluaciones, responder, enviar y resultado «reprobada» bajo el umbral |
 | `revision/evaluacion-bajo-el-umbral` ☐ | Revisor/área | Evaluación de evaluador interno con puntaje bajo el umbral (CE-5, CE-6) | Calificar, puntaje bajo el umbral que frena el cierre, recalificar, informe de evaluaciones (CE-12) |
 | `tercero/personas-relacionadas` ☐ | Tercero | Representante legal y socio sincronizados desde la ficha (PR-2) | Personas vigentes y propuestas, cédula de una persona relacionada, propuesta de la Cámara que confirma o descarta (PR-4, PR-9) |
 | `revision/documento-de-persona-relacionada` ☐ | Revisor/área | Persona relacionada con cédula subida (PR-8) | Lo que ve la empresa del documento de una persona relacionada y de dónde sale |
@@ -310,7 +311,7 @@ Las funciones que llegaron a main después de los lotes 1 a 4. Lo que está ✅ 
 | `revision/cotejo-con-fuentes-oficiales` ☐ | Revisor/área | Expediente con diferencia entre la ficha y RUES (FO-4, FO-9) | Resultado por fuente, cotejo campo por campo, resolver una diferencia, constancia con la respuesta cruda |
 | `acceso/cola-de-contactos-verificados` ☐ | Plataforma | Solicitudes de acceso aislado pendientes (AV, solo si cabe) | Cola de solicitudes de acceso en la consola de Plataforma |
 
-**Pendiente del lote 5 (esta corrida)**: los 10 recorridos de arriba no se han escrito, salvo los dos que están en `configuracion/` y que siguen rotos: `aprobacion-antes-de-invitar` (no encuentra el interruptor «Exige aprobación antes de invitar» en el panel del tipo; la sesión embebida se cerró durante la espera) y `cuestionario-de-evaluacion` (no encuentra la casilla «Eliminatoria» de la pregunta). Los tres ✅ sí pasan. La aprobación antes de invitar está cubierta en parte por `operacion/invitaciones-por-aprobar`.
+**Pendiente del lote 5**: `configuracion/aprobacion-antes-de-invitar` sigue roto (el enlace «Vínculos» del paso del lote no es un enlace en la interfaz). `configuracion/cuestionario-de-evaluacion` sigue roto (tras guardar, no aparece el botón «Publicar versión 1»). Pasa `revision/evaluacion-del-proveedor`. Quedan sin escribir: personas relacionadas, fuentes oficiales RUES/DIAN y contactos verificados (AV). La aprobación antes de invitar está cubierta en parte por `operacion/invitaciones-por-aprobar`.
 
 ### Cómo reportar
 

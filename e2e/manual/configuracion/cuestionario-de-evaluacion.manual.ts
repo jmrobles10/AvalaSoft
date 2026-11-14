@@ -68,13 +68,14 @@ recorrido(
     // 3. Una pregunta eliminatoria.
     await app.getByRole('button', { name: 'Agregar pregunta' }).click();
     await app.getByRole('textbox', { name: 'Texto de la pregunta' }).last().fill('¿Tiene sanciones vigentes de la superintendencia?');
-    await app.getByRole('checkbox', { name: 'Eliminatoria' }).last().check();
+    await app.getByLabel('Eliminatoria', { exact: true }).last().check();
+    await app.getByLabel('Elimina', { exact: true }).last().check();
     await paso(page, {
       titulo: 'Marca una pregunta eliminatoria',
       explicacion:
         'Una pregunta eliminatoria reprueba la evaluación cuando la respuesta cae en lo que elimina, sin importar el puntaje. Por eso exige decir qué respuesta elimina: una eliminatoria sin criterio no se puede publicar. ' +
         'Las preguntas que no puntúan sirven para recoger información o evidencia.',
-      resaltar: app.getByRole('checkbox', { name: 'Eliminatoria' }).last(),
+      resaltar: app.getByLabel('Eliminatoria', { exact: true }).last(),
       variantes: [{ cuando: 'La pregunta no tiene criterio de eliminación', entonces: 'Publicar falla con «Indica qué respuesta elimina».' }],
     });
 
