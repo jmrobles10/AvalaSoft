@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Configuracion;
 using Validasoft.Dominio.Documentos;
+using Validasoft.Dominio.Evaluaciones;
 
 namespace Validasoft.Dominio.Flujos;
 
@@ -62,6 +63,13 @@ public sealed record RequisitoDelFlujo(
         !EsSeccion && UsarComoSoporte != false && Ficha.MapaDeRespaldo.RespaldaAlguna(tipoCanonico);
 }
 
+/// <summary>
+/// Cuestionario de evaluación que pide el flujo al abrir el expediente inicial (CE-7): el cuestionario de la empresa (se toma su versión publicada al abrir) y el
+/// <see cref="Efecto"/> de una evaluación reprobada: <c>Observar</c> (deja la observación a la vista) o <c>Bloquear</c> (el expediente no se aprueba hasta que
+/// la evaluación esté aprobada).
+/// </summary>
+public sealed record EvaluacionRequeridaDelFlujo(Guid CuestionarioId, EfectoDeLaEvaluacion Efecto);
+
 /// <summary>Contenido versionado de un flujo (lo que se congela al publicar). Sin requisitos, cada área decide sobre el expediente (FL-1).</summary>
 public sealed record DefinicionDeFlujo(
     IReadOnlyList<EtapaDeFlujo> Etapas,
@@ -73,9 +81,13 @@ public sealed record DefinicionDeFlujo(
     ReintentoTrasRechazo? Reintento = null,
     VigenciaDelVinculo? VigenciaVinculo = null,
     int? RecordatorioObservacionesDias = null,
-    SeleccionDeFlujo? Seleccion = null)
+    SeleccionDeFlujo? Seleccion = null,
+    IReadOnlyList<EvaluacionRequeridaDelFlujo>? Evaluaciones = null)
 {
     public const int MaximoAprobadores = 10;
+
+    /// <summary>Cuestionarios de evaluación que puede pedir un flujo (CE-7).</summary>
+    public const int MaximoEvaluaciones = 5;
 
     /// <summary>Vigencia máxima configurable de una verificación (10 años).</summary>
     public const int MaximoVigenciaDias = 3650;
@@ -98,7 +110,7 @@ public sealed record DefinicionDeFlujo(
     /// atributos de <paramref name="tipoVinculo"/>, el tipo de vínculo del flujo.
     /// </summary>
     public DefinicionDeFlujo Validar(Guid empresaId, IReadOnlyCollection<Area> areasDeLaEmpresa,
-        IReadOnlyCollection<TipoDocumentoTenant>? tiposDelTenant = null, TipoVinculo? tipoVinculo = null)
+        IReadOnlyCollection<TipoDocumentoTenant>? tiposDelTenant = null, TipoVinculo? tipoVinculo = null, IReadOnlyCollection<Cuestionario>? cuestionarios = null)
     {
         if (Etapas is null || Etapas.Count == 0)
             throw ReglaDeNegocioException.Validacion("etapas-requeridas", "El flujo necesita al menos una etapa con un área.");
@@ -163,8 +175,36 @@ public sealed record DefinicionDeFlujo(
             VigenciaVinculo = vigencia,
             RecordatorioObservacionesDias = ValidarRecordatorio(RecordatorioObservacionesDias),
             // La condición de selección se valida con los atributos del tipo de vínculo del flujo, como las de sus requisitos (FR-1).
-            Seleccion = SeleccionDeFlujo.Validar(Seleccion, tipoVinculo)
+            Seleccion = SeleccionDeFlujo.Validar(Seleccion, tipoVinculo),
+            Evaluaciones = ValidarEvaluaciones(empresaId, cuestionarios)
         };
+    }
+
+    /// <summary>
+    /// Evaluaciones que pide el flujo (CE-7): cuestionarios de la empresa con una versión publicada, sin repetir, hasta <see cref="MaximoEvaluaciones"/> y con un efecto
+    /// válido. 422 <c>cuestionario-invalido</c>, <c>cuestionario-sin-publicar</c>, <c>evaluacion-duplicada</c>, <c>evaluaciones-demasiadas</c>, <c>efecto-invalido</c>.
+    /// </summary>
+    private IReadOnlyList<EvaluacionRequeridaDelFlujo> ValidarEvaluaciones(Guid empresaId, IReadOnlyCollection<Cuestionario>? cuestionarios)
+    {
+        if (Evaluaciones is null || Evaluaciones.Count == 0)
+            return [];
+        if (Evaluaciones.Count > MaximoEvaluaciones)
+            throw ReglaDeNegocioException.Validacion("evaluaciones-demasiadas", $"Un flujo pide hasta {MaximoEvaluaciones} cuestionarios de evaluación.");
+
+        var vistas = new HashSet<Guid>();
+        foreach (var requerida in Evaluaciones)
+        {
+            if (!Enum.IsDefined(requerida.Efecto))
+                throw ReglaDeNegocioException.Validacion("efecto-invalido", "El efecto de una evaluación reprobada es Observar o Bloquear.");
+            var cuestionario = cuestionarios?.FirstOrDefault(c => c.Id == requerida.CuestionarioId && c.EmpresaId == empresaId)
+                               ?? throw ReglaDeNegocioException.Validacion("cuestionario-invalido", $"El cuestionario {requerida.CuestionarioId} no existe en la empresa.");
+            if (cuestionario.VersionPublicada is null)
+                throw ReglaDeNegocioException.Validacion("cuestionario-sin-publicar", $"Publica el cuestionario {cuestionario.Codigo} antes de pedirlo en un flujo.");
+            if (!vistas.Add(requerida.CuestionarioId))
+                throw ReglaDeNegocioException.Validacion("evaluacion-duplicada", $"El flujo ya pide el cuestionario {cuestionario.Codigo}.");
+        }
+
+        return [.. Evaluaciones];
     }
 
     /// <summary>Recordatorio automático de observaciones del flujo (OP-19): nulo = el de la empresa; 0 = apagado; 1 a 60 = cada tantos días (422 <c>dias-invalidos</c>).</summary>
@@ -397,6 +437,9 @@ public sealed class FlujoVersion
     /// </summary>
     public SeleccionDeFlujo? Seleccion { get; set; }
 
+    /// <summary>Cuestionarios de evaluación que pide esta versión al abrir el expediente inicial (CE-7). Vacío en las versiones guardadas antes.</summary>
+    public List<EvaluacionRequeridaDelFlujo> Evaluaciones { get; set; } = [];
+
     public DateTimeOffset CreadaEn { get; set; }
 
     public DateTimeOffset? PublicadaEn { get; set; }
@@ -405,7 +448,7 @@ public sealed class FlujoVersion
 
     public DefinicionDeFlujo Definicion() =>
         new(Etapas, PoliticaDevolucion, SeparacionDeFunciones, Requisitos, Verificaciones, PlazoEfectivo(), ReintentoEfectivo(), VigenciaEfectiva(), RecordatorioObservacionesDias,
-            Seleccion);
+            Seleccion, Evaluaciones);
 }
 
 /// <summary>
@@ -445,7 +488,7 @@ public sealed class Flujo
     /// <summary>Crea el flujo con su primera versión en borrador.</summary>
     public static Flujo Crear(Guid empresaId, string codigo, string nombre, Guid tipoVinculoId, DefinicionDeFlujo definicion,
         IReadOnlyCollection<Area> areasDeLaEmpresa, DateTimeOffset ahora, IReadOnlyCollection<TipoDocumentoTenant>? tiposDelTenant = null,
-        TipoVinculo? tipoVinculo = null)
+        TipoVinculo? tipoVinculo = null, IReadOnlyCollection<Cuestionario>? cuestionarios = null)
     {
         var codigoNormalizado = (codigo ?? string.Empty).Trim().ToUpperInvariant();
         if (!Regex.IsMatch(codigoNormalizado, "^[A-Z][A-Z0-9_]{1,39}$"))
@@ -462,7 +505,7 @@ public sealed class Flujo
             CreadoEn = ahora,
             ActualizadoEn = ahora
         };
-        flujo.Versiones.Add(NuevaVersion(1, definicion.Validar(empresaId, areasDeLaEmpresa, tiposDelTenant, tipoVinculo), ahora));
+        flujo.Versiones.Add(NuevaVersion(1, definicion.Validar(empresaId, areasDeLaEmpresa, tiposDelTenant, tipoVinculo, cuestionarios), ahora));
         return flujo;
     }
 
@@ -470,9 +513,10 @@ public sealed class Flujo
     /// Edita el borrador; si no hay, crea uno nuevo (versión siguiente a la mayor). Lo publicado no cambia nunca.
     /// </summary>
     public FlujoVersion EditarBorrador(string? nombre, DefinicionDeFlujo definicion, IReadOnlyCollection<Area> areasDeLaEmpresa,
-        DateTimeOffset ahora, IReadOnlyCollection<TipoDocumentoTenant>? tiposDelTenant = null, TipoVinculo? tipoVinculo = null)
+        DateTimeOffset ahora, IReadOnlyCollection<TipoDocumentoTenant>? tiposDelTenant = null, TipoVinculo? tipoVinculo = null,
+        IReadOnlyCollection<Cuestionario>? cuestionarios = null)
     {
-        var validada = definicion.Validar(EmpresaId, areasDeLaEmpresa, tiposDelTenant, tipoVinculo);
+        var validada = definicion.Validar(EmpresaId, areasDeLaEmpresa, tiposDelTenant, tipoVinculo, cuestionarios);
         if (nombre is not null)
             Nombre = ValidarNombre(nombre);
 
@@ -494,6 +538,7 @@ public sealed class Flujo
             borrador.VigenciaVinculo = validada.VigenciaVinculo;
             borrador.RecordatorioObservacionesDias = validada.RecordatorioObservacionesDias;
             borrador.Seleccion = validada.Seleccion;
+            borrador.Evaluaciones = [.. validada.Evaluaciones ?? []];
         }
 
         ActualizadoEn = ahora;
@@ -505,11 +550,11 @@ public sealed class Flujo
     /// anterior. Los requisitos quedan congelados con la versión. Los expedientes abiertos conservan la versión que copiaron.
     /// </summary>
     public FlujoVersion Publicar(IReadOnlyCollection<Area> areasDeLaEmpresa, DateTimeOffset ahora,
-        IReadOnlyCollection<TipoDocumentoTenant>? tiposDelTenant = null, TipoVinculo? tipoVinculo = null)
+        IReadOnlyCollection<TipoDocumentoTenant>? tiposDelTenant = null, TipoVinculo? tipoVinculo = null, IReadOnlyCollection<Cuestionario>? cuestionarios = null)
     {
         var borrador = Borrador
                        ?? throw ReglaDeNegocioException.Conflicto("sin-borrador", "No hay un borrador por publicar; edita el flujo primero.");
-        var validada = borrador.Definicion().Validar(EmpresaId, areasDeLaEmpresa, tiposDelTenant, tipoVinculo);
+        var validada = borrador.Definicion().Validar(EmpresaId, areasDeLaEmpresa, tiposDelTenant, tipoVinculo, cuestionarios);
 
         if (VersionPublicada is { } anterior)
         {
@@ -525,6 +570,7 @@ public sealed class Flujo
         borrador.VigenciaVinculo = validada.VigenciaVinculo;
         borrador.RecordatorioObservacionesDias = validada.RecordatorioObservacionesDias;
         borrador.Seleccion = validada.Seleccion;
+        borrador.Evaluaciones = [.. validada.Evaluaciones ?? []];
         borrador.Estado = EstadoFlujoVersion.Publicada;
         borrador.PublicadaEn = ahora;
         ActualizadoEn = ahora;
@@ -546,6 +592,7 @@ public sealed class Flujo
         VigenciaVinculo = definicion.VigenciaVinculo,
         RecordatorioObservacionesDias = definicion.RecordatorioObservacionesDias,
         Seleccion = definicion.Seleccion,
+        Evaluaciones = [.. definicion.Evaluaciones ?? []],
         CreadaEn = ahora
     };
 

@@ -218,6 +218,22 @@ export function eventoExpedienteATimeline(
       return { ...base, detalle: t(campo(datos, 'aprobada') === true ? 'expedientes.historial.cuentaYaAprobada' : 'expedientes.historial.cuentaPendiente') };
     case 'cuenta_designada_confirmada':
       return base;
+    // Evaluaciones del proveedor (CE-4): las que pide el flujo al abrir el expediente y cómo va cada una (aprobada, reprobada, anulada).
+    case 'evaluaciones_requeridas':
+      return {
+        ...base,
+        detalle: lista(campo(datos, 'evaluaciones'))
+          .map((e) => (e && typeof e === 'object' ? texto(campo(e as Record<string, unknown>, 'nombre')) : null))
+          .filter((e): e is string => e !== null)
+          .join(' · '),
+      };
+    case 'evaluacion_del_expediente_actualizada': {
+      const estado = texto(campo(datos, 'estado'));
+      const puntaje = Number(campo(datos, 'puntaje'));
+      const conocido = estado === 'Pendiente' || estado === 'Aprobada' || estado === 'Reprobada' || estado === 'Anulada';
+      const puntos = campo(datos, 'puntaje') !== null && Number.isFinite(puntaje) ? t('evaluaciones.panel.puntaje', { puntaje: puntaje.toLocaleString('es-CO', { maximumFractionDigits: 2 }) }) : null;
+      return { ...base, detalle: conocido ? [t(`evaluaciones.panel.estados.${estado}`), puntos].filter(Boolean).join(' · ') : null };
+    }
     case 'verificacion_externa_registrada':
       return {
         ...base,

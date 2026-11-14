@@ -5,6 +5,8 @@ import { Building2, ChevronRight, Contact, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
+import { useEvaluacionesDelVinculo } from '../evaluaciones/api';
+import { AvisoEvaluacionesPendientes } from '../evaluaciones/TarjetaEvaluaciones';
 import { useExpedientePublico, useVinculosPublicos } from '../shared/api';
 import { CabeceraPagina, ErrorRecuperable, EsqueletoTarjetas, LogoEmpresa } from '../shared/componentes';
 import { avanceDelTercero, type AvanceTercero } from './avance';
@@ -51,6 +53,8 @@ function TarjetaEmpresa({ vinculo: v }: { vinculo: VinculoPublicoDto }) {
   const expedienteId = v.expedienteId ?? '';
   const conExpediente = expedienteId !== '' && situacion === 'vigente' && v.invitacionAceptada;
   const expediente = useExpedientePublico(expedienteId, conExpediente);
+  // Las evaluaciones que la empresa le pide (del flujo o la reevaluación periódica): el aviso lleva a responderlas.
+  const evaluaciones = useEvaluacionesDelVinculo(v.id, v.invitacionAceptada && situacion === 'vigente');
   const conocido = avanceDelTercero(v, conExpediente ? expediente.data : null);
   // Mientras llega el expediente no se muestra «En validación» ni «Por vencer»: la renovación abierta cambia lo que le toca (VV-3), y una
   // actualización abierta puede estar observada (VR-1), así que el chip espera en vez de mostrar un estado que luego se contradice.
@@ -106,6 +110,7 @@ function TarjetaEmpresa({ vinculo: v }: { vinculo: VinculoPublicoDto }) {
                 : t('empresas.pendienteAceptar')}
         </Typography>
       )}
+      {evaluaciones.data && <AvisoEvaluacionesPendientes evaluaciones={evaluaciones.data} vinculoId={v.id} empresa={v.empresa.nombre} />}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mt: 1.5 }}>
         {situacion === 'vigente' && !v.invitacionAceptada && (
           <Button component={RouterLink} to={`/empresas/${v.id}`} variant="contained" endIcon={<ChevronRight size={18} aria-hidden />}>

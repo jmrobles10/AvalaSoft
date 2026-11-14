@@ -505,6 +505,35 @@ const NOMBRES: Record<string, string> = {
   'PUT /api/v1/empresas/{id}/dominio-correo': 'fijarDominioDeCorreo',
   'POST /api/v1/empresas/{id}/dominio-correo/verificar': 'verificarDominioDeCorreo',
   'DELETE /api/v1/empresas/{id}/dominio-correo': 'quitarDominioDeCorreo',
+  // Cuestionario de evaluación del proveedor nuevo (CE-1…CE-12): el de la empresa, sus evaluaciones, el informe, la reevaluación y la autoevaluación del tercero.
+  'POST /api/v1/cuestionarios': 'crearCuestionario',
+  'GET /api/v1/cuestionarios': 'listarCuestionarios',
+  'GET /api/v1/cuestionarios/{id}': 'obtenerCuestionario',
+  'PUT /api/v1/cuestionarios/{id}': 'editarCuestionario',
+  'POST /api/v1/cuestionarios/{id}/publicar': 'publicarCuestionario',
+  'GET /api/v1/cuestionarios/{id}/versiones': 'listarVersionesCuestionario',
+  'GET /api/v1/cuestionarios/{id}/versiones/{n}': 'obtenerVersionCuestionario',
+  'POST /api/v1/cuestionarios/{id}/simular': 'simularCuestionario',
+  'GET /api/v1/evaluaciones': 'listarEvaluaciones',
+  'GET /api/v1/evaluaciones/{id}': 'obtenerEvaluacion',
+  'POST /api/v1/vinculos/{vinculoId}/evaluaciones': 'asignarEvaluacion',
+  'POST /api/v1/evaluaciones/{id}/visibilidad': 'calcularVisibilidadDeEvaluacion',
+  'POST /api/v1/evaluaciones/{id}/responder': 'responderEvaluacion',
+  'POST /api/v1/evaluaciones/{id}/recalificar': 'recalificarEvaluacion',
+  'POST /api/v1/evaluaciones/{id}/reabrir': 'reabrirEvaluacion',
+  'POST /api/v1/evaluaciones/{id}/anular': 'anularEvaluacion',
+  'PUT /api/v1/evaluaciones/{id}/adjuntos': 'iniciarAdjuntoDeEvaluacion',
+  'POST /api/v1/evaluaciones/{id}/adjuntos/{cargaId}/confirmar': 'confirmarAdjuntoDeEvaluacion',
+  'POST /api/v1/evaluaciones/{id}/adjuntos/{adjuntoId}/descarga': 'descargarAdjuntoDeEvaluacion',
+  'GET /api/v1/informes/evaluaciones': 'obtenerInformeEvaluaciones',
+  'GET /api/v1/informes/evaluaciones/excel': 'descargarInformeEvaluacionesExcel',
+  'POST /api/v1/plataforma/reevaluaciones/revisar': 'revisarReevaluaciones',
+  'GET /public/v1/vinculos/{vinculoId}/evaluaciones': 'listarEvaluacionesDelTercero',
+  'GET /public/v1/vinculos/{vinculoId}/evaluaciones/{id}': 'obtenerEvaluacionDelTercero',
+  'POST /public/v1/vinculos/{vinculoId}/evaluaciones/{id}/visibilidad': 'calcularVisibilidadDeEvaluacionDelTercero',
+  'POST /public/v1/vinculos/{vinculoId}/evaluaciones/{id}/responder': 'responderEvaluacionDelTercero',
+  'PUT /public/v1/vinculos/{vinculoId}/evaluaciones/{id}/adjuntos': 'iniciarAdjuntoDeEvaluacionDelTercero',
+  'POST /public/v1/vinculos/{vinculoId}/evaluaciones/{id}/adjuntos/{cargaId}/confirmar': 'confirmarAdjuntoDeEvaluacionDelTercero',
 };
 
 /** Prefijos del contrato que el cliente genera (el resto, como los health checks, no es parte del contrato). */
@@ -519,6 +548,8 @@ const RESPUESTAS_REALES: Record<string, Record<string, string | null>> = {
   // 201 con el enlace cuando salió; 202 cuando el tipo exige aprobación y la invitación quedó retenida (AI).
   invitarVinculo: { '201': 'EnlaceInvitacionDto', '202': 'InvitacionPorAprobarDto' },
   eximirVinculo: { '201': 'ExencionDeVinculoDto' },
+  crearCuestionario: { '201': 'CuestionarioDto' },
+  asignarEvaluacion: { '201': 'EvaluacionDto' },
   crearTenant: { '201': 'TenantCreadoDto' },
   crearSistema: { '201': 'SistemaIntegradoDto' },
   crearWebhook: { '201': 'WebhookDto' },
@@ -623,6 +654,14 @@ const ENUMS: Record<string, string[]> = {
   OrigenFilaCumplimiento: ['Expediente', 'Monitoreo'],
   // Exención del vínculo (EX-1): cómo está a hoy.
   EstadoDeExencion: ['Vigente', 'Revocada', 'Vencida'],
+  // Cuestionario de evaluación del proveedor (CE-1…CE-12).
+  TipoDePregunta: ['SiNo', 'OpcionUnica', 'OpcionMultiple', 'Escala', 'Numero', 'Texto', 'Adjunto'],
+  QuienResponde: ['Tercero', 'Evaluador'],
+  EfectoDeLaEvaluacion: ['Observar', 'Bloquear'],
+  EstadoCuestionarioVersion: ['Borrador', 'Publicada', 'Retirada'],
+  EstadoDeEvaluacion: ['Pendiente', 'Calificada', 'Vencida', 'Anulada'],
+  MotivoDeEvaluacion: ['Expediente', 'Reevaluacion', 'Manual'],
+  EstadoDeEvaluacionEnExpediente: ['Pendiente', 'Aprobada', 'Reprobada', 'Anulada'],
 };
 
 /** `Esquema.propiedad` → enum. */
@@ -711,6 +750,26 @@ const PROPIEDADES_ENUM: Record<string, string> = {
   'AceptacionDeSeccionDto.origen': 'OrigenDeAceptacion',
   'SeccionAceptadaDto.origen': 'OrigenDeAceptacion',
   'CorridaImportacionPortalDto.estado': 'EstadoCorridaPortal',
+  'PreguntaDeCuestionarioDto.tipo': 'TipoDePregunta',
+  'PreguntaPublicaDto.tipo': 'TipoDePregunta',
+  'DefinicionDeCuestionarioDto.responde': 'QuienResponde',
+  'CuestionarioVersionDto.estado': 'EstadoCuestionarioVersion',
+  'EvaluacionRequeridaDto.efecto': 'EfectoDeLaEvaluacion',
+  'EvaluacionDto.estado': 'EstadoDeEvaluacion',
+  'EvaluacionDto.motivo': 'MotivoDeEvaluacion',
+  'EvaluacionDto.responde': 'QuienResponde',
+  'EvaluacionDto.efecto': 'EfectoDeLaEvaluacion',
+  'EvaluacionResumenDto.estado': 'EstadoDeEvaluacion',
+  'EvaluacionResumenDto.motivo': 'MotivoDeEvaluacion',
+  'EvaluacionResumenDto.responde': 'QuienResponde',
+  'EvaluacionResumenDto.efecto': 'EfectoDeLaEvaluacion',
+  'FilaInformeEvaluacionDto.estado': 'EstadoDeEvaluacion',
+  'FilaInformeEvaluacionDto.motivo': 'MotivoDeEvaluacion',
+  'FilaInformeEvaluacionDto.responde': 'QuienResponde',
+  'FilaInformeEvaluacionDto.efecto': 'EfectoDeLaEvaluacion',
+  'EvaluacionDeExpedienteDto.responde': 'QuienResponde',
+  'EvaluacionDeExpedienteDto.efecto': 'EfectoDeLaEvaluacion',
+  'EvaluacionDeExpedienteDto.estado': 'EstadoDeEvaluacionEnExpediente',
 };
 
 const METODOS = ['get', 'post', 'put', 'patch', 'delete'];

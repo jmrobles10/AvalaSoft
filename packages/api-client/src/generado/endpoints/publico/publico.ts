@@ -28,14 +28,17 @@ import type {
   AceptarInvitacionDto,
   ActualizarContactosDto,
   ActualizarPreferenciasNotificacionDto,
+  AdjuntoDeEvaluacionDto,
   AutorregistroDto,
   BandejaNotificacionesTerceroDto,
   BovedaDto,
   BuscarEnCatalogoPublicoParams,
+  CargaDeAdjuntoDto,
   CargaPrefirmadaDto,
   CertificadoPublicoDto,
   CompletitudSeccionDto,
   ConfirmacionCargaDto,
+  ConfirmarAdjuntoDeEvaluacionDto,
   ConstanciaHabeasDto,
   ContactoDeEmpresaDto,
   ContactosDelTerceroDto,
@@ -48,6 +51,8 @@ import type {
   DocumentoDto,
   EnviarFormularioDto,
   EstadoFichaDto,
+  EvaluacionPublicaDto,
+  EvaluacionPublicaResumenDto,
   EvaluarSeccionFichaParams,
   ExpedientePublicoDto,
   ExportacionBovedaDto,
@@ -55,6 +60,7 @@ import type {
   GuardarSeccionFichaParams,
   IResult,
   ImpactoDeRetiroDto,
+  IniciarAdjuntoDeEvaluacionDto,
   IniciarCargaDto,
   InvitacionAceptadaDto,
   InvitacionPublicaDto,
@@ -71,6 +77,7 @@ import type {
   RechazarAccesoDto,
   ReenviarExpedienteDto,
   RegistrarCuentaBancariaDto,
+  ResponderEvaluacionDto,
   RetirarVersionDto,
   RetiroDto,
   SeccionFichaDto,
@@ -82,7 +89,8 @@ import type {
   SolicitudRecibidaDto,
   VerificarCertificadoParams,
   VerificarOtpDto,
-  VinculoPublicoDto
+  VinculoPublicoDto,
+  VisibilidadDto
 } from '../../modelos';
 
 import { clienteValidasoft } from '../../../fetcher';
@@ -3613,6 +3621,436 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getRatificarRequisitoMutationOptions(options), queryClient);
+    }
+    export const listarEvaluacionesDelTercero = (
+    vinculoId: string,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<EvaluacionPublicaResumenDto[]>(
+      {url: `/public/v1/vinculos/${vinculoId}/evaluaciones`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getListarEvaluacionesDelTerceroQueryKey = (vinculoId: string,) => {
+    return [
+    `/public/v1/vinculos/${vinculoId}/evaluaciones`
+    ] as const;
+    }
+
+
+export const getListarEvaluacionesDelTerceroQueryOptions = <TData = Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError = ErrorType<void>>(vinculoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListarEvaluacionesDelTerceroQueryKey(vinculoId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>> = ({ signal }) => listarEvaluacionesDelTercero(vinculoId, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: vinculoId !== null && vinculoId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListarEvaluacionesDelTerceroQueryResult = NonNullable<Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>>
+export type ListarEvaluacionesDelTerceroQueryError = ErrorType<void>
+
+
+export function useListarEvaluacionesDelTercero<TData = Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError = ErrorType<void>>(
+ vinculoId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>,
+          TError,
+          Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarEvaluacionesDelTercero<TData = Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError = ErrorType<void>>(
+ vinculoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>,
+          TError,
+          Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarEvaluacionesDelTercero<TData = Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError = ErrorType<void>>(
+ vinculoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarEvaluacionesDelTercero<TData = Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError = ErrorType<void>>(
+ vinculoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarEvaluacionesDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListarEvaluacionesDelTerceroQueryOptions(vinculoId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const obtenerEvaluacionDelTercero = (
+    vinculoId: string,
+    id: string,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<EvaluacionPublicaDto>(
+      {url: `/public/v1/vinculos/${vinculoId}/evaluaciones/${id}`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getObtenerEvaluacionDelTerceroQueryKey = (vinculoId: string,
+    id: string,) => {
+    return [
+    `/public/v1/vinculos/${vinculoId}/evaluaciones/${id}`
+    ] as const;
+    }
+
+
+export const getObtenerEvaluacionDelTerceroQueryOptions = <TData = Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError = ErrorType<void>>(vinculoId: string,
+    id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getObtenerEvaluacionDelTerceroQueryKey(vinculoId,id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>> = ({ signal }) => obtenerEvaluacionDelTercero(vinculoId,id, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: vinculoId !== null && vinculoId !== undefined && id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ObtenerEvaluacionDelTerceroQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>>
+export type ObtenerEvaluacionDelTerceroQueryError = ErrorType<void>
+
+
+export function useObtenerEvaluacionDelTercero<TData = Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError = ErrorType<void>>(
+ vinculoId: string,
+    id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerEvaluacionDelTercero<TData = Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError = ErrorType<void>>(
+ vinculoId: string,
+    id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerEvaluacionDelTercero<TData = Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError = ErrorType<void>>(
+ vinculoId: string,
+    id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerEvaluacionDelTercero<TData = Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError = ErrorType<void>>(
+ vinculoId: string,
+    id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerEvaluacionDelTercero>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getObtenerEvaluacionDelTerceroQueryOptions(vinculoId,id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const calcularVisibilidadDeEvaluacionDelTercero = (
+    vinculoId: string,
+    id: string,
+    responderEvaluacionDto: BodyType<ResponderEvaluacionDto>,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<VisibilidadDto>(
+      {url: `/public/v1/vinculos/${vinculoId}/evaluaciones/${id}/visibilidad`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: responderEvaluacionDto, signal
+    },
+      options);
+    }
+
+
+
+
+export const getCalcularVisibilidadDeEvaluacionDelTerceroMutationKey = () => ['calcularVisibilidadDeEvaluacionDelTercero'] as const;
+
+export const getCalcularVisibilidadDeEvaluacionDelTerceroMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof calcularVisibilidadDeEvaluacionDelTercero>>, TError,CalcularVisibilidadDeEvaluacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof calcularVisibilidadDeEvaluacionDelTercero>>, TError,CalcularVisibilidadDeEvaluacionDelTerceroMutationVariables, TContext> => {
+
+const mutationKey = getCalcularVisibilidadDeEvaluacionDelTerceroMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof calcularVisibilidadDeEvaluacionDelTercero>>, CalcularVisibilidadDeEvaluacionDelTerceroMutationVariables> = (props) => {
+          const {vinculoId,id,data} = props ?? {};
+
+          return  calcularVisibilidadDeEvaluacionDelTercero(vinculoId,id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CalcularVisibilidadDeEvaluacionDelTerceroMutationResult = NonNullable<Awaited<ReturnType<typeof calcularVisibilidadDeEvaluacionDelTercero>>>
+    export type CalcularVisibilidadDeEvaluacionDelTerceroMutationBody = BodyType<ResponderEvaluacionDto>
+    export type CalcularVisibilidadDeEvaluacionDelTerceroMutationError = ErrorType<void>
+    export type CalcularVisibilidadDeEvaluacionDelTerceroMutationVariables = {vinculoId: string;id: string;data: BodyType<ResponderEvaluacionDto>}
+
+    export const useCalcularVisibilidadDeEvaluacionDelTercero = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof calcularVisibilidadDeEvaluacionDelTercero>>, TError,CalcularVisibilidadDeEvaluacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof calcularVisibilidadDeEvaluacionDelTercero>>,
+        TError,
+        CalcularVisibilidadDeEvaluacionDelTerceroMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCalcularVisibilidadDeEvaluacionDelTerceroMutationOptions(options), queryClient);
+    }
+    export const responderEvaluacionDelTercero = (
+    vinculoId: string,
+    id: string,
+    responderEvaluacionDto: BodyType<ResponderEvaluacionDto>,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<EvaluacionPublicaDto>(
+      {url: `/public/v1/vinculos/${vinculoId}/evaluaciones/${id}/responder`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: responderEvaluacionDto, signal
+    },
+      options);
+    }
+
+
+
+
+export const getResponderEvaluacionDelTerceroMutationKey = () => ['responderEvaluacionDelTercero'] as const;
+
+export const getResponderEvaluacionDelTerceroMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof responderEvaluacionDelTercero>>, TError,ResponderEvaluacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof responderEvaluacionDelTercero>>, TError,ResponderEvaluacionDelTerceroMutationVariables, TContext> => {
+
+const mutationKey = getResponderEvaluacionDelTerceroMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof responderEvaluacionDelTercero>>, ResponderEvaluacionDelTerceroMutationVariables> = (props) => {
+          const {vinculoId,id,data} = props ?? {};
+
+          return  responderEvaluacionDelTercero(vinculoId,id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResponderEvaluacionDelTerceroMutationResult = NonNullable<Awaited<ReturnType<typeof responderEvaluacionDelTercero>>>
+    export type ResponderEvaluacionDelTerceroMutationBody = BodyType<ResponderEvaluacionDto>
+    export type ResponderEvaluacionDelTerceroMutationError = ErrorType<void>
+    export type ResponderEvaluacionDelTerceroMutationVariables = {vinculoId: string;id: string;data: BodyType<ResponderEvaluacionDto>}
+
+    export const useResponderEvaluacionDelTercero = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof responderEvaluacionDelTercero>>, TError,ResponderEvaluacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof responderEvaluacionDelTercero>>,
+        TError,
+        ResponderEvaluacionDelTerceroMutationVariables,
+        TContext
+      > => {
+      return useMutation(getResponderEvaluacionDelTerceroMutationOptions(options), queryClient);
+    }
+    export const iniciarAdjuntoDeEvaluacionDelTercero = (
+    vinculoId: string,
+    id: string,
+    iniciarAdjuntoDeEvaluacionDto: BodyType<IniciarAdjuntoDeEvaluacionDto>,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<CargaDeAdjuntoDto>(
+      {url: `/public/v1/vinculos/${vinculoId}/evaluaciones/${id}/adjuntos`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: iniciarAdjuntoDeEvaluacionDto, signal
+    },
+      options);
+    }
+
+
+
+
+export const getIniciarAdjuntoDeEvaluacionDelTerceroMutationKey = () => ['iniciarAdjuntoDeEvaluacionDelTercero'] as const;
+
+export const getIniciarAdjuntoDeEvaluacionDelTerceroMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof iniciarAdjuntoDeEvaluacionDelTercero>>, TError,IniciarAdjuntoDeEvaluacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof iniciarAdjuntoDeEvaluacionDelTercero>>, TError,IniciarAdjuntoDeEvaluacionDelTerceroMutationVariables, TContext> => {
+
+const mutationKey = getIniciarAdjuntoDeEvaluacionDelTerceroMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof iniciarAdjuntoDeEvaluacionDelTercero>>, IniciarAdjuntoDeEvaluacionDelTerceroMutationVariables> = (props) => {
+          const {vinculoId,id,data} = props ?? {};
+
+          return  iniciarAdjuntoDeEvaluacionDelTercero(vinculoId,id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type IniciarAdjuntoDeEvaluacionDelTerceroMutationResult = NonNullable<Awaited<ReturnType<typeof iniciarAdjuntoDeEvaluacionDelTercero>>>
+    export type IniciarAdjuntoDeEvaluacionDelTerceroMutationBody = BodyType<IniciarAdjuntoDeEvaluacionDto>
+    export type IniciarAdjuntoDeEvaluacionDelTerceroMutationError = ErrorType<void>
+    export type IniciarAdjuntoDeEvaluacionDelTerceroMutationVariables = {vinculoId: string;id: string;data: BodyType<IniciarAdjuntoDeEvaluacionDto>}
+
+    export const useIniciarAdjuntoDeEvaluacionDelTercero = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof iniciarAdjuntoDeEvaluacionDelTercero>>, TError,IniciarAdjuntoDeEvaluacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof iniciarAdjuntoDeEvaluacionDelTercero>>,
+        TError,
+        IniciarAdjuntoDeEvaluacionDelTerceroMutationVariables,
+        TContext
+      > => {
+      return useMutation(getIniciarAdjuntoDeEvaluacionDelTerceroMutationOptions(options), queryClient);
+    }
+    export const confirmarAdjuntoDeEvaluacionDelTercero = (
+    vinculoId: string,
+    id: string,
+    cargaId: string,
+    confirmarAdjuntoDeEvaluacionDto: BodyType<ConfirmarAdjuntoDeEvaluacionDto>,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<AdjuntoDeEvaluacionDto>(
+      {url: `/public/v1/vinculos/${vinculoId}/evaluaciones/${id}/adjuntos/${cargaId}/confirmar`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: confirmarAdjuntoDeEvaluacionDto, signal
+    },
+      options);
+    }
+
+
+
+
+export const getConfirmarAdjuntoDeEvaluacionDelTerceroMutationKey = () => ['confirmarAdjuntoDeEvaluacionDelTercero'] as const;
+
+export const getConfirmarAdjuntoDeEvaluacionDelTerceroMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmarAdjuntoDeEvaluacionDelTercero>>, TError,ConfirmarAdjuntoDeEvaluacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof confirmarAdjuntoDeEvaluacionDelTercero>>, TError,ConfirmarAdjuntoDeEvaluacionDelTerceroMutationVariables, TContext> => {
+
+const mutationKey = getConfirmarAdjuntoDeEvaluacionDelTerceroMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof confirmarAdjuntoDeEvaluacionDelTercero>>, ConfirmarAdjuntoDeEvaluacionDelTerceroMutationVariables> = (props) => {
+          const {vinculoId,id,cargaId,data} = props ?? {};
+
+          return  confirmarAdjuntoDeEvaluacionDelTercero(vinculoId,id,cargaId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConfirmarAdjuntoDeEvaluacionDelTerceroMutationResult = NonNullable<Awaited<ReturnType<typeof confirmarAdjuntoDeEvaluacionDelTercero>>>
+    export type ConfirmarAdjuntoDeEvaluacionDelTerceroMutationBody = BodyType<ConfirmarAdjuntoDeEvaluacionDto>
+    export type ConfirmarAdjuntoDeEvaluacionDelTerceroMutationError = ErrorType<void>
+    export type ConfirmarAdjuntoDeEvaluacionDelTerceroMutationVariables = {vinculoId: string;id: string;cargaId: string;data: BodyType<ConfirmarAdjuntoDeEvaluacionDto>}
+
+    export const useConfirmarAdjuntoDeEvaluacionDelTercero = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof confirmarAdjuntoDeEvaluacionDelTercero>>, TError,ConfirmarAdjuntoDeEvaluacionDelTerceroMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof confirmarAdjuntoDeEvaluacionDelTercero>>,
+        TError,
+        ConfirmarAdjuntoDeEvaluacionDelTerceroMutationVariables,
+        TContext
+      > => {
+      return useMutation(getConfirmarAdjuntoDeEvaluacionDelTerceroMutationOptions(options), queryClient);
     }
     export const obtenerBoveda = (
 

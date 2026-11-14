@@ -2,12 +2,14 @@ using Marten;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Validasoft.Aplicacion.Comun;
+using Validasoft.Aplicacion.Evaluaciones;
 using Validasoft.Aplicacion.Vinculos;
 using Validasoft.Contratos;
 using Validasoft.Dominio.Auditoria;
 using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Configuracion;
 using Validasoft.Dominio.Documentos;
+using Validasoft.Dominio.Evaluaciones;
 using Validasoft.Dominio.Flujos;
 using Validasoft.Dominio.Terceros;
 using Wolverine.Http;
@@ -46,9 +48,10 @@ public static class FlujosEndpoints
             Reintento = dto.Reintento?.ADominio(),
             VigenciaVinculo = dto.VigenciaVinculo?.ADominio(),
             RecordatorioObservacionesDias = dto.RecordatorioObservaciones?.ADominio(),
-            Seleccion = dto.Seleccion?.ADominio()
+            Seleccion = dto.Seleccion?.ADominio(),
+            Evaluaciones = [.. (dto.Evaluaciones ?? []).Select(e => e.ADominio())]
         };
-        var flujo = Flujo.Crear(empresa.EmpresaId, dto.Codigo, dto.Nombre, tipo.Id, definicion, areas, ahora, tipos, tipo);
+        var flujo = Flujo.Crear(empresa.EmpresaId, dto.Codigo, dto.Nombre, tipo.Id, definicion, areas, ahora, tipos, tipo, await CuestionariosAsync(empresa, ct));
 
         var codigo = flujo.Codigo;
         if (await empresa.Flujos().AnyAsync(f => f.Codigo == codigo, ct))
@@ -139,10 +142,11 @@ public static class FlujosEndpoints
             dto.Reintento?.ADominio() ?? ultima.ReintentoEfectivo(),
             dto.VigenciaVinculo?.ADominio() ?? ultima.VigenciaEfectiva(),
             dto.RecordatorioObservaciones is { } recordatorio ? recordatorio.ADominio() : ultima.RecordatorioObservacionesDias,
-            dto.Seleccion is { } seleccion ? seleccion.ADominio() : ultima.Seleccion);
+            dto.Seleccion is { } seleccion ? seleccion.ADominio() : ultima.Seleccion,
+            dto.Evaluaciones is null ? ultima.Evaluaciones : [.. dto.Evaluaciones.Select(e => e.ADominio())]);
 
         var borrador = flujo.EditarBorrador(dto.Nombre, definicion, await empresa.Areas().ToListAsync(ct), ahora, tipos,
-            await empresa.Sesion.LoadAsync<TipoVinculo>(flujo.TipoVinculoId, ct));
+            await empresa.Sesion.LoadAsync<TipoVinculo>(flujo.TipoVinculoId, ct), await CuestionariosAsync(empresa, ct));
         await ValidarPrioridadAsync(empresa, flujo, borrador.Seleccion, ct);
         return await GuardarAsync(empresa, contexto, flujo, "FlujoVersion", $"{flujo.Id}/v{borrador.Version}", AccionConfiguracion.Modificado, antes, ahora, ct);
     }
@@ -157,7 +161,7 @@ public static class FlujosEndpoints
         var flujo = await empresa.CargarFlujoAsync(id, ct);
         var antes = await DtoAsync(empresa, flujo, ct);
         var publicada = flujo.Publicar(await empresa.Areas().ToListAsync(ct), ahora, await TiposAsync(empresa, ct),
-            await empresa.Sesion.LoadAsync<TipoVinculo>(flujo.TipoVinculoId, ct));
+            await empresa.Sesion.LoadAsync<TipoVinculo>(flujo.TipoVinculoId, ct), await CuestionariosAsync(empresa, ct));
         await ValidarPrioridadAsync(empresa, flujo, publicada.Seleccion, ct);
 
         var clave = FlujoPorDefecto.Clave(flujo.EmpresaId, flujo.TipoVinculoId);
@@ -253,6 +257,10 @@ public static class FlujosEndpoints
     /// <summary>Tipos de documento del tenant (los requisitos se validan contra ellos: activos y de clase <c>Archivo</c>).</summary>
     private static async Task<IReadOnlyList<TipoDocumentoTenant>> TiposAsync(SesionDeEmpresa empresa, CancellationToken ct) =>
         await empresa.Sesion.Query<TipoDocumentoTenant>().ToListAsync(ct);
+
+    /// <summary>Cuestionarios de evaluación de la empresa (los flujos que los piden se validan contra ellos: de la empresa y con una versión publicada, CE-7).</summary>
+    private static async Task<IReadOnlyList<Cuestionario>> CuestionariosAsync(SesionDeEmpresa empresa, CancellationToken ct) =>
+        await empresa.Cuestionarios().ToListAsync(ct);
 
     private static async Task<IReadOnlyList<FlujoPorDefecto>> PorDefectoAsync(SesionDeEmpresa empresa, CancellationToken ct)
     {

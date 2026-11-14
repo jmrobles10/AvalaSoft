@@ -13,6 +13,7 @@ import { useAreas } from '../../configuracion/areas/api';
 import { useEmpresaActiva } from '../../empresas/useEmpresas';
 import { useTiposVinculo } from '../../vinculos/api';
 import { useCrearFlujo, useTiposDocumento, useDefinirPorDefecto, useEditarFlujo, useFlujo, usePublicarFlujo, useVersionesFlujo } from '../api';
+import { useCuestionarios } from '../../evaluaciones/api';
 import { FormularioFlujo } from '../components/FormularioFlujo';
 import { VersionesFlujo } from '../components/VersionesFlujo';
 import { recordatorioADto } from '../recordatorio';
@@ -23,6 +24,7 @@ import {
   borradorVacio,
   erroresBloqueantes,
   etapasADto,
+  evaluacionesADto,
   firmaBorrador,
   normalizarCodigo,
   plazoADto,
@@ -53,6 +55,7 @@ export function EditorFlujo() {
   const areas = useAreas(empresa.id, permisos.puede(SCOPES.configuracionLeer));
   const tipos = useTiposVinculo(empresa.id, nuevo && permisos.puede(SCOPES.configuracionLeer));
   const tiposDocumento = useTiposDocumento(permisos.puede(SCOPES.configuracionLeer));
+  const cuestionarios = useCuestionarios(empresa.id, permisos.puede(SCOPES.cuestionariosLeer));
   const crear = useCrearFlujo(empresa.id);
   const editar = useEditarFlujo(empresa.id, flujoId);
   const publicar = usePublicarFlujo(empresa.id, flujoId);
@@ -127,6 +130,7 @@ export function EditorFlujo() {
       vigenciaVinculo: vigenciaADto(borrador),
       requisitos: requisitosADto(borrador.requisitos),
       verificaciones: verificacionesADto(borrador.verificaciones),
+      evaluaciones: evaluacionesADto(borrador.evaluaciones),
     };
     if (nuevo) {
       crear.mutate(
@@ -229,6 +233,7 @@ export function EditorFlujo() {
             areas={listaAreas}
             tipos={nuevo ? (tipos.data ?? []) : null}
             tiposDocumento={tiposDocumento.data ?? []}
+            cuestionarios={cuestionarios.data ?? []}
             errores={visibles}
             soloLectura={!editando}
           />

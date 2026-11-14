@@ -3,7 +3,7 @@
 export const informes = {
   titulo: 'Informes',
   subtitulo: 'Estado de los expedientes y de los vínculos de {{empresa}}, con sus tiempos, para consultar y descargar.',
-  pestanas: { etiqueta: 'Informes', estado: 'Estado de expedientes', vinculos: 'Terceros y vínculos', sla: 'Plazo de revisión' },
+  pestanas: { etiqueta: 'Informes', estado: 'Estado de expedientes', vinculos: 'Terceros y vínculos', sla: 'Plazo de revisión', evaluaciones: 'Evaluaciones' },
   excel: 'Descargar Excel',
   pdf: 'Descargar PDF',
   descargaError: 'No se pudo descargar el informe.',

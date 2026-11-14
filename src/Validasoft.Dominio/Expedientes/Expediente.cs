@@ -39,7 +39,8 @@ public sealed record FlujoParaExpediente(
     IReadOnlyList<VerificacionRequeridaDelFlujo>? Verificaciones = null,
     PlazoDeCargue? PlazoCargue = null,
     int? RecordatorioObservacionesDias = null,
-    SeleccionPorRegla? Regla = null);
+    SeleccionPorRegla? Regla = null,
+    IReadOnlyList<EvaluacionRequeridaPorElFlujo>? Evaluaciones = null);
 
 /// <summary>Copia del flujo que gobierna el expediente; con origen <c>Regla</c>, la condición de selección que coincidió (FR-1).</summary>
 public sealed record FlujoDelExpediente(Guid FlujoId, Guid FlujoVersionId, string Codigo, string Nombre, int Version, OrigenFlujo Origen,
@@ -341,6 +342,9 @@ public sealed partial class Expediente
             simulacion.Emitir(new RequisitosCalculados(ResolverAlcance(requisitos, flujo), ahora));
         if (flujo.Verificaciones is { Count: > 0 } verificaciones)
             simulacion.Emitir(new VerificacionesRequeridas([.. verificaciones], ahora));
+        // Las evaluaciones frenan el cierre del expediente inicial (CE-8); una renovación o actualización no las repite: la reevaluación periódica asigna las suyas (CE-11).
+        if (datos.Tipo == TipoExpediente.Inicial && flujo.Evaluaciones is { Count: > 0 } evaluaciones)
+            simulacion.Emitir(new EvaluacionesRequeridas([.. evaluaciones], ahora));
         // La cuenta designada frena el cierre del expediente inicial y de las renovaciones; una actualización (un documento cambió)
         // no la repite, como tampoco repite las listas (VE-6): la aprobación que la precede ya la exigió.
         if (datos.ExigeCuentaDesignada && datos.Tipo != TipoExpediente.Actualizacion)
@@ -812,12 +816,12 @@ public sealed partial class Expediente
 
     /// <summary>
     /// Aprueba el expediente si todas las verificaciones bloqueantes están satisfechas y vigentes (docs/03 §6.3
-    /// <c>EvaluarCierre</c>) y, si el tipo de vínculo la exige, la cuenta designada está aprobada (CB-4); si no, queda
-    /// <c>EnRevision</c> con todas sus etapas aprobadas esperándolas.
+    /// <c>EvaluarCierre</c>), si el tipo de vínculo la exige, la cuenta designada está aprobada (CB-4) y las evaluaciones que bloquean están aprobadas
+    /// (CE-8); si no, queda <c>EnRevision</c> con todas sus etapas aprobadas esperándolas.
     /// </summary>
     private static void Cerrar(Simulacion simulacion, DateTimeOffset ahora)
     {
-        if (!simulacion.Estado!.VerificacionesSatisfechas(ahora) || !simulacion.Estado.CuentaDesignadaSatisfecha)
+        if (!simulacion.Estado!.VerificacionesSatisfechas(ahora) || !simulacion.Estado.CuentaDesignadaSatisfecha || !simulacion.Estado.EvaluacionesSatisfechas)
             return;
         simulacion.Emitir(new ExpedienteAprobado(ahora));
         AceptarSecciones(simulacion, ahora);
@@ -866,6 +870,8 @@ public sealed partial class Expediente
             case VerificacionesRequeridas e: Apply(e); break;
             case CuentaDesignadaRequerida e: Apply(e); break;
             case CuentaDesignadaConfirmada e: Apply(e); break;
+            case EvaluacionesRequeridas e: Apply(e); break;
+            case EvaluacionDelExpedienteActualizada e: Apply(e); break;
             case VerificacionExternaRegistrada e: Apply(e); break;
             case CoincidenciaResuelta e: Apply(e); break;
             case EstudioDeCumplimientoRegistrado e: Apply(e); break;

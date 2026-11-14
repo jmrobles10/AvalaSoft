@@ -6,6 +6,7 @@
  */
 import type { EstadoFlujoVersion } from './estadoFlujoVersion';
 import type { EtapaDto } from './etapaDto';
+import type { EvaluacionRequeridaDto } from './evaluacionRequeridaDto';
 import type { PlazoCargueDto } from './plazoCargueDto';
 import type { PoliticaDevolucion } from './politicaDevolucion';
 import type { RecordatorioDeFlujoDto } from './recordatorioDeFlujoDto';
@@ -36,4 +37,6 @@ export interface FlujoVersionDto {
   vigenciaVinculo?: null | VigenciaVinculoDto;
   recordatorioObservaciones?: null | RecordatorioDeFlujoDto;
   seleccion?: null | SeleccionDeFlujoDto;
+  /** @nullable */
+  evaluaciones?: EvaluacionRequeridaDto[] | null;
 }

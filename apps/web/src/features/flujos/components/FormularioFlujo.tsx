@@ -1,10 +1,11 @@
 import { Box, FormControlLabel, MenuItem, Radio, RadioGroup, Stack, Switch, TextField, Typography } from '@mui/material';
 import { CampoNumero } from '@validasoft/ui';
-import type { AreaDto, PoliticaDevolucion, TipoDocumentoTenantDto, TipoVinculoDto } from '@validasoft/api-client';
+import type { AreaDto, CuestionarioDto, PoliticaDevolucion, TipoDocumentoTenantDto, TipoVinculoDto } from '@validasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { limpiarAreasDeRequisitos, type BorradorFlujo, type ErrorFlujo } from '../editor';
 import { EditorEtapas } from './EditorEtapas';
+import { EditorEvaluacionesDelFlujo } from './EditorEvaluacionesDelFlujo';
 import { EditorRecordatorioFlujo } from './EditorRecordatorioFlujo';
 import { EditorRequisitos } from './EditorRequisitos';
 import { EditorSeleccionFlujo } from './EditorSeleccionFlujo';
@@ -19,6 +20,8 @@ export interface FormularioFlujoProps {
   tipos: readonly TipoVinculoDto[] | null;
   /** Tipos de documento del tenant, para los requisitos. */
   tiposDocumento: readonly TipoDocumentoTenantDto[];
+  /** Cuestionarios de evaluación de la empresa, para elegir cuáles pide el flujo (CE-7). */
+  cuestionarios?: readonly CuestionarioDto[];
   errores: readonly ErrorFlujo[];
   soloLectura: boolean;
 }
@@ -26,7 +29,7 @@ export interface FormularioFlujoProps {
 const POLITICAS: readonly PoliticaDevolucion[] = ['Inmediata', 'AlCerrarArea'];
 
 /** Datos generales del flujo, política de devolución, separación de funciones, etapas y documentos que pide. */
-export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocumento, errores, soloLectura }: FormularioFlujoProps) {
+export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocumento, cuestionarios = [], errores, soloLectura }: FormularioFlujoProps) {
   const { t } = useTranslation();
   const error = (campo: string) => {
     const e = errores.find((x) => x.campo === campo);
@@ -207,6 +210,15 @@ export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocume
           verificaciones={borrador.verificaciones}
           onCambiar={(verificaciones) => onCambiar({ ...borrador, verificaciones })}
           errores={errores}
+          soloLectura={soloLectura}
+        />
+      </Tarjeta>
+
+      <Tarjeta titulo={t('evaluaciones.flujo.titulo')}>
+        <EditorEvaluacionesDelFlujo
+          evaluaciones={borrador.evaluaciones}
+          cuestionarios={cuestionarios}
+          onCambiar={(evaluaciones) => onCambiar({ ...borrador, evaluaciones })}
           soloLectura={soloLectura}
         />
       </Tarjeta>

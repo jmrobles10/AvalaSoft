@@ -83,7 +83,7 @@ describe('AppShell', () => {
     expect(screen.queryByRole('link', { name: 'Configuración' })).not.toBeInTheDocument();
   });
 
-  it('con todos los permisos hay diez pestañas, en su orden, y sin medidas (jsdom) todas a la vista', () => {
+  it('con todos los permisos hay once pestañas, en su orden, y sin medidas (jsdom) todas a la vista', () => {
     permisos.scopes = new Set(Object.values(SCOPES));
     montar('/e/emp/inicio');
     const barra = screen.getByRole('navigation', { name: 'Secciones' });
@@ -94,12 +94,27 @@ describe('AppShell', () => {
       'Revalidaciones',
       'Vencimientos',
       'Cumplimiento',
+      'Evaluaciones',
       'Certificados',
       'Vínculos',
       'Informes',
       'Auditoría',
     ]);
     expect(within(barra).queryByRole('button', { name: 'Más' })).not.toBeInTheDocument();
+  });
+
+  it('sin permiso de leer evaluaciones no hay pestaña Evaluaciones (CE-3)', () => {
+    permisos.scopes = new Set([SCOPES.vinculosLeer]);
+    montar('/e/emp/vinculos');
+    expect(screen.queryByRole('link', { name: 'Evaluaciones' })).not.toBeInTheDocument();
+  });
+
+  it('con permiso de leer evaluaciones la pestaña sigue activa dentro de una evaluación (CE-3)', () => {
+    permisos.scopes = new Set([SCOPES.vinculosLeer, SCOPES.evaluacionesLeer]);
+    montar('/e/emp/evaluaciones/ev1');
+    const pestana = screen.getByRole('link', { name: 'Evaluaciones' });
+    expect(pestana).toHaveAttribute('href', '/e/emp/evaluaciones');
+    expect(pestana).toHaveAttribute('aria-current', 'page');
   });
 
   it('Excepciones lleva el contador de las que esperan a una persona', () => {

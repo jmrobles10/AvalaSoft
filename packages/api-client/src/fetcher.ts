@@ -42,6 +42,7 @@ export const RUTAS_QUE_CREAN: readonly string[] = [
   '/api/v1/motivos',
   '/api/v1/flujos',
   '/api/v1/tipos-documento',
+  '/api/v1/cuestionarios',
 ];
 
 /** Código con el que la API pide confirmar con la passkey antes de una acción sensible (PI-13). */

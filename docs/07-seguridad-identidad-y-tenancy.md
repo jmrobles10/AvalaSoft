@@ -186,6 +186,9 @@ Mapeo rol → scopes vigente (H1, `Permisos.DeRol`): `Administrador` = todos los
 | `vinculos:leer` / `escribir` | — | ✓ / ✓ | ✓ / — | ✓ / — | ✓ / — | scope | propios |
 | `vinculos:bloquear` | — | ✓ | — | ✓ | — | — | — |
 | `vinculos:eximir` (eximir un vínculo de requisitos y revocar la exención, EX-5) | — | ✓ | — | — | — | scope (una llave a la que se le marque) | — |
+| `cuestionarios:leer` / `escribir` (cuestionarios de evaluación del proveedor, CE-1) | — | ✓ / ✓ | — | — | — | scope | — |
+| `evaluaciones:leer` (CE-3) | — | ✓ | ✓ | ✓ | ✓ | scope | solo la autoevaluación propia, sin puntajes ni resultado |
+| `evaluaciones:responder` / `recalificar` (CE-3, CE-10) | — | ✓ / ✓ | ✓ / ✓ | ✓ / ✓ | — | scope | responde la suya (CE-3) |
 | `expedientes:leer` / `escribir` (crear, invitar, reabrir, anular) | — | ✓ / ✓ | ✓ / — | ✓ / — | ✓ / — | scope | propios / — |
 | `veredictos:emitir:area:{X}` | — | ✓ (todas, con justificación como Administrador) | ✓ (X) | ✓ (Cumplimiento) | — | — | — |
 | `requisitos:eximir` | — | ✓ | si `PuedeEximir` | si `PuedeEximir` | — | — | — |

@@ -2,6 +2,7 @@ import { SCOPES, type Scope } from '@validasoft/api-client';
 import {
   Building2,
   ClipboardCheck,
+  ClipboardList,
   Gauge,
   BookOpenText,
   Sparkles,
@@ -43,6 +44,7 @@ export interface SeccionConfiguracion {
     | 'ingreso'
     | 'sso'
     | 'flujos'
+    | 'cuestionarios'
     | 'datos-marca'
     | 'plantillas'
     | 'uso-ia'
@@ -98,6 +100,8 @@ export const SECCIONES_CONFIGURACION: readonly SeccionConfiguracion[] = [
   { ruta: 'habeas-data', scope: SCOPES.supresionesResolver, icono: ScrollText, alcance: 'empresa' },
   { ruta: 'areas', scope: SCOPES.configuracionLeer, icono: Workflow, alcance: 'empresa' },
   { ruta: 'flujos', scope: SCOPES.flujosLeer, icono: Route, alcance: 'empresa' },
+  // Cuestionarios de evaluación del proveedor (CE-1): versionados como los flujos; los flujos los piden y el informe de evaluaciones los usa.
+  { ruta: 'cuestionarios', scope: SCOPES.cuestionariosLeer, icono: ClipboardList, alcance: 'empresa' },
   // Plazos de revisión (OP-10, OP-11), ayuda de cada documento por empresa (OP-15, OP-16) y delegación de la revisión por ausencias (OP-7…OP-9).
   { ruta: 'plazos-de-revision', scope: SCOPES.configuracionLeer, icono: Timer, alcance: 'empresa' },
   { ruta: 'ayuda-de-documentos', scope: SCOPES.configuracionLeer, icono: BookOpenText, alcance: 'empresa' },

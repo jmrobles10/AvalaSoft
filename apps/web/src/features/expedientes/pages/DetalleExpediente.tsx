@@ -14,6 +14,7 @@ import { useAreas } from '../../configuracion/areas/api';
 import { useNombresUsuarios } from '../../configuracion/usuarios/api';
 import { PanelVerificaciones } from '../../cumplimiento/components/PanelVerificaciones';
 import { useEmpresaActiva } from '../../empresas/useEmpresas';
+import { AvisoEsperandoEvaluaciones, PanelEvaluaciones } from '../../evaluaciones/PanelEvaluaciones';
 import { BotonExportarExpediente } from '../../informes/BotonExportarExpediente';
 import { AvisoObservado } from '../../recordatorios/AvisoObservado';
 import { useVinculo } from '../../vinculos/api';
@@ -214,6 +215,7 @@ export function DetalleExpediente() {
         </Alert>
       )}
       {expediente.esperandoCuentaDesignada && <AvisoEsperandoCuenta empresaId={empresa.id} vinculoId={expediente.vinculoId} />}
+      {expediente.esperandoEvaluaciones && <AvisoEsperandoEvaluaciones expediente={expediente} />}
       {expediente.ultimaDesaprobacion && ESTADOS_ABIERTOS.includes(expediente.estado) && (
         <Alert severity="info" icon={<Undo2 size={18} strokeWidth={1.75} />} sx={{ mb: 2 }}>
           <AlertTitle>{t('expedientes.avisos.devueltoTitulo')}</AlertTitle>
@@ -257,6 +259,7 @@ export function DetalleExpediente() {
           <PanelDecisionArea expediente={expediente} contexto={contexto} onAccion={setDialogo} />
           <PanelRequisitos expediente={expediente} contexto={contexto} nombres={nombres} onAccion={setDialogo} />
           <PanelVerificaciones expediente={expediente} empresaId={empresa.id} scopes={permisos.scopes} nombres={nombres} />
+          <PanelEvaluaciones expediente={expediente} empresaId={empresa.id} />
           <EtapasExpediente expediente={expediente} contexto={contexto} nombres={nombres} motivos={nombresMotivos} onAccion={setDialogo} />
           <UltimaRespuesta expediente={expediente} />
           <DatosExpediente expediente={expediente} />

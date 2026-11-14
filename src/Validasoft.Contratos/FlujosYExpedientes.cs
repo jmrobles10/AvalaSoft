@@ -68,7 +68,7 @@ public sealed record CrearFlujoDto(
     bool SeparacionDeFunciones = false, IReadOnlyList<RequisitoDelFlujoDto>? Requisitos = null,
     IReadOnlyList<VerificacionRequeridaDto>? Verificaciones = null, PlazoCargueDto? PlazoCargue = null, ReintentoDto? Reintento = null,
     VigenciaVinculoDto? VigenciaVinculo = null, RecordatorioDeFlujoDto? RecordatorioObservaciones = null,
-    SeleccionDeFlujoDto? Seleccion = null);
+    SeleccionDeFlujoDto? Seleccion = null, IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null);
 
 /// <summary>
 /// Edita el borrador (o crea uno nuevo si solo hay versión publicada). Lo que llega nulo conserva el valor de la última
@@ -79,7 +79,7 @@ public sealed record EditarFlujoDto(
     string? Nombre = null, IReadOnlyList<EtapaDto>? Etapas = null, string? PoliticaDevolucion = null, bool? SeparacionDeFunciones = null,
     IReadOnlyList<RequisitoDelFlujoDto>? Requisitos = null, IReadOnlyList<VerificacionRequeridaDto>? Verificaciones = null,
     PlazoCargueDto? PlazoCargue = null, ReintentoDto? Reintento = null, VigenciaVinculoDto? VigenciaVinculo = null,
-    RecordatorioDeFlujoDto? RecordatorioObservaciones = null, SeleccionDeFlujoDto? Seleccion = null);
+    RecordatorioDeFlujoDto? RecordatorioObservaciones = null, SeleccionDeFlujoDto? Seleccion = null, IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null);
 
 /// <summary>
 /// Cuándo se escoge el flujo solo (FR-1, docs/03 §12.1): al abrir un expediente sin flujo explícito se evalúan los flujos publicados del
@@ -95,7 +95,8 @@ public sealed record FlujoVersionDto(
     Guid Id, int Version, string Estado, IReadOnlyList<EtapaDto> Etapas, string PoliticaDevolucion, bool SeparacionDeFunciones,
     DateTimeOffset CreadaEn, DateTimeOffset? PublicadaEn, DateTimeOffset? RetiradaEn, IReadOnlyList<RequisitoDelFlujoDto>? Requisitos = null,
     IReadOnlyList<VerificacionRequeridaDto>? Verificaciones = null, PlazoCargueDto? PlazoCargue = null, ReintentoDto? Reintento = null,
-    VigenciaVinculoDto? VigenciaVinculo = null, RecordatorioDeFlujoDto? RecordatorioObservaciones = null, SeleccionDeFlujoDto? Seleccion = null);
+    VigenciaVinculoDto? VigenciaVinculo = null, RecordatorioDeFlujoDto? RecordatorioObservaciones = null, SeleccionDeFlujoDto? Seleccion = null,
+    IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null);
 
 /// <summary>
 /// Reintento del tercero tras un rechazo (DS-4): con <see cref="Permitido"/> el tercero rechazado ve los motivos en su portal y
@@ -296,7 +297,9 @@ public sealed record ExpedienteDto(
     DesaprobacionDto? UltimaDesaprobacion = null,
     RecordatorioObservacionesDto? RecordatorioObservaciones = null,
     IReadOnlyList<AdjuntoDeCumplimientoDto>? AdjuntosDeCumplimiento = null,
-    bool EsperandoCuentaDesignada = false);
+    bool EsperandoCuentaDesignada = false,
+    IReadOnlyList<EvaluacionDeExpedienteDto>? Evaluaciones = null,
+    bool EsperandoEvaluaciones = false);
 
 /// <summary>
 /// Última vez que un administrador devolvió a revisión lo ya decidido del expediente (DS-1, DS-2). <see cref="Alcance"/>:
@@ -410,7 +413,7 @@ public sealed record ExpedientePublicoDto(
     Guid Id, string Folio, EmpresaPublicaDto Empresa, TipoVinculoResumenDto TipoVinculo, string Estado,
     IReadOnlyList<ObservacionPublicaDto> Observaciones, bool PuedeReenviar, int Reenvios, DateTimeOffset ActualizadoEn,
     IReadOnlyList<RequisitoPublicoDto>? Requisitos = null, int RequisitosFaltantes = 0, string Tipo = "Inicial", DateTimeOffset? PlazoCargueHasta = null,
-    bool EsperandoCuentaDesignada = false);
+    bool EsperandoCuentaDesignada = false, IReadOnlyList<EvaluacionPublicaResumenDto>? Evaluaciones = null);
 
 /// <summary>
 /// Plazo del tercero para completar el expediente inicial (P-4-2, LT-1): <see cref="Dias"/> (0 = sin plazo; por defecto 30) y

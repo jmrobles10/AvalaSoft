@@ -5,6 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { EtapaDto } from './etapaDto';
+import type { EvaluacionRequeridaDto } from './evaluacionRequeridaDto';
 import type { PlazoCargueDto } from './plazoCargueDto';
 import type { RecordatorioDeFlujoDto } from './recordatorioDeFlujoDto';
 import type { ReintentoDto } from './reintentoDto';
@@ -31,4 +32,6 @@ export interface CrearFlujoDto {
   vigenciaVinculo?: null | VigenciaVinculoDto;
   recordatorioObservaciones?: null | RecordatorioDeFlujoDto;
   seleccion?: null | SeleccionDeFlujoDto;
+  /** @nullable */
+  evaluaciones?: EvaluacionRequeridaDto[] | null;
 }
