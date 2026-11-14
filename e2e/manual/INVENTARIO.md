@@ -105,6 +105,7 @@ Todo en la app de la empresa (`abrirEmbebido`). Revisor/área: Rubén (Compras d
 | `vinculos/vinculo-con-actualizacion-pendiente` ☑ | Administrador de empresa | Aprobado por dos empresas y RUT nuevo (spec `vinculo-en-revision`) | «En revisión» en lista, filtro, inicio y detalle; certificado «En verificación»; aviso de la actualización no aprobada |
 | `vinculos/bloqueado-no-recibe-version` ☑ | Administrador de empresa | Vínculo bloqueado y versión nueva (spec `pendientes-pequenos`) | El bloqueado no recibe el RUT nuevo; al desbloquear queda «En revisión» |
 | `vinculos/referencias-externas` ☑ | Sistema integrador | Vínculo creado por un sistema con su referencia | Dónde se ve la referencia por sistema, buscar por referencia, varios sistemas |
+| `vinculos/exencion-por-vinculo` ✅ | Administrador de empresa | Vínculo aprobado por las áreas de Norte (aprobación por la interfaz); llave con `vinculos:eximir` (`llaveConEximir`) | Tarjeta «Exenciones», eximir de un requisito con justificación, «Exento» en el detalle, revocar |
 
 ### revision (19)
 
@@ -170,6 +171,7 @@ Todos en la app de la empresa como administradora (Ana) salvo donde se indica. C
 | `configuracion/flujo-verificaciones-de-cumplimiento` ☑ | Administrador de empresa | Grupo base | Pedir listas restrictivas y estudio SAGRILAFT, bloqueante, vigencia y reconsulta |
 | `configuracion/flujo-versiones-y-borradores` ☑ | Administrador de empresa | Flujo publicado | Editar → borrador v2, descartar cambios, publicar, ver versiones y volver a la vigente |
 | `configuracion/flujo-por-defecto` ☑ | Administrador de empresa | Dos flujos publicados del mismo tipo | Cambiar el flujo por defecto por tipo de vínculo, «Sin flujo por defecto» y aperturas pendientes |
+| `configuracion/flujo-por-reglas` ✅ | Administrador de empresa | Flujo por defecto de Sur (`publicarFlujoPorDefecto`); jurídica invitada y expediente abierto a mano | Selección automática: condición y prioridad del flujo nuevo, publicar la regla, el expediente dice «Se escogió por regla» |
 | `configuracion/areas-y-miembros` ☑ | Administrador de empresa | Personas con rol en la empresa | Crear área, asignar miembros, desactivar, efecto en la bandeja |
 | `configuracion/usuarios-y-roles` ☑ | Administrador de empresa | Sistema integrado con identidades | Crear una persona, roles por empresa o de todo el grupo (Administrador, Revisor, Oficial, Auditor), identidad en el sistema, desactivar |
 | `configuracion/empresas-y-textos-legales` ☑ | Administrador de empresa | Grupo base | Crear una empresa (prefijo de folio), publicar autorización y términos, versión nueva, qué ve el tercero |
@@ -195,6 +197,7 @@ Todos en la app de la empresa como administradora (Ana) salvo donde se indica. C
 | `operacion/recordatorio-en-lote` ☑ | Revisor/área | Varios expedientes observados (spec `novedades-tercero`) | Recordatorio desde la bandeja (uno por día), correo y campana |
 | `operacion/recordatorio-automatico-por-flujo` ☑ | Administrador de empresa | Flujo con recordatorio automático (spec `operacion`) | Modo «Empresa» o cada N días, lo que recibe el tercero |
 | `operacion/ayuda-de-documentos` ☑ | Administrador de empresa | Tipos de documento (spec `operacion`) | Texto de ayuda por documento y empresa, lo que lee el tercero al subir, plantillas de pre-vencimiento y preferencias |
+| `operacion/invitaciones-por-aprobar` ✅ | Oficial de cumplimiento | Tipo Proveedor con aprobación por rol Oficial (`exigirAprobacionParaInvitar`); dos invitaciones retenidas | Bandeja «Invitaciones por aprobar», aprobar (sale el correo), rechazar con motivo, bandeja vacía |
 
 ### ia (8), privacidad (2) y cumplimiento de configuración (2)
 
@@ -289,6 +292,25 @@ Siembra común: llave de Plataforma (`CLAVE_PLATAFORMA`) y `abrirEmbebidoCon` si
 | `acceso/codigos-de-recuperacion` ☑ | Administrador de empresa | Persona con passkey | Generar y usar un código de recuperación |
 
 ---
+
+## Lote 5 — Funciones recientes (de `docs/decisiones/registro.md`, 5-quatersexagies a 5-octiessexagies)
+
+Las funciones que llegaron a main después de los lotes 1 a 4. Lo que está ✅ ya tiene recorrido. Lo que está ☐ aún no lo tiene: cada fila es un archivo pendiente.
+
+| Archivo | Actor | Siembra | Pasos esperados |
+|---|---|---|---|
+| `configuracion/aprobacion-antes-de-invitar` ☐ | Administrador de empresa | Grupo base (AI-9) | Interruptor «Exige aprobación antes de invitar», «Un rol» o «Un área» en Tipos de vínculo, lote que queda «Por aprobar» |
+| `configuracion/cuestionario-de-evaluacion` ☐ | Administrador de empresa | Grupo base (CE-14) | Crear un cuestionario, secciones y preguntas con puntaje, eliminatoria y umbral, publicar (la versión queda congelada) |
+| `tercero/autoevaluacion-del-proveedor` ☐ | Tercero | Cuestionario con «Quién responde: Tercero» asignado (CE-3) | Responder la autoevaluación sin ver puntajes ni umbral, enviar |
+| `revision/evaluacion-bajo-el-umbral` ☐ | Revisor/área | Evaluación de evaluador interno con puntaje bajo el umbral (CE-5, CE-6) | Calificar, puntaje bajo el umbral que frena el cierre, recalificar, informe de evaluaciones (CE-12) |
+| `tercero/personas-relacionadas` ☐ | Tercero | Representante legal y socio sincronizados desde la ficha (PR-2) | Personas vigentes y propuestas, cédula de una persona relacionada, propuesta de la Cámara que confirma o descarta (PR-4, PR-9) |
+| `revision/documento-de-persona-relacionada` ☐ | Revisor/área | Persona relacionada con cédula subida (PR-8) | Lo que ve la empresa del documento de una persona relacionada y de dónde sale |
+| `plataforma/fuentes-oficiales` ☐ | Plataforma | Consola de Plataforma con credenciales simuladas (FO-5) | Configurar RUES y DIAN por proveedor, confirmar con passkey, no se ven las credenciales |
+| `configuracion/fuentes-oficiales-de-la-empresa` ☐ | Administrador de empresa | Flujo que pide RUES y DIAN (FO-1) | Pedir las verificaciones por tipo de vínculo, bloqueante o solo informar, vigencia, monitoreo |
+| `revision/cotejo-con-fuentes-oficiales` ☐ | Revisor/área | Expediente con diferencia entre la ficha y RUES (FO-4, FO-9) | Resultado por fuente, cotejo campo por campo, resolver una diferencia, constancia con la respuesta cruda |
+| `acceso/cola-de-contactos-verificados` ☐ | Plataforma | Solicitudes de acceso aislado pendientes (AV, solo si cabe) | Cola de solicitudes de acceso en la consola de Plataforma |
+
+**Pendiente del lote 5 (esta corrida)**: los 10 recorridos de arriba no se han escrito. Los tres ✅ sí, y la «aprobación antes de invitar» del tipo de vínculo está cubierta en parte por `operacion/invitaciones-por-aprobar`.
 
 ### Cómo reportar
 

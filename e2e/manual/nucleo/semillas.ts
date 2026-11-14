@@ -117,3 +117,42 @@ export async function exigirCuentaDesignada(e: Escenario): Promise<void> {
     cuerpo: { codigo: proveedor.codigo, nombre: proveedor.nombre, atributosPermitidos: [], exigeCuentaDesignada: true, exigeOtpEnEnlace: proveedor.exigeOtpEnEnlace },
   });
 }
+
+/**
+ * Una API key del mismo sistema integrado que la del escenario con además `vinculos:eximir` (EX-5): la llave del escenario no lo lleva
+ * (sus permisos son los de `crearEscenario`). Es lo que el sistema de la empresa le daría a quien decide las exenciones del vínculo.
+ */
+export async function llaveConEximir(e: Escenario): Promise<string> {
+  const llaves = await llamar<{ nombre: string; scopes: string[]; sistemaId: string }[]>('GET', '/api/v1/api-keys', { llave: e.admin });
+  const base = llaves.find((k) => k.nombre === 'E2E embebido');
+  if (!base) throw new Error('No encontré la API key del escenario.');
+  const nueva = await llamar<{ valor: string }>('POST', '/api/v1/api-keys', {
+    llave: e.admin,
+    cuerpo: { nombre: 'E2E eximir', scopes: [...base.scopes, 'vinculos:eximir'], empresas: null, expiraEn: null, sandbox: false, sistemaId: base.sistemaId },
+  });
+  return nueva.valor;
+}
+
+/**
+ * El tipo PROVEEDOR del grupo exige aprobar la invitación antes de que salga el correo (AI-1), y la aprueba un rol (por omisión, el
+ * oficial de cumplimiento). Llámala ANTES de invitar: la exigencia se evalúa al crear la invitación.
+ */
+export async function exigirAprobacionParaInvitar(e: Escenario, rol: 'OficialCumplimiento' | 'Revisor' | 'Administrador' = 'OficialCumplimiento'): Promise<void> {
+  const tipos = await llamar<{ id: string; codigo: string; nombre: string; exigeOtpEnEnlace: boolean; exigeCuentaDesignada: boolean }[]>('GET', '/api/v1/tipos-vinculo', {
+    llave: e.admin,
+  });
+  const proveedor = tipos.find((t) => t.codigo === 'PROVEEDOR');
+  if (!proveedor) throw new Error('El grupo no tiene el tipo de vínculo PROVEEDOR.');
+  await llamar('PUT', `/api/v1/tipos-vinculo/${proveedor.id}`, {
+    llave: e.admin,
+    cuerpo: {
+      codigo: proveedor.codigo,
+      nombre: proveedor.nombre,
+      atributosPermitidos: [],
+      exigeCuentaDesignada: proveedor.exigeCuentaDesignada,
+      exigeOtpEnEnlace: proveedor.exigeOtpEnEnlace,
+      requiereAprobacionParaInvitar: true,
+      aprobadoresDeInvitacion: { tipo: 'Rol', valor: rol },
+    },
+  });
+}
