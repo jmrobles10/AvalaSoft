@@ -123,16 +123,18 @@ public sealed record IdentidadExternaDto(Guid SistemaId, string IdExterno);
 /// </summary>
 public sealed record CrearUsuarioDto(
     string Nombre, string Correo, IdentificacionDto? Identificacion, IReadOnlyList<RolAsignadoDto>? Roles,
-    IReadOnlyList<IdentidadExternaDto>? Identidades, bool? Invitar = null);
+    IReadOnlyList<IdentidadExternaDto>? Identidades, bool? Invitar = null, IReadOnlyList<AsignacionDeGrupoDto>? Grupos = null);
 
 public sealed record AsignarRolesDto(IReadOnlyList<RolAsignadoDto> Roles);
 
 /// <param name="ExigePasskey">Un rol suyo (o el grupo) le exige passkey para entrar directo.</param>
 /// <param name="Passkeys">Passkeys activas que tiene registradas.</param>
+/// <param name="Grupos">Grupos de acceso propios que tiene asignados (los grupos predefinidos son sus <see cref="Roles"/>).</param>
 public sealed record UsuarioDto(
     Guid Id, string Nombre, string Correo, IdentificacionDto? Identificacion, bool Activo,
     IReadOnlyList<IdentidadExternaDto> Identidades, IReadOnlyList<RolAsignadoDto> Roles, DateTimeOffset CreadoEn,
-    DateTimeOffset? UltimoAcceso, bool ExigePasskey = false, int Passkeys = 0, DateTimeOffset? InvitadoEn = null);
+    DateTimeOffset? UltimoAcceso, bool ExigePasskey = false, int Passkeys = 0, DateTimeOffset? InvitadoEn = null,
+    IReadOnlyList<AsignacionDeGrupoDto>? Grupos = null);
 
 /// <summary>Sesión corta de Validasoft para pantallas embebidas: se envía como <c>Authorization: Bearer {token}</c>.</summary>
 public sealed record SesionUsuarioDto(string Token, DateTimeOffset Expira);

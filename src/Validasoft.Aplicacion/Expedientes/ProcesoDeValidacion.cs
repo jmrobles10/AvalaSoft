@@ -217,7 +217,7 @@ public static class ProcesoDeValidacion
 
         var exigencia = ContextoDeExigencia.De(tercero, tipo?.Codigo ?? string.Empty, vinculo.Atributos);
         var requisitos = await CalcularRequisitosAsync(sesion, vinculo, tercero, empresa.TenantId, flujo.Version, exigencia, soloRequisitos, documentos, ahora, ct,
-            retiros, exigirRatificacion);
+            retiros, exigirRatificacion, enrutarPorSector: tipoExpediente == TipoExpediente.Actualizacion);
 
         var folio = await SiguienteFolioAsync(sesion, empresa, tenant, ahora, ct);
         var abiertoPor = actor ?? new ActorDeExpediente(contexto?.ActorTipo ?? ActorTipo.Sistema, contexto?.ActorId ?? "sistema");
@@ -260,7 +260,8 @@ public static class ProcesoDeValidacion
     /// </summary>
     public static async Task<IReadOnlyList<RequisitoCalculado>> CalcularRequisitosAsync(IDocumentSession sesion, Vinculo vinculo, Tercero tercero,
         Guid tenantId, FlujoVersion version, ContextoDeExigencia exigencia, IReadOnlySet<Guid>? soloRequisitos, DocumentosDelVinculo? documentos,
-        DateTimeOffset ahora, CancellationToken ct, IReadOnlyDictionary<Guid, RetiroDeVersion>? retiros = null, bool exigirRatificacion = false)
+        DateTimeOffset ahora, CancellationToken ct, IReadOnlyDictionary<Guid, RetiroDeVersion>? retiros = null, bool exigirRatificacion = false,
+        bool enrutarPorSector = false)
     {
         var todosLosPedidos = (await RequisitosDeExpediente.DelFlujoAsync(sesion, version, exigencia, ct, incluirPersonas: true))
             .Where(p => soloRequisitos is null || soloRequisitos.Contains(p.Requisito.Id))
@@ -300,7 +301,11 @@ public static class ProcesoDeValidacion
             ? ordenados
             : [.. ordenados.Select(r => retiros.TryGetValue(r.RequisitoId, out var retiro) ? r with { Retiro = retiro } : r)];
         // Lo que la empresa tiene eximido para este vínculo (EX-3) nace Eximido citando la exención, sea cual sea el tipo de expediente.
-        return ExencionesDeVinculos.Aplicar(vinculo, conRetiros, ahora);
+        // Una actualización envía cada sección cambiada al área responsable de su sector (según el flujo); la revisión inicial no cambia.
+        var enrutados = enrutarPorSector
+            ? ResponsablesDeActualizacion.Enrutar(conRetiros, version.ResponsablesDeSector, [.. version.Etapas.SelectMany(e => e.Areas).Select(a => a.AreaId)])
+            : conRetiros;
+        return ExencionesDeVinculos.Aplicar(vinculo, enrutados, ahora);
     }
 
     /// <summary>Renovación periódica: la sección cuya versión completa es la ya aceptada no queda cubierta; hace falta ratificarla (VV-1).</summary>

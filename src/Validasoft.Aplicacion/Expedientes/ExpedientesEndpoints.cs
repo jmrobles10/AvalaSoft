@@ -137,15 +137,21 @@ public static class ExpedientesEndpoints
             }
             else if (veredicto == Dominio.Expedientes.Veredicto.Aprobado)
             {
+                // Aprobar el área decide de una vez sus secciones pendientes: todas deben estar al alcance de quien aprueba (grupos acotados por sector).
+                contexto.ExigirEditar(Permisos.ExpedientesRevisar, PendientesDelArea(expediente, areaId));
                 eventos = expediente.AprobarArea(areaId, revisor, dto.Versiones, ahora, await DiscrepanciasAsync(empresa, expediente, ct), dto.Justificacion);
             }
             else
             {
                 var observaciones = new List<ObservacionDeRequisito>();
                 foreach (var requisito in dto.Requisitos ?? [])
+                {
+                    contexto.ExigirEditar(Permisos.ExpedientesRevisar, expediente.BuscarRequisito(requisito.RequisitoId)?.Seccion);
                     observaciones.Add(new ObservacionDeRequisito(requisito.RequisitoId, requisito.SobreVersion,
                         await CatalogoDeMotivos.ResolverAsync(empresa.Sesion, requisito.Motivos, AplicaMotivo.Observacion, ct), requisito.Observacion,
                         requisito.Campos));
+                }
+
                 eventos = expediente.ObservarArea(areaId, revisor, observaciones, ahora);
             }
 
@@ -170,6 +176,7 @@ public static class ExpedientesEndpoints
             var stream = await empresa.ExpedienteParaEscribirAsync(id, Peticiones.VersionEsperada(http), ct);
             await AsegurarVinculoNoBloqueadoAsync(empresa, stream.Aggregate!, ct);
             var revisor = await Revisores.DelAreaAsync(empresa, contexto, areaId, ct);
+            contexto.ExigirEditar(Permisos.ExpedientesRevisar, stream.Aggregate!.BuscarRequisito(requisitoId)?.Seccion);
             var motivos = await CatalogoDeMotivos.ResolverAsync(empresa.Sesion, dto.Motivos, AplicaMotivo.Observacion, ct);
             var discrepancia = veredicto == Dominio.Expedientes.Veredicto.Aprobado &&
                                (await DiscrepanciasAsync(empresa, stream.Aggregate!, ct)).Contains(requisitoId);
@@ -193,6 +200,7 @@ public static class ExpedientesEndpoints
         {
             var stream = await empresa.ExpedienteParaEscribirAsync(id, Peticiones.VersionEsperada(http), ct);
             await AsegurarVinculoNoBloqueadoAsync(empresa, stream.Aggregate!, ct);
+            contexto.ExigirEditar(Permisos.ExpedientesAdministrar, stream.Aggregate!.BuscarRequisito(requisitoId)?.Seccion);
             var eventos = stream.Aggregate!.EximirRequisito(requisitoId, contexto.ActorId, dto.Justificacion, reloj.GetUtcNow());
             return await GuardarAsync(empresa, stream, eventos, mensajes, protector, http, reloj, ct);
         });
@@ -273,6 +281,7 @@ public static class ExpedientesEndpoints
         {
             var stream = await empresa.ExpedienteParaEscribirAsync(id, Peticiones.VersionEsperada(http), ct);
             await AsegurarVinculoNoBloqueadoAsync(empresa, stream.Aggregate!, ct);
+            contexto.ExigirEditar(Permisos.ExpedientesAdministrar, PendientesDelArea(stream.Aggregate!, areaId));
             var eventos = stream.Aggregate!.AprobarComoAdministrador(areaId, contexto.ActorId, dto.Justificacion, reloj.GetUtcNow());
             return await GuardarAsync(empresa, stream, eventos, mensajes, protector, http, reloj, ct);
         });
@@ -377,6 +386,13 @@ public static class ExpedientesEndpoints
             ? veredicto
             : throw ReglaDeNegocioException.Validacion("veredicto-invalido", "El veredicto es Aprobado u Observado (el rechazo es del expediente).");
 
+    /// <summary>Los requisitos del alcance del área que todavía no decidió (los que decidiría de una vez «Aprobar área»).</summary>
+    private static IEnumerable<RequisitoDeExpediente> PendientesDelArea(Expediente expediente, Guid areaId)
+    {
+        var area = expediente.BuscarArea(areaId);
+        return expediente.RequisitosDelArea(areaId).Where(r => area is null || !r.DecididoPor(area));
+    }
+
     /// <summary>Un vínculo bloqueado no recibe decisiones sobre su expediente (B-5).</summary>
     internal static async Task AsegurarVinculoNoBloqueadoAsync(SesionDeEmpresa empresa, Expediente expediente, CancellationToken ct)
     {
@@ -424,8 +440,35 @@ public static class ExpedientesEndpoints
         // Quien tiene una delegación vigente de un miembro del área también decide por ella (OP-8): el detalle lo trata como miembro.
         var empresaId = empresa.EmpresaId;
         var delegaciones = await empresa.Sesion.Query<Dominio.Delegaciones.DelegacionDeRevision>().Where(d => d.EmpresaId == empresaId && d.RevocadaEn == null).ToListAsync(ct);
-        return expediente.ADto(areas.ToDictionary(a => a.Id, a => (List<Guid>)[.. Delegaciones.DelegacionesDeRevision.QuienesRevisan(a, delegaciones, empresa.Hoy)]),
+        var detalle = expediente.ADto(areas.ToDictionary(a => a.Id, a => (List<Guid>)[.. Delegaciones.DelegacionesDeRevision.QuienesRevisan(a, delegaciones, empresa.Hoy)]),
             empresa.UsuarioConsultante, documentacion);
+        return SinContenidoDeSeccionesAjenas(detalle, empresa.Contexto);
+    }
+
+    /// <summary>
+    /// Un grupo de acceso acotado por sector no ve el contenido de las secciones de otros sectores: de cada una queda su nombre y su estado en el expediente, pero no sus datos, sus
+    /// soportes, sus cambios ni su cruce. Sin acotación (lo normal) devuelve el detalle tal cual.
+    /// </summary>
+    internal static ExpedienteDto SinContenidoDeSeccionesAjenas(ExpedienteDto detalle, IContextoSolicitud contexto)
+    {
+        bool Ajena(RequisitoExpedienteDto r) => r.Seccion is { } s && !contexto.PuedeVer(Permisos.ExpedientesLeer, s.Seccion);
+        if (detalle.Requisitos is null || !detalle.Requisitos.Any(Ajena))
+            return detalle;
+
+        return detalle with
+        {
+            Requisitos =
+            [
+                .. detalle.Requisitos.Select(r => Ajena(r)
+                    ? r with
+                    {
+                        Seccion = r.Seccion! with { Datos = null, Soportes = [], Cambios = [], Cruce = null, SinSoporte = null },
+                        SoporteDeSecciones = null,
+                        VersionActual = r.VersionActual is { } v ? v with { DatosDeclarados = null } : null
+                    }
+                    : r)
+            ]
+        };
     }
 }
 

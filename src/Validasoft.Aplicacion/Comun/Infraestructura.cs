@@ -23,6 +23,12 @@ public interface IContextoSolicitud
 
     IReadOnlySet<string> Scopes { get; }
 
+    /// <summary>
+    /// Sectores de la ficha (secciones <c>FICHA_*</c>) a los que alcanza <paramref name="scope"/> en esta petición para <paramref name="nivel"/> (ver o actuar): los de los grupos de
+    /// acceso de la persona. Sin grupos que acoten (API key sin usuario, roles fijos), todos.
+    /// </summary>
+    AlcanceDeSectores Sectores(string scope, NivelDeSector nivel) => AlcanceDeSectores.Todo;
+
     /// <summary>Empresas permitidas por la credencial; contiene <c>*</c> si son todas.</summary>
     IReadOnlySet<string> Empresas { get; }
 
@@ -76,9 +82,9 @@ public interface IEmisorDeSesiones
 
     /// <summary>
     /// Token de acceso de un usuario que entró directo (ING-1): los mismos reclamos que la sesión delegada (tenant, scopes efectivos de sus
-    /// roles, empresas) más la familia de su sesión y cómo se autenticó. Vence en minutos; se renueva con la cookie de refresco.
+    /// roles y grupos de acceso, empresas, acotaciones por sector) más la familia de su sesión y cómo se autenticó. Vence en minutos; se renueva con la cookie de refresco.
     /// </summary>
-    Contratos.SesionUsuarioDto EmitirDeUsuario(Usuario usuario, Guid tenantId, Guid sesionId, MetodoDeIngreso metodo, TimeSpan vigencia, DateTimeOffset ahora);
+    Contratos.SesionUsuarioDto EmitirDeUsuario(Usuario usuario, IReadOnlyList<ConcesionDeAcceso> gruposDelUsuario, Guid tenantId, Guid sesionId, MetodoDeIngreso metodo, TimeSpan vigencia, DateTimeOffset ahora);
 
     /// <summary>Token de acceso de un operador de Plataforma de ingreso directo (ING-4): sin tenant, solo <c>plataforma:tenants</c>.</summary>
     Contratos.SesionUsuarioDto EmitirDeOperador(OperadorDePlataforma operador, Guid sesionId, MetodoDeIngreso metodo, TimeSpan vigencia, DateTimeOffset ahora);

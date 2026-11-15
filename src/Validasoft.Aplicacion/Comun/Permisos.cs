@@ -116,6 +116,18 @@ public static class Permisos
         SupresionesResolver, CuestionariosLeer, CuestionariosEscribir, EvaluacionesLeer, EvaluacionesResponder, EvaluacionesRecalificar
     ];
 
+    /// <summary>
+    /// Permisos que un grupo de acceso puede llevar: el catálogo del tenant sin <see cref="SesionesTerceroCrear"/> (solo la usa la API key de un sistema integrador, no una
+    /// persona). Todos los demás los aplica el backend en sus endpoints; un grupo no inventa permisos.
+    /// </summary>
+    public static readonly IReadOnlyList<string> DeGrupo = [.. DelTenant.Where(p => p != SesionesTerceroCrear)];
+
+    /// <summary>
+    /// Los permisos que miran la ficha por secciones y por eso se acotan por sector: ver lo que el tercero declaró (<see cref="TercerosLeer"/>, <see cref="ExpedientesLeer"/>) y
+    /// actuar sobre ello (<see cref="ExpedientesRevisar"/>, <see cref="ExpedientesAdministrar"/>: veredictos, observaciones y exenciones de una sección).
+    /// </summary>
+    public static readonly IReadOnlyList<string> AcotablesPorSector = [TercerosLeer, ExpedientesLeer, ExpedientesRevisar, ExpedientesAdministrar];
+
     /// <summary>Lo que hace con las evaluaciones quien revisa: ver, responder como evaluador interno y recalificar con justificación (CE-4, CE-10).</summary>
     private static readonly string[] DeEvaluador = [EvaluacionesLeer, EvaluacionesResponder, EvaluacionesRecalificar];
 
@@ -160,33 +172,88 @@ public static class Permisos
     /// (<see cref="PermisosEfectivos.PorEmpresa"/>); las empresas efectivas son las del usuario (<c>*</c> si tiene un
     /// rol de todo el tenant) recortadas por las de la llave.
     /// </summary>
-    public static PermisosEfectivos ParaUsuario(IEnumerable<RolAsignado> roles, IEnumerable<string> scopesLlave, IEnumerable<string> empresasLlave)
+    public static PermisosEfectivos ParaUsuario(IEnumerable<RolAsignado> roles, IEnumerable<string> scopesLlave, IEnumerable<string> empresasLlave) =>
+        ParaUsuario(roles, [], scopesLlave, empresasLlave);
+
+    /// <summary>
+    /// Igual que la anterior con los grupos de acceso propios del tenant (<see cref="ConcesionDeAcceso.DeGrupo"/>): lo que puede la persona es la <b>unión</b> de lo que dan sus
+    /// roles (los grupos predefinidos) y sus grupos activos, siempre intersecado con la llave. Cada permiso lleva además su acotación por sector: la unión de las de los grupos que
+    /// lo otorgan (<see cref="PermisosEfectivos.Sectores"/>); si algún grupo que lo da no acota, vale para todos los sectores.
+    /// </summary>
+    public static PermisosEfectivos ParaUsuario(IEnumerable<RolAsignado> roles, IEnumerable<ConcesionDeAcceso> gruposDelUsuario, IEnumerable<string> scopesLlave,
+        IEnumerable<string> empresasLlave)
     {
         var llave = scopesLlave.ToHashSet();
         var empresasDeLlave = empresasLlave.ToHashSet();
-        var lista = roles.ToList();
+        var lista = roles.Select(ConcesionDeAcceso.DeRol).Concat(gruposDelUsuario).ToList();
 
-        var deTenant = lista.Where(r => r.EmpresaId is null).SelectMany(r => DeRol(r.Rol)).Where(llave.Contains).ToHashSet();
+        var deTenant = lista.Where(c => c.EmpresaId is null).SelectMany(c => c.Scopes).Where(llave.Contains).ToHashSet();
 
         var porEmpresa = new Dictionary<Guid, IReadOnlySet<string>>();
-        foreach (var grupo in lista.Where(r => r.EmpresaId is not null).GroupBy(r => r.EmpresaId!.Value))
+        foreach (var grupo in lista.Where(c => c.EmpresaId is not null).GroupBy(c => c.EmpresaId!.Value))
         {
             if (!PermiteEmpresa(empresasDeLlave, grupo.Key))
                 continue;
 
-            var scopes = grupo.SelectMany(r => DeRol(r.Rol))
+            var scopes = grupo.SelectMany(c => c.Scopes)
                 .Where(s => llave.Contains(s) && !SoloDeTenant.Contains(s) && !deTenant.Contains(s))
                 .ToHashSet();
             if (scopes.Count > 0)
                 porEmpresa[grupo.Key] = scopes;
         }
 
-        HashSet<string> empresasUsuario = lista.Any(r => r.EmpresaId is null)
+        HashSet<string> empresasUsuario = lista.Any(c => c.EmpresaId is null)
             ? ["*"]
-            : [.. lista.Select(r => r.EmpresaId!.Value.ToString())];
+            : [.. lista.Select(c => c.EmpresaId!.Value.ToString())];
         var empresas = Intersectar(empresasDeLlave, empresasUsuario);
 
-        return new PermisosEfectivos(deTenant, porEmpresa, empresas);
+        return new PermisosEfectivos(deTenant, porEmpresa, empresas, SectoresRestringidos(lista, deTenant, porEmpresa, empresasDeLlave));
+    }
+
+    /// <summary>
+    /// Las acotaciones por sector que hay que llevar en el token: solo las de los permisos <see cref="AcotablesPorSector"/> que no valen para todos los sectores, una por permiso para el
+    /// tenant entero y otra por empresa donde la unión de lo que alcanza allí sea distinta de lo que alcanza en todo el tenant. Sin ninguna, el token no trae nada de sectores.
+    /// </summary>
+    private static List<SectorRestringido> SectoresRestringidos(IReadOnlyList<ConcesionDeAcceso> concesiones, IReadOnlySet<string> deTenant,
+        IReadOnlyDictionary<Guid, IReadOnlySet<string>> porEmpresa, IReadOnlySet<string> empresasDeLlave)
+    {
+        static (AlcanceDeSectores Ver, AlcanceDeSectores Editar) Union(IEnumerable<ConcesionDeAcceso> concesiones) =>
+            concesiones.Aggregate((Ver: AlcanceDeSectores.De([]), Editar: AlcanceDeSectores.De([])),
+                (acumulado, c) => (acumulado.Ver.Union(c.Ver), acumulado.Editar.Union(c.Editar)));
+
+        var resultado = new List<SectorRestringido>();
+        foreach (var scope in AcotablesPorSector)
+        {
+            (AlcanceDeSectores Ver, AlcanceDeSectores Editar) deTodoElTenant = (AlcanceDeSectores.Todo, AlcanceDeSectores.Todo);
+            if (deTenant.Contains(scope))
+            {
+                deTodoElTenant = Union(concesiones.Where(c => c.EmpresaId is null && c.Scopes.Contains(scope)));
+                if (!deTodoElTenant.Ver.Todos || !deTodoElTenant.Editar.Todos)
+                    resultado.Add(new SectorRestringido(scope, null, deTodoElTenant.Ver, deTodoElTenant.Editar));
+            }
+
+            foreach (var empresaId in concesiones.Where(c => c.EmpresaId is not null).Select(c => c.EmpresaId!.Value).Distinct())
+            {
+                if (!PermiteEmpresa(empresasDeLlave, empresaId) || (!deTenant.Contains(scope) && porEmpresa.GetValueOrDefault(empresaId)?.Contains(scope) != true))
+                    continue;
+                var enLaEmpresa = Union(concesiones.Where(c => (c.EmpresaId is null || c.EmpresaId == empresaId) && c.Scopes.Contains(scope)));
+                if (!enLaEmpresa.Ver.Igual(deTodoElTenant.Ver) || !enLaEmpresa.Editar.Igual(deTodoElTenant.Editar))
+                    resultado.Add(new SectorRestringido(scope, empresaId, enLaEmpresa.Ver, enLaEmpresa.Editar));
+            }
+        }
+
+        return resultado;
+    }
+
+    /// <summary>
+    /// Qué sectores de la ficha alcanza un permiso en una petición: la entrada de la empresa activa si la hay, si no la del tenant entero y, sin ninguna, todos. Una credencial sin
+    /// acotaciones (API key sin usuario, rol sin grupos) alcanza todos.
+    /// </summary>
+    public static AlcanceDeSectores AlcanceEn(IEnumerable<SectorRestringido> restringidos, string scope, NivelDeSector nivel, Guid? empresaActiva)
+    {
+        var delScope = restringidos.Where(r => r.Scope == scope).ToList();
+        var entrada = (empresaActiva is { } empresa ? delScope.FirstOrDefault(r => r.EmpresaId == empresa) : null) ?? delScope.FirstOrDefault(r => r.EmpresaId is null);
+        return entrada is null ? AlcanceDeSectores.Todo : nivel == NivelDeSector.Editar ? entrada.Editar : entrada.Ver;
     }
 
     /// <summary>Intersección de alcances de empresa donde <c>*</c> significa "todas".</summary>
@@ -207,14 +274,77 @@ public static class Permisos
 /// <param name="DeTenant">Scopes válidos en cualquier empresa efectiva y en las operaciones de tenant.</param>
 /// <param name="PorEmpresa">Scopes adicionales que solo valen con <c>X-Empresa</c> igual a esa empresa.</param>
 /// <param name="Empresas">Empresas efectivas; <c>*</c> = todas las del tenant.</param>
+/// <param name="Sectores">Acotaciones por sector de los permisos que miran la ficha (solo los que no valen para todos los sectores); vacío = ninguna.</param>
 public sealed record PermisosEfectivos(
     IReadOnlySet<string> DeTenant,
     IReadOnlyDictionary<Guid, IReadOnlySet<string>> PorEmpresa,
-    IReadOnlySet<string> Empresas)
+    IReadOnlySet<string> Empresas,
+    IReadOnlyList<SectorRestringido>? Sectores = null)
 {
+    /// <summary>Las acotaciones por sector, nunca nulas.</summary>
+    public IReadOnlyList<SectorRestringido> SectoresRestringidos => Sectores ?? [];
+
     /// <summary>Scopes que aplican en una petición con la empresa activa indicada (o sin empresa).</summary>
     public IReadOnlySet<string> EnEmpresa(Guid? empresaId) =>
         empresaId is { } id && PorEmpresa.TryGetValue(id, out var adicionales)
             ? DeTenant.Union(adicionales).ToHashSet()
             : DeTenant;
+}
+
+/// <summary>
+/// Lo que da una asignación de acceso a una persona: los permisos, dónde valen (todo el tenant o una empresa) y a qué sectores de la ficha alcanzan los que la miran.
+/// Un rol (grupo predefinido) da sus permisos para todos los sectores; un grupo propio, los suyos acotados por los sectores que lo limitan.
+/// </summary>
+public sealed record ConcesionDeAcceso(IReadOnlyCollection<string> Scopes, Guid? EmpresaId, AlcanceDeSectores Ver, AlcanceDeSectores Editar)
+{
+    public static ConcesionDeAcceso DeRol(RolAsignado asignado) =>
+        new(Permisos.DeRol(asignado.Rol), asignado.EmpresaId, AlcanceDeSectores.Todo, AlcanceDeSectores.Todo);
+
+    /// <summary>Lo que da un grupo propio asignado en <paramref name="empresaId"/> (nulo = todo el tenant). Un grupo desactivado no da nada.</summary>
+    public static ConcesionDeAcceso? DeGrupo(GrupoDePermisos grupo, Guid? empresaId) =>
+        grupo.Activo
+            ? new ConcesionDeAcceso([.. grupo.Permisos.Where(Permisos.DeGrupo.Contains)], empresaId, grupo.AlcanceParaVer(), grupo.AlcanceParaEditar())
+            : null;
+
+    /// <summary>Las concesiones de los grupos propios de una persona: las de los grupos activos que existen (los demás ya no dan nada).</summary>
+    public static IReadOnlyList<ConcesionDeAcceso> DeLosGruposDe(Usuario usuario, IEnumerable<GrupoDePermisos> gruposDelTenant)
+    {
+        var porId = gruposDelTenant.ToDictionary(g => g.Id);
+        return
+        [
+            .. usuario.Grupos.Select(a => porId.TryGetValue(a.GrupoId, out var grupo) ? DeGrupo(grupo, a.EmpresaId) : null).OfType<ConcesionDeAcceso>()
+        ];
+    }
+}
+
+/// <summary>
+/// Acotación por sector de un permiso: a qué secciones de la ficha alcanza para ver y para actuar, en todo el tenant (<see cref="EmpresaId"/> nulo) o en una empresa. Viaja en
+/// el token como <c>permiso|empresa|ver|editar</c> (<c>*</c> = todas las secciones).
+/// </summary>
+public sealed record SectorRestringido(string Scope, Guid? EmpresaId, AlcanceDeSectores Ver, AlcanceDeSectores Editar)
+{
+    public string Codificar() => $"{Scope}|{EmpresaId?.ToString() ?? "*"}|{Ver.Codificar()}|{Editar.Codificar()}";
+
+    /// <summary>
+    /// Lee un reclamo. Si no tiene la forma esperada falla cerrado: el permiso queda acotado a ningún sector (nunca a todos). Solo un texto sin ni siquiera el nombre del permiso
+    /// se ignora (nulo): no hay a qué permiso aplicarlo.
+    /// </summary>
+    public static SectorRestringido? Decodificar(string texto)
+    {
+        var partes = texto.Split('|');
+        if (partes.Length == 0 || partes[0].Length == 0)
+            return null;
+        var ninguno = new SectorRestringido(partes[0], null, AlcanceDeSectores.De([]), AlcanceDeSectores.De([]));
+        if (partes.Length != 4)
+            return ninguno;
+        Guid? empresa = null;
+        if (partes[1] != "*")
+        {
+            if (!Guid.TryParse(partes[1], out var id))
+                return ninguno;
+            empresa = id;
+        }
+
+        return new SectorRestringido(partes[0], empresa, AlcanceDeSectores.Decodificar(partes[2]), AlcanceDeSectores.Decodificar(partes[3]));
+    }
 }
