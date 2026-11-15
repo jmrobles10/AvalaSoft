@@ -206,6 +206,10 @@ export function crearRouter() {
                   lazy: () => import('../features/configuracion/usuarios/PaginaUsuarios').then((m) => ({ Component: m.PaginaUsuarios })),
                 },
                 {
+                  path: 'grupos-de-acceso',
+                  lazy: () => import('../features/configuracion/gruposDeAcceso/PaginaGruposDeAcceso').then((m) => ({ Component: m.PaginaGruposDeAcceso })),
+                },
+                {
                   path: 'plantillas',
                   lazy: () => import('../features/configuracion/plantillas/PaginaPlantillas').then((m) => ({ Component: m.PaginaPlantillas })),
                 },

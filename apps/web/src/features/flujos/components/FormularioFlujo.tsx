@@ -6,6 +6,7 @@ import { Tarjeta } from '../../../shared/componentes';
 import { limpiarAreasDeRequisitos, type BorradorFlujo, type ErrorFlujo } from '../editor';
 import { EditorEtapas } from './EditorEtapas';
 import { EditorEvaluacionesDelFlujo } from './EditorEvaluacionesDelFlujo';
+import { EditorResponsablesDeSector } from './EditorResponsablesDeSector';
 import { EditorRecordatorioFlujo } from './EditorRecordatorioFlujo';
 import { EditorRequisitos } from './EditorRequisitos';
 import { EditorSeleccionFlujo } from './EditorSeleccionFlujo';
@@ -201,6 +202,16 @@ export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocume
           tiposDocumento={tiposDocumento}
           onCambiar={(requisitos) => onCambiar({ ...borrador, requisitos })}
           errores={errores}
+          soloLectura={soloLectura}
+        />
+      </Tarjeta>
+
+      <Tarjeta titulo={t('responsablesPorSector.titulo')}>
+        <EditorResponsablesDeSector
+          responsables={borrador.responsablesDeSector}
+          etapas={borrador.etapas}
+          areas={areas}
+          onCambiar={(responsablesDeSector) => onCambiar({ ...borrador, responsablesDeSector })}
           soloLectura={soloLectura}
         />
       </Tarjeta>

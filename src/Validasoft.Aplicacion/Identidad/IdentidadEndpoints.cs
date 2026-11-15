@@ -138,8 +138,6 @@ public static class UsuariosEndpoints
         await plan.ExigirAsync(tenantId, Validasoft.Dominio.Plataforma.MetricaDePlan.Usuarios, 1, ct); // límite de usuarios del plan con bloqueo suave (OD-17)
         var usuario = Usuario.Crear(dto.Nombre, dto.Correo, dto.Identificacion?.ADominio(), ahora, tenantId);
         var roles = (dto.Roles ?? []).Select(r => r.ADominio()).ToList();
-        await ValidarRolesAsync(roles, [], sesiones, contexto, ct);
-        usuario.AsignarRoles(roles);
 
         Tenant? tenant = null;
         await using (var global = sesiones.ConsultaGlobal())
@@ -148,6 +146,13 @@ public static class UsuariosEndpoints
             throw ReglaDeNegocioException.Validacion("ingreso-directo-apagado", "Este grupo no admite el ingreso directo: actívalo en Configuración › Ingreso para invitar por correo.");
 
         await using var sesion = sesiones.DelTenant(mensajes);
+        // Los grupos del alta: los predefinidos suman roles; los propios, asignaciones de grupo (se valida que existan y estén activos).
+        var (rolesDeGrupos, grupos) = await AsignacionDeAcceso.RepartirAsync(sesion, dto.Grupos ?? [], null, ct);
+        roles = [.. roles, .. rolesDeGrupos];
+        await ValidarEmpresasAsync([.. roles.Select(r => r.EmpresaId), .. grupos.Select(g => g.EmpresaId)], [], sesiones, contexto, ct);
+        usuario.AsignarRoles(roles);
+        usuario.AsignarGrupos(grupos);
+
         var correo = usuario.Correo;
         if (await sesion.Query<Usuario>().AnyAsync(u => u.Correo == correo, ct))
             throw ReglaDeNegocioException.Conflicto("usuario-duplicado", $"Ya existe un usuario con el correo {correo}.");
@@ -223,10 +228,35 @@ public static class UsuariosEndpoints
         await using var sesion = sesiones.DelTenant();
         var usuario = await CargarAsync(sesion, id, ct);
         var roles = (dto.Roles ?? []).Select(r => r.ADominio()).ToList();
-        await ValidarRolesAsync(roles, usuario.Roles, sesiones, contexto, ct);
+        await ValidarEmpresasAsync([.. roles.Select(r => r.EmpresaId)], [.. usuario.Roles.Select(r => r.EmpresaId), .. usuario.Grupos.Select(g => g.EmpresaId)], sesiones, contexto, ct);
 
         var antes = usuario.ADto();
         usuario.AsignarRoles(roles);
+        sesion.Store(usuario);
+        Auditoria.Registrar(sesion, contexto, "Usuario", usuario.Id.ToString(), AccionConfiguracion.Modificado, antes, usuario.ADto(), reloj.GetUtcNow());
+        await sesion.SaveChangesAsync(ct);
+        return usuario.ADto();
+    }
+
+    /// <summary>
+    /// Reemplaza todos los grupos de la persona, los predefinidos (sus roles de siempre) y los propios del tenant. Lo que puede es la unión de lo que dan, desde su siguiente token;
+    /// los grupos desactivados no dan nada y no se asignan de nuevo. Cada empresa debe ser del tenant y estar al alcance de quien asigna. Queda en la auditoría de configuración.
+    /// </summary>
+    [WolverinePut("/api/v1/usuarios/{id}/grupos")]
+    [Authorize(Policy = Permisos.UsuariosAdministrar)]
+    public static async Task<UsuarioDto> AsignarGrupos(Guid id, AsignarGruposDto dto, HttpContext http, ISesiones sesiones, IContextoSolicitud contexto,
+        ServicioDeIngreso servicio, TimeProvider reloj, CancellationToken ct)
+    {
+        await servicio.ExigirReautenticacionAsync(http.User, "cambiar-grupos", ct);
+        await using var sesion = sesiones.DelTenant();
+        var usuario = await CargarAsync(sesion, id, ct);
+        var (roles, grupos) = await AsignacionDeAcceso.RepartirAsync(sesion, dto.Grupos ?? [], usuario, ct);
+        await ValidarEmpresasAsync([.. roles.Select(r => r.EmpresaId), .. grupos.Select(g => g.EmpresaId)],
+            [.. usuario.Roles.Select(r => r.EmpresaId), .. usuario.Grupos.Select(g => g.EmpresaId)], sesiones, contexto, ct);
+
+        var antes = usuario.ADto();
+        usuario.AsignarRoles(roles);
+        usuario.AsignarGrupos(grupos);
         sesion.Store(usuario);
         Auditoria.Registrar(sesion, contexto, "Usuario", usuario.Id.ToString(), AccionConfiguracion.Modificado, antes, usuario.ADto(), reloj.GetUtcNow());
         await sesion.SaveChangesAsync(ct);
@@ -242,7 +272,7 @@ public static class UsuariosEndpoints
         await servicio.ExigirReautenticacionAsync(http.User, "desactivar-usuario", ct);
         await using var sesion = sesiones.DelTenant();
         var usuario = await CargarAsync(sesion, id, ct);
-        await ValidarRolesAsync([], usuario.Roles, sesiones, contexto, ct);
+        await ValidarEmpresasAsync([], [.. usuario.Roles.Select(r => r.EmpresaId), .. usuario.Grupos.Select(g => g.EmpresaId)], sesiones, contexto, ct);
 
         var ahora = reloj.GetUtcNow();
         var antes = usuario.ADto();
@@ -267,14 +297,14 @@ public static class UsuariosEndpoints
         ?? throw ReglaDeNegocioException.NoEncontrado("usuario-no-encontrado", "No existe ese usuario.");
 
     /// <summary>
-    /// Las empresas de los roles deben ser del tenant. Una credencial limitada a ciertas empresas solo toca roles de
-    /// esas empresas, ni los nuevos ni los que el usuario ya tenía (anti-escalada, como en las API keys).
+    /// Las empresas de las asignaciones de acceso (roles y grupos) deben ser del tenant. Una credencial limitada a ciertas empresas solo toca asignaciones de esas empresas, ni las
+    /// nuevas ni las que la persona ya tenía (anti-escalada, como en las API keys); <c>null</c> = todo el tenant.
     /// </summary>
-    private static async Task ValidarRolesAsync(IReadOnlyList<RolAsignado> nuevos, IReadOnlyList<RolAsignado> actuales,
-        ISesiones sesiones, IContextoSolicitud contexto, CancellationToken ct)
+    internal static async Task ValidarEmpresasAsync(IReadOnlyList<Guid?> nuevas, IReadOnlyList<Guid?> actuales, ISesiones sesiones, IContextoSolicitud contexto,
+        CancellationToken ct)
     {
         var tenantId = contexto.TenantRequerido();
-        var ids = nuevos.Where(r => r.EmpresaId is not null).Select(r => r.EmpresaId!.Value).Distinct().ToList();
+        var ids = nuevas.Where(e => e is not null).Select(e => e!.Value).Distinct().ToList();
         if (ids.Count > 0)
         {
             await using var consulta = sesiones.ConsultaGlobal();
@@ -286,7 +316,7 @@ public static class UsuariosEndpoints
         if (contexto.Empresas.Contains("*"))
             return;
 
-        if (nuevos.Concat(actuales).Any(r => r.EmpresaId is null || !contexto.Empresas.Contains(r.EmpresaId.Value.ToString())))
+        if (nuevas.Concat(actuales).Any(e => e is null || !contexto.Empresas.Contains(e.Value.ToString())))
             throw ReglaDeNegocioException.Prohibido("alcance-insuficiente",
                 "Tu credencial no alcanza todas las empresas de esos roles (ni los roles de todo el tenant).");
     }

@@ -80,6 +80,8 @@ public sealed class MiddlewareDeContexto(RequestDelegate siguiente)
             }
 
             contexto.Scopes = scopes;
+            // Acotaciones por sector de la ficha de los grupos de acceso de la persona (sin el reclamo, los permisos valen para todos los sectores).
+            contexto.SectoresRestringidos = [.. usuario.FindAll(Reclamos.Sectores).Select(c => SectorRestringido.Decodificar(c.Value)).OfType<SectorRestringido>()];
 
             // Plan del grupo (OD-15): cada llamada a /api/v1 con una API key de producción cuenta para el límite mensual de llamadas; no cuentan
             // las pantallas (sesiones), el sandbox ni la Plataforma. Con el bloqueo suave y el tope alcanzado, las escrituras responden 429.

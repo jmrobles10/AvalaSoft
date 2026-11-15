@@ -59,6 +59,7 @@ export * from './generado/endpoints/dominio-de-correo/dominio-de-correo';
 export * from './generado/endpoints/tipos-documento/tipos-documento';
 export * from './generado/endpoints/tipos-vinculo/tipos-vinculo';
 export * from './generado/endpoints/usuarios/usuarios';
+export * from './generado/endpoints/grupos-de-acceso/grupos-de-acceso';
 export * from './generado/endpoints/vinculos/vinculos';
 export * from './generado/endpoints/webhooks/webhooks';
 export * from './generado/endpoints/verificaciones/verificaciones';

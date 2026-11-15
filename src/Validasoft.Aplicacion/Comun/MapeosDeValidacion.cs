@@ -36,7 +36,7 @@ public static class MapeosDeValidacion
                     TodasLasRelaciones: r.TodasLasRelaciones))],
             [.. v.Verificaciones.Select(x => new VerificacionRequeridaDto(x.Tipo.ToString(), x.Bloqueante, x.VigenciaDias, x.FrecuenciaReconsultaMeses))],
             v.PlazoEfectivo().ADto(), v.ReintentoEfectivo().ADto(), v.VigenciaEfectiva().ADto(), RecordatorioADto(v.RecordatorioObservacionesDias),
-            v.Seleccion?.ADto(), [.. v.Evaluaciones.Select(e => e.ADto())]);
+            v.Seleccion?.ADto(), [.. v.Evaluaciones.Select(e => e.ADto())], [.. v.ResponsablesDeSector.Select(r => new ResponsableDeSectorDto(r.Sector, r.AreaId))]);
 
     public static SeleccionDeFlujoDto ADto(this SeleccionDeFlujo s) => new(s.Condicion?.ADto(), s.Prioridad);
 

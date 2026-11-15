@@ -129,6 +129,9 @@ public static class ConfiguracionMarten
                 opts.Schema.For<Usuario>().DatabaseSchemaName("identidad").MultiTenanted()
                     .UniqueIndex(UniqueIndexType.Computed, "ux_usuario_correo", TenancyScope.PerTenant, x => x.Correo);
                 opts.Schema.For<IndiceIdentidadExterna>().DatabaseSchemaName("identidad").MultiTenanted();
+                // Grupos de acceso del grupo empresarial (permisos acotables por sector de la ficha): por tenant, con el código único en él.
+                opts.Schema.For<GrupoDePermisos>().DatabaseSchemaName("identidad").MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_grupo_permisos_codigo", TenancyScope.PerTenant, x => x.Codigo);
                 // Consola de Plataforma (PT-4): sistemas del backoffice que firman las aserciones de sus operadores, y los
                 // operadores registrados en su primer acceso. Globales (no pertenecen a ningún tenant).
                 opts.Schema.For<SistemaDePlataforma>().DatabaseSchemaName("identidad");

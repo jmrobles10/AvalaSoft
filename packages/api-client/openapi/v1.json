@@ -7647,6 +7647,219 @@
         }
       }
     },
+    "/api/v1/grupos-de-acceso": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Identidad.GruposDeAccesoEndpoints"
+        ],
+        "summary": "GET_api_v1_grupos_de_acceso",
+        "description": "GET_api_v1_grupos_de_acceso",
+        "operationId": "GET_api_v1_grupos_de_acceso",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GrupoDeAccesoDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Identidad.GruposDeAccesoEndpoints"
+        ],
+        "summary": "POST_api_v1_grupos_de_acceso",
+        "description": "POST_api_v1_grupos_de_acceso",
+        "operationId": "POST_api_v1_grupos_de_acceso",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearGrupoDeAccesoDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/grupos-de-acceso/{id}": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Identidad.GruposDeAccesoEndpoints"
+        ],
+        "summary": "GET_api_v1_grupos_de_acceso_id",
+        "description": "GET_api_v1_grupos_de_acceso_id",
+        "operationId": "GET_api_v1_grupos_de_acceso_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrupoDeAccesoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.Identidad.GruposDeAccesoEndpoints"
+        ],
+        "summary": "PUT_api_v1_grupos_de_acceso_id",
+        "description": "PUT_api_v1_grupos_de_acceso_id",
+        "operationId": "PUT_api_v1_grupos_de_acceso_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarGrupoDeAccesoDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrupoDeAccesoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/grupos-de-acceso/{id}/desactivar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Identidad.GruposDeAccesoEndpoints"
+        ],
+        "summary": "POST_api_v1_grupos_de_acceso_id_desactivar",
+        "description": "POST_api_v1_grupos_de_acceso_id_desactivar",
+        "operationId": "POST_api_v1_grupos_de_acceso_id_desactivar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrupoDeAccesoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/grupos-de-acceso/{id}/reactivar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Identidad.GruposDeAccesoEndpoints"
+        ],
+        "summary": "POST_api_v1_grupos_de_acceso_id_reactivar",
+        "description": "POST_api_v1_grupos_de_acceso_id_reactivar",
+        "operationId": "POST_api_v1_grupos_de_acceso_id_reactivar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrupoDeAccesoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/v1/sistemas": {
       "post": {
         "tags": [
@@ -8038,6 +8251,52 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/AsignarRolesDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/usuarios/{id}/grupos": {
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.Identidad.UsuariosEndpoints"
+        ],
+        "summary": "PUT_api_v1_usuarios_id_grupos",
+        "description": "PUT_api_v1_usuarios_id_grupos",
+        "operationId": "PUT_api_v1_usuarios_id_grupos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsignarGruposDto"
               }
             }
           },
@@ -18944,6 +19203,40 @@
           }
         }
       },
+      "ActualizarGrupoDeAccesoDto": {
+        "required": [
+          "nombre",
+          "descripcion",
+          "permisos"
+        ],
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "permisos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sectores": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SectorDeGrupoDto"
+            }
+          }
+        }
+      },
       "ActualizarListasDePlataformaDto": {
         "required": [
           "credenciales"
@@ -19969,6 +20262,26 @@
           }
         }
       },
+      "AsignacionDeGrupoDto": {
+        "required": [
+          "grupoId",
+          "empresaId"
+        ],
+        "type": "object",
+        "properties": {
+          "grupoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "empresaId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
       "AsignarEvaluacionDto": {
         "required": [
           "cuestionarioId"
@@ -19978,6 +20291,20 @@
           "cuestionarioId": {
             "type": "string",
             "format": "uuid"
+          }
+        }
+      },
+      "AsignarGruposDto": {
+        "required": [
+          "grupos"
+        ],
+        "type": "object",
+        "properties": {
+          "grupos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AsignacionDeGrupoDto"
+            }
           }
         }
       },
@@ -23906,6 +24233,53 @@
             "items": {
               "$ref": "#/components/schemas/EvaluacionRequeridaDto"
             }
+          },
+          "responsablesDeSector": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ResponsableDeSectorDto"
+            }
+          }
+        }
+      },
+      "CrearGrupoDeAccesoDto": {
+        "required": [
+          "codigo",
+          "nombre",
+          "descripcion",
+          "permisos"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "permisos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sectores": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SectorDeGrupoDto"
+            }
           }
         }
       },
@@ -24409,6 +24783,15 @@
               "null",
               "boolean"
             ]
+          },
+          "grupos": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AsignacionDeGrupoDto"
+            }
           }
         }
       },
@@ -26557,6 +26940,15 @@
             ],
             "items": {
               "$ref": "#/components/schemas/EvaluacionRequeridaDto"
+            }
+          },
+          "responsablesDeSector": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ResponsableDeSectorDto"
             }
           }
         }
@@ -31291,6 +31683,15 @@
             "items": {
               "$ref": "#/components/schemas/EvaluacionRequeridaDto"
             }
+          },
+          "responsablesDeSector": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ResponsableDeSectorDto"
+            }
           }
         }
       },
@@ -31443,6 +31844,87 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "GrupoDeAccesoDto": {
+        "required": [
+          "id",
+          "codigo",
+          "nombre",
+          "descripcion",
+          "activo",
+          "predefinido",
+          "rol",
+          "permisos",
+          "sectores",
+          "usuarios",
+          "creadoEn",
+          "actualizadoEn"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "activo": {
+            "type": "boolean"
+          },
+          "predefinido": {
+            "type": "boolean"
+          },
+          "rol": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "permisos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sectores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SectorDeGrupoDto"
+            }
+          },
+          "usuarios": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "creadoEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "actualizadoEn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           }
         }
       },
@@ -31792,7 +32274,7 @@
               "string"
             ]
           },
-          "archivo": { },
+          "archivo": {},
           "unidades": {
             "type": [
               "null",
@@ -32788,7 +33270,7 @@
       "IResult": {
         "type": "object"
       },
-      "JsonElement": { },
+      "JsonElement": {},
       "JustificacionDto": {
         "required": [
           "justificacion"
@@ -34593,7 +35075,7 @@
               "$ref": "#/components/schemas/CuentaDeIngresoDto"
             }
           },
-          "opciones": { },
+          "opciones": {},
           "sesion": {
             "oneOf": [
               {
@@ -35913,7 +36395,7 @@
               "$ref": "#/components/schemas/CampoPropuestoDto"
             }
           },
-          "datos": { }
+          "datos": {}
         }
       },
       "ProveedorDeFuenteDto": {
@@ -38042,6 +38524,22 @@
             "items": {
               "$ref": "#/components/schemas/RespuestaDto"
             }
+          }
+        }
+      },
+      "ResponsableDeSectorDto": {
+        "required": [
+          "sector",
+          "areaId"
+        ],
+        "type": "object",
+        "properties": {
+          "sector": {
+            "type": "string"
+          },
+          "areaId": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -40556,7 +41054,7 @@
               "$ref": "#/components/schemas/AceptacionDeSeccionDto"
             }
           },
-          "prellenado": { },
+          "prellenado": {},
           "sinSoporte": {
             "oneOf": [
               {
@@ -40762,6 +41260,21 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "SectorDeGrupoDto": {
+        "required": [
+          "sector",
+          "nivel"
+        ],
+        "type": "object",
+        "properties": {
+          "sector": {
+            "type": "string"
+          },
+          "nivel": {
+            "type": "string"
           }
         }
       },
@@ -43292,6 +43805,15 @@
               "string"
             ],
             "format": "date-time"
+          },
+          "grupos": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AsignacionDeGrupoDto"
+            }
           }
         }
       },
@@ -45122,6 +45644,9 @@
     },
     {
       "name": "Validasoft.Aplicacion.Importacion.ImportacionEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Identidad.GruposDeAccesoEndpoints"
     },
     {
       "name": "Validasoft.Aplicacion.Identidad.SistemasEndpoints"

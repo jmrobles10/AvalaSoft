@@ -37,6 +37,7 @@ export * from './flujos/flujos';
 export * from './fuentes-oficiales/fuentes-oficiales';
 export * from './fuentes-oficiales-de-plataforma/fuentes-oficiales-de-plataforma';
 export * from './gestion-de-ingreso/gestion-de-ingreso';
+export * from './grupos-de-acceso/grupos-de-acceso';
 export * from './importacion/importacion';
 export * from './informe-cumplimiento/informe-cumplimiento';
 export * from './informe-de-evaluaciones/informe-de-evaluaciones';

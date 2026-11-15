@@ -142,6 +142,8 @@ public static class RevalidacionesEndpoints
             throw ReglaDeNegocioException.Conflicto("no-es-revalidacion", $"El expediente {expediente.Folio} no es una revalidación abierta.");
         var requisito = expediente.Requisitos.FirstOrDefault(r => r.Id == item.RequisitoId)
                         ?? throw ReglaDeNegocioException.NoEncontrado("requisito-no-encontrado", "Ese requisito no está en el expediente.");
+        // Un grupo acotado por sector solo aprueba en lote las secciones de los sectores que puede editar.
+        contexto.ExigirEditar(Permisos.ExpedientesRevisar, requisito.Seccion);
         if (requisito.VersionActual is not { } actual || actual.Numero != item.SobreVersion)
             throw ReglaDeNegocioException.Conflicto("version-superada", $"{requisito.Nombre} ya no está en la versión {item.SobreVersion}.");
 

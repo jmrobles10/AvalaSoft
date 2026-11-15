@@ -51,6 +51,8 @@ public static class FichaTerceroEndpoints
             await using var boveda = sesiones.ConsultaBoveda();
             secciones = await Ficha.FichaMaestraEndpoints.VigentesAsync(boveda, id, ct);
             secciones = await ConAceptacionesAsync(empresa, propios, secciones, ct);
+            // Un grupo de acceso acotado por sector solo ve las secciones de sus sectores.
+            secciones = [.. secciones.Where(s => contexto.PuedeVer(Permisos.TercerosLeer, s.Seccion))];
         }
 
         var terceroDto = sinAccesoALaBoveda && tercero.CreadoPorTenant != contexto.TenantId ? tercero.ADto() with { Contactos = [] } : tercero.ADto();

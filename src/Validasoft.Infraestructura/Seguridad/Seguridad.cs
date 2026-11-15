@@ -34,6 +34,11 @@ public sealed class ContextoSolicitud : IContextoSolicitud
 
     public IReadOnlySet<string> Scopes { get; set; } = new HashSet<string>();
 
+    /// <summary>Acotaciones por sector de la ficha de los permisos de la credencial (de los grupos de acceso de la persona); vacío = sin acotar.</summary>
+    public IReadOnlyList<SectorRestringido> SectoresRestringidos { get; set; } = [];
+
+    public AlcanceDeSectores Sectores(string scope, NivelDeSector nivel) => Permisos.AlcanceEn(SectoresRestringidos, scope, nivel, EmpresaId);
+
     public IReadOnlySet<string> Empresas { get; set; } = new HashSet<string>();
 
     public bool EsSandbox { get; set; }
@@ -74,6 +79,8 @@ public sealed class ContextoDesdeHttp(Microsoft.AspNetCore.Http.IHttpContextAcce
 
     public IReadOnlySet<string> Scopes => Actual.Scopes;
 
+    public AlcanceDeSectores Sectores(string scope, NivelDeSector nivel) => Actual.Sectores(scope, nivel);
+
     public IReadOnlySet<string> Empresas => Actual.Empresas;
 
     public bool EsSandbox => Actual.EsSandbox;
@@ -88,6 +95,9 @@ public static class Reclamos
 
     /// <summary>Scope que solo vale con esa empresa activa: <c>{scope}|{empresaId}</c> (roles por empresa, ADR-0011).</summary>
     public const string ScopeEmpresa = "validasoft:scope-empresa";
+
+    /// <summary>Acotación por sector de la ficha de un permiso (grupos de acceso): <c>permiso|empresa|ver|editar</c>, ver <see cref="SectorRestringido"/>. Sin este reclamo, el permiso vale para todos los sectores.</summary>
+    public const string Sectores = "validasoft:sectores";
 
     /// <summary>Código del sistema integrado de la credencial (SRM, MARCO…).</summary>
     public const string Sistema = "validasoft:sistema";
@@ -108,6 +118,18 @@ public static class Reclamos
 
     /// <summary>Cómo se autenticó la sesión directa: <c>Codigo</c>, <c>Passkey</c> o <c>CodigoYPasskey</c>.</summary>
     public const string Metodo = Aplicacion.Identidad.ReclamosDeIngreso.Metodo;
+}
+
+/// <summary>Los reclamos del permiso efectivo de una persona: scopes del tenant, scopes por empresa, empresas y acotaciones por sector (solo las que acotan).</summary>
+public static class ReclamosDePermisos
+{
+    public static IEnumerable<Claim> De(PermisosEfectivos permisos) =>
+    [
+        .. permisos.DeTenant.Select(s => new Claim(Reclamos.Scope, s)),
+        .. permisos.PorEmpresa.SelectMany(p => p.Value.Select(s => new Claim(Reclamos.ScopeEmpresa, $"{s}|{p.Key}"))),
+        .. permisos.Empresas.Select(e => new Claim(Reclamos.Empresa, e)),
+        .. permisos.SectoresRestringidos.Select(r => new Claim(Reclamos.Sectores, r.Codificar()))
+    ];
 }
 
 /// <summary>

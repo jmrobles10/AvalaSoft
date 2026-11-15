@@ -77,6 +77,13 @@ public sealed record RequisitoDelFlujo(
 /// </summary>
 public sealed record EvaluacionRequeridaDelFlujo(Guid CuestionarioId, EfectoDeLaEvaluacion Efecto);
 
+/// <summary>
+/// El área responsable de un sector de la ficha (una sección, <c>FICHA_*</c>) cuando el tercero lo cambia <b>después de aprobado</b>: la actualización envía la sección cambiada solo
+/// a esa área y no a todas las que revisan el flujo (el «responsable por sector» del SRM). El área debe participar en el flujo. Un sector sin responsable se enruta como siempre:
+/// por las áreas de su requisito o, si no las tiene, por todas. No cambia la revisión inicial.
+/// </summary>
+public sealed record ResponsableDeSector(string Sector, Guid AreaId);
+
 /// <summary>Contenido versionado de un flujo (lo que se congela al publicar). Sin requisitos, cada área decide sobre el expediente (FL-1).</summary>
 public sealed record DefinicionDeFlujo(
     IReadOnlyList<EtapaDeFlujo> Etapas,
@@ -89,7 +96,8 @@ public sealed record DefinicionDeFlujo(
     VigenciaDelVinculo? VigenciaVinculo = null,
     int? RecordatorioObservacionesDias = null,
     SeleccionDeFlujo? Seleccion = null,
-    IReadOnlyList<EvaluacionRequeridaDelFlujo>? Evaluaciones = null)
+    IReadOnlyList<EvaluacionRequeridaDelFlujo>? Evaluaciones = null,
+    IReadOnlyList<ResponsableDeSector>? ResponsablesDeSector = null)
 {
     public const int MaximoAprobadores = 10;
 
@@ -183,7 +191,8 @@ public sealed record DefinicionDeFlujo(
             RecordatorioObservacionesDias = ValidarRecordatorio(RecordatorioObservacionesDias),
             // La condición de selección se valida con los atributos del tipo de vínculo del flujo, como las de sus requisitos (FR-1).
             Seleccion = SeleccionDeFlujo.Validar(Seleccion, tipoVinculo),
-            Evaluaciones = ValidarEvaluaciones(empresaId, cuestionarios)
+            Evaluaciones = ValidarEvaluaciones(empresaId, cuestionarios),
+            ResponsablesDeSector = ValidarResponsablesDeSector(etapas)
         };
     }
 
@@ -212,6 +221,32 @@ public sealed record DefinicionDeFlujo(
         }
 
         return [.. Evaluaciones];
+    }
+
+    /// <summary>
+    /// Responsables por sector del flujo: un área del flujo por sector de la ficha, sin repetir sector. 422 <c>sector-invalido</c> (no es una sección de la ficha),
+    /// <c>sector-duplicado</c> y <c>responsable-area-invalida</c> (el área no participa en el flujo). Se guardan con el código canónico de la sección.
+    /// </summary>
+    private IReadOnlyList<ResponsableDeSector> ValidarResponsablesDeSector(IReadOnlyList<EtapaDeFlujo> etapas)
+    {
+        if (ResponsablesDeSector is null || ResponsablesDeSector.Count == 0)
+            return [];
+
+        var areasDelFlujo = etapas.SelectMany(e => e.Areas).Select(a => a.AreaId).ToHashSet();
+        var resultado = new List<ResponsableDeSector>();
+        foreach (var responsable in ResponsablesDeSector)
+        {
+            var sector = Ficha.CatalogoDeSecciones.Buscar(responsable.Sector)
+                         ?? throw ReglaDeNegocioException.Validacion("sector-invalido",
+                             $"El sector «{responsable.Sector}» no existe. Sectores: {string.Join(", ", Ficha.CatalogoDeSecciones.Todas.Select(s => s.Codigo))}.");
+            if (resultado.Any(r => r.Sector == sector.Codigo))
+                throw ReglaDeNegocioException.Validacion("sector-duplicado", $"El sector {sector.Codigo} tiene más de un responsable.");
+            if (!areasDelFlujo.Contains(responsable.AreaId))
+                throw ReglaDeNegocioException.Validacion("responsable-area-invalida", $"El área responsable de {sector.Nombre} no participa en el flujo.");
+            resultado.Add(new ResponsableDeSector(sector.Codigo, responsable.AreaId));
+        }
+
+        return resultado;
     }
 
     /// <summary>Recordatorio automático de observaciones del flujo (OP-19): nulo = el de la empresa; 0 = apagado; 1 a 60 = cada tantos días (422 <c>dias-invalidos</c>).</summary>
@@ -473,6 +508,9 @@ public sealed class FlujoVersion
     /// <summary>Cuestionarios de evaluación que pide esta versión al abrir el expediente inicial (CE-7). Vacío en las versiones guardadas antes.</summary>
     public List<EvaluacionRequeridaDelFlujo> Evaluaciones { get; set; } = [];
 
+    /// <summary>Responsable por sector de esta versión: a qué área va cada sección que el tercero cambia después de aprobada (vacío = como siempre). Vacío en las versiones guardadas antes.</summary>
+    public List<ResponsableDeSector> ResponsablesDeSector { get; set; } = [];
+
     public DateTimeOffset CreadaEn { get; set; }
 
     public DateTimeOffset? PublicadaEn { get; set; }
@@ -481,7 +519,7 @@ public sealed class FlujoVersion
 
     public DefinicionDeFlujo Definicion() =>
         new(Etapas, PoliticaDevolucion, SeparacionDeFunciones, Requisitos, Verificaciones, PlazoEfectivo(), ReintentoEfectivo(), VigenciaEfectiva(), RecordatorioObservacionesDias,
-            Seleccion, Evaluaciones);
+            Seleccion, Evaluaciones, ResponsablesDeSector);
 }
 
 /// <summary>
@@ -572,6 +610,7 @@ public sealed class Flujo
             borrador.RecordatorioObservacionesDias = validada.RecordatorioObservacionesDias;
             borrador.Seleccion = validada.Seleccion;
             borrador.Evaluaciones = [.. validada.Evaluaciones ?? []];
+            borrador.ResponsablesDeSector = [.. validada.ResponsablesDeSector ?? []];
         }
 
         ActualizadoEn = ahora;
@@ -604,6 +643,7 @@ public sealed class Flujo
         borrador.RecordatorioObservacionesDias = validada.RecordatorioObservacionesDias;
         borrador.Seleccion = validada.Seleccion;
         borrador.Evaluaciones = [.. validada.Evaluaciones ?? []];
+        borrador.ResponsablesDeSector = [.. validada.ResponsablesDeSector ?? []];
         borrador.Estado = EstadoFlujoVersion.Publicada;
         borrador.PublicadaEn = ahora;
         ActualizadoEn = ahora;
@@ -626,6 +666,7 @@ public sealed class Flujo
         RecordatorioObservacionesDias = definicion.RecordatorioObservacionesDias,
         Seleccion = definicion.Seleccion,
         Evaluaciones = [.. definicion.Evaluaciones ?? []],
+        ResponsablesDeSector = [.. definicion.ResponsablesDeSector ?? []],
         CreadaEn = ahora
     };
 
