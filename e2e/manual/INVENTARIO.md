@@ -306,12 +306,12 @@ Las funciones que llegaron a main después de los lotes 1 a 4. Lo que está ✅ 
 | `revision/evaluacion-bajo-el-umbral` ☐ | Revisor/área | Evaluación de evaluador interno con puntaje bajo el umbral (CE-5, CE-6) | Calificar, puntaje bajo el umbral que frena el cierre, recalificar, informe de evaluaciones (CE-12) |
 | `tercero/personas-relacionadas` ✅ | Tercero | Representante legal y socio sincronizados desde la ficha (PR-2) | Personas vigentes y propuestas, cédula de una persona relacionada, propuesta de la Cámara que confirma o descarta (PR-4, PR-9) |
 | `revision/documento-de-persona-relacionada` ☐ | Revisor/área | Persona relacionada con cédula subida (PR-8) | Lo que ve la empresa del documento de una persona relacionada y de dónde sale |
-| `plataforma/fuentes-oficiales` ☐ | Plataforma | Consola de Plataforma con credenciales simuladas (FO-5) | Configurar RUES y DIAN por proveedor, confirmar con passkey, no se ven las credenciales |
-| `configuracion/fuentes-oficiales-de-la-empresa` ☐ | Administrador de empresa | Flujo que pide RUES y DIAN (FO-1) | Pedir las verificaciones por tipo de vínculo, bloqueante o solo informar, vigencia, monitoreo |
-| `revision/cotejo-con-fuentes-oficiales` ☐ | Revisor/área | Expediente con diferencia entre la ficha y RUES (FO-4, FO-9) | Resultado por fuente, cotejo campo por campo, resolver una diferencia, constancia con la respuesta cruda |
-| `acceso/cola-de-contactos-verificados` ☐ | Plataforma | Solicitudes de acceso aislado pendientes (AV, solo si cabe) | Cola de solicitudes de acceso en la consola de Plataforma |
+| `plataforma/fuentes-oficiales` ☐ | Plataforma | Consola de Plataforma con credenciales simuladas (FO-5) | Configurar RUES y DIAN por proveedor, guardar la cuenta, así la ve una empresa. **Borrador sin verificar:** la consola y la app embebida no pintan en el entorno de prueba (ver nota) |
+| `configuracion/fuentes-oficiales-de-la-empresa` ☐ | Administrador de empresa | Flujo que pide RUES y DIAN (FO-1) | Pedir las verificaciones por tipo de vínculo, bloqueante o solo informar, vigencia, monitoreo. **Borrador sin verificar:** la app embebida no pinta en el entorno de prueba (ver nota) |
+| `revision/cotejo-con-fuentes-oficiales` ☐ | Revisor/área | Expediente con diferencia entre la ficha y RUES (FO-4, FO-9) | Resultado por fuente, cotejo campo por campo, resolver una diferencia, constancia con la respuesta cruda. **Borrador sin verificar:** la app embebida no pinta en el entorno de prueba (ver nota) |
+| `acceso/cola-de-contactos-verificados` ☐ | Plataforma | Solicitudes de acceso aislado pendientes (AV, solo si cabe) | Cola de solicitudes de acceso en la consola de Plataforma. **Borrador sin verificar:** la consola no pinta en el entorno de prueba (ver nota) |
 
-**Pendiente del lote 5**: fuentes oficiales RUES/DIAN (FO) y contactos verificados (AV) sin escribir; la propuesta de personas desde la Cámara necesita IA activa y no está en el recorrido de personas relacionadas.
+**Pendiente del lote 5**: los cuatro recorridos de fuentes oficiales (FO) y contactos verificados (AV) están escritos pero **sin validar**: en el entorno de la worktree de esta sesión, la consola de Plataforma y la app embebida no pintan (el recorrido de control `plataforma/listas-restrictivas-de-la-plataforma` falla igual, en el mismo paso). Hay que correrlos en un entorno donde la app embebida arranque, antes de marcarlos ✅. La propuesta de personas desde la Cámara necesita IA activa y no está en el recorrido de personas relacionadas.
 
 ### Cómo reportar
 
