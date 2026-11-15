@@ -2,7 +2,7 @@ import { Box, Checkbox, FormControlLabel, FormGroup, FormHelperText, FormLabel, 
 import type { TipoDocumentoCanonicoDto } from '@validasoft/api-client';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AMBITOS, FORMATOS, REGLAS_FRESCURA, techoDelCanonico, type BorradorTipo, type FormatoCorto, type ReglaFrescura } from './modelo';
+import { AMBITOS, etiquetaDelCanonico, FORMATOS, REGLAS_FRESCURA, techoDelCanonico, type BorradorTipo, type FormatoCorto, type ReglaFrescura } from './modelo';
 
 export interface PropsSeccion {
   borrador: BorradorTipo;
@@ -49,7 +49,7 @@ export function SeccionIdentidad({ borrador, cambiar, error, creando, canonicos 
           <MenuItem value="">{t('tiposDocumento.campos.sinCanonico')}</MenuItem>
           {canonicos.filter((c) => c.cargaSoportada).map((c) => (
             <MenuItem key={c.codigo} value={c.codigo}>
-              {c.nombre}
+              {etiquetaDelCanonico(c)}
             </MenuItem>
           ))}
         </TextField>

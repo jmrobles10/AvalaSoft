@@ -23365,6 +23365,69 @@
             "items": {
               "$ref": "#/components/schemas/IcaErpDto"
             }
+          },
+          "generico": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ContenidoTributarioGenericoDto"
+              }
+            ]
+          }
+        }
+      },
+      "ContenidoTributarioGenericoDto": {
+        "required": [
+          "regimen",
+          "contribuyenteImpuestoVentas",
+          "agenteDeRetencion",
+          "exentoDeRetenciones",
+          "certificadoExencion",
+          "emisorComprobantesElectronicos"
+        ],
+        "type": "object",
+        "properties": {
+          "regimen": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contribuyenteImpuestoVentas": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "agenteDeRetencion": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "exentoDeRetenciones": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "certificadoExencion": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ResolucionDto"
+              }
+            ]
+          },
+          "emisorComprobantesElectronicos": {
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
@@ -27451,6 +27514,16 @@
             "items": {
               "$ref": "#/components/schemas/ObservacionDeSeccionDto"
             }
+          },
+          "perfil": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PerfilDeFichaDto"
+              }
+            ]
           }
         }
       },
@@ -34662,6 +34735,58 @@
           }
         }
       },
+      "PerfilDeFichaDto": {
+        "required": [
+          "pais",
+          "tipoIdentificacion",
+          "dvDeclarado",
+          "modeloTributario",
+          "autoridadTributaria",
+          "impuestoVentas",
+          "regimenes",
+          "tiposDePersona",
+          "tiposConDvDeclarado"
+        ],
+        "type": "object",
+        "properties": {
+          "pais": {
+            "type": "string"
+          },
+          "tipoIdentificacion": {
+            "type": "string"
+          },
+          "dvDeclarado": {
+            "type": "boolean"
+          },
+          "modeloTributario": {
+            "type": "string"
+          },
+          "autoridadTributaria": {
+            "type": "string"
+          },
+          "impuestoVentas": {
+            "type": "string"
+          },
+          "regimenes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegimenTributarioDto"
+            }
+          },
+          "tiposDePersona": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tiposConDvDeclarado": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "PersonaConsultadaDto": {
         "required": [
           "rol",
@@ -36610,6 +36735,21 @@
             "type": "string"
           },
           "id": {
+            "type": "string"
+          }
+        }
+      },
+      "RegimenTributarioDto": {
+        "required": [
+          "codigo",
+          "nombre"
+        ],
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
             "type": "string"
           }
         }
@@ -42077,6 +42217,21 @@
               "string"
             ],
             "format": "int32"
+          },
+          "paises": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "equivalenteA": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

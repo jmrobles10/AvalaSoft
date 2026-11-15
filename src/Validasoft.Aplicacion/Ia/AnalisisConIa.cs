@@ -93,6 +93,9 @@ public static class AnalizarVersionConIaHandler
             documento = await consulta.LoadAsync<Documento>(mensaje.DocumentoId, ct);
         if (documento is null || !AnalisisConIa.Analizable(documento, mensaje.Numero))
             return;
+        // RG-6: el RUT y la Cámara de comercio son documentos de Colombia: de un tercero con identificación de otro país no se leen (revisión manual, sin consumo).
+        if (CatalogoCanonico.Buscar(documento.TipoCanonico) is { Paises: not null } deUnPais && !await AplicaAlTerceroAsync(sesiones, documento.TerceroId, deUnPais, ct))
+            return;
 
         var version = documento.VersionRequerida(mensaje.Numero);
         var destinatarias = Destinatarias(documento, version);
@@ -114,6 +117,16 @@ public static class AnalizarVersionConIaHandler
         // Idempotente: la pagadora (y quien ya la consumió) responde YaConsumida sin volver a contar.
         foreach (var destinataria in destinatarias)
             await cupo.ConsumirAsync(destinataria, documento.Id, version.Numero, pagaLaLlamada: false, mensajes, ct);
+    }
+
+    /// <summary>
+    /// ¿El tipo de un solo país aplica al tercero del documento (por el país de su identificación)? Si el tercero no se encuentra no se frena el
+    /// análisis: la inconsistencia no es de este flujo.
+    /// </summary>
+    private static async Task<bool> AplicaAlTerceroAsync(ISesiones sesiones, Guid terceroId, TipoDocumentoCanonico tipo, CancellationToken ct)
+    {
+        await using var global = sesiones.ConsultaGlobal();
+        return await global.LoadAsync<Dominio.Terceros.Tercero>(terceroId, ct) is not { } tercero || tipo.AplicaAlPais(tercero.Identificacion.Pais);
     }
 
     /// <summary>Empresas con las que está compartida la versión; primero la del vínculo de contexto y luego por orden de compartición.</summary>

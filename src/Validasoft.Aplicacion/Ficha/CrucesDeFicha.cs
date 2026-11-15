@@ -61,7 +61,8 @@ public static class CrucesDeFicha
         Tercero? tercero;
         await using (var global = sesiones.ConsultaGlobal())
             tercero = await global.LoadAsync<Tercero>(terceroId, ct);
-        if (tercero is null)
+        // RG-6: el cruce con los soportes está hecho para documentos colombianos; fuera de Colombia la revisión es manual.
+        if (tercero is null || !AlcanceDeLaLectura.Aplica(tercero.Identificacion.Pais))
             return 0;
 
         List<SeccionDeFicha> secciones;

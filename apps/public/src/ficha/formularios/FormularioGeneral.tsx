@@ -1,4 +1,5 @@
 import { Stack, TextField } from '@mui/material';
+import type { PerfilDeFichaDto } from '@validasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { CampoCifra, CampoFechaFicha, CampoSiNo, CampoTexto, Rejilla } from '../campos';
 import { PAISES } from '../paises';
@@ -13,13 +14,14 @@ const esTipoPersona = (valor: string): valor is (typeof TIPOS_PERSONA)[number] =
 
 /**
  * Información general (`FICHA_GENERAL`). Tipo de persona, identificación y DV los fija la API con el registro del
- * tercero: aquí solo se muestran. Persona jurídica (o consorcio) diligencia la razón social; natural, nombres y apellidos.
+ * tercero: aquí solo se muestran (salvo el DV que declara el propio tercero, como el del RUC de Panamá: RG-2). Persona jurídica (o consorcio) diligencia la razón social; natural, nombres y apellidos.
  */
-export function FormularioGeneral({ datos, onCambiar, mensaje, hayEnRuta, deshabilitado, tipoPersona }: PropsFormulario<DatosGenerales> & { tipoPersona: string }) {
+export function FormularioGeneral({ datos, onCambiar, mensaje, hayEnRuta, deshabilitado, tipoPersona, perfil }: PropsFormulario<DatosGenerales> & { tipoPersona: string; perfil?: PerfilDeFichaDto | null }) {
   const { t } = useTranslation();
   const natural = tipoPersona === 'Natural';
+  const dvDeclarado = perfil?.dvDeclarado === true;
   const identificacion = datos.numero
-    ? `${datos.tipo_identificacion ?? ''} ${datos.numero}${datos.dv ? `-${datos.dv}` : ''}`.trim()
+    ? `${datos.tipo_identificacion ?? ''} ${datos.numero}${datos.dv && !dvDeclarado ? `-${datos.dv}` : ''}`.trim()
     : t('ficha.general.identificacionPendiente');
   const secundarias = datos.ciiu_secundarias ?? [];
   const cambiarSecundarias = (lista: string[]) => onCambiar({ ciiu_secundarias: lista.length > 0 ? lista : null });
@@ -35,6 +37,11 @@ export function FormularioGeneral({ datos, onCambiar, mensaje, hayEnRuta, deshab
           slotProps={{ input: { readOnly: true } }}
         />
       </Rejilla>
+      {dvDeclarado && (
+        <Rejilla>
+          <CampoTexto etiqueta={t('ficha.general.dv')} valor={datos.dv} onCambiar={(v) => onCambiar({ dv: v })} mensaje={mensaje('dv')} ayuda={t('ficha.general.dvAyuda')} inputMode="numeric" maxLength={2} deshabilitado={deshabilitado} />
+        </Rejilla>
+      )}
       {natural ? (
         <>
           <Rejilla>

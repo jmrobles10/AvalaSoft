@@ -818,10 +818,16 @@ No son eventos de agregados event-sourced: son **registros de auditoría** (`Reg
 
 Ámbito y `permiteRatificacion` pueden **restringirse** por tenant/empresa, nunca ampliarse. `dePersonaRelacionada` indica que el documento pertenece a la bóveda de la persona natural relacionada (B-3). Frescura = default de la jerarquía tenant → empresa → regla.
 
+**País (RG-5).** `paises` (ISO 3166-1 alfa-2; nulo = de cualquier país) dice a qué terceros aplica un tipo y `equivalenteA` el canónico colombiano del que es equivalente. `RUT` y `CAMARA_COMERCIO` son de `CO`; sus equivalentes son de Panamá y de República Dominicana y se exigen con la condición `tercero.pais` del flujo. La lectura con IA, el cruce con la ficha y las fuentes oficiales solo aplican a Colombia (RG-6): los equivalentes se revisan a mano.
+
 | Código | Clase | Ámbito | Sensibilidad | Venc. intrínseco | Frescura por defecto | Ratificable | De persona relacionada | Campos clave | Campos críticos |
 |---|---|---|---|---|---|---|---|---|---|
 | `RUT` | Archivo | Global | Identidad | No | `MaxDiasDesdeExpedicion(365)` (fecha de generación del PDF) | Sí | — | NIT, razón social, actividad CIIU principal, responsabilidades, dirección, representante legal | NIT, razón social, representante legal |
 | `CAMARA_COMERCIO` | Archivo | Global | Identidad | No | `MaxDiasDesdeExpedicion(30)` | No | — | NIT, razón social, matrícula, representante legal, suplentes, objeto, capital, estado de matrícula, fecha de expedición | Representante legal, razón social, estado de matrícula |
+| `CERTIFICADO_RUC` (PA ≈ `RUT`) | Archivo | Global | Identidad | No | `MaxDiasDesdeExpedicion(365)` | Sí | — | RUC, DV, razón social, estado, actividad económica, dirección | RUC, razón social |
+| `REGISTRO_PUBLICO` (PA ≈ `CAMARA_COMERCIO`) | Archivo | Global | Identidad | No | `MaxDiasDesdeExpedicion(30)` | No | — | Razón social, folio, estado, representantes, fecha de expedición | Razón social, estado, representantes |
+| `CONSTANCIA_RNC` (DO ≈ `RUT`) | Archivo | Global | Identidad | No | `MaxDiasDesdeExpedicion(365)` | Sí | — | RNC, razón social, estado, actividad económica, régimen | RNC, razón social |
+| `REGISTRO_MERCANTIL` (DO ≈ `CAMARA_COMERCIO`) | Archivo | Global | Identidad | No | `MaxDiasDesdeExpedicion(30)` | No | — | Razón social, matrícula, estado, representantes, fecha de expedición | Razón social, estado, representantes |
 | `CEDULA` | Archivo | Global | Identidad | No | `Ninguna` | Sí | Sí (`RepresentanteLegal`, `Suplente`, `Socio`, `BeneficiarioFinal`, `MiembroDe`; o el propio tercero persona natural) | Número, nombres, fecha de expedición | Número, nombres |
 | `PASAPORTE` | Archivo | Global | Identidad | Sí (fecha de vencimiento) | — | No | Sí | Número, nombres, país, vencimiento | Número |
 | `CERTIFICADO_ANTECEDENTES` | Archivo | Global | Personal | No | `MaxDiasDesdeExpedicion(30)` | No | Sí (persona natural) | Número, nombre, resultado, fecha, entidad | Resultado |

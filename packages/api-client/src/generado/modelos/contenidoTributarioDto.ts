@@ -7,6 +7,7 @@
 import type { CalidadesTributariasDto } from './calidadesTributariasDto';
 import type { CalidadSinDerivarDto } from './calidadSinDerivarDto';
 import type { CodigoNombreDto } from './codigoNombreDto';
+import type { ContenidoTributarioGenericoDto } from './contenidoTributarioGenericoDto';
 import type { IcaErpDto } from './icaErpDto';
 import type { ResolucionDto } from './resolucionDto';
 
@@ -21,4 +22,5 @@ export interface ContenidoTributarioDto {
   /** @nullable */
   autorretenedorIca: boolean | null;
   ica: IcaErpDto[];
+  generico?: null | ContenidoTributarioGenericoDto;
 }

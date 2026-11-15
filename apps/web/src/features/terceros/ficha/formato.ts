@@ -28,6 +28,7 @@ function nombresDePaises(): (codigo: string) => string {
 const nombrePais = nombresDePaises();
 
 const ROLES = ['RepresentanteLegal', 'Suplente', 'Apoderado', 'Socio', 'JuntaDirectiva', 'RevisorFiscal', 'Contador'] as const;
+const REGIMENES = ['GENERAL', 'ORDINARIO', 'RST', 'SIMPLIFICADO', 'ZONA_LIBRE', 'ZONA_FRANCA', 'ZONA_FRANCA_O_ESPECIAL', 'ESPECIAL', 'SIN_FINES_DE_LUCRO', 'OTRO'] as const;
 const OPERACIONES = ['Importaciones', 'Exportaciones', 'Inversiones', 'Prestamos', 'Giros', 'PagoDeServicios', 'Otras'] as const;
 const TIPOS_PERSONA = ['Natural', 'Juridica', 'Consorcio'] as const;
 
@@ -52,6 +53,7 @@ export function formatearValor(clave: string, valor: unknown, t: TFunction): str
     if (clave.startsWith('fecha')) return formatearFechaDeclarada(valor);
     if (PAISES.has(clave)) return nombrePais(valor);
     if (clave === 'rol' && esDe(ROLES, valor)) return t(`fichaMaestra.roles.${valor}`);
+    if (clave === 'regimen' && esDe(REGIMENES, valor)) return t(`fichaMaestra.regimenes.${valor}`);
     if (clave === 'tipo_persona' && esDe(TIPOS_PERSONA, valor)) return t(`terceros.ficha.tiposPersona.${valor}`);
     return valor;
   }

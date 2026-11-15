@@ -47,6 +47,21 @@ public static class MapeosFicha
             : new SeccionFichaDto(definicion.Codigo, definicion.Nombre, periodo, null, null, [], null, null, null, null, seccion?.Versiones.Count ?? 0,
                 definicion.VersionEsquema);
 
+    /// <summary>
+    /// El perfil de la ficha según el país de la identificación del tercero (RG-7): si el DV lo declara el tercero y qué modelo
+    /// tributario y qué regímenes le tocan.
+    /// </summary>
+    public static PerfilDeFichaDto PerfilDeFicha(this Dominio.Identificaciones.Identificacion identificacion)
+    {
+        var perfil = PerfilesTributarios.De(identificacion.Pais);
+        var dvDeclarado = Dominio.Identificaciones.CatalogoIdentificacion.Buscar(identificacion.Pais, identificacion.Tipo) is { DvDeclarado: true };
+        var tiposDePersona = Dominio.Identificaciones.CatalogoIdentificacion.TiposParaPersona(identificacion.Pais);
+        var conDvDeclarado = tiposDePersona.Where(t => Dominio.Identificaciones.CatalogoIdentificacion.PaisParaTipo(t, identificacion.Pais) is { } pais &&
+            Dominio.Identificaciones.CatalogoIdentificacion.Buscar(pais, t) is { DvDeclarado: true });
+        return new PerfilDeFichaDto(identificacion.Pais, identificacion.Tipo, dvDeclarado, perfil.Modelo.ToString(), perfil.Autoridad, perfil.ImpuestoVentas,
+            [.. perfil.Regimenes.Select(r => new RegimenTributarioDto(r.Codigo, r.Nombre))], tiposDePersona, [.. conDvDeclarado]);
+    }
+
     /// <summary>Estado para el wizard: una fila por sección (en la financiera, una por periodo diligenciado).</summary>
     public static EstadoFichaDto ADto(this EstadoDeFicha estado, TipoPersona tipoPersona)
     {
@@ -297,7 +312,11 @@ public static class FichaMaestraEndpoints
         var tercero = await GuardadoDeSecciones.TerceroAsync(sesiones, terceroId, ct);
         await using var boveda = sesiones.ConsultaBoveda();
         var estado = await boveda.LoadAsync<EstadoDeFicha>(terceroId, ct) ?? EstadoDeFicha.Nuevo(terceroId);
-        var dto = estado.ADto(tercero.TipoPersona) with { Observaciones = await ObservacionesDeEmpresasAsync(sesiones, SesionDeTercero.De(http.User, GrupoDeAcceso.Ficha), ct) };
+        var dto = estado.ADto(tercero.TipoPersona) with
+        {
+            Observaciones = await ObservacionesDeEmpresasAsync(sesiones, SesionDeTercero.De(http.User, GrupoDeAcceso.Ficha), ct),
+            Perfil = tercero.Identificacion.PerfilDeFicha()
+        };
 
         // Una sección cuyo soporte el tercero retiró lo ve como advertencia en su fila (RT-4): se lee de la bóveda, no se recalcula.
         var secciones = await boveda.Query<SeccionDeFicha>().Where(s => s.TerceroId == terceroId).ToListAsync(ct);

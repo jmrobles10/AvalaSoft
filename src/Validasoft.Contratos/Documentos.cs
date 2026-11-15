@@ -13,13 +13,16 @@ public sealed record ReglaFrescuraDto(string Tipo, int? Dias = null, string? Reg
 /// Tipo canónico de la plataforma (Anexo A de docs/03). <see cref="CargaSoportada"/>: los de clase <c>Archivo</c> (un
 /// formulario canónico global aún no tiene esquema). <see cref="FormatosPermitidos"/> (MIME; vacío = todos),
 /// <see cref="TamanoMaximoMb"/> y <see cref="PaginasMaximas"/> (nulos = los globales) son el techo de los tipos del tenant (TD-1).
+/// <see cref="Paises"/> (ISO 3166-1 alfa-2; nulo = de cualquier país) y <see cref="EquivalenteA"/> (el canónico colombiano del que es equivalente: el
+/// certificado de RUC de Panamá lo es del <c>RUT</c>, el registro mercantil dominicano de <c>CAMARA_COMERCIO</c>) permiten exigir el documento
+/// que corresponde al país del tercero con la condición <c>tercero.pais</c> del flujo (RG-5).
 /// </summary>
 public sealed record TipoDocumentoCanonicoDto(
     string Codigo, int Version, string Nombre, string Ambito, string Clase, string AplicaA, bool TieneVencimientoIntrinseco,
     bool TieneFechaExpedicion, bool EsPeriodico, string? Periodicidad, bool PermiteRatificacion, bool DePersonaRelacionada,
     IReadOnlyList<string> CamposClave, IReadOnlyList<string> CamposCriticos, string Sensibilidad, ReglaFrescuraDto? ReglaFrescuraSugerida,
     int RetencionAniosSugerida, bool CargaSoportada, IReadOnlyList<string>? FormatosPermitidos = null, int? TamanoMaximoMb = null,
-    int? PaginasMaximas = null);
+    int? PaginasMaximas = null, IReadOnlyList<string>? Paises = null, string? EquivalenteA = null);
 
 /// <summary>
 /// Campo que llena el tercero (TD-4). <see cref="Clave"/> snake_case única; <see cref="Tipo"/>:
