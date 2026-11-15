@@ -1362,7 +1362,7 @@ Campos de la respuesta `200`:
 | `secciones[].cambioPosterior.revalidacion` | RevalidacionDeSeccionDto o null | no |  |
 | `secciones[].cambioPosterior.revalidacion.expedienteId` | uuid | sí |  |
 | `secciones[].cambioPosterior.revalidacion.folio` | texto | sí |  |
-| `secciones[].cambioPosterior.revalidacion.estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido |
+| `secciones[].cambioPosterior.revalidacion.estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido · NoAplica |
 | `secciones[].cambioPosterior.revalidacion.version` | entero o null | no |  |
 | `secciones[].cambioPosterior.revalidacion.plazoHasta` | fecha y hora | sí |  |
 
@@ -1585,6 +1585,13 @@ Campos de la respuesta `200`:
 | `secciones[].contenido.tributaria.ica[].municipio` | CiudadErpDto o null | no | mismos campos que `secciones[].contenido.general.ciudad` |
 | `secciones[].contenido.tributaria.ica[].ciiu` | CodigoNombreDto o null | no | mismos campos que `secciones[].contenido.general.ciiuPrincipal` |
 | `secciones[].contenido.tributaria.ica[].tarifaPorMil` | number \| string o null | no | patrón ^-?(?:0\|[1-9]\d*)(?:\.\d+)?$ |
+| `secciones[].contenido.tributaria.generico` | ContenidoTributarioGenericoDto o null | no |  |
+| `secciones[].contenido.tributaria.generico.regimen` | texto o null | no |  |
+| `secciones[].contenido.tributaria.generico.contribuyenteImpuestoVentas` | booleano o null | no |  |
+| `secciones[].contenido.tributaria.generico.agenteDeRetencion` | booleano o null | no |  |
+| `secciones[].contenido.tributaria.generico.exentoDeRetenciones` | booleano o null | no |  |
+| `secciones[].contenido.tributaria.generico.certificadoExencion` | ResolucionDto o null | no | mismos campos que `secciones[].contenido.tributaria.resolucionGranContribuyente` |
+| `secciones[].contenido.tributaria.generico.emisorComprobantesElectronicos` | booleano o null | no |  |
 | `secciones[].contenido.legal` | ContenidoLegalDto o null | no |  |
 | `secciones[].contenido.legal.representanteLegal` | RepresentanteLegalErpDto o null | no | mismos campos que `secciones[].contenido.general.representanteLegal` |
 | `secciones[].contenido.legal.personas` | lista de PersonaRelacionadaDto | sí |  |
@@ -1822,7 +1829,18 @@ Respuesta `200`:
               "ciiu": null,
               "tarifaPorMil": null
             }
-          ]
+          ],
+          "generico": {
+            "regimen": "texto",
+            "contribuyenteImpuestoVentas": true,
+            "agenteDeRetencion": true,
+            "exentoDeRetenciones": true,
+            "certificadoExencion": {
+              "numero": null,
+              "fecha": null
+            },
+            "emisorComprobantesElectronicos": true
+          }
         },
         "legal": {
           "representanteLegal": {

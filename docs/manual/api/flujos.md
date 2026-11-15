@@ -1,6 +1,6 @@
 # API · Flujos
 
-10 operaciones en 1 recurso.
+11 operaciones en 1 recurso.
 
 ## Flujos
 
@@ -99,6 +99,9 @@ Campos de la respuesta `200`:
 | `[].publicada.evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
 | `[].publicada.evaluaciones[].cuestionarioId` | uuid | sí |  |
 | `[].publicada.evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
+| `[].publicada.responsablesDeSector` | lista de ResponsableDeSectorDto o null | no |  |
+| `[].publicada.responsablesDeSector[].sector` | texto | sí |  |
+| `[].publicada.responsablesDeSector[].areaId` | uuid | sí |  |
 | `[].borrador` | FlujoVersionDto o null | no | mismos campos que `[].publicada` |
 | `[].creadoEn` | fecha y hora | sí |  |
 | `[].actualizadoEn` | fecha y hora | sí |  |
@@ -228,6 +231,12 @@ Respuesta `200`:
           "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
           "efecto": "Observar"
         }
+      ],
+      "responsablesDeSector": [
+        {
+          "sector": "texto",
+          "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        }
       ]
     },
     "borrador": {
@@ -332,6 +341,12 @@ Respuesta `200`:
           "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
           "efecto": "Observar"
         }
+      ],
+      "responsablesDeSector": [
+        {
+          "sector": "texto",
+          "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        }
       ]
     },
     "creadoEn": "2026-11-12T15:00:00Z",
@@ -410,6 +425,9 @@ Respuesta `200`:
 | `evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
 | `evaluaciones[].cuestionarioId` | uuid | sí |  |
 | `evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
+| `responsablesDeSector` | lista de ResponsableDeSectorDto o null | no |  |
+| `responsablesDeSector[].sector` | texto | sí |  |
+| `responsablesDeSector[].areaId` | uuid | sí |  |
 
 **Respuestas**
 
@@ -490,6 +508,9 @@ Campos de la respuesta `201`:
 | `publicada.evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
 | `publicada.evaluaciones[].cuestionarioId` | uuid | sí |  |
 | `publicada.evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
+| `publicada.responsablesDeSector` | lista de ResponsableDeSectorDto o null | no |  |
+| `publicada.responsablesDeSector[].sector` | texto | sí |  |
+| `publicada.responsablesDeSector[].areaId` | uuid | sí |  |
 | `borrador` | FlujoVersionDto o null | no | mismos campos que `publicada` |
 | `creadoEn` | fecha y hora | sí |  |
 | `actualizadoEn` | fecha y hora | sí |  |
@@ -507,7 +528,7 @@ curl -X POST "https://{host}/api/v1/flujos" \
   -H "X-Empresa: $EMPRESA_ID" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
-  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","tipoVinculo":"texto","etapas":[{"orden":1,"areas":[{"areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","aprobadoresRequeridos":1,"puedeRechazarExpediente":false,"automatica":false,"slaHoras":1}]}],"politicaDevolucion":"texto","separacionDeFunciones":false,"requisitos":[{"id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumento":"texto","obligatorio":true,"areasQueRevisan":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"aprobadoresRequeridos":1,"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"seccion":"texto","periodos":1,"exigeSoporte":false,"usarComoSoporte":true,"vigenciaDias":1,"diasRevalidacion":1,"dePersonaRelacionada":"texto","todasLasRelaciones":false}],"verificaciones":[{"tipo":"ListasRestrictivas","bloqueante":true,"vigenciaDias":1,"frecuenciaReconsultaMeses":1}],"plazoCargue":{"dias":1,"recordatorios":[1]},"reintento":{"permitido":true,"diasEspera":0},"vigenciaVinculo":{"dias":1,"diasAviso":[1],"diasGracia":0},"recordatorioObservaciones":{"modo":"Empresa","cadaDias":1},"seleccion":{"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"prioridad":1},"evaluaciones":[{"cuestionarioId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","efecto":"Observar"}]}'
+  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","tipoVinculo":"texto","etapas":[{"orden":1,"areas":[{"areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","aprobadoresRequeridos":1,"puedeRechazarExpediente":false,"automatica":false,"slaHoras":1}]}],"politicaDevolucion":"texto","separacionDeFunciones":false,"requisitos":[{"id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumento":"texto","obligatorio":true,"areasQueRevisan":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"aprobadoresRequeridos":1,"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"seccion":"texto","periodos":1,"exigeSoporte":false,"usarComoSoporte":true,"vigenciaDias":1,"diasRevalidacion":1,"dePersonaRelacionada":"texto","todasLasRelaciones":false}],"verificaciones":[{"tipo":"ListasRestrictivas","bloqueante":true,"vigenciaDias":1,"frecuenciaReconsultaMeses":1}],"plazoCargue":{"dias":1,"recordatorios":[1]},"reintento":{"permitido":true,"diasEspera":0},"vigenciaVinculo":{"dias":1,"diasAviso":[1],"diasGracia":0},"recordatorioObservaciones":{"modo":"Empresa","cadaDias":1},"seleccion":{"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"prioridad":1},"evaluaciones":[{"cuestionarioId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","efecto":"Observar"}],"responsablesDeSector":[{"sector":"texto","areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}]}'
 ```
 
 Respuesta `201`:
@@ -626,6 +647,12 @@ Respuesta `201`:
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
       }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
     ]
   },
   "borrador": {
@@ -729,6 +756,12 @@ Respuesta `201`:
       {
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
+      }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
       }
     ]
   },
@@ -884,6 +917,12 @@ Respuesta `200`:
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
       }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
     ]
   },
   "borrador": {
@@ -988,6 +1027,12 @@ Respuesta `200`:
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
       }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
     ]
   },
   "creadoEn": "2026-11-12T15:00:00Z",
@@ -1069,6 +1114,9 @@ Respuesta `200`:
 | `evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
 | `evaluaciones[].cuestionarioId` | uuid | sí |  |
 | `evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
+| `responsablesDeSector` | lista de ResponsableDeSectorDto o null | no |  |
+| `responsablesDeSector[].sector` | texto | sí |  |
+| `responsablesDeSector[].areaId` | uuid | sí |  |
 
 **Respuestas**
 
@@ -1086,7 +1134,7 @@ curl -X PUT "https://{host}/api/v1/flujos/3fa85f64-5717-4562-b3fc-2c963f66afa6" 
   -H "X-Api-Key: $API_KEY" \
   -H "X-Empresa: $EMPRESA_ID" \
   -H "Content-Type: application/json" \
-  -d '{"nombre":"Constructora Norte S.A.S.","etapas":[{"orden":1,"areas":[{"areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","aprobadoresRequeridos":1,"puedeRechazarExpediente":false,"automatica":false,"slaHoras":1}]}],"politicaDevolucion":"texto","separacionDeFunciones":true,"requisitos":[{"id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumento":"texto","obligatorio":true,"areasQueRevisan":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"aprobadoresRequeridos":1,"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"seccion":"texto","periodos":1,"exigeSoporte":false,"usarComoSoporte":true,"vigenciaDias":1,"diasRevalidacion":1,"dePersonaRelacionada":"texto","todasLasRelaciones":false}],"verificaciones":[{"tipo":"ListasRestrictivas","bloqueante":true,"vigenciaDias":1,"frecuenciaReconsultaMeses":1}],"plazoCargue":{"dias":1,"recordatorios":[1]},"reintento":{"permitido":true,"diasEspera":0},"vigenciaVinculo":{"dias":1,"diasAviso":[1],"diasGracia":0},"recordatorioObservaciones":{"modo":"Empresa","cadaDias":1},"seleccion":{"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"prioridad":1},"evaluaciones":[{"cuestionarioId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","efecto":"Observar"}]}'
+  -d '{"nombre":"Constructora Norte S.A.S.","etapas":[{"orden":1,"areas":[{"areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","aprobadoresRequeridos":1,"puedeRechazarExpediente":false,"automatica":false,"slaHoras":1}]}],"politicaDevolucion":"texto","separacionDeFunciones":true,"requisitos":[{"id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumentoTenantId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoDocumento":"texto","obligatorio":true,"areasQueRevisan":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"aprobadoresRequeridos":1,"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"seccion":"texto","periodos":1,"exigeSoporte":false,"usarComoSoporte":true,"vigenciaDias":1,"diasRevalidacion":1,"dePersonaRelacionada":"texto","todasLasRelaciones":false}],"verificaciones":[{"tipo":"ListasRestrictivas","bloqueante":true,"vigenciaDias":1,"frecuenciaReconsultaMeses":1}],"plazoCargue":{"dias":1,"recordatorios":[1]},"reintento":{"permitido":true,"diasEspera":0},"vigenciaVinculo":{"dias":1,"diasAviso":[1],"diasGracia":0},"recordatorioObservaciones":{"modo":"Empresa","cadaDias":1},"seleccion":{"condicion":{"tipo":"texto","nodos":[{}],"atributo":"texto","operador":"texto","valores":["texto"]},"prioridad":1},"evaluaciones":[{"cuestionarioId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","efecto":"Observar"}],"responsablesDeSector":[{"sector":"texto","areaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}]}'
 ```
 
 Respuesta `200`:
@@ -1205,6 +1253,12 @@ Respuesta `200`:
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
       }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
     ]
   },
   "borrador": {
@@ -1308,6 +1362,12 @@ Respuesta `200`:
       {
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
+      }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
       }
     ]
   },
@@ -1464,6 +1524,12 @@ Respuesta `200`:
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
       }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
     ]
   },
   "borrador": {
@@ -1568,6 +1634,12 @@ Respuesta `200`:
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
       }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
     ]
   },
   "creadoEn": "2026-11-12T15:00:00Z",
@@ -1660,6 +1732,9 @@ Campos de la respuesta `200`:
 | `[].evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
 | `[].evaluaciones[].cuestionarioId` | uuid | sí |  |
 | `[].evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
+| `[].responsablesDeSector` | lista de ResponsableDeSectorDto o null | no |  |
+| `[].responsablesDeSector[].sector` | texto | sí |  |
+| `[].responsablesDeSector[].areaId` | uuid | sí |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -1775,6 +1850,12 @@ Respuesta `200`:
         "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "efecto": "Observar"
       }
+    ],
+    "responsablesDeSector": [
+      {
+        "sector": "texto",
+        "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
     ]
   }
 ]
@@ -1865,6 +1946,9 @@ Campos de la respuesta `200`:
 | `evaluaciones` | lista de EvaluacionRequeridaDto o null | no |  |
 | `evaluaciones[].cuestionarioId` | uuid | sí |  |
 | `evaluaciones[].efecto` | EfectoDeLaEvaluacion (texto) | no | valores: Observar · Bloquear |
+| `responsablesDeSector` | lista de ResponsableDeSectorDto o null | no |  |
+| `responsablesDeSector[].sector` | texto | sí |  |
+| `responsablesDeSector[].areaId` | uuid | sí |  |
 
 **Errores de negocio que lanza**
 
@@ -1983,8 +2067,65 @@ Respuesta `200`:
       "cuestionarioId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "efecto": "Observar"
     }
+  ],
+  "responsablesDeSector": [
+    {
+      "sector": "texto",
+      "areaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
   ]
 }
+```
+
+</details>
+
+### `GET /api/v1/flujos/campos-de-ficha`
+
+**Listar campos de ficha.** Los campos de la ficha del tercero que puede mirar una condición (EF-1): su ruta (`ficha.{seccion}.{campo}`), tipo, operadores y el catálogo de plataforma de donde salen sus valores. Es lo que el editor ofrece para armar «se pide cuando el tercero declara…».
+
+**Permiso flujos:leer · API (`/api/v1`) · SDK: `listarCamposDeFicha`**
+
+**Respuestas**
+
+- `200` OK — lista de CampoDeFichaDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `[]` | lista de CampoDeFichaDto | sí |  |
+| `[].ruta` | texto | sí |  |
+| `[].seccion` | texto | sí |  |
+| `[].etiqueta` | texto | sí |  |
+| `[].tipo` | texto | sí |  |
+| `[].operadores` | lista de texto | sí |  |
+| `[].catalogo` | texto o null | no |  |
+| `[].jerarquica` | booleano | sí |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/api/v1/flujos/campos-de-ficha" \
+  -H "X-Api-Key: $API_KEY"
+```
+
+Respuesta `200`:
+
+```json
+[
+  {
+    "ruta": "texto",
+    "seccion": "texto",
+    "etiqueta": "texto",
+    "tipo": "texto",
+    "operadores": [
+      "texto"
+    ],
+    "catalogo": "texto",
+    "jerarquica": true
+  }
+]
 ```
 
 </details>
@@ -2103,6 +2244,7 @@ Respuesta `200`:
 | `tipoIdentificacion` | texto o null | no |  |
 | `esExtranjero` | booleano o null | no |  |
 | `atributos` | objeto libre o null | no |  |
+| `ficha` | objeto libre o null | no |  |
 
 **Respuestas**
 
@@ -2152,7 +2294,7 @@ curl -X POST "https://{host}/api/v1/flujos/seleccion/vista-previa" \
   -H "X-Empresa: $EMPRESA_ID" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
-  -d '{"tipoVinculo":"texto","terceroId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoPersona":"texto","pais":"CO","tipoIdentificacion":"900123456","esExtranjero":true,"atributos":{}}'
+  -d '{"tipoVinculo":"texto","terceroId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","tipoPersona":"texto","pais":"CO","tipoIdentificacion":"900123456","esExtranjero":true,"atributos":{},"ficha":{}}'
 ```
 
 Respuesta `200`:

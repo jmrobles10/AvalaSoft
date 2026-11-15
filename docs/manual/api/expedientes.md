@@ -676,7 +676,7 @@ Campos de la respuesta `200`:
 | `datos[].requisitos[].tipoDocumento.tienePlantilla` | booleano | no | por omisión false |
 | `datos[].requisitos[].tipoDocumento.textoAyuda` | texto o null | no |  |
 | `datos[].requisitos[].obligatorio` | booleano | sí |  |
-| `datos[].requisitos[].estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido |
+| `datos[].requisitos[].estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido · NoAplica |
 | `datos[].requisitos[].versionActual` | VersionRequisitoDto o null | no |  |
 | `datos[].requisitos[].versionActual.documentoId` | uuid | sí |  |
 | `datos[].requisitos[].versionActual.n` | entero | sí |  |
@@ -706,7 +706,7 @@ Campos de la respuesta `200`:
 | `datos[].requisitos[].areas` | lista de AreaDeRequisitoDto | sí |  |
 | `datos[].requisitos[].areas[].areaId` | uuid | sí |  |
 | `datos[].requisitos[].areas[].codigo` | texto | sí |  |
-| `datos[].requisitos[].areas[].estado` | EstadoAreaRequisito (texto) | sí | valores: Esperando · Pendiente · Aprobado · Observado · Eximido |
+| `datos[].requisitos[].areas[].estado` | EstadoAreaRequisito (texto) | sí | valores: Esperando · Pendiente · Aprobado · Observado · Eximido · NoAplica |
 | `datos[].requisitos[].areas[].aprobadoresRequeridos` | entero | sí |  |
 | `datos[].requisitos[].areas[].aprobaciones` | entero | sí |  |
 | `datos[].requisitos[].areas[].veredictos` | lista de VeredictoEmitidoDto | sí | mismos campos que `datos[].etapas[].areas[].veredictos[]` |
@@ -801,6 +801,10 @@ Campos de la respuesta `200`:
 | `datos[].requisitos[].persona.relacionId` | uuid o null | no |  |
 | `datos[].requisitos[].persona.nombre` | texto o null | no |  |
 | `datos[].requisitos[].persona.identificacion` | texto o null | no |  |
+| `datos[].requisitos[].porQue` | lista de MotivoDeExigenciaDto o null | no |  |
+| `datos[].requisitos[].porQue[].campo` | texto | sí |  |
+| `datos[].requisitos[].porQue[].etiqueta` | texto | sí |  |
+| `datos[].requisitos[].porQue[].valores` | lista de texto | sí |  |
 | `datos[].verificaciones` | lista de VerificacionDto o null | no |  |
 | `datos[].verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `datos[].verificaciones[].estado` | EstadoVerificacion (texto) | sí | valores: Pendiente · CoincidenciaPorAnalizar · Satisfecha · Fallida · Expirada |
@@ -857,10 +861,7 @@ Campos de la respuesta `200`:
 | `datos[].verificaciones[].estudio.matriz.nivel` | entero | sí |  |
 | `datos[].verificaciones[].estudio.matriz.nivelPorPuntaje` | entero | sí |  |
 | `datos[].verificaciones[].estudio.matriz.forzadoPor` | texto o null | no |  |
-| `datos[].verificaciones[].estudio.matriz.debidaDiligencia` | DebidaDiligencia (texto) | sí | valores: Simple · Ordinaria · Ampliada |
-| `datos[].verificaciones[].estudio.matriz.mesesRevision` | entero | sí |  |
-| `datos[].verificaciones[].estudio.matriz.versionMatriz` | entero | sí |  |
-| `datos[].verificaciones[].estudio.matriz.desglose` | lista de DesgloseDeMatrizDto | sí |  |
+| `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
@@ -1100,7 +1101,14 @@ Respuesta `200`:
             "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             "nombre": "Constructora Norte S.A.S.",
             "identificacion": "900123456"
-          }
+          },
+          "porQue": [
+            {
+              "campo": null,
+              "etiqueta": null,
+              "valores": null
+            }
+          ]
         }
       ],
       "verificaciones": [
@@ -1413,7 +1421,7 @@ Campos de la respuesta `200`:
 | `requisitos[].tipoDocumento.tienePlantilla` | booleano | no | por omisión false |
 | `requisitos[].tipoDocumento.textoAyuda` | texto o null | no |  |
 | `requisitos[].obligatorio` | booleano | sí |  |
-| `requisitos[].estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido |
+| `requisitos[].estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido · NoAplica |
 | `requisitos[].versionActual` | VersionRequisitoDto o null | no |  |
 | `requisitos[].versionActual.documentoId` | uuid | sí |  |
 | `requisitos[].versionActual.n` | entero | sí |  |
@@ -1443,7 +1451,7 @@ Campos de la respuesta `200`:
 | `requisitos[].areas` | lista de AreaDeRequisitoDto | sí |  |
 | `requisitos[].areas[].areaId` | uuid | sí |  |
 | `requisitos[].areas[].codigo` | texto | sí |  |
-| `requisitos[].areas[].estado` | EstadoAreaRequisito (texto) | sí | valores: Esperando · Pendiente · Aprobado · Observado · Eximido |
+| `requisitos[].areas[].estado` | EstadoAreaRequisito (texto) | sí | valores: Esperando · Pendiente · Aprobado · Observado · Eximido · NoAplica |
 | `requisitos[].areas[].aprobadoresRequeridos` | entero | sí |  |
 | `requisitos[].areas[].aprobaciones` | entero | sí |  |
 | `requisitos[].areas[].veredictos` | lista de VeredictoEmitidoDto | sí | mismos campos que `etapas[].areas[].veredictos[]` |
@@ -1545,6 +1553,10 @@ Campos de la respuesta `200`:
 | `requisitos[].persona.relacionId` | uuid o null | no |  |
 | `requisitos[].persona.nombre` | texto o null | no |  |
 | `requisitos[].persona.identificacion` | texto o null | no |  |
+| `requisitos[].porQue` | lista de MotivoDeExigenciaDto o null | no |  |
+| `requisitos[].porQue[].campo` | texto | sí |  |
+| `requisitos[].porQue[].etiqueta` | texto | sí |  |
+| `requisitos[].porQue[].valores` | lista de texto | sí |  |
 | `verificaciones` | lista de VerificacionDto o null | no |  |
 | `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `verificaciones[].estado` | EstadoVerificacion (texto) | sí | valores: Pendiente · CoincidenciaPorAnalizar · Satisfecha · Fallida · Expirada |
@@ -1595,11 +1607,6 @@ Campos de la respuesta `200`:
 | `verificaciones[].estudio.concepto` | ConceptoCumplimiento (texto) | sí | valores: Favorable · Desfavorable |
 | `verificaciones[].estudio.oficial` | texto | sí |  |
 | `verificaciones[].estudio.fecha` | fecha y hora | sí |  |
-| `verificaciones[].estudio.vigenteHasta` | fecha y hora | sí |  |
-| `verificaciones[].estudio.matriz` | ResultadoDeMatrizDto o null | no |  |
-| `verificaciones[].estudio.matriz.puntaje` | number \| string | sí | patrón ^-?(?:0\|[1-9]\d*)(?:\.\d+)?$ |
-| `verificaciones[].estudio.matriz.nivel` | entero | sí |  |
-| `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
@@ -1973,7 +1980,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -2596,7 +2612,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -3221,7 +3246,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -3845,7 +3879,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -4481,7 +4524,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -5105,7 +5157,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -5729,7 +5790,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -6352,7 +6422,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -7033,7 +7112,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -7656,7 +7744,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -8293,7 +8390,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -8917,7 +9023,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -9542,7 +9657,16 @@ Respuesta `201`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -9839,7 +9963,7 @@ Campos de la respuesta `200`:
 | `requisitos[].tipoDocumento.tienePlantilla` | booleano | no | por omisión false |
 | `requisitos[].tipoDocumento.textoAyuda` | texto o null | no |  |
 | `requisitos[].obligatorio` | booleano | sí |  |
-| `requisitos[].estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido |
+| `requisitos[].estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido · NoAplica |
 | `requisitos[].versionActual` | VersionRequisitoDto o null | no |  |
 | `requisitos[].versionActual.documentoId` | uuid | sí |  |
 | `requisitos[].versionActual.n` | entero | sí |  |
@@ -9931,6 +10055,10 @@ Campos de la respuesta `200`:
 | `requisitos[].persona.relacionId` | uuid o null | no |  |
 | `requisitos[].persona.nombre` | texto o null | no |  |
 | `requisitos[].persona.identificacion` | texto o null | no |  |
+| `requisitos[].porQue` | lista de MotivoDeExigenciaDto o null | no |  |
+| `requisitos[].porQue[].campo` | texto | sí |  |
+| `requisitos[].porQue[].etiqueta` | texto | sí |  |
+| `requisitos[].porQue[].valores` | lista de texto | sí |  |
 | `requisitosFaltantes` | entero | no | por omisión 0 |
 | `tipo` | texto | no | por omisión "Inicial" |
 | `plazoCargueHasta` | fecha y hora o null | no |  |
@@ -10159,7 +10287,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "requisitosFaltantes": 0,
@@ -10427,7 +10564,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "requisitosFaltantes": 0,
@@ -11125,7 +11271,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -11646,7 +11801,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "requisitosFaltantes": 0,
@@ -12114,7 +12278,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [
@@ -12647,7 +12820,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "requisitosFaltantes": 0,

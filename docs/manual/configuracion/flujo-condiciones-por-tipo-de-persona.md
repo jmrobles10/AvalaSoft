@@ -26,7 +26,7 @@ La administradora arma un flujo de proveedores en el que el RUT se pide a todos,
 
 ## Paso 1. Abre un flujo nuevo para proveedores
 
-Cada documento de un flujo tiene una columna «Se pide a» que decide a qué terceros se les pide. Por omisión es «Todos»; las otras dos opciones limitan el documento al tipo de persona del tercero: solo personas jurídicas o solo personas naturales. Para armar el ejemplo creamos un flujo nuevo de proveedores desde «Nuevo flujo».
+Cada documento de un flujo tiene una columna «Se pide a» que decide a qué terceros se les pide. Por omisión es «Todos»; las otras tres opciones limitan el documento: «Solo personas jurídicas» y «Solo personas naturales» según el tipo de persona del tercero, y «Según la ficha del tercero» según lo que declara en su ficha. Para armar el ejemplo creamos un flujo nuevo de proveedores desde «Nuevo flujo».
 
 > **Pantalla:** `/e/{empresa}/flujos`
 

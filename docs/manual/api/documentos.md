@@ -1238,6 +1238,8 @@ Campos de la respuesta `200`:
 | `[].formatosPermitidos` | lista de texto o null | no |  |
 | `[].tamanoMaximoMb` | entero o null | no |  |
 | `[].paginasMaximas` | entero o null | no |  |
+| `[].paises` | lista de texto o null | no |  |
+| `[].equivalenteA` | texto o null | no |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -1281,7 +1283,11 @@ Respuesta `200`:
       "texto"
     ],
     "tamanoMaximoMb": 1,
-    "paginasMaximas": 1
+    "paginasMaximas": 1,
+    "paises": [
+      "texto"
+    ],
+    "equivalenteA": "texto"
   }
 ]
 ```

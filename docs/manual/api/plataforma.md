@@ -2793,6 +2793,9 @@ Campos de la respuesta `201`:
 | `administrador.exigePasskey` | booleano | no | por omisión false |
 | `administrador.passkeys` | entero | no | por omisión 0 |
 | `administrador.invitadoEn` | fecha y hora o null | no |  |
+| `administrador.grupos` | lista de AsignacionDeGrupoDto o null | no |  |
+| `administrador.grupos[].grupoId` | uuid | sí |  |
+| `administrador.grupos[].empresaId` | uuid o null | no |  |
 | `sistema` | SistemaIntegradoDto o null | no |  |
 | `sistema.id` | uuid | sí |  |
 | `sistema.codigo` | texto | sí |  |
@@ -2902,7 +2905,13 @@ Respuesta `201`:
     "ultimoAcceso": "2026-11-12T15:00:00Z",
     "exigePasskey": false,
     "passkeys": 0,
-    "invitadoEn": "2026-11-12T15:00:00Z"
+    "invitadoEn": "2026-11-12T15:00:00Z",
+    "grupos": [
+      {
+        "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
+    ]
   },
   "sistema": {
     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",

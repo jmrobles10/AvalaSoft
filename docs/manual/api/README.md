@@ -1,6 +1,6 @@
 # Referencia de la API
 
-Todas las operaciones del contrato (454) agrupadas por recurso. Generada de `packages/api-client/openapi/v1.json` y del código de los endpoints con `pnpm manual`; no se edita a mano.
+Todas las operaciones del contrato (462) agrupadas por recurso. Generada de `packages/api-client/openapi/v1.json` y del código de los endpoints con `pnpm manual`; no se edita a mano.
 
 - [Convenciones](convenciones.md): autenticación, empresa activa, idempotencia, errores y límites.
 
@@ -16,11 +16,11 @@ Todas las operaciones del contrato (454) agrupadas por recurso. Generada de `pac
 - [Evaluaciones](evaluaciones.md) — Cuestionarios, Evaluaciones, Evaluaciones públicas, Informe de evaluaciones, Reevaluaciones (28)
 - [Expedientes](expedientes.md) — Bandeja, Configuración de recordatorios, Configuración de SLA, Expedientes, Expedientes públicos, Informe SLA, Inicio, Plazos de cargue, Ratificación, Recordatorios automaticos, Recordatorios de observaciones, Reintento público, Revalidaciones, Slas de revisión (37)
 - [Ficha](ficha.md) — Catálogos de ficha, Declaraciones PEP, Declaraciones PEP del tercero, Ficha maestra, Propuestas de ficha, Recálculo de fichas (12)
-- [Flujos](flujos.md) — Flujos (10)
+- [Flujos](flujos.md) — Flujos (11)
 - [Fuentes oficiales](fuentesoficiales.md) — Fuentes oficiales, Fuentes oficiales de plataforma (8)
 - [Habeas](habeas.md) — Exportación de bóveda, Plazos de habeas, Solicitudes habeas de la empresa, Solicitudes habeas de la plataforma, Solicitudes habeas del tercero (18)
 - [IA](ia.md) — Consumo de IA, Plan IA, Uso IA (8)
-- [Identidad](identidad.md) — Gestión de ingreso, Ingreso, Mi cuenta, Mi cuenta seguridad, Orígenes embebido, Quien soy, Sesión actual del tercero, Sesiones tercero embebidas, Sesiones usuario, Sistemas, SSO configuración, SSO ingreso, Usuarios (59)
+- [Identidad](identidad.md) — Gestión de ingreso, Grupos de acceso, Ingreso, Mi cuenta, Mi cuenta seguridad, Orígenes embebido, Quien soy, Sesión actual del tercero, Sesiones tercero embebidas, Sesiones usuario, Sistemas, SSO configuración, SSO ingreso, Usuarios (66)
 - [Importación](importacion.md) — Importación (5)
 - [Informes](informes.md) — Exportación de expediente, Informe estado expedientes, Informe sagrilaft, Informe vínculos (9)
 - [Integración](integracion.md) — Consulta certificacion (1)
