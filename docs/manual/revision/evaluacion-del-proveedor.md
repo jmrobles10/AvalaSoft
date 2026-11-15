@@ -63,4 +63,5 @@ El puntaje se compara con el umbral del cuestionario (70 en este caso). Con 0 pu
 
 ## Recorridos relacionados
 
+- [Crea y publica un cuestionario de evaluación de proveedores](../configuracion/cuestionario-de-evaluacion.md)
 - [Revisa el detalle de un vínculo](../vinculos/detalle-del-vinculo.md)

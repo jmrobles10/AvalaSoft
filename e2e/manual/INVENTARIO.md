@@ -300,7 +300,7 @@ Las funciones que llegaron a main después de los lotes 1 a 4. Lo que está ✅ 
 | Archivo | Actor | Siembra | Pasos esperados |
 |---|---|---|---|
 | `configuracion/aprobacion-antes-de-invitar` ✅ | Administrador de empresa | Grupo base (AI-9) | Interruptor «Exige aprobación antes de invitar», «Un rol» o «Un área» en Tipos de vínculo, lote que queda «Por aprobar» |
-| `configuracion/cuestionario-de-evaluacion` ☐ | Administrador de empresa | Grupo base (CE-14) | Crear un cuestionario, secciones y preguntas con puntaje, eliminatoria y umbral, publicar (la versión queda congelada) |
+| `configuracion/cuestionario-de-evaluacion` ✅ | Administrador de empresa | Grupo base (CE-14) | Crear un cuestionario, secciones y preguntas con puntaje, eliminatoria y umbral, publicar (la versión queda congelada) |
 | `tercero/autoevaluacion-del-proveedor` ☐ | Tercero | Cuestionario con «Quién responde: Tercero» asignado (CE-3) | Responder la autoevaluación sin ver puntajes ni umbral, enviar |
 | `revision/evaluacion-del-proveedor` ✅ | Oficial de cumplimiento | Cuestionario de evaluador con umbral 70 publicado por API y asignado al vínculo (`llaveConCuestionarios`) | Lista de evaluaciones, responder, enviar y resultado «reprobada» bajo el umbral |
 | `revision/evaluacion-bajo-el-umbral` ☐ | Revisor/área | Evaluación de evaluador interno con puntaje bajo el umbral (CE-5, CE-6) | Calificar, puntaje bajo el umbral que frena el cierre, recalificar, informe de evaluaciones (CE-12) |
@@ -311,7 +311,7 @@ Las funciones que llegaron a main después de los lotes 1 a 4. Lo que está ✅ 
 | `revision/cotejo-con-fuentes-oficiales` ☐ | Revisor/área | Expediente con diferencia entre la ficha y RUES (FO-4, FO-9) | Resultado por fuente, cotejo campo por campo, resolver una diferencia, constancia con la respuesta cruda |
 | `acceso/cola-de-contactos-verificados` ☐ | Plataforma | Solicitudes de acceso aislado pendientes (AV, solo si cabe) | Cola de solicitudes de acceso en la consola de Plataforma |
 
-**Pendiente del lote 5**: `configuracion/cuestionario-de-evaluacion` sigue roto: tras guardar el borrador, el editor sigue con «Guardar borrador» activo y no aparece «Publicar versión 1» (no confirmado si es defecto del producto). Quedan sin escribir: fuentes oficiales RUES/DIAN (FO) y contactos verificados (AV); la propuesta de personas desde la Cámara necesita IA activa y no está en el recorrido de personas relacionadas.
+**Pendiente del lote 5**: fuentes oficiales RUES/DIAN (FO) y contactos verificados (AV) sin escribir; la propuesta de personas desde la Cámara necesita IA activa y no está en el recorrido de personas relacionadas.
 
 ### Cómo reportar
 
