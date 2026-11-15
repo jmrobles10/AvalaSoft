@@ -219,7 +219,7 @@ Reglas: la **separación de funciones** (quien invita no aprueba) es configurabl
 
 ### 3.3 Grupos de acceso por empresa y sector (2026-11-14, GA-1…GA-12)
 
-Decisiones en el [registro](decisiones/registro.md#5-septuagies-grupos-de-acceso-por-empresa-y-actualizaciones-por-sector-con-responsable-2026-11-14-ga); contrato en [05 §2.13](05-api-contratos-y-webhooks.md).
+Decisiones en el [registro](decisiones/registro.md#5-unseptuagies-grupos-de-acceso-por-empresa-y-actualizaciones-por-sector-con-responsable-2026-11-14-ga); contrato en [05 §2.13](05-api-contratos-y-webhooks.md).
 
 **Qué es un grupo.** `GrupoDePermisos` (esquema `identidad`, por tenant): código único e inmutable, nombre, descripción, activo, **permisos** y **sectores**. Los permisos son scopes del catálogo del tenant (`Permisos.DeGrupo`: §3.2 sin `sesiones-tercero:crear`); un grupo no inventa permisos que el backend no aplique. Se crean, se editan y se desactivan; no se borran. Los cuatro roles fijos son grupos **predefinidos** (no se editan ni se desactivan) y se siguen asignando como `RolAsignado`, así que nadie se rompe. Una persona tiene `Roles` (los predefinidos) y `Grupos` (los propios, `{ grupoId, empresaId? }`), para todo el tenant o por empresa.
 

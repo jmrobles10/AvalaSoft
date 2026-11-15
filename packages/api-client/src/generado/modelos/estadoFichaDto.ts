@@ -6,6 +6,7 @@
  */
 import type { EstadoSeccionFichaDto } from './estadoSeccionFichaDto';
 import type { ObservacionDeSeccionDto } from './observacionDeSeccionDto';
+import type { PerfilDeFichaDto } from './perfilDeFichaDto';
 
 export interface EstadoFichaDto {
   terceroId: string;
@@ -17,4 +18,5 @@ export interface EstadoFichaDto {
   secciones: EstadoSeccionFichaDto[];
   /** @nullable */
   observaciones?: ObservacionDeSeccionDto[] | null;
+  perfil?: null | PerfilDeFichaDto;
 }

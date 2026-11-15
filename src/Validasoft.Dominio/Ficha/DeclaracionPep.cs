@@ -480,8 +480,8 @@ public static partial class DeclaracionPepReglas
         {
             if (valor is null)
                 Falta(campo, etiqueta);
-            else if (CatalogoIdentificacion.Buscar("CO", valor) is null)
-                Invalido(campo, $"«{etiqueta}»: «{valor}» no es un tipo de identificación válido (CC, CE, NIT, PA, PPT, TI, PASAPORTE, ID_FISCAL).");
+            else if (!CatalogoIdentificacion.TiposConocidos.Contains(valor))
+                Invalido(campo, $"«{etiqueta}»: «{valor}» no es un tipo de identificación válido ({string.Join(", ", CatalogoIdentificacion.TiposConocidos)}).");
         }
 
         public void Basicos(DeclaracionPep d)

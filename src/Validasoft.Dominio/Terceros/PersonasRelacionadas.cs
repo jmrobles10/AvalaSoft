@@ -52,8 +52,6 @@ public sealed record PersonaDeclarada(Identificacion Identificacion, string Nomb
 /// </summary>
 public static class PersonasDeLaFicha
 {
-    private static readonly HashSet<string> TiposColombianos = new(StringComparer.Ordinal) { "CC", "CE", "TI", "PPT", "PA" };
-
     /// <summary>
     /// Las personas con una relación del ADR que trae la sección legal, sin repetir (persona, tipo) y con la principal de cada tipo ya marcada: la del representante legal
     /// es la que regla el ERP (<see cref="RepresentanteLegalPrincipal"/>: la primera con representación «Principal», si no la primera); la del suplente, la primera; la del
@@ -110,12 +108,14 @@ public static class PersonasDeLaFicha
     {
         var tipo = (fila.TipoIdentificacion ?? string.Empty).Trim().ToUpperInvariant();
         var numero = fila.Numero;
-        if (tipo.Length == 0 || string.IsNullOrWhiteSpace(numero) || tipo == "NIT")
+        if (tipo.Length == 0 || string.IsNullOrWhiteSpace(numero) || CatalogoIdentificacion.EsDeSociedad(tipo, numero))
             return null;
 
-        var pais = TiposColombianos.Contains(tipo) ? "CO"
-            : !string.IsNullOrWhiteSpace(fila.Nacionalidad) ? fila.Nacionalidad.Trim().ToUpperInvariant()
-            : delTercero.Pais;
+        // Cada tipo se valida con el catálogo de su país (RG-4): la cédula de Colombia, la CED de República Dominicana, la CIP de Panamá…; el
+        // pasaporte y la identificación fiscal genéricos, con la nacionalidad o el país del tercero.
+        var pais = CatalogoIdentificacion.PaisParaTipo(tipo, fila.Nacionalidad, delTercero.Pais);
+        if (pais is null)
+            return null;
         try
         {
             var identificacion = Identificacion.Crear(pais, tipo, numero);

@@ -66,6 +66,29 @@ describe('modelo de empresas', () => {
     });
   });
 
+  it('valida el RUC de Panamá y el RNC y la cédula de República Dominicana con los patrones de la API, sin guiones y sin DV aparte (RG-2)', () => {
+    const RUC: TipoIdentificacionDto = {
+      pais: 'PA',
+      codigo: 'RUC',
+      nombre: 'Registro Único de Contribuyente (DGI)',
+      aplicaA: 'Ambas',
+      patron: '^((PE|PI|E|N)?[0-9]{1,2}(AV)?[0-9]{3,9}|[0-9]{12,20})$',
+      tieneDv: false,
+    };
+    const RNC: TipoIdentificacionDto = { pais: 'DO', codigo: 'RNC', nombre: 'Registro Nacional de Contribuyentes (DGII)', aplicaA: 'Ambas', patron: '^([0-9]{9}|[0-9]{11})$', tieneDv: false };
+    const base = { ...borradorEmpresaNuevo(), nombre: 'Constructora del Istmo', prefijo: 'istmo' };
+
+    // El guion del RUC panameño es parte del número, no un DV: se quita y el número sigue entero.
+    expect(numeroNormalizado('155612345-2-2019', RUC)).toBe('15561234522019');
+    expect(numeroNormalizado('1-01-85004-3', RNC)).toBe('101850043');
+    for (const numero of ['8-123-456', 'PE-12-345', '155612345-2-2019']) expect(validarEmpresa({ ...base, numero }, RUC)).toEqual([]);
+    for (const numero of ['1-01-85004-3', '001-1391820-5']) expect(validarEmpresa({ ...base, numero }, RNC)).toEqual([]);
+    expect(validarEmpresa({ ...base, numero: 'ABC' }, RUC)).toEqual(['numero-invalido']);
+    expect(validarEmpresa({ ...base, numero: '12345678' }, RNC)).toEqual(['numero-invalido']);
+    // El dígito de control del RNC lo verifica la API, no el navegador; el cuerpo lleva el número como se escribió.
+    expect(cuerpoCrearEmpresa({ ...base, pais: 'DO', tipo: 'RNC', numero: '1-01-85004-3' }).identificacion).toEqual({ pais: 'DO', tipo: 'RNC', numero: '1-01-85004-3', digitoVerificacion: null });
+  });
+
   it('muestra la identificación con su dígito y un folio de ejemplo', () => {
     expect(identificacionVisible({ pais: 'CO', tipo: 'NIT', numero: '900123456', digitoVerificacion: '8' })).toBe('NIT 900123456-8');
     expect(identificacionVisible({ pais: 'CO', tipo: 'CC', numero: '1020304', digitoVerificacion: null })).toBe('CC 1020304');

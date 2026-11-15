@@ -182,6 +182,16 @@ public static class ProcesoDeValidacion
     }
 
     /// <summary>
+    /// Las verificaciones del flujo que aplican al tercero (RG-6): las del RUES y la DIAN cubren solo Colombia, así que a un tercero con
+    /// identificación de otro país no se le piden (una bloqueante que nadie puede satisfacer lo dejaría para siempre sin aprobar); las listas
+    /// restrictivas y el estudio de cumplimiento siguen aplicando a todos.
+    /// </summary>
+    public static IReadOnlyList<VerificacionRequeridaDelFlujo> VerificacionesQueAplican(IReadOnlyList<VerificacionRequeridaDelFlujo> verificaciones, Tercero tercero) =>
+        AlcanceDeLaLectura.Aplica(tercero.Identificacion.Pais)
+            ? verificaciones
+            : [.. verificaciones.Where(v => !Dominio.FuentesOficiales.CatalogoDeFuentes.EsFuente(v.Tipo))];
+
+    /// <summary>
     /// Abre el expediente inicial del vínculo con el flujo resuelto: consume el folio, inicia el stream del expediente,
     /// registra <c>ExpedienteVinculado</c> en <paramref name="vinculoStream"/> y, si todo fue automático, lo cierra aprobado.
     /// Con requisitos, cada uno nace <c>Cargado</c> si la bóveda ya compartió con el vínculo la versión actual de su tipo:
@@ -233,7 +243,8 @@ public static class ProcesoDeValidacion
         var eventos = Expediente.Abrir(datos, new FlujoParaExpediente(flujo.Flujo.Id, flujo.Version.Id, flujo.Flujo.Codigo, flujo.Flujo.Nombre,
             flujo.Version.Version, flujo.Origen, etapas, flujo.Version.PoliticaDevolucion, flujo.Version.SeparacionDeFunciones,
             // Una actualización (un documento cambió) no repite las listas ni el estudio (VE-6).
-            tipoExpediente == TipoExpediente.Actualizacion ? [] : flujo.Version.Verificaciones, flujo.Version.PlazoEfectivo(), flujo.Version.RecordatorioObservacionesDias,
+            tipoExpediente == TipoExpediente.Actualizacion ? [] : VerificacionesQueAplican(flujo.Version.Verificaciones, tercero), flujo.Version.PlazoEfectivo(),
+            flujo.Version.RecordatorioObservacionesDias,
             flujo.Regla, [.. evaluaciones.Select(e => e.Requerida)]), ahora, requisitos);
 
         var expedienteId = ((ExpedienteAbierto)eventos[0]).ExpedienteId;

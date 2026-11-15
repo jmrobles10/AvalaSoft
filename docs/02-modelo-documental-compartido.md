@@ -82,6 +82,7 @@ flowchart LR
 | `dePersonaRelacionada` | El documento pertenece a la bóveda de una persona natural relacionada (rol) y no a la del tercero jurídico (B-3) | `CEDULA` (RepresentanteLegal…), `CERTIFICADO_ANTECEDENTES` (la declaración PEP de cada persona vive en la ficha, DP-13) |
 | `esquemaFormulario` + `versionEsquema` | Solo clase `Formulario`: JSON Schema **base canónico** de plataforma, versionado. Cada versión de documento guarda con qué versión del esquema se capturó (P-2-2, P-3-2). | `INFO_TRIBUTARIA` v2 |
 | `aplicaA` | `PersonaNatural`, `PersonaJuridica`, `Ambas` | Cámara de comercio = Jurídica (y natural comerciante: condición en la regla) |
+| `paises` + `equivalenteA` | Países (ISO 3166-1) a los que aplica el tipo (nulo = cualquiera) y el canónico colombiano del que es equivalente (RG-5) | `RUT` = `CO`; `CERTIFICADO_RUC` = `PA`, equivalente a `RUT`; `CONSTANCIA_RNC` = `DO`, equivalente a `RUT` |
 | `tieneVencimientoIntrinseco` | El documento trae su propia fecha de fin | Póliza = sí; RUT = no |
 | `tieneFechaExpedicion` | Se extrae `fecha_expedicion` | Cámara = sí |
 | `esPeriodico` + `periodicidad` | Se emite por periodo | EEFF = anual |

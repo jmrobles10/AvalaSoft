@@ -60,7 +60,7 @@ export function EditorSeccion({ definicion, periodo, estado, inicial, onReinicia
   const senalados = observaciones.flatMap((o) => o.observacion.campos ?? []);
   // Lo que alguna empresa le pide ratificar de esta sección en la renovación de su vínculo (VV-3).
   const ratificaciones = deLaSeccion(useRatificacionesPendientes(), definicion.codigo, periodo);
-  const editor = useEditorSeccion(definicion.codigo, periodo, inicial, senalados.length > 0 ? { campos: senalados, mensaje: t('ficha.observada.campoSenalado') } : null);
+  const editor = useEditorSeccion(definicion.codigo, periodo, inicial, senalados.length > 0 ? { campos: senalados, mensaje: t('ficha.observada.campoSenalado') } : null, estado.perfil ?? null);
   // Cada guardado incompleto lleva el foco (y la vista) a la lista de faltantes.
   const [senalFaltantes, setSenalFaltantes] = useState(0);
   const nombre = periodo ? t('ficha.nombreConPeriodo', { nombre: inicial.nombre, periodo: String(periodo) }) : inicial.nombre;

@@ -70,8 +70,17 @@ public sealed record TipoDocumentoCanonico(
     int RetencionAniosSugerida = 10,
     IReadOnlyList<string>? FormatosPermitidos = null,
     int? TamanoMaximoMb = null,
-    int? PaginasMaximas = null)
+    int? PaginasMaximas = null,
+    IReadOnlyList<string>? Paises = null,
+    string? EquivalenteA = null)
 {
+    /// <summary>
+    /// ¿El tipo aplica a un tercero de ese país (ISO 3166-1 alfa-2)? Sin <see cref="Paises"/> aplica a todos; con lista, solo a esos países
+    /// (RG-5): el RUT y la Cámara de comercio son de Colombia y sus equivalentes, de Panamá y República Dominicana.
+    /// </summary>
+    public bool AplicaAlPais(string? pais) =>
+        Paises is null || Paises.Contains((pais ?? string.Empty).Trim().ToUpperInvariant(), StringComparer.Ordinal);
+
     /// <summary>
     /// Un canónico global de clase <c>Formulario</c> aún no tiene esquema canónico: responde 422 <c>clase-no-soportada</c>.
     /// Un tipo del tenant puede pedirlo como formulario propio restringido a <c>PorVinculo</c> (TD-4).
@@ -93,11 +102,29 @@ public static class CatalogoCanonico
         Archivo("RUT", "Registro Único Tributario", AmbitoDocumento.Global, Sensibilidad.Identidad, AplicaA.Ambas,
             vencimiento: false, expedicion: true, ratificable: true, persona: false,
             ["nit", "razonSocial", "actividadCiiuPrincipal", "responsabilidades", "direccion", "representanteLegal"],
-            ["nit", "razonSocial", "representanteLegal"], ReglaFrescura.DiasDesdeExpedicion(365), formatos: SoloPdf),
+            ["nit", "razonSocial", "representanteLegal"], ReglaFrescura.DiasDesdeExpedicion(365), formatos: SoloPdf, paises: ["CO"]),
         Archivo("CAMARA_COMERCIO", "Certificado de existencia y representación legal", AmbitoDocumento.Global, Sensibilidad.Identidad,
             AplicaA.Juridica, vencimiento: false, expedicion: true, ratificable: false, persona: false,
             ["nit", "razonSocial", "matricula", "representanteLegal", "suplentes", "objeto", "capital", "estadoMatricula", "fechaExpedicion"],
-            ["representanteLegal", "razonSocial", "estadoMatricula"], ReglaFrescura.DiasDesdeExpedicion(30), formatos: SoloPdf),
+            ["representanteLegal", "razonSocial", "estadoMatricula"], ReglaFrescura.DiasDesdeExpedicion(30), formatos: SoloPdf, paises: ["CO"]),
+        // Equivalentes por país del RUT y de la Cámara de comercio (RG-5). Son soportes de la ficha que el tercero adjunta y la empresa revisa
+        // a mano: no tienen lectura de IA, cruce con la ficha ni consulta a fuentes oficiales, que son solo de Colombia (RG-6).
+        Archivo("CERTIFICADO_RUC", "Certificado de RUC (DGI)", AmbitoDocumento.Global, Sensibilidad.Identidad, AplicaA.Ambas,
+            vencimiento: false, expedicion: true, ratificable: true, persona: false,
+            ["ruc", "dv", "razonSocial", "estado", "actividadEconomica", "direccion"], ["ruc", "razonSocial"], ReglaFrescura.DiasDesdeExpedicion(365),
+            formatos: SoloPdf, paises: ["PA"], equivalente: "RUT"),
+        Archivo("REGISTRO_PUBLICO", "Certificado del Registro Público de Panamá", AmbitoDocumento.Global, Sensibilidad.Identidad, AplicaA.Juridica,
+            vencimiento: false, expedicion: true, ratificable: false, persona: false,
+            ["razonSocial", "folio", "estado", "representantes", "fechaExpedicion"], ["razonSocial", "estado", "representantes"],
+            ReglaFrescura.DiasDesdeExpedicion(30), formatos: SoloPdf, paises: ["PA"], equivalente: "CAMARA_COMERCIO"),
+        Archivo("CONSTANCIA_RNC", "Constancia de RNC (DGII)", AmbitoDocumento.Global, Sensibilidad.Identidad, AplicaA.Ambas,
+            vencimiento: false, expedicion: true, ratificable: true, persona: false,
+            ["rnc", "razonSocial", "estado", "actividadEconomica", "regimen"], ["rnc", "razonSocial"], ReglaFrescura.DiasDesdeExpedicion(365),
+            formatos: SoloPdf, paises: ["DO"], equivalente: "RUT"),
+        Archivo("REGISTRO_MERCANTIL", "Certificado de registro mercantil", AmbitoDocumento.Global, Sensibilidad.Identidad, AplicaA.Juridica,
+            vencimiento: false, expedicion: true, ratificable: false, persona: false,
+            ["razonSocial", "matricula", "estado", "representantes", "fechaExpedicion"], ["razonSocial", "estado", "representantes"],
+            ReglaFrescura.DiasDesdeExpedicion(30), formatos: SoloPdf, paises: ["DO"], equivalente: "CAMARA_COMERCIO"),
         Archivo("CEDULA", "Cédula de ciudadanía", AmbitoDocumento.Global, Sensibilidad.Identidad, AplicaA.Natural,
             vencimiento: false, expedicion: true, ratificable: true, persona: true,
             ["numero", "nombres", "fechaExpedicion"], ["numero", "nombres"], ReglaFrescura.Ninguna),
@@ -180,9 +207,9 @@ public static class CatalogoCanonico
 
     private static TipoDocumentoCanonico Archivo(string codigo, string nombre, AmbitoDocumento ambito, Sensibilidad sensibilidad, AplicaA aplicaA,
         bool vencimiento, bool expedicion, bool ratificable, bool persona, string[] clave, string[] criticos, ReglaFrescura? frescura,
-        string? periodicidad = null, string[]? formatos = null) =>
+        string? periodicidad = null, string[]? formatos = null, string[]? paises = null, string? equivalente = null) =>
         new(codigo, nombre, ClaseDocumento.Archivo, ambito, sensibilidad, aplicaA, vencimiento, expedicion, periodicidad is not null,
-            periodicidad, ratificable, persona, clave, criticos, frescura, FormatosPermitidos: formatos);
+            periodicidad, ratificable, persona, clave, criticos, frescura, FormatosPermitidos: formatos, Paises: paises, EquivalenteA: equivalente);
 
     private static TipoDocumentoCanonico Formulario(string codigo, string nombre, AmbitoDocumento ambito, Sensibilidad sensibilidad,
         bool ratificable, bool persona, string[] clave, string[] criticos, ReglaFrescura? frescura) =>

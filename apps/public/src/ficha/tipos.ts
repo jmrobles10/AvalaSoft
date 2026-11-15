@@ -172,6 +172,13 @@ export interface DatosTributarios {
   autorretenedor_ica?: boolean | null;
   exento_rete_cree?: boolean | null;
   ica?: FilaIca[] | null;
+  // Modelo genérico (RG-3): los terceros de un país distinto de Colombia (Panamá, República Dominicana…) no tienen la casilla 53 ni ICA.
+  regimen?: string | null;
+  contribuyente_impuesto_ventas?: boolean | null;
+  agente_de_retencion?: boolean | null;
+  exento_de_retenciones?: boolean | null;
+  certificado_exencion?: Resolucion | null;
+  emisor_comprobantes_electronicos?: boolean | null;
 }
 
 export const TIPOS_OPERACION = ['Importaciones', 'Exportaciones', 'Inversiones', 'Prestamos', 'Giros', 'PagoDeServicios', 'Otras'] as const;

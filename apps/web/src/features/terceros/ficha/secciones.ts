@@ -37,7 +37,11 @@ export const SECCIONES_FICHA: readonly DefinicionSeccionFicha[] = [
     codigo: 'FICHA_TRIBUTARIA',
     porPeriodo: false,
     soloJuridica: false,
-    campos: ['responsabilidades', 'resolucion_gran_contribuyente', 'resolucion_autorretenedor', 'responsable_ica', 'autorretenedor_ica', 'exento_rete_cree', 'ica'],
+    campos: [
+      'responsabilidades', 'resolucion_gran_contribuyente', 'resolucion_autorretenedor', 'responsable_ica', 'autorretenedor_ica', 'exento_rete_cree', 'ica',
+      // El modelo genérico de los terceros de otro país (RG-3).
+      'regimen', 'contribuyente_impuesto_ventas', 'agente_de_retencion', 'exento_de_retenciones', 'certificado_exencion', 'emisor_comprobantes_electronicos',
+    ],
   },
   {
     codigo: 'FICHA_FINANCIERA',

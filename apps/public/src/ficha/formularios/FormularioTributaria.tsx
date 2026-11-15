@@ -1,19 +1,27 @@
 import { Stack } from '@mui/material';
+import type { PerfilDeFichaDto } from '@validasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { useCatalogoCompleto } from '../api';
 import { CampoFechaFicha, CampoSiNo, CampoTexto, Rejilla, Subtitulo } from '../campos';
 import { SelectorMultiple } from '../selectores';
 import type { DatosTributarios, PropsFormulario, Resolucion } from '../tipos';
 import { FilasIca } from './FilasIca';
+import { FormularioTributariaGenerica } from './FormularioTributariaGenerica';
 
 const GRAN_CONTRIBUYENTE = '13';
 const AUTORRETENEDOR = '15';
 
+/** El modelo tributario del tercero: el de Colombia (casilla 53, ICA) o el genérico de cualquier otro país. Sin perfil, el colombiano de siempre. */
+export function FormularioTributaria(props: PropsFormulario<DatosTributarios> & { perfil?: PerfilDeFichaDto | null }) {
+  const { perfil, ...resto } = props;
+  return perfil?.modeloTributario === 'Generico' ? <FormularioTributariaGenerica {...resto} perfil={perfil} /> : <FormularioTributariaColombiana {...resto} />;
+}
+
 /**
- * Información tributaria (`FICHA_TRIBUTARIA`): responsabilidades de la casilla 53 del RUT; las resoluciones de gran
+ * Información tributaria de Colombia (`FICHA_TRIBUTARIA`): responsabilidades de la casilla 53 del RUT; las resoluciones de gran
  * contribuyente (13) y autorretenedor (15) aparecen solo si aplican; ICA es municipal y va aparte (FM-19).
  */
-export function FormularioTributaria({ datos, onCambiar, mensaje, deshabilitado }: PropsFormulario<DatosTributarios>) {
+function FormularioTributariaColombiana({ datos, onCambiar, mensaje, deshabilitado }: PropsFormulario<DatosTributarios>) {
   const { t } = useTranslation();
   const catalogo = useCatalogoCompleto('responsabilidades-dian');
   const responsabilidades = datos.responsabilidades ?? [];
