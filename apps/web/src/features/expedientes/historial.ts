@@ -176,15 +176,12 @@ export function eventoExpedienteATimeline(
       const nombresAgregados = lista(campo(datos, 'agregados'))
         .map((r) => (r && typeof r === 'object' ? texto(campo(r as Record<string, unknown>, 'nombre')) : null))
         .filter((n): n is string => n !== null);
-      const partes = [
-        nombresAgregados.length > 0 ? t('expedientes.historial.segunFichaSePiden', { documentos: nombresAgregados.join(', ') }) : null,
-        lista(campo(datos, 'noAplican')).length > 0
-          ? t('expedientes.historial.segunFichaDejanDeAplicar', { documentos: lista(campo(datos, 'noAplican')).map(requisito).join(', ') })
-          : null,
-        lista(campo(datos, 'vuelvenAAplicar')).length > 0
-          ? t('expedientes.historial.segunFichaVuelven', { documentos: lista(campo(datos, 'vuelvenAAplicar')).map(requisito).join(', ') })
-          : null,
-      ].filter((p): p is string => p !== null);
+      const partes: string[] = [];
+      if (nombresAgregados.length > 0) partes.push(t('expedientes.historial.segunFichaSePiden', { documentos: nombresAgregados.join(', ') }));
+      const noAplican = lista(campo(datos, 'noAplican'));
+      if (noAplican.length > 0) partes.push(t('expedientes.historial.segunFichaDejanDeAplicar', { documentos: noAplican.map(requisito).join(', ') }));
+      const vuelven = lista(campo(datos, 'vuelvenAAplicar'));
+      if (vuelven.length > 0) partes.push(t('expedientes.historial.segunFichaVuelven', { documentos: vuelven.map(requisito).join(', ') }));
       return { ...base, titulo: t('expedientes.historial.segunFicha'), detalle: partes.join(' · ') };
     }
     case 'persona_de_requisito_resuelta': {
