@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, SCOPES, type CuestionarioDto } from '@validasoft/api-client';
+import { reiniciarCliente, SCOPES, type CuestionarioDto, type DefinicionDeCuestionarioDto, type PreguntaDeCuestionarioDto } from '@validasoft/api-client';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../../pruebas/montar';
@@ -34,6 +34,34 @@ const conBorrador = (c: CuestionarioDto, texto: string): CuestionarioDto => ({
     retiradaEn: null,
   },
 });
+
+/**
+ * Lo que hace la API al guardar: recorta los textos, devuelve cada campo de la pregunta en su orden y con los opcionales en `null` (no ausentes). La definición que
+ * devuelve es la que queda guardada; la que envió el editor puede ser distinta como texto aunque diga lo mismo.
+ */
+function normalizadaComoLaApi(d: DefinicionDeCuestionarioDto): DefinicionDeCuestionarioDto {
+  const pregunta = (p: PreguntaDeCuestionarioDto): PreguntaDeCuestionarioDto => ({
+    codigo: p.codigo,
+    texto: p.texto.trim(),
+    tipo: p.tipo,
+    obligatoria: p.obligatoria,
+    peso: p.peso,
+    eliminatoria: p.eliminatoria,
+    opciones: p.opciones ?? null,
+    escala: p.escala ?? null,
+    rangos: p.rangos ?? null,
+    condicion: p.condicion ?? null,
+    ayuda: p.ayuda ?? null,
+    permiteComentario: p.permiteComentario ?? false,
+  });
+  return {
+    secciones: d.secciones.map((s) => ({ codigo: s.codigo, nombre: s.nombre.trim(), peso: s.peso, preguntas: s.preguntas.map(pregunta), condicion: s.condicion ?? null, descripcion: s.descripcion ?? null })),
+    umbralDeAprobacion: d.umbralDeAprobacion,
+    responde: d.responde,
+    reevaluarCadaMeses: d.reevaluarCadaMeses ?? null,
+    descripcion: d.descripcion ?? null,
+  };
+}
 
 afterEach(() => {
   reiniciarCliente();
@@ -86,6 +114,34 @@ describe('EditorCuestionario (CE-1, CE-2)', () => {
 
     expect(await screen.findByText('Versión 3 publicada.')).toBeInTheDocument();
     expect(peticiones.some((p) => p.metodo === 'POST' && p.ruta.endsWith('/publicar'))).toBe(true);
+  });
+
+  it('tras guardar un borrador que la API normaliza, el editor toma lo guardado y ofrece publicar (no queda «sin guardar» para siempre)', async () => {
+    permisos.scopes = new Set([SCOPES.cuestionariosLeer, SCOPES.cuestionariosEscribir]);
+    const usuario = userEvent.setup();
+    // El borrador ya existe en el servidor: al guardar su id no cambia y el editor no lo vuelve a cargar por eso.
+    let servidor = conBorrador(cuestionario(), '¿Tiene certificación ISO 9001?');
+    const peticiones = simularApi({
+      'GET /api/v1/cuestionarios/q1': () => servidor,
+      'PUT /api/v1/cuestionarios/q1': (p) => {
+        const cuerpo = p.cuerpo as { definicion: DefinicionDeCuestionarioDto };
+        servidor = { ...servidor, borrador: { ...servidor.borrador!, definicion: normalizadaComoLaApi(cuerpo.definicion) } };
+        return servidor;
+      },
+    });
+    abrir();
+
+    await usuario.click(await screen.findByRole('button', { name: 'Agregar pregunta' }));
+    const textos = screen.getAllByRole('textbox', { name: 'Texto de la pregunta' });
+    await usuario.type(textos[textos.length - 1]!, '¿Tiene sanciones vigentes? ');
+    await usuario.click(screen.getByRole('button', { name: 'Guardar borrador' }));
+
+    expect(await screen.findByText('Borrador guardado.')).toBeInTheDocument();
+    expect(peticiones.filter((p) => p.metodo === 'PUT')).toHaveLength(1);
+    expect(await screen.findByRole('button', { name: 'Publicar versión 3' })).toBeEnabled();
+    expect(screen.queryByRole('button', { name: 'Guardar borrador' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Descartar borrador' })).not.toBeInTheDocument();
+    expect(screen.getByDisplayValue('¿Tiene sanciones vigentes?')).toBeInTheDocument();
   });
 
   it('no guarda un borrador incompleto: marca lo que falta y no llama a la API', async () => {
