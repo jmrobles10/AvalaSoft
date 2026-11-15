@@ -332,7 +332,7 @@ Campos de la respuesta `200`:
 | `requisitos[].tipoDocumento.tienePlantilla` | booleano | no | por omisión false |
 | `requisitos[].tipoDocumento.textoAyuda` | texto o null | no |  |
 | `requisitos[].obligatorio` | booleano | sí |  |
-| `requisitos[].estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido |
+| `requisitos[].estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido · NoAplica |
 | `requisitos[].versionActual` | VersionRequisitoDto o null | no |  |
 | `requisitos[].versionActual.documentoId` | uuid | sí |  |
 | `requisitos[].versionActual.n` | entero | sí |  |
@@ -362,7 +362,7 @@ Campos de la respuesta `200`:
 | `requisitos[].areas` | lista de AreaDeRequisitoDto | sí |  |
 | `requisitos[].areas[].areaId` | uuid | sí |  |
 | `requisitos[].areas[].codigo` | texto | sí |  |
-| `requisitos[].areas[].estado` | EstadoAreaRequisito (texto) | sí | valores: Esperando · Pendiente · Aprobado · Observado · Eximido |
+| `requisitos[].areas[].estado` | EstadoAreaRequisito (texto) | sí | valores: Esperando · Pendiente · Aprobado · Observado · Eximido · NoAplica |
 | `requisitos[].areas[].aprobadoresRequeridos` | entero | sí |  |
 | `requisitos[].areas[].aprobaciones` | entero | sí |  |
 | `requisitos[].areas[].veredictos` | lista de VeredictoEmitidoDto | sí | mismos campos que `etapas[].areas[].veredictos[]` |
@@ -464,6 +464,10 @@ Campos de la respuesta `200`:
 | `requisitos[].persona.relacionId` | uuid o null | no |  |
 | `requisitos[].persona.nombre` | texto o null | no |  |
 | `requisitos[].persona.identificacion` | texto o null | no |  |
+| `requisitos[].porQue` | lista de MotivoDeExigenciaDto o null | no |  |
+| `requisitos[].porQue[].campo` | texto | sí |  |
+| `requisitos[].porQue[].etiqueta` | texto | sí |  |
+| `requisitos[].porQue[].valores` | lista de texto | sí |  |
 | `verificaciones` | lista de VerificacionDto o null | no |  |
 | `verificaciones[].tipo` | TipoVerificacion (texto) | sí | valores: ListasRestrictivas · EstudioDeCumplimiento · Rues · Dian |
 | `verificaciones[].estado` | EstadoVerificacion (texto) | sí | valores: Pendiente · CoincidenciaPorAnalizar · Satisfecha · Fallida · Expirada |
@@ -514,11 +518,6 @@ Campos de la respuesta `200`:
 | `verificaciones[].estudio.concepto` | ConceptoCumplimiento (texto) | sí | valores: Favorable · Desfavorable |
 | `verificaciones[].estudio.oficial` | texto | sí |  |
 | `verificaciones[].estudio.fecha` | fecha y hora | sí |  |
-| `verificaciones[].estudio.vigenteHasta` | fecha y hora | sí |  |
-| `verificaciones[].estudio.matriz` | ResultadoDeMatrizDto o null | no |  |
-| `verificaciones[].estudio.matriz.puntaje` | number \| string | sí | patrón ^-?(?:0\|[1-9]\d*)(?:\.\d+)?$ |
-| `verificaciones[].estudio.matriz.nivel` | entero | sí |  |
-| `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
 | `…` |  | no | Se omiten los campos restantes: el esquema es muy extenso. |
@@ -899,7 +898,16 @@ Respuesta `200`:
         "relacionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "Constructora Norte S.A.S.",
         "identificacion": "900123456"
-      }
+      },
+      "porQue": [
+        {
+          "campo": "texto",
+          "etiqueta": "texto",
+          "valores": [
+            "texto"
+          ]
+        }
+      ]
     }
   ],
   "verificaciones": [

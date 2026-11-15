@@ -1,6 +1,6 @@
 # API · Identidad
 
-59 operaciones en 13 recursos.
+66 operaciones en 14 recursos.
 
 ## Gestión de ingreso
 
@@ -205,6 +205,9 @@ Campos de la respuesta `200`:
 | `exigePasskey` | booleano | no | por omisión false |
 | `passkeys` | entero | no | por omisión 0 |
 | `invitadoEn` | fecha y hora o null | no |  |
+| `grupos` | lista de AsignacionDeGrupoDto o null | no |  |
+| `grupos[].grupoId` | uuid | sí |  |
+| `grupos[].empresaId` | uuid o null | no |  |
 
 **Errores de negocio que lanza**
 
@@ -251,7 +254,13 @@ Respuesta `200`:
   "ultimoAcceso": "2026-11-12T15:00:00Z",
   "exigePasskey": false,
   "passkeys": 0,
-  "invitadoEn": "2026-11-12T15:00:00Z"
+  "invitadoEn": "2026-11-12T15:00:00Z",
+  "grupos": [
+    {
+      "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
 }
 ```
 
@@ -480,6 +489,458 @@ Respuesta `200`:
 curl -X POST "https://{host}/api/v1/usuarios/3fa85f64-5717-4562-b3fc-2c963f66afa6/sesiones/3fa85f64-5717-4562-b3fc-2c963f66afa6/cerrar" \
   -H "X-Api-Key: $API_KEY" \
   -H "Idempotency-Key: $(uuidgen)"
+```
+
+</details>
+
+## Grupos de acceso
+
+### `GET /api/v1/grupos-de-acceso`
+
+**Listar grupos de acceso.**
+
+**Permiso usuarios:administrar · API (`/api/v1`) · SDK: `listarGruposDeAcceso`**
+
+**Respuestas**
+
+- `200` OK — lista de GrupoDeAccesoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `[]` | lista de GrupoDeAccesoDto | sí |  |
+| `[].id` | uuid | sí |  |
+| `[].codigo` | texto | sí |  |
+| `[].nombre` | texto | sí |  |
+| `[].descripcion` | texto o null | no |  |
+| `[].activo` | booleano | sí |  |
+| `[].predefinido` | booleano | sí |  |
+| `[].rol` | texto o null | no |  |
+| `[].permisos` | lista de texto | sí |  |
+| `[].sectores` | lista de SectorDeGrupoDto | sí |  |
+| `[].sectores[].sector` | texto | sí |  |
+| `[].sectores[].nivel` | NivelDeSector (texto) | sí | valores: Ver · Editar |
+| `[].usuarios` | entero | sí |  |
+| `[].creadoEn` | fecha y hora o null | no |  |
+| `[].actualizadoEn` | fecha y hora o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/api/v1/grupos-de-acceso" \
+  -H "X-Api-Key: $API_KEY"
+```
+
+Respuesta `200`:
+
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "codigo": "CODIGO_EJEMPLO",
+    "nombre": "Constructora Norte S.A.S.",
+    "descripcion": "Texto de ejemplo.",
+    "activo": true,
+    "predefinido": true,
+    "rol": "texto",
+    "permisos": [
+      "texto"
+    ],
+    "sectores": [
+      {
+        "sector": "texto",
+        "nivel": "Ver"
+      }
+    ],
+    "usuarios": 1,
+    "creadoEn": "2026-11-12T15:00:00Z",
+    "actualizadoEn": "2026-11-12T15:00:00Z"
+  }
+]
+```
+
+</details>
+
+### `POST /api/v1/grupos-de-acceso`
+
+**Crear grupo de acceso.**
+
+**Permiso usuarios:administrar · API (`/api/v1`) · SDK: `crearGrupoDeAcceso`**
+
+**Cuerpo de la petición** (`application/json`, CrearGrupoDeAccesoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `codigo` | texto | sí |  |
+| `nombre` | texto | sí |  |
+| `descripcion` | texto o null | no |  |
+| `permisos` | lista de texto | sí |  |
+| `sectores` | lista de SectorDeGrupoDto o null | no |  |
+| `sectores[].sector` | texto | sí |  |
+| `sectores[].nivel` | NivelDeSector (texto) | sí | valores: Ver · Editar |
+
+**Respuestas**
+
+- `201` Creado — GrupoDeAccesoDto
+
+Campos de la respuesta `201`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `codigo` | texto | sí |  |
+| `nombre` | texto | sí |  |
+| `descripcion` | texto o null | no |  |
+| `activo` | booleano | sí |  |
+| `predefinido` | booleano | sí |  |
+| `rol` | texto o null | no |  |
+| `permisos` | lista de texto | sí |  |
+| `sectores` | lista de SectorDeGrupoDto | sí |  |
+| `sectores[].sector` | texto | sí |  |
+| `sectores[].nivel` | NivelDeSector (texto) | sí | valores: Ver · Editar |
+| `usuarios` | entero | sí |  |
+| `creadoEn` | fecha y hora o null | no |  |
+| `actualizadoEn` | fecha y hora o null | no |  |
+
+**Errores de negocio que lanza**
+
+- `409` `grupo-duplicado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/grupos-de-acceso" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"codigo":"CODIGO_EJEMPLO","nombre":"Constructora Norte S.A.S.","descripcion":"Texto de ejemplo.","permisos":["texto"],"sectores":[{"sector":"texto","nivel":"Ver"}]}'
+```
+
+Respuesta `201`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "codigo": "CODIGO_EJEMPLO",
+  "nombre": "Constructora Norte S.A.S.",
+  "descripcion": "Texto de ejemplo.",
+  "activo": true,
+  "predefinido": true,
+  "rol": "texto",
+  "permisos": [
+    "texto"
+  ],
+  "sectores": [
+    {
+      "sector": "texto",
+      "nivel": "Ver"
+    }
+  ],
+  "usuarios": 1,
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z"
+}
+```
+
+</details>
+
+### `GET /api/v1/grupos-de-acceso/{id}`
+
+**Obtener grupo de acceso.**
+
+**Permiso usuarios:administrar · API (`/api/v1`) · SDK: `obtenerGrupoDeAcceso`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — GrupoDeAccesoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `codigo` | texto | sí |  |
+| `nombre` | texto | sí |  |
+| `descripcion` | texto o null | no |  |
+| `activo` | booleano | sí |  |
+| `predefinido` | booleano | sí |  |
+| `rol` | texto o null | no |  |
+| `permisos` | lista de texto | sí |  |
+| `sectores` | lista de SectorDeGrupoDto | sí |  |
+| `sectores[].sector` | texto | sí |  |
+| `sectores[].nivel` | NivelDeSector (texto) | sí | valores: Ver · Editar |
+| `usuarios` | entero | sí |  |
+| `creadoEn` | fecha y hora o null | no |  |
+| `actualizadoEn` | fecha y hora o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/api/v1/grupos-de-acceso/3fa85f64-5717-4562-b3fc-2c963f66afa6" \
+  -H "X-Api-Key: $API_KEY"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "codigo": "CODIGO_EJEMPLO",
+  "nombre": "Constructora Norte S.A.S.",
+  "descripcion": "Texto de ejemplo.",
+  "activo": true,
+  "predefinido": true,
+  "rol": "texto",
+  "permisos": [
+    "texto"
+  ],
+  "sectores": [
+    {
+      "sector": "texto",
+      "nivel": "Ver"
+    }
+  ],
+  "usuarios": 1,
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z"
+}
+```
+
+</details>
+
+### `PUT /api/v1/grupos-de-acceso/{id}`
+
+**Actualizar grupo de acceso.** Reemplaza nombre, descripción, permisos y sectores. Cambia lo que pueden ya quienes lo tienen, desde su siguiente token (como un cambio de roles), así que a quien entró directo se le pide confirmar con su passkey. 409 `grupo-predefinido` con uno de los cuatro roles fijos.
+
+**Permiso usuarios:administrar · API (`/api/v1`) · SDK: `actualizarGrupoDeAcceso`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, ActualizarGrupoDeAccesoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `nombre` | texto | sí |  |
+| `descripcion` | texto o null | no |  |
+| `permisos` | lista de texto | sí |  |
+| `sectores` | lista de SectorDeGrupoDto o null | no |  |
+| `sectores[].sector` | texto | sí |  |
+| `sectores[].nivel` | NivelDeSector (texto) | sí | valores: Ver · Editar |
+
+**Respuestas**
+
+- `200` OK — GrupoDeAccesoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `codigo` | texto | sí |  |
+| `nombre` | texto | sí |  |
+| `descripcion` | texto o null | no |  |
+| `activo` | booleano | sí |  |
+| `predefinido` | booleano | sí |  |
+| `rol` | texto o null | no |  |
+| `permisos` | lista de texto | sí |  |
+| `sectores` | lista de SectorDeGrupoDto | sí |  |
+| `sectores[].sector` | texto | sí |  |
+| `sectores[].nivel` | NivelDeSector (texto) | sí | valores: Ver · Editar |
+| `usuarios` | entero | sí |  |
+| `creadoEn` | fecha y hora o null | no |  |
+| `actualizadoEn` | fecha y hora o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X PUT "https://{host}/api/v1/grupos-de-acceso/3fa85f64-5717-4562-b3fc-2c963f66afa6" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Constructora Norte S.A.S.","descripcion":"Texto de ejemplo.","permisos":["texto"],"sectores":[{"sector":"texto","nivel":"Ver"}]}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "codigo": "CODIGO_EJEMPLO",
+  "nombre": "Constructora Norte S.A.S.",
+  "descripcion": "Texto de ejemplo.",
+  "activo": true,
+  "predefinido": true,
+  "rol": "texto",
+  "permisos": [
+    "texto"
+  ],
+  "sectores": [
+    {
+      "sector": "texto",
+      "nivel": "Ver"
+    }
+  ],
+  "usuarios": 1,
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z"
+}
+```
+
+</details>
+
+### `POST /api/v1/grupos-de-acceso/{id}/desactivar`
+
+**Desactivar grupo de acceso.** Desactiva el grupo: deja de dar permisos a quien lo tiene (desde su siguiente token) y no se asigna a nadie nuevo. Las asignaciones se conservan por si se reactiva.
+
+**Permiso usuarios:administrar · API (`/api/v1`) · SDK: `desactivarGrupoDeAcceso`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — GrupoDeAccesoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `codigo` | texto | sí |  |
+| `nombre` | texto | sí |  |
+| `descripcion` | texto o null | no |  |
+| `activo` | booleano | sí |  |
+| `predefinido` | booleano | sí |  |
+| `rol` | texto o null | no |  |
+| `permisos` | lista de texto | sí |  |
+| `sectores` | lista de SectorDeGrupoDto | sí |  |
+| `sectores[].sector` | texto | sí |  |
+| `sectores[].nivel` | NivelDeSector (texto) | sí | valores: Ver · Editar |
+| `usuarios` | entero | sí |  |
+| `creadoEn` | fecha y hora o null | no |  |
+| `actualizadoEn` | fecha y hora o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/grupos-de-acceso/3fa85f64-5717-4562-b3fc-2c963f66afa6/desactivar" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "Idempotency-Key: $(uuidgen)"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "codigo": "CODIGO_EJEMPLO",
+  "nombre": "Constructora Norte S.A.S.",
+  "descripcion": "Texto de ejemplo.",
+  "activo": true,
+  "predefinido": true,
+  "rol": "texto",
+  "permisos": [
+    "texto"
+  ],
+  "sectores": [
+    {
+      "sector": "texto",
+      "nivel": "Ver"
+    }
+  ],
+  "usuarios": 1,
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z"
+}
+```
+
+</details>
+
+### `POST /api/v1/grupos-de-acceso/{id}/reactivar`
+
+**Reactivar grupo de acceso.**
+
+**Permiso usuarios:administrar · API (`/api/v1`) · SDK: `reactivarGrupoDeAcceso`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — GrupoDeAccesoDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `codigo` | texto | sí |  |
+| `nombre` | texto | sí |  |
+| `descripcion` | texto o null | no |  |
+| `activo` | booleano | sí |  |
+| `predefinido` | booleano | sí |  |
+| `rol` | texto o null | no |  |
+| `permisos` | lista de texto | sí |  |
+| `sectores` | lista de SectorDeGrupoDto | sí |  |
+| `sectores[].sector` | texto | sí |  |
+| `sectores[].nivel` | NivelDeSector (texto) | sí | valores: Ver · Editar |
+| `usuarios` | entero | sí |  |
+| `creadoEn` | fecha y hora o null | no |  |
+| `actualizadoEn` | fecha y hora o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/grupos-de-acceso/3fa85f64-5717-4562-b3fc-2c963f66afa6/reactivar" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "Idempotency-Key: $(uuidgen)"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "codigo": "CODIGO_EJEMPLO",
+  "nombre": "Constructora Norte S.A.S.",
+  "descripcion": "Texto de ejemplo.",
+  "activo": true,
+  "predefinido": true,
+  "rol": "texto",
+  "permisos": [
+    "texto"
+  ],
+  "sectores": [
+    {
+      "sector": "texto",
+      "nivel": "Ver"
+    }
+  ],
+  "usuarios": 1,
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "actualizadoEn": "2026-11-12T15:00:00Z"
+}
 ```
 
 </details>
@@ -3007,6 +3468,9 @@ Campos de la respuesta `200`:
 | `[].exigePasskey` | booleano | no | por omisión false |
 | `[].passkeys` | entero | no | por omisión 0 |
 | `[].invitadoEn` | fecha y hora o null | no |  |
+| `[].grupos` | lista de AsignacionDeGrupoDto o null | no |  |
+| `[].grupos[].grupoId` | uuid | sí |  |
+| `[].grupos[].empresaId` | uuid o null | no |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -3046,7 +3510,13 @@ Respuesta `200`:
     "ultimoAcceso": "2026-11-12T15:00:00Z",
     "exigePasskey": false,
     "passkeys": 0,
-    "invitadoEn": "2026-11-12T15:00:00Z"
+    "invitadoEn": "2026-11-12T15:00:00Z",
+    "grupos": [
+      {
+        "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
+    ]
   }
 ]
 ```
@@ -3077,6 +3547,9 @@ Respuesta `200`:
 | `identidades[].sistemaId` | uuid | sí |  |
 | `identidades[].idExterno` | texto | sí |  |
 | `invitar` | booleano o null | no |  |
+| `grupos` | lista de AsignacionDeGrupoDto o null | no |  |
+| `grupos[].grupoId` | uuid | sí |  |
+| `grupos[].empresaId` | uuid o null | no |  |
 
 **Respuestas**
 
@@ -3100,7 +3573,7 @@ curl -X POST "https://{host}/api/v1/usuarios" \
   -H "X-Api-Key: $API_KEY" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
-  -d '{"nombre":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","identificacion":{"pais":"CO","tipo":"texto","numero":"900123456","digitoVerificacion":"texto"},"roles":[{"rol":"Administrador","empresaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}],"identidades":[{"sistemaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","idExterno":"REF-0001"}],"invitar":true}'
+  -d '{"nombre":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","identificacion":{"pais":"CO","tipo":"texto","numero":"900123456","digitoVerificacion":"texto"},"roles":[{"rol":"Administrador","empresaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}],"identidades":[{"sistemaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","idExterno":"REF-0001"}],"invitar":true,"grupos":[{"grupoId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","empresaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}]}'
 ```
 
 Respuesta `201`:
@@ -3133,7 +3606,13 @@ Respuesta `201`:
   "ultimoAcceso": "2026-11-12T15:00:00Z",
   "exigePasskey": false,
   "passkeys": 0,
-  "invitadoEn": "2026-11-12T15:00:00Z"
+  "invitadoEn": "2026-11-12T15:00:00Z",
+  "grupos": [
+    {
+      "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
 }
 ```
 
@@ -3197,7 +3676,13 @@ Respuesta `200`:
   "ultimoAcceso": "2026-11-12T15:00:00Z",
   "exigePasskey": false,
   "passkeys": 0,
-  "invitadoEn": "2026-11-12T15:00:00Z"
+  "invitadoEn": "2026-11-12T15:00:00Z",
+  "grupos": [
+    {
+      "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
 }
 ```
 
@@ -3262,7 +3747,93 @@ Respuesta `200`:
   "ultimoAcceso": "2026-11-12T15:00:00Z",
   "exigePasskey": false,
   "passkeys": 0,
-  "invitadoEn": "2026-11-12T15:00:00Z"
+  "invitadoEn": "2026-11-12T15:00:00Z",
+  "grupos": [
+    {
+      "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
+}
+```
+
+</details>
+
+### `PUT /api/v1/usuarios/{id}/grupos`
+
+**Asignar grupos usuario.** Reemplaza todos los grupos de la persona, los predefinidos (sus roles de siempre) y los propios del tenant. Lo que puede es la unión de lo que dan, desde su siguiente token; los grupos desactivados no dan nada y no se asignan de nuevo. Cada empresa debe ser del tenant y estar al alcance de quien asigna. Queda en la auditoría de configuración.
+
+**Permiso usuarios:administrar · API (`/api/v1`) · SDK: `asignarGruposUsuario`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, AsignarGruposDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `grupos` | lista de AsignacionDeGrupoDto | sí |  |
+| `grupos[].grupoId` | uuid | sí |  |
+| `grupos[].empresaId` | uuid o null | no |  |
+
+**Respuestas**
+
+- `200` OK — UsuarioDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+Mismos campos de `UsuarioDto` que se detallan en `POST /api/v1/usuarios/{id}/invitar`.
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X PUT "https://{host}/api/v1/usuarios/3fa85f64-5717-4562-b3fc-2c963f66afa6/grupos" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"grupos":[{"grupoId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","empresaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}]}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "nombre": "Constructora Norte S.A.S.",
+  "correo": "contacto@empresa.co",
+  "identificacion": {
+    "pais": "CO",
+    "tipo": "texto",
+    "numero": "900123456",
+    "digitoVerificacion": "texto"
+  },
+  "activo": true,
+  "identidades": [
+    {
+      "sistemaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "idExterno": "REF-0001"
+    }
+  ],
+  "roles": [
+    {
+      "rol": "Administrador",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ],
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "ultimoAcceso": "2026-11-12T15:00:00Z",
+  "exigePasskey": false,
+  "passkeys": 0,
+  "invitadoEn": "2026-11-12T15:00:00Z",
+  "grupos": [
+    {
+      "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
 }
 ```
 
@@ -3336,7 +3907,13 @@ Respuesta `200`:
   "ultimoAcceso": "2026-11-12T15:00:00Z",
   "exigePasskey": false,
   "passkeys": 0,
-  "invitadoEn": "2026-11-12T15:00:00Z"
+  "invitadoEn": "2026-11-12T15:00:00Z",
+  "grupos": [
+    {
+      "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
 }
 ```
 

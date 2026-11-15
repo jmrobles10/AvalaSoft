@@ -341,6 +341,18 @@ Campos de la respuesta `200`:
 | `observaciones[].observacion.fecha` | fecha y hora | sí |  |
 | `observaciones[].observacion.requisito` | texto o null | no |  |
 | `observaciones[].observacion.campos` | lista de texto o null | no |  |
+| `perfil` | PerfilDeFichaDto o null | no |  |
+| `perfil.pais` | texto | sí |  |
+| `perfil.tipoIdentificacion` | texto | sí |  |
+| `perfil.dvDeclarado` | booleano | sí |  |
+| `perfil.modeloTributario` | texto | sí |  |
+| `perfil.autoridadTributaria` | texto | sí |  |
+| `perfil.impuestoVentas` | texto | sí |  |
+| `perfil.regimenes` | lista de RegimenTributarioDto | sí |  |
+| `perfil.regimenes[].codigo` | texto | sí |  |
+| `perfil.regimenes[].nombre` | texto | sí |  |
+| `perfil.tiposDePersona` | lista de texto | sí |  |
+| `perfil.tiposConDvDeclarado` | lista de texto | sí |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 
@@ -409,7 +421,27 @@ Respuesta `200`:
         ]
       }
     }
-  ]
+  ],
+  "perfil": {
+    "pais": "CO",
+    "tipoIdentificacion": "900123456",
+    "dvDeclarado": true,
+    "modeloTributario": "texto",
+    "autoridadTributaria": "texto",
+    "impuestoVentas": "texto",
+    "regimenes": [
+      {
+        "codigo": "CODIGO_EJEMPLO",
+        "nombre": "Constructora Norte S.A.S."
+      }
+    ],
+    "tiposDePersona": [
+      "texto"
+    ],
+    "tiposConDvDeclarado": [
+      "texto"
+    ]
+  }
 }
 ```
 
@@ -470,7 +502,7 @@ Campos de la respuesta `200`:
 | `aceptaciones[].revalidacion` | RevalidacionDeSeccionDto o null | no |  |
 | `aceptaciones[].revalidacion.expedienteId` | uuid | sí |  |
 | `aceptaciones[].revalidacion.folio` | texto | sí |  |
-| `aceptaciones[].revalidacion.estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido |
+| `aceptaciones[].revalidacion.estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido · NoAplica |
 | `aceptaciones[].revalidacion.version` | entero o null | no |  |
 | `aceptaciones[].revalidacion.plazoHasta` | fecha y hora | sí |  |
 | `aceptaciones[].origen` | OrigenDeAceptacion (texto) | no | valores: Expediente · Importacion |
@@ -633,7 +665,7 @@ Campos de la respuesta `200`:
 | `seccion.aceptaciones[].revalidacion` | RevalidacionDeSeccionDto o null | no |  |
 | `seccion.aceptaciones[].revalidacion.expedienteId` | uuid | sí |  |
 | `seccion.aceptaciones[].revalidacion.folio` | texto | sí |  |
-| `seccion.aceptaciones[].revalidacion.estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido |
+| `seccion.aceptaciones[].revalidacion.estado` | EstadoRequisito (texto) | sí | valores: Pendiente · Cargado · EnRevision · Observado · Aprobado · Eximido · NoAplica |
 | `seccion.aceptaciones[].revalidacion.version` | entero o null | no |  |
 | `seccion.aceptaciones[].revalidacion.plazoHasta` | fecha y hora | sí |  |
 | `seccion.aceptaciones[].origen` | OrigenDeAceptacion (texto) | no | valores: Expediente · Importacion |
