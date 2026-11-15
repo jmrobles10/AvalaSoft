@@ -95,7 +95,7 @@ public static class ProcesoDeValidacion
     /// (<see cref="OrigenFlujo.PorDefecto"/>). Nulo si no hay ninguno publicado. Un flujo indicado por el llamador que no sirve es un
     /// error; el del vínculo sin publicar sigue con las reglas y el por defecto.
     /// </summary>
-    public static async Task<FlujoResuelto?> ResolverFlujoAsync(IQuerySession sesion, Vinculo vinculo, Guid? explicito, CancellationToken ct)
+    public static async Task<FlujoResuelto?> ResolverFlujoAsync(IQuerySession sesion, Vinculo vinculo, Guid? explicito, CancellationToken ct, bool aceptandose = false)
     {
         if (explicito is { } indicado)
         {
@@ -113,7 +113,7 @@ public static class ProcesoDeValidacion
             propio.EmpresaId == vinculo.EmpresaId && propio.VersionPublicada is { } versionPropia)
             return new FlujoResuelto(propio, versionPropia, OrigenFlujo.Explicito);
 
-        var seleccion = await SeleccionarFlujoAsync(sesion, vinculo, ct);
+        var seleccion = await SeleccionarFlujoAsync(sesion, vinculo, ct, aceptandose);
         return seleccion is { Flujo: { } elegido, Version: { } publicada }
             ? new FlujoResuelto(elegido, publicada, seleccion.Origen, seleccion.Regla)
             : null;
@@ -123,7 +123,7 @@ public static class ProcesoDeValidacion
     /// Elige entre las reglas de selección y el flujo por defecto para un vínculo sin flujo explícito. Solo carga al tercero y el tipo
     /// del vínculo si algún flujo publicado del tipo tiene una regla; sin reglas es el por defecto, como antes de FR-1.
     /// </summary>
-    public static async Task<SeleccionResuelta> SeleccionarFlujoAsync(IQuerySession sesion, Vinculo vinculo, CancellationToken ct)
+    public static async Task<SeleccionResuelta> SeleccionarFlujoAsync(IQuerySession sesion, Vinculo vinculo, CancellationToken ct, bool aceptandose = false)
     {
         var empresaId = vinculo.EmpresaId;
         var tipoId = vinculo.TipoVinculoId;
@@ -131,18 +131,24 @@ public static class ProcesoDeValidacion
         var porDefecto = await sesion.LoadAsync<FlujoPorDefecto>(FlujoPorDefecto.Clave(empresaId, tipoId), ct);
         var flujoPorDefecto = porDefecto is null ? null : delTipo.FirstOrDefault(f => f.Id == porDefecto.FlujoId);
 
-        if (EvaluadorDeSeleccion.Reglas(delTipo).Count > 0 && await ContextoDeSeleccionAsync(sesion, vinculo, ct) is { } contexto)
+        if (EvaluadorDeSeleccion.Reglas(delTipo).Count > 0 && await ContextoDeSeleccionAsync(sesion, vinculo, FichaDeExigencia.LaMiraLaSeleccion(delTipo), aceptandose, ct) is { } contexto)
             return EvaluadorDeSeleccion.Seleccionar(delTipo, flujoPorDefecto, contexto);
         return EvaluadorDeSeleccion.SoloPorDefecto(flujoPorDefecto);
     }
 
-    /// <summary>Lo que se sabe del tercero y del vínculo para evaluar las reglas de selección; nulo si el tercero ya no existe.</summary>
-    private static async Task<ContextoDeExigencia?> ContextoDeSeleccionAsync(IQuerySession sesion, Vinculo vinculo, CancellationToken ct)
+    /// <summary>
+    /// Lo que se sabe del tercero y del vínculo para evaluar las reglas de selección; nulo si el tercero ya no existe. Con <paramref name="conFicha"/> (alguna
+    /// regla mira la ficha) y la ficha ya disponible para la empresa, trae también lo que el tercero declaró (EF-4); antes de la aceptación esos campos son
+    /// datos faltantes.
+    /// </summary>
+    private static async Task<ContextoDeExigencia?> ContextoDeSeleccionAsync(IQuerySession sesion, Vinculo vinculo, bool conFicha, bool aceptandose,
+        CancellationToken ct)
     {
         if (await sesion.LoadAsync<Tercero>(vinculo.TerceroId, ct) is not { } tercero)
             return null;
         var tipo = await sesion.LoadAsync<TipoVinculo>(vinculo.TipoVinculoId, ct);
-        return ContextoDeExigencia.De(tercero, tipo?.Codigo ?? string.Empty, vinculo.Atributos);
+        var contexto = ContextoDeExigencia.De(tercero, tipo?.Codigo ?? string.Empty, vinculo.Atributos);
+        return conFicha ? await FichaDeExigencia.CompletarAsync(sesion, contexto, vinculo, null, aceptandose, ct, forzar: true) : contexto;
     }
 
     /// <summary>
@@ -215,7 +221,9 @@ public static class ProcesoDeValidacion
             areas.TryGetValue(a.AreaId, out var conNombre) ? conNombre.Nombre : "Área", a.AprobadoresRequeridos, a.PuedeRechazarExpediente,
             a.Automatica, a.SlaHoras ?? sla.HorasDe(a.AreaId)))])).ToList();
 
-        var exigencia = ContextoDeExigencia.De(tercero, tipo?.Codigo ?? string.Empty, vinculo.Atributos);
+        // La ficha del tercero (EF-2) entra al motor solo si una condición del flujo la mira y la empresa ya puede verla: con la aceptación de esta misma transacción (documentos) o ya aceptada.
+        var exigencia = await FichaDeExigencia.CompletarAsync(sesion, ContextoDeExigencia.De(tercero, tipo?.Codigo ?? string.Empty, vinculo.Atributos), vinculo,
+            flujo.Version, documentos is not null, ct);
         var requisitos = await CalcularRequisitosAsync(sesion, vinculo, tercero, empresa.TenantId, flujo.Version, exigencia, soloRequisitos, documentos, ahora, ct,
             retiros, exigirRatificacion);
 
@@ -299,8 +307,10 @@ public static class ProcesoDeValidacion
         var conRetiros = retiros is null || retiros.Count == 0
             ? ordenados
             : [.. ordenados.Select(r => retiros.TryGetValue(r.RequisitoId, out var retiro) ? r with { Retiro = retiro } : r)];
+        // Lo que de la ficha hizo que se pida cada requisito (EF-6): el tercero ve por qué se le pide. Solo si las condiciones del flujo miran la ficha.
+        var conMotivos = await FichaDeExigencia.ConMotivosAsync(sesion, version, exigencia, conRetiros, ct);
         // Lo que la empresa tiene eximido para este vínculo (EX-3) nace Eximido citando la exención, sea cual sea el tipo de expediente.
-        return ExencionesDeVinculos.Aplicar(vinculo, conRetiros, ahora);
+        return ExencionesDeVinculos.Aplicar(vinculo, conMotivos, ahora);
     }
 
     /// <summary>Renovación periódica: la sección cuya versión completa es la ya aceptada no queda cubierta; hace falta ratificarla (VV-1).</summary>

@@ -11044,6 +11044,34 @@
         }
       }
     },
+    "/api/v1/flujos/campos-de-ficha": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Flujos.FlujosEndpoints"
+        ],
+        "summary": "GET_api_v1_flujos_campos_de_ficha",
+        "description": "GET_api_v1_flujos_campos_de_ficha",
+        "operationId": "GET_api_v1_flujos_campos_de_ficha",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CampoDeFichaDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/v1/flujos/por-defecto": {
       "get": {
         "tags": [
@@ -20760,6 +20788,47 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "CampoDeFichaDto": {
+        "required": [
+          "ruta",
+          "seccion",
+          "etiqueta",
+          "tipo",
+          "operadores",
+          "catalogo",
+          "jerarquica"
+        ],
+        "type": "object",
+        "properties": {
+          "ruta": {
+            "type": "string"
+          },
+          "seccion": {
+            "type": "string"
+          },
+          "etiqueta": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "operadores": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "catalogo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "jerarquica": {
+            "type": "boolean"
           }
         }
       },
@@ -33466,6 +33535,28 @@
           }
         }
       },
+      "MotivoDeExigenciaDto": {
+        "required": [
+          "campo",
+          "etiqueta",
+          "valores"
+        ],
+        "type": "object",
+        "properties": {
+          "campo": {
+            "type": "string"
+          },
+          "etiqueta": {
+            "type": "string"
+          },
+          "valores": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "MotivoDeRevisionDto": {
         "required": [
           "codigo",
@@ -37731,6 +37822,15 @@
                 "$ref": "#/components/schemas/PersonaDelRequisitoDto"
               }
             ]
+          },
+          "porQue": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MotivoDeExigenciaDto"
+            }
           }
         }
       },
@@ -37808,6 +37908,15 @@
                 "$ref": "#/components/schemas/PersonaDelRequisitoDto"
               }
             ]
+          },
+          "porQue": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MotivoDeExigenciaDto"
+            }
           }
         }
       },
@@ -44547,6 +44656,12 @@
             ]
           },
           "atributos": {
+            "type": [
+              "null",
+              "object"
+            ]
+          },
+          "ficha": {
             "type": [
               "null",
               "object"

@@ -14,4 +14,5 @@ export const EstadoAreaRequisito = {
   Aprobado: 'Aprobado',
   Observado: 'Observado',
   Eximido: 'Eximido',
+  NoAplica: 'NoAplica',
 } as const;

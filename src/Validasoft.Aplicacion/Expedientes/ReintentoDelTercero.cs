@@ -55,6 +55,7 @@ public static class ReintentoDelTercero
         // La política de reintento es la del flujo que el vínculo tendría hoy: el suyo, el que escoja una regla de selección (FR-1) o el por defecto.
         var flujos = await ProcesoDeValidacion.CargarFlujosDeLosVinculosAsync(consulta, rechazados, ct);
         var terceros = (await consulta.LoadManyAsync<Tercero>(ct, rechazados.Select(v => v.TerceroId).Distinct().ToArray())).ToDictionary(t => t.Id);
+        var fichas = await FichaDeExigencia.CargarDeLosVinculosAsync(consulta, rechazados, flujos, ct);
         var tipoIds = rechazados.Select(v => v.TipoVinculoId).Distinct().ToArray();
         var tiposVinculo = (await consulta.Query<TipoVinculo>().Where(t => t.AnyTenant() && t.Id.IsOneOf(tipoIds)).ToListAsync(ct)).ToDictionary(t => t.Id);
 
@@ -64,7 +65,7 @@ public static class ReintentoDelTercero
             if (!expedientes.TryGetValue(vinculo.UltimoExpedienteId!.Value, out var expediente) || expediente is not { Estado: EstadoExpediente.Rechazado, Rechazo: { } rechazo })
                 continue;
             var contexto = terceros.TryGetValue(vinculo.TerceroId, out var tercero)
-                ? ContextoDeExigencia.De(tercero, tiposVinculo.GetValueOrDefault(vinculo.TipoVinculoId)?.Codigo ?? string.Empty, vinculo.Atributos)
+                ? ContextoDeExigencia.De(tercero, tiposVinculo.GetValueOrDefault(vinculo.TipoVinculoId)?.Codigo ?? string.Empty, vinculo.Atributos).ConFicha(fichas.GetValueOrDefault(vinculo.TerceroId))
                 : null;
             var politica = ProcesoDeValidacion.FlujoVigente(vinculo, flujos, porDefecto, contexto)?.ReintentoEfectivo() ?? ReintentoTrasRechazo.PorDefecto;
             var desde = politica.PuedeDesde(rechazo.Fecha);

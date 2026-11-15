@@ -257,6 +257,7 @@ const NOMBRES: Record<string, string> = {
   'GET /api/v1/flujos/{id}/versiones': 'listarVersionesFlujo',
   'GET /api/v1/flujos/{id}/versiones/{n}': 'obtenerVersionFlujo',
   'POST /api/v1/flujos/seleccion/vista-previa': 'vistaPreviaSeleccionFlujo',
+  'GET /api/v1/flujos/campos-de-ficha': 'listarCamposDeFicha',
   'POST /api/v1/vinculos/{id}/expedientes': 'abrirExpediente',
   'GET /api/v1/expedientes': 'listarExpedientes',
   'GET /api/v1/expedientes/{id}': 'obtenerExpediente',
@@ -642,8 +643,8 @@ const ENUMS: Record<string, string[]> = {
   AmbitoDocumento: ['Global', 'PorVinculo'],
   ClaseDocumento: ['Archivo', 'Formulario'],
   TipoTextoLegal: ['AvisoPlataforma', 'AutorizacionEmpresa', 'TerminosEmpresa'],
-  EstadoRequisito: ['Pendiente', 'Cargado', 'EnRevision', 'Observado', 'Aprobado', 'Eximido'],
-  EstadoAreaRequisito: ['Esperando', 'Pendiente', 'Aprobado', 'Observado', 'Eximido'],
+  EstadoRequisito: ['Pendiente', 'Cargado', 'EnRevision', 'Observado', 'Aprobado', 'Eximido', 'NoAplica'],
+  EstadoAreaRequisito: ['Esperando', 'Pendiente', 'Aprobado', 'Observado', 'Eximido', 'NoAplica'],
   // Ficha maestra por empresa (F2): qué pide un requisito y cómo cambió un campo entre la versión aceptada y la nueva.
   TipoRequisito: ['Documento', 'Seccion'],
   TipoCambio: ['Agregado', 'Quitado', 'Modificado'],

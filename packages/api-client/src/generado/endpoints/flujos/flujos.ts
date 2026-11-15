@@ -24,6 +24,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CampoDeFichaDto,
   CrearFlujoDto,
   EditarFlujoDto,
   FlujoDto,
@@ -197,6 +198,91 @@ export function useListarFlujos<TData = Awaited<ReturnType<typeof listarFlujos>>
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListarFlujosQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const listarCamposDeFicha = (
+
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<CampoDeFichaDto[]>(
+      {url: `/api/v1/flujos/campos-de-ficha`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getListarCamposDeFichaQueryKey = () => {
+    return [
+    `/api/v1/flujos/campos-de-ficha`
+    ] as const;
+    }
+
+
+export const getListarCamposDeFichaQueryOptions = <TData = Awaited<ReturnType<typeof listarCamposDeFicha>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCamposDeFicha>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListarCamposDeFichaQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listarCamposDeFicha>>> = ({ signal }) => listarCamposDeFicha(requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listarCamposDeFicha>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListarCamposDeFichaQueryResult = NonNullable<Awaited<ReturnType<typeof listarCamposDeFicha>>>
+export type ListarCamposDeFichaQueryError = ErrorType<void>
+
+
+export function useListarCamposDeFicha<TData = Awaited<ReturnType<typeof listarCamposDeFicha>>, TError = ErrorType<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCamposDeFicha>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarCamposDeFicha>>,
+          TError,
+          Awaited<ReturnType<typeof listarCamposDeFicha>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarCamposDeFicha<TData = Awaited<ReturnType<typeof listarCamposDeFicha>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCamposDeFicha>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listarCamposDeFicha>>,
+          TError,
+          Awaited<ReturnType<typeof listarCamposDeFicha>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarCamposDeFicha<TData = Awaited<ReturnType<typeof listarCamposDeFicha>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCamposDeFicha>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListarCamposDeFicha<TData = Awaited<ReturnType<typeof listarCamposDeFicha>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listarCamposDeFicha>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListarCamposDeFichaQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

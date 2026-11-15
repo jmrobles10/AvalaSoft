@@ -76,7 +76,8 @@ public sealed class EmisorDeCertificados(ClavesDeCertificados claves, ReglasDeCa
         var documentacion = await DocumentacionDelExpediente.CargarAsync(sesion, boveda, expediente, reglas, CalculadoraDeVigencia.Fecha(ahora), ct);
 
         var requisitos = expediente.Requisitos
-            .Where(r => r.Eximido || r.VersionActual is not null)
+            // Un requisito que no aplica según la ficha del tercero (EF-5) no se certifica: no se le pidió.
+            .Where(r => !r.NoAplica && (r.Eximido || r.VersionActual is not null))
             .Select(r => r.Eximido
                 // La justificación de una exención del vínculo (EX-3) es de la empresa: el certificado, que ve el tercero y cualquiera que lo verifique, solo dice que se eximió.
                 ? new RequisitoCertificado(r.Codigo, r.Nombre, null, null, null, true,

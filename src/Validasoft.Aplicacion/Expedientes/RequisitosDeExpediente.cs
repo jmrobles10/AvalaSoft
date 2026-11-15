@@ -73,13 +73,19 @@ public static class RequisitosDeExpediente
         VersionDeRequisito? aceptada) =>
         pedido.Calcular(ficha is null ? null : RequisitosDeSeccion.Evaluar(pedido, ficha.GetValueOrDefault(pedido.SeccionId(terceroId))), aceptada);
 
-    /// <summary>Tercero, tipo de vínculo y atributos del vínculo: con qué se evalúan las condiciones de sus requisitos.</summary>
-    public static async Task<ContextoDeExigencia> ContextoAsync(IQuerySession sesionDelTenant, Vinculo vinculo, CancellationToken ct)
+    /// <summary>
+    /// Tercero, tipo de vínculo y atributos del vínculo: con qué se evalúan las condiciones de sus requisitos. Con la <paramref name="version"/> del flujo que se va a
+    /// evaluar, y solo si alguna de sus condiciones mira la ficha del tercero y la empresa ya puede verla, el contexto trae también lo que el tercero declaró (EF-2);
+    /// sin versión, la ficha no se carga (sus campos son datos faltantes). <paramref name="aceptandose"/>: la aceptación de la invitación ocurre en esta transacción.
+    /// </summary>
+    public static async Task<ContextoDeExigencia> ContextoAsync(IQuerySession sesionDelTenant, Vinculo vinculo, CancellationToken ct, FlujoVersion? version = null,
+        bool aceptandose = false)
     {
         var tercero = await sesionDelTenant.LoadAsync<Tercero>(vinculo.TerceroId, ct)
                       ?? throw ReglaDeNegocioException.NoEncontrado("tercero-no-encontrado", "El tercero del vínculo no existe.");
         var tipo = await sesionDelTenant.LoadAsync<TipoVinculo>(vinculo.TipoVinculoId, ct);
-        return ContextoDeExigencia.De(tercero, tipo?.Codigo ?? string.Empty, vinculo.Atributos);
+        var contexto = ContextoDeExigencia.De(tercero, tipo?.Codigo ?? string.Empty, vinculo.Atributos);
+        return version is null ? contexto : await FichaDeExigencia.CompletarAsync(sesionDelTenant, contexto, vinculo, version, aceptandose, ct);
     }
 
     /// <summary>Canónicos de los tipos globales que se piden: lo que la bóveda del tercero comparte con el vínculo.</summary>
@@ -219,13 +225,96 @@ public static class RequisitosDeExpediente
         var tercero = await sesion.LoadAsync<Tercero>(vinculo.TerceroId, ct);
         if (tercero is null)
             return RecalculoDePersonas.Nada;
-        var pedidos = (await DelFlujoAsync(sesion, version, await ContextoAsync(sesion, vinculo, ct), ct, incluirPersonas: true))
+        var pedidos = (await DelFlujoAsync(sesion, version, await ContextoAsync(sesion, vinculo, ct, version), ct, incluirPersonas: true))
             .Where(p => p.Requisito.EsDePersona).ToList();
         if (pedidos.Count == 0)
             return RecalculoDePersonas.Nada;
 
         var deseados = await CalcularDePersonasAsync(sesion, vinculo, tercero, tenantId, pedidos, ahora, ct);
         return new RecalculoDePersonas(expediente.ResolverPersonas(deseados.Requisitos, ahora), deseados.Compartidos > 0);
+    }
+
+    /// <summary>Qué cambió al recalcular un expediente abierto contra la ficha del tercero y si se compartió algún documento con el vínculo (hay que calcular su vigencia y su IA).</summary>
+    public sealed record RecalculoPorFicha(IReadOnlyList<object> Eventos, bool Compartio)
+    {
+        public static readonly RecalculoPorFicha Nada = new([], false);
+    }
+
+    /// <summary>
+    /// Recalcula los requisitos de un expediente <b>abierto</b> contra lo que el tercero declara hoy en su ficha (EF-5): resuelve de nuevo, con la ficha de hoy,
+    /// las condiciones de los requisitos de la versión del flujo con la que se abrió el expediente que la miran y deja que el expediente decida qué cambia
+    /// (<see cref="Expediente.ResolverSegunFicha"/>): los que ahora aplican y no estaban se suman con el documento que el tercero ya tenga (se comparte con el vínculo
+    /// como al abrir), los que dejan de aplicar pasan a <c>NoAplica</c> y los que vuelven a aplicar se vuelven a exigir. Es el mismo camino que el recálculo de
+    /// personas relacionadas. Vacío si el flujo no mira la ficha, la empresa aún no puede verla (B-1) o el expediente está cerrado. El flujo del expediente no cambia
+    /// (FR-3), solo sus requisitos.
+    /// </summary>
+    public static async Task<RecalculoPorFicha> RecalcularPorFichaAsync(IDocumentSession sesion, Vinculo vinculo, Expediente expediente, Guid tenantId,
+        DateTimeOffset ahora, CancellationToken ct)
+    {
+        if (!expediente.EstaAbierto || !expediente.ConRequisitos || expediente.Flujo is not { } delFlujo || !FichaDeExigencia.Disponible(vinculo))
+            return RecalculoPorFicha.Nada;
+        var flujo = await sesion.LoadAsync<Flujo>(delFlujo.FlujoId, ct);
+        if (flujo?.Versiones.FirstOrDefault(v => v.Id == delFlujo.FlujoVersionId) is not { } version || !FichaDeExigencia.LaMira(version) ||
+            await sesion.LoadAsync<Tercero>(vinculo.TerceroId, ct) is not { } tercero)
+            return RecalculoPorFicha.Nada;
+
+        var contexto = await ContextoAsync(sesion, vinculo, ct, version);
+        var hoy = CalculadoraDeVigencia.Fecha(ahora);
+
+        // Los requisitos del flujo cuya condición mira la ficha y cuáles aplican hoy.
+        var condicionados = version.Requisitos.Where(r => AtributosDeExigencia.MencionaFicha(r.Condicion)).ToList();
+        var aplican = EvaluadorDeExigencia.Filtrar(condicionados, contexto).Select(r => r.Id).ToHashSet();
+        var delFlujoDe = expediente.Requisitos
+            .Select(r => (Requisito: r, IdDelFlujo: FichaDeExigencia.RequisitoDelFlujo(version, r.Id, r.Persona, r.TipoRequisito, r.Seccion)))
+            .Where(x => x.IdDelFlujo is { } id && condicionados.Any(c => c.Id == id))
+            .ToList();
+
+        var noAplican = delFlujoDe.Where(x => !aplican.Contains(x.IdDelFlujo!.Value)).Select(x => x.Requisito.Id).ToHashSet();
+        var vuelvenAAplicar = delFlujoDe.Where(x => x.Requisito.NoAplica && aplican.Contains(x.IdDelFlujo!.Value)).Select(x => x.Requisito.Id).ToHashSet();
+
+        // Los que aplican y el expediente no tiene (una sección de la financiera trae un requisito por periodo). El expediente inicial trae todo lo que aplicaba al abrirse,
+        // así que lo que falta es nuevo; una renovación o una actualización traen solo una parte (lo que venció o cambió): ahí es nuevo lo que la empresa nunca había pedido
+        // a este vínculo, no lo que ya revisó en otro expediente y no entra por no haber cambiado.
+        var yaEstan = delFlujoDe.Select(x => x.IdDelFlujo!.Value).ToHashSet();
+        if (expediente.Tipo != TipoExpediente.Inicial)
+        {
+            var vinculoId = vinculo.Id;
+            var expedienteId = expediente.Id;
+            var anteriores = await sesion.Query<Expediente>().Where(e => e.VinculoId == vinculoId && e.Id != expedienteId).ToListAsync(ct);
+            yaEstan.UnionWith(anteriores.SelectMany(e => e.Requisitos)
+                .Select(r => FichaDeExigencia.RequisitoDelFlujo(version, r.Id, r.Persona, r.TipoRequisito, r.Seccion))
+                .OfType<Guid>());
+        }
+
+        var faltantes = aplican.Where(id => !yaEstan.Contains(id)).ToHashSet();
+        var ids = new HashSet<Guid>(faltantes);
+        ids.UnionWith(RequisitosDeSeccion.Expandir(version.Requisitos.Where(r => r.EsSeccion && faltantes.Contains(r.Id)), hoy).Select(p => p.RequisitoId));
+
+        IReadOnlyList<RequisitoCalculado> nuevos = [];
+        var compartio = false;
+        if (ids.Count > 0)
+        {
+            // Los documentos que piden los nuevos se comparten con el vínculo (RQ-3) antes de calcularlos, como al abrir: quien ya subió su RUT no lo vuelve a subir.
+            var pedidos = (await DelFlujoAsync(sesion, version, contexto, ct)).Where(p => ids.Contains(p.Requisito.Id)).ToList();
+            DocumentosDelVinculo? documentos = null;
+            if (pedidos.Count > 0)
+            {
+                documentos = await ComparticionDeDocumentos.CompartirConVinculoAsync(sesion, vinculo, tenantId, CodigosGlobales(pedidos),
+                    OrigenComparticion.Automatica, ahora, ct);
+                compartio = documentos.Compartidos.Count > 0;
+            }
+
+            nuevos = await ProcesoDeValidacion.CalcularRequisitosAsync(sesion, vinculo, tercero, tenantId, version, contexto, ids, documentos, ahora, ct);
+        }
+
+        // El porqué vigente de los que siguen pidiéndose (si el tercero cambia una especialidad por otra del mismo grupo, el motivo dice la nueva).
+        var motivos = await FichaDeExigencia.MotivosAsync(sesion, version, contexto, ct);
+        var motivosVigentes = delFlujoDe
+            .Where(x => aplican.Contains(x.IdDelFlujo!.Value))
+            .Select(x => new MotivosDelRequisito(x.Requisito.Id, motivos.GetValueOrDefault(x.IdDelFlujo!.Value) ?? []))
+            .ToList();
+
+        return new RecalculoPorFicha(expediente.ResolverSegunFicha(nuevos, noAplican, vuelvenAAplicar, motivosVigentes, ahora), compartio);
     }
 
     /// <summary>
@@ -405,6 +494,7 @@ public static class RequisitosDeExpediente
 
         var terceroIds = vinculos.Select(v => v.TerceroId).Distinct().ToArray();
         var terceros = (await consulta.LoadManyAsync<Tercero>(ct, terceroIds)).ToDictionary(t => t.Id);
+        var fichas = await FichaDeExigencia.CargarDeLosVinculosAsync(consulta, vinculos, flujos, ct);
         var tipoVinculoIds = vinculos.Select(v => v.TipoVinculoId).Distinct().ToArray();
         var tiposVinculo = (await consulta.Query<TipoVinculo>().Where(t => t.AnyTenant() && t.Id.IsOneOf(tipoVinculoIds)).ToListAsync(ct))
             .ToDictionary(t => t.Id);
@@ -412,7 +502,7 @@ public static class RequisitosDeExpediente
         {
             if (!terceros.TryGetValue(vinculo.TerceroId, out var tercero))
                 continue;
-            var contexto = ContextoDeExigencia.De(tercero, tiposVinculo.GetValueOrDefault(vinculo.TipoVinculoId)?.Codigo ?? string.Empty, vinculo.Atributos);
+            var contexto = ContextoDeExigencia.De(tercero, tiposVinculo.GetValueOrDefault(vinculo.TipoVinculoId)?.Codigo ?? string.Empty, vinculo.Atributos).ConFicha(fichas.GetValueOrDefault(vinculo.TerceroId));
             if (ProcesoDeValidacion.FlujoVigente(vinculo, flujos, porDefecto, contexto) is not { } version)
                 continue;
             if (EvaluadorDeExigencia.Filtrar(version.Requisitos.Where(r => !r.EsDePersona && delCodigo.Contains(r.TipoDocumentoTenantId)), contexto).Count > 0)
@@ -459,6 +549,7 @@ public static class RequisitosDeExpediente
 
         var terceroIds = vinculos.Select(v => v.TerceroId).Distinct().ToArray();
         var terceros = (await consulta.LoadManyAsync<Tercero>(ct, terceroIds)).ToDictionary(t => t.Id);
+        var fichas = await FichaDeExigencia.CargarDeLosVinculosAsync(consulta, vinculos, flujos, ct);
         var relaciones = (await consulta.Query<RelacionEntreTerceros>().Where(r => r.AnyTenant() && r.DestinoId.IsOneOf(terceroIds)).ToListAsync(ct))
             .GroupBy(r => r.DestinoId).ToDictionary(g => g.Key, g => (IReadOnlyList<RelacionEntreTerceros>)[.. g]);
         var tiposVinculo = (await consulta.Query<TipoVinculo>().Where(t => t.AnyTenant() && t.Id.IsOneOf(vinculos.Select(v => v.TipoVinculoId).Distinct().ToArray())).ToListAsync(ct))
@@ -467,7 +558,7 @@ public static class RequisitosDeExpediente
         {
             if (!terceros.TryGetValue(vinculo.TerceroId, out var tercero))
                 continue;
-            var contexto = ContextoDeExigencia.De(tercero, tiposVinculo.GetValueOrDefault(vinculo.TipoVinculoId)?.Codigo ?? string.Empty, vinculo.Atributos);
+            var contexto = ContextoDeExigencia.De(tercero, tiposVinculo.GetValueOrDefault(vinculo.TipoVinculoId)?.Codigo ?? string.Empty, vinculo.Atributos).ConFicha(fichas.GetValueOrDefault(vinculo.TerceroId));
             if (ProcesoDeValidacion.FlujoVigente(vinculo, flujos, porDefecto, contexto) is not { } version)
                 continue;
             var delTercero = relaciones.GetValueOrDefault(vinculo.TerceroId) ?? [];

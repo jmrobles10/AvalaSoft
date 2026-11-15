@@ -244,6 +244,7 @@ public static partial class ExportacionDeExpedienteEndpoints
         RequisitosAgregados r => $"Se agregan a la actualización: {string.Join(", ", r.Requisitos.Select(x => x.Nombre))}",
         RequisitosDePersonaAgregados r => $"Se piden los documentos de más personas relacionadas: {string.Join(", ", r.Requisitos.Select(x => x.Nombre))}",
         PersonaDeRequisitoResuelta p => $"Una persona relacionada cumple el rol de {p.Persona.Rol} y se le pide su documento",
+        RequisitosSegunFichaResueltos f => TextoDeFicha(f),
         VersionAdjuntadaARequisito { Retiro: { } retiro } v => $"El tercero retiró la versión {retiro.Numero} (motivo: {retiro.Motivo}); vuelve la versión {v.Version.Numero}",
         VersionAdjuntadaARequisito v => $"Versión {v.Version.Numero} recibida",
         VeredictosInvalidadosPorNuevaVersion => "Versión nueva: se invalidan las decisiones previas",
@@ -267,6 +268,19 @@ public static partial class ExportacionDeExpedienteEndpoints
         ExpedienteDesaprobado d => $"Expediente desaprobado ({(d.FaseInicial ? "fase inicial" : $"desde la etapa {d.Orden}")}): {d.Justificacion}",
         _ => Separar(datos.GetType().Name)
     };
+
+    /// <summary>«Cambió la ficha del tercero: se piden X; dejan de aplicar Y; vuelven a aplicar Z» (EF-5).</summary>
+    private static string TextoDeFicha(RequisitosSegunFichaResueltos f)
+    {
+        var partes = new List<string>();
+        if (f.Agregados.Count > 0)
+            partes.Add($"se piden {string.Join(", ", f.Agregados.Select(x => x.Nombre))}");
+        if (f.NoAplican.Count > 0)
+            partes.Add($"dejan de aplicar {f.NoAplican.Count} requisito(s)");
+        if (f.VuelvenAAplicar.Count > 0)
+            partes.Add($"vuelven a aplicar {f.VuelvenAAplicar.Count} requisito(s)");
+        return partes.Count == 0 ? "Cambió la ficha del tercero" : $"Cambió la ficha del tercero: {string.Join("; ", partes)}";
+    }
 
     private static string Separar(string nombre) => RegexPalabras().Replace(nombre, " $1").Trim();
 

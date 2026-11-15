@@ -143,11 +143,22 @@ public sealed record SeleccionPorReglaDto(int Prioridad, CondicionDto Condicion,
 /// selección vigentes para <see cref="TipoVinculo"/> (código) con los datos del tercero y del vínculo. Con <see cref="TerceroId"/> (visible
 /// para el tenant) los datos salen del tercero y los campos que vengan los sustituyen («y si fuera extranjero»); sin él se usan los
 /// indicados y, si faltan, <c>Juridica</c>, <c>CO</c> y <c>NIT</c>. <see cref="EsExtranjero"/> omitido es «el país no es CO».
-/// <see cref="Atributos"/> son los del vínculo (<c>vinculo.atributos.{clave}</c>). No abre nada ni escribe nada.
+/// <see cref="Atributos"/> son los del vínculo (<c>vinculo.atributos.{clave}</c>). <see cref="Ficha"/> son los valores de la ficha del tercero con los que se
+/// quiere probar una regla (<c>ficha.{seccion}.{campo}</c>: texto, lista de textos o booleano; los de una especialidad se amplían con su categoría y su grupo
+/// como al evaluar): la ficha de un tercero real no se lee aquí, porque la empresa solo la ve cuando el tercero acepta su invitación. No abre nada ni escribe nada.
 /// </summary>
 public sealed record VistaPreviaDeSeleccionDto(
     string TipoVinculo, Guid? TerceroId = null, string? TipoPersona = null, string? Pais = null, string? TipoIdentificacion = null,
-    bool? EsExtranjero = null, Dictionary<string, JsonElement>? Atributos = null);
+    bool? EsExtranjero = null, Dictionary<string, JsonElement>? Atributos = null, Dictionary<string, JsonElement>? Ficha = null);
+
+/// <summary>
+/// Un campo de la ficha del tercero que puede mirar una condición (EF-1, <c>GET /flujos/campos-de-ficha</c>): su <see cref="Ruta"/> es el atributo
+/// (<c>ficha.especialidades.especialidades</c>), <see cref="Tipo"/> uno de <c>Texto|Opcion|ListaOpciones|Booleano</c>, <see cref="Operadores"/> los que admite y
+/// <see cref="Catalogo"/> la ruta del catálogo de plataforma de donde salen sus valores (<c>/catalogos/{catalogo}</c>; nula si no tiene). Con
+/// <see cref="Jerarquica"/> un valor de un nivel superior (el grupo, la categoría) cubre a los de abajo.
+/// </summary>
+public sealed record CampoDeFichaDto(
+    string Ruta, string Seccion, string Etiqueta, string Tipo, IReadOnlyList<string> Operadores, string? Catalogo, bool Jerarquica);
 
 /// <summary>Una regla de selección vigente (flujo publicado con condición) y si la cumple el tercero consultado.</summary>
 public sealed record ReglaDeSeleccionDto(
@@ -241,7 +252,13 @@ public sealed record RequisitoExpedienteDto(
     Guid Id, TipoDocumentoRequisitoDto TipoDocumento, bool Obligatorio, string Estado, VersionRequisitoDto? VersionActual, int Reenvios,
     ExencionDto? Exencion, IReadOnlyList<AreaDeRequisitoDto> Areas, string TipoRequisito = "Documento", SeccionDeRequisitoDto? Seccion = null,
     SoporteDeSeccionesDto? SoporteDeSecciones = null, RetiroDeVersionDto? Retiro = null,
-    IReadOnlyList<RevisionAutomaticaDto>? RevisionesAutomaticas = null, PersonaDelRequisitoDto? Persona = null);
+    IReadOnlyList<RevisionAutomaticaDto>? RevisionesAutomaticas = null, PersonaDelRequisitoDto? Persona = null, IReadOnlyList<MotivoDeExigenciaDto>? PorQue = null);
+
+/// <summary>
+/// Lo que de la ficha del tercero hizo que se pida un requisito (EF-6): el campo (<c>ficha.especialidades.especialidades</c>), su nombre legible y los valores de
+/// la condición que el tercero declaró, con su nombre en el catálogo. Sin valores, solo se sabe que declaró el campo.
+/// </summary>
+public sealed record MotivoDeExigenciaDto(string Campo, string Etiqueta, IReadOnlyList<string> Valores);
 
 /// <summary>
 /// Cambio de un campo o fila entre la versión que la empresa aceptó y la nueva (las Actualizaciones del SRM, F2):
@@ -404,7 +421,7 @@ public sealed record ObservacionPublicaDto(IReadOnlyList<MotivoPublicoDto> Motiv
 public sealed record RequisitoPublicoDto(
     Guid Id, TipoDocumentoRequisitoDto TipoDocumento, bool Obligatorio, string Estado, VersionRequisitoDto? VersionActual,
     IReadOnlyList<ObservacionPublicaDto> Observaciones, bool PuedeRatificar = false, DateTimeOffset? RatificadoEn = null,
-    string TipoRequisito = "Documento", SeccionDeRequisitoDto? Seccion = null, PersonaDelRequisitoDto? Persona = null);
+    string TipoRequisito = "Documento", SeccionDeRequisitoDto? Seccion = null, PersonaDelRequisitoDto? Persona = null, IReadOnlyList<MotivoDeExigenciaDto>? PorQue = null);
 
 /// <summary>
 /// Lo que el tercero ve de su expediente: estado, observaciones vigentes y los documentos que le piden
