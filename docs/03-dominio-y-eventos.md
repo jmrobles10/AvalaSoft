@@ -411,7 +411,7 @@ Para `Actualizacion` (revalidación) el expediente nace directamente en `EnRevis
 | `AbrirExpediente(VinculoId, EmpresaId, Tipo, FlujoVersionId, Alcance[])` | `ExpedienteAbierto(Folio, PlazoCargueHasta)` + `RequisitosCalculados(Requisitos[], ContextoEvaluado, MotorVersion)` | Snapshot inmutable. Si el tercero ya tiene versión actual del tipo **y la invitación está aceptada**, el requisito nace `Cargado`; si **todos** los obligatorios nacen `Cargado`, se emite `ExpedienteEnviadoARevision` automáticamente (esc. 1). Para `Actualizacion`, además `VersionAdjuntadaARequisito` y `ExpedienteEnviadoARevision`. |
 | `AgregarRequisitoAExpediente(TipoTenantId, Motivo: VersionNueva \| Vencimiento \| PersonaRelacionadaNueva)` | `RequisitoAgregadoAExpediente` | Lo emite la saga sobre un `Renovacion`/`Actualizacion` abierto (tabla de casos §5.2). Nunca abre un segundo expediente. |
 | `ReclasificarExpediente(NuevoTipo)` | `ExpedienteReclasificado(Actualizacion → Renovacion)` | Solo de `Actualizacion` a `Renovacion` cuando vence un crítico mientras la revalidación está abierta. |
-| `RecalcularRequisitos(Motivo, FlujoVersionId?)` | `RequisitosRecalculados(Agregados[], MarcadosNoAplica[], Conservados[], ContextoEvaluado)` | Nunca elimina: pasa a `NoAplica` conservando veredictos. |
+| `RecalcularRequisitos(Motivo, FlujoVersionId?)` | `RequisitosRecalculados(Agregados[], MarcadosNoAplica[], Conservados[], ContextoEvaluado)` | Nunca elimina: pasa a `NoAplica` conservando veredictos. **Implementado hoy para lo que depende de la ficha del tercero** (EF-5): `Expediente.ResolverSegunFicha` emite `RequisitosSegunFichaResueltos` ([§12.3](#123-condiciones-sobre-la-ficha-del-tercero-ef-1ef-10-implementado)); un `NoAplica` nunca es lo ya aprobado y sus decisiones quedan en el historial pero dejan de contar. |
 | (al abrir) `SeleccionarFlujo(FlujoVersionId?)` | `FlujoSeleccionado(ExpedienteId, FlujoVersionId, Origen: Explicito \| Regla \| PorDefecto, Regla? { Prioridad, Condicion, ReglasEvaluadas })` | Un flujo explícito (el del llamador o el del vínculo) gana siempre; si no, se evalúan por prioridad los flujos publicados del tipo de vínculo que traen condición de selección (§12.1, FR-1) y gana el primero que cumple (`Regla` guarda cuál); sin coincidencia, el flujo por defecto de `(empresa, tipo de vínculo)`. |
 | `CambiarFlujoDeExpediente(NuevoFlujoVersionId, Justificacion)` | `FlujoDeExpedienteCambiado(Anterior, Nuevo, Justificacion)` + `RequisitosRecalculados` | Solo `Administrador`, solo en `Abierto` u `Observado`; conserva los veredictos de los requisitos cuyo tipo sigue existiendo en el flujo nuevo; los demás pasan a `NoAplica`. Queda en `auditoria_configuracion` y en el timeline. |
 | (desde el editor) `AplicarVersionDeFlujoAExpedientesAbiertos(FlujoVersionId, Filtro, Simular)` | Por expediente: `RequisitosRecalculados`; global: `VersionDeFlujoAplicada(FlujoVersionId, Expedientes[], Impacto)` | `Simular = true` devuelve el impacto (cuántos expedientes, requisitos agregados/quitados por cada uno) sin emitir eventos; solo expedientes `Abierto`, `Observado` o `EnRevision` sin etapa aprobada. |
@@ -630,6 +630,8 @@ Operador = Igual | Distinto | En | NoEn | ContieneAlguno | ContieneTodos | Exist
 
 Atributos del contrato: `tercero.tipoPersona` (`Natural | Juridica | Consorcio`), `tercero.pais`, `tercero.tipoIdentificacion`, `tercero.regimenTributario`, `tercero.esExtranjero`, `tercero.atributos.*`, `vinculo.tipo`, `vinculo.empresa`, `vinculo.categorias`, `vinculo.etiquetas`, `vinculo.especialidades`, `vinculo.montoEstimado`, `vinculo.nivelRiesgo`, `vinculo.atributos.*`. Condición vacía = aplica a todos. Para consorcios la regla puede exigir documentos de `tercero.miembros[]` (se generan requisitos por miembro).
 
+A los anteriores se suman los **campos de la ficha del tercero**, `ficha.{seccion}.{campo}` (p. ej. `ficha.especialidades.especialidades`, `ficha.general.ciiu`; implementado, [§12.3](#123-condiciones-sobre-la-ficha-del-tercero-ef-1ef-10-implementado)): la especialidad que el tercero declara decide qué documentos se le piden.
+
 `IEvaluadorDeExigencia.Evaluar(FlujoVersion, ContextoTercero, ContextoVinculo) → RequisitoCalculado[]` es una **función pura** con tabla de casos. El recálculo es un comando explícito.
 
 ### 12.1 Selección automática y cambio de flujo
@@ -671,6 +673,28 @@ El cuestionario de evaluación del proveedor nuevo del SRM, rehecho: versionado,
 | `VencerEvaluacion` (barrido de reevaluación) | `EvaluacionVencida` + una `EvaluacionAsignada` nueva (motivo `Reevaluacion`) | Idempotente; la nueva usa la versión publicada de ese momento; no cambia el estado del vínculo. |
 
 **Con el expediente** (el patrón de la cuenta designada, CB-4): al abrir un expediente `Inicial`, el flujo (`DefinicionDeFlujo.Evaluaciones`) asigna cada evaluación y el expediente recibe `EvaluacionesRequeridas(Evaluaciones[])`; cada vez que la evaluación se responde, recalifica, reabre o anula, el expediente recibe `EvaluacionDelExpedienteActualizada(EvaluacionId, Estado, Puntaje)` **en la misma transacción**. `Expediente.Cerrar` exige `EvaluacionesSatisfechas` (ninguna que **bloquee** esté `Pendiente` o `Reprobada`); si las áreas ya aprobaron, `EsperandoSoloLasEvaluaciones` lo dice y el cierre ocurre al aprobarse la última. Un expediente rechazado o anulado anula sus evaluaciones pendientes. Privacidad: todo es del tenant y filtra por `EmpresaId`; el tercero solo ve su vista pública sin resultado (CE-9). Evento público: `evaluacion.calificada` ([05 §7](05-api-contratos-y-webhooks.md)).
+
+### 12.3 Condiciones sobre la ficha del tercero (EF-1…EF-10, implementado)
+
+El SRM exige documentos según la especialidad que el proveedor declara (`DocumentosRequeridos`: por especialidad, categoría o grupo). Aquí es el mismo motor de condiciones, con un espacio de nombres nuevo ([registro](decisiones/registro.md) `5-septuagies`).
+
+```
+Atributo   = ... | ficha.{seccion}.{campo}          -- solo los de CamposDeFicha.Todos (catálogo cerrado)
+ContextoDeExigencia.Ficha: { ruta → valor JSON }    -- FichaParaExigencia, función pura sobre la versión vigente de cada sección
+```
+
+| Campo | Tipo | Valores |
+|---|---|---|
+| `ficha.especialidades.especialidades` | lista | catálogo de especialidades (grupo → categoría → especialidad); un valor cubre lo que tiene debajo |
+| `ficha.general.ciiu` / `ficha.general.ciiu_principal` | lista / opción | CIIU de 2 a 4 dígitos (la lista suma la principal y las secundarias y cubre por prefijo; la principal es exacta) |
+| `ficha.general.ciudad`, `ficha.general.pais` | opción / texto | DANE de 5 dígitos; país ISO |
+| `ficha.tributaria.responsabilidades` | lista | casilla 53 del RUT (2 dígitos) |
+| `ficha.general.certificado_iso`, `ficha.tributaria.responsable_ica`, `ficha.tributaria.exento_rete_cree` | sí/no | `true` / `false` |
+
+- **Operadores por tipo:** listas con `ContieneAlguno` y `ContieneTodos`; texto y opciones con `Igual`, `Distinto`, `En`, `NoEn`; sí/no con `Igual` y `Distinto`; todos con `Existe`. «No incluye ninguno» es `No(ContieneAlguno)`. Un dato **no declarado** es un dato faltante (la comparación afirmativa no cumple, la negada sí); sin ficha disponible (antes de aceptar la invitación, B-1) todos los campos faltan.
+- **Dónde vale:** requisitos del flujo y selección del flujo (FR-2); no en cuestionarios. La ficha solo se carga si alguna condición la mira.
+- **Recalcular al cambiar la ficha (EF-5):** `Expediente.ResolverSegunFicha(nuevos, noAplican, vuelvenAAplicar, motivos)`, que emite `RequisitosSegunFichaResueltos(Agregados[], NoAplican[], VuelvenAAplicar[], Motivos[], Fecha)` y se dispara por la misma sincronización del vínculo que ya adjunta versiones y resuelve personas relacionadas (`SincronizarRequisitosDelVinculo`). Es la parte del recálculo de requisitos (§6) que depende de la ficha: lo que ahora aplica se suma, lo que ya no pasa a **`NoAplica`** (nunca se elimina; sus decisiones quedan en el historial pero dejan de contar, como en una exención, y `Cuenta` es falso para las áreas), y vuelve a exigirse si lo declarado vuelve. **Nunca** toca lo aprobado, lo eximido a mano ni un expediente cerrado, y no cambia el flujo del expediente (FR-3).
+- **Por qué se pide (EF-6):** `RequisitoCalculado.PorQue` y `RequisitoDeExpediente.PorQue` guardan `MotivoDeExigencia { Campo, Etiqueta, Valores[] }` —los valores de la condición que el tercero declaró, con su nombre en el catálogo—, para decírselo al tercero y al revisor.
 
 ---
 
