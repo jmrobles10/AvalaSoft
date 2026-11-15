@@ -471,7 +471,7 @@ public sealed partial class ServicioDeIngreso(
     {
         var vigencia = TimeSpan.FromMinutes(Math.Min(Math.Max(1, configuracion.GetValue("Validasoft:Ingreso:MinutosAcceso", 15)), inactividadMinutos));
         return cuenta.Usuario is { } usuario
-            ? emisor.EmitirDeUsuario(usuario, cuenta.Cuenta.TenantId!.Value, sesionId, metodo, vigencia, ahora)
+            ? emisor.EmitirDeUsuario(usuario, cuenta.Concesiones, cuenta.Cuenta.TenantId!.Value, sesionId, metodo, vigencia, ahora)
             : emisor.EmitirDeOperador(cuenta.Operador!, sesionId, metodo, vigencia, ahora);
     }
 

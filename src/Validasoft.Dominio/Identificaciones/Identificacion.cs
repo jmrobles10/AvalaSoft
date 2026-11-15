@@ -39,6 +39,23 @@ public sealed record Identificacion(string Pais, string Tipo, string Numero, str
             throw ReglaDeNegocioException.Validacion("numero-identificacion-invalido",
                 $"El número '{numero}' no tiene el formato de {tipoId.Nombre} ({codigoPais}).");
 
+        // El dígito de control va dentro del número (RNC y cédula dominicanos): sin él válido, la identificación no existe.
+        if (!Identificaciones.DigitoVerificacion.NumeroValido(tipoId.Control, normalizado))
+            throw ReglaDeNegocioException.Validacion("digito-verificacion-invalido",
+                $"El dígito de control del número '{numero}' no corresponde a {tipoId.Nombre} ({codigoPais}).");
+
+        // RUC de Panamá: el DV lo declara el tercero (2 dígitos, no se calcula); puede llegar aparte o faltar.
+        if (tipoId.DvDeclarado)
+        {
+            var declarado = digitoVerificacion?.Trim();
+            if (string.IsNullOrEmpty(declarado))
+                return new Identificacion(codigoPais, tipoId.Codigo, normalizado, null);
+            if (!Identificaciones.DigitoVerificacion.DvDeclaradoValido(declarado))
+                throw ReglaDeNegocioException.Validacion("digito-verificacion-invalido",
+                    $"El dígito de verificación de {tipoId.Codigo} son 2 dígitos (recibí '{digitoVerificacion}').");
+            return new Identificacion(codigoPais, tipoId.Codigo, normalizado, declarado);
+        }
+
         if (!tipoId.TieneDv)
             return new Identificacion(codigoPais, tipoId.Codigo, normalizado, null);
 

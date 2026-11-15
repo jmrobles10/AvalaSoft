@@ -309,7 +309,8 @@ public static class RequisitosDeExpediente
             }
 
             if (ids.Count > 0)
-                nuevos = await ProcesoDeValidacion.CalcularRequisitosAsync(sesion, vinculo, tercero, tenantId, version, contexto, ids, documentos, ahora, ct);
+                nuevos = await ProcesoDeValidacion.CalcularRequisitosAsync(sesion, vinculo, tercero, tenantId, version, contexto, ids, documentos, ahora, ct,
+                    enrutarPorSector: expediente.Tipo == TipoExpediente.Actualizacion);
         }
 
         // El porqué vigente de los que siguen pidiéndose (si el tercero cambia una especialidad por otra del mismo grupo, el motivo dice la nueva).

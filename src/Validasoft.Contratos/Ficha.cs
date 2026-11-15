@@ -99,10 +99,25 @@ public sealed record EstadoSeccionFichaDto(
     string Seccion, string Nombre, int? Periodo, bool Obligatoria, int? Version, bool Completa, IReadOnlyList<FaltanteSeccionDto> Faltantes,
     int? ReglaVersion, DateTimeOffset? Actualizada, IReadOnlyList<SoporteSeccionDto>? SoportesRetirados = null);
 
+/// <summary>Un régimen tributario que ofrece el país del tercero (RG-3): código estable y nombre.</summary>
+public sealed record RegimenTributarioDto(string Codigo, string Nombre);
+
+/// <summary>
+/// Cómo se diligencia la ficha de este tercero según el país de su identificación (RG-7): <see cref="DvDeclarado"/> (el RUC de Panamá
+/// lleva un DV que declara el tercero en la General), <see cref="ModeloTributario"/> (<c>Colombiano</c>: casilla 53 del RUT, resoluciones e ICA;
+/// <c>Generico</c>: régimen, impuesto a las ventas, retenciones y exención), la autoridad y el nombre del impuesto a las ventas (ITBMS, ITBIS,
+/// IVA…) y los regímenes del país (vacíos en el modelo colombiano). <see cref="TiposDePersona"/>: los tipos de identificación que admite una persona
+/// relacionada de este tercero (los de Colombia, los de su país y los genéricos) y <see cref="TiposConDvDeclarado"/> los de ellos cuyo DV declara la
+/// persona (el RUC de Panamá). El cliente no lo deduce: lo lee de aquí.
+/// </summary>
+public sealed record PerfilDeFichaDto(
+    string Pais, string TipoIdentificacion, bool DvDeclarado, string ModeloTributario, string AutoridadTributaria, string ImpuestoVentas,
+    IReadOnlyList<RegimenTributarioDto> Regimenes, IReadOnlyList<string> TiposDePersona, IReadOnlyList<string> TiposConDvDeclarado);
+
 /// <summary>Ficha del tercero para el wizard: orden por tipo de persona, la siguiente sección incompleta y el estado de cada una.</summary>
 public sealed record EstadoFichaDto(
     Guid TerceroId, string TipoPersona, IReadOnlyList<string> Orden, string? SiguienteSeccion, bool Completa,
-    IReadOnlyList<EstadoSeccionFichaDto> Secciones, IReadOnlyList<ObservacionDeSeccionDto>? Observaciones = null);
+    IReadOnlyList<EstadoSeccionFichaDto> Secciones, IReadOnlyList<ObservacionDeSeccionDto>? Observaciones = null, PerfilDeFichaDto? Perfil = null);
 
 /// <summary>
 /// Cambio de la sección sin un documento nuevo que lo respalde (FM-15, FD-4): los campos que cambiaron respecto de la última versión
@@ -206,11 +221,22 @@ public sealed record ResolucionDto(string? Numero, DateOnly? Fecha);
 /// <summary>Municipio donde declara ICA, su actividad (CIIU) y la tarifa por mil, si la hay.</summary>
 public sealed record IcaErpDto(CiudadErpDto? Municipio, CodigoNombreDto? Ciiu, decimal? TarifaPorMil);
 
-/// <summary><c>FICHA_TRIBUTARIA</c> aceptada: responsabilidades DIAN (código y nombre), las calidades derivadas, resoluciones e ICA.</summary>
+/// <summary>
+/// Información tributaria de un tercero fuera de Colombia (RG-3): el régimen (código del país), si es contribuyente del impuesto a las
+/// ventas (ITBMS, ITBIS, IVA…), agente de retención, exento de retenciones (con su certificado) y emisor de comprobantes electrónicos.
+/// </summary>
+public sealed record ContenidoTributarioGenericoDto(
+    string? Regimen, bool? ContribuyenteImpuestoVentas, bool? AgenteDeRetencion, bool? ExentoDeRetenciones, ResolucionDto? CertificadoExencion,
+    bool? EmisorComprobantesElectronicos);
+
+/// <summary>
+/// <c>FICHA_TRIBUTARIA</c> aceptada: responsabilidades DIAN (código y nombre), las calidades derivadas, resoluciones e ICA (todo ello, de Colombia)
+/// y, para un tercero de otro país, <see cref="Generico"/> (nulo si no se diligenció nada del modelo genérico).
+/// </summary>
 public sealed record ContenidoTributarioDto(
     IReadOnlyList<CodigoNombreDto> Responsabilidades, CalidadesTributariasDto Calidades, IReadOnlyList<CalidadSinDerivarDto> CalidadesSinDerivar,
     ResolucionDto? ResolucionGranContribuyente, ResolucionDto? ResolucionAutorretenedor, bool? ResponsableIca, bool? AutorretenedorIca,
-    IReadOnlyList<IcaErpDto> Ica);
+    IReadOnlyList<IcaErpDto> Ica, ContenidoTributarioGenericoDto? Generico = null);
 
 /// <summary>Persona de la sección legal (FM-7, fase 1). <see cref="Rol"/>: RepresentanteLegal, Suplente, Apoderado, Socio, JuntaDirectiva, RevisorFiscal, Contador.</summary>
 public sealed record PersonaRelacionadaDto(

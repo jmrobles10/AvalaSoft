@@ -29,6 +29,8 @@ public static class FichaDelVinculoEndpoints
         var aceptadas = await empresa.Sesion.Query<SeccionAceptada>()
             .Where(a => a.VinculoId == id && a.EmpresaId == empresa.EmpresaId)
             .ToListAsync(ct);
+        // Un grupo de acceso acotado por sector solo ve las secciones de sus sectores.
+        aceptadas = [.. aceptadas.Where(a => contexto.PuedeVer(Permisos.TercerosLeer, a.Seccion))];
 
         IReadOnlyDictionary<Guid, SeccionDeFicha> streams;
         await using (var boveda = sesiones.ConsultaBoveda())

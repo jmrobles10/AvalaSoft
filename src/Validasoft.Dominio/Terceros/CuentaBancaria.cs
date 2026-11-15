@@ -81,9 +81,20 @@ public sealed partial class CuentaBancaria
     public static string Enmascarar(string ultimos4) => $"****{ultimos4}";
 
     /// <summary>
+    /// La moneda de una cuenta que no la declara (RG-8): la del país del banco para los que tienen perfil propio (peso dominicano en República
+    /// Dominicana; dólar en Panamá, donde circula el dólar) y, como siempre, el peso colombiano en los demás.
+    /// </summary>
+    public static string MonedaPorOmision(string? pais) => (pais ?? string.Empty).Trim().ToUpperInvariant() switch
+    {
+        "DO" => "DOP",
+        "PA" => "USD",
+        _ => "COP"
+    };
+
+    /// <summary>
     /// Valida lo declarado y devuelve la cuenta con el número protegido por <paramref name="proteger"/>. Número de 6 a 20
     /// dígitos (se aceptan espacios y guiones); banco, titular e identificación del titular obligatorios; moneda ISO de tres
-    /// letras (COP por defecto).
+    /// letras (la del país del banco por defecto: <see cref="MonedaPorOmision"/>).
     /// </summary>
     public static CuentaBancaria Registrar(Guid terceroId, DatosDeCuentaBancaria datos, Func<string, string> proteger, DateTimeOffset ahora)
     {
@@ -97,10 +108,10 @@ public sealed partial class CuentaBancaria
         if (numero.Length is < 6 or > 20 || !(datos.Numero ?? string.Empty).All(c => char.IsDigit(c) || c is ' ' or '-'))
             throw ReglaDeNegocioException.Validacion("numero-cuenta-invalido", "El número de cuenta tiene entre 6 y 20 dígitos.");
 
-        var moneda = string.IsNullOrWhiteSpace(datos.Moneda) ? "COP" : datos.Moneda.Trim().ToUpperInvariant();
+        var pais = string.IsNullOrWhiteSpace(datos.Pais) ? "CO" : datos.Pais.Trim().ToUpperInvariant();
+        var moneda = string.IsNullOrWhiteSpace(datos.Moneda) ? MonedaPorOmision(pais) : datos.Moneda.Trim().ToUpperInvariant();
         if (moneda.Length != 3 || !moneda.All(char.IsAsciiLetterUpper))
             throw ReglaDeNegocioException.Validacion("moneda-invalida", "La moneda es un código ISO de tres letras (COP, USD…).");
-        var pais = string.IsNullOrWhiteSpace(datos.Pais) ? "CO" : datos.Pais.Trim().ToUpperInvariant();
         var swift = Ficha.ReglasDeCatalogo.NormalizarSwift(datos.BancoSwift, out var swiftValido);
         if (!swiftValido)
             throw ReglaDeNegocioException.Validacion("swift-invalido", "El SWIFT/BIC del banco tiene 8 u 11 caracteres (4 letras, 2 de país, 2 de plaza y 3 opcionales de sucursal).");

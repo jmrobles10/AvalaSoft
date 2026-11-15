@@ -69,7 +69,8 @@ public sealed record CrearFlujoDto(
     bool SeparacionDeFunciones = false, IReadOnlyList<RequisitoDelFlujoDto>? Requisitos = null,
     IReadOnlyList<VerificacionRequeridaDto>? Verificaciones = null, PlazoCargueDto? PlazoCargue = null, ReintentoDto? Reintento = null,
     VigenciaVinculoDto? VigenciaVinculo = null, RecordatorioDeFlujoDto? RecordatorioObservaciones = null,
-    SeleccionDeFlujoDto? Seleccion = null, IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null);
+    SeleccionDeFlujoDto? Seleccion = null, IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null,
+    IReadOnlyList<ResponsableDeSectorDto>? ResponsablesDeSector = null);
 
 /// <summary>
 /// Edita el borrador (o crea uno nuevo si solo hay versión publicada). Lo que llega nulo conserva el valor de la última
@@ -80,7 +81,8 @@ public sealed record EditarFlujoDto(
     string? Nombre = null, IReadOnlyList<EtapaDto>? Etapas = null, string? PoliticaDevolucion = null, bool? SeparacionDeFunciones = null,
     IReadOnlyList<RequisitoDelFlujoDto>? Requisitos = null, IReadOnlyList<VerificacionRequeridaDto>? Verificaciones = null,
     PlazoCargueDto? PlazoCargue = null, ReintentoDto? Reintento = null, VigenciaVinculoDto? VigenciaVinculo = null,
-    RecordatorioDeFlujoDto? RecordatorioObservaciones = null, SeleccionDeFlujoDto? Seleccion = null, IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null);
+    RecordatorioDeFlujoDto? RecordatorioObservaciones = null, SeleccionDeFlujoDto? Seleccion = null, IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null,
+    IReadOnlyList<ResponsableDeSectorDto>? ResponsablesDeSector = null);
 
 /// <summary>
 /// Cuándo se escoge el flujo solo (FR-1, docs/03 §12.1): al abrir un expediente sin flujo explícito se evalúan los flujos publicados del
@@ -97,7 +99,15 @@ public sealed record FlujoVersionDto(
     DateTimeOffset CreadaEn, DateTimeOffset? PublicadaEn, DateTimeOffset? RetiradaEn, IReadOnlyList<RequisitoDelFlujoDto>? Requisitos = null,
     IReadOnlyList<VerificacionRequeridaDto>? Verificaciones = null, PlazoCargueDto? PlazoCargue = null, ReintentoDto? Reintento = null,
     VigenciaVinculoDto? VigenciaVinculo = null, RecordatorioDeFlujoDto? RecordatorioObservaciones = null, SeleccionDeFlujoDto? Seleccion = null,
-    IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null);
+    IReadOnlyList<EvaluacionRequeridaDto>? Evaluaciones = null,
+    IReadOnlyList<ResponsableDeSectorDto>? ResponsablesDeSector = null);
+
+/// <summary>
+/// El área responsable de un sector de la ficha (<c>FICHA_GENERAL</c>, <c>FICHA_TRIBUTARIA</c>, <c>FICHA_LEGAL</c>, <c>FICHA_FINANCIERA</c>, <c>FICHA_SST</c> o <c>FICHA_ESPECIALIDADES</c>) en las actualizaciones: cuando el tercero
+/// cambia una sección después de aprobada, la actualización la envía solo a esta área y no a todas las del flujo. El área debe participar en el flujo (422 <c>responsable-area-invalida</c>);
+/// un sector sin responsable se enruta como siempre; un sector repetido, 422 <c>sector-duplicado</c>. En una edición, <c>[]</c> los quita todos y nulo conserva los de la última versión.
+/// </summary>
+public sealed record ResponsableDeSectorDto(string Sector, Guid AreaId);
 
 /// <summary>
 /// Reintento del tercero tras un rechazo (DS-4): con <see cref="Permitido"/> el tercero rechazado ve los motivos en su portal y

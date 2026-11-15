@@ -1,4 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField, useMediaQuery, useTheme } from '@mui/material';
+import type { PerfilDeFichaDto } from '@validasoft/api-client';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CampoCifra, CampoFechaFicha, CampoSiNo, CampoTexto, Rejilla } from '../campos';
@@ -6,7 +7,7 @@ import { PreguntaPep } from '../pep/PreguntaPep';
 import { PAISES } from '../paises';
 import { SelectorUnico } from '../selectores';
 import { ROLES, TIPOS_IDENTIFICACION_PERSONA, type PersonaRelacionada } from '../tipos';
-import { esRol } from './personas';
+import { esRol, esSociedad } from './personas';
 
 interface Props {
   inicial: PersonaRelacionada;
@@ -17,19 +18,23 @@ interface Props {
   hayEnRuta?: (prefijo: string) => boolean;
   onGuardar: (persona: PersonaRelacionada) => void;
   onCerrar: () => void;
+  /** Los tipos de identificación del país del tercero y los que declaran su DV (RG-4); sin perfil, los de siempre. */
+  perfil?: PerfilDeFichaDto | null;
 }
 
 /**
  * Agregar o editar una persona relacionada. Solo cambia la lista del formulario: se guarda con la sección. En el celular
  * ocupa toda la pantalla. El DV de un NIT lo calcula Validasoft.
  */
-export function DialogoPersona({ inicial, nueva, mensaje, hayEnRuta, onGuardar, onCerrar }: Props) {
+export function DialogoPersona({ inicial, nueva, mensaje, hayEnRuta, onGuardar, onCerrar, perfil }: Props) {
   const { t } = useTranslation();
   const tema = useTheme();
   const pantallaCompleta = useMediaQuery(tema.breakpoints.down('sm'));
   const [p, setP] = useState<PersonaRelacionada>(inicial);
   const cambiar = (cambio: PersonaRelacionada) => setP((actual) => ({ ...actual, ...cambio }));
-  const esNit = p.tipo_identificacion === 'NIT';
+  const esNit = esSociedad(p.tipo_identificacion, p.numero);
+  const tipos = perfil?.tiposDePersona ?? TIPOS_IDENTIFICACION_PERSONA;
+  const dvDeclarado = perfil?.tiposConDvDeclarado.includes(p.tipo_identificacion ?? '') === true;
   const titulo = nueva ? t('ficha.legal.nueva') : t('ficha.legal.editarPersona');
 
   const enviar = (evento: SubmitEvent) => {
@@ -61,13 +66,14 @@ export function DialogoPersona({ inicial, nueva, mensaje, hayEnRuta, onGuardar, 
                 helperText={mensaje('tipo_identificacion')}
                 fullWidth
               >
-                {TIPOS_IDENTIFICACION_PERSONA.map((tipo) => (
+                {tipos.map((tipo) => (
                   <MenuItem key={tipo} value={tipo}>
                     {tipo}
                   </MenuItem>
                 ))}
               </TextField>
-              <CampoTexto etiqueta={t('ficha.legal.numero')} valor={p.numero} onCambiar={(v) => cambiar({ numero: v })} mensaje={mensaje('numero') ?? mensaje('dv')} maxLength={20} />
+              <CampoTexto etiqueta={t('ficha.legal.numero')} valor={p.numero} onCambiar={(v) => cambiar({ numero: v })} mensaje={mensaje('numero') ?? (dvDeclarado ? null : mensaje('dv'))} maxLength={20} />
+              {dvDeclarado && <CampoTexto etiqueta={t('ficha.legal.dv')} valor={p.dv} onCambiar={(v) => cambiar({ dv: v })} mensaje={mensaje('dv')} ayuda={t('ficha.general.dvAyuda')} inputMode="numeric" maxLength={2} />}
             </Rejilla>
             <Rejilla>
               <CampoTexto etiqueta={esNit ? t('ficha.legal.razonSocial') : t('ficha.legal.nombres')} valor={p.nombres} onCambiar={(v) => cambiar({ nombres: v })} mensaje={mensaje('nombres')} maxLength={200} />

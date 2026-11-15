@@ -55,6 +55,9 @@ public static partial class CamposDeFicha
     [GeneratedRegex("^[A-Z]{2}$")]
     private static partial Regex RegexPais();
 
+    [GeneratedRegex("^[A-Z][A-Z0-9_]{0,39}$")]
+    private static partial Regex RegexRegimen();
+
     private static readonly IReadOnlyDictionary<string, string> NombresCortos = new Dictionary<string, string>(StringComparer.Ordinal)
     {
         [CodigosDeSeccion.General] = "general",
@@ -72,6 +75,13 @@ public static partial class CamposDeFicha
     private static string? Pais(string valor) => RegexPais().IsMatch(valor.ToUpperInvariant()) ? valor.ToUpperInvariant() : null;
 
     private static string? Booleano(string valor) => bool.TryParse(valor, out var b) ? (b ? "true" : "false") : null;
+
+    /// <summary>Código de un régimen tributario (<c>MAYÚSCULAS_Y_GUIONES_BAJOS</c>, RG-3): la lista de cada país la da su perfil, no un catálogo.</summary>
+    private static string? Regimen(string valor)
+    {
+        var codigo = valor.ToUpperInvariant();
+        return RegexRegimen().IsMatch(codigo) ? codigo : null;
+    }
 
     private static Func<string, string?> DeCatalogo(CatalogoDePlataforma catalogo) => valor => ReglasDeCatalogo.NormalizarCodigo(catalogo, valor);
 
@@ -98,6 +108,15 @@ public static partial class CamposDeFicha
         Campo(CodigosDeSeccion.Tributaria, "responsable_ica", ["responsable_ica"], "Responsable del impuesto de industria y comercio", TipoAtributo.Booleano,
             null, JerarquiaDeCampo.Ninguna, false, Booleano),
         Campo(CodigosDeSeccion.Tributaria, "exento_rete_cree", ["exento_rete_cree"], "Exento de la retención del CREE", TipoAtributo.Booleano, null,
+            JerarquiaDeCampo.Ninguna, false, Booleano),
+        // El modelo tributario de los demás países (Panamá, República Dominicana…, RG-3): no tienen la casilla 53 ni ICA, tienen régimen, impuesto a las ventas y retenciones.
+        Campo(CodigosDeSeccion.Tributaria, "regimen", ["regimen"], "Régimen tributario (fuera de Colombia)", TipoAtributo.Opcion, null, JerarquiaDeCampo.Ninguna, false,
+            Regimen),
+        Campo(CodigosDeSeccion.Tributaria, "contribuyente_impuesto_ventas", ["contribuyente_impuesto_ventas"], "Contribuyente del impuesto a las ventas (fuera de Colombia)",
+            TipoAtributo.Booleano, null, JerarquiaDeCampo.Ninguna, false, Booleano),
+        Campo(CodigosDeSeccion.Tributaria, "agente_de_retencion", ["agente_de_retencion"], "Agente de retención (fuera de Colombia)", TipoAtributo.Booleano, null,
+            JerarquiaDeCampo.Ninguna, false, Booleano),
+        Campo(CodigosDeSeccion.Tributaria, "exento_de_retenciones", ["exento_de_retenciones"], "Exento de retenciones (fuera de Colombia)", TipoAtributo.Booleano, null,
             JerarquiaDeCampo.Ninguna, false, Booleano)
     ];
 

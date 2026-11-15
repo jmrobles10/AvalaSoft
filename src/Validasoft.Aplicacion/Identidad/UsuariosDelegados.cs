@@ -27,6 +27,17 @@ public sealed class RegistroDeUsuariosDelegados(IDocumentStore store, IEntornos 
         return await consulta.LoadAsync<SistemaIntegrado>(sistemaId, ct);
     }
 
+    /// <summary>Lo que dan a la persona sus grupos de acceso propios (los activos que siguen existiendo); sin grupos, nada. Se lee al emitir el permiso efectivo.</summary>
+    public async Task<IReadOnlyList<ConcesionDeAcceso>> ConcesionesDeGruposAsync(Guid tenantId, Usuario usuario, CancellationToken ct)
+    {
+        if (usuario.Grupos.Count == 0)
+            return [];
+
+        await using var consulta = store.QuerySession(tenantId.ToString("N"));
+        var grupos = await consulta.LoadManyAsync<GrupoDePermisos>(ct, usuario.Grupos.Select(g => g.GrupoId).Distinct().ToArray());
+        return ConcesionDeAcceso.DeLosGruposDe(usuario, grupos);
+    }
+
     public async Task<Usuario> ResolverAsync(Guid tenantId, SistemaIntegrado sistema, string apiKeyId, AsercionDelegada asercion,
         string correlationId, CancellationToken ct)
     {

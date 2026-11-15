@@ -102,6 +102,14 @@ public class CondicionesSobreLaFichaTests
         { "no responsable de ICA no cumple «es responsable»", C.Predicado(ResponsableIca, Op.Igual, "true"), FichaDe(tributaria: """{"responsable_ica": false}"""), false },
         { "sin declarar ICA tampoco es «responsable»", C.Predicado(ResponsableIca, Op.Igual, "true"), FichaDe(tributaria: """{"responsabilidades": ["05"]}"""), false },
         { "sin declarar ICA «no es responsable» sí cumple", C.Predicado(ResponsableIca, Op.Distinto, "true"), FichaDe(tributaria: """{"responsabilidades": ["05"]}"""), true },
+        // El modelo tributario de los demás países (Panamá, República Dominicana…): régimen, impuesto a las ventas y retenciones.
+        { "régimen fuera de Colombia", C.Predicado("ficha.tributaria.regimen", Op.En, "ZONA_LIBRE", "ZONA_FRANCA"), FichaDe(tributaria: """{"regimen": "ZONA_LIBRE"}"""), true },
+        { "otro régimen", C.Predicado("ficha.tributaria.regimen", Op.Igual, "GENERAL"), FichaDe(tributaria: """{"regimen": "ZONA_LIBRE"}"""), false },
+        { "exento de retenciones", C.Predicado("ficha.tributaria.exento_de_retenciones", Op.Igual, "true"), FichaDe(tributaria: """{"exento_de_retenciones": true}"""), true },
+        { "agente de retención sin declarar no cumple «es agente»", C.Predicado("ficha.tributaria.agente_de_retencion", Op.Igual, "true"),
+            FichaDe(tributaria: """{"regimen": "GENERAL"}"""), false },
+        { "contribuyente del impuesto a las ventas", C.Predicado("ficha.tributaria.contribuyente_impuesto_ventas", Op.Igual, "true"),
+            FichaDe(tributaria: """{"contribuyente_impuesto_ventas": true}"""), true },
         { "ciudad", C.Predicado("ficha.general.ciudad", Op.En, "05001", "11001"), FichaDe(general: """{"ciudad": "11001"}"""), true },
         { "país del domicilio", C.Predicado("ficha.general.pais", Op.Igual, "PE"), FichaDe(general: """{"pais": "PE"}"""), true },
         // Combinaciones con el resto del motor.
@@ -223,7 +231,10 @@ public class CondicionesSobreLaFichaTests
             C.Predicado(ResponsableIca, Op.Igual, "True"),
             C.Predicado("ficha.general.ciudad", Op.Distinto, "11001"),
             C.Predicado("ficha.general.pais", Op.Igual, "pe"),
-            Esp(Op.Existe)), Proveedor, "Licencia de construcción")!;
+            Esp(Op.Existe),
+            C.Predicado("ficha.tributaria.regimen", Op.En, "zona_libre", "ZONA_FRANCA")), Proveedor, "Licencia de construcción")!;
+
+        normalizada.Nodos![8].Valores.ShouldBe(["ZONA_LIBRE", "ZONA_FRANCA"]);
 
         normalizada.Nodos![0].Valores.ShouldBe(["OG.CON", "OG"]);
         normalizada.Nodos[1].Valores.ShouldBe(["41", "4290"]);
@@ -249,6 +260,8 @@ public class CondicionesSobreLaFichaTests
     [InlineData("ficha.general.ciiu", Op.ContieneAlguno, "ABCD")]
     [InlineData("ficha.general.ciudad", Op.Igual, "1100")] // DANE de cinco dígitos
     [InlineData("ficha.general.pais", Op.Igual, "COL")]
+    [InlineData("ficha.tributaria.regimen", Op.Igual, "zona libre")] // MAYÚSCULAS_Y_GUIONES_BAJOS, sin espacios
+    [InlineData("ficha.tributaria.exento_de_retenciones", Op.ContieneAlguno, "true")]
     public void Rechaza_lo_que_no_es_un_campo_exigible_su_operador_o_su_valor(string atributo, Op operador, string? valor) =>
         Invalida(C.Predicado(atributo, operador, valor is null ? [] : [valor])).ShouldBe("condicion-invalida");
 

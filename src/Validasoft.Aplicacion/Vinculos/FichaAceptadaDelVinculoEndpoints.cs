@@ -26,12 +26,14 @@ public static class FichaAceptadaDelVinculoEndpoints
     [WolverineGet("/api/v1/vinculos/{id}/ficha-aceptada")]
     [Authorize(Policy = Permisos.VinculosLeer)]
     [Authorize(Policy = Permisos.TercerosLeer)]
-    public static async Task<FichaAceptadaDelVinculoDto> Obtener(Guid id, SesionDeEmpresa empresa, ISesiones sesiones, CancellationToken ct)
+    public static async Task<FichaAceptadaDelVinculoDto> Obtener(Guid id, SesionDeEmpresa empresa, ISesiones sesiones, IContextoSolicitud contexto, CancellationToken ct)
     {
         var vinculo = await empresa.CargarVinculoAsync(id, ct);
         var tercero = await empresa.Sesion.LoadAsync<Tercero>(vinculo.TerceroId, ct)
                       ?? throw new InvalidOperationException($"El vínculo {id} apunta a un tercero que no existe.");
         var aceptadas = await empresa.Sesion.Query<SeccionAceptada>().Where(a => a.VinculoId == id && a.EmpresaId == empresa.EmpresaId).ToListAsync(ct);
+        // Un grupo de acceso acotado por sector solo ve las secciones de sus sectores.
+        aceptadas = [.. aceptadas.Where(a => contexto.PuedeVer(Permisos.TercerosLeer, a.Seccion))];
         if (aceptadas.Count == 0)
             return new FichaAceptadaDelVinculoDto(vinculo.Id, vinculo.TerceroId, tercero.TipoPersona.ToString(), []);
 

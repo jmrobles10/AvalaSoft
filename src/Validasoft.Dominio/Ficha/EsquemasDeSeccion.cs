@@ -252,20 +252,31 @@ public abstract partial class EsquemaDeSeccion<T> : IEsquemaDeSeccion where T : 
         return entrada;
     }
 
-    /// <summary>Identificación de una persona (CO o genérica): formato y DV. Devuelve el número normalizado y su DV, o nulo.</summary>
-    protected static Identificacion? IdentificacionValida(string? tipo, string? numero)
+    /// <summary>
+    /// Identificación de una persona relacionada: formato y DV con el catálogo del país del tipo (los de Colombia, los del país del tercero y los
+    /// genéricos; RG-4). Devuelve el número normalizado y su DV, o nulo.
+    /// </summary>
+    protected static Identificacion? IdentificacionValida(string? tipo, string? numero, string? paisDelTercero = null)
     {
-        if (tipo is null || numero is null)
+        if (tipo is null || numero is null || CatalogoIdentificacion.PaisParaTipo(tipo, paisDelTercero) is not { } pais)
             return null;
         try
         {
-            return Identificacion.Crear("CO", tipo, numero);
+            return Identificacion.Crear(pais, tipo, numero);
         }
         catch (ReglaDeNegocioException)
         {
             return null;
         }
     }
+
+    /// <summary>Tipo del número fiscal de una sociedad según el país del tercero: RNC en República Dominicana, RUC en Panamá y NIT en los demás (como siempre).</summary>
+    protected static string TipoFiscalDe(string pais) => pais switch
+    {
+        "DO" => "RNC",
+        "PA" => "RUC",
+        _ => "NIT"
+    };
 
     protected static string Pesos(decimal valor) => valor.ToString("#,##0.##", CultureInfo.GetCultureInfo("es-CO"));
 }
@@ -304,7 +315,13 @@ public sealed partial class EsquemaGeneral : EsquemaDeSeccion<DatosGenerales>
     {
         var id = contexto.Identificacion;
         var tipoId = CatalogoIdentificacion.Buscar(id.Pais, id.Tipo);
-        var dv = tipoId is { TieneDv: true } ? DigitoVerificacion.Calcular(tipoId.AlgoritmoDv, id.Numero) : null;
+        var dv = tipoId switch
+        {
+            { TieneDv: true } => DigitoVerificacion.Calcular(tipoId.AlgoritmoDv, id.Numero),
+            // El DV del RUC de Panamá lo declara el tercero: el del registro si ya lo tiene y, si no, el de la ficha (la regla valida su formato).
+            { DvDeclarado: true } => id.DigitoVerificacion ?? Texto(d.Dv),
+            _ => null
+        };
 
         if (d.TipoPersona is { } tipoPersona && tipoPersona != contexto.TipoPersona)
             throw JsonDeFicha.Error("identificacion-no-editable", "tipo_persona",
@@ -327,7 +344,9 @@ public sealed partial class EsquemaGeneral : EsquemaDeSeccion<DatosGenerales>
             throw JsonDeFicha.Error("dv-no-editable", "dv",
                 dv is null
                     ? $"{id.Tipo} no lleva dígito de verificación."
-                    : $"El dígito de verificación lo calcula Validasoft (DIAN módulo 11): para {id.Numero} es {dv}.");
+                    : tipoId is { DvDeclarado: true }
+                        ? $"El dígito de verificación es el del registro del tercero ({dv}); no se cambia desde la ficha."
+                        : $"El dígito de verificación lo calcula Validasoft (DIAN módulo 11): para {id.Numero} es {dv}.");
 
         AsegurarCamposDelTipoDePersona(d, contexto);
 
@@ -428,6 +447,14 @@ public sealed partial class EsquemaGeneral : EsquemaDeSeccion<DatosGenerales>
 
     protected override void Revisar(DatosGenerales d, ContextoDeSeccion contexto, ICatalogosDeFicha catalogos, RevisionDeSeccion r)
     {
+        // RUC de Panamá (RG-2): el DV no se calcula, lo declara el tercero y es obligatorio.
+        if (CatalogoIdentificacion.Buscar(contexto.Identificacion.Pais, contexto.Identificacion.Tipo) is { DvDeclarado: true })
+        {
+            r.Requerido(d.Dv, "dv", "Dígito de verificación (DV)");
+            if (d.Dv is not null && !DigitoVerificacion.DvDeclaradoValido(d.Dv))
+                r.Formato("dv", $"«{d.Dv}» no es un dígito de verificación válido: son 2 dígitos.");
+        }
+
         if (contexto.EsJuridica)
         {
             r.Requerido(d.RazonSocial, "razon_social", "Razón social");
@@ -503,7 +530,12 @@ public sealed partial class EsquemaGeneral : EsquemaDeSeccion<DatosGenerales>
     }
 }
 
-/// <summary><c>FICHA_TRIBUTARIA</c> (+ ICA).</summary>
+/// <summary>
+/// <c>FICHA_TRIBUTARIA</c> (+ ICA). La forma depende del país de la identificación del tercero (RG-3, <see cref="PerfilesTributarios"/>):
+/// Colombia diligencia las responsabilidades de la casilla 53 del RUT, las resoluciones y el ICA (sin cambios); los demás países, el
+/// conjunto genérico (régimen, impuesto a las ventas, agente de retención, exención y facturación electrónica). Un campo del otro
+/// modelo es 422 <c>campo-no-aplica</c>, no un dato que se guarda y se ignora.
+/// </summary>
 public sealed class EsquemaTributaria : EsquemaDeSeccion<DatosTributarios>
 {
     public const string GranContribuyente = "13";
@@ -512,7 +544,20 @@ public sealed class EsquemaTributaria : EsquemaDeSeccion<DatosTributarios>
     public const string NoResponsableIva = "49";
     public const int MaximoFilasIca = 50;
 
-    protected override DatosTributarios Normalizar(DatosTributarios d, ContextoDeSeccion contexto) => d with
+    // Cambia la forma de los datos (campos genéricos fuera de Colombia) y la regla (depende del país): se recalcula (FM-16).
+    public override int VersionEsquema => 2;
+
+    public override int VersionReglas => 2;
+
+    protected override DatosTributarios Normalizar(DatosTributarios d, ContextoDeSeccion contexto)
+    {
+        var perfil = PerfilesTributarios.De(contexto.Identificacion.Pais);
+        AsegurarCamposDelModelo(d, perfil);
+        return perfil.EsColombiano ? NormalizarColombiano(d) : NormalizarGenerico(d);
+    }
+
+    /// <summary>Lo de Colombia, igual que antes del modelo por país.</summary>
+    private static DatosTributarios NormalizarColombiano(DatosTributarios d) => d with
     {
         Responsabilidades = Lista(d.Responsabilidades, c => Codigo(CatalogoDePlataforma.ResponsabilidadesDian, c), ordenar: true),
         ResolucionGranContribuyente = NormalizarResolucion(d.ResolucionGranContribuyente),
@@ -524,6 +569,59 @@ public sealed class EsquemaTributaria : EsquemaDeSeccion<DatosTributarios>
             TarifaPorMil = Cifra(f.TarifaPorMil)
         })?.Where(f => f != new FilaIca()).ToList() is { Count: > 0 } filas ? filas : null
     };
+
+    private static DatosTributarios NormalizarGenerico(DatosTributarios d) => d with
+    {
+        Regimen = Mayusculas(d.Regimen),
+        CertificadoExencion = NormalizarResolucion(d.CertificadoExencion)
+    };
+
+    /// <summary>
+    /// Un tercero de Colombia no diligencia los campos genéricos y uno de otro país no diligencia la casilla 53, las resoluciones ni el ICA.
+    /// Es un error de quien envía (422), no un dato que se guarda y se ignora; lo guardado antes de este modelo sigue leyéndose igual.
+    /// </summary>
+    private static void AsegurarCamposDelModelo(DatosTributarios d, PerfilTributario perfil)
+    {
+        if (perfil.EsColombiano)
+        {
+            foreach (var (campo, etiqueta, presente) in CamposGenericos)
+            {
+                if (presente(d))
+                    throw JsonDeFicha.Error("campo-no-aplica", campo,
+                        $"«{etiqueta}» no aplica a un tercero de Colombia: su información tributaria es la del RUT de la DIAN (casilla 53, resoluciones e ICA).");
+            }
+
+            return;
+        }
+
+        foreach (var (campo, etiqueta, presente) in CamposColombianos)
+        {
+            if (presente(d))
+                throw JsonDeFicha.Error("campo-no-aplica", campo,
+                    $"«{etiqueta}» no aplica a un tercero de {perfil.Pais}: su información tributaria es el régimen, {perfil.ImpuestoVentas}, las retenciones y la exención, no la casilla 53 del RUT de la DIAN.");
+        }
+    }
+
+    private static readonly (string Campo, string Etiqueta, Func<DatosTributarios, bool> Presente)[] CamposColombianos =
+    [
+        ("responsabilidades", "Responsabilidades de la casilla 53", d => d.Responsabilidades is { Count: > 0 }),
+        ("resolucion_gran_contribuyente", "Resolución de gran contribuyente", d => d.ResolucionGranContribuyente is not null),
+        ("resolucion_autorretenedor", "Resolución de autorretenedor", d => d.ResolucionAutorretenedor is not null),
+        ("responsable_ica", "Contribuyente de ICA", d => d.ResponsableIca is not null),
+        ("autorretenedor_ica", "Autorretenedor de ICA", d => d.AutorretenedorIca is not null),
+        ("exento_rete_cree", "Exento de la retención del CREE", d => d.ExentoReteCree is not null),
+        ("ica", "Municipios de ICA", d => d.Ica is { Count: > 0 })
+    ];
+
+    private static readonly (string Campo, string Etiqueta, Func<DatosTributarios, bool> Presente)[] CamposGenericos =
+    [
+        ("regimen", "Régimen tributario", d => Texto(d.Regimen) is not null),
+        ("contribuyente_impuesto_ventas", "Contribuyente del impuesto a las ventas", d => d.ContribuyenteImpuestoVentas is not null),
+        ("agente_de_retencion", "Agente de retención", d => d.AgenteDeRetencion is not null),
+        ("exento_de_retenciones", "Exento de retenciones", d => d.ExentoDeRetenciones is not null),
+        ("certificado_exencion", "Certificado de exención", d => d.CertificadoExencion is not null),
+        ("emisor_comprobantes_electronicos", "Emisor de comprobantes electrónicos", d => d.EmisorComprobantesElectronicos is not null)
+    ];
 
     private static Resolucion? NormalizarResolucion(Resolucion? r)
     {
@@ -547,6 +645,44 @@ public sealed class EsquemaTributaria : EsquemaDeSeccion<DatosTributarios>
     }
 
     protected override void Revisar(DatosTributarios d, ContextoDeSeccion contexto, ICatalogosDeFicha catalogos, RevisionDeSeccion r)
+    {
+        var perfil = PerfilesTributarios.De(contexto.Identificacion.Pais);
+        if (perfil.EsColombiano)
+            RevisarColombiano(d, contexto, catalogos, r);
+        else
+            RevisarGenerico(d, perfil, contexto, r);
+    }
+
+    /// <summary>
+    /// Modelo genérico (RG-3). Los datos guardados antes del modelo por país con los campos de Colombia siguen leyéndose: aquí no se
+    /// miran, y la sección queda incompleta hasta que el tercero diligencie los genéricos (el recálculo de FM-16 lo dice con su motivo).
+    /// </summary>
+    private static void RevisarGenerico(DatosTributarios d, PerfilTributario perfil, ContextoDeSeccion contexto, RevisionDeSeccion r)
+    {
+        r.Requerido(d.Regimen, "regimen", "Régimen tributario");
+        if (d.Regimen is { } codigo && perfil.Regimen(codigo) is null)
+            r.Formato("regimen", "codigo-invalido",
+                $"«{codigo}» no es un régimen válido para {perfil.Pais}: {string.Join(", ", perfil.Regimenes.Select(x => x.Codigo))}.");
+        r.Requerido(d.ContribuyenteImpuestoVentas, "contribuyente_impuesto_ventas", $"¿Eres contribuyente de {perfil.ImpuestoVentas}?");
+        r.Requerido(d.AgenteDeRetencion, "agente_de_retencion", "¿Eres agente de retención?");
+        r.Requerido(d.ExentoDeRetenciones, "exento_de_retenciones", "¿Estás exento de retenciones?");
+
+        var certificado = d.CertificadoExencion;
+        if (d.ExentoDeRetenciones == true)
+        {
+            r.Requerido(certificado?.Numero, "certificado_exencion.numero", "Número del certificado de exención");
+            r.Requerido(certificado?.Fecha, "certificado_exencion.fecha", "Fecha del certificado de exención");
+        }
+        else if (d.ExentoDeRetenciones == false && certificado is not null)
+        {
+            r.Regla("exencion-sin-declarar", "Indicaste un certificado de exención, pero que no estás exento de retenciones.");
+        }
+
+        Longitud(r, certificado?.Numero, "certificado_exencion.numero", "Número del certificado de exención", 50);
+        NoFutura(r, certificado?.Fecha, contexto.Hoy, "certificado_exencion.fecha", "Fecha del certificado de exención");
+    }
+
+    private static void RevisarColombiano(DatosTributarios d, ContextoDeSeccion contexto, ICatalogosDeFicha catalogos, RevisionDeSeccion r)
     {
         var responsabilidades = d.Responsabilidades ?? [];
         if (responsabilidades.Count == 0)
@@ -727,7 +863,7 @@ public sealed class EsquemaLegal : EsquemaDeSeccion<DatosLegales>
 
     protected override DatosLegales Normalizar(DatosLegales d, ContextoDeSeccion contexto) => d with
     {
-        Personas = Filas(d.Personas, NormalizarPersona),
+        Personas = Filas(d.Personas, p => NormalizarPersona(p, contexto.Identificacion.Pais)),
         RevisorFiscalFirma = NormalizarFirma(d.RevisorFiscalFirma)
     };
 
@@ -739,19 +875,20 @@ public sealed class EsquemaLegal : EsquemaDeSeccion<DatosLegales>
         return normal == new FirmaRevisora() ? null : normal;
     }
 
-    private static PersonaRelacionada NormalizarPersona(PersonaRelacionada p)
+    private static PersonaRelacionada NormalizarPersona(PersonaRelacionada p, string paisDelTercero)
     {
         var tipo = Mayusculas(p.TipoIdentificacion);
         var numero = Mayusculas(p.Numero);
-        var id = IdentificacionValida(tipo, numero);
+        var id = IdentificacionValida(tipo, numero, paisDelTercero);
+        var dvDeclarado = id is not null && CatalogoIdentificacion.Buscar(id.Pais, id.Tipo) is { DvDeclarado: true };
         var normal = p with
         {
             TipoRepresentacion = Texto(p.TipoRepresentacion),
             TipoIdentificacion = tipo,
             // Un número válido queda sin puntos ni DV; uno inválido queda tal cual para que la regla lo rechace.
             Numero = id?.Numero ?? numero,
-            // El DV lo calcula Validasoft: uno declarado distinto se conserva para que la regla lo rechace.
-            Dv = id is null || (Texto(p.Dv) is { } declarado && declarado != id.DigitoVerificacion) ? Texto(p.Dv) : id.DigitoVerificacion,
+            // El DV lo calcula Validasoft (uno declarado distinto se conserva para que la regla lo rechace); el del RUC de Panamá lo declara la persona.
+            Dv = id is null || dvDeclarado || (Texto(p.Dv) is { } declarado && declarado != id.DigitoVerificacion) ? Texto(p.Dv) : id.DigitoVerificacion,
             Nombres = Texto(p.Nombres),
             Apellidos = Texto(p.Apellidos),
             Cargo = Texto(p.Cargo),
@@ -785,25 +922,40 @@ public sealed class EsquemaLegal : EsquemaDeSeccion<DatosLegales>
             r.Requerido(p.Rol, $"{campo}.rol", "Rol");
             r.Requerido(p.TipoIdentificacion, $"{campo}.tipo_identificacion", "Tipo de identificación");
             r.Requerido(p.Numero, $"{campo}.numero", "Número de identificación");
-            r.Requerido(p.Nombres, $"{campo}.nombres", p.TipoIdentificacion == "NIT" ? "Razón social" : "Nombres");
-            if (p.TipoIdentificacion != "NIT")
+            // Un NIT, un RNC de 9 dígitos o un RUC panameño largo es una sociedad: lleva razón social, no nombres y apellidos.
+            var sociedad = CatalogoIdentificacion.EsDeSociedad(p.TipoIdentificacion, p.Numero);
+            r.Requerido(p.Nombres, $"{campo}.nombres", sociedad ? "Razón social" : "Nombres");
+            if (!sociedad)
                 r.Requerido(p.Apellidos, $"{campo}.apellidos", "Apellidos");
             r.Requerido(p.Pep, $"{campo}.pep", "¿Es persona expuesta políticamente (PEP)?");
             r.Requerido(p.VinculoPep, $"{campo}.vinculo_pep", "¿Tiene vínculo con una persona expuesta políticamente?");
             if (p.Rol == RolPersonaRelacionada.Socio)
                 r.Requerido(p.Porcentaje, $"{campo}.porcentaje", "Porcentaje de participación");
 
-            if (p.TipoIdentificacion is { } tipo && CatalogoIdentificacion.Buscar("CO", tipo) is null)
+            var paisDelTercero = contexto.Identificacion.Pais;
+            if (p.TipoIdentificacion is { } tipo && CatalogoIdentificacion.PaisParaTipo(tipo, paisDelTercero) is null)
             {
-                r.Formato($"{campo}.tipo_identificacion", $"«{tipo}» no es un tipo de identificación válido (CC, CE, NIT, PA, PPT, TI, PASAPORTE, ID_FISCAL).");
+                r.Formato($"{campo}.tipo_identificacion",
+                    $"«{tipo}» no es un tipo de identificación válido ({string.Join(", ", CatalogoIdentificacion.TiposParaPersona(paisDelTercero))}).");
             }
             else if (p is { TipoIdentificacion: { } tipoValido, Numero: { } numero })
             {
-                var id = IdentificacionValida(tipoValido, numero);
+                var id = IdentificacionValida(tipoValido, numero, paisDelTercero);
                 if (id is null)
+                {
                     r.Formato($"{campo}.numero", $"«{numero}» no es un número de {tipoValido} válido.");
+                }
+                else if (CatalogoIdentificacion.Buscar(id.Pais, id.Tipo) is { DvDeclarado: true })
+                {
+                    // RUC de Panamá: el DV no se calcula; lo declara la persona y son 2 dígitos.
+                    r.Requerido(p.Dv, $"{campo}.dv", "Dígito de verificación (DV)");
+                    if (p.Dv is not null && !DigitoVerificacion.DvDeclaradoValido(p.Dv))
+                        r.Formato($"{campo}.dv", $"«{p.Dv}» no es un dígito de verificación válido: son 2 dígitos.");
+                }
                 else if (p.Dv != id.DigitoVerificacion)
+                {
                     r.Formato($"{campo}.dv", "dv-no-editable", $"El dígito de verificación lo calcula Validasoft (DIAN módulo 11): para {id.Numero} es {id.DigitoVerificacion}.");
+                }
             }
 
             Longitud(r, p.Nombres, $"{campo}.nombres", "Nombres", 200);
@@ -840,8 +992,10 @@ public sealed class EsquemaLegal : EsquemaDeSeccion<DatosLegales>
         {
             r.Requerido(firma.Nit, "revisor_fiscal_firma.nit", "NIT de la firma de revisoría fiscal");
             r.Requerido(firma.RazonSocial, "revisor_fiscal_firma.razon_social", "Razón social de la firma de revisoría fiscal");
-            if (firma.Nit is not null && IdentificacionValida("NIT", firma.Nit) is null)
-                r.Formato("revisor_fiscal_firma.nit", $"«{firma.Nit}» no es un NIT válido.");
+            // La firma se identifica con el número fiscal del país del tercero: NIT en Colombia, RNC en República Dominicana, RUC en Panamá.
+            var tipoFiscal = TipoFiscalDe(contexto.Identificacion.Pais);
+            if (firma.Nit is not null && IdentificacionValida(tipoFiscal, firma.Nit, contexto.Identificacion.Pais) is null)
+                r.Formato("revisor_fiscal_firma.nit", $"«{firma.Nit}» no es un {tipoFiscal} válido.");
             Longitud(r, firma.RazonSocial, "revisor_fiscal_firma.razon_social", "Razón social");
         }
     }

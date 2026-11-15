@@ -19,6 +19,9 @@ namespace Validasoft.Aplicacion.Comun;
 public sealed class SesionDeEmpresa(ISesiones sesiones, IContextoSolicitud contexto, ReglasDeCarga reglas, TimeProvider reloj,
     EmisorDeCertificados certificados, IProtectorDeSecretos protector) : IAsyncDisposable
 {
+    /// <summary>La petición: quién actúa, sus permisos y lo que le alcanzan por sector de la ficha (grupos de acceso).</summary>
+    public IContextoSolicitud Contexto => contexto;
+
     /// <summary>Protector de secretos: descifra lo que solo se compara en memoria (el número de una cuenta frente a su certificación, FD-5).</summary>
     public IProtectorDeSecretos Protector => protector;
 

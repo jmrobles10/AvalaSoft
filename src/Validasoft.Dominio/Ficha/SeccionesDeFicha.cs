@@ -56,9 +56,12 @@ public sealed record DefinicionDeSeccion(
 /// <summary>Las seis secciones en el orden del wizard (General → Tributaria → Legal → Financiera → SST → Especialidades).</summary>
 public static class CatalogoDeSecciones
 {
-    private static readonly string[] SoportesGeneral = ["RUT", "CAMARA_COMERCIO", "CEDULA", CodigosDeSeccion.SoporteFicha];
-    private static readonly string[] SoportesTributaria = ["RUT", CodigosDeSeccion.SoporteFicha];
-    private static readonly string[] SoportesLegal = ["CAMARA_COMERCIO", "RUT", "CEDULA", CodigosDeSeccion.SoporteFicha];
+    // Los equivalentes de Panamá y República Dominicana (RG-5) sirven de soporte a mano: sin lectura ni cruce (eso es solo de Colombia, RG-6).
+    private static readonly string[] SoportesGeneral =
+        ["RUT", "CAMARA_COMERCIO", "CEDULA", "CERTIFICADO_RUC", "REGISTRO_PUBLICO", "CONSTANCIA_RNC", "REGISTRO_MERCANTIL", CodigosDeSeccion.SoporteFicha];
+    private static readonly string[] SoportesTributaria = ["RUT", "CERTIFICADO_RUC", "CONSTANCIA_RNC", CodigosDeSeccion.SoporteFicha];
+    private static readonly string[] SoportesLegal =
+        ["CAMARA_COMERCIO", "RUT", "CEDULA", "REGISTRO_PUBLICO", "REGISTRO_MERCANTIL", "CERTIFICADO_RUC", "CONSTANCIA_RNC", CodigosDeSeccion.SoporteFicha];
     private static readonly string[] SoportesFinanciera = ["ESTADOS_FINANCIEROS", CodigosDeSeccion.SoporteFicha];
 
     public static readonly IReadOnlyList<DefinicionDeSeccion> Todas =

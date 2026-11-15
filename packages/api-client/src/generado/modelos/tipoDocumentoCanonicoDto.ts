@@ -32,4 +32,8 @@ export interface TipoDocumentoCanonicoDto {
   tamanoMaximoMb?: number | null;
   /** @nullable */
   paginasMaximas?: number | null;
+  /** @nullable */
+  paises?: string[] | null;
+  /** @nullable */
+  equivalenteA?: string | null;
 }

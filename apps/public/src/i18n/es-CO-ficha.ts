@@ -119,6 +119,9 @@ export const ficha = {
     identificacion: 'Identificación',
     identificacionAyuda: 'La toma Validasoft de tu registro; no se cambia aquí.',
     identificacionPendiente: 'Se completa con tu registro al guardar',
+    // El DV de algunos números (RUC de Panamá) no lo calcula Validasoft: lo declara el tercero (RG-2).
+    dv: 'Dígito de verificación (DV)',
+    dvAyuda: 'Son 2 dígitos y figuran junto a tu RUC.',
     tipoPersona: 'Tipo de persona',
     tiposPersona: { Natural: 'Persona natural', Juridica: 'Persona jurídica', Consorcio: 'Consorcio o unión temporal' },
     razonSocial: 'Razón social',
@@ -178,6 +181,16 @@ export const ficha = {
     filaIca: 'Municipio {{n}}',
     agregarIca: 'Agregar municipio',
     quitarIca: 'Quitar el municipio {{n}}',
+    // Fuera de Colombia no hay casilla 53 ni ICA: el conjunto genérico (RG-3). `{{impuesto}}`: ITBMS, ITBIS, «IVA o equivalente».
+    regimen: 'Régimen tributario',
+    regimenAyuda: 'Elige el régimen en el que estás inscrito.',
+    contribuyenteImpuestoVentas: '¿Eres contribuyente de {{impuesto}}?',
+    agenteDeRetencion: '¿Eres agente de retención?',
+    exentoDeRetenciones: '¿Estás exento de retenciones?',
+    certificadoExencion: 'Certificado de exención',
+    numeroCertificado: 'Número del certificado',
+    fechaCertificado: 'Fecha del certificado',
+    emisorComprobantesElectronicos: '¿Emites facturas o comprobantes fiscales electrónicos?',
   },
   financiera: {
     periodo: 'Año (periodo)',
@@ -226,6 +239,7 @@ export const ficha = {
     tipoRepresentacionAyuda: 'Como en el certificado, por ejemplo: Principal o Primer suplente.',
     tipoIdentificacion: 'Tipo de identificación',
     numero: 'Número de identificación',
+    dv: 'Dígito de verificación (DV)',
     nombres: 'Nombres',
     razonSocial: 'Razón social',
     apellidos: 'Apellidos',
@@ -241,7 +255,7 @@ export const ficha = {
     correo: 'Correo electrónico',
     telefono: 'Teléfono',
     firma: 'Firma de revisoría fiscal (si el revisor actúa por una firma)',
-    firmaNit: 'NIT de la firma',
+    firmaNit: '{{tipo}} de la firma',
     firmaRazonSocial: 'Razón social de la firma',
   },
   sst: {

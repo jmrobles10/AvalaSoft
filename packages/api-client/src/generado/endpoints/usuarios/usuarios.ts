@@ -24,6 +24,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AsignarGruposDto,
   AsignarRolesDto,
   CrearUsuarioDto,
   ListarUsuariosParams,
@@ -350,6 +351,68 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getAsignarRolesUsuarioMutationOptions(options), queryClient);
+    }
+    export const asignarGruposUsuario = (
+    id: string,
+    asignarGruposDto: BodyType<AsignarGruposDto>,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<UsuarioDto>(
+      {url: `/api/v1/usuarios/${id}/grupos`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: asignarGruposDto, signal
+    },
+      options);
+    }
+
+
+
+
+export const getAsignarGruposUsuarioMutationKey = () => ['asignarGruposUsuario'] as const;
+
+export const getAsignarGruposUsuarioMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof asignarGruposUsuario>>, TError,AsignarGruposUsuarioMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof asignarGruposUsuario>>, TError,AsignarGruposUsuarioMutationVariables, TContext> => {
+
+const mutationKey = getAsignarGruposUsuarioMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof asignarGruposUsuario>>, AsignarGruposUsuarioMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  asignarGruposUsuario(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AsignarGruposUsuarioMutationResult = NonNullable<Awaited<ReturnType<typeof asignarGruposUsuario>>>
+    export type AsignarGruposUsuarioMutationBody = BodyType<AsignarGruposDto>
+    export type AsignarGruposUsuarioMutationError = ErrorType<void>
+    export type AsignarGruposUsuarioMutationVariables = {id: string;data: BodyType<AsignarGruposDto>}
+
+    export const useAsignarGruposUsuario = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof asignarGruposUsuario>>, TError,AsignarGruposUsuarioMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof asignarGruposUsuario>>,
+        TError,
+        AsignarGruposUsuarioMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAsignarGruposUsuarioMutationOptions(options), queryClient);
     }
     export const desactivarUsuario = (
     id: string,

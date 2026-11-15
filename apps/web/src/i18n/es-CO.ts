@@ -12,6 +12,7 @@ import { documentos, erroresDocumentos } from './es-CO-documentos';
 import { fichaMaestra } from './es-CO-ficha';
 import { cruce, erroresCruce } from './es-CO-cruce';
 import { erroresFichaEmpresa, fichaEmpresa } from './es-CO-ficha-empresa';
+import { gruposDeAcceso, responsablesPorSector } from './es-CO-grupos-de-acceso';
 import { fichaAceptada } from './es-CO-ficha-aceptada';
 import { informes } from './es-CO-informes';
 import { accesoUsuario, cuenta, erroresIngreso, ingreso, ingresoGrupo, ingresoPlataforma, operadores, usuariosIngreso } from './es-CO-ingreso';
@@ -73,6 +74,7 @@ export const esCO = {
     'tipos-documento': 'Tipos de documento',
     areas: 'Áreas',
     usuarios: 'Usuarios y roles',
+    'grupos-de-acceso': 'Grupos de acceso',
     sistemas: 'Sistemas integrados',
     webhooks: 'Webhooks',
     empresas: 'Empresas del grupo',
@@ -413,6 +415,8 @@ export const esCO = {
   terceros,
   fichaMaestra,
   fichaEmpresa,
+  gruposDeAcceso,
+  responsablesPorSector,
   fichaAceptada,
   cruce,
   auditoria,

@@ -92,7 +92,7 @@ public static partial class TraductorDelPortal
         avisos.Seccion = CodigosDeSeccion.General;
         Agregar(CodigosDeSeccion.General, null, General(origen, tercero, catalogos, avisos));
         avisos.Seccion = CodigosDeSeccion.Tributaria;
-        Agregar(CodigosDeSeccion.Tributaria, null, Tributaria(origen, catalogos, avisos));
+        Agregar(CodigosDeSeccion.Tributaria, null, Tributaria(origen, catalogos, avisos, tercero.Identificacion.Pais));
 
         var natural = tercero.TipoPersona == TipoPersona.Natural;
         avisos.Seccion = CodigosDeSeccion.Legal;
@@ -319,8 +319,36 @@ public static partial class TraductorDelPortal
         };
     }
 
-    private static DatosTributarios? Tributaria(TerceroDelPortal origen, CatalogosDelPortal catalogos, Avisos avisos)
+    /// <summary>
+    /// Un tercero que no es de Colombia (un documento extranjero) no tiene la casilla 53 ni ICA (RG-9): del Portal pasan las calidades que significan
+    /// lo mismo en el modelo genérico (contribuyente del impuesto a las ventas, agente de retención, exención, comprobantes electrónicos). El régimen
+    /// no existe en el Portal: queda por diligenciar.
+    /// </summary>
+    private static DatosTributarios? TributariaGenerica(TerceroDelPortal origen, Avisos avisos)
     {
+        if (origen.RetencionesIca is { Count: > 0 })
+            avisos.Advertir("ica", "ica-no-aplica", "El ICA es municipal de Colombia: no se importa para un tercero de otro país.");
+        if (origen.InfoTributaria is not { } t)
+            return null;
+
+        avisos.Advertir("regimen", "regimen-sin-diligenciar", "El Portal no guarda el régimen tributario de un tercero extranjero: queda por diligenciar.");
+        if (t.ExentoRetencionFuente)
+            avisos.Advertir("certificado_exencion", "exencion-sin-certificado", "El Portal dice exento de retención, pero no guarda el certificado de la exención: queda por diligenciar.");
+        return new DatosTributarios
+        {
+            ContribuyenteImpuestoVentas = t.ResponsableIVA,
+            AgenteDeRetencion = t.AgenteRetenedorIVA,
+            ExentoDeRetenciones = t.ExentoRetencionFuente,
+            // El Portal guarda «obligado a facturar» en NoObligFacturar (semántica invertida del legado).
+            EmisorComprobantesElectronicos = t.NoObligFacturar
+        };
+    }
+
+    private static DatosTributarios? Tributaria(TerceroDelPortal origen, CatalogosDelPortal catalogos, Avisos avisos, string pais)
+    {
+        if (!PerfilesTributarios.De(pais).EsColombiano)
+            return TributariaGenerica(origen, avisos);
+
         var t = origen.InfoTributaria;
         var ica = new List<FilaIca>();
         foreach (var fila in origen.RetencionesIca ?? [])

@@ -12,6 +12,7 @@ import type { PoliticaDevolucion } from './politicaDevolucion';
 import type { RecordatorioDeFlujoDto } from './recordatorioDeFlujoDto';
 import type { ReintentoDto } from './reintentoDto';
 import type { RequisitoDelFlujoDto } from './requisitoDelFlujoDto';
+import type { ResponsableDeSectorDto } from './responsableDeSectorDto';
 import type { SeleccionDeFlujoDto } from './seleccionDeFlujoDto';
 import type { VerificacionRequeridaDto } from './verificacionRequeridaDto';
 import type { VigenciaVinculoDto } from './vigenciaVinculoDto';
@@ -39,4 +40,6 @@ export interface FlujoVersionDto {
   seleccion?: null | SeleccionDeFlujoDto;
   /** @nullable */
   evaluaciones?: EvaluacionRequeridaDto[] | null;
+  /** @nullable */
+  responsablesDeSector?: ResponsableDeSectorDto[] | null;
 }

@@ -2,7 +2,7 @@
 
 | Estado | Fecha | Responsable |
 |---|---|---|
-| Borrador (decisiones del registro propagadas; ingreso sin contraseñas ING-1…ING-9 al 2026-11-11) | 2026-11-11 | Arquitectura |
+| Borrador (decisiones del registro propagadas; ingreso sin contraseñas ING-1…ING-9 al 2026-11-11; grupos de acceso GA-1…GA-12 al 2026-11-14) | 2026-11-14 | Arquitectura |
 
 **Propósito.** Definir cómo se autentican y autorizan usuarios, terceros e integraciones; cómo se aísla cada tenant (grupo empresarial) **y cada empresa dentro del tenant** (ADR-0008) mientras se comparte la bóveda del tercero; cómo se protegen binarios, secretos y datos personales; qué se registra; y qué amenazas se mitigan. **Este documento es el dueño de los nombres de roles y permisos.**
 
@@ -82,7 +82,7 @@ Proveedor externo OIDC/SAML por tenant; mapeo de grupos a roles por empresa; cue
 2. **Aserción.** Con su API key, el sistema envía `X-Usuario-Delegado`: JWT RS256/ES256 firmado con su clave privada, `iss` = código del sistema, `aud` = `validasoft`, `exp` no vencido y a lo sumo 5 min en el futuro (tolerancia 30 s), `sub`, `name`, `email` y `jti`. Firma, emisor, audiencia o vigencia inválidos, llave sin sistema, sistema inactivo o usuario desactivado ⇒ `401` ProblemDetails (`asercion-*`, `llave-sin-sistema`, `sistema-inactivo`, `usuario-inactivo`).
    - **Un solo uso (SE-4).** Sin `jti` ⇒ `401 asercion-sin-jti`. Tras verificar la firma y la vigencia (para que nadie llene el registro con aserciones falsas) y antes de tocar al usuario, Validasoft inserta `AsercionUsada` (global, esquema `identidad`, `Id` = `{sistemaId}:{jti}`, `ExpiraEn` = `exp` + 30 s, índice por `ExpiraEn`): la llave primaria hace que un segundo uso —aunque llegue en paralelo— responda `401 asercion-reutilizada`. Un servicio en segundo plano borra las vencidas cada `Validasoft:AsercionesUsadas:MinutosLimpieza` (10) minutos. Una aserción robada (logs, proxy) ya no sirve para repetir la petición dentro de sus 5 minutos.
 3. **Usuario.** Se busca por la identidad externa `(sistema, sub)` (única por tenant). Si no existe se **enlaza** al usuario con el mismo correo (alta anticipada por el administrador u otro sistema) o se **crea sin roles** (JIT, ID-2). El sistema es la fuente de nombre y correo; `ultimoAcceso` se actualiza como mucho una vez por minuto. Altas y enlaces quedan en la auditoría de configuración con la API key del sistema como actor.
-4. **Permiso efectivo = intersección.** Scopes = scopes de la llave ∩ scopes de los roles del usuario (§3.1); empresas = empresas de la llave ∩ empresas donde el usuario tiene rol (`*` si tiene un rol de todo el tenant). Los scopes de un rol por empresa solo valen cuando `X-Empresa` es esa empresa; la administración del tenant (`usuarios`, `sistemas`, `api-keys`, `empresas`) solo se obtiene con un rol de todo el tenant. Sin roles, el usuario no ve ninguna empresa (`404`).
+4. **Permiso efectivo = intersección.** Scopes = scopes de la llave ∩ (unión de los scopes de los roles y de los grupos de acceso activos del usuario: §3.1 y §3.3); empresas = empresas de la llave ∩ empresas donde el usuario tiene rol (`*` si tiene un rol de todo el tenant). Los scopes de un rol por empresa solo valen cuando `X-Empresa` es esa empresa; la administración del tenant (`usuarios`, `sistemas`, `api-keys`, `empresas`) solo se obtiene con un rol de todo el tenant. Sin roles, el usuario no ve ninguna empresa (`404`).
 5. **Actor.** La petición queda con actor `Usuario` (`actorId` = id del usuario) y el sistema de origen; los eventos guardan `actorTipo`, `actorId` y `sistema` en sus metadatos, y la auditoría de configuración registra `sistema`.
 6. **Sesiones embebidas (ID-3).** El sistema canjea, servidor a servidor, la aserción por una sesión de Validasoft (`POST /sesiones-usuario` ⇒ `{ token, expira }`): JWT HS256 de **30 min** firmado con `Validasoft:Sesiones:ClaveFirma` (≥ 32 bytes, secreto de configuración) que copia tenant, usuario, sistema, scopes y empresas efectivos. El iframe o Web Component lo envía como `Authorization: Bearer`; `X-Empresa`, idempotencia y autorización funcionan igual que con la API key. Un cambio de roles o la desactivación del usuario se aplican a la siguiente sesión (la vigente expira sola).
 7. **Referencias externas.** El sistema de la referencia de un vínculo lo fija la credencial, no el cuerpo; un vínculo guarda una referencia por sistema y todos comparten la misma validación (I-0, [05 §2.3](05-api-contratos-y-webhooks.md)).
@@ -173,6 +173,8 @@ Un rol se asigna **por empresa** (`RolAsignado { rol, empresaId, areas[] }`) o *
 
 Mapeo rol → scopes vigente (H1, `Permisos.DeRol`): `Administrador` = todos los del tenant; `Revisor` = `configuracion:leer`, `terceros:leer`, `vinculos:leer` + `vinculos:escribir`; `OficialCumplimiento` (el `Cumplimiento` de esta tabla) = `Revisor` + `vinculos:bloquear`; `Auditor` = lecturas + `auditoria:leer`. En peticiones delegadas se intersecan con la API key (§2.6).
 
+**Grupos de acceso (2026-11-14, GA-1…GA-12).** Los cuatro roles de arriba son hoy los **grupos predefinidos** de una lista más amplia: cada grupo empresarial puede crear **grupos propios** con permisos del catálogo (§3.2) acotables por sector de la ficha, y una persona puede tener varios; lo que puede es la **unión** de sus roles y de sus grupos activos (§3.3).
+
 ### 3.2 Permisos (claims finos; la UI solo oculta botones)
 
 | Permiso | Plataforma | Administrador | Revisor (área X) | Cumplimiento | Auditor | Integración | Tercero |
@@ -214,6 +216,23 @@ Mapeo rol → scopes vigente (H1, `Permisos.DeRol`): `Administrador` = todos los
 | `importacion:escribir` | — | — | — | — | — | scope dedicado | — |
 
 Reglas: la **separación de funciones** (quien invita no aprueba) es configurable por tenant, apagada por defecto (P-4-8); el **conflicto de intereses** bloquea asignar o emitir veredicto a un usuario que es contacto o representante del tercero (cruce por identificación, adición 7); `AprobadoresRequeridos = 2` exige dos usuarios distintos.
+
+### 3.3 Grupos de acceso por empresa y sector (2026-11-14, GA-1…GA-12)
+
+Decisiones en el [registro](decisiones/registro.md#5-unseptuagies-grupos-de-acceso-por-empresa-y-actualizaciones-por-sector-con-responsable-2026-11-14-ga); contrato en [05 §2.13](05-api-contratos-y-webhooks.md).
+
+**Qué es un grupo.** `GrupoDePermisos` (esquema `identidad`, por tenant): código único e inmutable, nombre, descripción, activo, **permisos** y **sectores**. Los permisos son scopes del catálogo del tenant (`Permisos.DeGrupo`: §3.2 sin `sesiones-tercero:crear`); un grupo no inventa permisos que el backend no aplique. Se crean, se editan y se desactivan; no se borran. Los cuatro roles fijos son grupos **predefinidos** (no se editan ni se desactivan) y se siguen asignando como `RolAsignado`, así que nadie se rompe. Una persona tiene `Roles` (los predefinidos) y `Grupos` (los propios, `{ grupoId, empresaId? }`), para todo el tenant o por empresa.
+
+**Cómo se aplican: el mismo camino de siempre.**
+1. Al emitir el token (aserción `X-Usuario-Delegado`, sesión embebida de `POST /sesiones-usuario` o sesión directa, también al renovarla) se arma una `ConcesionDeAcceso` por rol y por grupo activo y `Permisos.ParaUsuario` calcula la **unión**: scopes del tenant y por empresa (los de administración del tenant solo con una asignación de todo el tenant), intersecados con los de la API key en la identidad delegada.
+2. Los scopes viajan en los reclamos `scope` y `scope-empresa` y cada endpoint se autoriza con su política por scope, igual que con un rol. Un grupo desactivado, o que ya no existe, no da nada. Las API keys sin persona no cambian.
+3. Un cambio de grupos o de sus permisos aplica a la siguiente petición con llave y al siguiente token (≤ 30 min embebido, ≤ 15 min directo): la misma latencia de un cambio de roles.
+
+**Acotación por sector.** `sectores` vacío = todos. Con sectores, solo se acotan los permisos que miran la ficha por secciones: `terceros:leer` y `expedientes:leer` (**ver**) y `expedientes:revisar` y `expedientes:administrar` (**actuar**, nivel `Editar`). La acotación es **por permiso**: el alcance de un permiso es la unión de los de los grupos que lo otorgan (uno que lo da sin acotar lo libera; uno que no lo da no cuenta) y se calcula por empresa donde las asignaciones difieren. Viaja como reclamos `validasoft:sectores` (`permiso|empresa|ver|editar`, solo los que acotan; ilegible ⇒ ningún sector). El servidor la exige: las lecturas de la ficha omiten lo ajeno y decidir sobre una sección ajena responde 403 `sector-no-permitido` (veredicto, observación, aprobar el área o aprobarla como administrador, eximir y aprobar en lote); lo que no es una sección nunca se acota.
+
+**Quién gestiona.** `usuarios:administrar` con un rol de todo el tenant (como los roles y las llaves), con reautenticación por passkey para quien entró directo al editar, desactivar o asignar. Anti-escalada igual que en los roles (403 `alcance-insuficiente`). Todo queda en la auditoría de configuración (`GrupoDeAcceso` y `Usuario`).
+
+**Límites conocidos.** Las listas de destinatarios y elegibles que se arman con los roles (cuenta propuesta, delegaciones, aprobadores de invitaciones) siguen usando los roles; las exportaciones, los informes y el historial no se acotan por sector.
 
 ---
 
@@ -427,6 +446,7 @@ Firma HMAC con timestamp; secretos de 256 bits con rotación solapada; payloads 
 | Denegación | Subidas masivas / PDF malicioso | Límites, rate limit, antivirus, aislamiento, cuarentena |
 | Denegación | `/verificar` o autorregistro abusados | Rate limit por IP, caché |
 | Elevación | Revisor fuera de su área o empresa | Permiso por área **y** alcance por empresa |
+| Elevación | Un grupo de acceso da más de lo debido o una persona decide sobre un sector que no le toca | El catálogo de un grupo es el de los scopes que el backend aplica (sin `sesiones-tercero:crear`); solo `usuarios:administrar` de todo el tenant los crea y asigna, con passkey y auditoría; la unión nunca supera a la llave; el sector se acota por permiso en el servidor (403 `sector-no-permitido`) y un reclamo ilegible falla cerrado (GA-4…GA-7) |
 | Elevación | Administrador sin rastro | Comandos `…ComoAdministrador` con justificación |
 | SSRF | Webhook a metadata | Solo https, bloqueo de privados, DNS pinning |
 

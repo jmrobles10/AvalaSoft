@@ -614,8 +614,8 @@ export const flujos = {
         ListasRestrictivas:
           'Se consultan solas al pasar a revisión, con el proveedor de la empresa: el tercero y su representante legal, suplentes, socios y PEP declarados en su ficha.',
         EstudioDeCumplimiento: 'Nivel de riesgo, conflicto de interés, debida diligencia, observaciones y concepto del oficial. Vence y vuelve a pedirse.',
-        Rues: 'Corrobora razón social, estado y renovación de la matrícula y representante legal contra el registro mercantil, y lo coteja con la ficha y el certificado de Cámara. Se consulta sola al pasar a revisión; las diferencias son para el revisor.',
-        Dian: 'Corrobora el estado del RUT, la razón social, las responsabilidades y la dirección, y lo coteja con la ficha y el RUT. Se consulta sola al pasar a revisión; las diferencias son para el revisor.',
+        Rues: 'Corrobora razón social, estado y renovación de la matrícula y representante legal contra el registro mercantil, y lo coteja con la ficha y el certificado de Cámara. Se consulta sola al pasar a revisión; las diferencias son para el revisor. Aplica solo a terceros con identificación de Colombia: a los de otro país no se les pide.',
+        Dian: 'Corrobora el estado del RUT, la razón social, las responsabilidades y la dirección, y lo coteja con la ficha y el RUT. Se consulta sola al pasar a revisión; las diferencias son para el revisor. Aplica solo a terceros con identificación de Colombia: a los de otro país no se les pide.',
       },
       pedir: 'Pedir {{tipo}}',
       bloqueante: 'Bloquea la aprobación',
@@ -670,6 +670,10 @@ export const flujos = {
       'ficha.tributaria.responsabilidades': 'responsabilidades tributarias',
       'ficha.tributaria.responsable_ica': 'responsable de ICA',
       'ficha.tributaria.exento_rete_cree': 'exento de la retención del CREE',
+      'ficha.tributaria.regimen': 'régimen tributario',
+      'ficha.tributaria.contribuyente_impuesto_ventas': 'contribuyente del impuesto a las ventas',
+      'ficha.tributaria.agente_de_retencion': 'agente de retención',
+      'ficha.tributaria.exento_de_retenciones': 'exento de retenciones',
     },
     operadores: {
       Igual: 'es',

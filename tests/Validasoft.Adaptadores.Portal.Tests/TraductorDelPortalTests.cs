@@ -194,6 +194,28 @@ public class TraductorDelPortalTests
         Regla(sinIca, CodigosDeSeccion.Tributaria).Completitud.Faltantes.ShouldContain(f => f.Campo == "responsable_ica");
     }
 
+    [Fact]
+    public void Un_tercero_extranjero_lleva_la_tributaria_generica_y_no_la_casilla_53_ni_el_ica()
+    {
+        var extranjero = new TerceroDelPortal(new TercerosPortal(7),
+            new TerInformacionGeneral(TigNombre: "Acme Inc", TigTipoPersona: "J", TigTipoDocumento: "EXT", TigNumeroIdentificacion: "123456789", TigPais: "Estados Unidos"),
+            InfoTributaria: new TerInfoTributaria(ResponsableIVA: true, AgenteRetenedorIVA: false, ExentoRetencionFuente: true, NoObligFacturar: true, Declarante: true),
+            RetencionesIca: [new TerRetencionICA(1, 1, 10)]);
+        var r = Traducir(extranjero);
+
+        r.Rechazos.ShouldBeEmpty();
+        r.Tercero!.Identificacion.Clave.ShouldBe("US|ID_FISCAL|123456789");
+        var t = Datos<DatosTributarios>(r, CodigosDeSeccion.Tributaria);
+        (t.ContribuyenteImpuestoVentas, t.AgenteDeRetencion, t.ExentoDeRetenciones, t.EmisorComprobantesElectronicos).ShouldBe((true, false, true, true));
+        (t.Regimen, t.Responsabilidades, t.ResponsableIca, t.Ica).ShouldBe((null, null, null, null));
+        r.Advertencias.Select(a => a.Codigo).ShouldContain("regimen-sin-diligenciar");
+        r.Advertencias.Select(a => a.Codigo).ShouldContain("exencion-sin-certificado");
+        r.Advertencias.Select(a => a.Codigo).ShouldContain("ica-no-aplica");
+
+        // Lo que el Portal no guarda (régimen y certificado de la exención) queda por diligenciar con su motivo exacto.
+        Regla(r, CodigosDeSeccion.Tributaria).Completitud.Faltantes.Select(f => f.Campo).ShouldBe(["regimen", "certificado_exencion.numero", "certificado_exencion.fecha"]);
+    }
+
     // ---------- fechas, lugares y porcentajes de texto ----------
 
     [Theory]

@@ -188,6 +188,16 @@ public static class ProcesoDeValidacion
     }
 
     /// <summary>
+    /// Las verificaciones del flujo que aplican al tercero (RG-6): las del RUES y la DIAN cubren solo Colombia, así que a un tercero con
+    /// identificación de otro país no se le piden (una bloqueante que nadie puede satisfacer lo dejaría para siempre sin aprobar); las listas
+    /// restrictivas y el estudio de cumplimiento siguen aplicando a todos.
+    /// </summary>
+    public static IReadOnlyList<VerificacionRequeridaDelFlujo> VerificacionesQueAplican(IReadOnlyList<VerificacionRequeridaDelFlujo> verificaciones, Tercero tercero) =>
+        AlcanceDeLaLectura.Aplica(tercero.Identificacion.Pais)
+            ? verificaciones
+            : [.. verificaciones.Where(v => !Dominio.FuentesOficiales.CatalogoDeFuentes.EsFuente(v.Tipo))];
+
+    /// <summary>
     /// Abre el expediente inicial del vínculo con el flujo resuelto: consume el folio, inicia el stream del expediente,
     /// registra <c>ExpedienteVinculado</c> en <paramref name="vinculoStream"/> y, si todo fue automático, lo cierra aprobado.
     /// Con requisitos, cada uno nace <c>Cargado</c> si la bóveda ya compartió con el vínculo la versión actual de su tipo:
@@ -225,7 +235,7 @@ public static class ProcesoDeValidacion
         var exigencia = await FichaDeExigencia.CompletarAsync(sesion, ContextoDeExigencia.De(tercero, tipo?.Codigo ?? string.Empty, vinculo.Atributos), vinculo,
             flujo.Version, documentos is not null, ct);
         var requisitos = await CalcularRequisitosAsync(sesion, vinculo, tercero, empresa.TenantId, flujo.Version, exigencia, soloRequisitos, documentos, ahora, ct,
-            retiros, exigirRatificacion);
+            retiros, exigirRatificacion, enrutarPorSector: tipoExpediente == TipoExpediente.Actualizacion);
 
         var folio = await SiguienteFolioAsync(sesion, empresa, tenant, ahora, ct);
         var abiertoPor = actor ?? new ActorDeExpediente(contexto?.ActorTipo ?? ActorTipo.Sistema, contexto?.ActorId ?? "sistema");
@@ -241,7 +251,8 @@ public static class ProcesoDeValidacion
         var eventos = Expediente.Abrir(datos, new FlujoParaExpediente(flujo.Flujo.Id, flujo.Version.Id, flujo.Flujo.Codigo, flujo.Flujo.Nombre,
             flujo.Version.Version, flujo.Origen, etapas, flujo.Version.PoliticaDevolucion, flujo.Version.SeparacionDeFunciones,
             // Una actualización (un documento cambió) no repite las listas ni el estudio (VE-6).
-            tipoExpediente == TipoExpediente.Actualizacion ? [] : flujo.Version.Verificaciones, flujo.Version.PlazoEfectivo(), flujo.Version.RecordatorioObservacionesDias,
+            tipoExpediente == TipoExpediente.Actualizacion ? [] : VerificacionesQueAplican(flujo.Version.Verificaciones, tercero), flujo.Version.PlazoEfectivo(),
+            flujo.Version.RecordatorioObservacionesDias,
             flujo.Regla, [.. evaluaciones.Select(e => e.Requerida)]), ahora, requisitos);
 
         var expedienteId = ((ExpedienteAbierto)eventos[0]).ExpedienteId;
@@ -268,7 +279,8 @@ public static class ProcesoDeValidacion
     /// </summary>
     public static async Task<IReadOnlyList<RequisitoCalculado>> CalcularRequisitosAsync(IDocumentSession sesion, Vinculo vinculo, Tercero tercero,
         Guid tenantId, FlujoVersion version, ContextoDeExigencia exigencia, IReadOnlySet<Guid>? soloRequisitos, DocumentosDelVinculo? documentos,
-        DateTimeOffset ahora, CancellationToken ct, IReadOnlyDictionary<Guid, RetiroDeVersion>? retiros = null, bool exigirRatificacion = false)
+        DateTimeOffset ahora, CancellationToken ct, IReadOnlyDictionary<Guid, RetiroDeVersion>? retiros = null, bool exigirRatificacion = false,
+        bool enrutarPorSector = false)
     {
         var todosLosPedidos = (await RequisitosDeExpediente.DelFlujoAsync(sesion, version, exigencia, ct, incluirPersonas: true))
             .Where(p => soloRequisitos is null || soloRequisitos.Contains(p.Requisito.Id))
@@ -310,7 +322,11 @@ public static class ProcesoDeValidacion
         // Lo que de la ficha hizo que se pida cada requisito (EF-6): el tercero ve por qué se le pide. Solo si las condiciones del flujo miran la ficha.
         var conMotivos = await FichaDeExigencia.ConMotivosAsync(sesion, version, exigencia, conRetiros, ct);
         // Lo que la empresa tiene eximido para este vínculo (EX-3) nace Eximido citando la exención, sea cual sea el tipo de expediente.
-        return ExencionesDeVinculos.Aplicar(vinculo, conMotivos, ahora);
+        // Una actualización envía cada sección cambiada al área responsable de su sector (según el flujo); la revisión inicial no cambia.
+        var enrutados = enrutarPorSector
+            ? ResponsablesDeActualizacion.Enrutar(conMotivos, version.ResponsablesDeSector, [.. version.Etapas.SelectMany(e => e.Areas).Select(a => a.AreaId)])
+            : conMotivos;
+        return ExencionesDeVinculos.Aplicar(vinculo, enrutados, ahora);
     }
 
     /// <summary>Renovación periódica: la sección cuya versión completa es la ya aceptada no queda cubierta; hace falta ratificarla (VV-1).</summary>

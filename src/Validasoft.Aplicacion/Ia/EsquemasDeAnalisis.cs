@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Validasoft.Dominio.Documentos;
+using Validasoft.Dominio.Ficha;
 
 namespace Validasoft.Aplicacion.Ia;
 
@@ -42,9 +43,9 @@ public sealed record EsquemaDeAnalisis(
 
     public static readonly IReadOnlyList<string> Comunes = ["tipoDetectado", "legible", "confianza", "alertasDeManipulacion", "observaciones", "campos"];
 
-    /// <summary>Tipos que el modelo puede reconocer: los canónicos de archivo y <c>OTRO</c>.</summary>
+    /// <summary>Tipos que el modelo puede reconocer: los canónicos de archivo que la lectura automática cubre (no los de otro país, RG-6) y <c>OTRO</c>.</summary>
     public static readonly IReadOnlyList<string> TiposDetectables =
-        [.. CatalogoCanonico.Todos.Where(t => t.Clase == ClaseDocumento.Archivo).Select(t => t.Codigo), Otro];
+        [.. CatalogoCanonico.Todos.Where(t => t.Clase == ClaseDocumento.Archivo && t.AplicaAlPais(AlcanceDeLaLectura.Pais)).Select(t => t.Codigo), Otro];
 
     /// <summary>Nombre del formato en la API (<c>hechos_rut</c>).</summary>
     public string NombreFormato => "hechos_" + TipoCanonico.ToLowerInvariant();
@@ -329,10 +330,13 @@ public static class EsquemasDeAnalisis
             ["numeroPoliza", "vigenciaHasta", "valorAsegurado"])
     };
 
-    /// <summary>Esquema del tipo canónico de archivo; nulo si no es un canónico de archivo del catálogo.</summary>
+    /// <summary>
+    /// Esquema del tipo canónico de archivo; nulo si no es un canónico de archivo del catálogo o si es de un país que la lectura automática no cubre
+    /// (el certificado de RUC de Panamá, la constancia de RNC y el registro mercantil de República Dominicana: RG-5, RG-6).
+    /// </summary>
     public static EsquemaDeAnalisis? Para(string? tipoCanonico)
     {
-        if (CatalogoCanonico.Buscar(tipoCanonico) is not { Clase: ClaseDocumento.Archivo } canonico)
+        if (CatalogoCanonico.Buscar(tipoCanonico) is not { Clase: ClaseDocumento.Archivo } canonico || !canonico.AplicaAlPais(AlcanceDeLaLectura.Pais))
             return null;
         return Propios.TryGetValue(canonico.Codigo, out var propio)
             ? propio

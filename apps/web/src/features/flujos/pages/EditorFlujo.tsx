@@ -25,6 +25,7 @@ import {
   erroresBloqueantes,
   etapasADto,
   evaluacionesADto,
+  responsablesDeSectorADto,
   firmaBorrador,
   normalizarCodigo,
   plazoADto,
@@ -131,6 +132,7 @@ export function EditorFlujo() {
       requisitos: requisitosADto(borrador.requisitos),
       verificaciones: verificacionesADto(borrador.verificaciones),
       evaluaciones: evaluacionesADto(borrador.evaluaciones),
+      responsablesDeSector: responsablesDeSectorADto(borrador.responsablesDeSector),
     };
     if (nuevo) {
       crear.mutate(

@@ -90,7 +90,7 @@ public static class Revalidacion
             return null;
 
         var calculados = await ProcesoDeValidacion.CalcularRequisitosAsync(sesion, vinculo, tercero, empresa.TenantId, version, contexto, cambios.Ids, null,
-            ahora, ct, cambios.Retiros);
+            ahora, ct, cambios.Retiros, enrutarPorSector: true);
         var eventos = expediente.AgregarRequisitos(calculados, ahora);
         if (eventos.Count == 0)
             return null;

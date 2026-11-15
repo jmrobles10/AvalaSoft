@@ -116,6 +116,27 @@ public sealed record DatosTributarios
     public bool? ExentoReteCree { get; init; }
 
     public IReadOnlyList<FilaIca>? Ica { get; init; }
+
+    // Modelo genérico (RG-3): los países distintos de Colombia no tienen la casilla 53 del RUT ni ICA. Los campos de arriba solo aplican a
+    // Colombia y los de abajo solo fuera de ella (enviar los del otro modelo es 422 campo-no-aplica). Ver PerfilesTributarios.
+
+    /// <summary>Código del régimen del país (<see cref="PerfilTributario.Regimenes"/>): ORDINARIO, RST, ZONA_FRANCA, GENERAL… Obligatorio fuera de Colombia.</summary>
+    public string? Regimen { get; init; }
+
+    /// <summary>¿Contribuyente del impuesto a las ventas del país (ITBMS en Panamá, ITBIS en República Dominicana, IVA o equivalente)? Obligatorio fuera de Colombia.</summary>
+    public bool? ContribuyenteImpuestoVentas { get; init; }
+
+    /// <summary>¿Agente de retención designado por la autoridad tributaria? Obligatorio fuera de Colombia.</summary>
+    public bool? AgenteDeRetencion { get; init; }
+
+    /// <summary>¿Exento de retenciones? Con <c>true</c> exige <see cref="CertificadoExencion"/>. Obligatorio fuera de Colombia.</summary>
+    public bool? ExentoDeRetenciones { get; init; }
+
+    /// <summary>Número y fecha del certificado o resolución que acredita la exención (obligatorio con <see cref="ExentoDeRetenciones"/> en <c>true</c>).</summary>
+    public Resolucion? CertificadoExencion { get; init; }
+
+    /// <summary>¿Emite facturas o comprobantes fiscales electrónicos? Opcional.</summary>
+    public bool? EmisorComprobantesElectronicos { get; init; }
 }
 
 public sealed record Resolucion

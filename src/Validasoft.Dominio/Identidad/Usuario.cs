@@ -47,6 +47,12 @@ public sealed class Usuario
 
     public List<RolAsignado> Roles { get; set; } = [];
 
+    /// <summary>
+    /// Grupos de acceso propios del tenant que tiene la persona (además de los roles, que son los grupos predefinidos). Lo que puede es la unión de sus roles y de lo
+    /// que dan estos grupos mientras estén activos.
+    /// </summary>
+    public List<AsignacionDeGrupo> Grupos { get; set; } = [];
+
     public DateTimeOffset CreadoEn { get; set; }
 
     public DateTimeOffset? UltimoAcceso { get; set; }
@@ -115,6 +121,17 @@ public sealed class Usuario
         Roles = [.. lista.Where(r => r.EmpresaId is null || !deTenant.Contains(r.Rol))];
     }
 
+    /// <summary>Reemplaza las asignaciones de grupos propios. Un grupo asignado a todo el tenant hace redundante el mismo grupo por empresa.</summary>
+    public void AsignarGrupos(IEnumerable<AsignacionDeGrupo> grupos)
+    {
+        if (!Activo)
+            throw ReglaDeNegocioException.Conflicto("usuario-inactivo", "No se asignan grupos a un usuario desactivado.");
+
+        var lista = grupos.Distinct().ToList();
+        var deTenant = lista.Where(g => g.EmpresaId is null).Select(g => g.GrupoId).ToHashSet();
+        Grupos = [.. lista.Where(g => g.EmpresaId is null || !deTenant.Contains(g.GrupoId))];
+    }
+
     public void Desactivar()
     {
         if (!Activo)
@@ -128,8 +145,9 @@ public sealed class Usuario
     /// </summary>
     public bool ExigePasskey(bool paraTodosEnElGrupo) => paraTodosEnElGrupo || Roles.Any(r => PoliticaDePasskeys.RolExige(r.Rol));
 
-    /// <summary>Si tiene algún rol en la empresa, directamente o para todo el tenant.</summary>
-    public bool TieneRolEn(Guid empresaId) => Roles.Any(r => r.EmpresaId is null || r.EmpresaId == empresaId);
+    /// <summary>Si tiene algún rol o grupo de acceso en la empresa, directamente o para todo el tenant.</summary>
+    public bool TieneRolEn(Guid empresaId) =>
+        Roles.Any(r => r.EmpresaId is null || r.EmpresaId == empresaId) || Grupos.Any(g => g.EmpresaId is null || g.EmpresaId == empresaId);
 }
 
 /// <summary>

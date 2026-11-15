@@ -94,8 +94,12 @@ public sealed class PoliticaDeIngreso(IDocumentStore store, IMemoryCache cache, 
 
 /// <summary>Una cuenta con la que se puede entrar: su documento, su grupo y lo que se le exige.</summary>
 public sealed record CuentaResuelta(
-    CuentaDeIngreso Cuenta, string Nombre, string Correo, string? Grupo, bool ExigePasskey, Usuario? Usuario, OperadorDePlataforma? Operador, Tenant? Tenant)
+    CuentaDeIngreso Cuenta, string Nombre, string Correo, string? Grupo, bool ExigePasskey, Usuario? Usuario, OperadorDePlataforma? Operador, Tenant? Tenant,
+    IReadOnlyList<ConcesionDeAcceso>? ConcesionesDeGrupos = null)
 {
+    /// <summary>Lo que dan a la persona sus grupos de acceso propios (activos y vigentes al cargar la cuenta); se suma a lo de sus roles al emitir el token.</summary>
+    public IReadOnlyList<ConcesionDeAcceso> Concesiones => ConcesionesDeGrupos ?? [];
+
     /// <summary>Identificador estable que viaja al navegador: <c>u:{grupo}:{usuario}</c> u <c>o:{operador}</c>.</summary>
     public string Id => Identificador(Cuenta);
 
@@ -123,9 +127,10 @@ public sealed class CuentasDeIngreso(IDocumentStore store)
         {
             var ids = usuarios.Select(u => u.TenantId!.Value).Distinct().ToArray();
             var tenants = (await consulta.LoadManyAsync<Tenant>(ct, ids)).ToDictionary(t => t.Id);
-            cuentas.AddRange(usuarios
-                .Where(u => tenants.TryGetValue(u.TenantId!.Value, out var t) && t.Activo && t.ModosDeIngreso.HasFlag(ModoDeIngreso.Directo))
-                .Select(u => DeUsuario(u, tenants[u.TenantId!.Value]))
+            var admitidos = usuarios.Where(u => tenants.TryGetValue(u.TenantId!.Value, out var t) && t.Activo && t.ModosDeIngreso.HasFlag(ModoDeIngreso.Directo)).ToList();
+            var grupos = await GruposDeAsync(consulta, admitidos, ct);
+            cuentas.AddRange(admitidos
+                .Select(u => DeUsuario(u, tenants[u.TenantId!.Value], ConcesionDeAcceso.DeLosGruposDe(u, grupos)))
                 .OrderBy(c => c.Grupo, StringComparer.CurrentCultureIgnoreCase));
         }
 
@@ -155,7 +160,9 @@ public sealed class CuentasDeIngreso(IDocumentStore store)
 
         await using var deTenant = store.QuerySession(tenantId.ToString("N"));
         var usuario = await deTenant.LoadAsync<Usuario>(usuarioId, ct);
-        return usuario is { Activo: true } ? DeUsuario(usuario, tenant) : null;
+        if (usuario is not { Activo: true })
+            return null;
+        return DeUsuario(usuario, tenant, ConcesionDeAcceso.DeLosGruposDe(usuario, await GruposDeAsync(deTenant, [usuario], ct)));
     }
 
     /// <summary>Passkeys activas de la cuenta.</summary>
@@ -167,8 +174,15 @@ public sealed class CuentasDeIngreso(IDocumentStore store)
         return await consulta.Query<Passkey>().Where(p => p.Propietario == tipo && p.SujetoId == sujeto && p.RevocadaEn == null).OrderBy(p => p.CreadaEn).ToListAsync(ct);
     }
 
-    private static CuentaResuelta DeUsuario(Usuario u, Tenant t) =>
-        new(new CuentaDeIngreso(TipoDePropietario.Usuario, t.Id, u.Id.ToString()), u.Nombre, u.Correo, t.Nombre, u.ExigePasskey(t.PasskeyParaTodos), u, null, t);
+    /// <summary>Los grupos de acceso propios que tienen asignados estas personas (de cualquiera de sus grupos empresariales); los activos darán permisos.</summary>
+    private static async Task<IReadOnlyList<GrupoDePermisos>> GruposDeAsync(IQuerySession consulta, IReadOnlyList<Usuario> usuarios, CancellationToken ct)
+    {
+        var ids = usuarios.SelectMany(u => u.Grupos).Select(a => a.GrupoId).Distinct().ToArray();
+        return ids.Length == 0 ? [] : await consulta.Query<GrupoDePermisos>().Where(g => g.AnyTenant() && g.Id.IsOneOf(ids)).ToListAsync(ct);
+    }
+
+    private static CuentaResuelta DeUsuario(Usuario u, Tenant t, IReadOnlyList<ConcesionDeAcceso> concesiones) =>
+        new(new CuentaDeIngreso(TipoDePropietario.Usuario, t.Id, u.Id.ToString()), u.Nombre, u.Correo, t.Nombre, u.ExigePasskey(t.PasskeyParaTodos), u, null, t, concesiones);
 
     private static CuentaResuelta DeOperador(OperadorDePlataforma o) =>
         new(new CuentaDeIngreso(TipoDePropietario.Operador, null, o.Id), o.Nombre, o.Correo, null, true, null, o, null);

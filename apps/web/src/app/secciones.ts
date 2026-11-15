@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   Timer,
   Users,
+  UserCog,
   UsersRound,
   Webhook,
   Workflow,
@@ -34,6 +35,7 @@ export interface SeccionConfiguracion {
   ruta:
     | 'empresas'
     | 'usuarios'
+    | 'grupos-de-acceso'
     | 'areas'
     | 'sistemas'
     | 'api-keys'
@@ -69,6 +71,8 @@ export interface SeccionConfiguracion {
 export const SECCIONES_CONFIGURACION: readonly SeccionConfiguracion[] = [
   { ruta: 'empresas', scope: SCOPES.empresasAdministrar, icono: Building2, alcance: 'grupo' },
   { ruta: 'usuarios', scope: SCOPES.usuariosAdministrar, icono: Users, alcance: 'grupo' },
+  // Permisos del catálogo acotados por sector de la ficha, que se asignan a las personas (GA-1…GA-9); los cuatro roles fijos son grupos predefinidos.
+  { ruta: 'grupos-de-acceso', scope: SCOPES.usuariosAdministrar, icono: UserCog, alcance: 'grupo' },
   // Cómo entran las personas del grupo (ING-1): modos, duración de la sesión e inactividad, passkey para todos.
   { ruta: 'ingreso', scope: SCOPES.usuariosAdministrar, icono: LogIn, alcance: 'grupo' },
   // Inicio de sesión único con el proveedor de identidad del cliente (PI-1): proveedor, dominios verificados, creación de personas y roles.

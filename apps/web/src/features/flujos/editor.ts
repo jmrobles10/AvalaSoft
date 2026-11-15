@@ -5,10 +5,12 @@ import type {
   FlujoVersionDto,
   PoliticaDevolucion,
   RequisitoDelFlujoDto,
+  ResponsableDeSectorDto,
   TipoDocumentoTenantDto,
   TipoVerificacion,
   VerificacionRequeridaDto,
 } from '@validasoft/api-client';
+import { SECCIONES_FICHA } from '../terceros/ficha/secciones';
 import { condicionDeFichaCompleta, condicionDeFichaSimple } from './condiciones';
 import { recordatorioADto, recordatorioDesdeVersion, validarRecordatorio, type ModoRecordatorio } from './recordatorio';
 import { requisitoDeSeccionADto, validarRequisitoDeSeccion } from './requisitosDeSeccion';
@@ -140,6 +142,14 @@ export interface BorradorFlujo {
   verificaciones: VerificacionEnEditor[];
   /** Cuestionarios de evaluación que pide el flujo al abrir el expediente inicial (CE-7): el cuestionario y qué pasa si sale reprobado. */
   evaluaciones: EvaluacionEnEditor[];
+  /** Área responsable de cada sector de la ficha en las actualizaciones (GA-8): sin entrada, el sector se revisa como siempre. */
+  responsablesDeSector: ResponsableDeSectorEnEditor[];
+}
+
+/** El área del flujo que responde por un sector (código de sección `FICHA_*`) cuando el tercero lo cambia después de aprobado. */
+export interface ResponsableDeSectorEnEditor {
+  sector: string;
+  areaId: string;
 }
 
 /** Un cuestionario que pide el flujo; el efecto de una evaluación reprobada: `Bloquear` el cierre del expediente o solo `Observar`. */
@@ -251,6 +261,7 @@ export function borradorVacio(): BorradorFlujo {
     requisitos: [],
     verificaciones: [],
     evaluaciones: [],
+    responsablesDeSector: [],
   };
 }
 
@@ -305,6 +316,7 @@ export function borradorDesdeVersion(base: { codigo: string; nombre: string; tip
       frecuenciaReconsultaMeses: v.frecuenciaReconsultaMeses ?? null,
     })),
     evaluaciones: (version.evaluaciones ?? []).map((e) => ({ cuestionarioId: e.cuestionarioId, efecto: e.efecto ?? 'Bloquear' })),
+    responsablesDeSector: (version.responsablesDeSector ?? []).map((r) => ({ sector: r.sector, areaId: r.areaId })),
   };
 }
 
@@ -467,7 +479,12 @@ export function requisitosADto(requisitos: readonly RequisitoEnEditor[]): Requis
 /** Quita de los requisitos las áreas que ya no están en el flujo (al quitar un área de una etapa). */
 export function limpiarAreasDeRequisitos(borrador: BorradorFlujo): BorradorFlujo {
   const areasDelFlujo = new Set(borrador.etapas.flatMap((e) => e.areas.map((a) => a.areaId)));
-  return { ...borrador, requisitos: borrador.requisitos.map((r) => ({ ...r, areasQueRevisan: r.areasQueRevisan.filter((a) => areasDelFlujo.has(a)) })) };
+  return {
+    ...borrador,
+    requisitos: borrador.requisitos.map((r) => ({ ...r, areasQueRevisan: r.areasQueRevisan.filter((a) => areasDelFlujo.has(a)) })),
+    // Un responsable cuya área salió del flujo ya no puede decidir: se quita y el sector vuelve a revisarse como siempre.
+    responsablesDeSector: borrador.responsablesDeSector.filter((r) => areasDelFlujo.has(r.areaId)),
+  };
 }
 
 /** Solo los errores que impiden guardar. */
@@ -524,7 +541,17 @@ export function firmaBorrador(borrador: BorradorFlujo): string {
     requisitos: requisitosADto(borrador.requisitos).map((r) => ({ ...r, id: null })),
     verificaciones: verificacionesADto(borrador.verificaciones),
     evaluaciones: evaluacionesADto(borrador.evaluaciones),
+    responsablesDeSector: responsablesDeSectorADto(borrador.responsablesDeSector),
   });
+}
+
+/** Los responsables por sector como los recibe la API: sin repetir sector (el editor no lo permite) y en el orden de la ficha. */
+export function responsablesDeSectorADto(responsables: readonly ResponsableDeSectorEnEditor[]): ResponsableDeSectorDto[] {
+  const orden = SECCIONES_FICHA.map((s) => s.codigo as string);
+  return [...responsables]
+    .filter((r) => r.sector !== '' && r.areaId !== '')
+    .sort((a, b) => orden.indexOf(a.sector) - orden.indexOf(b.sector))
+    .map((r) => ({ sector: r.sector, areaId: r.areaId }));
 }
 
 /** Las evaluaciones del editor como las recibe la API (el editor no deja repetir un cuestionario). */

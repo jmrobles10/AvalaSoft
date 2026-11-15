@@ -43,7 +43,8 @@ public sealed class VerificadorDeIdentidadDelegada(RegistroDeUsuariosDelegados u
         // Después de la firma (nadie llena el registro con aserciones falsas) y antes de tocar al usuario.
         await usadas.RegistrarAsync(sistema.Id, jti, reloj.GetUtcNow(), expira + Tolerancia, ct);
         var usuario = await usuarios.ResolverAsync(tenantId, sistema, apiKeyId, datos, correlationId, ct);
-        var permisos = Permisos.ParaUsuario(usuario.Roles, scopesLlave, empresasLlave);
+        var concesiones = await usuarios.ConcesionesDeGruposAsync(tenantId, usuario, ct);
+        var permisos = Permisos.ParaUsuario(usuario.Roles, concesiones, scopesLlave, empresasLlave);
 
         var reclamos = new List<Claim>
         {
@@ -54,9 +55,7 @@ public sealed class VerificadorDeIdentidadDelegada(RegistroDeUsuariosDelegados u
             new(Reclamos.Sistema, sistema.Codigo),
             new(Reclamos.Generacion, sistema.Generacion.ToString(System.Globalization.CultureInfo.InvariantCulture))
         };
-        reclamos.AddRange(permisos.DeTenant.Select(s => new Claim(Reclamos.Scope, s)));
-        reclamos.AddRange(permisos.PorEmpresa.SelectMany(p => p.Value.Select(s => new Claim(Reclamos.ScopeEmpresa, $"{s}|{p.Key}"))));
-        reclamos.AddRange(permisos.Empresas.Select(e => new Claim(Reclamos.Empresa, e)));
+        reclamos.AddRange(ReclamosDePermisos.De(permisos));
         return reclamos;
     }
 
@@ -150,7 +149,7 @@ public sealed class EmisorDeSesiones(IConfiguration configuracion) : IEmisorDeSe
     public static readonly TimeSpan Duracion = TimeSpan.FromMinutes(30);
 
     private static readonly string[] ReclamosCopiados =
-        [Reclamos.Tenant, Reclamos.ActorTipo, Reclamos.Sistema, Reclamos.SistemaId, Reclamos.Generacion, Reclamos.Scope, Reclamos.ScopeEmpresa, Reclamos.Empresa];
+        [Reclamos.Tenant, Reclamos.ActorTipo, Reclamos.Sistema, Reclamos.SistemaId, Reclamos.Generacion, Reclamos.Scope, Reclamos.ScopeEmpresa, Reclamos.Empresa, Reclamos.Sectores];
 
     public SesionUsuarioDto Emitir(ClaimsPrincipal principal, DateTimeOffset ahora)
     {
@@ -181,10 +180,11 @@ public sealed class EmisorDeSesiones(IConfiguration configuracion) : IEmisorDeSe
             new Claim(Reclamos.Generacion, operador.Generacion.ToString(System.Globalization.CultureInfo.InvariantCulture))
         ], ahora);
 
-    public SesionUsuarioDto EmitirDeUsuario(Usuario usuario, Guid tenantId, Guid sesionId, MetodoDeIngreso metodo, TimeSpan vigencia, DateTimeOffset ahora)
+    public SesionUsuarioDto EmitirDeUsuario(Usuario usuario, IReadOnlyList<ConcesionDeAcceso> gruposDelUsuario, Guid tenantId, Guid sesionId, MetodoDeIngreso metodo,
+        TimeSpan vigencia, DateTimeOffset ahora)
     {
-        // Mismos reclamos que la sesión delegada: el permiso efectivo es el de los roles del usuario (la llave de un sistema no interviene).
-        var permisos = Permisos.ParaUsuario(usuario.Roles, Permisos.DelTenant, ["*"]);
+        // Mismos reclamos que la sesión delegada: el permiso efectivo es la unión de los roles y los grupos de acceso del usuario (la llave de un sistema no interviene).
+        var permisos = Permisos.ParaUsuario(usuario.Roles, gruposDelUsuario, Permisos.DelTenant, ["*"]);
         var reclamos = new List<Claim>
         {
             new(Reclamos.Tenant, tenantId.ToString()),
@@ -194,9 +194,7 @@ public sealed class EmisorDeSesiones(IConfiguration configuracion) : IEmisorDeSe
             new(Reclamos.SesionId, sesionId.ToString()),
             new(Reclamos.Metodo, metodo.ToString())
         };
-        reclamos.AddRange(permisos.DeTenant.Select(s => new Claim(Reclamos.Scope, s)));
-        reclamos.AddRange(permisos.PorEmpresa.SelectMany(p => p.Value.Select(s => new Claim(Reclamos.ScopeEmpresa, $"{s}|{p.Key}"))));
-        reclamos.AddRange(permisos.Empresas.Select(e => new Claim(Reclamos.Empresa, e)));
+        reclamos.AddRange(ReclamosDePermisos.De(permisos));
         return Firmar(reclamos, ahora, vigencia);
     }
 

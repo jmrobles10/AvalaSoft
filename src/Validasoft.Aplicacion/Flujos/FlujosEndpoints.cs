@@ -50,7 +50,8 @@ public static class FlujosEndpoints
             VigenciaVinculo = dto.VigenciaVinculo?.ADominio(),
             RecordatorioObservacionesDias = dto.RecordatorioObservaciones?.ADominio(),
             Seleccion = dto.Seleccion?.ADominio(),
-            Evaluaciones = [.. (dto.Evaluaciones ?? []).Select(e => e.ADominio())]
+            Evaluaciones = [.. (dto.Evaluaciones ?? []).Select(e => e.ADominio())],
+            ResponsablesDeSector = [.. (dto.ResponsablesDeSector ?? []).Select(r => new ResponsableDeSector(r.Sector, r.AreaId))]
         };
         var flujo = Flujo.Crear(empresa.EmpresaId, dto.Codigo, dto.Nombre, tipo.Id, definicion, areas, ahora, tipos, tipo, await CuestionariosAsync(empresa, ct));
 
@@ -153,7 +154,8 @@ public static class FlujosEndpoints
             dto.VigenciaVinculo?.ADominio() ?? ultima.VigenciaEfectiva(),
             dto.RecordatorioObservaciones is { } recordatorio ? recordatorio.ADominio() : ultima.RecordatorioObservacionesDias,
             dto.Seleccion is { } seleccion ? seleccion.ADominio() : ultima.Seleccion,
-            dto.Evaluaciones is null ? ultima.Evaluaciones : [.. dto.Evaluaciones.Select(e => e.ADominio())]);
+            dto.Evaluaciones is null ? ultima.Evaluaciones : [.. dto.Evaluaciones.Select(e => e.ADominio())],
+            dto.ResponsablesDeSector is null ? ultima.ResponsablesDeSector : [.. dto.ResponsablesDeSector.Select(r => new ResponsableDeSector(r.Sector, r.AreaId))]);
 
         var borrador = flujo.EditarBorrador(dto.Nombre, definicion, await empresa.Areas().ToListAsync(ct), ahora, tipos,
             await empresa.Sesion.LoadAsync<TipoVinculo>(flujo.TipoVinculoId, ct), await CuestionariosAsync(empresa, ct));

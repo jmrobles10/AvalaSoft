@@ -1,4 +1,4 @@
-import { esErrorApi, type ErrorApi, type FaltanteSeccionDto, type JsonElement, type SeccionFichaDto, type SeccionGuardadaDto, type SoporteSeccionDto } from '@validasoft/api-client';
+import { esErrorApi, type ErrorApi, type FaltanteSeccionDto, type JsonElement, type PerfilDeFichaDto, type SeccionFichaDto, type SeccionGuardadaDto, type SoporteSeccionDto } from '@validasoft/api-client';
 import { useState } from 'react';
 import { useGuardarSeccion } from './api';
 import { estaSenalado } from './etiquetas';
@@ -17,20 +17,23 @@ export function prellenadoDe(inicial: Pick<SeccionFichaDto, 'version' | 'datos' 
   return inicial.version === null && !inicial.datos && typeof sugerido === 'object' && sugerido !== null && !Array.isArray(sugerido) ? sugerido : null;
 }
 
-/** Lo que no edita el tercero (lo fija la API con su registro, FM-19) no se envía. */
-export function datosParaEnviar(codigo: CodigoSeccion, datos: object): JsonElement {
+/**
+ * Lo que no edita el tercero (lo fija la API con su registro, FM-19) no se envía. El DV sí viaja cuando lo declara el tercero (el RUC de Panamá,
+ * RG-2): el de su identificación en la General y el de cada persona cuyo tipo lo declara en la Legal; el resto lo calcula Validasoft.
+ */
+export function datosParaEnviar(codigo: CodigoSeccion, datos: object, perfil?: PerfilDeFichaDto | null): JsonElement {
   const copia: Record<string, unknown> = { ...datos };
   if (codigo === 'FICHA_GENERAL') {
     delete copia.tipo_persona;
     delete copia.tipo_identificacion;
     delete copia.numero;
-    delete copia.dv;
+    if (!perfil?.dvDeclarado) delete copia.dv;
   }
   if (codigo === 'FICHA_FINANCIERA') delete copia.periodo;
   if (codigo === 'FICHA_LEGAL' && Array.isArray(copia.personas)) {
     copia.personas = (copia.personas as PersonaRelacionada[]).map((persona) => {
       const sinDv: PersonaRelacionada = { ...persona };
-      delete sinDv.dv;
+      if (!perfil?.tiposConDvDeclarado.includes(persona.tipo_identificacion ?? '')) delete sinDv.dv;
       return sinDv;
     });
   }
@@ -48,7 +51,7 @@ export interface Senalados {
  * faltantes exactos (FM-16) y el error 422 de un campo —, más los campos que una empresa señaló al observarla. Un campo
  * que el tercero vuelve a tocar deja de marcarse hasta el siguiente guardado. La completitud nunca se calcula aquí.
  */
-export function useEditorSeccion(codigo: CodigoSeccion, periodo: number | null, inicial: SeccionFichaDto, senalados: Senalados | null = null) {
+export function useEditorSeccion(codigo: CodigoSeccion, periodo: number | null, inicial: SeccionFichaDto, senalados: Senalados | null = null, perfil: PerfilDeFichaDto | null = null) {
   // La General vacía arranca con lo que ya se sabe del tercero (FD-1): hasta guardar, «Guardar» queda habilitado aunque no haya tocado nada.
   const sugerido = prellenadoDe(inicial);
   const [conPrellenado, setConPrellenado] = useState(sugerido !== null);
@@ -101,7 +104,7 @@ export function useEditorSeccion(codigo: CodigoSeccion, periodo: number | null, 
       : (erroresCampo.find((e) => claveDeRuta(e.campo) === clave)?.mensaje ?? (senalados && estaSenalado(clave, senalados.campos) ? senalados.mensaje : null));
 
   // Lo que se enviaría al guardar. El tipo de cada soporte lo pone el servidor: se envía solo qué versión de qué documento.
-  const cuerpo = { datos: datosParaEnviar(codigo, datos), soportes: soportes.map(({ documentoId, version }) => ({ documentoId, version })) };
+  const cuerpo = { datos: datosParaEnviar(codigo, datos, perfil), soportes: soportes.map(({ documentoId, version }) => ({ documentoId, version })) };
 
   const guardar = (alGuardar: (respuesta: SeccionGuardadaDto) => void) => {
     guardado.mutate(

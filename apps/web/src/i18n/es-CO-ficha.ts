@@ -55,6 +55,13 @@ export const fichaMaestra = {
     responsable_ica: 'Contribuyente de ICA',
     autorretenedor_ica: 'Autorretenedor de ICA',
     exento_rete_cree: 'Exento de retención CREE',
+    // Fuera de Colombia no hay casilla 53 ni ICA: el conjunto genérico (RG-3).
+    regimen: 'Régimen tributario',
+    contribuyente_impuesto_ventas: 'Contribuyente del impuesto a las ventas (ITBMS, ITBIS, IVA)',
+    agente_de_retencion: 'Agente de retención',
+    exento_de_retenciones: 'Exento de retenciones',
+    certificado_exencion: 'Certificado de exención',
+    emisor_comprobantes_electronicos: 'Emisor de comprobantes electrónicos',
     ica: 'ICA por municipio',
     municipio: 'Municipio (DANE)',
     ciiu: 'CIIU',
@@ -115,6 +122,19 @@ export const fichaMaestra = {
     Giros: 'Giros',
     PagoDeServicios: 'Pago de servicios',
     Otras: 'Otras',
+  },
+  // Regímenes tributarios de los países sin la casilla 53 (RG-3): Panamá, República Dominicana y el genérico.
+  regimenes: {
+    GENERAL: 'Régimen general',
+    ORDINARIO: 'Régimen ordinario',
+    RST: 'Régimen Simplificado de Tributación (RST)',
+    SIMPLIFICADO: 'Régimen simplificado o de pequeño contribuyente',
+    ZONA_LIBRE: 'Zona Libre de Colón',
+    ZONA_FRANCA: 'Zona franca',
+    ZONA_FRANCA_O_ESPECIAL: 'Zona franca o régimen especial',
+    ESPECIAL: 'Régimen especial, zona franca o exento',
+    SIN_FINES_DE_LUCRO: 'Sin fines de lucro',
+    OTRO: 'Otro',
   },
   // Declaración jurada PEP de una persona (HU 49093): solo se ve con «Sí» en PEP.
   pep: {

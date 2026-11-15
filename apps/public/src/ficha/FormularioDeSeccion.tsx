@@ -14,11 +14,11 @@ export function FormularioDeSeccion({ codigo, estado, editor, selectorPeriodo }:
   const comun = { onCambiar: editor.cambiar, mensaje: editor.mensaje, hayEnRuta: editor.hayEnRuta, deshabilitado: editor.guardando };
   switch (codigo) {
     case 'FICHA_GENERAL':
-      return <FormularioGeneral {...comun} datos={editor.datos} tipoPersona={estado.tipoPersona} />;
+      return <FormularioGeneral {...comun} datos={editor.datos} tipoPersona={estado.tipoPersona} perfil={estado.perfil} />;
     case 'FICHA_TRIBUTARIA':
-      return <FormularioTributaria {...comun} datos={editor.datos} />;
+      return <FormularioTributaria {...comun} datos={editor.datos} perfil={estado.perfil} />;
     case 'FICHA_LEGAL':
-      return <FormularioLegal {...comun} datos={editor.datos} />;
+      return <FormularioLegal {...comun} datos={editor.datos} perfil={estado.perfil} />;
     case 'FICHA_FINANCIERA':
       return <FormularioFinanciera {...comun} datos={editor.datos} selectorPeriodo={selectorPeriodo} />;
     case 'FICHA_SST':
