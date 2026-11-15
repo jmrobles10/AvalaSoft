@@ -82,8 +82,8 @@ Esquemas base de plataforma. Las empresas pueden agregar **campos privados** por
 
 | Código | Campos (resumen) | Varias filas | Respaldo |
 |---|---|---|---|
-| `FICHA_GENERAL` | razon_social / nombres + apellidos, tipo_persona, tipo_identificacion, numero, dv (calculado DIAN módulo 11; no editable), correo, telefono, pais (ISO), ciudad (DANE), direccion (+ estructura AyF), ciiu_principal, ciiu_secundarias, pagina_web, certificado_iso, anio_inicio. **Solo persona natural** (opcionales, FD-8): pep, vinculo_pep, fecha_expedicion, lugar_expedicion, declaracion_pep (obligatoria con pep = Sí, §4.2); lo que no aplica al tipo de persona se rechaza (`campo-no-aplica`) | — | RUT, Cámara, cédula |
-| `FICHA_TRIBUTARIA` | responsabilidades (códigos DIAN de la casilla 53 del RUT), resoluciones de gran contribuyente y autorretenedor (número, fecha), ica[] (municipio DANE, CIIU); las 13 calidades del Portal **se derivan** de los códigos | ica[] | RUT |
+| `FICHA_GENERAL` | razon_social / nombres + apellidos, tipo_persona, tipo_identificacion, numero, dv (calculado DIAN módulo 11; no editable; **el RUC de Panamá lo declara el tercero**, §4.3), correo, telefono, pais (ISO), ciudad (DANE), direccion (+ estructura AyF), ciiu_principal, ciiu_secundarias, pagina_web, certificado_iso, anio_inicio. **Solo persona natural** (opcionales, FD-8): pep, vinculo_pep, fecha_expedicion, lugar_expedicion, declaracion_pep (obligatoria con pep = Sí, §4.2); lo que no aplica al tipo de persona se rechaza (`campo-no-aplica`) | — | RUT, Cámara, cédula |
+| `FICHA_TRIBUTARIA` | **Colombia:** responsabilidades (códigos DIAN de la casilla 53 del RUT), resoluciones de gran contribuyente y autorretenedor (número, fecha), ica[] (municipio DANE, CIIU); las 13 calidades del Portal **se derivan** de los códigos. **Otros países (PA, DO y el resto, §4.3):** régimen del país, contribuyente del impuesto a las ventas (ITBMS, ITBIS, IVA), agente de retención, exento de retenciones con su certificado y emisor de comprobantes electrónicos | ica[] | RUT (Colombia) |
 | `FICHA_FINANCIERA` | periodo (año), fecha_corte, activos, pasivos, patrimonio, ingresos_brutos, ingresos_netos, gastos_operacionales, gastos_no_operacionales, otros_ingresos; validación activos = pasivos + patrimonio (con tolerancia); moneda_extranjera { realiza, tipos[], paises[] } | una versión por periodo | Estados financieros del periodo |
 | `FICHA_LEGAL` | personas[] { rol, tipo_representacion, tipo_identificacion, numero, nombres, apellidos, cargo, porcentaje (0–100, suma de socios ≤ 100), pep, vinculo_pep, declaracion_pep (§4.2), fecha_expedicion, fecha_nacimiento, nacionalidad, residencia }; revisor_fiscal_firma? | personas[] | Cámara; RUT (representantes) |
 | `FICHA_SST` | las 8 preguntas S/N | — | Certificado ARL/SG-SST (opcional por empresa) |
@@ -133,10 +133,28 @@ Quien responde «Sí» a «¿Es PEP?» firma su **declaración jurada**: la de l
 - **Sin soporte del cambio.** Declarar o cambiar la declaración, o la respuesta a PEP, no exige un documento nuevo (DP-17): la declaración es su propia evidencia.
 - **Versiones.** General y Legal pasan a esquema 3 y reglas 3 (FM-16; el 2 fue el de la declaración con un solo vínculo, DP-22): al recalcular, una ficha con «Sí» y sin declaración queda incompleta con su faltante exacto. El canónico `DECLARACION_PEP` se retira (DP-13): lo reemplaza este formulario.
 
+### 4.3 Regiones: la ficha según el país del tercero (RG-1…RG-11)
+La brecha frente al SRM decía que faltaban Panamá y República Dominicana y que la ficha tributaria era colombiana. El **país de la identificación del tercero** (no el del domicilio) decide qué se diligencia; la API lo entrega en `perfil` (`GET /public/v1/ficha`) y las pantallas no lo deducen. Decisiones completas en el [registro, sección 5-septuagies](decisiones/registro.md).
+
+- **Qué hace el SRM por región (RG-1).** La región es un parámetro del ERP, no del tercero. Cambia la nomenclatura (`NIT` ⇒ `RNC`, `CC` ⇒ `CED`, «ITBIS» por «IVA», «Física» por «Natural») y los tipos de adjunto por región; las 13 calidades tributarias son las mismas. No hay lógica propia de Panamá.
+- **Identificación (RG-2).**
+
+| País | Tipos | Formato (sin guiones) | Dígito de verificación |
+|---|---|---|---|
+| CO | `NIT`, `CC`, `CE`, `TI`, `PPT`, `PA` | como siempre | NIT: lo calcula Validasoft (DIAN módulo 11) |
+| PA | `RUC` (natural o jurídica), `CIP` (cédula, natural) | cédula `[PE\|PI\|E\|N]` + 1–2 dígitos + `AV`? + 3–9 dígitos; RUC jurídico de 12 a 20 dígitos | RUC: **lo declara el tercero** (2 dígitos, `dv` de la General; obligatorio) |
+| DO | `RNC` (natural o jurídica), `CED` (cédula, natural) | RNC de 9 dígitos (sociedad) u 11 (cédula como RNC); CED de 11 | **Dentro del número**: RNC con el algoritmo de la DGII, cédula con Luhn; uno equivocado no se registra |
+| Otros | `PASAPORTE`, `ID_FISCAL` (y los propios de CL, AR, MX, PE, EC, US) | como siempre | como siempre |
+
+- **Tributaria (RG-3).** Colombia, sin cambios (§4). Fuera de Colombia, el conjunto genérico: `regimen` (lista del país: Panamá `GENERAL`, `ZONA_LIBRE`, `ZONA_FRANCA_O_ESPECIAL`, `SIN_FINES_DE_LUCRO`, `OTRO`; República Dominicana `ORDINARIO`, `RST`, `ZONA_FRANCA`, `SIN_FINES_DE_LUCRO`, `OTRO`; genérico `GENERAL`, `SIMPLIFICADO`, `ESPECIAL`, `OTRO`), `contribuyente_impuesto_ventas`, `agente_de_retencion`, `exento_de_retenciones` (con `certificado_exencion` si «Sí») y `emisor_comprobantes_electronicos` (opcional). Los campos de un modelo en el otro son 422 `campo-no-aplica`. Esquema 2, reglas 2: lo guardado antes se lee igual y se recalcula con su motivo exacto.
+- **Legal (RG-4).** Las personas admiten los tipos de Colombia, los del país del tercero y los genéricos; una sociedad (NIT, RNC de 9 dígitos, RUC panameño largo) lleva razón social; el RUC de una persona panameña lleva su DV declarado.
+- **Lo que solo es de Colombia (RG-6).** El análisis con IA del RUT y de la Cámara, el cruce de la ficha con sus soportes, la propuesta «Actualizar desde mi documento» y el RUES y la DIAN **no aplican** a un tercero con identificación de otro país: la revisión es manual y el flujo no le pide esas fuentes. `AlcanceDeLaLectura` es la única definición.
+- **Documentos (RG-5).** Equivalentes por país del RUT y de la Cámara: `CERTIFICADO_RUC` y `REGISTRO_PUBLICO` (Panamá), `CONSTANCIA_RNC` y `REGISTRO_MERCANTIL` (República Dominicana). Son soportes de la ficha, sin lectura ni cruce.
+
 ## 5. El documento como fuente de las secciones
 
 ### 5.1 Qué respalda cada documento (mapa de plataforma, FM-13)
-El catálogo canónico declara, por tipo de documento, **qué campos de qué secciones respalda**. Son los mismos campos que la IA extrae del documento (ADR-0012):
+El catálogo canónico declara, por tipo de documento, **qué campos de qué secciones respalda**. Son los mismos campos que la IA extrae del documento (ADR-0012). **Este mapa y todo el cruce de §5.2 a §6 es de Colombia (RG-6):** los equivalentes de otros países (§4.3) sirven de soporte a mano y no están en él.
 
 | Documento | Respalda |
 |---|---|
@@ -210,7 +228,7 @@ Cuando hay hechos de IA del documento de respaldo (ADR-0012), la plataforma comp
 
   Lo que no se pueda convertir va al CSV de rechazos.
 
-  Construido en F4: endpoints, tablas del traductor, idempotencia y aceptación importada en [08 §6.6](08-integracion-y-migracion.md) y FM-39…FM-45. Las versiones que llegan del legado (origen `Importada` o `Portal`) no exigen el soporte del cambio.
+  Construido en F4: endpoints, tablas del traductor, idempotencia y aceptación importada en [08 §6.6](08-integracion-y-migracion.md) y FM-39…FM-45. Las versiones que llegan del legado (origen `Importada` o `Portal`) no exigen el soporte del cambio. **Terceros de otro país (RG-9):** el traductor del Portal produce la tributaria genérica (§4.3) para un tercero cuyo documento es extranjero (`ID_FISCAL` o `PASAPORTE`) y no la casilla 53; el ICA no se importa y el régimen y el certificado de una exención quedan por diligenciar con su aviso.
 - **Coexistencia por empresa** (FM-11). Mientras una empresa no haya hecho el corte, el Portal sigue siendo su UI. Un sincronizador de un solo sentido, del Portal a Validasoft, lleva cada guardado de sección como una versión nueva, con origen `Portal`. Después del corte, el Portal lee la ficha de Validasoft o embebe su UI, y ya no escribe en `Ter*`. El sincronizador es `POST /api/v1/plataforma/importacion/portal/terceros/{terid}/sincronizar`, que el Portal llama tras cada guardado (FM-43, FM-44).
 
 ## 9. Orden de construcción
