@@ -92,8 +92,8 @@ describe('CondicionDeFicha (EF-1)', () => {
 
     expect(await screen.findByText('OG · Obra gris')).toBeInTheDocument();
     expect(await screen.findByText('AC · Acabados')).toBeInTheDocument();
-    // «Todos los valores» sin tocar el catálogo del campo no se pide dos veces por el mismo código.
-    await usuario.click(within(screen.getByText('AC · Acabados').closest('.MuiChip-root') as HTMLElement).getByTestId('CancelIcon'));
+    // Quitar un valor es quitar su chip.
+    await usuario.click(within(screen.getByText('AC · Acabados').closest<HTMLElement>('.MuiChip-root')!).getByTestId('CancelIcon'));
     expect(condicion()).toEqual(alguno('OG'));
   });
 
