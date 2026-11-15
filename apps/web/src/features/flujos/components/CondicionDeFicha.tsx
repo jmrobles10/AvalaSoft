@@ -180,7 +180,6 @@ function ValoresDeCatalogo({ campo, valores, unico, onCambiar, deshabilitado, er
       getOptionLabel={(codigo) => etiquetaDe(codigo)}
       getOptionDisabled={() => unico && valores.length >= 1}
       loading={resultados.isFetching}
-      loadingText={t('condicionDeFicha.buscando')}
       noOptionsText={t('condicionDeFicha.sinResultados')}
       disabled={deshabilitado}
       renderInput={(parametros) => (

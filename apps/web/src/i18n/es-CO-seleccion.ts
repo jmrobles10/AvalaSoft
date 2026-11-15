@@ -31,7 +31,6 @@ export const condicionDeFicha = {
   valor: 'Valor',
   buscar: 'Busca por código o por nombre',
   sinResultados: 'Sin resultados',
-  buscando: 'Buscando…',
   si: 'Sí',
   no: 'No',
   jerarquica: 'Un valor de nivel superior cubre los de abajo: el grupo o la categoría de una especialidad, la división o el grupo de un CIIU.',
