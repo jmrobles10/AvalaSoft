@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatearDiaCivil, formatearFecha, ZONA_HORARIA_POR_DEFECTO } from './formato';
+import { formatearDiaCivil, formatearFecha, textoDelPorQue, ZONA_HORARIA_POR_DEFECTO } from './formato';
 
 describe('formatearDiaCivil', () => {
   it('escribe un día de calendario tal cual, sin correrlo al día anterior por la zona horaria', () => {
@@ -45,5 +45,22 @@ describe('días de calendario en America/Bogota', () => {
   it('un instante sí se muestra en la zona del negocio: a las 8 p. m. de Bogotá ya es el día siguiente en UTC pero sigue siendo el mismo día', () => {
     expect(formatearFecha('2026-11-27T01:00:00Z', 'America/Bogota')).toBe('26/11/2026');
     expect(formatearDiaCivil('2026-11-27T01:00:00Z', 'America/Bogota')).toBe('26/11/2026');
+  });
+});
+
+describe('textoDelPorQue (EF-6)', () => {
+  it('une el campo con los valores que el tercero declaró y separa los campos con punto y coma', () => {
+    expect(textoDelPorQue([{ etiqueta: 'Especialidades', valores: ['Obra gris', 'Acabados'] }])).toBe('Especialidades: Obra gris, Acabados');
+    expect(
+      textoDelPorQue([
+        { etiqueta: 'Especialidades', valores: ['Obra gris'] },
+        { etiqueta: 'Responsable de ICA', valores: ['Sí'] },
+      ]),
+    ).toBe('Especialidades: Obra gris; Responsable de ICA: Sí');
+  });
+
+  it('con un campo sin valores (solo declaró el campo) lo nombra y sin motivos no dice nada', () => {
+    expect(textoDelPorQue([{ etiqueta: 'Actividad económica (CIIU)', valores: [] }])).toBe('Actividad económica (CIIU)');
+    expect(textoDelPorQue([])).toBe('');
   });
 });

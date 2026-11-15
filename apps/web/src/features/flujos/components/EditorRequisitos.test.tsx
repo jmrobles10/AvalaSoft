@@ -1,9 +1,12 @@
 import { ThemeProvider } from '@mui/material';
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { ErrorApi, type AreaDto, type TipoDocumentoTenantDto } from '@validasoft/api-client';
+import userEvent from '@testing-library/user-event';
+import { ErrorApi, type AreaDto, type CondicionDto, type TipoDocumentoTenantDto } from '@validasoft/api-client';
 import { createValidasoftTheme } from '@validasoft/ui';
-import { describe, expect, it, vi } from 'vitest';
-import { areaNueva, requisitoDeSeccionNuevo, requisitoNuevo, type RequisitoEnEditor } from '../editor';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { montarPantalla } from '../../../pruebas/montar';
+import { simularApi } from '../../../pruebas/simularApi';
+import { areaNueva, requisitoDeSeccionNuevo, requisitoNuevo, type ErrorFlujo, type RequisitoEnEditor } from '../editor';
 import { errorDeApiEnRequisitos } from '../requisitosDeSeccion';
 import { EditorRequisitos } from './EditorRequisitos';
 
@@ -84,12 +87,12 @@ describe('EditorRequisitos', () => {
     expect(celda).toHaveStyle({ alignItems: 'center', minHeight: '32px' });
   });
 
-  it('«Se pide a» elige entre todos, solo jurídicas o solo naturales', () => {
+  it('«Se pide a» elige entre todos, solo jurídicas, solo naturales o según la ficha del tercero', () => {
     const onCambiar = vi.fn();
     editor([requisitoNuevo('rut')], onCambiar);
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Se pide a' }));
     const opciones = within(screen.getByRole('listbox'));
-    expect(opciones.getAllByRole('option').map((o) => o.textContent)).toEqual(['Todos', 'Solo personas jurídicas', 'Solo personas naturales']);
+    expect(opciones.getAllByRole('option').map((o) => o.textContent)).toEqual(['Todos', 'Solo personas jurídicas', 'Solo personas naturales', 'Según la ficha del tercero']);
     fireEvent.click(opciones.getByRole('option', { name: 'Solo personas jurídicas' }));
     expect(onCambiar).toHaveBeenCalledWith([
       expect.objectContaining({ condicion: { tipo: 'Predicado', nodos: null, atributo: 'tercero.tipoPersona', operador: 'Igual', valores: ['Juridica'] } }),
@@ -215,5 +218,83 @@ describe('EditorRequisitos: secciones de la información del tercero (F2)', () =
   it('un tipo que no respalda secciones no ofrece «Usar como soporte»', () => {
     editor([requisitoNuevo('rut')]);
     expect(screen.queryByRole('switch', { name: 'Usar como soporte de las secciones' })).not.toBeInTheDocument();
+  });
+});
+
+describe('EditorRequisitos: documentos según la ficha del tercero (EF-1)', () => {
+  const camara = { id: 'camara', codigo: 'CAMARA_COMERCIO', nombre: 'Cámara de comercio', clase: 'Archivo', activo: true } as TipoDocumentoTenantDto;
+  const porEspecialidad: CondicionDto = { tipo: 'Predicado', nodos: null, atributo: 'ficha.especialidades.especialidades', operador: 'ContieneAlguno', valores: ['OG'] };
+
+  beforeEach(() => {
+    simularApi({
+      'GET /api/v1/flujos/campos-de-ficha': [
+        { ruta: 'ficha.especialidades.especialidades', seccion: 'especialidades', etiqueta: 'Especialidades', tipo: 'ListaOpciones', operadores: ['ContieneAlguno', 'ContieneTodos', 'Existe'], catalogo: 'especialidades', jerarquica: true },
+      ],
+      'GET /api/v1/catalogos/especialidades': { datos: [{ codigo: 'OG', nombre: 'Obra gris', nivel: 1, activo: true }], siguiente: null },
+    });
+  });
+
+  function montar(requisitos: RequisitoEnEditor[], onCambiar = vi.fn(), errores: ErrorFlujo[] = []) {
+    montarPantalla(
+      <EditorRequisitos
+        requisitos={requisitos}
+        etapas={[{ clave: 'e1', areas: [areaNueva('compras')] }]}
+        areas={[area('compras', 'Compras')]}
+        tiposDocumento={[tipo, camara]}
+        onCambiar={onCambiar}
+        errores={errores}
+        soloLectura={false}
+      />,
+    );
+    return onCambiar;
+  }
+
+  it('elegir «Según la ficha del tercero» arma la condición de las especialidades, sin valores, y muestra el constructor', async () => {
+    const usuario = userEvent.setup();
+    const onCambiar = montar([requisitoNuevo('camara')]);
+
+    await usuario.click(screen.getByRole('combobox', { name: 'Se pide a' }));
+    await usuario.click(await screen.findByRole('option', { name: 'Según la ficha del tercero' }));
+    expect(onCambiar).toHaveBeenLastCalledWith([
+      expect.objectContaining({ condicion: { tipo: 'Predicado', nodos: null, atributo: 'ficha.especialidades.especialidades', operador: 'ContieneAlguno', valores: [] } }),
+    ]);
+  });
+
+  it('un documento que se pide según la ficha muestra su constructor y cambiar los valores lo guarda en el requisito', async () => {
+    const usuario = userEvent.setup();
+    const onCambiar = montar([{ ...requisitoNuevo('camara'), condicion: porEspecialidad }]);
+
+    expect(screen.getByRole('combobox', { name: 'Se pide a' })).toHaveTextContent('Según la ficha del tercero');
+    expect(await screen.findByRole('combobox', { name: 'Campo de la ficha' })).toHaveTextContent('Especialidades');
+    expect(await screen.findByText('OG · Obra gris')).toBeInTheDocument();
+    expect(screen.queryByText(/Se pide cuando/)).not.toBeInTheDocument(); // no es «personalizada»: el constructor la entiende
+
+    await usuario.click(screen.getByRole('combobox', { name: 'Se cumple cuando' }));
+    await usuario.click(await screen.findByRole('option', { name: 'no incluye ninguno de' }));
+    expect(onCambiar).toHaveBeenLastCalledWith([
+      expect.objectContaining({ condicion: { tipo: 'No', nodos: [porEspecialidad], atributo: null, operador: null, valores: null } }),
+    ]);
+  });
+
+  it('volver a «Todos» quita la condición y el constructor desaparece', async () => {
+    const usuario = userEvent.setup();
+    const onCambiar = montar([{ ...requisitoNuevo('camara'), condicion: porEspecialidad }]);
+
+    await usuario.click(screen.getByRole('combobox', { name: 'Se pide a' }));
+    await usuario.click(await screen.findByRole('option', { name: 'Todos' }));
+    expect(onCambiar).toHaveBeenLastCalledWith([expect.objectContaining({ condicion: null })]);
+  });
+
+  it('el error de una condición inválida (valores que faltan o que no existen en el catálogo) sale en el requisito', async () => {
+    montar([{ ...requisitoNuevo('camara'), condicion: porEspecialidad }], vi.fn(), [{ codigo: 'condicion-invalida', campo: 'requisito.0' }]);
+
+    expect(await screen.findByText('La condición no es válida: revisa el campo, el operador y los valores (que existan en el catálogo).')).toBeInTheDocument();
+  });
+
+  it('un error 422 de la API sobre la condición de un requisito se lleva a su campo', () => {
+    const error = new ErrorApi(422, 'condicion-invalida', 'La condición no es válida.', null, null, {}, { requisito: 1 });
+    const requisitos = [requisitoNuevo('rut'), requisitoNuevo('camara')];
+
+    expect(errorDeApiEnRequisitos(error, requisitos)).toEqual({ codigo: 'condicion-invalida', campo: 'requisito.1' });
   });
 });

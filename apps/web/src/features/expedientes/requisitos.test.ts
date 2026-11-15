@@ -77,6 +77,12 @@ describe('exención y nombres', () => {
     expect(puedeEximir(conRequisitos('Aprobado', [r]), r, ADMIN)).toBe(false);
   });
 
+  it('un documento que ya no aplica según la ficha del tercero (NoAplica) no se revisa ni se exime a mano (EF-5)', () => {
+    const noAplica = requisito({ estado: 'NoAplica' });
+    expect(bloqueoRequisito(conRequisitos('EnRevision', [noAplica]), noAplica, noAplica.areas[0]!, miembro())).toBe('requisito-cerrado');
+    expect(puedeEximir(conRequisitos('EnRevision', [noAplica]), noAplica, ADMIN)).toBe(false);
+  });
+
   it('junta los ids de quienes aparecen para pedir sus nombres una sola vez', () => {
     const r = requisito({
       exencion: { por: 'u-admin', justificacion: 'No aplica', fecha: '2026-11-06T15:00:00Z' },

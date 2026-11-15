@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFecha } from '@validasoft/ui';
+import { ChipEstado, formatearFecha, textoDelPorQue } from '@validasoft/ui';
 import { FileText, PencilLine, Upload, UsersRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
@@ -61,6 +61,12 @@ export function TarjetaRequisito({ requisito, expediente, enlace }: { requisito:
                 : t('expediente.documentos.faltaOpcional')}
           </Typography>
           <LineaVigencia vigencia={version?.vigencia} />
+          {/* Por qué se le pide este documento: lo que declaró en su ficha y lo hizo aplicar (EF-6). */}
+          {(requisito.porQue?.length ?? 0) > 0 && (
+            <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', mt: 0.25 }} data-por-que="">
+              {t('expediente.documentos.porQue', { empresa: expediente.empresa.nombre, motivos: textoDelPorQue(requisito.porQue ?? []) })}
+            </Typography>
+          )}
         </Box>
         <ChipEstado estado={requisito.estado} size="medium" />
       </Stack>

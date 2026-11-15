@@ -3,7 +3,9 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { CondicionDto } from '@validasoft/api-client';
 import { createValidasoftTheme } from '@validasoft/ui';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { montarPantalla } from '../../../pruebas/montar';
+import { simularApi } from '../../../pruebas/simularApi';
 import { borradorVacio, type ErrorFlujo } from '../editor';
 import { EditorSeleccionFlujo } from './EditorSeleccionFlujo';
 
@@ -36,7 +38,21 @@ describe('EditorSeleccionFlujo', () => {
       'Sin condición',
       'El tercero es persona jurídica',
       'El tercero es persona natural',
+      'Según la ficha del tercero',
     ]);
+  });
+
+  it('elegir «Según la ficha del tercero» arranca con las especialidades, sin valores, y conserva la prioridad', async () => {
+    const usuario = userEvent.setup();
+    const { onCambiar, borrador } = montar({ seleccionCondicion: juridica, seleccionPrioridad: '3' });
+
+    await usuario.click(screen.getByRole('combobox', { name: 'Se escoge cuando' }));
+    await usuario.click(await screen.findByRole('option', { name: 'Según la ficha del tercero' }));
+    expect(onCambiar).toHaveBeenLastCalledWith({
+      ...borrador,
+      seleccionCondicion: { tipo: 'Predicado', nodos: null, atributo: 'ficha.especialidades.especialidades', operador: 'ContieneAlguno', valores: [] },
+      seleccionPrioridad: '3',
+    });
   });
 
   it('elegir «persona jurídica» arma la condición y pide la prioridad', async () => {
@@ -91,5 +107,56 @@ describe('EditorSeleccionFlujo', () => {
     montar({ seleccionCondicion: juridica, seleccionPrioridad: '2' }, [], true);
     expect(screen.getByRole('combobox', { name: 'Se escoge cuando' })).toHaveAttribute('aria-disabled', 'true');
     expect(screen.getByRole('textbox', { name: 'Prioridad' })).toBeDisabled();
+  });
+});
+
+describe('EditorSeleccionFlujo con una condición sobre la ficha del tercero (EF-4)', () => {
+  const porEspecialidad: CondicionDto = { tipo: 'Predicado', nodos: null, atributo: 'ficha.especialidades.especialidades', operador: 'ContieneAlguno', valores: ['OG'] };
+
+  beforeEach(() => {
+    simularApi({
+      'GET /api/v1/flujos/campos-de-ficha': [
+        { ruta: 'ficha.especialidades.especialidades', seccion: 'especialidades', etiqueta: 'Especialidades', tipo: 'ListaOpciones', operadores: ['ContieneAlguno', 'ContieneTodos', 'Existe'], catalogo: 'especialidades', jerarquica: true },
+      ],
+      'GET /api/v1/catalogos/especialidades': { datos: [{ codigo: 'OG', nombre: 'Obra gris', nivel: 1, activo: true }], siguiente: null },
+    });
+  });
+
+  it('muestra el constructor de la condición, sin la frase de «personalizada», y pide la prioridad', async () => {
+    const onCambiar = vi.fn();
+    montarPantalla(
+      <EditorSeleccionFlujo borrador={{ ...borradorVacio(), seleccionCondicion: porEspecialidad, seleccionPrioridad: '1' }} onCambiar={onCambiar} errores={[]} soloLectura={false} />,
+    );
+
+    expect(screen.getByRole('combobox', { name: 'Se escoge cuando' })).toHaveTextContent('Según la ficha del tercero');
+    expect(await screen.findByRole('combobox', { name: 'Campo de la ficha' })).toHaveTextContent('Especialidades');
+    expect(await screen.findByText('OG · Obra gris')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Prioridad' })).toHaveValue('1');
+    expect(screen.queryByText(/Se escoge cuando especialidades/)).not.toBeInTheDocument();
+  });
+
+  it('cambiar los valores actualiza la condición del borrador sin tocar la prioridad', async () => {
+    const usuario = userEvent.setup();
+    const onCambiar = vi.fn();
+    const borrador = { ...borradorVacio(), seleccionCondicion: porEspecialidad, seleccionPrioridad: '2' };
+    montarPantalla(<EditorSeleccionFlujo borrador={borrador} onCambiar={onCambiar} errores={[]} soloLectura={false} />);
+
+    await usuario.click(await screen.findByRole('combobox', { name: 'Se cumple cuando' }));
+    await usuario.click(await screen.findByRole('option', { name: 'incluye todos' }));
+    expect(onCambiar).toHaveBeenLastCalledWith({ ...borrador, seleccionCondicion: { ...porEspecialidad, operador: 'ContieneTodos' } });
+  });
+
+  it('el error de la API sobre la condición se muestra en el constructor y no dos veces', async () => {
+    montarPantalla(
+      <EditorSeleccionFlujo
+        borrador={{ ...borradorVacio(), seleccionCondicion: porEspecialidad, seleccionPrioridad: '1' }}
+        onCambiar={vi.fn()}
+        errores={[{ codigo: 'condicion-invalida', campo: 'seleccion.condicion' }]}
+        soloLectura={false}
+      />,
+    );
+
+    await screen.findByRole('combobox', { name: 'Campo de la ficha' });
+    expect(screen.getAllByText('La condición de selección no es válida para este tipo de vínculo.')).toHaveLength(1);
   });
 });

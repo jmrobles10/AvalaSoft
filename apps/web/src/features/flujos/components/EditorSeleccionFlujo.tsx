@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { atajoDe, describirCondicion } from '../condiciones';
 import type { BorradorFlujo, ErrorFlujo } from '../editor';
 import { PRIORIDAD_MAXIMA } from '../seleccion';
+import { CondicionDeFicha } from './CondicionDeFicha';
 import { SelectorDeCondicion } from './SelectorDeCondicion';
 
 interface Props {
@@ -36,7 +37,7 @@ export function EditorSeleccionFlujo({ borrador, onCambiar, errores, soloLectura
           onCambiar={(nueva) => onCambiar({ ...borrador, seleccionCondicion: nueva, seleccionPrioridad: nueva === null ? '' : borrador.seleccionPrioridad })}
           deshabilitado={soloLectura}
           textoDe={(a) => t(`flujoSeleccion.atajos.${a}`)}
-          ayuda={errorCondicion ? t(`flujos.editor.errores.${errorCondicion.codigo}`) : undefined}
+          ayuda={errorCondicion && atajo !== 'ficha' ? t(`flujos.editor.errores.${errorCondicion.codigo}`) : undefined}
         />
         {condicion !== null && (
           <CampoNumero
@@ -50,6 +51,14 @@ export function EditorSeleccionFlujo({ borrador, onCambiar, errores, soloLectura
           />
         )}
       </Box>
+      {condicion !== null && atajo === 'ficha' && (
+        <CondicionDeFicha
+          condicion={condicion}
+          onCambiar={(nueva) => onCambiar({ ...borrador, seleccionCondicion: nueva })}
+          deshabilitado={soloLectura}
+          error={errorCondicion ? t(`flujos.editor.errores.${errorCondicion.codigo}`) : undefined}
+        />
+      )}
       {condicion !== null && atajo === 'personalizada' && (
         <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 1 }}>{t('flujoSeleccion.personalizada', { condicion: describirCondicion(condicion, t) })}</Typography>
       )}
