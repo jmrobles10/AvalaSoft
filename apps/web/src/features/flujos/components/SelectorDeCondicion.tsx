@@ -12,10 +12,10 @@ export interface SelectorDeCondicionProps {
   ayuda?: string;
 }
 
-const ATAJOS = ['siempre', 'juridica', 'natural'] as const;
+const ATAJOS = ['siempre', 'juridica', 'natural', 'ficha'] as const;
 
 /**
- * Elige la condición entre los atajos del uso diario (sin condición, solo personas jurídicas, solo naturales): el mismo editor
+ * Elige la condición entre los atajos del uso diario (sin condición, solo personas jurídicas, solo naturales, según la ficha del tercero): el mismo editor
  * de condiciones de «Se pide a» de los requisitos (RQ-12) y de «Se escoge cuando» de la selección del flujo (FR-1). Una condición armada
  * por la API (país, atributos del vínculo, combinaciones) aparece como «personalizada» y se conserva tal cual.
  */

@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, Stack, Typography } from '@mui/material';
 import { SCOPES, type AreaDeRequisitoDto, type AreaExpedienteDto, type DocumentoVistaEmpresaDto, type ExpedienteDto, type HechosDto, type RequisitoExpedienteDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFecha } from '@validasoft/ui';
+import { ChipEstado, formatearFecha, textoDelPorQue } from '@validasoft/ui';
 import { ClipboardList, Clock, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { hashCorto } from '../../documentos/api';
@@ -130,6 +130,17 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
       {requisito.reenvios > 0 && (
         <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }}>
           {t('expedientes.requisitos.versionesNuevas', { count: requisito.reenvios })}
+        </Typography>
+      )}
+      {/* Lo que de la ficha del tercero hizo que se pida (EF-6), o que ya no aplica porque lo declarado cambió (EF-5). */}
+      {requisito.estado !== 'NoAplica' && (requisito.porQue?.length ?? 0) > 0 && (
+        <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }} data-por-que="">
+          {t('expedientes.requisitos.porQue', { motivos: textoDelPorQue(requisito.porQue ?? []) })}
+        </Typography>
+      )}
+      {requisito.estado === 'NoAplica' && (
+        <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }} data-no-aplica="">
+          {t('expedientes.requisitos.noAplica')}
         </Typography>
       )}
       {requisito.exencion && (

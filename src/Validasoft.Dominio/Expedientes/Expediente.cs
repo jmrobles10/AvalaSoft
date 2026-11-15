@@ -848,6 +848,7 @@ public sealed partial class Expediente
             case RequisitosCalculados e: Apply(e); break;
             case RequisitosAgregados e: Apply(e); break;
             case RequisitosDePersonaAgregados e: Apply(e); break;
+            case RequisitosSegunFichaResueltos e: Apply(e); break;
             case PersonaDeRequisitoResuelta e: Apply(e); break;
             case VersionAdjuntadaARequisito e: Apply(e); break;
             case VeredictosInvalidadosPorNuevaVersion e: Apply(e); break;

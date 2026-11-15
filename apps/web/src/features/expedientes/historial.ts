@@ -171,6 +171,19 @@ export function eventoExpedienteATimeline(
         .filter((n): n is string => n !== null);
       return { ...base, titulo: t('expedientes.historial.personasAgregadas', { documentos: nombres.join(', ') }) };
     }
+    case 'requisitos_segun_ficha_resueltos': {
+      // Lo que el tercero declaró en su ficha cambió lo que se le pide (EF-5): documentos que entran, que dejan de aplicar o que vuelven a aplicar.
+      const nombresAgregados = lista(campo(datos, 'agregados'))
+        .map((r) => (r && typeof r === 'object' ? texto(campo(r as Record<string, unknown>, 'nombre')) : null))
+        .filter((n): n is string => n !== null);
+      const partes: string[] = [];
+      if (nombresAgregados.length > 0) partes.push(t('expedientes.historial.segunFichaSePiden', { documentos: nombresAgregados.join(', ') }));
+      const noAplican = lista(campo(datos, 'noAplican'));
+      if (noAplican.length > 0) partes.push(t('expedientes.historial.segunFichaDejanDeAplicar', { documentos: noAplican.map(requisito).join(', ') }));
+      const vuelven = lista(campo(datos, 'vuelvenAAplicar'));
+      if (vuelven.length > 0) partes.push(t('expedientes.historial.segunFichaVuelven', { documentos: vuelven.map(requisito).join(', ') }));
+      return { ...base, titulo: t('expedientes.historial.segunFicha'), detalle: partes.join(' · ') };
+    }
     case 'persona_de_requisito_resuelta': {
       const persona = campo(datos, 'persona');
       const nombre = persona && typeof persona === 'object' ? texto(campo(persona as Record<string, unknown>, 'nombre')) : null;

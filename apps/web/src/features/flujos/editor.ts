@@ -11,6 +11,7 @@ import type {
   VerificacionRequeridaDto,
 } from '@validasoft/api-client';
 import { SECCIONES_FICHA } from '../terceros/ficha/secciones';
+import { condicionDeFichaCompleta, condicionDeFichaSimple } from './condiciones';
 import { recordatorioADto, recordatorioDesdeVersion, validarRecordatorio, type ModoRecordatorio } from './recordatorio';
 import { requisitoDeSeccionADto, validarRequisitoDeSeccion } from './requisitosDeSeccion';
 import { seleccionADto, seleccionDesdeVersion, validarSeleccion } from './seleccion';
@@ -438,6 +439,9 @@ export function validarRequisitos(borrador: Pick<BorradorFlujo, 'etapas' | 'requ
       const tipo = tiposDocumento.find((t) => t.id === r.tipoDocumentoTenantId);
       if (tiposDocumento.length > 0 && !(tipo && sePuedePedir(tipo))) errores.push({ codigo: 'requisito-invalido', campo });
     }
+    // Una condición sobre la ficha del tercero sin sus valores no se cumpliría nunca: la API la rechazaría (EF-1).
+    const ficha = condicionDeFichaSimple(r.condicion);
+    if (ficha && !condicionDeFichaCompleta(ficha)) errores.push({ codigo: 'condicion-invalida', campo });
     if (r.areasQueRevisan.some((a) => !areasDelFlujo.has(a))) errores.push({ codigo: 'requisito-area-invalida', campo });
     if (r.aprobadoresRequeridos !== null && (!Number.isInteger(r.aprobadoresRequeridos) || r.aprobadoresRequeridos < 1 || r.aprobadoresRequeridos > MAXIMO_APROBADORES)) {
       errores.push({ codigo: 'requisito-aprobadores-invalidos', campo });

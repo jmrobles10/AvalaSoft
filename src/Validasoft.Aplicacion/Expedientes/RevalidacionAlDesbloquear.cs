@@ -56,7 +56,7 @@ public static class RevalidarVinculoDesbloqueadoHandler
         if (flujo is null)
             return;
 
-        var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct);
+        var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct, flujo.Version);
         var pedidos = await RequisitosDeExpediente.DelFlujoAsync(sesion, flujo.Version, contexto, ct);
         var compartidos = await ComparticionDeDocumentos.CompartirConVinculoAsync(sesion, vinculo, mensaje.TenantId,
             RequisitosDeExpediente.CodigosGlobales(pedidos), OrigenComparticion.Automatica, ahora, ct);

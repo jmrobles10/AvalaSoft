@@ -48,7 +48,7 @@ public static class Revalidacion
         if (flujo is null)
             return null;
 
-        var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct);
+        var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct, flujo.Version);
         var cambios = await CambiosAsync(sesion, vinculo, flujo.Version, contexto, ahora, ct);
         if (cambios.Vacio)
             return null;
@@ -83,7 +83,7 @@ public static class Revalidacion
             await sesion.LoadAsync<Empresa>(vinculo.EmpresaId, ct) is not { } empresa)
             return null;
 
-        var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct);
+        var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct, version);
         var yaIncluidos = expediente.Requisitos.Select(r => r.Id).ToHashSet();
         var cambios = await CambiosAsync(sesion, vinculo, version, contexto, ahora, ct, yaIncluidos);
         if (cambios.Vacio)

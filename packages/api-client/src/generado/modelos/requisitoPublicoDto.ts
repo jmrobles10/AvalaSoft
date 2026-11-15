@@ -5,6 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { EstadoRequisito } from './estadoRequisito';
+import type { MotivoDeExigenciaDto } from './motivoDeExigenciaDto';
 import type { ObservacionPublicaDto } from './observacionPublicaDto';
 import type { PersonaDelRequisitoDto } from './personaDelRequisitoDto';
 import type { SeccionDeRequisitoDto } from './seccionDeRequisitoDto';
@@ -25,4 +26,6 @@ export interface RequisitoPublicoDto {
   tipoRequisito?: TipoRequisito;
   seccion?: null | SeccionDeRequisitoDto;
   persona?: null | PersonaDelRequisitoDto;
+  /** @nullable */
+  porQue?: MotivoDeExigenciaDto[] | null;
 }

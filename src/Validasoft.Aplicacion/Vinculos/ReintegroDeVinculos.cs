@@ -45,7 +45,7 @@ public static class ReintegroDeVinculos
             await sesion.LoadAsync<Flujo>(delExpediente.FlujoId, ct) is { } flujo &&
             flujo.Versiones.FirstOrDefault(v => v.Id == delExpediente.FlujoVersionId) is { } version)
         {
-            var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct);
+            var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct, version);
             var cambios = await Revalidacion.CambiosAsync(sesion, vinculo, version, contexto, ahora, ct);
             if (!cambios.Vacio)
                 motivos.Add($"Cambió en la bóveda del tercero, sin que la empresa lo revisara: {string.Join(", ", cambios.Nombres)}.");

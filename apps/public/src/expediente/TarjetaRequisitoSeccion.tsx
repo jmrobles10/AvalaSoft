@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFecha } from '@validasoft/ui';
+import { ChipEstado, formatearFecha, textoDelPorQue } from '@validasoft/ui';
 import { ClipboardList, PencilLine } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
@@ -39,6 +39,12 @@ export function TarjetaRequisitoSeccion({ requisito, expediente, conAccion }: { 
                 ? t('expediente.seccion.version', { n: String(version.n), fecha: formatearFecha(version.cargadaEn) })
                 : t('expediente.seccion.sinVersion')}
           </Typography>
+          {/* Por qué se le pide esta sección: lo que declaró en su ficha y la hizo aplicar (EF-6). */}
+          {(requisito.porQue?.length ?? 0) > 0 && (
+            <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', mt: 0.25 }} data-por-que="">
+              {t('expediente.documentos.porQue', { empresa, motivos: textoDelPorQue(requisito.porQue ?? []) })}
+            </Typography>
+          )}
         </Box>
         <ChipEstado estado={requisito.estado} size="medium" />
       </Stack>

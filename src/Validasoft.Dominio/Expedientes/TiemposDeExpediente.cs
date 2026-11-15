@@ -140,6 +140,7 @@ public sealed partial class Expediente
         RequisitosCalculados e => e.Fecha,
         RequisitosAgregados e => e.Fecha,
         RequisitosDePersonaAgregados e => e.Fecha,
+        RequisitosSegunFichaResueltos e => e.Fecha,
         PersonaDeRequisitoResuelta e => e.Fecha,
         VersionAdjuntadaARequisito e => e.Fecha,
         VeredictosInvalidadosPorNuevaVersion e => e.Fecha,

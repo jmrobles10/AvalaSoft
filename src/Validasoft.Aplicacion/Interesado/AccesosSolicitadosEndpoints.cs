@@ -279,7 +279,7 @@ public static class DecisionDeAcceso
             recibe = vinculo.InvitacionAceptada && vinculo.BovedaDisponible;
             if (recibe && await ProcesoDeValidacion.ResolverFlujoAsync(sesion, vinculo, null, ct) is { } flujo)
             {
-                var pedidos = await RequisitosDeExpediente.DelFlujoAsync(sesion, flujo.Version, await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct), ct);
+                var pedidos = await RequisitosDeExpediente.DelFlujoAsync(sesion, flujo.Version, await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct, flujo.Version), ct);
                 documentos = await ComparticionDeDocumentos.CompartirConVinculoAsync(sesion, vinculo, invitacion.TenantId, RequisitosDeExpediente.CodigosGlobales(pedidos),
                     OrigenComparticion.Automatica, ahora, ct);
             }

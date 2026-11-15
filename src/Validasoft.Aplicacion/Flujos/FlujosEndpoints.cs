@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Validasoft.Aplicacion.Comun;
 using Validasoft.Aplicacion.Evaluaciones;
+using Validasoft.Aplicacion.Expedientes;
 using Validasoft.Aplicacion.Vinculos;
 using Validasoft.Contratos;
 using Validasoft.Dominio.Auditoria;
@@ -58,6 +59,7 @@ public static class FlujosEndpoints
         if (await empresa.Flujos().AnyAsync(f => f.Codigo == codigo, ct))
             throw ReglaDeNegocioException.Conflicto("flujo-duplicado", $"La empresa ya tiene el flujo {codigo}.");
         await ValidarPrioridadAsync(empresa, flujo, flujo.Ultima.Seleccion, ct);
+        await CondicionesDeFicha.ValidarCatalogosAsync(empresa.Sesion, flujo.Ultima, ct);
 
         empresa.Sesion.Store(flujo);
         var resultado = flujo.ADto(tipo, false);
@@ -82,6 +84,14 @@ public static class FlujosEndpoints
         var porDefecto = await PorDefectoAsync(empresa, ct);
         return [.. flujos.Select(f => f.ADto(tipos.FirstOrDefault(t => t.Id == f.TipoVinculoId), porDefecto.Any(p => p.FlujoId == f.Id)))];
     }
+
+    /// <summary>
+    /// Los campos de la ficha del tercero que puede mirar una condición (EF-1): su ruta (<c>ficha.{seccion}.{campo}</c>), tipo, operadores y el catálogo de
+    /// plataforma de donde salen sus valores. Es lo que el editor ofrece para armar «se pide cuando el tercero declara…».
+    /// </summary>
+    [WolverineGet("/api/v1/flujos/campos-de-ficha")]
+    [Authorize(Policy = Permisos.FlujosLeer)]
+    public static IReadOnlyList<CampoDeFichaDto> ListarCamposDeFicha() => CondicionesDeFicha.Campos();
 
     /// <summary>Flujo por defecto de cada tipo de vínculo de la empresa.</summary>
     [WolverineGet("/api/v1/flujos/por-defecto")]
@@ -150,6 +160,7 @@ public static class FlujosEndpoints
         var borrador = flujo.EditarBorrador(dto.Nombre, definicion, await empresa.Areas().ToListAsync(ct), ahora, tipos,
             await empresa.Sesion.LoadAsync<TipoVinculo>(flujo.TipoVinculoId, ct), await CuestionariosAsync(empresa, ct));
         await ValidarPrioridadAsync(empresa, flujo, borrador.Seleccion, ct);
+        await CondicionesDeFicha.ValidarCatalogosAsync(empresa.Sesion, borrador, ct);
         return await GuardarAsync(empresa, contexto, flujo, "FlujoVersion", $"{flujo.Id}/v{borrador.Version}", AccionConfiguracion.Modificado, antes, ahora, ct);
     }
 
@@ -165,6 +176,7 @@ public static class FlujosEndpoints
         var publicada = flujo.Publicar(await empresa.Areas().ToListAsync(ct), ahora, await TiposAsync(empresa, ct),
             await empresa.Sesion.LoadAsync<TipoVinculo>(flujo.TipoVinculoId, ct), await CuestionariosAsync(empresa, ct));
         await ValidarPrioridadAsync(empresa, flujo, publicada.Seleccion, ct);
+        await CondicionesDeFicha.ValidarCatalogosAsync(empresa.Sesion, publicada, ct);
 
         var clave = FlujoPorDefecto.Clave(flujo.EmpresaId, flujo.TipoVinculoId);
         if (await empresa.Sesion.LoadAsync<FlujoPorDefecto>(clave, ct) is null)
@@ -211,10 +223,12 @@ public static class FlujosEndpoints
             : throw ReglaDeNegocioException.Validacion("tipo-persona-invalido",
                 $"'{dto.TipoPersona}' no es un tipo de persona ({string.Join(", ", Enum.GetNames<TipoPersona>())}).");
         var pais = Texto(dto.Pais) ?? tercero?.Identificacion.Pais ?? "CO";
+        // La ficha de un tercero real no se lee aquí (la empresa solo la ve cuando el tercero acepta): se prueba con lo que se indique (EF-4).
+        var ficha = dto.Ficha is { Count: > 0 } ? await FichaDeExigencia.DeValoresAsync(empresa.Sesion, dto.Ficha, ct) : null;
         var evaluado = new ContextoDeExigencia(persona ?? tercero?.TipoPersona ?? TipoPersona.Juridica, pais,
             Texto(dto.TipoIdentificacion) ?? tercero?.Identificacion.Tipo ?? "NIT",
             dto.EsExtranjero ?? (dto.Pais is null && tercero is not null ? tercero.EsExtranjero : pais != "CO"), tipo.Codigo,
-            dto.Atributos ?? new Dictionary<string, System.Text.Json.JsonElement>());
+            dto.Atributos ?? new Dictionary<string, System.Text.Json.JsonElement>(), Ficha: ficha);
 
         var tipoId = tipo.Id;
         var flujos = await empresa.Flujos().Where(f => f.TipoVinculoId == tipoId).ToListAsync(ct);

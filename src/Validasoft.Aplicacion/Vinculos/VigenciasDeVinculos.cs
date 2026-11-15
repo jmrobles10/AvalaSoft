@@ -423,7 +423,7 @@ public static class VigenciasDeVinculos
     internal static async Task<RequisitosPorRenovar> RequisitosDeRenovacionAsync(IDocumentSession sesion, Vinculo vinculo, FlujoVersion version,
         DateTimeOffset ahora, CancellationToken ct)
     {
-        var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct);
+        var contexto = await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct, version);
         var hoy = CalculadoraDeVigencia.Fecha(ahora);
         var referencia = vinculo.VigenteHasta is { } fin && fin.AddDays(1) > hoy ? fin.AddDays(1) : hoy;
         var periodica = VigenciaDeAprobacion.PeriodicaVencida(version.VigenciaEfectiva(), vinculo.UltimaAprobacionEn, referencia);

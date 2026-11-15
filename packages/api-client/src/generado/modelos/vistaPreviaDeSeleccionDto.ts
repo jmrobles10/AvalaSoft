@@ -5,6 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { VistaPreviaDeSeleccionDtoAtributos } from './vistaPreviaDeSeleccionDtoAtributos';
+import type { VistaPreviaDeSeleccionDtoFicha } from './vistaPreviaDeSeleccionDtoFicha';
 
 export interface VistaPreviaDeSeleccionDto {
   tipoVinculo: string;
@@ -20,4 +21,6 @@ export interface VistaPreviaDeSeleccionDto {
   esExtranjero?: boolean | null;
   /** @nullable */
   atributos?: VistaPreviaDeSeleccionDtoAtributos;
+  /** @nullable */
+  ficha?: VistaPreviaDeSeleccionDtoFicha;
 }

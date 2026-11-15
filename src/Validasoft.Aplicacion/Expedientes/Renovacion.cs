@@ -48,7 +48,7 @@ public static class RenovarPorVencimientoHandler
         if (documento is null || flujo is null)
             return;
 
-        var pedidos = await RequisitosDeExpediente.DelFlujoAsync(sesion, flujo.Version, await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct), ct);
+        var pedidos = await RequisitosDeExpediente.DelFlujoAsync(sesion, flujo.Version, await RequisitosDeExpediente.ContextoAsync(sesion, vinculo, ct, flujo.Version), ct);
         var vencidos = pedidos.Where(p => p.Requisito.Obligatorio && Pide(p, documento, vinculo.Id)).ToList();
         if (vencidos.Count == 0)
             return;

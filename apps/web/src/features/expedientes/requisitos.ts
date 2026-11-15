@@ -74,7 +74,7 @@ export function bloqueoRequisito(
   if (expediente.estado === 'Observado') return 'expediente-observado';
   if (expediente.estado !== 'EnRevision') return 'expediente-cerrado';
   if (contexto.vinculoBloqueado) return 'vinculo-bloqueado';
-  if (requisito.estado === 'Eximido' || requisito.estado === 'Aprobado') return 'requisito-cerrado';
+  if (requisito.estado === 'Eximido' || requisito.estado === 'Aprobado' || requisito.estado === 'NoAplica') return 'requisito-cerrado';
   if (!requisito.versionActual) return 'sin-version';
   if (area.estado === 'Esperando') return 'area-esperando';
   if (area.estado !== 'Pendiente') return 'area-cerrada';
@@ -94,7 +94,8 @@ export function puedeEximir(expediente: Pick<ExpedienteDto, 'estado'>, requisito
     scopes.has(SCOPES.expedientesAdministrar) &&
     ['Abierto', 'EnRevision', 'Observado'].includes(expediente.estado) &&
     requisito.estado !== 'Aprobado' &&
-    requisito.estado !== 'Eximido'
+    requisito.estado !== 'Eximido' &&
+    requisito.estado !== 'NoAplica'
   );
 }
 

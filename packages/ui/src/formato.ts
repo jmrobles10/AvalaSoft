@@ -38,6 +38,15 @@ export function claveDia(valor: string | Date, zonaHoraria = ZONA_HORARIA_POR_DE
   return partes;
 }
 
+/**
+ * Lo que de la ficha del tercero hizo que se le pida un documento (EF-6) como texto corrido: «Especialidades: Obra gris, Acabados; Responsable de ICA: Sí».
+ * Cada motivo trae el campo de la ficha por su nombre y los valores que el tercero declaró (sin valores, solo se sabe que declaró el campo). Lo usan la
+ * empresa y el portal del tercero, con su propia frase alrededor.
+ */
+export function textoDelPorQue(motivos: readonly { etiqueta: string; valores: readonly string[] }[]): string {
+  return motivos.map((m) => (m.valores.length > 0 ? `${m.etiqueta}: ${m.valores.join(', ')}` : m.etiqueta)).join('; ');
+}
+
 /** "Jueves, 28 de septiembre de 2026" (solo la primera letra en mayúscula, como se escribe en español). */
 export function formatearDiaLargo(valor: string | Date, zonaHoraria = ZONA_HORARIA_POR_DEFECTO): string {
   const texto = new Intl.DateTimeFormat(LOCALE, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: zonaHoraria }).format(

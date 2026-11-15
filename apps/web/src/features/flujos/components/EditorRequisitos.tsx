@@ -11,6 +11,7 @@ import { admitePersona, requisitoDeSeccionNuevo, requisitoNuevo, ROLES_DE_PERSON
 import { seccionesQueRespalda } from '../requisitosDeSeccion';
 import { OpcionesSeccion, SelectorSeccion } from './CamposRequisitoSeccion';
 import { SelectorAreasRequisito } from './SelectorAreasRequisito';
+import { CondicionDeFicha } from './CondicionDeFicha';
 import { SelectorDeCondicion } from './SelectorDeCondicion';
 
 export interface EditorRequisitosProps {
@@ -41,7 +42,11 @@ export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, on
   const cambiar = (k: number, cambio: Partial<RequisitoEnEditor>) => onCambiar(requisitos.map((r, i) => (i === k ? { ...r, ...cambio } : r)));
   const error = (campo: string) => errores.find((e) => e.campo === campo);
   const textoError = (e: ErrorFlujo, esSeccion: boolean) =>
-    esSeccion && esErrorDeSeccion(e.codigo) ? t(`fichaEmpresa.editor.errores.${e.codigo}`) : t(`flujos.editor.errores.${e.codigo}`);
+    esSeccion && esErrorDeSeccion(e.codigo)
+      ? t(`fichaEmpresa.editor.errores.${e.codigo}`)
+      : e.codigo === 'condicion-invalida'
+        ? t('flujos.editor.requisitos.condicionInvalida')
+        : t(`flujos.editor.errores.${e.codigo}`);
 
   return (
     <Stack spacing={1.5}>
@@ -134,6 +139,9 @@ export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, on
                 )}
               </AlineadoConCampo>
             </Box>
+            {r.condicion && atajoDe(r.condicion) === 'ficha' && (
+              <CondicionDeFicha condicion={r.condicion} onCambiar={(condicion) => cambiar(k, { condicion })} deshabilitado={soloLectura} />
+            )}
             {esSeccion && (
               <OpcionesSeccion
                 requisito={r}

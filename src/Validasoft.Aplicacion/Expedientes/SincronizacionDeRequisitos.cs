@@ -66,7 +66,20 @@ public static class SincronizarRequisitosDelVinculoHandler
         }
 
         var conPersonas = eventos.Count == 0 ? expediente : Expediente.Reproducir(expediente, eventos);
-        eventos.AddRange(await RequisitosDeExpediente.SincronizarAsync(sesion, conPersonas, ahora, ct));
+        // Lo que el tercero declaró en su ficha (EF-5): los documentos que su especialidad, su actividad u otro campo hacen aplicar entran al expediente abierto y los que
+        // ya no aplican pasan a NoAplica; antes de adjuntar versiones, para que lo nuevo reciba la que ya está compartida.
+        var porFicha = await RequisitosDeExpediente.RecalcularPorFichaAsync(sesion, vinculo, conPersonas, mensaje.TenantId, ahora, ct);
+        if (porFicha.Compartio)
+        {
+            await mensajes.PublishAsync(new Documentos.CalcularVigenciasDelVinculo(vinculo.TerceroId, vinculo.Id));
+            await mensajes.PublishAsync(new Ia.AnalizarIaDelVinculo(vinculo.TerceroId, vinculo.Id));
+            // La compartición se confirma con esta transacción: una pasada más (idempotente) adjunta a lo que vuelve a aplicar la versión que ahora está compartida.
+            await mensajes.PublishAsync(new SincronizarRequisitosDelVinculo(mensaje.TenantId, mensaje.VinculoId, mensaje.ActorTipo, mensaje.ActorId));
+        }
+
+        eventos.AddRange(porFicha.Eventos);
+        var conFicha = porFicha.Eventos.Count == 0 ? conPersonas : Expediente.Reproducir(conPersonas, porFicha.Eventos);
+        eventos.AddRange(await RequisitosDeExpediente.SincronizarAsync(sesion, conFicha, ahora, ct));
         // Una actualización abierta amplía su alcance con lo que cambió después de abrirse (la sincronización ya está aplicada).
         var ampliacion = await Revalidacion.AmpliarAsync(sesion, Expediente.Reproducir(expediente, eventos), ahora, ct);
         if (ampliacion is not null)

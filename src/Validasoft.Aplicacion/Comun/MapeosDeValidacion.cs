@@ -141,6 +141,13 @@ public static class MapeosDeValidacion
     public static PersonaDelRequisitoDto ADto(this PersonaDelRequisito p) =>
         new(p.Rol.ToString(), p.TodasLasRelaciones, p.SinPersona, p.PersonaId, p.RelacionId, p.Nombre, p.Identificacion);
 
+    /// <summary>Lo de la ficha que hizo que se pida un requisito (EF-6); nulo si no hay.</summary>
+    public static IReadOnlyList<MotivoDeExigenciaDto>? ADto(this IReadOnlyList<MotivoDeExigencia>? motivos) =>
+        motivos is { Count: > 0 } ? [.. motivos.Select(m => new MotivoDeExigenciaDto(m.Campo, m.Etiqueta, m.Valores))] : null;
+
+    /// <inheritdoc cref="ADto(IReadOnlyList{MotivoDeExigencia}?)"/>
+    public static IReadOnlyList<MotivoDeExigenciaDto>? ADto(this List<MotivoDeExigencia>? motivos) => ((IReadOnlyList<MotivoDeExigencia>?)motivos).ADto();
+
     public static FlujoDto ADto(this Flujo f, TipoVinculo? tipo, bool esPorDefecto) =>
         new(f.Id, f.EmpresaId, f.Codigo, f.Nombre,
             new TipoVinculoResumenDto(f.TipoVinculoId, tipo?.Codigo ?? string.Empty, tipo?.Nombre ?? string.Empty),
@@ -197,13 +204,13 @@ public static class MapeosDeValidacion
     /// <summary>Requisito con la decisión de cada área que lo revisa (estado, aprobaciones y veredictos de esa área).</summary>
     private static RequisitoExpedienteDto ADto(this RequisitoDeExpediente r, Expediente e, DocumentacionDelExpediente? documentacion) =>
         new(r.Id, r.Tipo(documentacion), r.Obligatorio, r.Estado.ToString(), r.Version(e, documentacion), r.Reenvios,
-            r.Eximido ? new ExencionDto(r.EximidoPor ?? string.Empty, r.JustificacionExencion ?? string.Empty, r.EximidoEn ?? e.ActualizadoEn, r.ExencionDeVinculoId) : null,
+            r.Eximido && !r.NoAplica ? new ExencionDto(r.EximidoPor ?? string.Empty, r.JustificacionExencion ?? string.Empty, r.EximidoEn ?? e.ActualizadoEn, r.ExencionDeVinculoId) : null,
             [
                 .. r.AreasQueRevisan.Select(id => (Id: id, Area: e.BuscarArea(id))).Where(x => x.Area is not null).Select(x =>
                     new AreaDeRequisitoDto(x.Id, x.Area!.Codigo, EstadoEnArea(r, x.Area, e), r.AprobadoresPara(x.Area), r.AprobacionesDe(x.Area),
                         [.. r.Veredictos.Where(v => v.AreaId == x.Id).Select(ADto)]))
             ], r.TipoRequisito.ToString(), r.DetalleDeSeccion(documentacion), documentacion?.Cruces?.DeDocumento(r.Id),
-            r.Retiro is { } retiro ? new RetiroDeVersionDto(retiro.Numero, retiro.Motivo, retiro.Fecha) : null, r.RevisionesDto(e), r.Persona?.ADto());
+            r.Retiro is { } retiro ? new RetiroDeVersionDto(retiro.Numero, retiro.Motivo, retiro.Fecha) : null, r.RevisionesDto(e), r.Persona?.ADto(), r.PorQue.ADto());
 
     /// <summary>Lo que la revisión automática registró del documento para su versión vigente (nulo si no registró nada, ADR-0012).</summary>
     private static IReadOnlyList<RevisionAutomaticaDto>? RevisionesDto(this RequisitoDeExpediente r, Expediente e)
@@ -222,7 +229,8 @@ public static class MapeosDeValidacion
         !r.EsSeccion ? null : documentacion?.Seccion(r) ?? DocumentacionDelExpediente.SeccionSinDatos(r);
 
     private static string EstadoEnArea(RequisitoDeExpediente r, AreaDeExpediente area, Expediente e) =>
-        r.Eximido ? "Eximido"
+        r.NoAplica ? "NoAplica"
+        : r.Eximido ? "Eximido"
         : r.ObservadoPor(area.AreaId) ? "Observado"
         : r.AprobadoPor(area) ? "Aprobado"
         : e.Etapas.First(et => et.Areas.Contains(area)).Estado == EstadoEtapa.Esperando || e.Estado == EstadoExpediente.Abierto ? "Esperando"
@@ -291,13 +299,13 @@ public static class MapeosDeValidacion
             e.Estado == EstadoExpediente.Observado, e.Reenvios, e.ActualizadoEn,
             [
                 // Una observación solo llega al tercero cuando el expediente se le devuelve (con AlCerrarArea puede esperar).
-                .. e.Requisitos.Select(r => new RequisitoPublicoDto(r.Id, r.Tipo(documentacion), r.Obligatorio,
+                .. e.Requisitos.Where(r => !r.NoAplica).Select(r => new RequisitoPublicoDto(r.Id, r.Tipo(documentacion), r.Obligatorio,
                     (r.Estado == EstadoRequisito.Observado && e.Estado != EstadoExpediente.Observado ? EstadoRequisito.EnRevision : r.Estado).ToString(),
                     r.Version(e, documentacion),
                     e.Estado == EstadoExpediente.Observado
                         ? [.. r.Veredictos.Where(v => v.Vigente && v.Veredicto == Veredicto.Observado).OrderBy(v => v.Fecha).Select(v => v.APublica(r.Codigo))]
                         : [],
-                    PuedeRatificar(e, r), r.Ratificado ? r.Ratificacion!.Fecha : null, r.TipoRequisito.ToString(), r.DetalleDeSeccion(documentacion), r.Persona?.ADto()))
+                    PuedeRatificar(e, r), r.Ratificado ? r.Ratificacion!.Fecha : null, r.TipoRequisito.ToString(), r.DetalleDeSeccion(documentacion), r.Persona?.ADto(), r.PorQue.ADto()))
             ],
             e.Requisitos.Count(r => r.Obligatorio && r.Estado == EstadoRequisito.Pendiente), e.Tipo.ToString(), e.PlazoCargueHasta, e.EsperandoCuentaDesignada,
             e.EvaluacionesPublicas());

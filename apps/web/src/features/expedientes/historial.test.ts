@@ -31,6 +31,37 @@ describe('historial del expediente', () => {
   });
 });
 
+describe('historial: lo que el tercero declara en su ficha cambia lo que se le pide (EF-5)', () => {
+  const evento = (datos: Record<string, unknown>): EventoHistorialDto => ({
+    version: 6,
+    tipo: 'requisitos_segun_ficha_resueltos',
+    fecha: '2026-11-14T12:00:00Z',
+    actorTipo: 'Tercero',
+    actorId: 'tercero',
+    sistema: null,
+    datos,
+  });
+  const requisitos = new Map([['r-camara', 'Cámara de comercio'], ['r-banco', 'Certificación bancaria']]);
+
+  it('dice qué se piden, qué deja de aplicar y qué vuelve a aplicar', () => {
+    const entrada = eventoExpedienteATimeline(
+      evento({ agregados: [{ requisitoId: 'r-licencia', nombre: 'Licencia de construcción' }], noAplican: ['r-camara'], vuelvenAAplicar: ['r-banco'], motivos: [] }),
+      { ...contexto, requisitos },
+      t,
+    );
+
+    expect(entrada.titulo).toBe('Cambió la ficha del tercero');
+    expect(entrada.detalle).toBe('se piden Licencia de construcción · dejan de aplicar Cámara de comercio · vuelven a aplicar Certificación bancaria');
+  });
+
+  it('con solo un cambio de porqué no inventa documentos', () => {
+    const entrada = eventoExpedienteATimeline(evento({ agregados: [], noAplican: [], vuelvenAAplicar: [], motivos: [{ requisitoId: 'r-camara', motivos: [] }] }), contexto, t);
+
+    expect(entrada.titulo).toBe('Cambió la ficha del tercero');
+    expect(entrada.detalle).toBe('');
+  });
+});
+
 describe('historial: ratificación del tercero en una renovación', () => {
   it('«requisito_ratificado» dice qué ratificó el tercero', () => {
     const evento: EventoHistorialDto = {

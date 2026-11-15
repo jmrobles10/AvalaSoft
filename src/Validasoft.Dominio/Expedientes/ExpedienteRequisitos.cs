@@ -123,10 +123,19 @@ public sealed class RequisitoDeExpediente
     public Guid? ExencionDeVinculoId { get; set; }
 
     /// <summary>
+    /// El requisito ya no aplica porque lo que el tercero declaró en su ficha cambió (EF-5): sigue en el expediente, sin exigirse (cuenta como <see cref="Eximido"/> para las áreas y el cierre, y su estado es
+    /// <see cref="EstadoRequisito.NoAplica"/>), y vuelve a exigirse si lo declarado vuelve a cumplir la condición. Nunca se marca un requisito ya aprobado.
+    /// </summary>
+    public bool NoAplica { get; set; }
+
+    /// <summary>Lo de la ficha que hizo que se pida (EF-6), para decírselo al tercero; nulo si la condición no mira la ficha.</summary>
+    public List<MotivoDeExigencia>? PorQue { get; set; }
+
+    /// <summary>
     /// ¿Cuenta para el alcance de sus áreas? Un opcional sin versión no frena a nadie; si el tercero lo carga, se revisa.
     /// </summary>
     [JsonIgnore]
-    public bool Cuenta => Obligatorio || VersionActual is not null || Eximido;
+    public bool Cuenta => !NoAplica && (Obligatorio || VersionActual is not null || Eximido);
 
     public bool LoRevisa(Guid areaId) => AreasQueRevisan.Contains(areaId);
 
@@ -223,6 +232,8 @@ public sealed partial class Expediente
             throw ReglaDeNegocioException.Conflicto("estado-invalido", $"No se eximen requisitos de un expediente {Estado}.");
         var requisito = BuscarRequisito(requisitoId)
                         ?? throw ReglaDeNegocioException.NoEncontrado("requisito-no-encontrado", "Ese requisito no está en el expediente.");
+        if (requisito.NoAplica)
+            throw ReglaDeNegocioException.Conflicto("requisito-no-aplica", $"{requisito.Nombre} no aplica según lo que el tercero declaró en su ficha.");
         if (requisito.Eximido)
             throw ReglaDeNegocioException.Conflicto("requisito-eximido", $"{requisito.Nombre} ya está eximido.");
         if (requisito.Estado == EstadoRequisito.Aprobado)
@@ -410,6 +421,59 @@ public sealed partial class Expediente
         }, ahora);
     }
 
+    /// <summary>
+    /// Pone al día el expediente <b>abierto</b> con lo que el tercero declaró en su ficha (EF-5): las condiciones del flujo que miran la ficha dan hoy otro
+    /// resultado que cuando se calcularon los requisitos. El llamador resuelve el flujo del expediente contra la ficha de hoy y entrega:
+    /// <paramref name="nuevos"/> (requisitos que ahora aplican y el expediente no tiene), <paramref name="noAplican"/> (ids de los que ya no aplican),
+    /// <paramref name="vuelvenAAplicar"/> (ids de los marcados <c>NoAplica</c> que vuelven a aplicar) y <paramref name="motivos"/> (el porqué vigente de los que
+    /// siguen). Aquí se decide qué cambia, sin tocar lo que ya está bien:
+    /// <list type="bullet">
+    /// <item>un requisito nuevo entra como uno más (ya cubierto si su documento está compartido con el vínculo) y sus áreas vuelven a quedar pendientes;</item>
+    /// <item>uno que ya no aplica, mientras no esté aprobado ni eximido a mano, pasa a <see cref="EstadoRequisito.NoAplica"/>: sigue en el expediente, sin exigirse y
+    /// con sus decisiones invalidadas; si ya estaba aprobado se conserva como lo que la empresa aceptó;</item>
+    /// <item>uno <c>NoAplica</c> que vuelve a aplicar se vuelve a exigir (sus áreas lo revisan de nuevo);</item>
+    /// <item>el porqué de los que siguen se actualiza solo si cambió.</item>
+    /// </list>
+    /// Idempotente: sin diferencias no emite nada. Un expediente cerrado no cambia.
+    /// </summary>
+    public IReadOnlyList<object> ResolverSegunFicha(IReadOnlyList<RequisitoCalculado> nuevos, IReadOnlySet<Guid> noAplican, IReadOnlySet<Guid> vuelvenAAplicar,
+        IReadOnlyList<MotivosDelRequisito> motivos, DateTimeOffset ahora)
+    {
+        if (!EstaAbierto || !ConRequisitos)
+            return [];
+
+        var agregados = nuevos.DistinctBy(r => r.RequisitoId).Where(r => BuscarRequisito(r.RequisitoId) is null).ToList();
+        var salen = Requisitos.Where(r => noAplican.Contains(r.Id) && !r.Eximido && r.Estado != EstadoRequisito.Aprobado).Select(r => r.Id).ToList();
+        var vuelven = Requisitos.Where(r => vuelvenAAplicar.Contains(r.Id) && r.NoAplica).Select(r => r.Id).ToList();
+        var cambiados = motivos
+            .Where(m => !salen.Contains(m.RequisitoId) && BuscarRequisito(m.RequisitoId) is { } r && (!r.NoAplica || vuelven.Contains(r.Id)) &&
+                        !MismosMotivos(r.PorQue, m.Motivos))
+            .DistinctBy(m => m.RequisitoId)
+            .ToList();
+        if (agregados.Count == 0 && salen.Count == 0 && vuelven.Count == 0 && cambiados.Count == 0)
+            return [];
+
+        var areas = Etapas.OrderBy(e => e.Orden).SelectMany(e => e.Areas).Select(a => a.AreaId).ToList();
+        return Simular(s =>
+        {
+            s.Emitir(new RequisitosSegunFichaResueltos(ResolverAlcance(agregados, areas), salen, vuelven, cambiados, ahora));
+            if (s.Estado is { Estado: EstadoExpediente.Observado, EtapaActiva: { } etapa } && etapa.Areas.All(a => a.Estado != EstadoAreaExpediente.Observada))
+                s.Emitir(new RevisionReanudada(Guid.Empty, ahora));
+        }, ahora);
+    }
+
+    private static bool MismosMotivos(IReadOnlyList<MotivoDeExigencia>? actuales, IReadOnlyList<MotivoDeExigencia> nuevos) =>
+        (actuales ?? []).Count == nuevos.Count &&
+        (actuales ?? []).Zip(nuevos).All(p => p.First.Campo == p.Second.Campo && p.First.Etiqueta == p.Second.Etiqueta && p.First.Valores.SequenceEqual(p.Second.Valores));
+
+    /// <summary>Quién y por qué deja el sistema sin exigir un requisito cuya condición sobre la ficha dejó de cumplirse (EF-5).</summary>
+    public static class NoAplicaPorFicha
+    {
+        public const string Por = "sistema";
+
+        public const string Justificacion = "Lo que el tercero declaró en su ficha ya no cumple la condición con la que se pedía este documento.";
+    }
+
     /// <summary>Quién y por qué exime el sistema el requisito de una persona que dejó de cumplir el rol (ADR-0010).</summary>
     public static class ExencionPorCambioDePersona
     {
@@ -469,6 +533,49 @@ public sealed partial class Expediente
         ActualizadoEn = e.Fecha;
     }
 
+    public void Apply(RequisitosSegunFichaResueltos e)
+    {
+        var nuevos = e.Agregados.Select(DeCalculado).ToList();
+        Requisitos = [.. Requisitos, .. nuevos];
+        foreach (var id in e.NoAplican)
+        {
+            var requisito = BuscarRequisito(id)!;
+            // «No aplica» cuenta como eximido para las áreas, el cierre y todo lo que ya mira Eximido; NoAplica dice por qué (y se muestra distinto).
+            requisito.NoAplica = true;
+            requisito.Eximido = true;
+            requisito.EximidoPor = NoAplicaPorFicha.Por;
+            requisito.JustificacionExencion = NoAplicaPorFicha.Justificacion;
+            requisito.EximidoEn = e.Fecha;
+            requisito.ExencionDeVinculoId = null;
+            foreach (var veredicto in requisito.Veredictos.Where(v => v.Vigente))
+            {
+                veredicto.Vigente = false;
+                veredicto.Superado = true;
+            }
+        }
+
+        var vueltos = new List<RequisitoDeExpediente>();
+        foreach (var id in e.VuelvenAAplicar)
+        {
+            var requisito = BuscarRequisito(id)!;
+            requisito.NoAplica = false;
+            requisito.Eximido = false;
+            requisito.EximidoPor = null;
+            requisito.JustificacionExencion = null;
+            requisito.EximidoEn = null;
+            vueltos.Add(requisito);
+        }
+
+        foreach (var motivo in e.Motivos)
+            BuscarRequisito(motivo.RequisitoId)!.PorQue = motivo.Motivos.Count > 0 ? [.. motivo.Motivos] : null;
+
+        var reabiertas = ReabrirEtapasDe([.. nuevos, .. vueltos]);
+        RecalcularRequisitos(e.Fecha);
+        foreach (var area in reabiertas.SelectMany(etapa => etapa.Areas).Where(a => a.Estado == EstadoAreaExpediente.Pendiente))
+            area.ReiniciarSla(e.Fecha);
+        ActualizadoEn = e.Fecha;
+    }
+
     public void Apply(PersonaDeRequisitoResuelta e)
     {
         BuscarRequisito(e.RequisitoId)!.Persona = e.Persona;
@@ -504,7 +611,8 @@ public sealed partial class Expediente
         JustificacionExencion = r.Exencion?.Justificacion,
         EximidoEn = r.Exencion?.Fecha,
         ExencionDeVinculoId = r.Exencion?.ExencionId,
-        Persona = r.Persona
+        Persona = r.Persona,
+        PorQue = r.PorQue is { Count: > 0 } ? [.. r.PorQue] : null
     };
 
     /// <summary>
@@ -678,6 +786,8 @@ public sealed partial class Expediente
 
     private EstadoRequisito EstadoDe(RequisitoDeExpediente requisito)
     {
+        if (requisito.NoAplica)
+            return EstadoRequisito.NoAplica;
         if (requisito.Eximido)
             return EstadoRequisito.Eximido;
         if (requisito.VersionActual is null)

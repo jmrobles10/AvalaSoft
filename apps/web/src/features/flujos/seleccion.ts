@@ -1,4 +1,5 @@
 import { esErrorApi, type CondicionDto, type SeleccionDeFlujoDto } from '@validasoft/api-client';
+import { condicionDeFichaCompleta, condicionDeFichaSimple } from './condiciones';
 import type { BorradorFlujo, ErrorFlujo } from './editor';
 
 // Selección automática del flujo en el editor (FR-1): condición y prioridad con las que el sistema escoge este flujo solo.
@@ -31,13 +32,19 @@ export function seleccionADto(borrador: CamposSeleccion): SeleccionDeFlujoDto {
   return { condicion: borrador.seleccionCondicion, prioridad: prioridadDe(borrador.seleccionPrioridad) };
 }
 
-/** Replica `SeleccionDeFlujo.Validar`: con condición, la prioridad es un entero de 1 a 999. */
+/**
+ * Replica `SeleccionDeFlujo.Validar`: con condición, la prioridad es un entero de 1 a 999; y una condición sobre la ficha del tercero lleva sus valores
+ * (sin ellos no se cumpliría nunca).
+ */
 export function validarSeleccion(borrador: CamposSeleccion): ErrorFlujo[] {
   if (borrador.seleccionCondicion === null) return [];
+  const errores: ErrorFlujo[] = [];
+  const ficha = condicionDeFichaSimple(borrador.seleccionCondicion);
+  if (ficha && !condicionDeFichaCompleta(ficha)) errores.push({ codigo: 'condicion-invalida', campo: 'seleccion.condicion' });
   const campo = 'seleccion.prioridad';
-  if (borrador.seleccionPrioridad.trim() === '') return [{ codigo: 'prioridad-requerida', campo }];
+  if (borrador.seleccionPrioridad.trim() === '') return [...errores, { codigo: 'prioridad-requerida', campo }];
   const prioridad = prioridadDe(borrador.seleccionPrioridad);
-  return prioridad === null || prioridad < 1 || prioridad > PRIORIDAD_MAXIMA ? [{ codigo: 'prioridad-invalida', campo }] : [];
+  return prioridad === null || prioridad < 1 || prioridad > PRIORIDAD_MAXIMA ? [...errores, { codigo: 'prioridad-invalida', campo }] : errores;
 }
 
 const CODIGOS_DE_SELECCION = ['prioridad-requerida', 'prioridad-invalida', 'prioridad-duplicada', 'seleccion-sin-condicion', 'condicion-invalida'] as const;

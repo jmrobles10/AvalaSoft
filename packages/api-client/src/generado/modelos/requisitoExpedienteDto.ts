@@ -7,6 +7,7 @@
 import type { AreaDeRequisitoDto } from './areaDeRequisitoDto';
 import type { EstadoRequisito } from './estadoRequisito';
 import type { ExencionDto } from './exencionDto';
+import type { MotivoDeExigenciaDto } from './motivoDeExigenciaDto';
 import type { PersonaDelRequisitoDto } from './personaDelRequisitoDto';
 import type { RetiroDeVersionDto } from './retiroDeVersionDto';
 import type { RevisionAutomaticaDto } from './revisionAutomaticaDto';
@@ -32,4 +33,6 @@ export interface RequisitoExpedienteDto {
   /** @nullable */
   revisionesAutomaticas?: RevisionAutomaticaDto[] | null;
   persona?: null | PersonaDelRequisitoDto;
+  /** @nullable */
+  porQue?: MotivoDeExigenciaDto[] | null;
 }

@@ -145,6 +145,14 @@ El representante legal, los suplentes, los socios/beneficiarios finales y los mi
 - El `FORMULARIO_SARLAFT` de cada empresa es `PorVinculo` y **referencia** la versión vigente de `BENEFICIARIO_FINAL` en vez de duplicar los datos (I-20). **Pendiente** (registro PR-10): `BENEFICIARIO_FINAL` aún no tiene esquema de formulario canónico y el SARLAFT no lo referencia todavía.
 - Un cambio de representante detectado por la IA en una Cámara nueva **no** cambia la relación por sí solo (queda como una relación `Propuesta`): la relación cambia cuando el tercero lo confirma (implementado), un revisor lo confirma al revalidar (pendiente), o la confianza es ≥ 0,98 y la Cámara fue aprobada por alguna empresa; solo entonces expiran la cédula y las listas del saliente en todas las empresas (esc. 6).
 
+### 4.6 Exigencia según la ficha del tercero (EF-1…EF-10, implementado)
+
+La regla de exigencia ([03 §12](03-dominio-y-eventos.md)) decide qué documentos se piden a un tercero con una condición. Además del tipo de persona, el país, el tipo de identificación, los atributos del vínculo y las respuestas de un cuestionario, **la condición puede mirar lo que el tercero declara en su ficha**: `ficha.{seccion}.{campo}` ([03 §12.4](03-dominio-y-eventos.md), [registro](decisiones/registro.md) `5-duoseptuagies`). Es la exigencia por especialidad del SRM («la licencia de construcción solo a quien declara obra gris»), con los mismos grupos y categorías, y también por actividad económica (CIIU), ciudad, responsabilidades del RUT y algunos sí/no.
+
+- **La ficha es del tercero y la empresa solo la ve desde que acepta su invitación (B-1).** Antes de la aceptación esos campos son datos faltantes: no se pide lo condicionado a ellos. Al aceptar, la ficha ya vale en la misma transacción en que se resuelve el flujo y se abre el expediente.
+- **Lo declarado cambia con el expediente abierto.** Guardar una versión de la ficha recalcula los requisitos del expediente abierto por el mismo camino que ya adjunta versiones nuevas (§7): el documento que ahora aplica se suma —y si el tercero ya lo tenía en su bóveda se comparte con esa empresa y entra cubierto, sin volver a subirlo (§6.1)—, el que ya no aplica pasa a `NoAplica` y, si lo declarado vuelve, se vuelve a exigir. Lo ya aprobado, lo eximido a mano y los expedientes cerrados no se tocan.
+- **El tercero ve por qué se le pide cada documento** («porque en tu ficha declaraste: Especialidades: Obra gris»), y no ve los que no le aplican.
+
 ## 5. Ciclo de vida de una versión
 
 `EstadoVersion { Recibida, EnAnalisis, Actual, Superada, Devuelta, Retirada }` (dueño del enum: [03](03-dominio-y-eventos.md)).

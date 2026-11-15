@@ -59,6 +59,7 @@ const CODIGOS_DE_REQUISITO = [
   'requisito-invalido',
   'vigencia-seccion-invalida',
   'dias-revalidacion-invalidos',
+  'condicion-invalida',
 ] as const;
 type CodigoDeRequisito = (typeof CODIGOS_DE_REQUISITO)[number];
 

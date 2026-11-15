@@ -532,6 +532,7 @@ export const esCO = {
       grupos: { 'te-toca': 'Te toca', 'en-revision': 'Lo revisa {{empresa}}', listo: 'Listo' },
       version: 'Versión {{n}} · cargada el {{fecha}}',
       faltaObligatorio: 'Aún no lo subes.',
+      porQue: 'Te lo pide {{empresa}} porque en tu ficha declaraste: {{motivos}}.',
       faltaOpcional: 'Opcional: súbelo si lo tienes.',
       acciones: { subir: 'Subir documento', corregir: 'Subir versión corregida', reemplazar: 'Subir otra versión' },
       accionesFormulario: { subir: 'Llenar formulario', corregir: 'Corregir los datos', reemplazar: 'Actualizar los datos' },

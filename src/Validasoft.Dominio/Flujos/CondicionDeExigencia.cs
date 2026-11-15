@@ -54,7 +54,9 @@ public sealed record CondicionDeExigencia(
 
 /// <summary>
 /// Lo que se sabe del tercero y del vínculo al decidir qué documentos se le piden. <see cref="TipoVinculo"/> es el código
-/// del tipo del vínculo; <see cref="Atributos"/>, los del vínculo (los valida su tipo).
+/// del tipo del vínculo; <see cref="Atributos"/>, los del vínculo (los valida su tipo). <see cref="Ficha"/> trae lo que el tercero declaró en su
+/// ficha, por <c>ficha.{seccion}.{campo}</c> (<see cref="FichaParaExigencia"/>); es nula cuando la ficha no está disponible para la empresa (antes de
+/// que el tercero acepte) o el llamador no la cargó, y entonces sus campos son «datos faltantes».
 /// </summary>
 public sealed record ContextoDeExigencia(
     TipoPersona TipoPersona,
@@ -63,8 +65,11 @@ public sealed record ContextoDeExigencia(
     bool EsExtranjero,
     string TipoVinculo,
     IReadOnlyDictionary<string, JsonElement> Atributos,
-    IReadOnlyDictionary<string, JsonElement>? Respuestas = null)
+    IReadOnlyDictionary<string, JsonElement>? Respuestas = null,
+    IReadOnlyDictionary<string, JsonElement>? Ficha = null)
 {
+    public ContextoDeExigencia ConFicha(IReadOnlyDictionary<string, JsonElement>? ficha) => this with { Ficha = ficha };
+
     public static ContextoDeExigencia De(Tercero tercero, string tipoVinculo, IReadOnlyDictionary<string, JsonElement>? atributos) =>
         new(tercero.TipoPersona, tercero.Identificacion.Pais, tercero.Identificacion.Tipo, tercero.EsExtranjero, tipoVinculo,
             atributos ?? new Dictionary<string, JsonElement>());
@@ -89,6 +94,9 @@ public static class AtributosDeExigencia
     public const string EsExtranjero = "tercero.esExtranjero";
     public const string TipoVinculo = "vinculo.tipo";
     public const string PrefijoAtributos = "vinculo.atributos.";
+
+    /// <summary>Campos de la ficha del tercero (EF-1): <c>ficha.{seccion}.{campo}</c>, solo los de <see cref="CamposDeFicha"/>. Valen en los requisitos y la selección de un flujo, no en los cuestionarios.</summary>
+    public const string PrefijoFicha = CamposDeFicha.Prefijo;
 
     /// <summary>Respuestas a preguntas anteriores de un cuestionario de evaluación (CE-6): solo valen en las condiciones del cuestionario.</summary>
     public const string PrefijoRespuestas = "respuesta.";
@@ -199,6 +207,15 @@ public static class AtributosDeExigencia
             return ClaseDeAtributo(pregunta.Tipo, pregunta.Opciones ?? [], pregunta.Clave, documento);
         }
 
+        if (atributo.StartsWith(PrefijoFicha, StringComparison.Ordinal))
+        {
+            if (respuestas is not null)
+                throw Invalida(documento, $"no puede mirar la ficha del tercero («{atributo}»): eso solo se usa en los requisitos y la selección de un flujo.");
+            var campo = CamposDeFicha.Buscar(atributo)
+                        ?? throw Invalida(documento, $"«{atributo}» no es un campo de la ficha que se pueda usar en una condición.");
+            return ClaseDeCampoDeFicha(campo);
+        }
+
         if (!atributo.StartsWith(PrefijoAtributos, StringComparison.Ordinal))
             throw Invalida(documento, $"«{atributo}» no es un atributo que se pueda usar en una condición.");
 
@@ -227,6 +244,46 @@ public static class AtributosDeExigencia
         };
     }
 
+    /// <summary>Clase de valor de un campo de la ficha: sus operadores salen de su tipo y sus valores se normalizan como los del catálogo del que vienen.</summary>
+    private static Clase ClaseDeCampoDeFicha(CampoDeFichaExigible campo)
+    {
+        var operadores = new HashSet<OperadorCondicion>(campo.Tipo switch
+        {
+            TipoAtributo.ListaOpciones => DeLista,
+            TipoAtributo.Booleano => DeBooleano,
+            _ => DeTexto
+        }) { OperadorCondicion.Existe };
+        return new Clase(campo.Tipo, operadores, campo.Normalizar);
+    }
+
+    /// <summary>Los operadores que admite un campo de la ficha según su tipo (listas: contiene alguno o todos; texto y opciones: es, es uno de…; booleanos: es), y «existe».</summary>
+    public static IReadOnlyCollection<OperadorCondicion> OperadoresDe(CampoDeFichaExigible campo) => ClaseDeCampoDeFicha(campo).Operadores;
+
+    /// <summary>¿Alguna comparación de la condición mira la ficha del tercero?</summary>
+    public static bool MencionaFicha(CondicionDeExigencia? condicion) =>
+        condicion is not null && (condicion.Tipo == TipoNodoCondicion.Predicado
+            ? (condicion.Atributo ?? string.Empty).StartsWith(PrefijoFicha, StringComparison.Ordinal)
+            : (condicion.Nodos ?? []).Any(MencionaFicha));
+
+    /// <summary>Las comparaciones sobre campos de la ficha que trae la condición, con los valores que citan (para cargar de antemano los catálogos que mencionan).</summary>
+    public static IEnumerable<(CampoDeFichaExigible Campo, IReadOnlyList<string> Valores)> ComparacionesDeFicha(CondicionDeExigencia? condicion)
+    {
+        if (condicion is null)
+            yield break;
+        if (condicion.Tipo == TipoNodoCondicion.Predicado)
+        {
+            if (CamposDeFicha.Buscar(condicion.Atributo) is { } campo)
+                yield return (campo, condicion.Valores ?? []);
+            yield break;
+        }
+
+        foreach (var hijo in condicion.Nodos ?? [])
+        {
+            foreach (var comparacion in ComparacionesDeFicha(hijo))
+                yield return comparacion;
+        }
+    }
+
     private static string? NormalizarBooleano(string v) =>
         bool.TryParse(v, out var b) ? (b ? "true" : "false") : null;
 
@@ -238,6 +295,12 @@ public static class AtributosDeExigencia
     private static ReglaDeNegocioException Invalida(string documento, string detalle) =>
         ReglaDeNegocioException.Validacion("condicion-invalida", $"La condición de {documento} {detalle}");
 }
+
+/// <summary>
+/// Una comparación sobre un campo de la ficha que se cumple y por qué (EF-6): <see cref="Valores"/> son los de la condición que el tercero declaró
+/// (vacío con «es distinto», «no está en» o «existe»: solo declaró el campo).
+/// </summary>
+public sealed record CoincidenciaDeFicha(CampoDeFichaExigible Campo, OperadorCondicion Operador, IReadOnlyList<string> Valores);
 
 /// <summary>
 /// Qué requisitos del flujo se le piden a este tercero en este vínculo (docs/03 §12): función pura, sin estado. Un
@@ -257,6 +320,42 @@ public static class EvaluadorDeExigencia
         requisito.Seccion is null || Ficha.CatalogoDeSecciones.Buscar(requisito.Seccion)?.Obligatoria(contexto.TipoPersona) != false;
 
     public static bool Aplica(CondicionDeExigencia? condicion, ContextoDeExigencia contexto) => condicion is null || Evaluar(condicion, contexto);
+
+    /// <summary>
+    /// Lo que de la ficha del tercero hizo que se cumpla la condición (EF-6), para decirle por qué se le pide algo: por cada comparación sobre un campo de la
+    /// ficha que se cumple y que aporta (las de un «O» solo si ellas se cumplen; las de un «No» no se explican), el campo y los valores de la condición que
+    /// el tercero tiene declarados. Con «es distinto», «no está en» o «existe» no hay valores: solo se sabe que declaró el campo. Se llama con una condición que
+    /// ya se cumple.
+    /// </summary>
+    public static IReadOnlyList<CoincidenciaDeFicha> Coincidencias(CondicionDeExigencia? condicion, ContextoDeExigencia contexto)
+    {
+        if (condicion is null)
+            return [];
+        switch (condicion.Tipo)
+        {
+            case TipoNodoCondicion.Y:
+                return [.. (condicion.Nodos ?? []).SelectMany(n => Coincidencias(n, contexto))];
+            case TipoNodoCondicion.O:
+                return [.. (condicion.Nodos ?? []).Where(n => Evaluar(n, contexto)).SelectMany(n => Coincidencias(n, contexto))];
+            case TipoNodoCondicion.Predicado:
+                if (CamposDeFicha.Buscar(condicion.Atributo) is not { } campo || !Predicado(condicion, contexto))
+                    return [];
+                var (presente, actual) = Leer(campo.Ruta, contexto);
+                if (!presente)
+                    return [];
+                var operador = condicion.Operador ?? OperadorCondicion.Igual;
+                var valores = condicion.Valores ?? [];
+                IReadOnlyList<string> coinciden = operador switch
+                {
+                    OperadorCondicion.ContieneAlguno or OperadorCondicion.ContieneTodos when actual.Lista is { } lista => [.. valores.Where(lista.Contains)],
+                    OperadorCondicion.Igual or OperadorCondicion.En when actual.Escalar is { } escalar => [.. valores.Where(v => string.Equals(v, escalar, StringComparison.Ordinal))],
+                    _ => []
+                };
+                return [new CoincidenciaDeFicha(campo, operador, coinciden)];
+            default:
+                return [];
+        }
+    }
 
     private static bool Evaluar(CondicionDeExigencia nodo, ContextoDeExigencia contexto) => nodo.Tipo switch
     {
@@ -320,7 +419,12 @@ public static class EvaluadorDeExigencia
         }
 
         JsonElement json;
-        if (atributo.StartsWith(AtributosDeExigencia.PrefijoRespuestas, StringComparison.Ordinal))
+        if (atributo.StartsWith(AtributosDeExigencia.PrefijoFicha, StringComparison.Ordinal))
+        {
+            if (c.Ficha is null || !c.Ficha.TryGetValue(atributo, out json))
+                return (false, new Valor(null, null, null));
+        }
+        else if (atributo.StartsWith(AtributosDeExigencia.PrefijoRespuestas, StringComparison.Ordinal))
         {
             if (c.Respuestas is null || !c.Respuestas.TryGetValue(atributo[AtributosDeExigencia.PrefijoRespuestas.Length..], out json))
                 return (false, new Valor(null, null, null));
