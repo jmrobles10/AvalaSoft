@@ -69,7 +69,7 @@ public static class MapeosDocumentos
         new(t.Codigo, t.Version, t.Nombre, t.Ambito.ToString(), t.Clase.ToString(), t.AplicaA.ToString(), t.TieneVencimientoIntrinseco,
             t.TieneFechaExpedicion, t.EsPeriodico, t.Periodicidad, t.PermiteRatificacion, t.DePersonaRelacionada, t.CamposClave,
             t.CamposCriticos, t.Sensibilidad.ToString(), t.ReglaFrescuraSugerida?.ADto(), t.RetencionAniosSugerida, t.CargaSoportada,
-            t.Formatos, t.TamanoMaximoMb, t.PaginasMaximas);
+            t.Formatos, t.TamanoMaximoMb, t.PaginasMaximas, t.Paises, t.EquivalenteA);
 
     /// <summary>Con <paramref name="reglas"/> incluye las reglas de archivo efectivas (con los límites globales).</summary>
     public static TipoDocumentoTenantDto ADto(this TipoDocumentoTenant t, ReglasDeCarga? reglas = null) =>

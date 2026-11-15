@@ -54,6 +54,9 @@ public static class PropuestasDeFichaEndpoints
         bool conDatos, TimeProvider reloj, CancellationToken ct)
     {
         var tercero = await GuardadoDeSecciones.TerceroAsync(sesiones, terceroId, ct);
+        // RG-6: la propuesta sale de la lectura de documentos colombianos (RUT, Cámara, cédula…); fuera de Colombia el tercero diligencia con el documento a la vista.
+        if (!AlcanceDeLaLectura.Aplica(tercero.Identificacion.Pais))
+            return [];
         List<Documento> documentos;
         Dictionary<Guid, SeccionDeFicha> secciones;
         await using (var boveda = sesiones.ConsultaBoveda())

@@ -7,6 +7,8 @@ public static class DigitoVerificacion
 
     private static readonly int[] PesosCuit = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
 
+    private static readonly int[] PesosRnc = [7, 9, 8, 6, 5, 4, 3, 2];
+
     public static string? Calcular(AlgoritmoDv algoritmo, string numero) => algoritmo switch
     {
         AlgoritmoDv.NitColombia => NitColombia(numero),
@@ -14,6 +16,53 @@ public static class DigitoVerificacion
         AlgoritmoDv.CuitArgentina => CuitArgentina(numero),
         _ => null
     };
+
+    /// <summary>El DV declarado de un RUC de Panamá son dos dígitos (Validasoft no lo calcula).</summary>
+    public static bool DvDeclaradoValido(string? dv) => dv is { Length: 2 } && dv.All(char.IsAsciiDigit);
+
+    /// <summary>¿El número (solo dígitos, ya normalizado) pasa el control propio de su tipo? Sin control, siempre.</summary>
+    public static bool NumeroValido(ControlDeNumero control, string numero) => control switch
+    {
+        ControlDeNumero.RncDominicano => numero.Length switch
+        {
+            9 => numero.All(char.IsAsciiDigit) && numero[8].ToString() == RncDominicano(numero[..8]),
+            11 => CedulaDominicana(numero),
+            _ => false
+        },
+        ControlDeNumero.CedulaDominicana => CedulaDominicana(numero),
+        _ => true
+    };
+
+    /// <summary>DGII: pesos 7, 9, 8, 6, 5, 4, 3, 2 sobre los ocho primeros dígitos; residuo módulo 11 (0 ⇒ 2, 1 ⇒ 1, otro ⇒ 11 − residuo).</summary>
+    public static string RncDominicano(string primerosOcho)
+    {
+        var suma = 0;
+        for (var i = 0; i < PesosRnc.Length; i++)
+            suma += (primerosOcho[i] - '0') * PesosRnc[i];
+
+        return (suma % 11) switch
+        {
+            0 => "2",
+            1 => "1",
+            var r => (11 - r).ToString()
+        };
+    }
+
+    /// <summary>Cédula dominicana: 11 dígitos, el último de control con el algoritmo de Luhn (pesos 1 y 2 de izquierda a derecha).</summary>
+    public static bool CedulaDominicana(string numero)
+    {
+        if (numero.Length != 11 || !numero.All(char.IsAsciiDigit))
+            return false;
+
+        var suma = 0;
+        for (var i = 0; i < 11; i++)
+        {
+            var producto = (numero[i] - '0') * (i % 2 == 0 ? 1 : 2);
+            suma += producto > 9 ? producto - 9 : producto;
+        }
+
+        return suma % 10 == 0;
+    }
 
     /// <summary>DIAN: pesos primos de derecha a izquierda, residuo módulo 11.</summary>
     public static string NitColombia(string numero)

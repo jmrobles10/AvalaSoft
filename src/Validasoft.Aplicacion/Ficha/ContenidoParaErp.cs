@@ -65,23 +65,36 @@ public static class ContenidoParaErp
             g.AnioInicio, representante, g.Pep, g.VinculoPep, g.FechaExpedicion, g.LugarExpedicion, Declaracion(g.Pep, g.DeclaracionPep));
     }
 
+    /// <summary>Las calidades de la DIAN no se derivan de lo genérico: un tercero de otro país no es «no responsable de IVA», no se sabe (todas nulas).</summary>
+    private static readonly CalidadesTributarias SinCalidades = new(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
     private static ContenidoTributarioDto Tributaria(DatosTributarios t, ICatalogosDeFicha catalogos)
     {
-        var c = CalidadesTributarias.Derivar(t);
+        // RG-3/RG-7: con el modelo genérico (un tercero de otro país) las calidades colombianas no aplican: van nulas y sin notas, no «falsas».
+        var generico = Generico(t);
+        var c = generico is null ? CalidadesTributarias.Derivar(t) : SinCalidades;
         return new ContenidoTributarioDto(
             [.. (t.Responsabilidades ?? []).Select(r => Codigo(catalogos, CatalogoDePlataforma.ResponsabilidadesDian, r)!)],
             new CalidadesTributariasDto(c.ResponsableIva, c.Autorretenedor, c.DeclaranteRenta, c.GranContribuyente, c.AutorretenedorIca, c.RegimenSimple,
                 c.GranContribuyenteBogota, c.RegimenEspecial, c.AutorretenedorRft, c.DescuentoSenaFic, c.ProfesionalIndependiente, c.ExentoRetencion,
                 c.AgenteRetenedorIva, c.ObligadoAFacturar, c.ExentoReteCree),
             [
-                .. CalidadesTributarias.Tabla
+                .. generico is not null ? [] : CalidadesTributarias.Tabla
                     .Where(r => r.Origen == OrigenDeCalidad.NoDerivable || (r.Origen == OrigenDeCalidad.DatoDeLaSeccion && c.ValorDe(r.Calidad) is null))
                     .Select(r => new CalidadSinDerivarDto(r.Calidad, r.Nota))
             ],
             Resolucion(t.ResolucionGranContribuyente), Resolucion(t.ResolucionAutorretenedor), t.ResponsableIca, t.AutorretenedorIca,
             [.. (t.Ica ?? []).Select(f => new IcaErpDto(Ciudad(catalogos, f.Municipio), Codigo(catalogos, CatalogoDePlataforma.ActividadesEconomicas, f.Ciiu),
-                f.TarifaPorMil))]);
+                f.TarifaPorMil))],
+            generico);
     }
+
+    /// <summary>El modelo genérico de un tercero fuera de Colombia (RG-3); nulo si no se diligenció nada de él (los terceros colombianos nunca lo traen).</summary>
+    private static ContenidoTributarioGenericoDto? Generico(DatosTributarios t) =>
+        t is { Regimen: null, ContribuyenteImpuestoVentas: null, AgenteDeRetencion: null, ExentoDeRetenciones: null, CertificadoExencion: null, EmisorComprobantesElectronicos: null }
+            ? null
+            : new ContenidoTributarioGenericoDto(t.Regimen, t.ContribuyenteImpuestoVentas, t.AgenteDeRetencion, t.ExentoDeRetenciones, Resolucion(t.CertificadoExencion),
+                t.EmisorComprobantesElectronicos);
 
     /// <summary>Resumen de la declaración PEP activa (con «Sí» a PEP); la inactiva no viaja.</summary>
     private static DeclaracionPepErpDto? Declaracion(bool? pep, DeclaracionPep? d) =>
