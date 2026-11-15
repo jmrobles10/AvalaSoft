@@ -3,7 +3,7 @@ import i18n from 'i18next';
 import { describe, expect, it } from 'vitest';
 import '../../../i18n';
 import { sePuedePedir } from '../../flujos/editor';
-import { borradorDe, borradorNuevo, campoNuevo, claveDesdeEtiqueta, cuerpoActualizar, cuerpoCrear, validarBorrador, type BorradorTipo } from './modelo';
+import { borradorDe, borradorNuevo, campoNuevo, claveDesdeEtiqueta, cuerpoActualizar, cuerpoCrear, etiquetaDelCanonico, validarBorrador, type BorradorTipo } from './modelo';
 import { enumerar, resumenTipo, resumenVigencia } from './resumen';
 
 const t = i18n.t.bind(i18n);
@@ -113,5 +113,15 @@ describe('resumen de reglas (lista y editor de flujos)', () => {
     expect(sePuedePedir({ activo: true, clase: 'Formulario', cargaSoportada: false })).toBe(false);
     expect(sePuedePedir({ activo: false, clase: 'Archivo', cargaSoportada: true })).toBe(false);
     expect(sePuedePedir({ activo: true, clase: 'Archivo' })).toBe(true);
+  });
+});
+
+describe('Canónicos por país (RG-5)', () => {
+  it('el canónico de un solo país lo lleva en su etiqueta y el de cualquiera va con su nombre', () => {
+    expect(etiquetaDelCanonico({ nombre: 'Registro Único Tributario', paises: ['CO'] })).toBe('Registro Único Tributario · Colombia');
+    expect(etiquetaDelCanonico({ nombre: 'Certificado de RUC (DGI)', paises: ['PA'] })).toBe('Certificado de RUC (DGI) · Panamá');
+    expect(etiquetaDelCanonico({ nombre: 'Constancia de RNC (DGII)', paises: ['DO'] })).toBe('Constancia de RNC (DGII) · República Dominicana');
+    expect(etiquetaDelCanonico({ nombre: 'Cédula de ciudadanía', paises: null })).toBe('Cédula de ciudadanía');
+    expect(etiquetaDelCanonico({ nombre: 'Pasaporte' })).toBe('Pasaporte');
   });
 });

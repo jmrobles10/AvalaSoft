@@ -245,6 +245,26 @@ export function cuerpoActualizar(b: BorradorTipo): ActualizarTipoDocumentoDto {
   };
 }
 
+function nombresDePaises(): (codigo: string) => string {
+  try {
+    const nombres = new Intl.DisplayNames(['es'], { type: 'region' });
+    return (codigo) => nombres.of(codigo) ?? codigo;
+  } catch {
+    return (codigo) => codigo;
+  }
+}
+
+const nombrePais = nombresDePaises();
+
+/**
+ * «Certificado de RUC (DGI) · Panamá»: el canónico con el país al que pertenece cuando es de uno solo (el RUT y la Cámara son de Colombia; sus
+ * equivalentes, de Panamá y República Dominicana, RG-5). Un canónico sin país es de cualquiera y va con su nombre.
+ */
+export function etiquetaDelCanonico(canonico: Pick<TipoDocumentoCanonicoDto, 'nombre' | 'paises'>): string {
+  const paises = (canonico.paises ?? []).map(nombrePais);
+  return paises.length > 0 ? `${canonico.nombre} · ${paises.join(', ')}` : canonico.nombre;
+}
+
 /** Techo que impone el canónico (los tipos de la plataforma solo admiten reglas más estrictas). */
 export function techoDelCanonico(canonico: TipoDocumentoCanonicoDto | undefined) {
   if (!canonico) return null;

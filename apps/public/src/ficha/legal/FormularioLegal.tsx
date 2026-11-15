@@ -1,4 +1,5 @@
 import { Alert, Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
+import type { PerfilDeFichaDto } from '@validasoft/api-client';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +13,7 @@ import { esRol, nombrePersona } from './personas';
  * Información legal (`FICHA_LEGAL`, fase 1 de FM-7): las personas relacionadas como tarjetas (agregar, editar en un
  * diálogo, quitar) y la firma de revisoría fiscal si el revisor actúa por una firma.
  */
-export function FormularioLegal({ datos, onCambiar, mensaje, hayEnRuta, deshabilitado }: PropsFormulario<DatosLegales>) {
+export function FormularioLegal({ datos, onCambiar, mensaje, hayEnRuta, deshabilitado, perfil }: PropsFormulario<DatosLegales> & { perfil?: PerfilDeFichaDto | null }) {
   const { t } = useTranslation();
   const personas = datos.personas ?? [];
   // Índice de la persona en edición; `personas.length` = una nueva.
@@ -50,7 +51,7 @@ export function FormularioLegal({ datos, onCambiar, mensaje, hayEnRuta, deshabil
       </Button>
       <Subtitulo>{t('ficha.legal.firma')}</Subtitulo>
       <Rejilla>
-        <CampoTexto etiqueta={t('ficha.legal.firmaNit')} valor={firma.nit} onCambiar={(nit) => cambiarFirma({ nit })} mensaje={mensaje('revisor_fiscal_firma.nit')} maxLength={20} deshabilitado={deshabilitado} />
+        <CampoTexto etiqueta={t('ficha.legal.firmaNit', { tipo: perfil?.pais === 'DO' ? 'RNC' : perfil?.pais === 'PA' ? 'RUC' : 'NIT' })} valor={firma.nit} onCambiar={(nit) => cambiarFirma({ nit })} mensaje={mensaje('revisor_fiscal_firma.nit')} maxLength={20} deshabilitado={deshabilitado} />
         <CampoTexto etiqueta={t('ficha.legal.firmaRazonSocial')} valor={firma.razon_social} onCambiar={(razon) => cambiarFirma({ razon_social: razon })} mensaje={mensaje('revisor_fiscal_firma.razon_social')} deshabilitado={deshabilitado} />
       </Rejilla>
       {editando !== null && (
@@ -61,6 +62,7 @@ export function FormularioLegal({ datos, onCambiar, mensaje, hayEnRuta, deshabil
           hayEnRuta={hayEnRuta ? (prefijo) => hayEnRuta(`personas[${String(editando)}].${prefijo}`) : undefined}
           onGuardar={(persona) => guardarPersona(editando, persona)}
           onCerrar={() => setEditando(null)}
+          perfil={perfil}
         />
       )}
     </Stack>
