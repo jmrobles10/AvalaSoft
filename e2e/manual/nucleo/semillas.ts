@@ -1,4 +1,4 @@
-import { API, llamar } from '../../soporte/api';
+import { API, CLAVE_PLATAFORMA, llamar } from '../../soporte/api';
 import { enlace, esperarCorreo, literal } from '../../soporte/correo';
 import { publicarFlujoDeFicha, soloPara, type RequisitoDeFicha } from '../../soporte/ficha';
 import { crearEscenario, ORIGEN_SISTEMA, type Area, type Empresa, type Escenario, type Invitacion } from '../../soporte/semilla';
@@ -171,4 +171,15 @@ export async function llaveConCuestionarios(e: Escenario): Promise<string> {
     cuerpo: { nombre: 'E2E cuestionarios', scopes: [...new Set([...base.scopes, ...extra])], empresas: null, expiraEn: null, sandbox: false, sistemaId: base.sistemaId },
   });
   return nueva.valor;
+}
+
+/**
+ * Fuentes oficiales (FO-5) por API: el proveedor predeterminado del RUES y la DIAN de la plataforma es el simulado, así un expediente que pide
+ * estas verificaciones se consulta sin llamar a ningún proveedor real. Llámala en los recorridos que no documentan la configuración.
+ */
+export async function usarProveedorSimuladoParaFuentes(): Promise<void> {
+  await llamar('PUT', '/api/v1/plataforma/fuentes-oficiales', {
+    llave: CLAVE_PLATAFORMA,
+    cuerpo: { predeterminados: [{ fuente: 'Rues', proveedor: 'Simulado' }, { fuente: 'Dian', proveedor: 'Simulado' }] },
+  });
 }
