@@ -28,7 +28,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre un flujo nuevo para proveedores',
       explicacion:
-        'Cada documento de un flujo tiene una columna «Se pide a» que decide a qué terceros se les pide. Por omisión es «Todos»; las otras dos opciones limitan el documento al tipo de persona del tercero: solo personas jurídicas o solo personas naturales. ' +
+        'Cada documento de un flujo tiene una columna «Se pide a» que decide a qué terceros se les pide. Por omisión es «Todos»; las otras tres opciones limitan el documento: «Solo personas jurídicas» y «Solo personas naturales» según el tipo de persona del tercero, y «Según la ficha del tercero» según lo que declara en su ficha. ' +
         'Para armar el ejemplo creamos un flujo nuevo de proveedores desde «Nuevo flujo».',
       resaltar: app.getByRole('button', { name: 'Nuevo flujo' }),
       configuracion: {
