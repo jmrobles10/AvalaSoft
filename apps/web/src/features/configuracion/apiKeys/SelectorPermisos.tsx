@@ -1,21 +1,33 @@
 import { Box, Checkbox, FormControlLabel, Stack, Typography } from '@mui/material';
 import { SCOPES } from '@validasoft/api-client';
 import { useTranslation } from 'react-i18next';
-import { alternarGrupo, alternarScope, GRUPOS_PERMISOS } from './scopes';
+import { alternarGrupo, alternarScope, GRUPOS_PERMISOS, type ClavePermiso } from './scopes';
+
+export interface SelectorPermisosProps {
+  valor: readonly string[];
+  onCambiar: (scopes: string[]) => void;
+  /** Permisos que no se ofrecen (un grupo de acceso no lleva el de abrir sesiones del tercero, que es solo de una API key). */
+  excluir?: readonly ClavePermiso[];
+  /** Título y ayuda propios; por omisión los de las API keys. */
+  etiqueta?: string;
+  ayuda?: string;
+  soloLectura?: boolean;
+}
 
 /** Multiselección de permisos agrupada: cada grupo se marca entero o permiso por permiso (con su scope en mono). */
-export function SelectorPermisos({ valor, onCambiar }: { valor: readonly string[]; onCambiar: (scopes: string[]) => void }) {
+export function SelectorPermisos({ valor, onCambiar, excluir = [], etiqueta, ayuda, soloLectura = false }: SelectorPermisosProps) {
   const { t } = useTranslation();
+  const grupos = GRUPOS_PERMISOS.map(({ grupo, claves }) => ({ grupo, claves: claves.filter((c) => !excluir.includes(c)) })).filter((g) => g.claves.length > 0);
   return (
-    <Box component="fieldset" sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
+    <Box component="fieldset" disabled={soloLectura} sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
       <Typography component="legend" sx={{ fontSize: 14, fontWeight: 600 }}>
-        {t('apiKeys.campos.permisos')}
+        {etiqueta ?? t('apiKeys.campos.permisos')}
       </Typography>
       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-        {t('apiKeys.campos.permisosAyuda', { n: String(valor.length) })}
+        {ayuda ?? t('apiKeys.campos.permisosAyuda', { n: String(valor.length) })}
       </Typography>
       <Box sx={{ border: 1, borderColor: 'divider', borderRadius: (th) => `${String(th.radio.sm)}px` }}>
-        {GRUPOS_PERMISOS.map(({ grupo, claves }, i) => {
+        {grupos.map(({ grupo, claves }, i) => {
           const marcados = claves.filter((c) => valor.includes(SCOPES[c])).length;
           return (
             <Box key={grupo} sx={{ px: 1.5, py: 0.75, borderTop: i === 0 ? 0 : 1, borderColor: 'divider' }}>
@@ -26,7 +38,12 @@ export function SelectorPermisos({ valor, onCambiar }: { valor: readonly string[
                     size="small"
                     checked={marcados === claves.length}
                     indeterminate={marcados > 0 && marcados < claves.length}
-                    onChange={() => onCambiar(alternarGrupo(valor, grupo))}
+                    onChange={() => {
+                      const delGrupo: string[] = claves.map((c) => SCOPES[c]);
+                      const completo = delGrupo.every((s) => valor.includes(s));
+                      // Sin exclusiones es el mismo comportamiento de siempre (marca o desmarca todo el grupo).
+                      onCambiar(excluir.length === 0 ? alternarGrupo(valor, grupo) : completo ? valor.filter((s) => !delGrupo.includes(s)) : [...valor, ...delGrupo.filter((s) => !valor.includes(s))]);
+                    }}
                   />
                 }
                 label={t(`apiKeys.grupos.${grupo}`)}

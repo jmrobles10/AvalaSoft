@@ -4,6 +4,7 @@
  * Validasoft.Api | v1
  * OpenAPI spec version: 1.0.0
  */
+import type { AsignacionDeGrupoDto } from './asignacionDeGrupoDto';
 import type { IdentidadExternaDto } from './identidadExternaDto';
 import type { IdentificacionDto } from './identificacionDto';
 import type { RolAsignadoDto } from './rolAsignadoDto';
@@ -23,4 +24,6 @@ export interface UsuarioDto {
   passkeys?: number;
   /** @nullable */
   invitadoEn?: string | null;
+  /** @nullable */
+  grupos?: AsignacionDeGrupoDto[] | null;
 }

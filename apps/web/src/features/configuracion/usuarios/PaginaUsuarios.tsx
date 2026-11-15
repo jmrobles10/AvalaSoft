@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  asignarGruposUsuario,
   asignarRolesUsuario,
   crearUsuario,
   desactivarUsuario,
@@ -8,6 +9,7 @@ import {
   getObtenerConfiguracionIngresoQueryOptions,
   invitarUsuario,
   SCOPES,
+  type AsignacionDeGrupoDto,
   type RolAsignadoDto,
   type UsuarioDto,
 } from '@validasoft/api-client';
@@ -22,8 +24,10 @@ import { MenuFila } from '../../../shared/MenuFila';
 import { usePermisos } from '../../../shared/usePermisos';
 import { useAvisos } from '../../../shared/useAvisos';
 import { useEmpresaActiva } from '../../empresas/useEmpresas';
+import { useGruposDeAcceso } from '../gruposDeAcceso/api';
 import { useUsuarios } from './api';
 import { DrawerAcceso } from './DrawerAcceso';
+import { rolesComoGrupos } from './grupos';
 import { DrawerRoles } from './DrawerRoles';
 
 type Edicion = { tipo: 'crear'; clave: string } | { tipo: 'roles'; usuario: UsuarioDto } | { tipo: 'acceso'; usuario: UsuarioDto };
@@ -45,6 +49,7 @@ export function PaginaUsuarios() {
   const permisos = usePermisos(empresa.id);
   const puede = permisos.puede(SCOPES.usuariosAdministrar);
   const consulta = useUsuarios(puede);
+  const grupos = useGruposDeAcceso(puede);
   const sistemas = useQuery({ ...getListarSistemasQueryOptions({ request: { empresa: null } }), enabled: permisos.puede(SCOPES.sistemasAdministrar) });
   // Si el grupo admite el ingreso directo se puede invitar por correo y se ven las passkeys y sesiones de cada persona (ING-5).
   const ingreso = useQuery({ ...getObtenerConfiguracionIngresoQueryOptions({ request: { empresa: null } }), enabled: puede });
@@ -57,9 +62,13 @@ export function PaginaUsuarios() {
   const [estado, setEstado] = useState('activas');
 
   const guardar = useMutation({
-    mutationFn: ({ nombre, correo, roles, invitar }: { nombre: string; correo: string; roles: RolAsignadoDto[]; invitar: boolean }) => {
-      if (edicion?.tipo === 'roles') return asignarRolesUsuario(edicion.usuario.id, { roles }, { empresa: null });
-      return crearUsuario({ nombre, correo, identificacion: null, roles, identidades: null, invitar }, { empresa: null, idempotencyKey: edicion?.tipo === 'crear' ? edicion.clave : undefined });
+    mutationFn: ({ nombre, correo, roles, grupos: asignados, invitar }: { nombre: string; correo: string; roles: RolAsignadoDto[]; grupos: AsignacionDeGrupoDto[]; invitar: boolean }) => {
+      if (edicion?.tipo === 'roles') {
+        // Sin grupos propios es el guardado de roles de siempre. Con ellos (o si ya los tenía) se guarda todo junto: los roles viajan como sus grupos predefinidos.
+        if (asignados.length === 0 && (edicion.usuario.grupos ?? []).length === 0) return asignarRolesUsuario(edicion.usuario.id, { roles }, { empresa: null });
+        return asignarGruposUsuario(edicion.usuario.id, { grupos: [...rolesComoGrupos(roles, grupos.data ?? []), ...asignados] }, { empresa: null });
+      }
+      return crearUsuario({ nombre, correo, identificacion: null, roles, identidades: null, invitar, grupos: asignados }, { empresa: null, idempotencyKey: edicion?.tipo === 'crear' ? edicion.clave : undefined });
     },
     onSuccess: () => {
       mostrar(edicion?.tipo === 'roles' ? t('usuarios.rolesGuardados') : t('usuarios.creado'));
@@ -89,6 +98,7 @@ export function PaginaUsuarios() {
   });
 
   const codigoSistema = useMemo(() => new Map((sistemas.data ?? []).map((s) => [s.id, s.codigo])), [sistemas.data]);
+  const nombreGrupo = useMemo(() => new Map((grupos.data ?? []).map((g) => [g.id, g.nombre])), [grupos.data]);
   const visibles = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
     return (consulta.data ?? []).filter(
@@ -183,7 +193,7 @@ export function PaginaUsuarios() {
                     </Stack>
                   </TableCell>
                   <TableCell>
-                    {u.roles.length === 0 ? (
+                    {u.roles.length === 0 && (u.grupos ?? []).length === 0 ? (
                       <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
                         {t('usuarios.sinRoles')}
                       </Typography>
@@ -194,6 +204,14 @@ export function PaginaUsuarios() {
                             <span style={{ fontWeight: 500 }}>{t(`usuarios.roles.${r.rol}`)}</span>
                             <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
                               {nombreEmpresa(r.empresaId)}
+                            </Typography>
+                          </Box>
+                        ))}
+                        {(u.grupos ?? []).map((g) => (
+                          <Box component="span" key={`grupo|${g.grupoId}|${g.empresaId ?? ''}`} sx={{ display: 'inline-flex', flexDirection: 'column', fontSize: 13, lineHeight: '16px' }}>
+                            <span style={{ fontWeight: 500 }}>{nombreGrupo.get(g.grupoId) ?? t('gruposDeAcceso.asignacion.columna')}</span>
+                            <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                              {nombreEmpresa(g.empresaId)}
                             </Typography>
                           </Box>
                         ))}
@@ -259,6 +277,7 @@ export function PaginaUsuarios() {
           key={edicion.tipo === 'roles' ? edicion.usuario.id : edicion.clave}
           usuario={edicion.tipo === 'roles' ? edicion.usuario : null}
           empresas={empresas}
+          grupos={grupos.data ?? []}
           guardando={guardar.isPending}
           error={guardar.error}
           puedeInvitar={admiteDirecto}

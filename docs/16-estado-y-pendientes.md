@@ -172,6 +172,13 @@ Rama sobre `main`, con push y **sin PR**. Decisiones **PP-1…PP-10** en el [reg
 - **G-2 implementada:** la cuenta de Infolaft es de la plataforma (consola de Plataforma › Listas restrictivas, clave maestra, passkey para cambiarla); las empresas solo ven si está disponible y su cuota; una migración recoge lo que cada empresa había cargado (PP-4…PP-8). Stradata y Compliance siguen por empresa. **Tras desplegar hay que correr la migración** (o configurar la cuenta) o las empresas con Infolaft no consultan. Pendiente: cuota distinta por empresa y un reporte de consumo por cliente en la consola.
 - **B-5:** desbloquear un vínculo (a mano o por fecha) restituye su compartición y abre la actualización si lo aprobado difiere de lo actual: queda «En revisión» y el certificado «En verificación» (PP-9).
 
+### 3.7 Grupos de acceso y actualizaciones por sector (rama `feat/grupos-de-acceso`, 2026-11-14)
+Rama sobre `main`, con push y **sin PR**. Decisiones **GA-1…GA-12** en el [registro](decisiones/registro.md#5-septuagies-grupos-de-acceso-por-empresa-y-actualizaciones-por-sector-con-responsable-2026-11-14-ga); contrato en [05 §2.13](05-api-contratos-y-webhooks.md) y seguridad en [07 §3.3](07-seguridad-identidad-y-tenancy.md).
+- **Grupos de acceso:** el grupo empresarial crea grupos con permisos del catálogo de scopes, los acota por sector de la ficha (cada sección con nivel *Ver* o *Ver y decidir*) y los asigna a las personas (varios por persona; lo que pueden es la **unión**). Los cuatro roles fijos son grupos predefinidos (no se editan ni se desactivan). El backend los aplica en cada endpoint por el mismo camino de siempre (scopes del token: identidad delegada, sesión embebida y sesión directa); las API keys no cambian. Hay auditoría de cambios de grupos y de asignaciones.
+- **Por sector:** las lecturas de la ficha omiten lo ajeno y decidir sobre una sección fuera del alcance responde 403 `sector-no-permitido`.
+- **Actualizaciones por sector:** cada sector de la ficha puede tener un área responsable en el flujo; la actualización envía cada sección cambiada solo a esa área (un sector sin responsable se revisa como siempre).
+- **Pendiente:** los destinatarios y elegibles armados con roles (cuenta propuesta, delegaciones, aprobadores de invitaciones) todavía no cuentan los grupos propios; la acotación por sector no cubre exportaciones, informes ni historial; la aplicación en AyF sigue en espera (§3.2).
+
 ## 3-bis. Qué está en la rama `feature/novedades-tercero` (aún no en `main`)
 
 Sale de `main` y cierra los huecos con el SRM + Portal sobre las novedades del tercero. **No tiene PR.** Detalle en el
@@ -223,6 +230,8 @@ empresa (NT-11) y la guardia de edición en otros formularios que no sean la fic
    en `feature/vigencia-vinculo` (VV-8: mensaje programado de Wolverine al bloquear con fecha, respaldado por el barrido
    del job de vigencias); reintegrar sin revalidar y el reinicio tras un rechazo están resueltos en
    `feature/desaprobar-y-reintegrar` (§4.10).
+7. **Grupos de acceso por opción y sector (los 4 roles fijos más las áreas):** **resuelto** en `feat/grupos-de-acceso` (GA-1…GA-12, §3.7): grupos propios por grupo empresarial con permisos del catálogo, acotables por sector de la ficha (ver o decidir), varios por persona y aplicados por el backend en cada endpoint; los cuatro roles quedan como grupos predefinidos.
+8. **Actualizaciones por sector con responsable:** **resuelto** salvo la aplicación en AyF (§3.2): el flujo guarda el área responsable de cada sector y la actualización envía cada sección cambiada solo a esa área (GA-8, GA-9).
 
 **Pendiente de lo resuelto en `feature/vigencia-vinculo`:** un vínculo vencido por dos documentos a la vez solo abre la renovación con el primero
 (RN-1); el aviso de vigencia aún no es una plantilla personalizable (PL-1); los vínculos con vigencia o bloqueo anteriores
