@@ -88,16 +88,21 @@ public sealed partial class RequisitosApiTests
         (bancaria.Estado, bancaria.VersionActual).ShouldBe(("Pendiente", null));
         bancaria.PorQue!.Single().Valores.ShouldBe(["Acabados de prueba"]);
 
+        // Lo que no aplica no recibe versiones nuevas: una Cámara nueva queda en la bóveda del tercero y no se comparte con esta empresa.
+        await SubirAsync(sesion, "CAMARA_COMERCIO", Pdf("Cámara v2"));
+        var documentos = await ApiAsync<List<DocumentoVistaEmpresaDto>>("GET", $"/api/v1/vinculos/{vinculo.Id}/documentos", Admin(e.Norte), null, 200);
+        documentos.Single(d => d.Tipo.Codigo == "CAMARA_COMERCIO").VersionesCompartidas.Select(v => v.N).ShouldBe([1]);
+
         // El tercero ve solo lo que le piden y por qué: la Cámara que ya no aplica desaparece de su lista.
         var publico = await TerceroAsync<ExpedientePublicoDto>("GET", $"/public/v1/expedientes/{expedienteId}", sesion.AccessToken, null, 200);
         publico.Requisitos!.Select(r => r.TipoDocumento.Codigo).Order().ShouldBe(["CERTIFICACION_BANCARIA", "RUT"]);
         publico.RequisitosFaltantes.ShouldBe(1);
         publico.Requisitos!.Single(r => r.TipoDocumento.Codigo == "CERTIFICACION_BANCARIA").PorQue!.Single().Valores.ShouldBe(["Acabados de prueba"]);
 
-        // Declara las dos: la Cámara vuelve a exigirse (con su documento) y la bancaria sigue.
+        // Declara las dos: la Cámara vuelve a exigirse y, como ya aplica, recibe la versión nueva que había subido mientras no aplicaba; la bancaria sigue.
         await GuardarEspecialidadesAsync(sesion, especialidades.EspecialidadA, especialidades.EspecialidadB);
-        var ambas = await EsperarAsync(e.Norte, expedienteId, x => Requisito(x, "CAMARA_COMERCIO").Estado != "NoAplica");
-        (Requisito(ambas, "CAMARA_COMERCIO").Estado, Requisito(ambas, "CAMARA_COMERCIO").VersionActual!.N).ShouldBe(("EnRevision", 1));
+        var ambas = await EsperarAsync(e.Norte, expedienteId, x => Requisito(x, "CAMARA_COMERCIO") is { Estado: not "NoAplica", VersionActual.N: 2 });
+        Requisito(ambas, "CAMARA_COMERCIO").Estado.ShouldBe("EnRevision");
         Requisito(ambas, "CERTIFICACION_BANCARIA").Estado.ShouldBe("Pendiente");
         (await ResolucionesPorFichaAsync(e.Norte, expedienteId)).ShouldBe(3);
 

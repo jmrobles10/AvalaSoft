@@ -292,10 +292,14 @@ public static class RequisitosDeExpediente
 
         IReadOnlyList<RequisitoCalculado> nuevos = [];
         var compartio = false;
-        if (ids.Count > 0)
+        // Los documentos de lo que entra y de lo que vuelve a aplicar se comparten con el vínculo (RQ-3) antes de calcular, como al abrir: quien ya subió su RUT no lo vuelve a
+        // subir, y mientras un requisito no aplicaba no recibió las versiones nuevas (ahora sí: la sincronización siguiente las adjunta).
+        var delFlujoQueVuelve = delFlujoDe.Where(x => vuelvenAAplicar.Contains(x.Requisito.Id)).Select(x => x.IdDelFlujo!.Value);
+        var aCompartir = new HashSet<Guid>(ids);
+        aCompartir.UnionWith(delFlujoQueVuelve);
+        if (aCompartir.Count > 0)
         {
-            // Los documentos que piden los nuevos se comparten con el vínculo (RQ-3) antes de calcularlos, como al abrir: quien ya subió su RUT no lo vuelve a subir.
-            var pedidos = (await DelFlujoAsync(sesion, version, contexto, ct)).Where(p => ids.Contains(p.Requisito.Id)).ToList();
+            var pedidos = (await DelFlujoAsync(sesion, version, contexto, ct)).Where(p => aCompartir.Contains(p.Requisito.Id)).ToList();
             DocumentosDelVinculo? documentos = null;
             if (pedidos.Count > 0)
             {
@@ -304,7 +308,8 @@ public static class RequisitosDeExpediente
                 compartio = documentos.Compartidos.Count > 0;
             }
 
-            nuevos = await ProcesoDeValidacion.CalcularRequisitosAsync(sesion, vinculo, tercero, tenantId, version, contexto, ids, documentos, ahora, ct);
+            if (ids.Count > 0)
+                nuevos = await ProcesoDeValidacion.CalcularRequisitosAsync(sesion, vinculo, tercero, tenantId, version, contexto, ids, documentos, ahora, ct);
         }
 
         // El porqué vigente de los que siguen pidiéndose (si el tercero cambia una especialidad por otra del mismo grupo, el motivo dice la nueva).
@@ -471,7 +476,7 @@ public static class RequisitosDeExpediente
         foreach (var expediente in expedientes.Where(e => e.EstaAbierto))
         {
             // El requisito de otra persona (ADR-0010) no pide el documento del tercero; el de una persona natural que es su propio representante, sí.
-            if (expediente.Requisitos.Any(r => r.Ambito == AmbitoDocumento.Global && r.TipoCanonico == codigo &&
+            if (expediente.Requisitos.Any(r => !r.NoAplica && r.Ambito == AmbitoDocumento.Global && r.TipoCanonico == codigo &&
                                                (r.Persona is null || r.Persona.PersonaId == expediente.TerceroId)))
                 piden.Add(expediente.VinculoId);
         }
@@ -529,7 +534,7 @@ public static class RequisitosDeExpediente
         var expedientes = await consulta.Query<Expediente>().Where(e => e.AnyTenant() && e.VinculoId.IsOneOf(ids)).ToListAsync(ct);
         foreach (var expediente in expedientes.Where(e => e.EstaAbierto))
         {
-            if (expediente.Requisitos.Any(r => r.Persona?.PersonaId == personaId && r.TipoCanonico == codigo))
+            if (expediente.Requisitos.Any(r => !r.NoAplica && r.Persona?.PersonaId == personaId && r.TipoCanonico == codigo))
                 piden.Add(expediente.VinculoId);
         }
 
