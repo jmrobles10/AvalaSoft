@@ -205,7 +205,18 @@ public sealed record RequisitoCalculado(
     bool ExigeRatificacion = false,
     int? DiasRevalidacion = null,
     ExencionAplicada? Exencion = null,
-    PersonaDelRequisito? Persona = null);
+    PersonaDelRequisito? Persona = null,
+    IReadOnlyList<MotivoDeExigencia>? PorQue = null);
+
+/// <summary>
+/// Lo que de la ficha del tercero hizo que se le pida un requisito (EF-6): el campo (<c>ficha.especialidades.especialidades</c>), su nombre legible y los
+/// valores de la condición que el tercero declaró, con el nombre que tenían en el catálogo en ese momento (como los motivos tipificados, es una copia
+/// congelada). Sin valores, solo se sabe que declaró el campo.
+/// </summary>
+public sealed record MotivoDeExigencia(string Campo, string Etiqueta, IReadOnlyList<string> Valores);
+
+/// <summary>El porqué vigente de un requisito del expediente (<see cref="RequisitosSegunFichaResueltos.Motivos"/>).</summary>
+public sealed record MotivosDelRequisito(Guid RequisitoId, IReadOnlyList<MotivoDeExigencia> Motivos);
 
 /// <summary>
 /// De quién es el documento de un requisito <c>DePersonaRelacionada</c> (ADR-0010): el requisito del flujo que lo pide (<see cref="RequisitoDelFlujoId"/>), el rol que
@@ -235,6 +246,20 @@ public sealed record PersonaDeRequisitoResuelta(Guid RequisitoId, PersonaDelRequ
 /// <see cref="RequisitosAgregados"/> (la ampliación de una actualización) vale en cualquier expediente abierto y no avisa a nadie por sí solo.
 /// </summary>
 public sealed record RequisitosDePersonaAgregados(IReadOnlyList<RequisitoCalculado> Requisitos, DateTimeOffset Fecha);
+
+/// <summary>
+/// El tercero cambió su ficha (EF-5) y las condiciones del flujo que la miran dan otro resultado: <see cref="Agregados"/> entran como requisitos nuevos (ya
+/// cubiertos si su documento está compartido con el vínculo), <see cref="NoAplican"/> pasan a <c>NoAplica</c> (siguen en el expediente, sin exigirse),
+/// <see cref="VuelvenAAplicar"/> dejan <c>NoAplica</c> porque lo declarado volvió a cumplir su condición y <see cref="Motivos"/> trae el porqué vigente de los
+/// requisitos que siguen pidiéndose y cambió. Un solo evento para todo el recálculo, así el historial lo cuenta como un cambio. Vale en cualquier expediente
+/// abierto; nunca toca un requisito aprobado ni un expediente cerrado.
+/// </summary>
+public sealed record RequisitosSegunFichaResueltos(
+    IReadOnlyList<RequisitoCalculado> Agregados,
+    IReadOnlyList<Guid> NoAplican,
+    IReadOnlyList<Guid> VuelvenAAplicar,
+    IReadOnlyList<MotivosDelRequisito> Motivos,
+    DateTimeOffset Fecha);
 
 /// <summary>
 /// El vínculo tenía una exención vigente que cubre este requisito (EX-3): nace <c>Eximido</c> citándola. <see cref="Justificacion"/> es la de la exención
