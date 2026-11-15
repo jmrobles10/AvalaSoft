@@ -24,8 +24,26 @@ function ultimaVersion(c: CuestionarioDto): CuestionarioVersionDto | null {
   return c.borrador ?? c.publicada ?? null;
 }
 
+/** El borrador tal como lo guardó el servidor (que normaliza al guardar), o nada si el cuestionario no tiene borrador. */
+function delServidor(c: CuestionarioDto): Borrador | null {
+  return c.borrador ? { nombre: c.nombre, definicion: c.borrador.definicion } : null;
+}
+
+/** Orden de campos y valores vacíos no cuentan: `{ a: 1, b: null }` y `{ b: undefined, a: 1 }` dicen lo mismo. */
+function canonico(valor: unknown): unknown {
+  if (Array.isArray(valor)) return valor.map(canonico);
+  if (valor === null || typeof valor !== 'object') return valor;
+  return Object.fromEntries(
+    Object.entries(valor)
+      .filter(([, v]) => v !== null && v !== undefined)
+      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+      .map(([k, v]) => [k, canonico(v)]),
+  );
+}
+
+/** Huella para saber si el editor difiere del servidor: se compara el contenido, no cómo lo escribió cada lado (orden de campos, nulos explícitos u omitidos). */
 function firma(b: Borrador): string {
-  return JSON.stringify({ nombre: b.nombre.trim(), definicion: b.definicion });
+  return JSON.stringify(canonico({ nombre: b.nombre.trim(), definicion: b.definicion }));
 }
 
 /**
@@ -81,7 +99,8 @@ export function EditorCuestionario() {
   const mostrado: Borrador | null = borrador ?? (ultima ? { nombre: datos.nombre, definicion: ultima.definicion } : null);
   const editando = borrador !== null && puedeEscribir;
   const errores = borrador ? validarDefinicion(borrador.definicion) : [];
-  const sinGuardar = Boolean(borrador && (!datos.borrador || firma(borrador) !== firma({ nombre: datos.nombre, definicion: datos.borrador.definicion })));
+  const delServ = delServidor(datos);
+  const sinGuardar = Boolean(borrador && (!delServ || firma(borrador) !== firma(delServ)));
   const ocupado = editar.isPending || publicar.isPending;
   const errorMutacion = editar.error ?? publicar.error;
   const preguntaConError = esErrorApi(errorMutacion) && typeof errorMutacion.extensiones.pregunta === 'string' ? errorMutacion.extensiones.pregunta : null;
@@ -93,7 +112,19 @@ export function EditorCuestionario() {
   const guardar = () => {
     setIntentado(true);
     if (!borrador || errores.length > 0) return;
-    editar.mutate({ nombre: borrador.nombre.trim(), definicion: borrador.definicion }, { onSuccess: () => mostrar(t('evaluaciones.editor.guardado')) });
+    const enviado = firma(borrador);
+    editar.mutate(
+      { nombre: borrador.nombre.trim(), definicion: borrador.definicion },
+      {
+        onSuccess: (guardado) => {
+          // El servidor normaliza al guardar (recorta, completa y reordena): lo que queda guardado es lo suyo. Si el editor no cambió desde el envío, pasa a ser esa copia;
+          // si la persona siguió editando mientras tanto, se conserva lo que escribió y sigue pendiente de guardar.
+          const guardadoPorElServidor = delServidor(guardado);
+          setBorrador((actual) => (guardadoPorElServidor && actual && firma(actual) === enviado ? guardadoPorElServidor : actual));
+          mostrar(t('evaluaciones.editor.guardado'));
+        },
+      },
+    );
   };
   const confirmarPublicacion = () =>
     publicar.mutate(undefined, {
