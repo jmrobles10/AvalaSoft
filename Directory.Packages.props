@@ -30,7 +30,7 @@
     <!-- Lectura de la BD del Portal de Proveedores en el importador de la ficha (F4, FM-39; MIT). -->
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.1.1" />
     <!-- SqlClient 6.1.1 arrastra Pkcs 9.0.4, con vulnerabilidades conocidas (NU1902/NU1903): se fija la versión corregida que ya usa el resto de la solución. -->
-    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="11.0.0" />
     <!-- Pruebas -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
