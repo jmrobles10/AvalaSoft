@@ -38,7 +38,7 @@ Los pantallazos no se guardan en git: se generan en `salida/manual/` junto con e
 Lo que no sale de un recorrido (se escribe en `e2e/manual/guias/`):
 
 - **Arquitectura**: [Contexto y contenedores](guias/arquitectura-contexto-y-contenedores.md) · [Módulos de la solución](guias/arquitectura-modulos.md) · [Datos, multi-tenencia y event sourcing](guias/arquitectura-datos-y-tenencia.md) · [Mensajería, eventos y tiempo real](guias/arquitectura-mensajeria-y-tiempo-real.md) · [Seguridad e identidad](guias/arquitectura-seguridad.md) · [Almacenamiento de documentos](guias/arquitectura-documentos.md) · [Ciclos de vida: documento, vínculo, expediente y certificado](guias/arquitectura-ciclos-de-vida.md) · [Despliegue y operación](guias/arquitectura-despliegue.md)
-- **Flujo de punta a punta**: [Del vínculo a la validación, de punta a punta](guias/flujo-del-vinculo-a-la-validacion.md)
+- **Flujo de punta a punta**: [Del vínculo a la validación, de punta a punta](guias/flujo-del-vinculo-a-la-validacion.md) · [Replica una empresa del SRM y prueba la validación de punta a punta](guias/replicar-una-empresa-del-srm.md)
 - **Configuración y glosario**: [Glosario](guias/glosario.md) · [Configuración del grupo](guias/configuracion-del-grupo.md) · [Configuración de la empresa](guias/configuracion-de-la-empresa.md) · [Configuración de Plataforma](guias/configuracion-de-plataforma.md) · [Variables de entorno del despliegue](guias/variables-de-entorno.md)
 - **Integración**: [Guía de integración, resumida](guias/guia-de-integracion.md)
 

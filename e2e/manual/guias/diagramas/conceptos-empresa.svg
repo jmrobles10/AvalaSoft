@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" class="diagrama" role="img" aria-labelledby="titulo descripcion">
+<title id="titulo">Cómo se relacionan los conceptos de Validasoft</title>
+<desc id="descripcion">Plataforma da de alta el grupo empresarial; el grupo comparte usuarios, tipos de documento, tipos de vínculo, motivos y el sistema integrado; cada empresa del grupo tiene sus áreas, flujos y textos legales; un vínculo une una empresa con un tercero en un tipo; al aceptar la invitación se abre un expediente con el flujo, que al aprobarse emite un certificado. El tercero es uno solo, con su bóveda de documentos y su ficha.</desc>
+<defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca" d="M0 0L10 5L0 10z"/></marker><marker id="f-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-a" d="M0 0L10 5L0 10z"/></marker><marker id="f-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-ok" d="M0 0L10 5L0 10z"/></marker></defs>
+<rect class="d-caja-a" x="20" y="20" width="300" height="60" rx="10"/>
+<text class="d-t-b d-c" x="170" y="44">Plataforma (Sincosoft)</text>
+<text class="d-t-s d-c" x="170" y="62">consola #/plataforma: da de alta grupos y empresas</text>
+<path class="d-l-a" d="M170 80 L170 110" marker-end="url(#f-a)"/>
+<rect class="d-grupo" x="20" y="110" width="560" height="430" rx="14"/>
+<text class="d-t-b" x="36" y="134">Grupo empresarial (tenant) = el cliente</text>
+<text class="d-t-s" x="36" y="152">en el SRM: la instalación del ERP de un cliente, con sus varias empresas</text>
+<rect class="d-caja" x="40" y="170" width="250" height="200" rx="10"/>
+<text class="d-t-b d-c" x="165" y="194">Se comparte en todo el grupo</text>
+<text class="d-t-s d-c" x="165" y="220">Administrador del grupo y usuarios</text>
+<text class="d-t-s d-c" x="165" y="242">Roles y grupos de acceso (por sector)</text>
+<text class="d-t-s d-c" x="165" y="264">Tipos de documento</text>
+<text class="d-t-s d-c" x="165" y="286">Tipos de vínculo (Proveedor, Cliente…)</text>
+<text class="d-t-s d-c" x="165" y="308">Motivos de observación y rechazo</text>
+<text class="d-t-s d-c" x="165" y="330">Sistema integrado y API keys</text>
+<text class="d-t-s d-c" x="165" y="352">Ingreso (correo + código + passkey)</text>
+<rect class="d-caja-ok" x="310" y="170" width="250" height="200" rx="10"/>
+<text class="d-t-b d-c" x="435" y="194">Empresa (razón social)</text>
+<text class="d-t-s d-c" x="435" y="212">en el SRM: la constructora</text>
+<text class="d-t-s d-c" x="435" y="238">Áreas y sus miembros</text>
+<text class="d-t-s d-c" x="435" y="260">Flujo aprobatorio: etapas → áreas</text>
+<text class="d-t-s d-c" x="435" y="282">Documentos y secciones que pide</text>
+<text class="d-t-s d-c" x="435" y="304">Textos legales (datos y términos)</text>
+<text class="d-t-s d-c" x="435" y="326">Plantillas de correo, IA, listas</text>
+<text class="d-t-s d-c" x="435" y="348">Prefijo de folio</text>
+<rect class="d-caja" x="310" y="390" width="250" height="60" rx="10"/>
+<text class="d-t-b d-c" x="435" y="414">Otra empresa del grupo</text>
+<text class="d-t-s d-c" x="435" y="432">sus propias decisiones, privadas</text>
+<rect class="d-caja" x="40" y="390" width="250" height="130" rx="10"/>
+<text class="d-t-b d-c" x="165" y="414">Persona del grupo</text>
+<text class="d-t-s d-c" x="165" y="438">tiene roles (todo el grupo o una</text>
+<text class="d-t-s d-c" x="165" y="456">empresa) y grupos de acceso;</text>
+<text class="d-t-s d-c" x="165" y="474">es miembro de áreas: así le llegan</text>
+<text class="d-t-s d-c" x="165" y="492">expedientes a su bandeja</text>
+<path class="d-l" d="M290 455 L330 455 L330 370" marker-end="url(#f)"/>
+<rect class="d-grupo" x="620" y="20" width="360" height="160" rx="14"/>
+<text class="d-t-b" x="636" y="44">Tercero (uno solo en toda la plataforma)</text>
+<text class="d-t-s" x="636" y="62">en el Portal: el proveedor (Terceros)</text>
+<rect class="d-caja" x="636" y="76" width="160" height="90" rx="10"/>
+<text class="d-t-b d-c" x="716" y="102">Bóveda</text>
+<text class="d-t-s d-c" x="716" y="122">sus documentos y</text>
+<text class="d-t-s d-c" x="716" y="138">versiones (RUT, Cámara…)</text>
+<rect class="d-caja" x="806" y="76" width="160" height="90" rx="10"/>
+<text class="d-t-b d-c" x="886" y="102">Ficha</text>
+<text class="d-t-s d-c" x="886" y="122">secciones = sectores</text>
+<text class="d-t-s d-c" x="886" y="138">(general, tributaria…)</text>
+<rect class="d-caja-ok" x="620" y="230" width="360" height="62" rx="10"/>
+<text class="d-t-b d-c" x="800" y="255">Vínculo = empresa × tercero × tipo</text>
+<text class="d-t-s d-c" x="800" y="274">en el SRM: la Solicitud; en el Portal: TercerosConstructora</text>
+<path class="d-l" d="M560 270 L620 270" marker-end="url(#f)"/>
+<path class="d-l" d="M800 180 L800 230" marker-end="url(#f)"/>
+<rect class="d-caja-ok" x="620" y="340" width="360" height="80" rx="10"/>
+<text class="d-t-b d-c" x="800" y="364">Expediente</text>
+<text class="d-t-s d-c" x="800" y="384">el flujo aplicado al vínculo: requisitos,</text>
+<text class="d-t-s d-c" x="800" y="402">revisión por etapas y áreas, observaciones</text>
+<path class="d-l" d="M800 292 L800 340" marker-end="url(#f)"/>
+<rect class="d-rotulo" x="806" y="306" width="150" height="16" rx="4"/>
+<text class="d-t-s d-c" x="881" y="318">al aceptar la invitación</text>
+<path class="d-l-a" d="M640 166 L600 166 L600 380 L620 380" marker-end="url(#f-a)"/>
+<text class="d-t-s" x="606" y="200">la bóveda comparte</text>
+<text class="d-t-s" x="606" y="214">solo lo que el flujo pide</text>
+<rect class="d-caja-ok" x="620" y="470" width="360" height="62" rx="10"/>
+<text class="d-t-b d-c" x="800" y="495">Certificado</text>
+<text class="d-t-s d-c" x="800" y="514">folio, QR y sello; se verifica sin sesión</text>
+<path class="d-l-ok" d="M800 420 L800 470" marker-end="url(#f-ok)"/>
+<text class="d-t-s" x="812" y="440">al aprobarse</text>
+</svg>
