@@ -10,12 +10,28 @@
 // cada ejecución) y un operador para entrar a la consola de Plataforma (/plataforma) desde el formulario de sesión. Las invitaciones llegan a Mailpit (http://localhost:8025) con el enlace del tercero. Escribe las
 // credenciales en apps/web/.semilla.local.json (ignorado por git), que Vite sirve solo en `vite dev` para prellenar
 // el formulario de sesión y embed-demo.html. Cada ejecución crea un tenant distinto: no reutiliza ni borra nada.
+//
+//   pnpm semilla:plataforma     (equivale a `pnpm semilla:dev --solo-plataforma`)
+//
+// Para una base limpia: NO crea tenant, empresas, usuarios, vínculos ni flujos. Solo registra el sistema CONSOLA_DEV con una
+// clave nueva, verifica la sesión del operador y escribe en apps/web/.semilla.local.json únicamente la parte `plataforma`
+// (más `generadoEn` y `apiUrl`), lo que basta para «Entrar como operador de Plataforma» y crear desde cero el grupo, la
+// empresa y su administrador en #/plataforma. Reemplaza el archivo: si tenías una semilla completa, el formulario deja de
+// prellenar las personas de la demostración.
 import { createSign, generateKeyPairSync, randomUUID } from 'node:crypto';
 import { writeFile } from 'node:fs/promises';
 
 const API = process.env.VALIDASOFT_API_URL ?? 'http://localhost:5080';
 const CLAVE_PLATAFORMA = process.env.VALIDASOFT_CLAVE_PLATAFORMA ?? 'dev-plataforma-solo-local-cambiar-0001';
 const SISTEMA = 'DEMO';
+const SISTEMA_PLATAFORMA = 'CONSOLA_DEV';
+const SOLO_PLATAFORMA = process.argv.includes('--solo-plataforma');
+// Orígenes desde los que los sistemas alojan las pantallas embebidas (SE-1): en desarrollo, la app web de Vite. Entran en
+// frame-ancestors y en GET /public/v1/embed/origenes-permitidos, que el puente embebido lee al arrancar.
+const ORIGENES_DEMO = (process.env.VALIDASOFT_ORIGENES_DEMO ?? 'http://localhost:5173')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
 
 /** Dígito de verificación del NIT (DIAN). */
 function dvNit(numero) {
@@ -74,6 +90,41 @@ function asercion(clavePrivadaPem, usuario, emisor = SISTEMA) {
   return `${cabecera}.${carga}.${base64Url(firma)}`;
 }
 
+/**
+ * Consola de Plataforma (PT-4): el backoffice de desarrollo que firma las aserciones de sus operadores. Se reemplaza la
+ * clave del sistema CONSOLA_DEV en cada ejecución (la del archivo anterior deja de servir) y aloja la consola desde la
+ * app de Vite. Verifica que el operador entra (y lo deja registrado). Devuelve lo que va en `plataforma` del archivo.
+ */
+async function registrarPlataforma() {
+  const claves = generateKeyPairSync('rsa', {
+    modulusLength: 2048,
+    publicKeyEncoding: { type: 'spki', format: 'pem' },
+    privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+  });
+  await llamar('PUT', `/api/v1/plataforma/sistemas/${SISTEMA_PLATAFORMA}`, {
+    llave: CLAVE_PLATAFORMA,
+    cuerpo: { nombre: 'Backoffice de Plataforma (desarrollo)', clavePublicaPem: claves.publicKey, origenesPermitidos: ORIGENES_DEMO },
+  });
+  const persona = { sub: 'op-paula', nombre: 'Paula Plataforma', correo: 'paula@validasoft.local' };
+  await llamar('POST', '/api/v1/plataforma/sesiones', { llave: CLAVE_PLATAFORMA, delegado: asercion(claves.privateKey, persona, SISTEMA_PLATAFORMA) });
+  return { clavePlataforma: CLAVE_PLATAFORMA, sistema: SISTEMA_PLATAFORMA, clavePrivadaPem: claves.privateKey, persona };
+}
+
+/** Escribe apps/web/.semilla.local.json (ignorado por git), que Vite sirve en `/__dev/semilla.json` solo en `vite dev`. */
+function escribirSemilla(salida) {
+  return writeFile(new URL('../.semilla.local.json', import.meta.url), JSON.stringify(salida, null, 2) + '\n', 'utf8');
+}
+
+if (SOLO_PLATAFORMA) {
+  console.log(`Registrando solo la consola de Plataforma (${SISTEMA_PLATAFORMA}) en ${API}…`);
+  const plataforma = await registrarPlataforma();
+  await escribirSemilla({ generadoEn: new Date().toISOString(), apiUrl: API, plataforma });
+  console.log(`Listo: sistema ${SISTEMA_PLATAFORMA} registrado con clave nueva y operador ${plataforma.persona.nombre} verificado. No se creó ningún grupo, empresa ni usuario.`);
+  console.log('Abre la app (pnpm dev), pulsa «Usar la sesión de desarrollo» y «Entrar como operador de Plataforma»; en #/plataforma crea el grupo, la empresa y su administrador.');
+  console.log('Credenciales de Plataforma en apps/web/.semilla.local.json (solo desarrollo; no se versiona).');
+  process.exit(0);
+}
+
 const sufijo = Date.now().toString(36);
 const slug = `demo-front-${sufijo}`;
 console.log(`Creando tenant ${slug} en ${API}…`);
@@ -105,12 +156,6 @@ const { privateKey, publicKey } = generateKeyPairSync('rsa', {
   publicKeyEncoding: { type: 'spki', format: 'pem' },
   privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
 });
-// Orígenes desde los que el sistema aloja las pantallas embebidas (SE-1): en desarrollo, la app web de Vite. Entran en
-// frame-ancestors y en GET /public/v1/embed/origenes-permitidos, que el puente embebido lee al arrancar.
-const ORIGENES_DEMO = (process.env.VALIDASOFT_ORIGENES_DEMO ?? 'http://localhost:5173')
-  .split(',')
-  .map((o) => o.trim())
-  .filter(Boolean);
 const sistema = await llamar('POST', '/api/v1/sistemas', {
   llave: admin,
   cuerpo: { codigo: SISTEMA, nombre: 'Sistema integrado de demostración', clavePublicaPem: publicKey, origenesPermitidos: ORIGENES_DEMO },
@@ -394,21 +439,7 @@ for (const [persona, codigoArea] of [
 const certificado = await llamar('GET', `/api/v1/vinculos/${aprobado.id}/certificado`, { llave: admin, empresa: norte.id });
 console.log(`Aceros del Norte quedó aprobado en Norte con el certificado ${certificado.actual?.folio ?? '(sin emitir)'}.`);
 
-// Consola de Plataforma (PT-4): el backoffice de desarrollo que firma las aserciones de sus operadores. Se reemplaza su clave
-// en cada ejecución (la del archivo anterior deja de servir) y aloja la consola desde la app de Vite.
-const SISTEMA_PLATAFORMA = 'CONSOLA_DEV';
-const clavesPlataforma = generateKeyPairSync('rsa', {
-  modulusLength: 2048,
-  publicKeyEncoding: { type: 'spki', format: 'pem' },
-  privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
-});
-await llamar('PUT', `/api/v1/plataforma/sistemas/${SISTEMA_PLATAFORMA}`, {
-  llave: CLAVE_PLATAFORMA,
-  cuerpo: { nombre: 'Backoffice de Plataforma (desarrollo)', clavePublicaPem: clavesPlataforma.publicKey, origenesPermitidos: ORIGENES_DEMO },
-});
-const operador = { sub: 'op-paula', nombre: 'Paula Plataforma', correo: 'paula@validasoft.local' };
-// Verifica que el operador entra (y lo deja registrado).
-await llamar('POST', '/api/v1/plataforma/sesiones', { llave: CLAVE_PLATAFORMA, delegado: asercion(clavesPlataforma.privateKey, operador, SISTEMA_PLATAFORMA) });
+const plataforma = await registrarPlataforma();
 
 const salida = {
   generadoEn: new Date().toISOString(),
@@ -422,11 +453,11 @@ const salida = {
     { id: sur.id, nombre: sur.nombre },
   ],
   usuarios: usuarios.map(({ sub, nombre, correo, descripcion }) => ({ sub, nombre, correo, descripcion })),
-  plataforma: { clavePlataforma: CLAVE_PLATAFORMA, sistema: SISTEMA_PLATAFORMA, clavePrivadaPem: clavesPlataforma.privateKey, persona: operador },
+  plataforma,
 };
-await writeFile(new URL('../.semilla.local.json', import.meta.url), JSON.stringify(salida, null, 2) + '\n', 'utf8');
+await escribirSemilla(salida);
 
-console.log(`Listo: ${vinculos.length + 1} vínculos, ${usuarios.length} usuarios, sistema ${SISTEMA} y operador de Plataforma ${operador.nombre}.`);
+console.log(`Listo: ${vinculos.length + 1} vínculos, ${usuarios.length} usuarios, sistema ${SISTEMA} y operador de Plataforma ${plataforma.persona.nombre}.`);
 console.log(`Ingreso directo (sin contraseña): abre la app, escribe el correo de una persona (p. ej. ${usuarios[1].correo}) y lee el código en Mailpit. Ana, Olga y Aurelio deberán registrar una passkey.`);
 console.log('Credenciales en apps/web/.semilla.local.json (solo desarrollo; no se versiona).');
 console.log('Invitaciones (enlace del tercero y código OTP) en Mailpit: http://localhost:8025, o en apps/public: /dev/correos.');

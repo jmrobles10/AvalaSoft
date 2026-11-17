@@ -8,7 +8,8 @@
     "build": "tsc -p tsconfig.json && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json",
-    "semilla": "node scripts/semilla-dev.mjs"
+    "semilla": "node scripts/semilla-dev.mjs",
+    "semilla:plataforma": "node scripts/semilla-dev.mjs --solo-plataforma"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

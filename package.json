@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "generar:api": "pnpm --filter @validasoft/api-client generar",
     "semilla:dev": "pnpm --filter @validasoft/web semilla",
+    "semilla:plataforma": "pnpm --filter @validasoft/web semilla:plataforma",
     "dev:public": "pnpm --filter @validasoft/public dev",
     "e2e": "pnpm --filter @validasoft/e2e test",
     "manual": "node e2e/manual/generador/manual.mjs",

@@ -125,11 +125,13 @@ export const esCO = {
       asercion: 'O pega una aserción ya firmada',
       entrar: 'Abrir sesión',
       semilla: 'Credenciales de `pnpm semilla:dev` cargadas.',
-      sinSemilla: 'Ejecuta `pnpm semilla:dev` para prellenar este formulario.',
+      semillaPlataforma:
+        'Semilla de `pnpm semilla:plataforma` cargada: solo trae el operador de Plataforma, sin tenant ni sistema de demostración. Los demás campos se llenan a mano.',
+      sinSemilla: 'Ejecuta `pnpm semilla:dev` (datos de demostración) o `pnpm semilla:plataforma` (solo la consola de Plataforma) para prellenar este formulario.',
       demo: 'Ver la demo embebida',
       operador: 'Entrar como operador de Plataforma',
       operadorAyuda: 'Consola de Plataforma: el backoffice firma la aserción del operador y la canjea con la credencial de Plataforma en POST /api/v1/plataforma/sesiones.',
-      operadorSinSemilla: 'La semilla no trae operador de Plataforma: vuelve a ejecutar `pnpm semilla:dev`.',
+      operadorSinSemilla: 'La semilla no trae operador de Plataforma: vuelve a ejecutar `pnpm semilla:dev` o ejecuta `pnpm semilla:plataforma`.',
     },
   },
   comun: {

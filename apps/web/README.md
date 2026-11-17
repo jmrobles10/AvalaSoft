@@ -29,8 +29,11 @@ pnpm --filter @validasoft/api-client openapi:actualizar   # baja un snapshot nue
 docker compose -f infra/compose/compose.yaml up -d                       # PostgreSQL, Mailpit (:8025) y MinIO (:9000)
 ASPNETCORE_ENVIRONMENT=Development Validasoft__Correo__UrlPublica=http://localhost:5181 dotnet run --project src/Validasoft.Api   # API en :5080; los enlaces del correo apuntan a apps/public
 pnpm semilla:dev                                                          # tenant, empresas, sistema DEMO, usuarios, vínculos, flujo con requisitos y textos legales
+pnpm semilla:plataforma                                                   # base limpia: solo el operador de la consola de Plataforma (sin tenant, empresas ni usuarios)
 pnpm dev                                                                  # Vite en :5173 (si está ocupado: pnpm --filter @validasoft/web exec vite --port 5180)
 ```
+
+**Base limpia (`pnpm semilla:plataforma`, equivale a `pnpm semilla:dev --solo-plataforma`).** Para crear a mano, desde cero, el grupo, la empresa y su administrador en `#/plataforma`: registra el sistema `CONSOLA_DEV` con una clave nueva, verifica la sesión de la operadora y escribe en `apps/web/.semilla.local.json` solo la parte `plataforma` (más `generadoEn` y `apiUrl`). No crea tenant, empresas, usuarios, vínculos ni flujos. Después de `pnpm dev`, en `http://localhost:5173/` pulsa «Usar la sesión de desarrollo» → «Entrar como operador de Plataforma». Con ese archivo parcial el formulario no muestra las personas de la demostración (el resto de sus campos se llena a mano) y la demo embebida (`/embed-demo.html`) avisa que no hay credenciales, porque necesita `pnpm semilla:dev`. El archivo se reemplaza: ejecutar `semilla:plataforma` descarta la semilla completa anterior, y `semilla:dev` la vuelve a escribir entera.
 
 - `http://localhost:5173/embed-demo.html`: página que hace de sistema integrado y aloja el iframe. Elige la persona (administradora, revisor, oficial de cumplimiento, auditor), la empresa sugerida y el tema; muestra los mensajes `postMessage`.
 - `http://localhost:5173/`: fuera de un iframe y solo en desarrollo, un formulario abre la sesión (firma la aserción con la clave del sistema y la canjea). Se prellena con la semilla.
