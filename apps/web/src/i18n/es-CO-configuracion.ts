@@ -5,6 +5,9 @@ export const empresasGrupo = {
   ayuda: 'Cada empresa decide por su cuenta y no ve las decisiones de las otras. Comparten usuarios y configuración del grupo.',
   nueva: 'Agregar empresa',
   crear: 'Agregar empresa',
+  editar: 'Editar empresa',
+  guardar: 'Guardar',
+  actualizada: '{{nombre}} quedó actualizada.',
   creada: '{{nombre}} quedó en el grupo. Publica su autorización y sus términos para que los terceros puedan aceptar sus invitaciones.',
   ver: 'Ver {{nombre}}',
   vacio: 'Aún no hay empresas en el grupo.',
@@ -13,7 +16,8 @@ export const empresasGrupo = {
   activa: 'Activa',
   inactiva: 'Inactiva',
   inactivaAyuda: 'La empresa está inactiva: sus textos legales quedan como estaban y no se publican versiones nuevas.',
-  prefijoNoCambia: 'El prefijo de folio aparece en todos los folios de la empresa y no se puede cambiar después.',
+  prefijoAlCrear: 'El prefijo de folio aparece en todos los folios de la empresa. Después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior.',
+  prefijoAlEditar: 'Los folios ya emitidos conservan el prefijo anterior; el prefijo nuevo se usa desde el siguiente folio.',
   campos: {
     pais: 'País',
     tipo: 'Tipo de identificación',
@@ -230,6 +234,7 @@ export const tiposVinculo = {
 
 export const erroresConfiguracion = {
   'empresa-duplicada': 'Ya hay una empresa con esa identificación en el grupo.',
+  'prefijo-folio-duplicado': 'Otra empresa del grupo ya usa ese prefijo de folio. Elige uno distinto.',
   'tipo-vinculo-duplicado': 'Ya existe un tipo de vínculo con ese código.',
   'contacto-soporte-invalido': 'El contacto de soporte debe ser un correo válido.',
   'color-marca-invalido': 'El color de marca debe ser hexadecimal, como #E07A1F.',
@@ -251,7 +256,7 @@ export const datosMarca = {
   razonSocial: 'Razón social',
   identificacion: 'Identificación',
   prefijo: 'Prefijo de folio',
-  prefijoAyuda: 'La razón social, la identificación y el prefijo no se cambian aquí: el prefijo ya está en los folios emitidos.',
+  prefijoAyuda: 'La razón social, la identificación y el prefijo no se cambian aquí: los corrige Plataforma, y los folios ya emitidos conservan el prefijo anterior.',
   contactoSoporte: 'Contacto de soporte para terceros',
   contactoAyuda: 'Aparece en el pie del portal del tercero y es la dirección de respuesta de los correos.',
   marca: 'Marca en el portal del tercero',

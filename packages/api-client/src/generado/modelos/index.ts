@@ -148,6 +148,7 @@ export * from './contenidoSstDto';
 export * from './contenidoTributarioDto';
 export * from './contenidoTributarioGenericoDto';
 export * from './conteoDto';
+export * from './corregirEmpresaDto';
 export * from './correoDePruebaDto';
 export * from './correoOficialDto';
 export * from './corridaImportacionDto';

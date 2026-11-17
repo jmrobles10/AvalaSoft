@@ -599,6 +599,118 @@ public sealed partial class IngresoApiTests
         (registro.Entidad, registro.Accion, registro.ActorTipo).ShouldBe(("Empresa", Validasoft.Dominio.Auditoria.AccionConfiguracion.Creado, Validasoft.Dominio.Comun.ActorTipo.Plataforma));
     }
 
+    // ---------- corregir los datos de alta de una empresa del grupo ----------
+
+    [Fact]
+    public async Task Plataforma_corrige_identificacion_razon_social_y_prefijo_de_una_empresa_con_su_auditoria_sin_chocar_consigo_misma_y_alinea_la_copia_de_pruebas()
+    {
+        var g = await GrupoAsync(); // ya trae «Norte» (NIT 800197268-4, prefijo NORTE)
+        var norte = g.Empresa;
+        var sur = await ApiAsync<EmpresaDto>("POST", $"/api/v1/plataforma/tenants/{g.TenantId}/empresas", ApiFixture.ClavePlataforma, null,
+            new CrearEmpresaDto(new IdentificacionDto("CO", "NIT", "900123456-8"), "Sur S.A.S.", "SUR", null, "soporte@sur.co"), 201);
+        var sandbox = await ApiAsync<SandboxDto>("POST", "/api/v1/sandbox", g.Admin, null, null, 201);
+        var copiaDeNorte = sandbox.Empresas.Single(e => e.ProduccionId == norte.Id);
+        copiaDeNorte.PrefijoFolio.ShouldBe("TNORTE");
+
+        Task<IScenarioResult> Corregir(Guid empresaId, CorregirEmpresaDto cuerpo, int esperado, string? credencial = null, Guid? grupo = null) =>
+            Host.Scenario(s =>
+            {
+                s.Put.Json(cuerpo).ToUrl($"/api/v1/plataforma/tenants/{grupo ?? g.TenantId}/empresas/{empresaId}");
+                if (credencial != "sin")
+                    s.WithRequestHeader("X-Api-Key", credencial ?? ApiFixture.ClavePlataforma);
+                s.StatusCodeShouldBe(esperado);
+            });
+
+        static CorregirEmpresaDto Datos(string nit, string nombre, string prefijo) => new(new IdentificacionDto("CO", "NIT", nit), nombre, prefijo);
+
+        // Corrige las tres cosas de Norte: la respuesta y las vistas del grupo y de la consola traen lo nuevo; su marca no cambia.
+        var corregida = await (await Corregir(norte.Id, Datos("899999068-1", "  Norte Constructora S.A.S. ", "norte2"), 200)).ReadAsJsonAsync<EmpresaDto>();
+        corregida.ShouldNotBeNull();
+        (corregida.Id, corregida.TenantId, corregida.Nombre, corregida.PrefijoFolio, corregida.Activa).ShouldBe((norte.Id, g.TenantId, "Norte Constructora S.A.S.", "NORTE2", true));
+        (corregida.Identificacion.Numero, corregida.Identificacion.DigitoVerificacion).ShouldBe(("899999068", "1"));
+        var enLaConsola = (await ApiAsync<GrupoDto>("GET", $"/api/v1/plataforma/grupos/{g.TenantId}", ApiFixture.ClavePlataforma, null, null, 200)).Empresas.Single(e => e.Id == norte.Id);
+        (enLaConsola.Nombre, enLaConsola.PrefijoFolio, enLaConsola.Identificacion.Numero).ShouldBe(("Norte Constructora S.A.S.", "NORTE2", "899999068"));
+        var delGrupo = (await ApiAsync<List<EmpresaDto>>("GET", "/api/v1/empresas", g.Admin, null, null, 200)).Single(e => e.Id == norte.Id);
+        (delGrupo.Nombre, delGrupo.PrefijoFolio, delGrupo.ReplyTo, delGrupo.ColorMarca).ShouldBe(("Norte Constructora S.A.S.", "NORTE2", norte.ReplyTo, norte.ColorMarca));
+
+        // Su copia de pruebas la sigue: nombre e identificación del real, y un prefijo que sigue la regla propia (T + el real).
+        var tras = await ApiAsync<SandboxDto>("GET", "/api/v1/sandbox", g.Admin, null, null, 200);
+        var copia = tras.Empresas.Single(e => e.ProduccionId == norte.Id);
+        (copia.Id, copia.Nombre, copia.PrefijoFolio).ShouldBe((copiaDeNorte.Id, "Norte Constructora S.A.S. (sandbox)", "TNORTE2"));
+        tras.Empresas.Single(e => e.ProduccionId == sur.Id).PrefijoFolio.ShouldBe("TSUR");
+        var almacen = Host.Services.GetRequiredService<IDocumentStore>();
+        await using (var global = almacen.QuerySession())
+        {
+            var guardada = (await global.LoadAsync<Validasoft.Dominio.Plataforma.Empresa>(copia.Id))!;
+            (guardada.ClaveIdentificacion, guardada.Identificacion.DigitoVerificacion).ShouldBe(("CO|NIT|899999068", "1"));
+        }
+
+        // Quedó en la auditoría del grupo con el antes y el después, a nombre de Plataforma.
+        await using (var consulta = almacen.QuerySession(g.TenantId.ToString("N")))
+        {
+            var registro = (await consulta.Query<Validasoft.Dominio.Auditoria.RegistroDeCambioDeConfiguracion>()
+                .Where(r => r.EntidadId == norte.Id.ToString() && r.Accion == Validasoft.Dominio.Auditoria.AccionConfiguracion.Modificado).ToListAsync()).ShouldHaveSingleItem();
+            (registro.Entidad, registro.ActorTipo, registro.EmpresaId).ShouldBe(("Empresa", Validasoft.Dominio.Comun.ActorTipo.Plataforma, (Guid?)norte.Id));
+            var antes = JsonSerializer.Serialize(registro.Antes);
+            antes.ShouldContain("\"prefijoFolio\":\"NORTE\"");
+            antes.ShouldContain("800197268");
+            var despues = JsonSerializer.Serialize(registro.Despues);
+            despues.ShouldContain("\"prefijoFolio\":\"NORTE2\"");
+            despues.ShouldContain("899999068");
+        }
+
+        // Enviar lo mismo no choca consigo misma ni deja otra entrada en la auditoría.
+        await Corregir(norte.Id, Datos("899999068-1", "Norte Constructora S.A.S.", "NORTE2"), 200);
+        await Corregir(sur.Id, Datos("900123456-8", "Sur S.A.S.", "SUR"), 200);
+        await using (var consulta = almacen.QuerySession(g.TenantId.ToString("N")))
+            (await consulta.Query<Validasoft.Dominio.Auditoria.RegistroDeCambioDeConfiguracion>().CountAsync(r => r.Entidad == "Empresa" && r.Accion == Validasoft.Dominio.Auditoria.AccionConfiguracion.Modificado)).ShouldBe(1);
+
+        // Contra otra empresa del grupo: la identificación y el prefijo siguen únicos (409), y lo que ya no usa Norte queda libre.
+        (await CodigoDeErrorAsync(await Corregir(sur.Id, Datos("899999068-1", "Sur S.A.S.", "SUR"), 409))).ShouldBe("empresa-duplicada");
+        (await CodigoDeErrorAsync(await Corregir(sur.Id, Datos("900123456-8", "Sur S.A.S.", "NORTE2"), 409))).ShouldBe("prefijo-folio-duplicado");
+        (await CodigoDeErrorAsync(await Corregir(norte.Id, Datos("900123456-8", "Norte S.A.S.", "NORTE2"), 409))).ShouldBe("empresa-duplicada");
+        var conElPrefijoViejo = await (await Corregir(sur.Id, Datos("900123456-8", "Sur S.A.S.", "norte"), 200)).ReadAsJsonAsync<EmpresaDto>();
+        conElPrefijoViejo!.PrefijoFolio.ShouldBe("NORTE");
+        (await ApiAsync<SandboxDto>("GET", "/api/v1/sandbox", g.Admin, null, null, 200)).Empresas.Single(e => e.ProduccionId == sur.Id).PrefijoFolio.ShouldBe("TNORTE");
+
+        // Las mismas reglas del alta.
+        (await CodigoDeErrorAsync(await Corregir(norte.Id, Datos("899999068-1", "Norte S.A.S.", "N"), 422))).ShouldBe("prefijo-folio-invalido");
+        (await CodigoDeErrorAsync(await Corregir(norte.Id, Datos("899999068-1", " ", "NORTE2"), 422))).ShouldBe("nombre-requerido");
+        (await CodigoDeErrorAsync(await Corregir(norte.Id, Datos("899999068-3", "Norte S.A.S.", "NORTE2"), 422))).ShouldBe("digito-verificacion-invalido");
+        (await ApiAsync<GrupoDto>("GET", $"/api/v1/plataforma/grupos/{g.TenantId}", ApiFixture.ClavePlataforma, null, null, 200)).Empresas.Single(e => e.Id == norte.Id)
+            .Nombre.ShouldBe("Norte Constructora S.A.S.");
+
+        // El grupo y la empresa existen; la copia de pruebas no se corrige por su cuenta (el sandbox no es un grupo de la consola); solo Plataforma.
+        var otro = await GrupoAsync();
+        await Corregir(norte.Id, Datos("899999068-1", "Norte S.A.S.", "NORTE2"), 404, grupo: Guid.NewGuid());
+        (await CodigoDeErrorAsync(await Corregir(norte.Id, Datos("899999068-1", "Norte S.A.S.", "NORTE2"), 404, grupo: otro.TenantId))).ShouldBe("empresa-no-encontrada");
+        (await CodigoDeErrorAsync(await Corregir(copia.Id, Datos("899999068-1", "Norte S.A.S.", "NORTE2"), 404, grupo: sandbox.TenantId))).ShouldBe("tenant-no-encontrado");
+        await Corregir(norte.Id, Datos("899999068-1", "Norte S.A.S.", "NORTE2"), 403, credencial: g.Admin);
+        await Corregir(norte.Id, Datos("899999068-1", "Norte S.A.S.", "NORTE2"), 401, credencial: "sin");
+
+        // «Siempre»: también con el grupo desactivado.
+        await using (var sesionDelAlmacen = almacen.LightweightSession())
+        {
+            var tenant = (await sesionDelAlmacen.LoadAsync<Validasoft.Dominio.Plataforma.Tenant>(g.TenantId))!;
+            tenant.Activo = false;
+            sesionDelAlmacen.Store(tenant);
+            await sesionDelAlmacen.SaveChangesAsync();
+        }
+
+        try
+        {
+            (await (await Corregir(norte.Id, Datos("899999068-1", "Norte Grupo Inactivo S.A.S.", "NORTE2"), 200)).ReadAsJsonAsync<EmpresaDto>())!.Nombre.ShouldBe("Norte Grupo Inactivo S.A.S.");
+        }
+        finally
+        {
+            await using var restaurar = almacen.LightweightSession();
+            var tenant = (await restaurar.LoadAsync<Validasoft.Dominio.Plataforma.Tenant>(g.TenantId))!;
+            tenant.Activo = true;
+            restaurar.Store(tenant);
+            await restaurar.SaveChangesAsync();
+        }
+    }
+
     // ---------- la idempotencia no guarda secretos ----------
 
     private async Task<(IScenarioResult Resultado, string Cuerpo)> PostConLlaveAsync(string url, object? cuerpo, string apiKey, string llave, int esperado, IDictionary<string, string>? cabeceras = null)

@@ -211,6 +211,8 @@ const NOMBRES: Record<string, string> = {
   'POST /api/v1/plataforma/operadores/{id}/reactivar': 'reactivarOperadorPlataforma',
   'GET /api/v1/plataforma/auditoria-ingresos': 'listarIngresosOperadores',
   'POST /api/v1/plataforma/tenants/{tenantId}/empresas': 'crearEmpresaDeGrupo',
+  // Corregir identificación, razón social y prefijo de folio de una empresa del grupo, siempre y desde la consola.
+  'PUT /api/v1/plataforma/tenants/{tenantId}/empresas/{empresaId}': 'corregirEmpresaDeGrupo',
   'GET /api/v1/plataforma/clave-de-arranque': 'obtenerClaveDeArranque',
   'POST /api/v1/plataforma/clave-de-arranque/desactivar': 'desactivarClaveDeArranque',
   'POST /api/v1/plataforma/clave-de-arranque/reactivar': 'reactivarClaveDeArranque',

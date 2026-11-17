@@ -191,9 +191,20 @@ public sealed class Empresa
         CreadaEn = ahora
     };
 
-    /// <summary>Alinea la copia de pruebas con su empresa real: nombre, marca y si está activa (no toca identificación ni prefijo).</summary>
-    public void SincronizarCopiaDeSandbox(Empresa produccion)
+    /// <summary>
+    /// Alinea la copia de pruebas con su empresa real: identificación, nombre, marca y si está activa. El prefijo de folio de la copia
+    /// no se copia (tiene su propia regla, <see cref="AislamientoDeSandbox.PrefijoDeFolio"/>): si el real cambia, se vuelve a derivar
+    /// con <see cref="AjustarPrefijoDeCopiaDeSandbox"/>. Si otra empresa del sandbox (creada allá, sin real) ya tiene la identificación
+    /// del real —<paramref name="clavesDeOtrasEmpresas"/>—, la copia conserva la suya: la unicidad del grupo no se rompe.
+    /// </summary>
+    public void SincronizarCopiaDeSandbox(Empresa produccion, IReadOnlySet<string>? clavesDeOtrasEmpresas = null)
     {
+        if (clavesDeOtrasEmpresas is null || !clavesDeOtrasEmpresas.Contains(produccion.ClaveIdentificacion))
+        {
+            Identificacion = produccion.Identificacion;
+            ClaveIdentificacion = produccion.ClaveIdentificacion;
+        }
+
         Nombre = produccion.Nombre + AislamientoDeSandbox.SufijoDeNombre;
         LogoUrl = produccion.LogoUrl;
         ReplyTo = produccion.ReplyTo;
@@ -201,8 +212,59 @@ public sealed class Empresa
         Activa = produccion.Activa;
     }
 
+    /// <summary>
+    /// Vuelve a derivar el prefijo de folio de la copia de pruebas del real <paramref name="prefijoDeProduccion"/> (<c>T</c> + el real,
+    /// sin chocar con <paramref name="ocupadosPorOtras"/>, los prefijos de las demás empresas del sandbox). Los folios de prueba ya
+    /// emitidos conservan el prefijo con que salieron.
+    /// </summary>
+    public void AjustarPrefijoDeCopiaDeSandbox(string prefijoDeProduccion, IReadOnlySet<string> ocupadosPorOtras) =>
+        PrefijoFolio = AislamientoDeSandbox.PrefijoDeFolio(prefijoDeProduccion, ocupadosPorOtras);
+
     public static Empresa Crear(Guid tenantId, Identificacion identificacion, string nombre, string prefijoFolio,
         string? logoUrl, string? replyTo, DateTimeOffset ahora)
+    {
+        var (nombreLimpio, prefijo) = ValidarDatosDeAlta(nombre, prefijoFolio);
+
+        return new Empresa
+        {
+            Id = Guid.CreateVersion7(),
+            TenantId = tenantId,
+            Identificacion = identificacion,
+            ClaveIdentificacion = identificacion.Clave,
+            Nombre = nombreLimpio,
+            PrefijoFolio = prefijo,
+            LogoUrl = ValidarLogo(logoUrl),
+            ReplyTo = ValidarSoporte(replyTo),
+            CreadaEn = ahora
+        };
+    }
+
+    /// <summary>
+    /// Corrige los datos con que se dio de alta la empresa —identificación, razón social y prefijo de folio— con las mismas reglas
+    /// que <see cref="Crear"/>; recalcula <see cref="ClaveIdentificacion"/>. Siempre se puede (la consola de Plataforma lo ofrece sin
+    /// condiciones). Devuelve si algo cambió. La unicidad en el grupo (identificación y prefijo) la decide quien tiene a las demás
+    /// empresas. Los folios y los certificados ya emitidos no se reescriben: conservan el prefijo, el nombre y la identificación con
+    /// que se emitieron; los contadores de folio son por empresa (no por prefijo), así que la numeración sigue donde iba. Las copias
+    /// de pruebas siguen a su empresa real, no se corrigen por su cuenta (409 <c>copia-de-sandbox</c>).
+    /// </summary>
+    public bool CorregirDatosDeAlta(Identificacion identificacion, string nombre, string prefijoFolio)
+    {
+        if (EmpresaDeProduccionId is not null)
+            throw ReglaDeNegocioException.Conflicto("copia-de-sandbox", "La copia de pruebas sigue a su empresa real: corrige la real.");
+
+        ArgumentNullException.ThrowIfNull(identificacion);
+        var (nombreLimpio, prefijo) = ValidarDatosDeAlta(nombre, prefijoFolio);
+
+        var cambio = identificacion != Identificacion || nombreLimpio != Nombre || prefijo != PrefijoFolio;
+        Identificacion = identificacion;
+        ClaveIdentificacion = identificacion.Clave;
+        Nombre = nombreLimpio;
+        PrefijoFolio = prefijo;
+        return cambio;
+    }
+
+    /// <summary>Lo común del alta y de la corrección: razón social obligatoria y prefijo de 2 a 10 letras mayúsculas o números.</summary>
+    private static (string Nombre, string Prefijo) ValidarDatosDeAlta(string nombre, string prefijoFolio)
     {
         if (string.IsNullOrWhiteSpace(nombre))
             throw ReglaDeNegocioException.Validacion("nombre-requerido", "La razón social es obligatoria.");
@@ -212,25 +274,14 @@ public sealed class Empresa
             throw ReglaDeNegocioException.Validacion("prefijo-folio-invalido",
                 "El prefijo de folio debe tener entre 2 y 10 letras mayúsculas o números.");
 
-        return new Empresa
-        {
-            Id = Guid.CreateVersion7(),
-            TenantId = tenantId,
-            Identificacion = identificacion,
-            ClaveIdentificacion = identificacion.Clave,
-            Nombre = nombre.Trim(),
-            PrefijoFolio = prefijo,
-            LogoUrl = ValidarLogo(logoUrl),
-            ReplyTo = ValidarSoporte(replyTo),
-            CreadaEn = ahora
-        };
+        return (nombre.Trim(), prefijo);
     }
 
     public const int TamanoMaximoLogo = 200 * 1024;
 
     /// <summary>
-    /// Datos y marca (P2ConfigEmpresa): contacto de soporte, color y logo. La razón social, la identificación y el prefijo
-    /// de folio no cambian aquí (el prefijo ya está en folios emitidos). <c>null</c> conserva; cadena vacía quita.
+    /// Datos y marca (P2ConfigEmpresa): contacto de soporte, color y logo. La razón social, la identificación y el prefijo de folio
+    /// no se cambian aquí: los corrige Plataforma con <see cref="CorregirDatosDeAlta"/>. <c>null</c> conserva; cadena vacía quita.
     /// </summary>
     public void ActualizarMarca(string? contactoSoporte, string? colorMarca, string? logoUrl)
     {

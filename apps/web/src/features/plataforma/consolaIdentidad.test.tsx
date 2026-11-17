@@ -1,6 +1,8 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type ClaveDeArranqueDto, type GrupoDto, type OperadorDePlataformaDto, type SistemaIntegradoDto } from '@validasoft/api-client';
+import { useQuery } from '@tanstack/react-query';
+import { reiniciarCliente, type ClaveDeArranqueDto, type EmpresaDeGrupoDto, type GrupoDto, type OperadorDePlataformaDto, type SistemaIntegradoDto } from '@validasoft/api-client';
+import type { ReactNode } from 'react';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';
@@ -246,13 +248,18 @@ const SISTEMAS: SistemaIntegradoDto[] = [
 
 const NIT = { pais: 'CO', codigo: 'NIT', nombre: 'Número de Identificación Tributaria', aplicaA: 'Ambas', patron: '^[0-9]{6,15}$', tieneDv: true };
 
-function montarGrupo(rutas: Parameters<typeof simularApi>[0] = {}) {
+function montarGrupo(rutas: Parameters<typeof simularApi>[0] = {}, grupo: GrupoDto = GRUPO, sonda: ReactNode = null) {
   const peticiones = simularApi({
     'GET /api/v1/catalogos/paises': [{ codigo: 'CO', nombre: 'Colombia', tiposIdentificacion: [NIT] }],
     'GET /api/v1/plataforma/tenants/t1/sistemas': SISTEMAS,
     ...rutas,
   });
-  montarPantalla(<TarjetaGrupo grupo={GRUPO} expandido={false} onAlternar={() => undefined} />);
+  montarPantalla(
+    <>
+      <TarjetaGrupo grupo={grupo} expandido={false} onAlternar={() => undefined} />
+      {sonda}
+    </>,
+  );
   return { peticiones, usuario: userEvent.setup() };
 }
 
@@ -283,6 +290,118 @@ describe('Agregar una empresa a un grupo desde la consola (PI-9)', () => {
   it('un grupo sin empresas ofrece agregarla aquí', () => {
     montarGrupo();
     expect(screen.getByText(/agrégala aquí/)).toBeInTheDocument();
+  });
+});
+
+// ---------- Corregir una empresa de un grupo ----------
+
+const EMPRESA_NORTE: EmpresaDeGrupoDto = {
+  id: 'e1',
+  nombre: 'Constructora Norte S.A.S.',
+  identificacion: { pais: 'CO', tipo: 'NIT', numero: '800197268', digitoVerificacion: '4' },
+  prefijoFolio: 'NORTE',
+  activa: true,
+  planIaConfigurado: false,
+  planIaActivo: false,
+  llaveConfigurada: false,
+  ultimosCuatro: null,
+};
+const GRUPO_CON_EMPRESA: GrupoDto = { ...GRUPO, empresas: [EMPRESA_NORTE] };
+
+/** Hace de la lista de grupos de la consola: se suscribe a la misma ruta y cuenta cuántas veces se vuelve a pedir. */
+function SondaDeGrupos({ veces }: { veces: { n: number } }) {
+  useQuery({
+    queryKey: ['/api/v1/plataforma/grupos', 'sonda'],
+    queryFn: () => {
+      veces.n += 1;
+      return Promise.resolve(veces.n);
+    },
+  });
+  return null;
+}
+
+describe('Corregir una empresa de un grupo desde la consola', () => {
+  it('cada fila trae su acción «Editar» con el nombre de la empresa', () => {
+    montarGrupo({}, GRUPO_CON_EMPRESA);
+    expect(screen.getByRole('button', { name: 'Editar la empresa Constructora Norte S.A.S.' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Plan de IA de Constructora Norte S.A.S.' })).toBeInTheDocument();
+  });
+
+  it('abre el mismo formulario del alta ya precargado, avisa de los folios emitidos y no ofrece «Agregar»', async () => {
+    const { usuario } = montarGrupo({}, GRUPO_CON_EMPRESA);
+
+    await usuario.click(screen.getByRole('button', { name: 'Editar la empresa Constructora Norte S.A.S.' }));
+
+    const dialogo = await screen.findByRole('dialog', { name: /^Editar empresa/ });
+    expect(within(dialogo).getByText('Para el grupo Grupo Andino')).toBeInTheDocument();
+    expect(within(dialogo).getByRole('textbox', { name: /Número de identificación/ })).toHaveValue('800197268-4');
+    expect(within(dialogo).getByRole('textbox', { name: /Razón social/ })).toHaveValue('Constructora Norte S.A.S.');
+    expect(within(dialogo).getByRole('textbox', { name: /Prefijo de folio/ })).toHaveValue('NORTE');
+    expect(within(dialogo).getByText(/Los folios ya emitidos conservan el prefijo anterior/)).toBeInTheDocument();
+    expect(within(dialogo).queryByText(/no se puede cambiar/)).not.toBeInTheDocument();
+    expect(within(dialogo).getByRole('button', { name: 'Guardar' })).toBeEnabled();
+    expect(within(dialogo).queryByRole('button', { name: 'Agregar empresa' })).not.toBeInTheDocument();
+  });
+
+  it('guarda con un PUT al grupo y la empresa, avisa, cierra y vuelve a pedir la lista de grupos', async () => {
+    const veces = { n: 0 };
+    const { peticiones, usuario } = montarGrupo(
+      { 'PUT /api/v1/plataforma/tenants/t1/empresas/e1': (p) => ({ id: 'e1', tenantId: 't1', activa: true, ...(p.cuerpo as Record<string, unknown>) }) },
+      GRUPO_CON_EMPRESA,
+      <SondaDeGrupos veces={veces} />,
+    );
+    await waitFor(() => expect(veces.n).toBe(1));
+
+    await usuario.click(screen.getByRole('button', { name: 'Editar la empresa Constructora Norte S.A.S.' }));
+    const dialogo = await screen.findByRole('dialog', { name: /^Editar empresa/ });
+    const numero = within(dialogo).getByRole('textbox', { name: /Número de identificación/ });
+    await usuario.clear(numero);
+    await usuario.type(numero, '900123456-8');
+    const razon = within(dialogo).getByRole('textbox', { name: /Razón social/ });
+    await usuario.clear(razon);
+    await usuario.type(razon, 'Constructora Sur S.A.S.');
+    const prefijo = within(dialogo).getByRole('textbox', { name: /Prefijo de folio/ });
+    await usuario.clear(prefijo);
+    await usuario.type(prefijo, 'sur2');
+    const guardar = within(dialogo).getByRole('button', { name: 'Guardar' });
+    await waitFor(() => expect(guardar).toBeEnabled());
+    await usuario.click(guardar);
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    const puts = peticiones.filter((p) => p.metodo === 'PUT');
+    expect(puts).toHaveLength(1);
+    expect(puts[0]?.ruta).toBe('/api/v1/plataforma/tenants/t1/empresas/e1');
+    expect(puts[0]?.cuerpo).toEqual({
+      identificacion: { pais: 'CO', tipo: 'NIT', numero: '900123456-8', digitoVerificacion: null },
+      nombre: 'Constructora Sur S.A.S.',
+      prefijoFolio: 'SUR2',
+    });
+    expect(await screen.findByText('Constructora Sur S.A.S. quedó actualizada.')).toBeInTheDocument();
+    await waitFor(() => expect(veces.n).toBe(2));
+  });
+
+  it('un prefijo ya usado por otra empresa del grupo se muestra y el diálogo sigue abierto', async () => {
+    const { usuario } = montarGrupo(
+      { 'PUT /api/v1/plataforma/tenants/t1/empresas/e1': new ProblemaSimulado(409, 'prefijo-folio-duplicado', 'El prefijo SUR ya lo usa otra empresa del grupo.') },
+      GRUPO_CON_EMPRESA,
+    );
+    await usuario.click(screen.getByRole('button', { name: 'Editar la empresa Constructora Norte S.A.S.' }));
+    const dialogo = await screen.findByRole('dialog', { name: /^Editar empresa/ });
+
+    await usuario.click(within(dialogo).getByRole('button', { name: 'Guardar' }));
+
+    expect(await within(dialogo).findByText('Otra empresa del grupo ya usa ese prefijo de folio. Elige uno distinto.')).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: /^Editar empresa/ })).toBeInTheDocument();
+  });
+
+  it('agregar una empresa sigue siendo el formulario vacío, con el aviso de que solo Plataforma corrige el prefijo', async () => {
+    const { usuario } = montarGrupo({}, GRUPO_CON_EMPRESA);
+
+    await usuario.click(screen.getByRole('button', { name: 'Agregar una empresa a Grupo Andino' }));
+
+    const dialogo = await screen.findByRole('dialog', { name: /Agregar empresa/ });
+    expect(within(dialogo).getByRole('textbox', { name: /Razón social/ })).toHaveValue('');
+    expect(within(dialogo).getByText(/Después solo Plataforma puede corregirlo/)).toBeInTheDocument();
   });
 });
 

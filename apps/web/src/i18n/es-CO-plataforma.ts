@@ -112,6 +112,8 @@ export const plataforma = {
     planDelGrupo: 'Plan y límites',
     planDelGrupoDe: 'Plan y límites de {{grupo}}',
     configurarPlanDe: 'Plan de IA de {{empresa}}',
+    editarEmpresa: 'Editar',
+    editarEmpresaDe: 'Editar la empresa {{empresa}}',
     estadoPlan: {
       'sin-plan': 'Sin plan',
       inactivo: 'Plan inactivo',

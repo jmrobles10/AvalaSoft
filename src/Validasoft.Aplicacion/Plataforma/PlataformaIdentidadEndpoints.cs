@@ -1,9 +1,12 @@
 using Marten;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Validasoft.Aplicacion.Comun;
+using Validasoft.Aplicacion.Configuracion;
 using Validasoft.Aplicacion.Identidad;
+using Validasoft.Aplicacion.Sandbox;
 using Validasoft.Contratos;
 using Validasoft.Dominio.Auditoria;
 using Validasoft.Dominio.Comun;
@@ -199,6 +202,58 @@ public static class EmpresasDeGrupoEndpoints
         Auditoria.Registrar(sesion, contexto, "Empresa", empresa.Id.ToString(), AccionConfiguracion.Creado, null, empresa.ADto(), ahora, empresa.Id);
         await sesion.SaveChangesAsync(ct);
         return Results.Created($"/api/v1/empresas/{empresa.Id}", empresa.ADto());
+    }
+
+    /// <summary>
+    /// Corrige la identificación, la razón social y el prefijo de folio de una empresa del grupo (con su auditoría antes/después, a nombre de
+    /// Plataforma). Siempre se puede: también con el grupo o la empresa desactivados. Mismas reglas que el alta; la identificación y el
+    /// prefijo siguen únicos en el grupo, sin contar a la propia empresa (enviar lo mismo no choca consigo misma y no escribe nada). Los folios
+    /// y certificados ya emitidos no se reescriben (conservan el prefijo, el nombre y la identificación con que salieron) y la numeración
+    /// sigue donde iba (el contador es de la empresa, no del prefijo). La copia de pruebas del sandbox, si la hay, se alinea en la misma
+    /// transacción (su prefijo sigue su propia regla). 404 <c>tenant-no-encontrado</c>, <c>empresa-no-encontrada</c>; 409 <c>empresa-duplicada</c>,
+    /// <c>prefijo-folio-duplicado</c>; 422 <c>prefijo-folio-invalido</c>, <c>nombre-requerido</c> y los de la identificación.
+    /// </summary>
+    [WolverinePut("/api/v1/plataforma/tenants/{tenantId}/empresas/{empresaId}")]
+    [Authorize(Policy = Permisos.PlataformaTenants)]
+    public static async Task<EmpresaDto> Corregir(Guid tenantId, Guid empresaId, CorregirEmpresaDto dto, ISesiones sesiones, IContextoSolicitud contexto, CacheDeEmpresas cache,
+        IMemoryCache memoria, ServicioDeSandbox sandbox, TimeProvider reloj, CancellationToken ct)
+    {
+        var ahora = reloj.GetUtcNow();
+        await using (var consulta = sesiones.ConsultaGlobal())
+        {
+            var tenant = await consulta.LoadAsync<Tenant>(tenantId, ct);
+            if (tenant is null || tenant.EsSandbox)
+                throw ReglaDeNegocioException.NoEncontrado("tenant-no-encontrado", "No existe ese tenant.");
+        }
+
+        var identificacion = dto.Identificacion.ADominio();
+        await using var sesion = sesiones.ParaTenant(tenantId);
+        var delGrupo = await sesion.Query<Empresa>().Where(e => e.TenantId == tenantId).ToListAsync(ct);
+        var empresa = delGrupo.FirstOrDefault(e => e.Id == empresaId)
+                      ?? throw ReglaDeNegocioException.NoEncontrado("empresa-no-encontrada", "No existe esa empresa en el grupo.");
+
+        var antes = empresa.ADto();
+        var cambio = empresa.CorregirDatosDeAlta(identificacion, dto.Nombre, dto.PrefijoFolio);
+        var otras = delGrupo.Where(e => e.Id != empresaId).ToList();
+        if (otras.Any(e => e.ClaveIdentificacion == empresa.ClaveIdentificacion))
+            throw ReglaDeNegocioException.Conflicto("empresa-duplicada", "Ya existe una empresa con esa identificación en el grupo.");
+        if (otras.Any(e => e.PrefijoFolio == empresa.PrefijoFolio))
+            throw ReglaDeNegocioException.Conflicto("prefijo-folio-duplicado", $"El prefijo {empresa.PrefijoFolio} ya lo usa otra empresa del grupo.");
+        if (!cambio)
+            return empresa.ADto();
+
+        sesion.Store(empresa);
+        var copia = await sandbox.AlinearCopiaDeEmpresaAsync(sesion, empresa, cambioElPrefijo: antes.PrefijoFolio != empresa.PrefijoFolio, ct);
+        Auditoria.Registrar(sesion, contexto, "Empresa", empresa.Id.ToString(), AccionConfiguracion.Modificado, antes, empresa.ADto(), ahora, empresa.Id);
+        await sesion.SaveChangesAsync(ct);
+
+        // La caché de acceso solo guarda id, grupo y si está activa (no cambian), pero se olvida igual en todos los nodos; el remitente de sus
+        // correos lleva la razón social y se recuerda 30 s en este nodo.
+        cache.Olvidar(empresa.Id);
+        if (copia is { } idCopia)
+            cache.Olvidar(idCopia);
+        memoria.Remove(DominioDeCorreoEndpoints.LlaveDelRemitente(empresa.Id));
+        return empresa.ADto();
     }
 }
 

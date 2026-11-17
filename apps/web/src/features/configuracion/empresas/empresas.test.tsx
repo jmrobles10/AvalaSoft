@@ -8,7 +8,7 @@ import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DialogoEmpresa } from './DialogoEmpresa';
 import { FilaTextoLegal } from './FilaTextoLegal';
-import { borradorEmpresaNuevo, cuerpoCrearEmpresa, ejemploFolio, identificacionVisible, numeroNormalizado, validarEmpresa, validarTexto } from './modelo';
+import { borradorDeEmpresa, borradorEmpresaNuevo, cuerpoCorregirEmpresa, cuerpoCrearEmpresa, ejemploFolio, identificacionVisible, numeroNormalizado, validarEmpresa, validarTexto } from './modelo';
 
 const NIT: TipoIdentificacionDto = { pais: 'CO', codigo: 'NIT', nombre: 'Número de Identificación Tributaria', aplicaA: 'Ambas', patron: '^[0-9]{6,15}$', tieneDv: true };
 const PAISES = [{ codigo: 'CO', nombre: 'Colombia', tiposIdentificacion: [NIT] }];
@@ -89,6 +89,20 @@ describe('modelo de empresas', () => {
     expect(cuerpoCrearEmpresa({ ...base, pais: 'DO', tipo: 'RNC', numero: '1-01-85004-3' }).identificacion).toEqual({ pais: 'DO', tipo: 'RNC', numero: '1-01-85004-3', digitoVerificacion: null });
   });
 
+  it('el borrador de una empresa existente trae su identificación con el dígito y el cuerpo de la corrección lleva solo los tres datos de alta', () => {
+    const empresa = { identificacion: { pais: 'CO', tipo: 'NIT', numero: '800197268', digitoVerificacion: '4' }, nombre: 'Constructora Norte S.A.S.', prefijoFolio: 'NORTE' };
+    const borrador = borradorDeEmpresa(empresa);
+
+    expect(borrador).toEqual({ pais: 'CO', tipo: 'NIT', numero: '800197268-4', nombre: 'Constructora Norte S.A.S.', prefijo: 'NORTE' });
+    expect(validarEmpresa(borrador, NIT)).toEqual([]);
+    expect(borradorDeEmpresa({ ...empresa, identificacion: { pais: 'CO', tipo: 'CC', numero: '1020304', digitoVerificacion: null } }).numero).toBe('1020304');
+    expect(cuerpoCorregirEmpresa({ ...borrador, nombre: '  Constructora Sur  ', prefijo: 'sur' })).toEqual({
+      identificacion: { pais: 'CO', tipo: 'NIT', numero: '800197268-4', digitoVerificacion: null },
+      nombre: 'Constructora Sur',
+      prefijoFolio: 'SUR',
+    });
+  });
+
   it('muestra la identificación con su dígito y un folio de ejemplo', () => {
     expect(identificacionVisible({ pais: 'CO', tipo: 'NIT', numero: '900123456', digitoVerificacion: '8' })).toBe('NIT 900123456-8');
     expect(identificacionVisible({ pais: 'CO', tipo: 'CC', numero: '1020304', digitoVerificacion: null })).toBe('CC 1020304');
@@ -106,8 +120,8 @@ describe('modelo de empresas', () => {
 describe('agregar una empresa', () => {
   it('valida el NIT con el patrón del catálogo y crea la empresa con el prefijo en mayúsculas', async () => {
     const usuario = userEvent.setup();
-    const onCreada = vi.fn();
-    const peticiones = montar(<DialogoEmpresa claveIdempotencia="idem-1" onCerrar={() => undefined} onCreada={onCreada} />, (url, metodo, cuerpo) =>
+    const onGuardada = vi.fn();
+    const peticiones = montar(<DialogoEmpresa claveIdempotencia="idem-1" onCerrar={() => undefined} onGuardada={onGuardada} />, (url, metodo, cuerpo) =>
       url.includes('/catalogos/paises') ? json(PAISES) : metodo === 'POST' ? json({ id: 'e9', activa: true, ...(cuerpo as object) }, 201) : json({}),
     );
     const agregar = screen.getByRole('button', { name: 'Agregar empresa' });
@@ -127,7 +141,7 @@ describe('agregar una empresa', () => {
 
     await waitFor(() => expect(agregar).toBeEnabled());
     await usuario.click(agregar);
-    await waitFor(() => expect(onCreada).toHaveBeenCalled());
+    await waitFor(() => expect(onGuardada).toHaveBeenCalled());
     expect(peticiones[0]).toMatchObject({
       url: '/api/v1/empresas',
       metodo: 'POST',

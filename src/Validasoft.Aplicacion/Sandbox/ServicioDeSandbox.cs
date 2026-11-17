@@ -186,7 +186,7 @@ public sealed class ServicioDeSandbox(ISesiones sesiones, IDocumentStore store, 
         {
             if (porReal.TryGetValue(real.Id, out var copia))
             {
-                copia.SincronizarCopiaDeSandbox(real);
+                copia.SincronizarCopiaDeSandbox(real, ClavesDeOtras(copias, copia));
             }
             else
             {
@@ -203,6 +203,43 @@ public sealed class ServicioDeSandbox(ISesiones sesiones, IDocumentStore store, 
         foreach (var copia in porReal.Values)
             cacheDeEmpresas.Olvidar(copia.Id);
         return reales.ToDictionary(r => r.Id, r => porReal[r.Id]);
+    }
+
+    private static HashSet<string> ClavesDeOtras(IEnumerable<Empresa> empresasDelSandbox, Empresa copia) =>
+        [.. empresasDelSandbox.Where(e => e.Id != copia.Id).Select(e => e.ClaveIdentificacion)];
+
+    /// <summary>
+    /// Alinea con su empresa real la copia de pruebas de una empresa que Plataforma acaba de corregir (razón social, identificación o
+    /// prefijo), sin esperar al próximo reinicio: el cambio se escribe en <paramref name="sesion"/>, la misma transacción de la
+    /// corrección, y nunca la hace fallar (si la identificación nueva ya la tiene otra empresa del sandbox, la copia conserva la suya).
+    /// El prefijo de la copia sigue su propia regla (<c>T</c> + el real) y solo se vuelve a derivar si el real cambió; los folios de
+    /// prueba ya emitidos conservan el suyo. Devuelve el id de la copia (para olvidarla en la caché de empresas) o nulo si el grupo no
+    /// tiene sandbox o la empresa aún no tiene copia (se crea al sembrar).
+    /// </summary>
+    public async Task<Guid?> AlinearCopiaDeEmpresaAsync(IDocumentSession sesion, Empresa produccion, bool cambioElPrefijo, CancellationToken ct)
+    {
+        List<Empresa> delSandbox;
+        await using (var consulta = store.QuerySession())
+        {
+            var sandbox = await BuscarAsync(consulta, produccion.TenantId, ct);
+            if (sandbox is null)
+                return null;
+            delSandbox = [.. await consulta.Query<Empresa>().Where(e => e.TenantId == sandbox.Id).ToListAsync(ct)];
+        }
+
+        var copia = delSandbox.FirstOrDefault(e => e.EmpresaDeProduccionId == produccion.Id);
+        if (copia is null)
+            return null;
+
+        copia.SincronizarCopiaDeSandbox(produccion, ClavesDeOtras(delSandbox, copia));
+        if (cambioElPrefijo)
+        {
+            var ocupados = delSandbox.Where(e => e.Id != copia.Id).Select(e => e.PrefijoFolio).ToHashSet(StringComparer.Ordinal);
+            copia.AjustarPrefijoDeCopiaDeSandbox(produccion.PrefijoFolio, ocupados);
+        }
+
+        sesion.Store(copia);
+        return copia.Id;
     }
 
     /// <summary>Agrega al sandbox lo que le falta de producción (por clave natural); lo que ya tiene —aunque se haya editado— no se toca.</summary>

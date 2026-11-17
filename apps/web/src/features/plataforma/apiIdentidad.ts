@@ -1,5 +1,6 @@
 import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  corregirEmpresaDeGrupo,
   crearEmpresaDeGrupo,
   desactivarClaveDeArranque,
   desactivarSistemaDeGrupo,
@@ -18,7 +19,7 @@ import {
   type ListarIngresosOperadoresParams,
 } from '@validasoft/api-client';
 import { invalidarRuta } from '../../shared/consultas';
-import { cuerpoCrearEmpresa, type BorradorEmpresa } from '../configuracion/empresas/modelo';
+import { cuerpoCorregirEmpresa, cuerpoCrearEmpresa, type BorradorEmpresa } from '../configuracion/empresas/modelo';
 
 /** La consola de Plataforma no tiene empresa activa ni tenant (PT-4). */
 const SIN_EMPRESA = { empresa: null } as const;
@@ -109,6 +110,18 @@ export function useCrearEmpresaDeGrupo(tenantId: string, claveIdempotencia: stri
   const cliente = useQueryClient();
   return useMutation({
     mutationFn: (borrador: BorradorEmpresa) => crearEmpresaDeGrupo(tenantId, cuerpoCrearEmpresa(borrador), { ...SIN_EMPRESA, idempotencyKey: claveIdempotencia }),
+    onSuccess: () => invalidarRuta(cliente, '/api/v1/plataforma/grupos'),
+  });
+}
+
+/**
+ * Corrige la identificación, la razón social y el prefijo de folio de una empresa del grupo, siempre (PUT; repetirlo no hace daño).
+ * Los folios ya emitidos conservan el prefijo anterior.
+ */
+export function useCorregirEmpresaDeGrupo(tenantId: string, empresaId: string) {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: (borrador: BorradorEmpresa) => corregirEmpresaDeGrupo(tenantId, empresaId, cuerpoCorregirEmpresa(borrador), SIN_EMPRESA),
     onSuccess: () => invalidarRuta(cliente, '/api/v1/plataforma/grupos'),
   });
 }

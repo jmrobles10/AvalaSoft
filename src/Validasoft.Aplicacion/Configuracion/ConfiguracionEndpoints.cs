@@ -61,7 +61,7 @@ public static class EmpresasEndpoints
     public static async Task<EmpresaDto> Obtener(Guid id, ISesiones sesiones, IContextoSolicitud contexto, CancellationToken ct) =>
         (await CargarAsync(id, sesiones, contexto, ct)).ADto();
 
-    /// <summary>Datos y marca (contacto de soporte, color y logo). La identificación, la razón social y el prefijo no cambian.</summary>
+    /// <summary>Datos y marca (contacto de soporte, color y logo). La identificación, la razón social y el prefijo de folio no se cambian aquí: los corrige Plataforma desde su consola.</summary>
     [WolverinePut("/api/v1/empresas/{id}")]
     [Authorize(Policy = Permisos.EmpresasAdministrar)]
     public static async Task<EmpresaDto> Actualizar(Guid id, ActualizarEmpresaDto dto, ISesiones sesiones, IContextoSolicitud contexto, CacheDeEmpresas cache,

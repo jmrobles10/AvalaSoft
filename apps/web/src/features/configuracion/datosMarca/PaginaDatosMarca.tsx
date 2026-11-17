@@ -14,8 +14,8 @@ import { useEmpresaActiva } from '../../empresas/useEmpresas';
 import { borradorDe, cuerpoActualizar, errorDeLogo, hayCambios, leerComoDataUri, validarMarca, type BorradorMarca } from './modelo';
 
 /**
- * Datos y marca de la empresa activa (P2ConfigEmpresa, CF-1): la identificación y el prefijo se ven pero no cambian; el
- * contacto de soporte, el color y el logo son lo que el tercero ve en su portal y en los correos.
+ * Datos y marca de la empresa activa (P2ConfigEmpresa, CF-1): la identificación, la razón social y el prefijo se ven pero no se cambian
+ * aquí (los corrige Plataforma, CD); el contacto de soporte, el color y el logo son lo que el tercero ve en su portal y en los correos.
  */
 export function PaginaDatosMarca() {
   const { t } = useTranslation();

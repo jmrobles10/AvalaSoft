@@ -158,7 +158,7 @@ export function PaginaEmpresas() {
         <DialogoEmpresa
           claveIdempotencia={creando}
           onCerrar={() => setCreando(null)}
-          onCreada={(empresa) => {
+          onGuardada={(empresa) => {
             setElegidaId(empresa.id);
             setCreando(null);
           }}

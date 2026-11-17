@@ -4288,6 +4288,61 @@
         }
       }
     },
+    "/api/v1/plataforma/tenants/{tenantId}/empresas/{empresaId}": {
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.Plataforma.EmpresasDeGrupoEndpoints"
+        ],
+        "summary": "PUT_api_v1_plataforma_tenants_tenantId_empresas_empresaId",
+        "description": "PUT_api_v1_plataforma_tenants_tenantId_empresas_empresaId",
+        "operationId": "PUT_api_v1_plataforma_tenants_tenantId_empresas_empresaId",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "empresaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorregirEmpresaDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmpresaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/v1/plataforma/clave-de-arranque": {
       "get": {
         "tags": [
@@ -23844,6 +23899,25 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "CorregirEmpresaDto": {
+        "required": [
+          "identificacion",
+          "nombre",
+          "prefijoFolio"
+        ],
+        "type": "object",
+        "properties": {
+          "identificacion": {
+            "$ref": "#/components/schemas/IdentificacionDto"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "prefijoFolio": {
+            "type": "string"
           }
         }
       },

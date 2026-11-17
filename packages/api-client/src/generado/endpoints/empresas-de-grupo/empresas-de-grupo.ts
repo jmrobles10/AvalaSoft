@@ -15,6 +15,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CorregirEmpresaDto,
   CrearEmpresaDto,
   EmpresaDto
 } from '../../modelos';
@@ -92,4 +93,67 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getCrearEmpresaDeGrupoMutationOptions(options), queryClient);
+    }
+    export const corregirEmpresaDeGrupo = (
+    tenantId: string,
+    empresaId: string,
+    corregirEmpresaDto: BodyType<CorregirEmpresaDto>,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<EmpresaDto>(
+      {url: `/api/v1/plataforma/tenants/${tenantId}/empresas/${empresaId}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: corregirEmpresaDto, signal
+    },
+      options);
+    }
+
+
+
+
+export const getCorregirEmpresaDeGrupoMutationKey = () => ['corregirEmpresaDeGrupo'] as const;
+
+export const getCorregirEmpresaDeGrupoMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof corregirEmpresaDeGrupo>>, TError,CorregirEmpresaDeGrupoMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+): UseMutationOptions<Awaited<ReturnType<typeof corregirEmpresaDeGrupo>>, TError,CorregirEmpresaDeGrupoMutationVariables, TContext> => {
+
+const mutationKey = getCorregirEmpresaDeGrupoMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof corregirEmpresaDeGrupo>>, CorregirEmpresaDeGrupoMutationVariables> = (props) => {
+          const {tenantId,empresaId,data} = props ?? {};
+
+          return  corregirEmpresaDeGrupo(tenantId,empresaId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CorregirEmpresaDeGrupoMutationResult = NonNullable<Awaited<ReturnType<typeof corregirEmpresaDeGrupo>>>
+    export type CorregirEmpresaDeGrupoMutationBody = BodyType<CorregirEmpresaDto>
+    export type CorregirEmpresaDeGrupoMutationError = ErrorType<void>
+    export type CorregirEmpresaDeGrupoMutationVariables = {tenantId: string;empresaId: string;data: BodyType<CorregirEmpresaDto>}
+
+    export const useCorregirEmpresaDeGrupo = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof corregirEmpresaDeGrupo>>, TError,CorregirEmpresaDeGrupoMutationVariables, TContext>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof corregirEmpresaDeGrupo>>,
+        TError,
+        CorregirEmpresaDeGrupoMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCorregirEmpresaDeGrupoMutationOptions(options), queryClient);
     }

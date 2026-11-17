@@ -1,19 +1,19 @@
-import { Box, Button, Chip, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import type { GrupoDto } from '@validasoft/api-client';
+import { Box, Button, Chip, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import type { EmpresaDeGrupoDto, GrupoDto } from '@validasoft/api-client';
 import { formatearFecha, MarcoTabla, visualmenteOculto } from '@validasoft/ui';
-import { ChevronDown, ChevronUp, CircleDashed, Gauge, KeyRound, Plug, Plus, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronUp, CircleDashed, Gauge, KeyRound, Pencil, Plug, Plus, Sparkles } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { Tarjeta } from '../../shared/componentes';
 import { DialogoEmpresa } from '../configuracion/empresas/DialogoEmpresa';
-import { identificacionVisible } from '../configuracion/empresas/modelo';
+import { borradorDeEmpresa, identificacionVisible } from '../configuracion/empresas/modelo';
 import { EstadoActivo } from '../configuracion/EstadoActivo';
-import { useCrearEmpresaDeGrupo } from './apiIdentidad';
+import { useCorregirEmpresaDeGrupo, useCrearEmpresaDeGrupo } from './apiIdentidad';
 import { DialogoSistemasDeGrupo } from './DialogoSistemasDeGrupo';
 import { estadoPlanIa, llaveEnmascarada, MAX_EMPRESAS_SIN_COLAPSAR } from './modelo';
 
-function TablaEmpresas({ grupo, id }: { grupo: GrupoDto; id: string }) {
+function TablaEmpresas({ grupo, id, onEditar }: { grupo: GrupoDto; id: string; onEditar: (empresa: EmpresaDeGrupoDto) => void }) {
   const { t } = useTranslation();
   return (
     <MarcoTabla>
@@ -25,7 +25,7 @@ function TablaEmpresas({ grupo, id }: { grupo: GrupoDto; id: string }) {
               <TableCell sx={{ width: 180 }}>{t('plataforma.grupos.columnas.identificacion')}</TableCell>
               <TableCell sx={{ width: 100 }}>{t('plataforma.grupos.columnas.prefijo')}</TableCell>
               <TableCell sx={{ width: 210 }}>{t('plataforma.grupos.columnas.planIa')}</TableCell>
-              <TableCell sx={{ width: 120 }}>
+              <TableCell sx={{ width: 170 }}>
                 <Box component="span" sx={visualmenteOculto}>
                   {t('plataforma.grupos.columnas.acciones')}
                 </Box>
@@ -56,16 +56,23 @@ function TablaEmpresas({ grupo, id }: { grupo: GrupoDto; id: string }) {
                     />
                   </TableCell>
                   <TableCell align="right">
-                    <Button
-                      component={RouterLink}
-                      to={`/plataforma/grupos/${grupo.tenant.id}/empresas/${e.id}/plan-ia`}
-                      size="small"
-                      variant="text"
-                      startIcon={<Sparkles size={14} aria-hidden />}
-                      aria-label={t('plataforma.grupos.configurarPlanDe', { empresa: e.nombre })}
-                    >
-                      {t('plataforma.grupos.configurarPlan')}
-                    </Button>
+                    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
+                      <Tooltip title={t('plataforma.grupos.editarEmpresa')}>
+                        <IconButton size="small" onClick={() => onEditar(e)} aria-label={t('plataforma.grupos.editarEmpresaDe', { empresa: e.nombre })}>
+                          <Pencil size={14} aria-hidden />
+                        </IconButton>
+                      </Tooltip>
+                      <Button
+                        component={RouterLink}
+                        to={`/plataforma/grupos/${grupo.tenant.id}/empresas/${e.id}/plan-ia`}
+                        size="small"
+                        variant="text"
+                        startIcon={<Sparkles size={14} aria-hidden />}
+                        aria-label={t('plataforma.grupos.configurarPlanDe', { empresa: e.nombre })}
+                      >
+                        {t('plataforma.grupos.configurarPlan')}
+                      </Button>
+                    </Stack>
                   </TableCell>
                 </TableRow>
               );
@@ -82,7 +89,14 @@ function DialogoNuevaEmpresa({ grupo, onCerrar }: { grupo: GrupoDto; onCerrar: (
   const { t } = useTranslation();
   const [clave] = useState(() => crypto.randomUUID());
   const mutacion = useCrearEmpresaDeGrupo(grupo.tenant.id, clave);
-  return <DialogoEmpresa claveIdempotencia={clave} mutacion={mutacion} subtitulo={t('consola.empresa.paraElGrupo', { grupo: grupo.tenant.nombre })} onCerrar={onCerrar} onCreada={onCerrar} />;
+  return <DialogoEmpresa claveIdempotencia={clave} mutacion={mutacion} subtitulo={t('consola.empresa.paraElGrupo', { grupo: grupo.tenant.nombre })} onCerrar={onCerrar} onGuardada={onCerrar} />;
+}
+
+/** Corregir la identificación, la razón social y el prefijo de folio de una empresa del grupo, siempre: el mismo formulario del alta, precargado. */
+function DialogoCorregirEmpresa({ grupo, empresa, onCerrar }: { grupo: GrupoDto; empresa: EmpresaDeGrupoDto; onCerrar: () => void }) {
+  const { t } = useTranslation();
+  const mutacion = useCorregirEmpresaDeGrupo(grupo.tenant.id, empresa.id);
+  return <DialogoEmpresa mutacion={mutacion} inicial={borradorDeEmpresa(empresa)} subtitulo={t('consola.empresa.paraElGrupo', { grupo: grupo.tenant.nombre })} onCerrar={onCerrar} onGuardada={onCerrar} />;
 }
 
 /**
@@ -95,6 +109,7 @@ export function TarjetaGrupo({ grupo, expandido, onAlternar }: { grupo: GrupoDto
   const idTabla = useId();
   const plegable = grupo.empresas.length > MAX_EMPRESAS_SIN_COLAPSAR;
   const [agregando, setAgregando] = useState(false);
+  const [editando, setEditando] = useState<EmpresaDeGrupoDto | null>(null);
   const [verSistemas, setVerSistemas] = useState(false);
   return (
     <Tarjeta
@@ -137,7 +152,7 @@ export function TarjetaGrupo({ grupo, expandido, onAlternar }: { grupo: GrupoDto
         </Typography>
       ) : (
         <>
-          {(!plegable || expandido) && <TablaEmpresas grupo={grupo} id={idTabla} />}
+          {(!plegable || expandido) && <TablaEmpresas grupo={grupo} id={idTabla} onEditar={setEditando} />}
           {plegable && (
             <Button
               size="small"
@@ -154,6 +169,7 @@ export function TarjetaGrupo({ grupo, expandido, onAlternar }: { grupo: GrupoDto
         </>
       )}
       {agregando && <DialogoNuevaEmpresa grupo={grupo} onCerrar={() => setAgregando(false)} />}
+      {editando && <DialogoCorregirEmpresa grupo={grupo} empresa={editando} onCerrar={() => setEditando(null)} />}
       {verSistemas && <DialogoSistemasDeGrupo tenantId={grupo.tenant.id} grupo={grupo.tenant.nombre} onCerrar={() => setVerSistemas(false)} />}
     </Tarjeta>
   );
