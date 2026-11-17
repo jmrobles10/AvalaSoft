@@ -1,4 +1,5 @@
 import { pdf } from '../../soporte/archivos';
+import { irASeccion } from '../../soporte/empresa';
 import { abrirConsolaDePlataforma } from '../../soporte/plataforma';
 import { completarInvitacion } from '../../soporte/proveedor';
 import { crearEscenario, invitar, nuevoTercero } from '../../soporte/semilla';
@@ -36,7 +37,7 @@ recorrido(
     expect(radicado).not.toBe('');
 
     const consola = await abrirConsolaDePlataforma(await (await browser.newContext()).newPage());
-    await consola.getByRole('link', { name: 'Habeas data' }).click();
+    await irASeccion(consola, 'Habeas data');
     await expect(consola.getByRole('heading', { level: 1, name: 'Habeas data' })).toBeVisible();
     const solicitud = consola.getByRole('article').filter({ hasText: radicado });
     await expect(solicitud).toContainText(tercero.nombre);

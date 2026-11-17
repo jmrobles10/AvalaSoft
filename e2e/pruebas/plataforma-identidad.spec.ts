@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { CLAVE_PLATAFORMA, clavesDeSistema, llamar, nitAleatorio } from '../soporte/api';
 import { autenticadorVirtual, type AutenticadorVirtual } from '../soporte/autenticador';
 import { codigo, esperarCorreo, mensajesDe } from '../soporte/correo';
+import { irASeccion } from '../soporte/empresa';
 import { abrirConsolaDePlataforma } from '../soporte/plataforma';
 
 /**
@@ -93,7 +94,7 @@ test('Plataforma: uso de IA con su tarifa, ingresos de los operadores y la clave
   const consola = await abrirConsolaDePlataforma(page);
 
   // Uso de IA: el mes, los totales y la tarifa del adicional (que se cambia).
-  await consola.getByRole('link', { name: 'Uso de IA' }).click();
+  await irASeccion(consola, 'Uso de IA');
   await expect(consola.getByRole('heading', { level: 1, name: 'Uso de IA' })).toBeVisible();
   await expect(consola.getByText(/Total de /)).toBeVisible();
   await expect(consola.getByText('por validación adicional')).toBeVisible();
@@ -107,7 +108,7 @@ test('Plataforma: uso de IA con su tarifa, ingresos de los operadores y la clave
   await expect(consola.getByText(/1\.750/).first()).toBeVisible();
 
   // Ingresos de los operadores: la tabla y un filtro que viaja a la URL.
-  await consola.getByRole('link', { name: 'Ingresos' }).click();
+  await irASeccion(consola, 'Ingresos');
   await expect(consola.getByRole('heading', { level: 1, name: 'Ingresos de los operadores' })).toBeVisible();
   await expect(consola.getByRole('table', { name: 'Ingresos de los operadores' })).toBeVisible();
   await capturar(page, 'plataforma-ingresos');
@@ -117,7 +118,7 @@ test('Plataforma: uso de IA con su tarifa, ingresos de los operadores y la clave
   await consola.getByRole('button', { name: 'Limpiar filtros' }).click();
 
   // Secretos: la clave de arranque (no se desactiva aquí: las demás pruebas dependen de ella).
-  await consola.getByRole('link', { name: 'Secretos' }).click();
+  await irASeccion(consola, 'Secretos');
   await expect(consola.getByRole('heading', { name: 'Clave de arranque' })).toBeVisible();
   await expect(consola.getByText('Activa', { exact: true })).toBeVisible();
   await expect(consola.getByText(/con passkey$/)).toBeVisible();

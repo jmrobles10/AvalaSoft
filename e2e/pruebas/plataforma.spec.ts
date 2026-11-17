@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { asercion, CLAVE_PLATAFORMA, clavesDeSistema, llamar, nitAleatorio } from '../soporte/api';
 import { esperarCorreo, literal } from '../soporte/correo';
+import { irASeccion } from '../soporte/empresa';
 import { abrirEmbebidoCon, sesionDeUsuario } from '../soporte/embebido';
 import { abrirConsolaDePlataforma } from '../soporte/plataforma';
 import { ORIGEN_SISTEMA } from '../soporte/semilla';
@@ -64,7 +65,7 @@ test('Alta de una empresa nueva desde la consola, su plan de IA con llave y su p
   await expect(consola.getByText(`OpenAI aceptó la llave ••••${ultimos}.`)).toBeVisible();
 
   // La lista es paginada (con cientos de grupos la nuestra no está en la primera página): se busca por la razón social.
-  await consola.getByRole('link', { name: 'Grupos y empresas' }).first().click();
+  await irASeccion(consola, 'Grupos y empresas');
   await consola.getByRole('searchbox', { name: 'Buscar por grupo, empresa o NIT' }).fill(empresa);
   const fila = consola.getByRole('row', { name: new RegExp(literal(empresa)) });
   await expect(fila).toContainText(`Activo · llave ••••${ultimos}`);
@@ -159,10 +160,10 @@ test('La consola pagina los grupos con scroll infinito y cambia de pestaña al i
 
   // Pasar a «Secretos» es inmediato (la lista anterior se va con la ruta) y volver muestra lo ya cargado.
   const inicio = Date.now();
-  await consola.getByRole('link', { name: 'Secretos' }).click();
+  await irASeccion(consola, 'Secretos');
   await expect(consola.getByRole('heading', { level: 1, name: 'Secretos en reposo' })).toBeVisible();
   await expect(consola.getByRole('list', { name: 'Grupos' })).toHaveCount(0);
   expect(Date.now() - inicio).toBeLessThan(3_000);
-  await consola.getByRole('link', { name: 'Grupos y empresas' }).first().click();
+  await irASeccion(consola, 'Grupos y empresas');
   await expect(consola.getByRole('heading', { level: 1, name: 'Grupos y empresas' })).toBeVisible();
 });

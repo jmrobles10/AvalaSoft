@@ -4,6 +4,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { CLAVE_PLATAFORMA, llamar } from '../soporte/api';
 import { pdf } from '../soporte/archivos';
+import { irASeccion } from '../soporte/empresa';
 import { abrirConsolaDePlataforma } from '../soporte/plataforma';
 import { escribirFecha } from '../soporte/fechas';
 import { abrirEmpresa, aceptarInvitacion, entrarPorInvitacion, esperarEstadoDelTercero, subirDocumento, tarjeta } from '../soporte/proveedor';
@@ -215,7 +216,7 @@ test('el alta de un grupo y los secretos de la consola también usan todo el anc
   const derecha = (await consola.getByRole('region', { name: 'Administrador del grupo' }).boundingBox())!;
   expect(derecha.x).toBeGreaterThan(izquierda.x + izquierda.width - 1);
   expect(izquierda.width).toBeGreaterThan(700);
-  await consola.getByRole('link', { name: 'Secretos' }).click();
+  await irASeccion(consola, 'Secretos');
   await expect(consola.getByRole('heading', { level: 1, name: 'Secretos en reposo' })).toBeVisible();
   const tabla = (await consola.getByRole('table', { name: 'Secretos en reposo' }).boundingBox())!;
   expect(tabla.width).toBeGreaterThan(1500);

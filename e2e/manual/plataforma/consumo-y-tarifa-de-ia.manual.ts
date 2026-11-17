@@ -1,3 +1,4 @@
+import { irASeccion } from '../../soporte/empresa';
 import { abrirConsolaDePlataforma } from '../../soporte/plataforma';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
@@ -16,7 +17,7 @@ recorrido(
     await crearEscenario();
 
     const consola = await abrirConsolaDePlataforma(page);
-    await consola.getByRole('link', { name: 'Uso de IA' }).click();
+    await irASeccion(consola, 'Uso de IA');
     await expect(consola.getByRole('heading', { level: 1, name: 'Uso de IA' })).toBeVisible();
     await expect(consola.getByText(/Total de /).first()).toBeVisible();
 

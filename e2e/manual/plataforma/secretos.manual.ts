@@ -1,3 +1,4 @@
+import { irASeccion } from '../../soporte/empresa';
 import { abrirConsolaDePlataforma } from '../../soporte/plataforma';
 import { expect, paso, recorrido } from '../nucleo';
 
@@ -13,7 +14,7 @@ recorrido(
   },
   async ({ page }) => {
     const consola = await abrirConsolaDePlataforma(page);
-    await consola.getByRole('link', { name: 'Secretos' }).click();
+    await irASeccion(consola, 'Secretos');
     await expect(consola.getByRole('heading', { level: 1, name: 'Secretos en reposo' })).toBeVisible();
     await expect(consola.getByRole('table').first()).toBeVisible();
 

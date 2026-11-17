@@ -1,4 +1,4 @@
-import { expect, type FrameLocator, type Locator } from '@playwright/test';
+import { expect, type FrameLocator, type Locator, type Page } from '@playwright/test';
 
 /**
  * Acciones de las personas de la empresa dentro de Validasoft embebido (el iframe que devuelve `abrirEmbebido`).
@@ -6,10 +6,11 @@ import { expect, type FrameLocator, type Locator } from '@playwright/test';
  */
 
 /**
- * Va a una sección de la barra superior: su pestaña si cabe en el ancho del iframe, y si no, la opción del menú «Más»
- * (las pestañas que no caben pasan allí, así que el mismo nombre puede ser un enlace de la barra o un ítem del menú).
+ * Va a una sección de la barra superior (la de la empresa o la de la consola de Plataforma, NAV-8): su pestaña si cabe en el
+ * ancho del iframe, y si no, la opción del menú «Más» (las pestañas que no caben pasan allí, así que el mismo nombre puede
+ * ser un enlace de la barra o un ítem del menú). Acepta el iframe embebido o la página (ingreso directo).
  */
-export async function irASeccion(app: FrameLocator, nombre: string): Promise<void> {
+export async function irASeccion(app: FrameLocator | Page, nombre: string): Promise<void> {
   const barra = app.getByRole('navigation', { name: 'Secciones' });
   await expect(barra).toBeVisible();
   const pestana = barra.getByRole('link', { name: nombre, exact: true });

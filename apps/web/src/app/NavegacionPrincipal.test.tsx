@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { createValidasoftTheme } from '@validasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import i18n from '../i18n';
 import { NavegacionPrincipal, type Pestana } from './NavegacionPrincipal';
 import type { MedidasPestanas } from './pestanasAdaptativas';
 
@@ -23,7 +24,7 @@ function montar(activa: Pestana['clave'] | null, medidasDeLaBarra?: MedidasPesta
   return render(
     <ThemeProvider theme={createValidasoftTheme('light')}>
       <MemoryRouter>
-        <NavegacionPrincipal pestanas={pestanas} empresaId="emp" activa={activa} medidas={medidasDeLaBarra} />
+        <NavegacionPrincipal pestanas={pestanas} rutaBase="/e/emp" activa={activa} nombreDe={(clave) => i18n.t(`nav.${clave}`)} medidas={medidasDeLaBarra} />
       </MemoryRouter>
     </ThemeProvider>,
   );
@@ -121,6 +122,29 @@ describe('NavegacionPrincipal', () => {
     await usuario.click(screen.getByRole('button', { name: 'Más' }));
     await usuario.click(screen.getByRole('menuitem', { name: 'Vínculos' }));
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+  });
+
+  it('sirve a otra barra: la ruta base y el nombre de cada pestaña los pone quien la usa', () => {
+    render(
+      <ThemeProvider theme={createValidasoftTheme('light')}>
+        <MemoryRouter>
+          <NavegacionPrincipal<'a' | 'b'>
+            pestanas={[
+              { clave: 'a', ruta: 'seccion-a', prefijos: ['seccion-a'] },
+              { clave: 'b', ruta: 'seccion-b', prefijos: ['seccion-b'], conteo: '3' },
+            ]}
+            rutaBase="/otra"
+            activa="b"
+            nombreDe={(clave) => `Sección ${clave.toUpperCase()}`}
+          />
+        </MemoryRouter>
+      </ThemeProvider>,
+    );
+    expect(screen.getByRole('link', { name: 'Sección A' })).toHaveAttribute('href', '/otra/seccion-a');
+    const activa = screen.getByRole('link', { name: /Sección B/ });
+    expect(activa).toHaveAttribute('href', '/otra/seccion-b');
+    expect(activa).toHaveAttribute('aria-current', 'page');
+    expect(activa).toHaveTextContent('Sección B (3)');
   });
 
   it('con una barra estrechísima solo queda «Más»', () => {
