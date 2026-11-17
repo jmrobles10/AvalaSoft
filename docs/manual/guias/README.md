@@ -16,6 +16,7 @@ Lo que no sale de un recorrido: arquitectura, flujo de punta a punta, configurac
 ## Flujo de punta a punta
 
 - [Del vínculo a la validación, de punta a punta](flujo-del-vinculo-a-la-validacion.md) — El camino completo: la empresa se configura y crea el vínculo, el tercero acepta y completa su expediente, las áreas y el oficial revisan, se emite el certificado y luego vienen las vigencias, las actualizaciones, los bloqueos y los webhooks de cada hito.
+- [Replica una empresa del SRM y prueba la validación de punta a punta](replicar-una-empresa-del-srm.md) — Guía para Producto: con la base local en blanco, configura a mano una constructora como funciona hoy en el SRM (grupo, empresa, áreas, documentos, flujo, motivos y textos), invita a un proveedor y recorre la validación completa hasta verificar su certificado.
 
 ## Configuración y glosario
 
