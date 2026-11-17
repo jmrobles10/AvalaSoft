@@ -47,7 +47,7 @@ recorrido(
     await paso(page, {
       titulo: 'Escribe los datos de la nueva empresa',
       explicacion:
-        'El diálogo usa el mismo formulario de la primera empresa del alta: país y tipo de identificación, número, razón social y prefijo de folio. El prefijo es el que aparece en los números de sus expedientes y no cambia después, así que elige uno corto y reconocible. ',
+        'El diálogo usa el mismo formulario de la primera empresa del alta: país y tipo de identificación, número, razón social y prefijo de folio. El prefijo es el que aparece en los números de sus expedientes y se puede corregir después con «Editar» en la fila de la empresa (los folios ya emitidos conservan el prefijo anterior); aun así, elige uno corto y reconocible. ',
       resaltar: [
         dialogo.getByRole('textbox', { name: /Número de identificación/ }),
         dialogo.getByRole('textbox', { name: /Razón social/ }),

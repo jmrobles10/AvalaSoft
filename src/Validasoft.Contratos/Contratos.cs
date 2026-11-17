@@ -47,6 +47,12 @@ public sealed record TenantCreadoDto(
 
 public sealed record CrearEmpresaDto(IdentificacionDto Identificacion, string Nombre, string PrefijoFolio, string? LogoUrl, string? ReplyTo);
 
+/// <summary>
+/// Corrección de los datos de alta de una empresa desde la consola de Plataforma: identificación, razón social y prefijo de folio. Los
+/// tres se envían completos (lo que no cambia, igual). Los folios ya emitidos conservan el prefijo anterior.
+/// </summary>
+public sealed record CorregirEmpresaDto(IdentificacionDto Identificacion, string Nombre, string PrefijoFolio);
+
 public sealed record EmpresaDto(
     Guid Id, Guid TenantId, IdentificacionDto Identificacion, string Nombre, string? LogoUrl, string? ReplyTo, string PrefijoFolio, bool Activa,
     string? ColorMarca = null);

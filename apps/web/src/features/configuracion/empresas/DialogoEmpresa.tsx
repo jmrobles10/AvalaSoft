@@ -11,24 +11,32 @@ import { useCrearEmpresa, usePaises } from './api';
 import { borradorEmpresaNuevo, ejemploFolio, validarEmpresa, type BorradorEmpresa, type ErrorEmpresa } from './modelo';
 
 interface Props {
-  claveIdempotencia: string;
+  /** `Idempotency-Key` del alta; solo la usa la creación propia del grupo (la consola de Plataforma trae su `mutacion`). */
+  claveIdempotencia?: string;
   onCerrar: () => void;
-  onCreada: (empresa: EmpresaDto) => void;
-  /** Quién crea la empresa: por omisión, el grupo desde su propia sesión; la consola de Plataforma pasa la suya (con el grupo ya elegido, PI-4). */
+  /** Se llama al guardar con éxito, sea el alta o la corrección. */
+  onGuardada: (empresa: EmpresaDto) => void;
+  /** Quién guarda la empresa: por omisión, el grupo desde su propia sesión; la consola de Plataforma pasa la suya (con el grupo ya elegido, PI-4). */
   mutacion?: UseMutationResult<EmpresaDto, Error, BorradorEmpresa>;
   /** Para qué grupo es (la consola de Plataforma lo dice debajo del título). */
   subtitulo?: string;
+  /** Con esto el diálogo corrige una empresa que ya existe, precargada con sus datos de alta (la consola de Plataforma); sin esto, la agrega. */
+  inicial?: BorradorEmpresa;
 }
 
-/** Agregar una razón social al grupo: identificación, razón social y prefijo de folio (no se puede cambiar después). */
-export function DialogoEmpresa({ claveIdempotencia, onCerrar, onCreada, mutacion, subtitulo }: Props) {
+/**
+ * Agregar una razón social al grupo —identificación, razón social y prefijo de folio— o, con `inicial`, corregirlas (solo Plataforma; los
+ * folios ya emitidos conservan el prefijo anterior).
+ */
+export function DialogoEmpresa({ claveIdempotencia = '', onCerrar, onGuardada, mutacion, subtitulo, inicial }: Props) {
   const { t } = useTranslation();
   const mostrar = useAvisos((s) => s.mostrar);
-  const [b, setB] = useState<BorradorEmpresa>(borradorEmpresaNuevo);
+  const [b, setB] = useState<BorradorEmpresa>(inicial ?? borradorEmpresaNuevo);
   const [tocados, setTocados] = useState<ReadonlySet<keyof BorradorEmpresa>>(new Set());
   const paises = usePaises(true);
   const propia = useCrearEmpresa(claveIdempotencia);
   const crear = mutacion ?? propia;
+  const editando = inicial !== undefined;
 
   const tipos = paises.data?.find((p) => p.codigo === b.pais)?.tiposIdentificacion ?? [];
   const tipo = tipos.find((x) => x.codigo === b.tipo);
@@ -47,8 +55,8 @@ export function DialogoEmpresa({ claveIdempotencia, onCerrar, onCreada, mutacion
     if (primero) return;
     crear.mutate(b, {
       onSuccess: (empresa) => {
-        mostrar(t('empresasGrupo.creada', { nombre: empresa.nombre }));
-        onCreada(empresa);
+        mostrar(t(editando ? 'empresasGrupo.actualizada' : 'empresasGrupo.creada', { nombre: empresa.nombre }));
+        onGuardada(empresa);
       },
     });
   };
@@ -61,7 +69,7 @@ export function DialogoEmpresa({ claveIdempotencia, onCerrar, onCreada, mutacion
     <Dialog open onClose={crear.isPending ? undefined : onCerrar} maxWidth={false} slotProps={{ paper: { sx: { width: 520, maxWidth: 'calc(100% - 32px)' } } }} aria-labelledby="titulo-empresa">
       <FormularioDeDialogo onSubmit={enviar}>
         <DialogTitle id="titulo-empresa">
-          {t('empresasGrupo.nueva')}
+          {t(editando ? 'empresasGrupo.editar' : 'empresasGrupo.nueva')}
           {subtitulo && (
             <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
               {subtitulo}
@@ -133,7 +141,7 @@ export function DialogoEmpresa({ claveIdempotencia, onCerrar, onCreada, mutacion
               slotProps={{ htmlInput: { maxLength: 10, spellCheck: false, autoComplete: 'off' } }}
               sx={{ maxWidth: 240, '& input': { fontFamily: (th) => th.typography.mono.fontFamily } }}
             />
-            <Alert severity="info">{t('empresasGrupo.prefijoNoCambia')}</Alert>
+            <Alert severity="info">{t(editando ? 'empresasGrupo.prefijoAlEditar' : 'empresasGrupo.prefijoAlCrear')}</Alert>
           </Stack>
         </DialogContent>
         <DialogActions>
@@ -142,7 +150,7 @@ export function DialogoEmpresa({ claveIdempotencia, onCerrar, onCreada, mutacion
             {t('comun.cancelar')}
           </Button>
           <Button type="submit" variant="contained" disabled={crear.isPending || primero !== undefined} startIcon={crear.isPending ? <IconoCarga /> : undefined}>
-            {t('empresasGrupo.crear')}
+            {t(editando ? 'empresasGrupo.guardar' : 'empresasGrupo.crear')}
           </Button>
         </DialogActions>
       </FormularioDeDialogo>

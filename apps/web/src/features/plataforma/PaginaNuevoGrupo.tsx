@@ -132,7 +132,7 @@ export function PaginaNuevoGrupo() {
                   mono: true,
                 })}
                 {campo(t('empresasGrupo.campos.prefijo'), b.empresa.prefijo, (v) => cambiarEmpresa({ prefijo: v.toUpperCase().replace(/[^A-Z0-9]/g, '') }), ['empresa-prefijo-invalido'], {
-                  ayuda: t('empresasGrupo.prefijoNoCambia'),
+                  ayuda: t('empresasGrupo.prefijoAlCrear'),
                   mono: true,
                 })}
               </Stack>

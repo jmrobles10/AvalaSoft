@@ -1,4 +1,4 @@
-import type { CrearEmpresaDto, IdentificacionDto, TextoLegalDto, TextosLegalesEmpresaDto, TipoIdentificacionDto } from '@validasoft/api-client';
+import type { CorregirEmpresaDto, CrearEmpresaDto, IdentificacionDto, TextoLegalDto, TextosLegalesEmpresaDto, TipoIdentificacionDto } from '@validasoft/api-client';
 
 /**
  * Empresas del grupo (ADR-0008) y sus textos legales. Misma validación que el dominio (`Empresa.Crear`,
@@ -73,6 +73,18 @@ export function cuerpoCrearEmpresa(b: BorradorEmpresa): CrearEmpresaDto {
     logoUrl: null,
     replyTo: null,
   };
+}
+
+/** Lo que se corrige de una empresa ya creada (consola de Plataforma): los tres datos de su alta, completos. */
+export function cuerpoCorregirEmpresa(b: BorradorEmpresa): CorregirEmpresaDto {
+  const { identificacion, nombre, prefijoFolio } = cuerpoCrearEmpresa(b);
+  return { identificacion, nombre, prefijoFolio };
+}
+
+/** El formulario de edición arranca con lo que la empresa tiene hoy (el número con su dígito de verificación, como se escribiría). */
+export function borradorDeEmpresa(e: { identificacion: IdentificacionDto; nombre: string; prefijoFolio: string }): BorradorEmpresa {
+  const { pais, tipo, numero, digitoVerificacion } = e.identificacion;
+  return { pais, tipo, numero: digitoVerificacion ? `${numero}-${digitoVerificacion}` : numero, nombre: e.nombre, prefijo: e.prefijoFolio };
 }
 
 /** «NIT 900123456-7». */

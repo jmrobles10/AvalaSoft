@@ -56,6 +56,41 @@ public sealed class SandboxTests
     }
 
     [Fact]
+    public void Corregir_la_empresa_real_alinea_la_copia_de_pruebas_pero_su_prefijo_sigue_su_propia_regla()
+    {
+        var real = EmpresaReal();
+        var copia = Empresa.CrearCopiaDeSandbox(real, Guid.NewGuid(), "TNORTE", Ahora);
+
+        real.CorregirDatosDeAlta(Identificacion.Crear("CO", "NIT", "900123456", "8"), "Constructora Sur S.A.S.", "SUR");
+        copia.SincronizarCopiaDeSandbox(real);
+
+        // Nombre e identificación siguen al real; el prefijo no se copia (sigue siendo de la copia) hasta que se vuelve a derivar.
+        copia.Nombre.ShouldBe("Constructora Sur S.A.S. (sandbox)");
+        (copia.Identificacion, copia.ClaveIdentificacion).ShouldBe((real.Identificacion, "CO|NIT|900123456"));
+        copia.PrefijoFolio.ShouldBe("TNORTE");
+
+        copia.AjustarPrefijoDeCopiaDeSandbox(real.PrefijoFolio, new HashSet<string>());
+        copia.PrefijoFolio.ShouldBe("TSUR");
+
+        // Si otra empresa del sandbox ya usa ese prefijo, el último carácter pasa a ser un dígito.
+        copia.AjustarPrefijoDeCopiaDeSandbox(real.PrefijoFolio, new HashSet<string> { "TSUR" });
+        copia.PrefijoFolio.ShouldBe("TSUR0");
+    }
+
+    [Fact]
+    public void La_copia_conserva_su_identificacion_si_otra_empresa_del_sandbox_ya_tiene_la_del_real()
+    {
+        var real = EmpresaReal();
+        var copia = Empresa.CrearCopiaDeSandbox(real, Guid.NewGuid(), "TNORTE", Ahora);
+        real.CorregirDatosDeAlta(Identificacion.Crear("CO", "NIT", "900123456", "8"), "Constructora Sur S.A.S.", "SUR");
+
+        copia.SincronizarCopiaDeSandbox(real, new HashSet<string> { real.ClaveIdentificacion });
+
+        copia.ClaveIdentificacion.ShouldBe("CO|NIT|800197268");
+        copia.Nombre.ShouldBe("Constructora Sur S.A.S. (sandbox)");
+    }
+
+    [Fact]
     public void El_prefijo_de_folio_de_prueba_lleva_una_T_y_evita_los_ya_usados()
     {
         AislamientoDeSandbox.PrefijoDeFolio("NORTE", new HashSet<string>()).ShouldBe("TNORTE");

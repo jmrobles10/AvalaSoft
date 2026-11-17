@@ -1,6 +1,6 @@
 # API · Plataforma
 
-42 operaciones en 13 recursos.
+43 operaciones en 13 recursos.
 
 ## Auditoría de operadores
 
@@ -405,6 +405,93 @@ curl -X POST "https://{host}/api/v1/plataforma/tenants/3fa85f64-5717-4562-b3fc-2
 ```
 
 Respuesta `201`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "tenantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "identificacion": {
+    "pais": "CO",
+    "tipo": "texto",
+    "numero": "900123456",
+    "digitoVerificacion": "texto"
+  },
+  "nombre": "Constructora Norte S.A.S.",
+  "logoUrl": "https://ejemplo.co/recurso",
+  "replyTo": "texto",
+  "prefijoFolio": "texto",
+  "activa": true,
+  "colorMarca": "texto"
+}
+```
+
+</details>
+
+### `PUT /api/v1/plataforma/tenants/{tenantId}/empresas/{empresaId}`
+
+**Corregir empresa de grupo.** Corrige la identificación, la razón social y el prefijo de folio de una empresa del grupo (con su auditoría antes/después, a nombre de Plataforma). Siempre se puede: también con el grupo o la empresa desactivados. Mismas reglas que el alta; la identificación y el prefijo siguen únicos en el grupo, sin contar a la propia empresa (enviar lo mismo no choca consigo misma y no escribe nada). Los folios y certificados ya emitidos no se reescriben (conservan el prefijo, el nombre y la identificación con que salieron) y la numeración sigue donde iba (el contador es de la empresa, no del prefijo). La copia de pruebas del sandbox, si la hay, se alinea en la misma transacción (su prefijo sigue su propia regla). 404 `tenant-no-encontrado`, `empresa-no-encontrada`; 409 `empresa-duplicada`, `prefijo-folio-duplicado`; 422 `prefijo-folio-invalido`, `nombre-requerido` y los de la identificación.
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `corregirEmpresaDeGrupo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `tenantId` | path | uuid | sí |  |
+| `empresaId` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, CorregirEmpresaDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `identificacion` | IdentificacionDto | sí |  |
+| `identificacion.pais` | texto | sí |  |
+| `identificacion.tipo` | texto | sí |  |
+| `identificacion.numero` | texto | sí |  |
+| `identificacion.digitoVerificacion` | texto o null | no |  |
+| `nombre` | texto | sí |  |
+| `prefijoFolio` | texto | sí |  |
+
+**Respuestas**
+
+- `200` OK — EmpresaDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `tenantId` | uuid | sí |  |
+| `identificacion` | IdentificacionDto | sí |  |
+| `identificacion.pais` | texto | sí |  |
+| `identificacion.tipo` | texto | sí |  |
+| `identificacion.numero` | texto | sí |  |
+| `identificacion.digitoVerificacion` | texto o null | no |  |
+| `nombre` | texto | sí |  |
+| `logoUrl` | texto o null | no |  |
+| `replyTo` | texto o null | no |  |
+| `prefijoFolio` | texto | sí |  |
+| `activa` | booleano | sí |  |
+| `colorMarca` | texto o null | no |  |
+
+**Errores de negocio que lanza**
+
+- `404` `empresa-no-encontrada`
+- `404` `tenant-no-encontrado`
+- `409` `empresa-duplicada`
+- `409` `prefijo-folio-duplicado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X PUT "https://{host}/api/v1/plataforma/tenants/3fa85f64-5717-4562-b3fc-2c963f66afa6/empresas/3fa85f64-5717-4562-b3fc-2c963f66afa6" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
+  -H "Content-Type: application/json" \
+  -d '{"identificacion":{"pais":"CO","tipo":"texto","numero":"900123456","digitoVerificacion":"texto"},"nombre":"Constructora Norte S.A.S.","prefijoFolio":"texto"}'
+```
+
+Respuesta `200`:
 
 ```json
 {

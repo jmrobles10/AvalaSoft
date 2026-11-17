@@ -52,7 +52,7 @@ recorrido(
     await paso(page, {
       titulo: 'Escribe los datos de la empresa',
       explicacion:
-        'Elige el tipo y el número de identificación (con o sin dígito de verificación: Validasoft lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: no se puede cambiar después. ' +
+        'Elige el tipo y el número de identificación (con o sin dígito de verificación: Validasoft lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior. ' +
         'El campo de ejemplo muestra cómo se verán sus folios.',
       resaltar: [dialogo.getByRole('textbox', { name: 'Razón social' }), dialogo.getByRole('textbox', { name: 'Prefijo de folio' })],
       variantes: [

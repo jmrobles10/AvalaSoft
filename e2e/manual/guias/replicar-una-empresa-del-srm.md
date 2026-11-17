@@ -168,7 +168,7 @@ Sigue el orden: cada paso deja listo algo que el siguiente necesita.
 | Primera empresa: país y tipo | `CO` y `NIT` |
 | Número | `900123456` (el dígito de verificación es opcional: Validasoft lo calcula y lo compara) |
 | Razón social | `Constructora Andina S.A.S.` |
-| Prefijo de folio | `CAND` (de 2 a 10 mayúsculas o números; **no cambia después**; encabeza los folios `CAND-E-2026-…` y `CAND-C-2026-…`) |
+| Prefijo de folio | `CAND` (de 2 a 10 mayúsculas o números; **después solo Plataforma puede corregirlo**, y los folios ya emitidos conservan el anterior; encabeza los folios `CAND-E-2026-…` y `CAND-C-2026-…`) |
 | Administrador: nombre y correo | `Ana Administradora`, `ana@andina.test` |
 | Su usuario en el sistema | Vacío |
 | Cómo entra la gente del grupo | Marca **solo «Directo a Validasoft»**. Así no aparece la sección del sistema integrado y no necesitas una clave pública. |

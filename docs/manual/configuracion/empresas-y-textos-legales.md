@@ -45,7 +45,7 @@ La tabla lista las razones sociales del grupo con su identificación, su prefijo
 
 ## Paso 2. Escribe los datos de la empresa
 
-Elige el tipo y el número de identificación (con o sin dígito de verificación: Validasoft lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: no se puede cambiar después. El campo de ejemplo muestra cómo se verán sus folios.
+Elige el tipo y el número de identificación (con o sin dígito de verificación: Validasoft lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior. El campo de ejemplo muestra cómo se verán sus folios.
 
 > **Pantalla:** `/e/{empresa}/empresas`
 
