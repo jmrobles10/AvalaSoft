@@ -3,7 +3,8 @@
  * postMessage de `sesion/puenteEmbed.ts` desde el lado del contenedor: responde a `sesion-requerida` emitiendo una
  * sesión, ajusta la altura con `resize`, hace scroll hasta la región de `visible` y envía el tema.
  */
-import { abrirSesionDelegada, cargarSemilla, type SemillaDev } from '../dev/firmarAsercion';
+import { abrirSesionDelegada } from '../dev/firmarAsercion';
+import { cargarSemilla, type SemillaDemo } from '../dev/semilla';
 
 interface MensajeDeValidasoft {
   tipo: string;
@@ -44,7 +45,7 @@ const bitacora = elemento('bitacora');
 const marco = document.querySelector<HTMLElement>('.marco');
 const ORIGEN = window.location.origin;
 
-let semilla: SemillaDev | null = null;
+let semilla: SemillaDemo | null = null;
 let iframe: HTMLIFrameElement | null = null;
 
 function registrar(direccion: 'entrante' | 'saliente', texto: string) {
@@ -155,13 +156,14 @@ persona.addEventListener('change', () => {
   if (iframe) void entregarSesion();
 });
 
+// La demo embebida necesita las personas del sistema DEMO: con `pnpm semilla:plataforma` (solo Plataforma) no hay con quién abrirla.
 void cargarSemilla().then((datos) => {
-  semilla = datos;
-  if (!datos) {
+  semilla = datos?.demo ?? null;
+  if (!semilla) {
     elemento('sin-semilla').hidden = false;
     botonAbrir.disabled = true;
     return;
   }
-  persona.replaceChildren(...datos.usuarios.map((u) => new Option(`${u.nombre} — ${u.descripcion}`, u.sub)));
-  empresa.replaceChildren(new Option('(la que elija la persona)', ''), ...datos.empresas.map((e) => new Option(e.nombre, e.id)));
+  persona.replaceChildren(...semilla.usuarios.map((u) => new Option(`${u.nombre} — ${u.descripcion}`, u.sub)));
+  empresa.replaceChildren(new Option('(la que elija la persona)', ''), ...semilla.empresas.map((e) => new Option(e.nombre, e.id)));
 });

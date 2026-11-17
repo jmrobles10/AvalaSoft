@@ -28,17 +28,6 @@ export interface OperadorDev {
   persona: PersonaDelegada;
 }
 
-/** Lo que `pnpm semilla:dev` deja en apps/web/.semilla.local.json. */
-export interface SemillaDev {
-  apiKey: string;
-  clavePrivadaPem: string;
-  sistema: { id: string; codigo: string };
-  empresas: { id: string; nombre: string }[];
-  usuarios: (PersonaDelegada & { descripcion: string })[];
-  /** Ausente en semillas anteriores a la consola de Plataforma. */
-  plataforma?: OperadorDev;
-}
-
 const VIGENCIA_ASERCION_S = 300;
 
 function base64Url(bytes: Uint8Array): string {
@@ -126,15 +115,4 @@ export async function abrirSesionDePlataforma(operador: OperadorDev): Promise<Se
     empresa: null,
     headers: { 'X-Api-Key': operador.clavePlataforma, 'X-Usuario-Delegado': asercion },
   });
-}
-
-export async function cargarSemilla(): Promise<SemillaDev | null> {
-  try {
-    const respuesta = await fetch('/__dev/semilla.json');
-    if (!respuesta.ok) return null;
-    const datos = (await respuesta.json()) as Partial<SemillaDev>;
-    return datos.apiKey && datos.clavePrivadaPem && datos.sistema && datos.usuarios ? (datos as SemillaDev) : null;
-  } catch {
-    return null;
-  }
 }

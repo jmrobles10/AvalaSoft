@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 
 /**
- * Solo en `vite dev`: sirve las credenciales que dejó `pnpm semilla:dev` (archivo ignorado por git) para
+ * Solo en `vite dev`: sirve las credenciales que dejó `pnpm semilla:dev` o `pnpm semilla:plataforma` (archivo ignorado por git) para
  * prellenar el formulario de sesión de desarrollo y la página `embed-demo.html`. Nunca entra al build.
  */
 function semillaDeDesarrollo(): Plugin {

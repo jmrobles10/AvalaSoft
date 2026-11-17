@@ -1,13 +1,15 @@
 import { Alert, Button, Card, CardContent, Link, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { abrirSesionDelegada, abrirSesionDePlataforma, canjearSesion, cargarSemilla, type SemillaDev } from '../dev/firmarAsercion';
+import { abrirSesionDelegada, abrirSesionDePlataforma, canjearSesion } from '../dev/firmarAsercion';
+import { cargarSemilla, type SemillaDev } from '../dev/semilla';
 import { mensajeDeError } from '../shared/errores';
 import { useSesion } from './sesionStore';
 
 /**
  * Solo en `vite dev` y fuera de un iframe: abre una sesión como lo haría el sistema integrado, para trabajar en la
- * UI sin un contenedor. Los campos se prellenan con `pnpm semilla:dev`.
+ * UI sin un contenedor. Los campos se prellenan con `pnpm semilla:dev`; con `pnpm semilla:plataforma` (base limpia) solo
+ * se ofrece «Entrar como operador de Plataforma» y el resto del formulario queda para llenarlo a mano.
  */
 export function FormularioSesionDev({ vencida = false }: { vencida?: boolean }) {
   const { t } = useTranslation();
@@ -27,10 +29,13 @@ export function FormularioSesionDev({ vencida = false }: { vencida?: boolean }) 
     void cargarSemilla().then((datos) => {
       if (!datos) return;
       setSemilla(datos);
-      setApiKey(datos.apiKey);
-      setSistema(datos.sistema.codigo);
-      setClavePrivadaPem(datos.clavePrivadaPem);
-      const primero = datos.usuarios[0];
+      // Sin tenant ni sistema de la semilla (solo Plataforma), los campos de persona quedan vacíos para llenarlos a mano.
+      const { demo } = datos;
+      if (!demo) return;
+      setApiKey(demo.apiKey);
+      setSistema(demo.sistema.codigo);
+      setClavePrivadaPem(demo.clavePrivadaPem);
+      const primero = demo.usuarios[0];
       if (primero) {
         setSub(primero.sub);
         setNombre(primero.nombre);
@@ -40,7 +45,7 @@ export function FormularioSesionDev({ vencida = false }: { vencida?: boolean }) 
   }, []);
 
   const elegirPersona = (valor: string) => {
-    const persona = semilla?.usuarios.find((u) => u.sub === valor);
+    const persona = semilla?.demo?.usuarios.find((u) => u.sub === valor);
     if (!persona) return;
     setSub(persona.sub);
     setNombre(persona.nombre);
@@ -87,11 +92,13 @@ export function FormularioSesionDev({ vencida = false }: { vencida?: boolean }) 
             {t('sesion.dev.ayuda')}
           </Typography>
           {vencida && <Alert severity="warning">{t('sesion.vencida')}</Alert>}
-          <Alert severity={semilla ? 'success' : 'info'}>{semilla ? t('sesion.dev.semilla') : t('sesion.dev.sinSemilla')}</Alert>
+          <Alert severity={semilla ? 'success' : 'info'}>
+            {semilla ? t(semilla.demo ? 'sesion.dev.semilla' : 'sesion.dev.semillaPlataforma') : t('sesion.dev.sinSemilla')}
+          </Alert>
           {error !== null && <Alert severity="error">{mensajeDeError(error, t)}</Alert>}
-          {semilla && (
+          {semilla?.demo && (
             <TextField select label={t('sesion.dev.usuario')} value={sub} onChange={(e) => elegirPersona(e.target.value)}>
-              {semilla.usuarios.map((u) => (
+              {semilla.demo.usuarios.map((u) => (
                 <MenuItem key={u.sub} value={u.sub}>
                   {u.nombre} — {u.descripcion}
                 </MenuItem>

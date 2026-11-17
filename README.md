@@ -29,9 +29,12 @@ pnpm install
 docker compose -f infra/compose/compose.yaml up -d      # PostgreSQL (:5432), Mailpit (:8025) y MinIO (:9000, consola :9001)
 ASPNETCORE_ENVIRONMENT=Development Validasoft__Correo__UrlPublica=http://localhost:5181 dotnet run --project src/Validasoft.Api   # API en :5080
 pnpm semilla:dev                                         # datos de ejemplo: grupo, empresas, sistema DEMO, usuarios y flujo
+pnpm semilla:plataforma                                  # alternativa, base limpia: solo el operador de la consola de Plataforma (#/plataforma)
 pnpm dev                                                 # app de la empresa en :5173 (demo embebida en /embed-demo.html)
 pnpm dev:public                                          # portal del tercero en :5181
 ```
+
+`pnpm semilla:plataforma` (o `pnpm semilla:dev --solo-plataforma`) no crea grupo, empresas ni usuarios: solo registra el sistema `CONSOLA_DEV` con una clave nueva y deja en `apps/web/.semilla.local.json` lo necesario para «Entrar como operador de Plataforma» en la sesión de desarrollo; desde la consola (`#/plataforma`) creas a mano el grupo, la empresa y su administrador. Reemplaza el archivo de la semilla anterior.
 
 Para correr la API en un contenedor en vez de con `dotnet run`: `docker compose -f infra/compose/compose.yaml --profile app up -d --build` (API en :5080). Los comandos de cada app y la demo embebida están en [apps/web/README.md](apps/web/README.md) y [apps/public/README.md](apps/public/README.md).
 
