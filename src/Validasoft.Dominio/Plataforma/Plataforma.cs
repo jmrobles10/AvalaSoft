@@ -14,7 +14,10 @@ public sealed class Tenant
 {
     public Guid Id { get; set; }
 
-    /// <summary>Inmutable; forma parte de las API keys (<c>vsk_{entorno}_{slug}_…</c>).</summary>
+    /// <summary>
+    /// Inmutable: forma parte de cada API key del grupo (<c>vsk_{entorno}_{slug}_…</c>) y es con lo que se encuentra al grupo al autenticarla;
+    /// cambiarlo invalidaría todas las llaves emitidas. Tampoco lo corrige Plataforma. El sandbox lleva el suyo, con <c>~sandbox</c>.
+    /// </summary>
     public string Slug { get; set; } = string.Empty;
 
     public string Nombre { get; set; } = string.Empty;
@@ -118,22 +121,71 @@ public sealed class Tenant
             throw ReglaDeNegocioException.Validacion("slug-invalido",
                 "El slug debe tener entre 3 y 30 caracteres: letras minúsculas, números y guiones, sin guion al inicio o al final.");
 
-        if (string.IsNullOrWhiteSpace(nombre))
-            throw ReglaDeNegocioException.Validacion("nombre-requerido", "El nombre del tenant es obligatorio.");
-
-        var zona = string.IsNullOrWhiteSpace(zonaHoraria) ? "America/Bogota" : zonaHoraria.Trim();
-        if (!TimeZoneInfo.TryFindSystemTimeZoneById(zona, out _))
-            throw ReglaDeNegocioException.Validacion("zona-horaria-invalida", $"'{zona}' no es una zona horaria IANA válida.");
-
         return new Tenant
         {
             Id = Guid.CreateVersion7(),
             Slug = slugNormalizado,
-            Nombre = nombre.Trim(),
-            Region = string.IsNullOrWhiteSpace(region) ? "co" : region.Trim().ToLowerInvariant(),
-            ZonaHoraria = zona,
+            Nombre = ValidarNombre(nombre),
+            Region = NormalizarRegion(region),
+            ZonaHoraria = ValidarZonaHoraria(zonaHoraria),
             CreadoEn = ahora
         };
+    }
+
+    /// <summary>
+    /// Corrige los datos con que se dio de alta el grupo —nombre, región y zona horaria— con las mismas reglas que <see cref="Crear"/>
+    /// (nombre obligatorio, zona IANA válida; una región o una zona vacías son las del alta: <c>co</c> y <c>America/Bogota</c>); <c>null</c>
+    /// conserva el valor actual. El slug no cambia (va en las API keys). Siempre se puede, también con el grupo desactivado. Devuelve si algo
+    /// cambió. Un grupo sandbox no se corrige por su cuenta: sigue al de producción (<see cref="AlinearConProduccion"/>).
+    /// </summary>
+    public bool CorregirDatos(string nombre, string? region, string? zonaHoraria)
+    {
+        if (EsSandbox)
+            throw ReglaDeNegocioException.Conflicto("copia-de-sandbox", "El sandbox sigue a su grupo de producción: corrige el de producción.");
+
+        var nombreLimpio = ValidarNombre(nombre);
+        var regionNueva = region is null ? Region : NormalizarRegion(region);
+        var zonaNueva = zonaHoraria is null ? ZonaHoraria : ValidarZonaHoraria(zonaHoraria);
+
+        var cambio = nombreLimpio != Nombre || regionNueva != Region || zonaNueva != ZonaHoraria;
+        Nombre = nombreLimpio;
+        Region = regionNueva;
+        ZonaHoraria = zonaNueva;
+        return cambio;
+    }
+
+    /// <summary>
+    /// Pone este sandbox al día con su grupo de producción tras una corrección: el nombre con « (sandbox)», la región y la zona horaria.
+    /// Devuelve si algo cambió.
+    /// </summary>
+    public bool AlinearConProduccion(Tenant produccion)
+    {
+        if (TenantDeProduccionId != produccion.Id)
+            throw ReglaDeNegocioException.Conflicto("sandbox-ajeno", "Este sandbox no es el de ese grupo.");
+
+        var nombre = produccion.Nombre + AislamientoDeSandbox.SufijoDeNombre;
+        var cambio = nombre != Nombre || produccion.Region != Region || produccion.ZonaHoraria != ZonaHoraria;
+        Nombre = nombre;
+        Region = produccion.Region;
+        ZonaHoraria = produccion.ZonaHoraria;
+        return cambio;
+    }
+
+    private static string ValidarNombre(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            throw ReglaDeNegocioException.Validacion("nombre-requerido", "El nombre del tenant es obligatorio.");
+        return nombre.Trim();
+    }
+
+    private static string NormalizarRegion(string? region) => string.IsNullOrWhiteSpace(region) ? "co" : region.Trim().ToLowerInvariant();
+
+    private static string ValidarZonaHoraria(string? zonaHoraria)
+    {
+        var zona = string.IsNullOrWhiteSpace(zonaHoraria) ? "America/Bogota" : zonaHoraria.Trim();
+        if (!TimeZoneInfo.TryFindSystemTimeZoneById(zona, out _))
+            throw ReglaDeNegocioException.Validacion("zona-horaria-invalida", $"'{zona}' no es una zona horaria IANA válida.");
+        return zona;
     }
 }
 

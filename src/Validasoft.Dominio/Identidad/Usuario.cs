@@ -62,18 +62,38 @@ public sealed class Usuario
 
     public static Usuario Crear(string nombre, string correo, Identificacion? identificacion, DateTimeOffset ahora, Guid? tenantId = null)
     {
-        if (string.IsNullOrWhiteSpace(nombre))
-            throw ReglaDeNegocioException.Validacion("nombre-requerido", "El nombre del usuario es obligatorio.");
-
         return new Usuario
         {
             Id = Guid.CreateVersion7(),
             TenantId = tenantId,
-            Nombre = nombre.Trim(),
+            Nombre = ValidarNombre(nombre),
             Correo = NormalizarCorreo(correo),
             Identificacion = identificacion,
             CreadoEn = ahora
         };
+    }
+
+    /// <summary>
+    /// Corrige el nombre y el correo con los que se dio de alta a la persona (la consola de Plataforma lo ofrece sin condiciones, también con la cuenta
+    /// desactivada), con las mismas reglas que <see cref="Crear"/>: nombre obligatorio y correo válido, que se normaliza (minúsculas, sin espacios).
+    /// Devuelve si algo cambió. Que el correo no lo tenga otra persona del grupo lo decide quien tiene a las demás.
+    /// </summary>
+    public bool CorregirDatos(string nombre, string correo)
+    {
+        var nombreLimpio = ValidarNombre(nombre);
+        var correoNormalizado = NormalizarCorreo(correo);
+
+        var cambio = nombreLimpio != Nombre || correoNormalizado != Correo;
+        Nombre = nombreLimpio;
+        Correo = correoNormalizado;
+        return cambio;
+    }
+
+    private static string ValidarNombre(string? nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            throw ReglaDeNegocioException.Validacion("nombre-requerido", "El nombre del usuario es obligatorio.");
+        return nombre.Trim();
     }
 
     /// <summary>Alta automática desde una aserción delegada: nace <b>sin roles</b> (ID-2).</summary>
@@ -108,6 +128,28 @@ public sealed class Usuario
 
         if (existente is null)
             Identidades.Add(new IdentidadExterna(sistemaId, id));
+    }
+
+    /// <summary>
+    /// Reemplaza las identidades externas por las indicadas (a lo más una por sistema; el id se recorta y no puede quedar vacío): así Plataforma corrige
+    /// el <c>sub</c> con que el sistema integrado reconoce a la persona, o lo quita. Devuelve si algo cambió. Que el <c>sub</c> no lo tenga otra persona del
+    /// grupo y que el sistema exista lo decide quien tiene el contexto (el índice <see cref="IndiceIdentidadExterna"/>).
+    /// </summary>
+    public bool ReemplazarIdentidades(IEnumerable<IdentidadExterna> nuevas)
+    {
+        var lista = new List<IdentidadExterna>();
+        foreach (var identidad in nuevas)
+        {
+            if (string.IsNullOrWhiteSpace(identidad.IdExterno))
+                throw ReglaDeNegocioException.Validacion("identidad-externa-invalida", "La identidad externa necesita el id del usuario en el sistema.");
+            if (lista.Any(i => i.SistemaId == identidad.SistemaId))
+                throw ReglaDeNegocioException.Validacion("identidades-repetidas", "Solo puede haber una identidad por sistema.");
+            lista.Add(new IdentidadExterna(identidad.SistemaId, identidad.IdExterno.Trim()));
+        }
+
+        var cambio = lista.Count != Identidades.Count || lista.Any(i => !Identidades.Contains(i));
+        Identidades = lista;
+        return cambio;
     }
 
     /// <summary>Reemplaza los roles. Un rol de todo el tenant hace redundante el mismo rol por empresa.</summary>

@@ -25,7 +25,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre Grupos y empresas',
       explicacion:
-        'Es la pantalla de inicio de la consola de Plataforma. Cada grupo es un cliente de Validasoft y aparece como una tarjeta con su número de empresas, su fecha de creación y sus acciones: «Plan y límites», «Sistemas» y «Agregar empresa». ' +
+        'Es la pantalla de inicio de la consola de Plataforma. Cada grupo es un cliente de Validasoft y aparece como una tarjeta con su número de empresas, su fecha de creación y sus acciones: «Ver ficha» (también desde el nombre del grupo), «Plan y límites», «Sistemas» y «Agregar empresa». ' +
         'Con el buscador encuentras un grupo por su nombre, por el nombre o NIT de una de sus empresas.',
       resaltar: consola.getByRole('searchbox', { name: 'Buscar por grupo, empresa o NIT' }),
       configuracion: {

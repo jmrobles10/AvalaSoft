@@ -1,6 +1,6 @@
 # Referencia de la API
 
-Todas las operaciones del contrato (463) agrupadas por recurso. Generada de `packages/api-client/openapi/v1.json` y del código de los endpoints con `pnpm manual`; no se edita a mano.
+Todas las operaciones del contrato (467) agrupadas por recurso. Generada de `packages/api-client/openapi/v1.json` y del código de los endpoints con `pnpm manual`; no se edita a mano.
 
 - [Convenciones](convenciones.md): autenticación, empresa activa, idempotencia, errores y límites.
 
@@ -28,7 +28,7 @@ Todas las operaciones del contrato (463) agrupadas por recurso. Generada de `pac
 - [Invitaciones](invitaciones.md) — Lotes (13)
 - [Notificaciones](notificaciones.md) — Eventos, Notificaciones, Notificaciones del tercero, Webhooks (25)
 - [Personas](personas.md) — Personas del vínculo, Personas relacionadas (6)
-- [Plataforma](plataforma.md) — Auditoría de operadores, Catálogos, Clave de arranque, Empresas de grupo, Listas de plataforma, Operadores de plataforma, Operadores directos, Plan del grupo, Secretos, Sistemas de grupo, Sistemas de plataforma estado, Solicitudes de acceso de la plataforma, Tenants (43)
+- [Plataforma](plataforma.md) — Auditoría de operadores, Catálogos, Clave de arranque, Correccion de grupo, Empresas de grupo, Listas de plataforma, Operadores de plataforma, Operadores directos, Plan del grupo, Secretos, Sistemas de grupo, Sistemas de plataforma estado, Solicitudes de acceso de la plataforma, Tenants, Usuarios de grupo (47)
 - [Revisión](revision.md) — Revisión automatica (4)
 - [Sandbox](sandbox.md) — Sandbox (6)
 - [Verificaciones](verificaciones.md) — Adjuntos de cumplimiento, Informe cumplimiento, Listas restrictivas, Matriz, Procesamiento inmediato de verificaciones, Rechazo de cumplimiento, Verificaciones (22)
