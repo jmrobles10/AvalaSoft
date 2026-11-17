@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { irASeccion } from '../../soporte/empresa';
 import { abrirConsolaDePlataforma } from '../../soporte/plataforma';
 import { expect, paso, recorrido } from '../nucleo';
 
@@ -18,7 +19,7 @@ recorrido(
     const correo = `operador.${sufijo}@e2e.validasoft.co`;
 
     const consola = await abrirConsolaDePlataforma(page);
-    await consola.getByRole('link', { name: 'Operadores' }).click();
+    await irASeccion(consola, 'Operadores');
     await expect(consola.getByRole('heading', { level: 1, name: 'Operadores' })).toBeVisible();
     await expect(consola.getByRole('table', { name: 'Operadores' })).toBeVisible();
 

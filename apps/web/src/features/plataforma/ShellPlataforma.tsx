@@ -4,7 +4,8 @@ import { Logo, VARIABLE_TOPE } from '@validasoft/ui';
 import { Moon, ShieldCheck, Sun } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink, Navigate, Outlet, useLocation } from 'react-router';
+import { Navigate, Outlet, useLocation } from 'react-router';
+import { NavegacionPrincipal, type Pestana } from '../../app/NavegacionPrincipal';
 import { RELLENO_CONTENIDO } from '../../app/rellenoContenido';
 import { AvisoDePasskey } from '../cuenta/AvisoDePasskey';
 import { MenuDeCuenta } from '../cuenta/MenuDeCuenta';
@@ -12,17 +13,18 @@ import { useAlturaFija, useScrollPropio } from '../../sesion/alturaFija';
 import { useSesion } from '../../sesion/sesionStore';
 import { usePreferencias } from '../../shared/preferencias';
 
+/** Secciones de la consola: sus textos están en `plataforma.nav.{clave}` y sus rutas cuelgan de `/plataforma`. */
 const PESTANAS = [
-  { clave: 'grupos', ruta: '/plataforma/grupos' },
-  { clave: 'habeas', ruta: '/plataforma/habeas' },
-  { clave: 'accesos', ruta: '/plataforma/accesos-a-terceros' },
-  { clave: 'usoIa', ruta: '/plataforma/uso-ia' },
-  { clave: 'operadores', ruta: '/plataforma/operadores' },
-  { clave: 'ingresos', ruta: '/plataforma/ingresos' },
-  { clave: 'secretos', ruta: '/plataforma/secretos' },
-  { clave: 'listas', ruta: '/plataforma/listas' },
-  { clave: 'fuentes', ruta: '/plataforma/fuentes' },
-] as const;
+  { clave: 'grupos', ruta: 'grupos', prefijos: ['grupos'] },
+  { clave: 'habeas', ruta: 'habeas', prefijos: ['habeas'] },
+  { clave: 'accesos', ruta: 'accesos-a-terceros', prefijos: ['accesos-a-terceros'] },
+  { clave: 'usoIa', ruta: 'uso-ia', prefijos: ['uso-ia'] },
+  { clave: 'operadores', ruta: 'operadores', prefijos: ['operadores'] },
+  { clave: 'ingresos', ruta: 'ingresos', prefijos: ['ingresos'] },
+  { clave: 'secretos', ruta: 'secretos', prefijos: ['secretos'] },
+  { clave: 'listas', ruta: 'listas', prefijos: ['listas'] },
+  { clave: 'fuentes', ruta: 'fuentes', prefijos: ['fuentes'] },
+] as const satisfies readonly Pestana<string>[];
 
 /** `/`: la sesión de un operador de Plataforma va a su consola; la de una persona de un tenant, a su empresa. */
 export function SegunSesion({ deTenant }: { deTenant: ReactNode }) {
@@ -38,7 +40,9 @@ export function SoloTenant({ children }: { children: ReactNode }) {
 
 /**
  * Consola de Plataforma (P-15-2, PT-4): solo con la sesión de un operador (sin tenant, `plataforma:tenants`). Una fila de
- * 48 px como el AppShell de la empresa: logo, «Plataforma», sus secciones y quién opera desde qué sistema.
+ * 48 px como el AppShell de la empresa: logo, «Plataforma», sus secciones (las pestañas que caben y el resto en «Más»,
+ * NAV-8: la misma `NavegacionPrincipal`, sin desplazamiento horizontal) y quién opera desde qué sistema, que se acorta con
+ * puntos suspensivos si no cabe.
  */
 export function ShellPlataforma() {
   const { t } = useTranslation();
@@ -51,6 +55,11 @@ export function ShellPlataforma() {
   const alturaFija = useAlturaFija((s) => s.altura);
 
   if (!sesion || !esSesionDePlataforma(sesion)) return <Navigate to="/" replace />;
+
+  // La ficha de un grupo o de su plan de IA cuelga de su sección: se activa por el primer segmento de la ruta.
+  const relativa = pathname.slice('/plataforma/'.length);
+  const activa = PESTANAS.find((p) => p.prefijos.some((prefijo) => relativa === prefijo || relativa.startsWith(`${prefijo}/`)));
+  const textoSesion = sesion.sistema ? t('plataforma.sesion', { persona: sesion.nombre ?? sesion.usuarioId, sistema: sesion.sistema }) : null;
 
   return (
     <Box
@@ -88,41 +97,18 @@ export function ShellPlataforma() {
           <ShieldCheck size={16} strokeWidth={1.75} aria-hidden />
           {t('plataforma.titulo')}
         </Typography>
-        <Box component="nav" aria-label={t('nav.principal')} sx={{ display: 'flex', alignSelf: 'stretch', gap: '2px', ml: 1, minWidth: 0, overflowX: 'auto' }}>
-          {PESTANAS.map((p) => {
-            const actual = pathname.startsWith(p.ruta);
-            return (
-              <Box
-                key={p.clave}
-                component={RouterLink}
-                to={p.ruta}
-                aria-current={actual ? 'page' : undefined}
-                sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  px: 1.25,
-                  borderBottom: 2,
-                  borderColor: actual ? 'acento.main' : 'transparent',
-                  color: actual ? 'text.primary' : 'text.secondary',
-                  fontSize: 14,
-                  lineHeight: '20px',
-                  fontWeight: actual ? 600 : 500,
-                  textDecoration: 'none',
-                  whiteSpace: 'nowrap',
-                  '&:hover': { color: 'text.primary' },
-                  '&:focus-visible': { outlineOffset: -2 },
-                }}
-              >
-                {t(`plataforma.nav.${p.clave}`)}
-              </Box>
-            );
-          })}
-        </Box>
-        <Box sx={{ flex: 1 }} />
-        {sesion.sistema && (
-          <Typography component="span" sx={{ color: 'text.secondary', display: { xs: 'none', md: 'inline' }, fontSize: 12, lineHeight: '16px', whiteSpace: 'nowrap' }}>
-            {t('plataforma.sesion', { persona: sesion.nombre ?? sesion.usuarioId, sistema: sesion.sistema })}
-          </Typography>
+        <NavegacionPrincipal pestanas={PESTANAS} rutaBase="/plataforma" activa={activa?.clave ?? null} nombreDe={(clave) => t(`plataforma.nav.${clave}`)} />
+        {textoSesion && (
+          // Mide lo que mide hasta un tope y, si no cabe, se acorta con puntos suspensivos (el tooltip lleva el texto
+          // completo); las pestañas toman lo que sobra, así que un nombre largo no las empuja a «Más» sin necesidad.
+          <Tooltip title={textoSesion}>
+            <Typography
+              component="span"
+              sx={{ color: 'text.secondary', display: { xs: 'none', md: 'block' }, flex: '0 1 auto', minWidth: 0, maxWidth: 'min(360px, 20vw)', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: 12, lineHeight: '16px', whiteSpace: 'nowrap' }}
+            >
+              {textoSesion}
+            </Typography>
+          </Tooltip>
         )}
         <MenuDeCuenta rutaMiCuenta="/plataforma/mi-cuenta" />
         {!temaDelContenedor && (

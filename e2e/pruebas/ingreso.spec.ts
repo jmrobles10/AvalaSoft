@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { CLAVE_PLATAFORMA, llamar, nitAleatorio } from '../soporte/api';
 import { autenticadorVirtual } from '../soporte/autenticador';
 import { codigo, esperarCorreo, mensajesDe } from '../soporte/correo';
+import { irASeccion } from '../soporte/empresa';
 
 /**
  * Ingreso directo sin contraseñas (ING-1…ING-4): correo → código → passkey, ingreso solo con passkey (autenticador virtual del navegador por CDP),
@@ -277,7 +278,7 @@ test('un operador de Plataforma entra con correo, código y passkey a la consola
   // Sin tenant ni empresas: va directo a la consola de Plataforma.
   await expect(page.getByRole('heading', { name: 'Grupos y empresas' })).toBeVisible();
   expect(await credenciales(virtual)).toBe(1);
-  await page.getByRole('link', { name: 'Operadores' }).click();
+  await irASeccion(page, 'Operadores');
   await expect(page.getByRole('heading', { name: 'Operadores' })).toBeVisible();
   await expect(page.getByText(correo)).toBeVisible();
   await page.screenshot({ path: captura('plataforma-operadores'), fullPage: true });

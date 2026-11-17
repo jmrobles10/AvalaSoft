@@ -1,5 +1,6 @@
 import { CLAVE_PLATAFORMA, llamar } from '../../soporte/api';
 import { abrirEmbebido } from '../../soporte/embebido';
+import { irASeccion } from '../../soporte/empresa';
 import { abrirConsolaDePlataforma } from '../../soporte/plataforma';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
@@ -22,7 +23,7 @@ recorrido(
     await llamar('PUT', '/api/v1/plataforma/listas-restrictivas', { llave: CLAVE_PLATAFORMA, cuerpo: { credenciales: { proveedor: 'Infolaft', clave: '' } } });
 
     const consola = await abrirConsolaDePlataforma(page);
-    await consola.getByRole('link', { name: 'Listas restrictivas' }).click();
+    await irASeccion(consola, 'Listas restrictivas');
     await expect(consola.getByRole('heading', { level: 1, name: 'Listas restrictivas' })).toBeVisible();
     await expect(consola.getByText('Sin configurar', { exact: true })).toBeVisible();
 

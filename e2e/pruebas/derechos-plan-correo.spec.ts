@@ -6,6 +6,7 @@ import { capturar } from '../soporte/capturas';
 import { esperarCorreo } from '../soporte/correo';
 import { abrirEmbebidoConLlave, llaveConHabeas } from '../soporte/derechos';
 import { abrirEmbebido } from '../soporte/embebido';
+import { irASeccion } from '../soporte/empresa';
 import { abrirConsolaDePlataforma } from '../soporte/plataforma';
 import { completarInvitacion } from '../soporte/proveedor';
 import { crearEscenario, invitar, nuevoTercero } from '../soporte/semilla';
@@ -140,7 +141,7 @@ test('una supresión ante la plataforma muestra antes qué se elimina y qué se 
 
   // El operador de Plataforma la ve y, antes de ejecutarla, el plan: nada se borra hasta que confirma.
   const consola = await abrirConsolaDePlataforma(await (await page.context().browser()!.newContext()).newPage());
-  await consola.getByRole('link', { name: 'Habeas data' }).click();
+  await irASeccion(consola, 'Habeas data');
   await expect(consola.getByRole('heading', { level: 1, name: 'Habeas data' })).toBeVisible();
   const solicitud = consola.getByRole('article').filter({ hasText: radicado });
   await expect(solicitud).toContainText(tercero.nombre);

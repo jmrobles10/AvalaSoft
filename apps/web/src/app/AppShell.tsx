@@ -114,7 +114,7 @@ export function AppShell() {
           actual={empresa.id}
           onCambiar={(id) => void navegar(`/e/${id}/${seccionActual}`)}
         />
-        <NavegacionPrincipal pestanas={pestanas} empresaId={empresa.id} activa={activa?.clave ?? null} />
+        <NavegacionPrincipal pestanas={pestanas} rutaBase={`/e/${empresa.id}`} activa={activa?.clave ?? null} nombreDe={(clave) => t(`nav.${clave}`)} />
         {sistema && (
           // El texto completo solo cabe en pantallas anchas: en las demás queda el ícono con el texto en un tooltip (y
           // oculto solo a la vista, para los lectores de pantalla), así caben más pestañas antes de pasar a «Más».

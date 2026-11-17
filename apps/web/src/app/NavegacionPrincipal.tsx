@@ -6,8 +6,12 @@ import { Link as RouterLink } from 'react-router';
 import { cuantasPestanasCaben, SEPARACION_PESTANAS, type MedidasPestanas } from './pestanasAdaptativas';
 import { useMedidasPestanas } from './useMedidasPestanas';
 
-export interface Pestana {
-  clave: 'inicio' | 'bandeja' | 'excepciones' | 'revalidaciones' | 'evaluaciones' | 'vencimientos' | 'cumplimiento' | 'certificados' | 'vinculos' | 'informes' | 'auditoria';
+/** Claves de las secciones de la web de empresa (`AppShell`): su nombre está en `nav.{clave}`. */
+export type ClavePestana = 'inicio' | 'bandeja' | 'excepciones' | 'revalidaciones' | 'evaluaciones' | 'vencimientos' | 'cumplimiento' | 'certificados' | 'vinculos' | 'informes' | 'auditoria';
+
+export interface Pestana<C extends string = ClavePestana> {
+  clave: C;
+  /** Ruta de la sección, relativa a la `rutaBase` de la barra. */
   ruta: string;
   /** Rutas que marcan la pestaña como activa. */
   prefijos: readonly string[];
@@ -57,25 +61,28 @@ function FilaDeMedidas({ etiquetas, etiquetaMas, refFila }: { etiquetas: readonl
   );
 }
 
-interface Props {
-  pestanas: readonly Pestana[];
-  empresaId: string;
+interface Props<C extends string> {
+  pestanas: readonly Pestana<C>[];
+  /** Ruta (sin barra final) a la que se suma la de cada pestaña: `/e/{empresaId}` en la empresa, `/plataforma` en la consola. */
+  rutaBase: string;
   /** Clave de la pestaña de la sección en que está la persona; `null` si es otra (Configuración, una ruta sin pestaña). */
-  activa: Pestana['clave'] | null;
+  activa: C | null;
+  /** Nombre de la pestaña, traducido (`nav.{clave}` en la empresa, `plataforma.nav.{clave}` en la consola). */
+  nombreDe: (clave: C) => string;
   /** Solo para pruebas: sin layout (jsdom) no hay medidas; con ellas se simula el ancho de la barra. */
   medidas?: MedidasPestanas;
 }
 
 /**
- * Barra de secciones del AppShell (docs/06 §3.3): las pestañas que caben en el ancho disponible, en su orden; las demás,
- * en un menú «Más». Nunca hay desplazamiento horizontal. Si la sección activa quedó en «Más», el botón se subraya como
- * una pestaña activa y lleva su nombre («Auditoría» en lugar de «Más»).
+ * Barra de secciones del AppShell y de la consola de Plataforma (docs/06 §3.3): las pestañas que caben en el ancho
+ * disponible, en su orden; las demás, en un menú «Más». Nunca hay desplazamiento horizontal. Si la sección activa quedó en
+ * «Más», el botón se subraya como una pestaña activa y lleva su nombre («Auditoría» en lugar de «Más»).
  */
-export function NavegacionPrincipal({ pestanas, empresaId, activa, medidas: inyectadas }: Props) {
+export function NavegacionPrincipal<C extends string = ClavePestana>({ pestanas, rutaBase, activa, nombreDe, medidas: inyectadas }: Props<C>) {
   const { t } = useTranslation();
   const idMenu = useId();
   const [ancla, setAncla] = useState<HTMLElement | null>(null);
-  const etiquetaDe = (p: Pestana) => (p.conteo ? t('nav.conConteo', { nombre: t(`nav.${p.clave}`), conteo: p.conteo }) : t(`nav.${p.clave}`));
+  const etiquetaDe = (p: Pestana<C>) => (p.conteo ? t('nav.conConteo', { nombre: nombreDe(p.clave), conteo: p.conteo }) : nombreDe(p.clave));
   const etiquetas = pestanas.map(etiquetaDe);
   const { refBarra, refFila, medidas } = useMedidasPestanas(etiquetas.join('|'), inyectadas);
 
@@ -88,7 +95,7 @@ export function NavegacionPrincipal({ pestanas, empresaId, activa, medidas: inye
   const enMas = pestanas.slice(visibles);
   const activaEnMas = indiceActiva >= visibles;
   const abierto = ancla !== null && enMas.length > 0;
-  const destino = (p: Pestana) => `/e/${empresaId}/${p.ruta}`;
+  const destino = (p: Pestana<C>) => `${rutaBase}/${p.ruta}`;
 
   return (
     <Box
