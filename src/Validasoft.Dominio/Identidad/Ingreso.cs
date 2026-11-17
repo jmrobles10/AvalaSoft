@@ -563,6 +563,9 @@ public sealed class SesionDeUsuario
     public const string MotivoUsuarioDesactivado = "usuario-desactivado";
     public const string MotivoPasskeyRevocada = "passkey-revocada";
 
+    /// <summary>Plataforma corrigió el correo de la cuenta (quien tuvo el correo anterior no se queda dentro).</summary>
+    public const string MotivoCorreoCambiado = "correo-cambiado";
+
     public Guid Id { get; set; }
 
     public string TokenHash { get; set; } = string.Empty;

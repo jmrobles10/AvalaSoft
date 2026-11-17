@@ -59,6 +59,91 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
+export const obtenerTenant = (
+    id: string,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<TenantDto>(
+      {url: `/api/v1/plataforma/tenants/${id}`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getObtenerTenantQueryKey = (id: string,) => {
+    return [
+    `/api/v1/plataforma/tenants/${id}`
+    ] as const;
+    }
+
+
+export const getObtenerTenantQueryOptions = <TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getObtenerTenantQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerTenant>>> = ({ signal }) => obtenerTenant(id, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ObtenerTenantQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerTenant>>>
+export type ObtenerTenantQueryError = ErrorType<void>
+
+
+export function useObtenerTenant<TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerTenant>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerTenant>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerTenant<TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerTenant>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerTenant>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerTenant<TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerTenant<TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getObtenerTenantQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export const crearTenant = (
     crearTenantDto: BodyType<CrearTenantDto>,
  options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
@@ -194,91 +279,6 @@ export function useListarTenants<TData = Awaited<ReturnType<typeof listarTenants
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListarTenantsQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-export const obtenerTenant = (
-    id: string,
- options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
-) => {
-
-
-      return clienteValidasoft<TenantDto>(
-      {url: `/api/v1/plataforma/tenants/${id}`, method: 'GET', signal
-    },
-      options);
-    }
-
-
-
-
-export const getObtenerTenantQueryKey = (id: string,) => {
-    return [
-    `/api/v1/plataforma/tenants/${id}`
-    ] as const;
-    }
-
-
-export const getObtenerTenantQueryOptions = <TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getObtenerTenantQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerTenant>>> = ({ signal }) => obtenerTenant(id, requestOptions, signal);
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ObtenerTenantQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerTenant>>>
-export type ObtenerTenantQueryError = ErrorType<void>
-
-
-export function useObtenerTenant<TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof obtenerTenant>>,
-          TError,
-          Awaited<ReturnType<typeof obtenerTenant>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof clienteValidasoft>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useObtenerTenant<TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof obtenerTenant>>,
-          TError,
-          Awaited<ReturnType<typeof obtenerTenant>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof clienteValidasoft>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useObtenerTenant<TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useObtenerTenant<TData = Awaited<ReturnType<typeof obtenerTenant>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerTenant>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getObtenerTenantQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -1,16 +1,15 @@
-import { Box, Button, Chip, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Chip, IconButton, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import type { EmpresaDeGrupoDto, GrupoDto } from '@validasoft/api-client';
 import { formatearFecha, MarcoTabla, visualmenteOculto } from '@validasoft/ui';
-import { ChevronDown, ChevronUp, CircleDashed, Gauge, KeyRound, Pencil, Plug, Plus, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronUp, CircleDashed, ClipboardList, Gauge, KeyRound, Pencil, Plug, Plus, Sparkles } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { Tarjeta } from '../../shared/componentes';
-import { DialogoEmpresa } from '../configuracion/empresas/DialogoEmpresa';
-import { borradorDeEmpresa, identificacionVisible } from '../configuracion/empresas/modelo';
+import { identificacionVisible } from '../configuracion/empresas/modelo';
 import { EstadoActivo } from '../configuracion/EstadoActivo';
-import { useCorregirEmpresaDeGrupo, useCrearEmpresaDeGrupo } from './apiIdentidad';
 import { DialogoSistemasDeGrupo } from './DialogoSistemasDeGrupo';
+import { DialogoCorregirEmpresa, DialogoNuevaEmpresa } from './DialogosDeEmpresaDeGrupo';
 import { estadoPlanIa, llaveEnmascarada, MAX_EMPRESAS_SIN_COLAPSAR } from './modelo';
 
 function TablaEmpresas({ grupo, id, onEditar }: { grupo: GrupoDto; id: string; onEditar: (empresa: EmpresaDeGrupoDto) => void }) {
@@ -84,21 +83,6 @@ function TablaEmpresas({ grupo, id, onEditar }: { grupo: GrupoDto; id: string; o
   );
 }
 
-/** Agregar una empresa a un grupo que ya existe (PI-9): el mismo formulario del grupo, con la clave de idempotencia de este diálogo. */
-function DialogoNuevaEmpresa({ grupo, onCerrar }: { grupo: GrupoDto; onCerrar: () => void }) {
-  const { t } = useTranslation();
-  const [clave] = useState(() => crypto.randomUUID());
-  const mutacion = useCrearEmpresaDeGrupo(grupo.tenant.id, clave);
-  return <DialogoEmpresa claveIdempotencia={clave} mutacion={mutacion} subtitulo={t('consola.empresa.paraElGrupo', { grupo: grupo.tenant.nombre })} onCerrar={onCerrar} onGuardada={onCerrar} />;
-}
-
-/** Corregir la identificación, la razón social y el prefijo de folio de una empresa del grupo, siempre: el mismo formulario del alta, precargado. */
-function DialogoCorregirEmpresa({ grupo, empresa, onCerrar }: { grupo: GrupoDto; empresa: EmpresaDeGrupoDto; onCerrar: () => void }) {
-  const { t } = useTranslation();
-  const mutacion = useCorregirEmpresaDeGrupo(grupo.tenant.id, empresa.id);
-  return <DialogoEmpresa mutacion={mutacion} inicial={borradorDeEmpresa(empresa)} subtitulo={t('consola.empresa.paraElGrupo', { grupo: grupo.tenant.nombre })} onCerrar={onCerrar} onGuardada={onCerrar} />;
-}
-
 /**
  * Un grupo con su identificador, el alta y la tabla de sus empresas con el estado del plan de IA. Con más de
  * {@link MAX_EMPRESAS_SIN_COLAPSAR} empresas la tabla va plegada y se despliega a pedido (`expandido` lo guarda la lista,
@@ -116,7 +100,9 @@ export function TarjetaGrupo({ grupo, expandido, onAlternar }: { grupo: GrupoDto
       etiqueta={grupo.tenant.nombre}
       titulo={
         <Stack direction="row" spacing={1} component="span" sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-          <span>{grupo.tenant.nombre}</span>
+          <Link component={RouterLink} to={`/plataforma/grupos/${grupo.tenant.id}`} color="inherit" underline="hover">
+            {grupo.tenant.nombre}
+          </Link>
           <Chip size="small" variant="outlined" label={grupo.tenant.slug} sx={{ fontFamily: (th) => th.typography.mono.fontFamily }} />
           {!grupo.tenant.activo && <Chip size="small" label={t('plataforma.grupos.inactivo')} />}
         </Stack>
@@ -126,6 +112,17 @@ export function TarjetaGrupo({ grupo, expandido, onAlternar }: { grupo: GrupoDto
           <Typography variant="caption" sx={{ color: 'text.secondary', whiteSpace: 'nowrap' }}>
             {t('plataforma.grupos.empresasCuenta', { count: grupo.empresas.length })} · {t('plataforma.grupos.creado', { fecha: formatearFecha(grupo.tenant.creadoEn) })}
           </Typography>
+          <Button
+            component={RouterLink}
+            to={`/plataforma/grupos/${grupo.tenant.id}`}
+            size="small"
+            variant="text"
+            startIcon={<ClipboardList size={14} aria-hidden />}
+            aria-label={t('plataforma.ficha.verFichaDe', { grupo: grupo.tenant.nombre })}
+            sx={{ whiteSpace: 'nowrap' }}
+          >
+            {t('plataforma.ficha.verFicha')}
+          </Button>
           <Button
             component={RouterLink}
             to={`/plataforma/grupos/${grupo.tenant.id}/plan`}

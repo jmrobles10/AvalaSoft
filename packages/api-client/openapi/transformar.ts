@@ -213,6 +213,11 @@ const NOMBRES: Record<string, string> = {
   'POST /api/v1/plataforma/tenants/{tenantId}/empresas': 'crearEmpresaDeGrupo',
   // Corregir identificación, razón social y prefijo de folio de una empresa del grupo, siempre y desde la consola.
   'PUT /api/v1/plataforma/tenants/{tenantId}/empresas/{empresaId}': 'corregirEmpresaDeGrupo',
+  // Ficha del grupo (decisión FG): corregir nombre, región y zona del grupo, y a quien lo administra (nombre, correo, ids externos); reenviar su invitación.
+  'PUT /api/v1/plataforma/tenants/{id}': 'corregirGrupo',
+  'GET /api/v1/plataforma/tenants/{tenantId}/administradores': 'listarAdministradoresDeGrupo',
+  'PUT /api/v1/plataforma/tenants/{tenantId}/usuarios/{usuarioId}': 'corregirUsuarioDeGrupo',
+  'POST /api/v1/plataforma/tenants/{tenantId}/usuarios/{usuarioId}/invitar': 'invitarUsuarioDeGrupo',
   'GET /api/v1/plataforma/clave-de-arranque': 'obtenerClaveDeArranque',
   'POST /api/v1/plataforma/clave-de-arranque/desactivar': 'desactivarClaveDeArranque',
   'POST /api/v1/plataforma/clave-de-arranque/reactivar': 'reactivarClaveDeArranque',

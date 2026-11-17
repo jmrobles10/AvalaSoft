@@ -12,6 +12,7 @@ import { documentos, erroresDocumentos } from './es-CO-documentos';
 import { fichaMaestra } from './es-CO-ficha';
 import { cruce, erroresCruce } from './es-CO-cruce';
 import { erroresFichaEmpresa, fichaEmpresa } from './es-CO-ficha-empresa';
+import { erroresDeFichaGrupo } from './es-CO-ficha-grupo';
 import { gruposDeAcceso, responsablesPorSector } from './es-CO-grupos-de-acceso';
 import { fichaAceptada } from './es-CO-ficha-aceptada';
 import { informes } from './es-CO-informes';
@@ -791,6 +792,7 @@ export const esCO = {
     ...erroresCumplimiento,
     ...erroresFuentesOficiales,
     ...erroresFichaEmpresa,
+    ...erroresDeFichaGrupo,
     ...erroresLotes,
     ...erroresInvitaciones,
     ...erroresCampanias,

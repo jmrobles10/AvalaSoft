@@ -46,7 +46,7 @@ recorrido(
       titulo: 'Nombra el grupo',
       explicacion:
         'Escribe el nombre del grupo. El identificador se propone solo a partir del nombre y admite minúsculas, números y guiones, de 3 a 30 caracteres. ' +
-        'Ese identificador forma parte de las API keys del grupo y no cambia después, así que revísalo antes de crear. La zona horaria viene por omisión (America/Bogota).',
+        'Ese identificador forma parte de las API keys del grupo y no cambia después, así que revísalo antes de crear; el nombre y la zona horaria sí se corrigen después en la ficha del grupo. La zona horaria viene por omisión (America/Bogota).',
       resaltar: [consola.getByRole('textbox', { name: 'Nombre del grupo' }), consola.getByRole('textbox', { name: 'Identificador' })],
       variantes: [
         {
@@ -85,7 +85,7 @@ recorrido(
       titulo: 'Nombra al administrador del grupo',
       explicacion:
         'El administrador tiene el rol Administrador en todo el grupo: crea usuarios, áreas y flujos. Validasoft no guarda su contraseña; esta persona entra desde el sistema integrado o, si eliges el ingreso directo, con un correo. ' +
-        'Si el sistema identifica a sus personas con un usuario propio, escríbelo; si lo dejas vacío, la persona se enlaza por su correo la primera vez que entre.',
+        'Si el sistema identifica a sus personas con un usuario propio, escríbelo; si lo dejas vacío, la persona se enlaza por su correo la primera vez que entre. Si el correo quedó mal, se corrige después en la ficha del grupo (Administradores › Editar).',
       resaltar: [
         consola.getByRole('textbox', { name: 'Nombre', exact: true }),
         consola.getByRole('textbox', { name: 'Correo' }),

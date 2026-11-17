@@ -28,6 +28,10 @@ export function crearRouter() {
           lazy: () => import('../features/plataforma/PaginaNuevoGrupo').then((m) => ({ Component: m.PaginaNuevoGrupo })),
         },
         {
+          path: 'grupos/:tenantId',
+          lazy: () => import('../features/plataforma/PaginaFichaGrupo').then((m) => ({ Component: m.PaginaFichaGrupo })),
+        },
+        {
           path: 'grupos/:tenantId/empresas/:empresaId/plan-ia',
           lazy: () => import('../features/plataforma/PaginaPlanIa').then((m) => ({ Component: m.PaginaPlanIa })),
         },

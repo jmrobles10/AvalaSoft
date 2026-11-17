@@ -82,3 +82,17 @@ public sealed record ConsumoDeIaDto(
 public sealed record TarifaDeIaDto(decimal PrecioPorValidacionAdicional, string Moneda, DateTimeOffset? ActualizadaEn, string? ActualizadaPor);
 
 public sealed record FijarTarifaDeIaDto(decimal PrecioPorValidacionAdicional, string Moneda);
+
+/// <summary>
+/// Corrección de los datos de alta de un grupo desde la consola de Plataforma: nombre, región y zona horaria (el identificador —slug— no cambia, va
+/// en las API keys). <c>null</c> en región o zona conserva la actual; vacías, vuelven a las del alta (<c>co</c>, <c>America/Bogota</c>).
+/// </summary>
+public sealed record CorregirGrupoDto(string Nombre, string? Region = null, string? ZonaHoraria = null);
+
+/// <summary>
+/// Corrección de una persona del grupo desde la consola de Plataforma: nombre, correo e identidades externas (el <c>sub</c> con que cada sistema
+/// integrado la reconoce). <see cref="Identidades"/> reemplaza la lista completa (a lo más una por sistema; vacía quita todas); <c>null</c> la conserva.
+/// Si cambia el correo, se cierran las sesiones directas de la cuenta y se revocan sus passkeys (quien tuvo el correo anterior no queda dentro);
+/// <see cref="Invitar"/> en <c>true</c> manda además la invitación al correo nuevo (solo si el grupo admite el ingreso directo).
+/// </summary>
+public sealed record CorregirUsuarioDto(string Nombre, string Correo, IReadOnlyList<IdentidadExternaDto>? Identidades = null, bool? Invitar = null);

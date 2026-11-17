@@ -3223,6 +3223,225 @@
         }
       }
     },
+    "/api/v1/plataforma/tenants/{id}": {
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.Plataforma.CorreccionDeGrupoEndpoints"
+        ],
+        "summary": "PUT_api_v1_plataforma_tenants_id",
+        "description": "PUT_api_v1_plataforma_tenants_id",
+        "operationId": "PUT_api_v1_plataforma_tenants_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorregirGrupoDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Plataforma.TenantsEndpoints"
+        ],
+        "summary": "GET_api_v1_plataforma_tenants_id",
+        "description": "GET_api_v1_plataforma_tenants_id",
+        "operationId": "GET_api_v1_plataforma_tenants_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/plataforma/tenants/{tenantId}/administradores": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Plataforma.UsuariosDeGrupoEndpoints"
+        ],
+        "summary": "GET_api_v1_plataforma_tenants_tenantId_administradores",
+        "description": "GET_api_v1_plataforma_tenants_tenantId_administradores",
+        "operationId": "GET_api_v1_plataforma_tenants_tenantId_administradores",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UsuarioDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/plataforma/tenants/{tenantId}/usuarios/{usuarioId}": {
+      "put": {
+        "tags": [
+          "Validasoft.Aplicacion.Plataforma.UsuariosDeGrupoEndpoints"
+        ],
+        "summary": "PUT_api_v1_plataforma_tenants_tenantId_usuarios_usuarioId",
+        "description": "PUT_api_v1_plataforma_tenants_tenantId_usuarios_usuarioId",
+        "operationId": "PUT_api_v1_plataforma_tenants_tenantId_usuarios_usuarioId",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "usuarioId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorregirUsuarioDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/plataforma/tenants/{tenantId}/usuarios/{usuarioId}/invitar": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Plataforma.UsuariosDeGrupoEndpoints"
+        ],
+        "summary": "POST_api_v1_plataforma_tenants_tenantId_usuarios_usuarioId_invitar",
+        "description": "POST_api_v1_plataforma_tenants_tenantId_usuarios_usuarioId_invitar",
+        "operationId": "POST_api_v1_plataforma_tenants_tenantId_usuarios_usuarioId_invitar",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "usuarioId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/v1/plataforma/listas-restrictivas": {
       "get": {
         "tags": [
@@ -3843,42 +4062,6 @@
                   "items": {
                     "$ref": "#/components/schemas/TenantDto"
                   }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/api/v1/plataforma/tenants/{id}": {
-      "get": {
-        "tags": [
-          "Validasoft.Aplicacion.Plataforma.TenantsEndpoints"
-        ],
-        "summary": "GET_api_v1_plataforma_tenants_id",
-        "description": "GET_api_v1_plataforma_tenants_id",
-        "operationId": "GET_api_v1_plataforma_tenants_id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TenantDto"
                 }
               }
             }
@@ -23918,6 +24101,59 @@
           },
           "prefijoFolio": {
             "type": "string"
+          }
+        }
+      },
+      "CorregirGrupoDto": {
+        "required": [
+          "nombre"
+        ],
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "region": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "zonaHoraria": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CorregirUsuarioDto": {
+        "required": [
+          "nombre",
+          "correo"
+        ],
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "identidades": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/IdentidadExternaDto"
+            }
+          },
+          "invitar": {
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
@@ -45739,6 +45975,15 @@
       "name": "Validasoft.Aplicacion.Plataforma.SecretosEndpoints"
     },
     {
+      "name": "Validasoft.Aplicacion.Plataforma.CorreccionDeGrupoEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Plataforma.TenantsEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Plataforma.UsuariosDeGrupoEndpoints"
+    },
+    {
       "name": "Validasoft.Aplicacion.Plataforma.ListasDePlataformaEndpoints"
     },
     {
@@ -45746,9 +45991,6 @@
     },
     {
       "name": "Validasoft.Aplicacion.Plataforma.PlanDelGrupoEndpoints"
-    },
-    {
-      "name": "Validasoft.Aplicacion.Plataforma.TenantsEndpoints"
     },
     {
       "name": "Validasoft.Aplicacion.Plataforma.CatalogosEndpoints"
