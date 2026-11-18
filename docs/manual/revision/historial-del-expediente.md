@@ -47,3 +47,4 @@ Cuando el proveedor responde a una observación, su respuesta aparece en «Últi
 
 - [Observa un documento con motivos](observar-con-motivos.md)
 - [Revisa lo que corrigió el proveedor tras una observación](responder-con-lo-corregido.md)
+- [Recorre la ficha del vínculo por sectores](../vinculos/ficha-por-sectores.md)

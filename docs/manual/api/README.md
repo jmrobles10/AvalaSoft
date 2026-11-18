@@ -1,6 +1,6 @@
 # Referencia de la API
 
-Todas las operaciones del contrato (468) agrupadas por recurso. Generada de `packages/api-client/openapi/v1.json` y del código de los endpoints con `pnpm manual`; no se edita a mano.
+Todas las operaciones del contrato (469) agrupadas por recurso. Generada de `packages/api-client/openapi/v1.json` y del código de los endpoints con `pnpm manual`; no se edita a mano.
 
 - [Convenciones](convenciones.md): autenticación, empresa activa, idempotencia, errores y límites.
 
@@ -10,7 +10,7 @@ Todas las operaciones del contrato (468) agrupadas por recurso. Generada de `pac
 - [Certificados](certificados.md) — Certificados, Lista de certificados, Verificación pública (7)
 - [Común](comun.md) — Auditoría (2)
 - [Configuración](configuracion.md) — Accesos soporte, API keys, Areas, Dominio de correo, Empresas, Motivos, Plantillas notificación, Tipos vínculo (32)
-- [Consentimientos](consentimientos.md) — Textos legales (4)
+- [Consentimientos](consentimientos.md) — Textos legales (5)
 - [Delegaciones](delegaciones.md) — Delegaciones (4)
 - [Documentos](documentos.md) — Ayudas de documento, Bóveda, Carga, Catálogo documental, Documentos de vínculo, Formularios, Plantillas, Tipos documento (24)
 - [Evaluaciones](evaluaciones.md) — Cuestionarios, Evaluaciones, Evaluaciones públicas, Informe de evaluaciones, Reevaluaciones (28)

@@ -1,7 +1,8 @@
-import { pedirVerificaciones, enRevision, esperarListas } from '../../soporte/cumplimiento';
+import { pedirVerificaciones, enRevision } from '../../soporte/cumplimiento';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha } from '../nucleo/ficha';
 
 const NOMBRE = 'Aceros del Norte S.A.S.';
 
@@ -28,7 +29,7 @@ recorrido(
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, 'cumplimiento');
     await expect(olga.getByRole('heading', { level: 1, name: 'Cumplimiento' })).toBeVisible();
     // La consulta de listas es automática: espera a que quede satisfecha antes de mostrarla.
-    await esperarListas(olga, NOMBRE, 'Cumplimiento', 'Satisfecha');
+    await esperarListasEnLaFicha(olga, NOMBRE, 'Cumplimiento', 'Satisfecha');
     await expect(olga.getByRole('heading', { level: 1, name: NOMBRE })).toBeVisible();
 
     await paso(page, {

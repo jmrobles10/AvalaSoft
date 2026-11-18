@@ -1,5 +1,6 @@
 import { Autocomplete, Box, MenuItem, TextField } from '@mui/material';
 import type { AtributoPermitidoDto } from '@validasoft/api-client';
+import { CampoFecha } from '@validasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { modoUnSoloValor, type ModoDeAtributo } from '../condiciones';
 
@@ -13,6 +14,33 @@ interface Props {
   error: boolean;
 }
 
+interface CampoDeValorProps {
+  tipo: AtributoPermitidoDto['tipo'] | undefined;
+  etiqueta: string;
+  valor: string;
+  onCambiar: (valor: string) => void;
+  deshabilitado: boolean;
+  error: boolean;
+}
+
+/** Un valor escrito de la condición: la fecha con el selector de la aplicación (`aaaa-mm-dd`), y lo demás (números, texto) con un campo de texto. */
+function CampoDeValor({ tipo, etiqueta, valor, onCambiar, deshabilitado, error }: CampoDeValorProps) {
+  if (tipo === 'Fecha') {
+    return <CampoFecha etiqueta={etiqueta} valor={valor} onCambiar={onCambiar} deshabilitado={deshabilitado} error={error} fullWidth />;
+  }
+  return (
+    <TextField
+      size="small"
+      label={etiqueta}
+      value={valor}
+      onChange={(ev) => onCambiar(ev.target.value)}
+      disabled={deshabilitado}
+      error={error}
+      slotProps={{ inputLabel: { shrink: true }, htmlInput: { inputMode: tipo === 'Numero' ? 'decimal' : undefined, autoComplete: 'off' } }}
+    />
+  );
+}
+
 /**
  * Los valores de una condición sobre un atributo del vínculo, con el control de su tipo: sí/no y opciones se eligen, los números y las fechas se escriben
  * (con «entre» van dos) y el texto es libre. Los valores viajan como texto invariante: números con punto, fechas `AAAA-MM-DD`, sí/no como `true`/`false`.
@@ -22,7 +50,7 @@ export function ValoresDeAtributo({ atributo, modo, valores, onCambiar, deshabil
   const tipo = atributo?.tipo;
   const unico = modoUnSoloValor(modo);
   const rotulo = t(unico ? 'condicionDeAtributo.valor' : 'condicionDeAtributo.valores');
-  // Un número solo admite dígitos, el punto decimal y el signo (así viaja a la API); una fecha la da el selector de fechas.
+  // Un número solo admite dígitos, el punto decimal y el signo (así viaja a la API); una fecha la da el selector de fechas (`CampoFecha`).
   const limpiar = (texto: string) => (tipo === 'Numero' ? texto.replace(/[^0-9.-]/g, '') : texto);
 
   if (modo === 'entre') {
@@ -30,17 +58,7 @@ export function ValoresDeAtributo({ atributo, modo, valores, onCambiar, deshabil
     return (
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
         {(['desde', 'hasta'] as const).map((rango, i) => (
-          <TextField
-            key={rango}
-            size="small"
-            type={tipo === 'Fecha' ? 'date' : 'text'}
-            label={t(`condicionDeAtributo.${rango}`)}
-            value={valores[i] ?? ''}
-            onChange={(ev) => cambiar(i, ev.target.value)}
-            disabled={deshabilitado}
-            error={error}
-            slotProps={{ inputLabel: { shrink: true }, htmlInput: { inputMode: tipo === 'Numero' ? 'decimal' : undefined, autoComplete: 'off' } }}
-          />
+          <CampoDeValor key={rango} tipo={tipo} etiqueta={t(`condicionDeAtributo.${rango}`)} valor={valores[i] ?? ''} onCambiar={(valor) => cambiar(i, valor)} deshabilitado={deshabilitado} error={error} />
         ))}
       </Box>
     );
@@ -60,18 +78,7 @@ export function ValoresDeAtributo({ atributo, modo, valores, onCambiar, deshabil
   }
 
   if (unico) {
-    return (
-      <TextField
-        size="small"
-        type={tipo === 'Fecha' ? 'date' : 'text'}
-        label={rotulo}
-        value={valores[0] ?? ''}
-        onChange={(ev) => onCambiar(limpiar(ev.target.value) === '' ? [] : [limpiar(ev.target.value)])}
-        disabled={deshabilitado}
-        error={error}
-        slotProps={{ inputLabel: { shrink: true }, htmlInput: { inputMode: tipo === 'Numero' ? 'decimal' : undefined, autoComplete: 'off' } }}
-      />
-    );
+    return <CampoDeValor tipo={tipo} etiqueta={rotulo} valor={valores[0] ?? ''} onCambiar={(valor) => onCambiar(limpiar(valor) === '' ? [] : [limpiar(valor)])} deshabilitado={deshabilitado} error={error} />;
   }
 
   // Varios valores: las opciones del atributo, o texto libre (se pulsa Intro por cada uno) si es de texto.

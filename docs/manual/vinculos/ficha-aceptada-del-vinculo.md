@@ -67,5 +67,4 @@ Dentro de la sección aparece el soporte con que se aceptó, con su nombre y su 
 
 ## Recorridos relacionados
 
-- [Respalda tu información con un documento de tu bóveda](../tercero/ficha-secciones-con-soporte.md)
 - [Revisa el detalle de un vínculo](detalle-del-vinculo.md)

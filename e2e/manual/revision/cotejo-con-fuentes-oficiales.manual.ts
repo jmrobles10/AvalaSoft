@@ -4,6 +4,7 @@ import { abrirDesdeBandeja, aprobarArea } from '../../soporte/empresa';
 import { esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 import { usarProveedorSimuladoParaFuentes } from '../nucleo/semillas';
 
 const NOMBRE = 'Aceros Cancelados del Norte S.A.S.';
@@ -12,6 +13,7 @@ const NOMBRE = 'Aceros Cancelados del Norte S.A.S.';
 async function esperarRues(app: FrameLocator, tercero: string, area: string, estado: string): Promise<void> {
   await expect(async () => {
     await abrirDesdeBandeja(app, tercero, area);
+    await irASector(app, 'Oficial de cumplimiento');
     await expect(app.getByRole('region', { name: 'Registro mercantil (RUES)' })).toContainText(estado, { timeout: 1500 });
   }).toPass({ timeout: 45_000 });
 }
@@ -100,6 +102,7 @@ recorrido(
     });
 
     // La última área aprueba y el expediente cierra.
+    await irASector(olga, 'Aprobaciones');
     await aprobarArea(olga, 'Cumplimiento');
     await esperarEstadoDelTercero(pTercero, 'Aprobado');
     await paso(page, {

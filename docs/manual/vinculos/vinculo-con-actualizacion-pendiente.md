@@ -46,7 +46,7 @@ El filtro «Estado» con «En revisión» deja solo los vínculos con una actual
 
 ## Paso 3. Revisa el detalle y el certificado
 
-El detalle muestra el vínculo como «En revisión» mientras las áreas revisan el RUT nuevo. Mientras dure la revisión, nada se suspende ni se bloquea: el certificado sigue vigente pero se ve «En verificación», igual que en la página pública de verificación.
+El encabezado muestra el vínculo como «En revisión» mientras las áreas revisan el RUT nuevo; el sector «Certificado» muestra el certificado. Mientras dure la revisión, nada se suspende ni se bloquea: el certificado sigue vigente pero se ve «En verificación», igual que en la página pública de verificación.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 

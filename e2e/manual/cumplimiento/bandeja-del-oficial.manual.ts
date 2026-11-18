@@ -1,8 +1,9 @@
-import { aprobarUltimaArea, enRevision, esperarListas, pedirVerificaciones, personaEmbebida } from '../../soporte/cumplimiento';
+import { aprobarUltimaArea, enRevision, pedirVerificaciones, personaEmbebida } from '../../soporte/cumplimiento';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { abrirDesdeBandeja, aprobarArea, irASeccion } from '../../soporte/empresa';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha, irASector } from '../nucleo/ficha';
 
 const CON_COINCIDENCIA = 'Ferretería Coincidencia S.A.S.';
 const SIN_COINCIDENCIAS = 'Aceros del Norte S.A.S.';
@@ -54,7 +55,8 @@ recorrido(
     });
 
     // Tu área aprueba el expediente con la coincidencia: lo único que queda es esa decisión.
-    await esperarListas(olga, CON_COINCIDENCIA, 'Cumplimiento', 'Coincidencia por analizar');
+    await esperarListasEnLaFicha(olga, CON_COINCIDENCIA, 'Cumplimiento', 'Coincidencia por analizar');
+    await irASector(olga, 'Aprobaciones');
     await aprobarUltimaArea(olga, 'Cumplimiento', /Listas restrictivas \(coincidencia por analizar\)/);
     await irASeccion(olga, 'Cumplimiento');
     const filaCoincidencia = olga.getByRole('row').filter({ hasText: CON_COINCIDENCIA });

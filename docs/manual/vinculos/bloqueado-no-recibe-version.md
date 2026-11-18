@@ -51,7 +51,7 @@ Al desbloquear, el sistema abre la actualización pendiente del RUT nuevo. La ju
 
 ## Paso 4. Comprueba que el vínculo quedó en revisión
 
-El vínculo queda «En revisión» y su certificado se ve «En verificación» mientras las áreas revisan el RUT nuevo. El proveedor ve lo mismo en «Mis empresas», donde su revisión con Constructora Norte vuelve a estar en curso.
+El vínculo queda «En revisión» (en el encabezado) y, en el sector «Certificado», su certificado se ve «En verificación» mientras las áreas revisan el RUT nuevo. El proveedor ve lo mismo en «Mis empresas», donde su revisión con Constructora Norte vuelve a estar en curso.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 

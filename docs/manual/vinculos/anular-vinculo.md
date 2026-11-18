@@ -4,7 +4,7 @@ titulo: "Anula un vínculo creado por error"
 actor: "Administrador de empresa"
 dominio: "vinculos"
 resumen: "La administradora anula un vínculo que se creó por error: escribe el motivo, confirma escribiendo la palabra ANULAR y el vínculo deja de estar activo para esta empresa, sin que pueda deshacerse."
-pasos: 3
+pasos: 4
 ---
 
 # Anula un vínculo creado por error
@@ -23,6 +23,7 @@ La administradora anula un vínculo que se creó por error: escribe el motivo, c
 1. Abre la acción Anular
 2. Escribe el motivo y confirma con la palabra ANULAR
 3. Comprueba que el vínculo quedó anulado
+4. Revisa la anulación en el historial
 
 ## Paso 1. Abre la acción Anular
 
@@ -46,11 +47,19 @@ El diálogo pide el motivo, que queda en el historial con tu nombre, y que escri
 
 ## Paso 3. Comprueba que el vínculo quedó anulado
 
-Validasoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle, que ahora muestra el estado «Anulado» con su fecha (1). El historial (2) conserva la anulación con el estado anterior, el motivo y quién la hizo. El vínculo deja de aparecer entre los vigentes de la empresa y ya no recibe invitaciones ni expedientes.
+Validasoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle, que ahora muestra el estado «Anulado» con su fecha (1). El vínculo deja de aparecer entre los vigentes de la empresa y ya no recibe invitaciones ni expedientes.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 
 ![Paso 3: Comprueba que el vínculo quedó anulado (escritorio)](../../../salida/manual/img/vinculos/anular-vinculo/03-comprueba-que-el-vinculo-quedo-anulado-claro.webp)
+
+## Paso 4. Revisa la anulación en el historial
+
+El panel «Historial» (botón del encabezado) guarda la anulación con el estado anterior, el motivo y quién la hizo. Nada se borra: el vínculo anulado sigue en el historial para auditoría.
+
+> **Pantalla:** `/e/{empresa}/vinculos/{id}`
+
+![Paso 4: Revisa la anulación en el historial (escritorio)](../../../salida/manual/img/vinculos/anular-vinculo/04-revisa-la-anulacion-en-el-historial-claro.webp)
 
 ## Recorridos relacionados
 

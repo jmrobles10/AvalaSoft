@@ -48,7 +48,7 @@ recorrido(
     });
 
     // 2) Desaprobar con justificación.
-    await app.getByRole('button', { name: 'Más acciones' }).click();
+    await app.getByRole('region', { name: 'Aprobaciones' }).getByRole('button', { name: 'Más acciones' }).click();
     await app.getByRole('menuitem', { name: 'Desaprobar expediente' }).click();
     const dialogo = app.getByRole('dialog', { name: /^Desaprobar expediente/ });
     await dialogo.getByRole('textbox', { name: /Justificación/ }).fill('Apareció una inhabilidad que no estaba en las listas.');

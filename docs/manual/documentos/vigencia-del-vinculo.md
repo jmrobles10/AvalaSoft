@@ -63,6 +63,5 @@ Si el tercero no ratifica a tiempo y terminó la gracia de 3 días, el vínculo 
 
 ## Recorridos relacionados
 
-- [Ratifica tu información antes de que venza el vínculo](../tercero/vinculo-por-vencer-renovar.md)
 - [Define la vigencia periódica del vínculo](../configuracion/flujo-vigencia-del-vinculo.md)
 - [Sigue el ciclo de vigencia de un certificado](ciclo-de-vigencia.md)

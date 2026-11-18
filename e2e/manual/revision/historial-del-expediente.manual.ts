@@ -4,6 +4,7 @@ import { abrirDesdeBandeja, aprobarArea, observar } from '../../soporte/empresa'
 import { completarInvitacion, esperarEstadoDelTercero, responder, subirDocumento } from '../../soporte/proveedor';
 import { crearEscenario, expedienteAbierto, invitar, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { abrirHistorial } from '../nucleo/ficha';
 
 const RUT = 'Registro Único Tributario';
 const CAMARA = 'Certificado de existencia y representación legal';
@@ -19,7 +20,7 @@ recorrido(
       'Un grupo con Constructora Norte, con las áreas Compras (Rubén) y Cumplimiento (Olga). Ana es administradora.',
       'Un proveedor que subió su RUT y su Cámara; Compras observó el RUT, el proveedor subió la versión 2 y respondió, y las dos áreas aprobaron.',
     ],
-    relacionados: ['revision/observar-con-motivos', 'revision/responder-con-lo-corregido'],
+    relacionados: ['revision/observar-con-motivos', 'revision/responder-con-lo-corregido', 'vinculos/ficha-por-sectores'],
   },
   async ({ page, browser }) => {
     const e = await crearEscenario();
@@ -50,8 +51,8 @@ recorrido(
     // 1) Ana abre el historial del expediente.
     const app = await abrirEmbebido(page, e, e.ana, e.norte, `expedientes/${expediente}`);
     await expect(app.getByRole('heading', { level: 1, name: proveedor.nombre })).toBeVisible();
-    const historial = app.getByText('Historial', { exact: true }).first();
-    await expect(historial).toBeVisible();
+    // El historial no es una tarjeta de la página: se abre con el botón «Historial» del encabezado (panel lateral, pestaña del expediente).
+    const historial = await abrirHistorial(app);
     await expect(app.getByText('Adjunto el RUT completo.').first()).toBeVisible();
     await paso(page, {
       titulo: 'Abre el historial del expediente',
@@ -64,7 +65,9 @@ recorrido(
       ],
     });
 
-    // 2) La última respuesta del proveedor.
+    // 2) La última respuesta del proveedor, en el sector «Aprobaciones» (se cierra el panel del historial primero).
+    await page.keyboard.press('Escape');
+    await expect(historial).toBeHidden();
     await paso(page, {
       titulo: 'Revisa la última respuesta del proveedor',
       explicacion:

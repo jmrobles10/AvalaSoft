@@ -4,6 +4,7 @@ import { abrirDesdeBandeja, regionDeArea } from '../../soporte/empresa';
 import { completarInvitacion } from '../../soporte/proveedor';
 import { crearEscenario, invitar, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 
 const RUT = 'Registro Único Tributario';
 const CAMARA = 'Certificado de existencia y representación legal';
@@ -33,6 +34,7 @@ recorrido(
     // 1) Abrir el expediente y pasar la decisión a «por documento».
     const app = await abrirEmbebido(page, e, e.olga, e.norte, 'bandeja');
     await abrirDesdeBandeja(app, proveedor.nombre, 'Cumplimiento');
+    await irASector(app, 'Información tributaria');
     await app.getByRole('button', { name: 'Decidir por documento', exact: true }).click();
     await expect(app.getByRole('button', { name: 'Ocultar decisión por documento', exact: true })).toBeVisible();
     await expect(app.getByRole('button', { name: `Aprobar u observar ${RUT} por Cumplimiento` })).toBeVisible();
@@ -70,6 +72,7 @@ recorrido(
     const dialogoCamara = app.getByRole('dialog', { name: `${CAMARA} · Cumplimiento` });
     await dialogoCamara.getByRole('button', { name: 'Aprobar', exact: true }).click();
     await expect(dialogoCamara).toBeHidden();
+    await irASector(app, 'Aprobaciones');
     await expect(regionDeArea(app, 'Cumplimiento').filter({ hasText: 'Aprobada' })).toBeVisible();
     await paso(page, {
       titulo: 'Cierra el área al decidir el último documento',

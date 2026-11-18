@@ -1,6 +1,7 @@
-import { enRevision, esperarListas, pedirVerificaciones } from '../../soporte/cumplimiento';
+import { enRevision, pedirVerificaciones } from '../../soporte/cumplimiento';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha, irASector } from '../nucleo/ficha';
 import { crearEscenario } from '../../soporte/semilla';
 
 const NOMBRE = 'Ferretería Coincidencia S.A.S.';
@@ -26,7 +27,7 @@ recorrido(
     await enRevision(pTercero, e, NOMBRE);
 
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, 'cumplimiento');
-    await esperarListas(olga, NOMBRE, 'Cumplimiento', 'Coincidencia por analizar');
+    await esperarListasEnLaFicha(olga, NOMBRE, 'Cumplimiento', 'Coincidencia por analizar');
     await expect(olga.getByRole('button', { name: 'Rechazar por cumplimiento' })).toHaveCount(0);
 
     const coincidencia = olga.getByRole('listitem', { name: `${NOMBRE} · OFAC (SDN)` });
@@ -62,6 +63,7 @@ recorrido(
 
     await dialogo.getByRole('button', { name: 'Rechazar expediente' }).click();
     await expect(dialogo).toBeHidden();
+    await irASector(olga, 'Aprobaciones');
     await expect(olga.getByRole('alert').filter({ hasText: 'Cumplimiento lo rechazó el' })).toContainText('El vínculo volvió a Invitado.');
     await paso(page, {
       titulo: 'Confirma el rechazo',

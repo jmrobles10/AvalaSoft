@@ -1,6 +1,6 @@
 # API · Consentimientos
 
-4 operaciones en 1 recurso.
+5 operaciones en 1 recurso.
 
 ## Textos legales
 
@@ -230,6 +230,66 @@ curl -X PUT "https://{host}/api/v1/plataforma/textos-legales/aviso" \
   -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
   -H "Content-Type: application/json" \
   -d '{"contenido":"Texto de ejemplo."}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "ambito": "texto",
+  "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "tipo": "texto",
+  "version": 1,
+  "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "contenido": "Texto de ejemplo.",
+  "publicadoEn": "2026-11-12T15:00:00Z",
+  "publicadoPor": "texto"
+}
+```
+
+</details>
+
+### `GET /api/v1/textos-legales/{id}`
+
+**Obtener version texto legal.** Una versión exacta de un texto legal, la que el tercero aceptó (el id viaja en `ConsentimientosRegistrados`): la ficha del vínculo la muestra en «Autorización y declaración». El aviso de la plataforma lo ve cualquiera que lea vínculos; un texto de empresa, solo quien puede usar esa empresa. 404 `texto-legal-no-encontrado` (también si es de otra empresa: no se revela que existe).
+
+**Permiso vinculos:leer · API (`/api/v1`) · SDK: `obtenerVersionTextoLegal`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — TextoLegalDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `ambito` | texto | sí |  |
+| `empresaId` | uuid o null | no |  |
+| `tipo` | texto | sí |  |
+| `version` | entero | sí |  |
+| `hash` | texto | sí |  |
+| `contenido` | texto | sí |  |
+| `publicadoEn` | fecha y hora | sí |  |
+| `publicadoPor` | texto | sí |  |
+
+**Errores de negocio que lanza**
+
+- `404` `texto-legal-no-encontrado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/api/v1/textos-legales/3fa85f64-5717-4562-b3fc-2c963f66afa6" \
+  -H "X-Api-Key: $API_KEY"
 ```
 
 Respuesta `200`:

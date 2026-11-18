@@ -45,5 +45,4 @@ Cuando lo único que falta para aprobar es una verificación de Cumplimiento, la
 
 ## Recorridos relacionados
 
-- [Analiza una coincidencia en las listas y la descarta por homónimo](analizar-una-coincidencia.md)
 - [Consulta el informe SAGRILAFT de los terceros](informe-sagrilaft.md)

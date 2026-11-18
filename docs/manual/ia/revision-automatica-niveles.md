@@ -63,8 +63,3 @@ Antes de guardar, el aviso dice cuántos tipos de documento y cuántas áreas qu
 > **Pantalla:** `/e/{empresa}/revision-automatica`
 
 ![Paso 4: Confirma antes de activar (escritorio)](../../../salida/manual/img/ia/revision-automatica-niveles/04-confirma-antes-de-activar-claro.webp)
-
-## Recorridos relacionados
-
-- [Revisa un documento que el sistema aprobó solo](revision-automatica-aprueba-sola.md)
-- [Atiende una excepción de la revisión asistida](revision-asistida-y-excepciones.md)

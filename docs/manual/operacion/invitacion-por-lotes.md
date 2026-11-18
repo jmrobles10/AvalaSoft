@@ -85,7 +85,3 @@ Desde la fila, el enlace «Invitado» lleva al vínculo del tercero, que queda e
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 
 ![Paso 6: Abre el vínculo de un tercero del lote (escritorio)](../../../salida/manual/img/operacion/invitacion-por-lotes/06-abre-el-vinculo-de-un-tercero-del-lote-claro.webp)
-
-## Recorridos relacionados
-
-- [Acepta la invitación y completa tu información como persona jurídica](../tercero/aceptar-invitacion-persona-juridica.md)

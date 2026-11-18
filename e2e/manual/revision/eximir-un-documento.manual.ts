@@ -3,6 +3,7 @@ import { abrirEmbebido } from '../../soporte/embebido';
 import { aceptarInvitacion, entrarPorInvitacion, esperarEstadoDelTercero, subirDocumento, tarjeta } from '../../soporte/proveedor';
 import { expedienteAbierto, invitar, nuevoTercero, crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 
 const RUT = 'Registro Único Tributario';
 const CAMARA = 'Certificado de existencia y representación legal';
@@ -34,6 +35,7 @@ recorrido(
     const paginaAna = await (await browser.newContext()).newPage();
     const ana = await abrirEmbebido(paginaAna, e, e.ana, e.norte, `expedientes/${await expedienteAbierto(e, invitacion)}`);
     await expect(ana.getByRole('heading', { level: 1, name: nombre })).toBeVisible();
+    await irASector(ana, 'Información legal');
     const documento = ana.getByRole('listitem').filter({ has: ana.getByRole('heading', { level: 4, name: CAMARA, exact: true }) }).first();
     await expect(documento.getByRole('button', { name: 'Eximir', exact: true })).toBeVisible();
     await paso(paginaAna, {

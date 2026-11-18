@@ -205,7 +205,3 @@ La lista muestra el flujo nuevo con su versión publicada (v1) y la marca «Por 
 **Variantes**
 
 - **La empresa no tiene un flujo por defecto para el tipo de vínculo:** La lista de «Flujo por defecto por tipo de vínculo» dice «Sin flujo por defecto» y los terceros que aceptan quedan en aperturas pendientes.
-
-## Recorridos relacionados
-
-- [Acepta la invitación y completa tu información como persona jurídica](../tercero/aceptar-invitacion-persona-juridica.md)

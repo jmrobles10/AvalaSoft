@@ -442,6 +442,7 @@ Campos de la respuesta `202`:
 |---|---|---|---|
 | `requiereOtp` | booleano | sí |  |
 | `expira` | fecha y hora | sí |  |
+| `correoEnmascarado` | texto o null | no |  |
 
 <details><summary>Ejemplo de petición y respuesta</summary>
 

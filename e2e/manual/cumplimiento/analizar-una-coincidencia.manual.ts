@@ -1,9 +1,10 @@
-import { aprobarUltimaArea, enRevision, esperarListas, pedirVerificaciones } from '../../soporte/cumplimiento';
+import { aprobarUltimaArea, enRevision, pedirVerificaciones } from '../../soporte/cumplimiento';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { abrirDesdeBandeja, aprobarArea } from '../../soporte/empresa';
 import { esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha, irASector } from '../nucleo/ficha';
 
 const NOMBRE = 'Ferretería Coincidencia S.A.S.';
 
@@ -32,7 +33,7 @@ recorrido(
     await aprobarArea(ruben, 'Compras');
 
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, 'cumplimiento');
-    await esperarListas(olga, NOMBRE, 'Cumplimiento', 'Coincidencia por analizar');
+    await esperarListasEnLaFicha(olga, NOMBRE, 'Cumplimiento', 'Coincidencia por analizar');
     const coincidencia = olga.getByRole('listitem', { name: `${NOMBRE} · OFAC (SDN)` });
     await expect(coincidencia.getByRole('button', { name: 'Descartar' })).toBeVisible();
     await expect(coincidencia).not.toContainText('Descartada');
@@ -49,6 +50,7 @@ recorrido(
     });
 
     // Tu área aprueba, pero el expediente no se aprueba: la verificación bloquea.
+    await irASector(olga, 'Aprobaciones');
     await aprobarUltimaArea(olga, 'Cumplimiento', /Listas restrictivas \(coincidencia por analizar\)/);
     await paso(page, {
       titulo: 'Aprueba tu área: el sistema lo impide',
@@ -58,6 +60,7 @@ recorrido(
       resaltar: olga.getByRole('alert').filter({ hasText: 'Falta cumplimiento para aprobar' }),
     });
 
+    await irASector(olga, 'Oficial de cumplimiento');
     await coincidencia.getByRole('button', { name: 'Descartar' }).click();
     const dialogo = olga.getByRole('dialog', { name: 'Descartar coincidencia' });
     await expect(dialogo).toBeVisible();
@@ -77,6 +80,7 @@ recorrido(
     await dialogo.getByRole('textbox', { name: /Justificación/ }).fill('Homónimo: el NIT de la lista es otro y la dirección no coincide.');
     await dialogo.getByRole('button', { name: 'Guardar decisión' }).click();
     await expect(dialogo).toBeHidden();
+    await irASector(olga, 'Aprobaciones');
     await expect(olga.getByText(/Todas las áreas aprobaron el .* y el vínculo quedó activo\./)).toBeVisible();
 
     await paso(page, {

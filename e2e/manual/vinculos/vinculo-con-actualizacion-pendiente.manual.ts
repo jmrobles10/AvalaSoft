@@ -7,6 +7,7 @@ import { crearTipoDeVinculo, invitarVinculo } from '../../soporte/flujos';
 import { aceptarInvitacion, entrarPorInvitacion, esperarEstadoDelTercero, subirDocumento } from '../../soporte/proveedor';
 import { crearEscenario, nuevoTercero, type Empresa, type Escenario, type Persona } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -107,11 +108,12 @@ recorrido(
 
     await fila.click();
     await expect(app.getByRole('heading', { level: 1, name: tercero.nombre })).toBeVisible();
+    await irASector(app, 'Certificado');
     await expect(app.getByText('En verificación').first()).toBeVisible();
     await paso(page, {
       titulo: 'Revisa el detalle y el certificado',
       explicacion:
-        'El detalle muestra el vínculo como «En revisión» mientras las áreas revisan el RUT nuevo. Mientras dure la revisión, nada se suspende ni se bloquea: el certificado sigue vigente pero se ve «En verificación», igual que en la página pública de verificación.',
+        'El encabezado muestra el vínculo como «En revisión» mientras las áreas revisan el RUT nuevo; el sector «Certificado» muestra el certificado. Mientras dure la revisión, nada se suspende ni se bloquea: el certificado sigue vigente pero se ve «En verificación», igual que en la página pública de verificación.',
       resaltar: app.getByText('En verificación').first(),
     });
   },

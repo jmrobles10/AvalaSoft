@@ -1,10 +1,11 @@
-import { pedirVerificaciones, aprobarUltimaArea, esperarListas, personaEmbebida } from '../../soporte/cumplimiento';
+import { pedirVerificaciones, aprobarUltimaArea, personaEmbebida } from '../../soporte/cumplimiento';
 import { pdf } from '../../soporte/archivos';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { abrirDesdeBandeja, aprobarArea, irASeccion, rechazar } from '../../soporte/empresa';
 import { abrirEmpresa, completarInvitacion, esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario, invitar, nuevoTercero, SST } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha, irASector } from '../nucleo/ficha';
 
 const NOMBRE = 'Ferretería Coincidencia Confirmada S.A.S.';
 const RUT = 'Registro Único Tributario';
@@ -42,7 +43,7 @@ recorrido(
     await aprobarArea(ruben, 'Compras');
 
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, 'cumplimiento');
-    await esperarListas(olga, tercero.nombre, 'Cumplimiento', 'Coincidencia por analizar');
+    await esperarListasEnLaFicha(olga, tercero.nombre, 'Cumplimiento', 'Coincidencia por analizar');
     const coincidencia = olga.getByRole('listitem', { name: `${tercero.nombre} · OFAC (SDN)` });
     await coincidencia.getByRole('button', { name: 'Confirmar' }).click();
     const confirmar = olga.getByRole('dialog', { name: 'Confirmar coincidencia' });
@@ -61,6 +62,7 @@ recorrido(
     await expect(confirmar).toBeHidden();
     await expect(olga.getByRole('region', { name: 'Listas restrictivas' })).toContainText('Fallida');
 
+    await irASector(olga, 'Aprobaciones');
     await aprobarUltimaArea(olga, 'Cumplimiento', /Listas restrictivas \(fallida\)/);
     await paso(page, {
       titulo: 'Aprueba tu área: el expediente sigue bloqueado',
@@ -74,6 +76,7 @@ recorrido(
     await abrirEmpresa(pTercero, e.norte.nombre);
     await esperarEstadoDelTercero(pTercero, 'EnRevision');
     await rechazar(olga, ['No corresponde al tercero'], 'Coincidencia confirmada con OFAC: no se puede vincular.');
+    await irASector(olga, 'Aprobaciones');
     await expect(olga.getByRole('alert').filter({ hasText: 'Cumplimiento lo rechazó el' })).toContainText('El vínculo volvió a Invitado.');
     await paso(page, {
       titulo: 'Rechaza el expediente con motivos',

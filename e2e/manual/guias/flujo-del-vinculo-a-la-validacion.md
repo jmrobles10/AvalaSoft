@@ -63,7 +63,7 @@ También existe el **autorregistro** (`POST /public/v1/autorregistro`: el propio
 
 > **Configuración:** [Tipos de vínculo](guia:configuracion-del-grupo#tipos-de-vinculo), [Plan del grupo](guia:configuracion-del-grupo#plan-del-grupo) y [guía de integración](guia:guia-de-integracion#invitar-a-un-tercero).
 >
-> **Recorridos:** [[operacion/invitacion-por-lotes|Invitación por lotes]] · [[operacion/lote-pausar-reanudar-cancelar|Pausar, reanudar o cancelar un lote]] · [[integracion/invitar-por-api|Invitar por API]] · [[integracion/sistema-integrador|Registrar el sistema integrador]] · [[integracion/api-keys|API keys]] · [[vinculos/lista-y-filtros|Lista de vínculos y filtros]] · [[vinculos/detalle-del-vinculo|Detalle del vínculo]] · [[vinculos/reenviar-invitacion|Reenviar la invitación]] · [[vinculos/abrir-expediente-manual|Abrir el expediente a mano]]
+> **Recorridos:** [[operacion/invitacion-por-lotes|Invitación por lotes]] · [[operacion/lote-pausar-reanudar-cancelar|Pausar, reanudar o cancelar un lote]] · [[integracion/invitar-por-api|Invitar por API]] · [[integracion/sistema-integrador|Registrar el sistema integrador]] · [[integracion/api-keys|API keys]] · [[vinculos/lista-y-filtros|Lista de vínculos y filtros]] · [[vinculos/detalle-del-vinculo|Detalle del vínculo]] · [[vinculos/ficha-por-sectores|La ficha por sectores]] · [[vinculos/reenviar-invitacion|Reenviar la invitación]] · [[vinculos/abrir-expediente-manual|Abrir el expediente a mano]]
 
 ### 3. Invitación y aceptación
 
@@ -116,7 +116,17 @@ Los veredictos del sistema llevan origen `Sistema`, su confianza y la justificac
 
 ### 6. Revisión por áreas y etapas
 
-El flujo define **etapas en secuencia**; las **áreas** de una misma etapa revisan **en paralelo**, cada una con su número de **aprobadores** (personas distintas). Un revisor ve en **Inicio** lo que le toca y en la **Bandeja** los expedientes de las áreas de las que es miembro. Abre el expediente y, para cada documento o sección de su área, ve la versión (con su visor y los datos del análisis), los veredictos de las otras áreas y el historial. Puede:
+El flujo define **etapas en secuencia**; las **áreas** de una misma etapa revisan **en paralelo**, cada una con su número de **aprobadores** (personas distintas). Un revisor ve en **Inicio** lo que le toca y en la **Bandeja** los expedientes de las áreas de las que es miembro. Abre el expediente en la **ficha del vínculo**, una sola pantalla con una barra de **sectores** a la izquierda (como la ficha del tercero del SRM). El sector va en la dirección (`?sector=…`), así que se puede compartir el enlace a uno de ellos.
+
+| Grupo | Sectores | Qué muestra |
+|---|---|---|
+| Proceso | Aprobaciones | El expediente en curso: estado, acciones, avisos, decisión de cada área y etapas. El expediente abre aquí. |
+| Información | Información general, Seguridad industrial y SST, Cuenta bancaria, Tributaria, Financiera, Datos de contacto, Autorización y declaración, Legal, Oficial de cumplimiento | En cada sector, **lo que pide el expediente** (sus requisitos, con su versión, vigencia y veredictos) y **lo que declaró el tercero** en esas secciones de la ficha. Autorización y declaración muestra los textos que aceptó, con el botón «Ver» para leer la versión exacta; Oficial de cumplimiento, las verificaciones de listas y del estudio y el monitoreo. El vínculo abre en Información general. |
+| Registro | Documentos adjuntos, Evaluación, Certificado, Historial | Los documentos que no van en otro sector, las evaluaciones, el certificado y la línea de tiempo. |
+
+Cada sector indica cuántos requisitos tiene **pendientes**, y en ámbar si alguno está observado o rechazado. El **historial** (del expediente y del vínculo) se abre en cualquier momento con el botón «Historial» del encabezado, sin salir del sector, y también tiene su propio sector.
+
+Para cada documento o sección de su área, el revisor ve la versión (con su visor y los datos del análisis), los veredictos de las otras áreas y el historial. Puede:
 
 - **aprobar** el requisito o toda el área;
 - **observar** con motivos (ver la etapa 7);
@@ -126,7 +136,7 @@ Un área aprueba cuando todos sus requisitos y todos sus aprobadores aprobaron; 
 
 > **Configuración:** [Áreas](guia:configuracion-de-la-empresa#areas), [Plazos de revisión](guia:configuracion-de-la-empresa#plazos-de-revision) y [Delegación de revisión](guia:configuracion-de-la-empresa#delegacion-de-revision).
 >
-> **Recorridos:** [[revision/inicio-lo-que-te-toca|Inicio: lo que te toca]] · [[revision/bandeja-de-revision|Bandeja de revisión]] · [[revision/aprobar-un-area|Aprobar un área]] · [[revision/aprobar-documento-por-documento|Aprobar documento por documento]] · [[revision/etapas-en-secuencia|Etapas en secuencia]] · [[revision/dos-aprobadores-y-separacion-de-funciones|Dos aprobadores y separación de funciones]] · [[revision/aprobar-en-nombre-del-area|Aprobar en nombre del área]] · [[revision/eximir-un-documento|Eximir un documento]] · [[revision/visor-y-datos-de-un-documento|Visor y datos de un documento]] · [[revision/historial-del-expediente|Historial del expediente]] · [[operacion/delegacion-de-revision|Delegación de revisión]] · [[operacion/plazos-de-revision|Plazos de revisión]] · [[informes/plazos-de-revision|Informe de plazos de revisión]]
+> **Recorridos:** [[revision/inicio-lo-que-te-toca|Inicio: lo que te toca]] · [[revision/bandeja-de-revision|Bandeja de revisión]] · [[revision/aprobar-un-area|Aprobar un área]] · [[revision/aprobar-documento-por-documento|Aprobar documento por documento]] · [[revision/etapas-en-secuencia|Etapas en secuencia]] · [[revision/dos-aprobadores-y-separacion-de-funciones|Dos aprobadores y separación de funciones]] · [[revision/aprobar-en-nombre-del-area|Aprobar en nombre del área]] · [[revision/eximir-un-documento|Eximir un documento]] · [[revision/visor-y-datos-de-un-documento|Visor y datos de un documento]] · [[revision/historial-del-expediente|Historial del expediente]] · [[vinculos/ficha-por-sectores|La ficha por sectores]] · [[operacion/delegacion-de-revision|Delegación de revisión]] · [[operacion/plazos-de-revision|Plazos de revisión]] · [[informes/plazos-de-revision|Informe de plazos de revisión]]
 
 ### 7. Observaciones y reenvío
 

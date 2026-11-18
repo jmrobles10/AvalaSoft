@@ -26,7 +26,7 @@ La administradora abre a mano el expediente de un proveedor invitado que todaví
 
 ## Paso 1. Encuentra la tarjeta Expediente del vínculo
 
-Mientras el tercero no ha aceptado, la tarjeta «Expediente» dice «Sin expediente abierto» y ofrece el botón «Abrir expediente». Usa esa opción cuando necesitas empezar la validación ya, por ejemplo porque el tercero entregó sus documentos por otro canal.
+En el sector «Aprobaciones» de la barra lateral, la tarjeta «Expediente» dice «Sin expediente abierto» y ofrece el botón «Abrir expediente». Usa esa opción cuando necesitas empezar la validación ya, por ejemplo porque el tercero entregó sus documentos por otro canal.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 

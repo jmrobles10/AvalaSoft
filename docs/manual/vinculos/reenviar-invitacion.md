@@ -55,4 +55,3 @@ Validasoft confirma con un aviso que la invitación se envió a ese correo y el 
 ## Recorridos relacionados
 
 - [Revisa el detalle de un vínculo](detalle-del-vinculo.md)
-- [Qué pasa cuando un enlace de invitación ya se usó, venció o no existe](../tercero/invitacion-vencida-o-usada.md)
