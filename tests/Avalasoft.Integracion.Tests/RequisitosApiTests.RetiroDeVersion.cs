@@ -69,6 +69,8 @@ public sealed partial class RequisitosApiTests
         var fila = (await ApiAsync<PaginaDto<RevalidacionDto>>("GET", "/api/v1/revalidaciones", Admin(e.Norte), null, 200)).Datos
             .Single(r => r.ExpedienteId == revalidacion2);
         fila.Retiro.ShouldNotBeNull().Motivo.ShouldBe("Subí el RUT de otra empresa");
+        fila.Retiro.Numero.ShouldBe(2);
+        (fila.VersionAceptada!.Numero, fila.VersionActual.Numero).ShouldBe((2, 1)); // la bandeja va hacia atrás: de la v2 que aprobó a la v1 que vuelve
         fila.AprobableEnLote.ShouldBeFalse();
         var lote = await ApiAsync<ResultadoDeLoteDto>("POST", "/api/v1/revalidaciones/aprobar", Delegado(e.Norte, e.Laura),
             new AprobarRevalidacionesDto([new RevalidacionAAprobarDto(revalidacion2, rut.Id, 1)]), 200);

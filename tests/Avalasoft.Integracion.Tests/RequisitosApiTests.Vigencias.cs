@@ -457,6 +457,9 @@ public sealed partial class RequisitosApiTests
                 new BloquearVinculoDto("Revisión de sanciones", DateTimeOffset.UtcNow.AddDays(2)), 200);
             (bloqueado.Estado, bloqueado.Bloqueo!.Hasta).ShouldBe(("Bloqueado", bloqueado.Bloqueo.Hasta));
             (await CertificadoActualAsync(a.E.Norte, a.Vinculo.Id)).Estado.ShouldBe("Suspendido");
+            // El tercero se entera por correo de que su certificado quedó suspendido (sin el motivo, que es interno).
+            var suspension = await fixture.Correos.EsperarAsync(a.Vinculo.CorreoTercero, m => m.Asunto.StartsWith("Norte S.A.S. suspendió tu certificado", StringComparison.Ordinal));
+            suspension.Texto.ShouldNotContain("Revisión de sanciones");
             await BarrerVigenciasAsync(tenantId);
             (await VinculoAsync(a.E.Norte, a.Vinculo.Id)).Estado.ShouldBe("Bloqueado");
 

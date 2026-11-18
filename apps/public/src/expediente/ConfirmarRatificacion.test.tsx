@@ -6,6 +6,7 @@ import { configurarCliente, reiniciarCliente } from '@avalasoft/api-client';
 import { createAvalasoftTheme } from '@avalasoft/ui';
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { useAvisos } from '../shared/useAvisos';
 import { ConfirmarRatificacion } from './ConfirmarRatificacion';
 
 const json = (estado: number, cuerpo: unknown) => new Response(JSON.stringify(cuerpo), { status: estado, headers: { 'Content-Type': 'application/problem+json' } });
@@ -28,7 +29,10 @@ function montar(respuesta: () => Response, props: Partial<ComponentProps<typeof 
   return urls;
 }
 
-afterEach(() => reiniciarCliente());
+afterEach(() => {
+  reiniciarCliente();
+  useAvisos.getState().cerrar();
+});
 
 describe('ratificar un documento vencido', () => {
   it('explica qué se declara, pide confirmación y ratifica el requisito de la renovación', async () => {
@@ -44,6 +48,7 @@ describe('ratificar un documento vencido', () => {
     await vi.waitFor(() => expect(urls).toHaveLength(1));
     expect(urls[0]).toContain('/public/v1/expedientes/e1/requisitos/r1/ratificar');
     await vi.waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(useAvisos.getState().actual?.mensaje).toBe('Confirmaste tu Registro Único Tributario. Constructora Norte lo dio por renovado.');
   });
 
   it('una sección de la ficha en la renovación periódica: explica que la información sigue igual y ratifica el requisito', async () => {
@@ -58,6 +63,7 @@ describe('ratificar un documento vencido', () => {
     await usuario.click(screen.getByRole('button', { name: 'Sí, sigue igual' }));
     await vi.waitFor(() => expect(urls).toHaveLength(1));
     expect(urls[0]).toContain('/public/v1/expedientes/e1/requisitos/r1/ratificar');
+    await vi.waitFor(() => expect(useAvisos.getState().actual?.mensaje).toBe('Confirmaste tu información de Información general. Constructora Norte la dio por renovada.'));
   });
 
   it('el botón puede llevar el nombre de la empresa (Mi información con varias empresas)', () => {

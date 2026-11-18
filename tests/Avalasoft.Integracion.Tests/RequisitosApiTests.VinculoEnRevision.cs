@@ -115,6 +115,7 @@ public sealed partial class RequisitosApiTests
         campana.Mensaje.ShouldContain("lo que ya tenías aprobado sigue vigente.");
         var mensaje = await fixture.Correos.EsperarAsync(correo, m => m.Asunto.StartsWith("Norte S.A.S. no aprobó tu actualización"));
         mensaje.Texto.ShouldContain("Lo que ya tenías aprobado sigue vigente.");
+        mensaje.Texto.ShouldContain("El documento no corresponde a la persona o empresa que se está validando."); // el motivo, con el texto que se le comunica
         mensaje.Texto.ShouldNotContain("Interno");
 
         // La siguiente actualización quita el aviso: el vínculo vuelve a estar en revisión y, aprobada, ya no hay nada que avisar.

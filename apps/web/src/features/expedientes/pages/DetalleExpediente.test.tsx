@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
 import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { area, expediente, veredicto } from '../datosPrueba';
 import { DetalleExpediente } from './DetalleExpediente';
 
@@ -64,13 +64,7 @@ function montar(datos: ExpedienteDto, scopes: ReadonlySet<string> = REVISOR) {
   );
 }
 
-// La ficha del vínculo mide el encabezado fijo con un ResizeObserver, que jsdom no trae.
-beforeEach(() => {
-  vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} });
-});
-
 afterEach(() => {
-  vi.unstubAllGlobals();
   reiniciarCliente();
   permisos.scopes = new Set();
 });

@@ -158,6 +158,29 @@ describe('DialogoDecision', () => {
   });
 });
 
+describe('DialogoDecision: eximir un documento (RQ-6)', () => {
+  it('avisa qué pasará con el documento, envía la justificación y confirma «Registro Único Tributario eximido.»', async () => {
+    const usuario = userEvent.setup();
+    const { fetch, onCerrar } = preparar({
+      inicial: { ...expediente('EnRevision'), requisitos: [requisito()] },
+      dialogo: { tipo: 'eximir', requisito: requisito() },
+      respuesta: () => json(200, expediente('EnRevision')),
+      recarga: null,
+    });
+
+    expect(screen.getByRole('heading', { name: /^Eximir Registro Único Tributario/ })).toBeInTheDocument();
+    expect(screen.getByText(/El documento deja de exigirse en este expediente y sus veredictos dejan de contar/)).toBeInTheDocument();
+    await usuario.type(screen.getByRole('textbox', { name: /Justificación/ }), 'Está inscrita en la Cámara de otro país.');
+    await usuario.click(screen.getByRole('button', { name: 'Eximir documento' }));
+
+    await waitFor(() => expect(onCerrar).toHaveBeenCalled());
+    const post = fetch.mock.calls.find(([, init]) => init?.method === 'POST');
+    expect(post?.[0]).toBe('/api/v1/expedientes/e1/requisitos/r-rut/eximir');
+    expect(JSON.parse(String(post?.[1]?.body))).toEqual({ justificacion: 'Está inscrita en la Cámara de otro país.' });
+    expect(useAvisos.getState().actual?.mensaje).toBe('Registro Único Tributario eximido.');
+  });
+});
+
 describe('DialogoDecision: nada se envía con el formulario incompleto', () => {
   it('eximir queda deshabilitado hasta escribir la justificación, y dice qué falta', async () => {
     const usuario = userEvent.setup();

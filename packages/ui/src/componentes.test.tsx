@@ -71,6 +71,17 @@ describe('ChipEstado', () => {
     expect(chip).toHaveTextContent('Vencido. Venció el 28/09/2026');
   });
 
+  it('«En revisión» y «Activo» dicen cada uno desde cuándo con su propia etiqueta: en el detalle del vínculo nunca salen los dos', () => {
+    const { unmount } = conTema(<ChipEstado estado="EnRevision" fecha="2026-11-08T15:00:00Z" />);
+    expect(screen.getByText('En revisión').closest('[data-estado]')).toHaveTextContent('En revisión. En revisión desde el 08/11/2026');
+    expect(screen.queryByText(/Activo desde el/)).not.toBeInTheDocument();
+    unmount();
+
+    conTema(<ChipEstado estado="Activo" fecha="2026-11-08T15:00:00Z" />);
+    expect(screen.getByText('Activo').closest('[data-estado]')).toHaveTextContent('Activo. Activo desde el 08/11/2026');
+    expect(screen.queryByText(/En revisión desde el/)).not.toBeInTheDocument();
+  });
+
   it('arma el tooltip con fecha, bloqueante y decisión automática', () => {
     expect(textoTooltip('Aprobado', null, true)).toBe('Decidido por Sistema (IA)');
     expect(textoTooltip('ConPendientes', null, false, true)).toBe('Bloqueante');

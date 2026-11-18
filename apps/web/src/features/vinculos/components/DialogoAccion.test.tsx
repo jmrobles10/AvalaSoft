@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ACCIONES_VINCULO, configurarCliente, reiniciarCliente, type AccionVinculo, type VinculoDto } from '@avalasoft/api-client';
 import { createAvalasoftTheme } from '@avalasoft/ui';
@@ -116,6 +116,22 @@ describe('DialogoAccion', () => {
     expect(peticion?.cuerpo).toEqual({ motivo: 'Coincidencia en lista restrictiva', hasta: null });
   });
 
+  it('bloquear con fecha de fin envía hasta cuándo dura el bloqueo (VV-5) y avisa que el vínculo quedó bloqueado', async () => {
+    const usuario = userEvent.setup();
+    const { peticiones, onCerrar } = preparar('bloquear', () => json(200, { ...vinculo, estado: 'Bloqueado', version: 8 }));
+
+    await usuario.type(screen.getByLabelText(/Motivo/), 'Revisión temporal de sanciones.');
+    const fecha = screen.getByRole('group', { name: 'Bloquear hasta (opcional)' });
+    await usuario.click(within(fecha).getByRole('spinbutton', { name: 'Día' }));
+    await usuario.keyboard('10112027');
+    await usuario.click(screen.getByRole('button', { name: 'Bloquear vínculo' }));
+
+    await waitFor(() => expect(onCerrar).toHaveBeenCalled());
+    expect(peticiones[0]?.url).toBe('/api/v1/vinculos/v1/bloquear');
+    expect(peticiones[0]?.cuerpo).toEqual({ motivo: 'Revisión temporal de sanciones.', hasta: new Date('2027-11-10T23:59:59').toISOString() });
+    expect(useAvisos.getState().actual?.mensaje).toBe('Vínculo bloqueado.');
+  });
+
   it('anular exige escribir la palabra de confirmación', async () => {
     const usuario = userEvent.setup();
     const { peticiones } = preparar('anular', () => json(200, vinculo));
@@ -187,6 +203,20 @@ describe('DialogoAccion', () => {
     expect(peticiones[0]?.cuerpo).toEqual({ correoDestino: 'contacto@aceros.co', vigenciaHoras: 72 });
   });
 
+  it('desvincular pide el motivo, lo envía y avisa «Tercero desvinculado.»', async () => {
+    const usuario = userEvent.setup();
+    const { peticiones, onCerrar } = preparar('desvincular', () => json(200, { ...vinculo, estado: 'Desvinculado', version: 8 }));
+
+    expect(screen.getByRole('button', { name: 'Desvincular' })).toBeDisabled();
+    await usuario.type(screen.getByLabelText(/Motivo/), 'Terminó el contrato marco.');
+    await usuario.click(screen.getByRole('button', { name: 'Desvincular' }));
+
+    await waitFor(() => expect(onCerrar).toHaveBeenCalled());
+    expect(peticiones[0]?.url).toBe('/api/v1/vinculos/v1/desvincular');
+    expect(peticiones[0]?.cuerpo).toEqual({ motivo: 'Terminó el contrato marco.' });
+    expect(useAvisos.getState().actual?.mensaje).toBe('Tercero desvinculado.');
+  });
+
   describe('reintegrar (DS-3)', () => {
     const desvinculado: VinculoDto = { ...vinculo, estado: 'Desvinculado' };
 
@@ -205,6 +235,7 @@ describe('DialogoAccion', () => {
       await waitFor(() => expect(peticiones).toHaveLength(1));
       expect(peticiones[0]?.url).toBe('/api/v1/vinculos/v1/reintegrar');
       expect(peticiones[0]?.cuerpo).toEqual({ justificacion: 'Se renovó el contrato', revalidar: false });
+      await waitFor(() => expect(useAvisos.getState().actual?.mensaje).toBe('Vínculo reintegrado.'));
     });
 
     it('si no se puede sin revalidar explica por qué, deshabilita esa opción y envía revalidar', async () => {
@@ -217,6 +248,7 @@ describe('DialogoAccion', () => {
       expect(await screen.findByText('Su vigencia terminó: Registro Único Tributario.')).toBeInTheDocument();
       expect(screen.getByText('No se puede reintegrar sin revalidar:')).toBeInTheDocument();
       expect(screen.getByRole('radio', { name: /Reintegrar sin revalidar/ })).toBeDisabled();
+      expect(screen.getByRole('radio', { name: /^Revalidar/ })).toBeChecked();
 
       await usuario.type(screen.getByLabelText(/Justificación/), 'Retoma la relación');
       await usuario.click(screen.getByRole('button', { name: 'Reintegrar vínculo' }));
