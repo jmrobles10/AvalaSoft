@@ -15,7 +15,7 @@ function paginaAnfitriona(rutaInicial: string, empresaId: string | null): string
 <style>html,body{margin:0;background:#eef1f5;font-family:sans-serif} header{height:48px;display:flex;align-items:center;padding:0 16px;background:#263238;color:#fff}
 iframe{display:block;width:100%;height:calc(100vh - 48px);border:0}</style></head>
 <body><header>Sistema integrado E2E</header>
-<iframe id="validasoft" title="Validasoft" src="${API}/app/#/${empresaId ? `e/${empresaId}/` : ''}${rutaInicial}"></iframe>
+<iframe id="validasoft" title="AvalaSoft" src="${API}/app/#/${empresaId ? `e/${empresaId}/` : ''}${rutaInicial}"></iframe>
 <script>
   const marco = document.getElementById('validasoft');
   window.mensajesDeValidasoft = [];

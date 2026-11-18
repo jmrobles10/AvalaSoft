@@ -21,7 +21,7 @@ recorrido(
     actor: 'Tercero',
     titulo: 'Actualiza tu información desde un RUT nuevo',
     resumen:
-      'Cuando subes un RUT nuevo con datos distintos a los de tu información, Validasoft te avisa y te propone los cambios. Revisas lo que dice el RUT campo por campo y aplicas solo lo que es correcto; nada se guarda hasta que tú guardes.',
+      'Cuando subes un RUT nuevo con datos distintos a los de tu información, AvalaSoft te avisa y te propone los cambios. Revisas lo que dice el RUT campo por campo y aplicas solo lo que es correcto; nada se guarda hasta que tú guardes.',
     precondiciones: [
       'Un grupo empresarial con «Constructora Sur S.A.S.», lectura automática de documentos activa (IA) y un flujo de Cliente que pide el RUT y las secciones de la ficha.',
       'Un tercero jurídico que aceptó la invitación, completó la información general con la dirección del RUT versión 1 y cuyo expediente ya fue aprobado.',

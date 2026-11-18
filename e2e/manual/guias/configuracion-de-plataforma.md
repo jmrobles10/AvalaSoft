@@ -5,7 +5,7 @@ orden: 33
 resumen: "La consola /plataforma y los ajustes globales de la instalación: grupos, planes, IA, listas restrictivas, operadores, secretos y soporte, con valores por defecto y variantes."
 ---
 
-**Plataforma** es quien opera la instalación de Validasoft: da de alta grupos y empresas, fija planes y límites, configura la IA y la cuenta de listas restrictivas, administra operadores y secretos. Sus pantallas viven en `/plataforma` de la app web (`/app/#/plataforma/…`) y solo las ven los operadores de Plataforma. Los ajustes que cambian por despliegue y no desde la consola están en [Variables de entorno](guia:variables-de-entorno).
+**Plataforma** es quien opera la instalación de AvalaSoft: da de alta grupos y empresas, fija planes y límites, configura la IA y la cuenta de listas restrictivas, administra operadores y secretos. Sus pantallas viven en `/plataforma` de la app web (`/app/#/plataforma/…`) y solo las ven los operadores de Plataforma. Los ajustes que cambian por despliegue y no desde la consola están en [Variables de entorno](guia:variables-de-entorno).
 
 ## Reglas comunes de la consola
 
@@ -44,7 +44,7 @@ Ruta `/plataforma/grupos/nuevo` · `POST /plataforma/tenants` con `Idempotency-K
 | Zona horaria | Calendario del negocio (vencimientos, «hoy»). La pantalla fija la región en `co` y el idioma es `es-CO`; el nombre, la zona y la región se corrigen después en la ficha del grupo. | `America/Bogota` | Debe ser una zona IANA (`zona-horaria-invalida`). |
 | Primera empresa: país, tipo, número, prefijo de folio y razón social | La primera razón social del grupo. | Sin valor: debe configurarse | Prefijo de 2 a 10 caracteres `A-Z0-9`, único en el grupo; el número se valida según el tipo de identificación. |
 | Administrador: nombre, correo y usuario en el sistema (opcional) | Rol Administrador de todo el grupo; con ingreso directo recibe un correo de invitación. | Sin valor: debe configurarse | Un id externo sin sistema: 422 `sistema-requerido`. |
-| Cómo entran sus personas | Desde el sistema integrado (Delegado) y/o Directo a Validasoft. | La pantalla propone Delegado; la API sin `ingreso` crea solo Delegado | Al menos uno. |
+| Cómo entran sus personas | Desde el sistema integrado (Delegado) y/o Directo a AvalaSoft. | La pantalla propone Delegado; la API sin `ingreso` crea solo Delegado | Al menos uno. |
 | Política de sesión del grupo | Duración de la sesión, inactividad y passkey para todos; luego se cambian en Configuración › Ingreso. | 8 horas, 30 minutos, no | Sesión de 1 a 24 horas; inactividad de 5 a 480 minutos y no más que la sesión. |
 | Sistema integrado (solo con Delegado): código, nombre, clave pública y sitios | El sistema que autentica a las personas. | Sin valor: debe configurarse | Código `A-Z`, `0-9` y `_` (2 a 20), que es el `iss` de las aserciones; clave RSA de 2048 bits o más, o EC P-256; hasta 20 orígenes `https://host[:puerto]`. |
 | Resultado | Muestra **una sola vez** dos API keys: la de administración y la del sistema, ambas con todos los permisos del grupo, empresas `*` y sin expiración. También siembra tipos de vínculo y de documento. | — | Sin documento de plan el grupo nace sin límites, con la etiqueta «Inicial». |

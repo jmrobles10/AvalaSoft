@@ -2,10 +2,10 @@
 titulo: "Variables de entorno del despliegue"
 seccion: "Configuración y glosario"
 orden: 34
-resumen: "Toda la configuración de servidor de Validasoft: qué clave es obligatoria, qué hace cada una y su valor por defecto. Se leen del entorno, de appsettings o de ambos."
+resumen: "Toda la configuración de servidor de AvalaSoft: qué clave es obligatoria, qué hace cada una y su valor por defecto. Se leen del entorno, de appsettings o de ambos."
 ---
 
-Validasoft usa la configuración estándar de .NET: cada clave `Validasoft:Grupo:Nombre` de `appsettings.json` se puede fijar con una variable de entorno que usa dos guiones bajos como separador, por ejemplo `Validasoft__Almacen__Endpoint`. Las listas se numeran (`Validasoft__Webhooks__Reintentos__0=00:01:00`). Lo de **esta página se cambia por despliegue**, no desde la app; lo que se cambia desde la app está en [Configuración del grupo](guia:configuracion-del-grupo), [de la empresa](guia:configuracion-de-la-empresa) y [de Plataforma](guia:configuracion-de-plataforma). Cómo se despliega está en [Despliegue](guia:arquitectura-despliegue).
+AvalaSoft usa la configuración estándar de .NET: cada clave `Validasoft:Grupo:Nombre` de `appsettings.json` se puede fijar con una variable de entorno que usa dos guiones bajos como separador, por ejemplo `Validasoft__Almacen__Endpoint`. Las listas se numeran (`Validasoft__Webhooks__Reintentos__0=00:01:00`). Lo de **esta página se cambia por despliegue**, no desde la app; lo que se cambia desde la app está en [Configuración del grupo](guia:configuracion-del-grupo), [de la empresa](guia:configuracion-de-la-empresa) y [de Plataforma](guia:configuracion-de-plataforma). Cómo se despliega está en [Despliegue](guia:arquitectura-despliegue).
 
 > **Importante:** nunca pongas secretos reales en el repositorio, en una imagen ni en un `appsettings` versionado. Las claves y contraseñas de `appsettings.Development.json` y de `infra/compose/compose.yaml` son solo para desarrollo local y llevan «solo local» en su valor. **Fuera de `Development` la API no arranca con ellas**: ver «Claves propias del entorno».
 
@@ -60,7 +60,7 @@ Sin estas la API no arranca o parte de ella no funciona.
 | `Validasoft__Ingreso__CookieSegura` | Lo mismo para las personas del grupo; si falta usa la del tercero. | La del tercero |
 | `Validasoft__Ingreso__MinutosAcceso` | Vida del token de acceso de una sesión directa. | `15` |
 | `Validasoft__Ingreso__MinutosLimpieza` | Cada cuántos minutos se limpian ingresos vencidos. | `10` |
-| `Validasoft__Ingreso__Passkeys__Nombre`, `__RpId` y `__Origenes` | Nombre, dominio (Relying Party) y orígenes permitidos de las passkeys (WebAuthn). El `RpId` debe ser el dominio desde el que se sirve la app. | `Validasoft`, vacío y vacío |
+| `Validasoft__Ingreso__Passkeys__Nombre`, `__RpId` y `__Origenes` | Nombre, dominio (Relying Party) y orígenes permitidos de las passkeys (WebAuthn). El `RpId` debe ser el dominio desde el que se sirve la app. | `AvalaSoft`, vacío y vacío |
 | `Validasoft__Ingreso__Plataforma__SesionHoras` y `__InactividadMinutos` | Duración y cierre por inactividad de la sesión de un operador de Plataforma. | `8` y `30` |
 | `Validasoft__Ingreso__Sso__PermitirHttpLocal` | Permite `http` a localhost en el emisor del SSO (solo desarrollo). | `false` |
 | `Validasoft__Ingreso__Sso__UrlDeRetorno` | URL de retorno que se registra en el proveedor de identidad. | La de la instalación |
@@ -95,7 +95,7 @@ Sin estas la API no arranca o parte de ella no funciona.
 |---|---|---|
 | `Validasoft__Correo__Puerto` y `__Seguridad` | Puerto y seguridad del SMTP (`None`, `StartTls` o SSL). | `587` y `StartTls` |
 | `Validasoft__Correo__Usuario` y `__Clave` | Credenciales del SMTP. | Vacío |
-| `Validasoft__Correo__Remitente` | Remitente de la plataforma, que usan las empresas sin dominio propio verificado. | `Validasoft <no-responder@validasoft.co>` |
+| `Validasoft__Correo__Remitente` | Remitente de la plataforma, que usan las empresas sin dominio propio verificado. | `AvalaSoft <no-responder@validasoft.co>` |
 | `Validasoft__Correo__UrlApp` | URL de la app de la empresa en los correos. | `{UrlPublica}/app/` |
 | `Validasoft__Correo__Dominios__Proveedor` | Proveedor de dominios de correo propios por empresa; hoy solo existe el `Simulado`. | `Simulado` |
 | `Validasoft__Correo__Dominios__Simulado__IncluirSpf` | Host que incluye el registro SPF del proveedor simulado. | `spf.simulado.validasoft.test` |

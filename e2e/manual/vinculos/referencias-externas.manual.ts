@@ -31,7 +31,7 @@ recorrido(
     actor: 'Sistema integrador',
     titulo: 'Localiza un vínculo por la referencia de un sistema externo',
     resumen:
-      'Un sistema integrado crea vínculos con su propio identificador, como el código de proveedor de su sistema. En Validasoft, la lista muestra esas referencias, el buscador abre un vínculo escribiendo el sistema y su referencia, y el detalle las muestra con su sistema.',
+      'Un sistema integrado crea vínculos con su propio identificador, como el código de proveedor de su sistema. En AvalaSoft, la lista muestra esas referencias, el buscador abre un vínculo escribiendo el sistema y su referencia, y el detalle las muestra con su sistema.',
     precondiciones: [
       'Un grupo con Constructora Norte y una administradora que consulta los vínculos.',
       'Dos vínculos de proveedor: uno creado por el sistema integrado con la referencia E2E · PRV-204, y otro creado a mano sin referencia.',

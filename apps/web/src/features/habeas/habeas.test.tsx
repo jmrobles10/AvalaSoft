@@ -37,7 +37,7 @@ const SOLICITUD: SolicitudHabeasDto = {
   titular: { nombre: 'Ana Gómez', identificacion: 'CC 52.123.456', correo: 'ana@aceros.co' },
 };
 const VENCIDA: SolicitudHabeasDto = { ...SOLICITUD, id: 's2', radicado: 'HD-2026-000002', tipo: 'Correccion', diasHabiles: 15, diasHabilesRestantes: -2, plazo: 'Vencida', detalle: 'Mi razón social cambió.' };
-const SUPRESION: SolicitudHabeasDto = { ...SOLICITUD, id: 's3', radicado: 'HD-2026-000003', tipo: 'Supresion', alcance: 'Todo', destino: { empresaId: null, nombre: 'Validasoft' } };
+const SUPRESION: SolicitudHabeasDto = { ...SOLICITUD, id: 's3', radicado: 'HD-2026-000003', tipo: 'Supresion', alcance: 'Todo', destino: { empresaId: null, nombre: 'AvalaSoft' } };
 
 const json = (cuerpo: unknown, estado = 200) => new Response(JSON.stringify(cuerpo), { status: estado, headers: { 'Content-Type': 'application/json' } });
 

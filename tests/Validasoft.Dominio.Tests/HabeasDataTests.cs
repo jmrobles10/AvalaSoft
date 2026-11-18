@@ -134,7 +134,7 @@ public class HabeasDataTests
     [Fact]
     public void La_constancia_no_lleva_datos_personales_y_su_huella_es_el_hash_del_json_canonico()
     {
-        var constancia = new ConstanciaDeSolicitud("HD-2026-ABCD1234", "Supresion", "Todo", "Validasoft", new DateOnly(2026, 11, 11), new DateOnly(2026, 11, 20), true,
+        var constancia = new ConstanciaDeSolicitud("HD-2026-ABCD1234", "Supresion", "Todo", "AvalaSoft", new DateOnly(2026, 11, 11), new DateOnly(2026, 11, 20), true,
             "Parcial", [new ElementoSuprimido("documento-version", "d:1", "RUT (versión 1)")],
             [new ElementoRetenido("documento-version", "d:2", "RUT (versión 2)", "Obligación legal", new DateOnly(2036, 11, 11))], ["Contactos y nombre comercial"]);
         var (json, hash) = constancia.Sellar();

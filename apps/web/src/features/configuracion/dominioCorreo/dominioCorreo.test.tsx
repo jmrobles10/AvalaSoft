@@ -24,7 +24,7 @@ const permisos = vi.hoisted(() => ({ scopes: new Set<string>() }));
 vi.mock('../../empresas/useEmpresas', () => ({ useEmpresaActiva: () => ({ empresa: { id: 'emp', nombre: 'Constructora Norte' }, empresas: [] }) }));
 vi.mock('../../../shared/usePermisos', () => ({ usePermisos: () => ({ scopes: permisos.scopes, puede: (s: string) => permisos.scopes.has(s) }) }));
 
-const PLATAFORMA = 'Validasoft <no-responder@validasoft.co>';
+const PLATAFORMA = 'AvalaSoft <no-responder@validasoft.co>';
 
 const SIN_DOMINIO: DominioDeCorreoDto = {
   empresaId: 'emp',
@@ -165,7 +165,7 @@ describe('Dominio de correo de la empresa', () => {
     permisos.scopes = new Set([SCOPES.empresasAdministrar]);
     const peticiones = montar(SIN_DOMINIO, () => PENDIENTE);
 
-    expect(await screen.findByText(/sigue saliendo desde Validasoft <no-responder@validasoft.co>/)).toBeInTheDocument();
+    expect(await screen.findByText(/sigue saliendo desde AvalaSoft <no-responder@validasoft.co>/)).toBeInTheDocument();
     expect(screen.getByText(/Verificación simulada/)).toBeInTheDocument();
     const registrar = screen.getByRole('button', { name: 'Registrar el dominio' });
     expect(registrar).toBeDisabled();
@@ -238,7 +238,7 @@ describe('Dominio de correo de la empresa', () => {
 
     await usuario.click(screen.getByRole('button', { name: 'Quitar el dominio' }));
     const dialogo = await screen.findByRole('dialog', { name: /Quitar proveedores.norte.co/ });
-    expect(within(dialogo).getByText(/vuelve a salir desde Validasoft <no-responder@validasoft.co>/)).toBeInTheDocument();
+    expect(within(dialogo).getByText(/vuelve a salir desde AvalaSoft <no-responder@validasoft.co>/)).toBeInTheDocument();
     await usuario.click(within(dialogo).getByRole('button', { name: 'Quitar el dominio' }));
 
     await waitFor(() => expect(peticiones.some((p) => p.metodo === 'DELETE')).toBe(true));

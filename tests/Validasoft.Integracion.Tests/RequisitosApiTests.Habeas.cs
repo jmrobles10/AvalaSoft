@@ -209,7 +209,7 @@ public sealed partial class RequisitosApiTests
 
         var solicitud = await SolicitarAsync(sesion, "Supresion", "Todo", null, "Pido que supriman todos mis datos personales.");
         solicitud.Destino.EmpresaId.ShouldBeNull();
-        solicitud.Destino.Nombre.ShouldBe("Validasoft");
+        solicitud.Destino.Nombre.ShouldBe("AvalaSoft");
         solicitud.DiasHabiles.ShouldBe(15);
 
         // La plataforma ve la solicitud con su titular y el plan: qué se elimina y qué se conserva.
@@ -274,7 +274,7 @@ public sealed partial class RequisitosApiTests
 
         // La constancia dice qué se eliminó y qué se conserva, con su base y su fecha; no lleva datos personales.
         var constancia = await TerceroAsync<ConstanciaHabeasDto>("GET", $"/public/v1/solicitudes-habeas/{solicitud.Id}/constancia", sesion.AccessToken, null, 200);
-        (constancia.Resultado, constancia.Destino).ShouldBe(("Parcial", "Validasoft"));
+        (constancia.Resultado, constancia.Destino).ShouldBe(("Parcial", "AvalaSoft"));
         constancia.Retenidos.Count.ShouldBe(2);
         constancia.Retenidos.ShouldAllBe(r => r.RetenidaHasta != null && r.BaseLegal.Contains("Código de Comercio"));
         constancia.Suprimidos.Select(s => s.Descripcion).ShouldContain(d => d.StartsWith("Certificación bancaria"));

@@ -47,7 +47,7 @@ public sealed class EnviadorSmtp(IConfiguration configuracion, ILogger<EnviadorS
         // Con el dominio de correo de la empresa verificado (OD-20) sale desde su dirección; si no, con el de la plataforma.
         correo.From.Add(mensaje.Remitente is { } propio
             ? new MailboxAddress(propio.Nombre, propio.Direccion)
-            : MailboxAddress.Parse(remitentePorOmision is { Length: > 0 } remitente ? remitente : "Validasoft <no-responder@validasoft.local>"));
+            : MailboxAddress.Parse(remitentePorOmision is { Length: > 0 } remitente ? remitente : "AvalaSoft <no-responder@validasoft.local>"));
         correo.To.Add(MailboxAddress.Parse(mensaje.Para));
         // El correo de soporte de la empresa recibe las respuestas del tercero (Reply-To); una dirección ilegible no impide el envío.
         if (mensaje.ResponderA is { Length: > 0 } responderA && MailboxAddress.TryParse(responderA, out var respuestas))

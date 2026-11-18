@@ -589,7 +589,7 @@ public sealed partial class ServicioDeIngreso(
     private static void AsegurarCliente(HttpContext http)
     {
         if (!string.Equals(http.Request.Headers[CabeceraCliente].ToString().Trim(), ValorCliente, StringComparison.OrdinalIgnoreCase))
-            throw ReglaDeNegocioException.Prohibido("cliente-invalido", $"Esta ruta solo la usa la aplicación web de Validasoft (falta la cabecera {CabeceraCliente}).");
+            throw ReglaDeNegocioException.Prohibido("cliente-invalido", $"Esta ruta solo la usa la aplicación web de AvalaSoft (falta la cabecera {CabeceraCliente}).");
     }
 
     private static async Task<DesafioDeIngreso> CargarAsync(IDocumentSession sesion, Guid id, CancellationToken ct) =>

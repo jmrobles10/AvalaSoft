@@ -206,7 +206,7 @@ public sealed partial class ServicioDeIngreso
         if (usuario is null)
         {
             if (!configuracion.AprovisionamientoJit)
-                throw ReglaDeNegocioException.Prohibido("sso-sin-cuenta", "Tu empresa aún no te dio acceso a Validasoft. Pide a un administrador de tu grupo que te invite.");
+                throw ReglaDeNegocioException.Prohibido("sso-sin-cuenta", "Tu empresa aún no te dio acceso a AvalaSoft. Pide a un administrador de tu grupo que te invite.");
 
             var roles = configuracion.RolesPara(identidad.Grupos);
             var nombre = string.IsNullOrWhiteSpace(identidad.Nombre) ? correo[..correo.IndexOf('@', StringComparison.Ordinal)] : identidad.Nombre;

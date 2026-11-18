@@ -41,7 +41,7 @@ public static class OperadoresDirectosEndpoints
         sesion.Insert(operador);
         Auditoria.Registrar(sesion, contexto, Entidad, operador.Id, AccionConfiguracion.Creado, null, operador.ADto(0), ahora);
         await mensajes.PublishAsync(new CorreoDeAccesoPendiente(PlantillaCorreo.InvitacionDeUsuario, operador.Correo, protector.Proteger("-"), ahora,
-            "Plataforma de Validasoft", "Operador de Plataforma"));
+            "Plataforma de AvalaSoft", "Operador de Plataforma"));
         await sesion.SaveChangesAsync(ct);
         await registro.RegistrarAsync(EventoDeIngreso.UsuarioInvitado, true, ContextoDeCliente.De(http, contexto.CorrelationId), null, TipoDePropietario.Operador, operador.Id,
             operador.Correo, actorTipo: contexto.ActorTipo, actorId: contexto.ActorId, ct: ct);
@@ -120,7 +120,7 @@ public static class OperadoresDirectosEndpoints
         sesion.Store(operador);
         Auditoria.Registrar(sesion, contexto, Entidad, operador.Id, AccionConfiguracion.Reactivado, antes, operador.ADto(0), ahora);
         if (operador.EsDirecto)
-            await mensajes.PublishAsync(new CorreoDeAccesoPendiente(PlantillaCorreo.InvitacionDeUsuario, operador.Correo, protector.Proteger("-"), ahora, "Plataforma de Validasoft",
+            await mensajes.PublishAsync(new CorreoDeAccesoPendiente(PlantillaCorreo.InvitacionDeUsuario, operador.Correo, protector.Proteger("-"), ahora, "Plataforma de AvalaSoft",
                 "Operador de Plataforma"));
         await sesion.SaveChangesAsync(ct);
         cacheSistemas.OlvidarOperador(id);

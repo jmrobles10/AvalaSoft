@@ -30,9 +30,9 @@ function paginaAnfitriona(url: string, token: string | null): string {
 </style></head>
 <body><header><strong>Sistema anfitrión</strong><span>ficticio · ejemplo de integración</span></header>
 <main>
-  <div id="contenedor"><iframe id="marco" title="Validasoft" referrerpolicy="origin" src="${url}"></iframe></div>
-  <h2>Mensajes que llegan desde Validasoft</h2>
-  <ol id="bitacora" aria-label="Mensajes de Validasoft"></ol>
+  <div id="contenedor"><iframe id="marco" title="AvalaSoft" referrerpolicy="origin" src="${url}"></iframe></div>
+  <h2>Mensajes que llegan desde AvalaSoft</h2>
+  <ol id="bitacora" aria-label="Mensajes de AvalaSoft"></ol>
 </main>
 <script>
   const marco = document.getElementById('marco');
@@ -92,7 +92,7 @@ recorrido(
         'Si las abres directamente, no hay quien entregue la sesión y la pantalla se queda en «Conectando con tu sistema…», sin pedir correo ni mostrar datos del tercero.',
       resaltar: esperando,
       esperarCarga: false,
-      variantes: [{ cuando: 'La persona busca sus documentos', entonces: 'Debe entrar por su correo en la dirección normal de Validasoft, no por una dirección /embed.' }],
+      variantes: [{ cuando: 'La persona busca sus documentos', entonces: 'Debe entrar por su correo en la dirección normal de AvalaSoft, no por una dirección /embed.' }],
     });
 
     // 2) El sistema anfitrión no entrega la sesión.
@@ -101,13 +101,13 @@ recorrido(
     await enEspera.goto(`${ORIGEN_SISTEMA}/`);
     const marcoEnEspera = enEspera.frameLocator('#marco');
     await expect(marcoEnEspera.getByLabel('Conectando con tu sistema…')).toBeVisible();
-    await expect(enEspera.getByRole('list', { name: 'Mensajes de Validasoft' })).toContainText('validasoft:ready');
+    await expect(enEspera.getByRole('list', { name: 'Mensajes de AvalaSoft' })).toContainText('validasoft:ready');
     await paso(enEspera, {
       titulo: 'Mira qué pide la pantalla al sistema anfitrión',
       explicacion:
-        'Dentro del iframe de un sistema permitido, la pantalla avisa al sistema que está lista (`validasoft:ready`) y espera. El sistema debe responder con la sesión que su backend pidió a Validasoft (`validasoft:sesion`). ' +
+        'Dentro del iframe de un sistema permitido, la pantalla avisa al sistema que está lista (`validasoft:ready`) y espera. El sistema debe responder con la sesión que su backend pidió a AvalaSoft (`validasoft:sesion`). ' +
         'Mientras no llegue, el iframe sigue en «Conectando con tu sistema…» (1) y la lista de mensajes (2) solo muestra lo que la pantalla pidió.',
-      resaltar: [marcoEnEspera.getByLabel('Conectando con tu sistema…'), enEspera.getByRole('list', { name: 'Mensajes de Validasoft' })],
+      resaltar: [marcoEnEspera.getByLabel('Conectando con tu sistema…'), enEspera.getByRole('list', { name: 'Mensajes de AvalaSoft' })],
       esperarCarga: false,
       configuracion: { ajuste: 'Orígenes permitidos del sistema', ruta: 'Configuración › Sistemas integrados (/sistemas)', efecto: 'Solo las páginas de esos orígenes pueden alojar el iframe y recibir la sesión.' },
     });
@@ -129,7 +129,7 @@ recorrido(
         'la pantalla lo rechaza, pide otra sesión al sistema (`validasoft:sesion-requerida` con motivo «rechazada») y muestra «Esta pantalla solo se muestra dentro de tu sistema» (1) con un botón «Reintentar» (2), sin mostrar nada del tercero. Hay que volver a pedir la sesión para el origen correcto.',
       resaltar: [titulo, marcoEquivocado.getByRole('button', { name: 'Reintentar' })],
       variantes: [
-        { cuando: 'El origen de la página no está registrado en el sistema', entonces: 'El navegador ni siquiera dibuja el iframe: Validasoft solo permite que lo aloje un origen permitido, y no se ve nada del tercero.' },
+        { cuando: 'El origen de la página no está registrado en el sistema', entonces: 'El navegador ni siquiera dibuja el iframe: AvalaSoft solo permite que lo aloje un origen permitido, y no se ve nada del tercero.' },
         { cuando: 'Se abre la dirección fuera de un iframe', entonces: 'Se queda en «Conectando con tu sistema…», como en el primer paso.' },
       ],
     });

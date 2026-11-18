@@ -6,7 +6,7 @@ recorrido(
     actor: 'Público',
     titulo: 'Llega a una dirección que no existe y vuelve a entrar',
     resumen:
-      'Cuando un enlace está roto o se escribe mal una dirección, Validasoft muestra «No encontramos este enlace» con una salida clara: entrar con el correo para llegar a los documentos.',
+      'Cuando un enlace está roto o se escribe mal una dirección, AvalaSoft muestra «No encontramos este enlace» con una salida clara: entrar con el correo para llegar a los documentos.',
     precondiciones: ['Nadie ha entrado al portal: la consulta se hace sin sesión, desde una ventana nueva del navegador.'],
     relacionados: ['publico/verificar-certificado-invalido'],
   },
@@ -33,7 +33,7 @@ recorrido(
     await paso(page, {
       titulo: 'Vuelve a entrar con tu correo',
       explicacion:
-        'Con «Entrar con mi correo» llegas a la entrada del portal. Escribe tu correo y Validasoft te envía un código para entrar; si estabas buscando un certificado, usa el enlace de verificación original.',
+        'Con «Entrar con mi correo» llegas a la entrada del portal. Escribe tu correo y AvalaSoft te envía un código para entrar; si estabas buscando un certificado, usa el enlace de verificación original.',
       resaltar: page.getByRole('heading', { level: 1, name: 'Entrar con mi correo' }),
       celular: false,
     });

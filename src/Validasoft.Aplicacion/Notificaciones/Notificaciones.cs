@@ -773,7 +773,7 @@ public sealed partial class PlanificadorDeNotificaciones
 
     private static string Titulo(TipoTextoLegal tipo, string? empresa) => tipo switch
     {
-        TipoTextoLegal.AvisoPlataforma => "Aviso de privacidad de Validasoft",
+        TipoTextoLegal.AvisoPlataforma => "Aviso de privacidad de AvalaSoft",
         TipoTextoLegal.AutorizacionEmpresa => $"Autorización de tratamiento de datos de {empresa ?? "la empresa"}",
         _ => $"Términos y condiciones de {empresa ?? "la empresa"}"
     };

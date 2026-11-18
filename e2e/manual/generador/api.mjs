@@ -135,7 +135,7 @@ export function construirModeloApi({ bruto, transformado, fuentes }) {
     m.total = m.recursos.reduce((n, r) => n + r.endpoints.length, 0);
     abreviarEsquemasRepetidos(m);
   }
-  return { modulos: lista, total, componentes, titulo: bruto.info?.title ?? 'Validasoft API', version: bruto.info?.version ?? '' };
+  return { modulos: lista, total, componentes, titulo: bruto.info?.title ?? 'AvalaSoft API', version: bruto.info?.version ?? '' };
 }
 
 /**
@@ -349,7 +349,7 @@ function paginaDeModulo(modelo, m, generado) {
   const contenido = `<h1>${escapar(m.nombre)}</h1><p class="modulo-intro">${String(m.total)} operaciones en ${String(m.recursos.length)} ${m.recursos.length === 1 ? 'recurso' : 'recursos'}. Los permisos y las descripciones salen del código de cada endpoint; los parámetros, cuerpos y respuestas, del contrato OpenAPI.</p>${unico ? '' : indice}${recursos}`;
   return pagina({
     titulo: `API · ${m.nombre}`,
-    descripcion: `Referencia de la API de Validasoft: ${m.nombre}.`,
+    descripcion: `Referencia de la API de AvalaSoft: ${m.nombre}.`,
     raiz: '../',
     seccion: 'api',
     lateral: lateralApi(modelo, m.slug),
@@ -365,7 +365,7 @@ function paginaDeConvenciones(modelo, generado) {
   ).join('');
   return pagina({
     titulo: 'API · Convenciones',
-    descripcion: 'Convenciones comunes de la API de Validasoft.',
+    descripcion: 'Convenciones comunes de la API de AvalaSoft.',
     raiz: '../',
     seccion: 'api',
     lateral: lateralApi(modelo, 'convenciones'),
@@ -383,7 +383,7 @@ function paginaDeIndice(modelo, generado) {
     )
     .join('');
   const contenido = `<div class="heroe"><h1>Referencia de la API</h1><p>Todas las operaciones del contrato (${String(modelo.total)}), agrupadas por recurso, con su permiso, parámetros, cuerpos, respuestas, errores de negocio y un ejemplo de petición y de respuesta construido del esquema.</p><p><a href="convenciones.html">Convenciones comunes →</a> autenticación, empresa activa, idempotencia y errores.</p></div><div class="rejilla">${tarjetas}</div>`;
-  return pagina({ titulo: 'API', descripcion: 'Referencia de la API de Validasoft.', raiz: '../', seccion: 'api', lateral: lateralApi(modelo, 'indice'), migas: [{ texto: 'Manual', href: '../index.html' }, { texto: 'API' }], contenido, generado });
+  return pagina({ titulo: 'API', descripcion: 'Referencia de la API de AvalaSoft.', raiz: '../', seccion: 'api', lateral: lateralApi(modelo, 'indice'), migas: [{ texto: 'Manual', href: '../index.html' }, { texto: 'API' }], contenido, generado });
 }
 
 /** Páginas HTML de la API y sus entradas de búsqueda (rutas relativas al sitio). */

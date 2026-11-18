@@ -4,18 +4,18 @@ import { invitar, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
 import { escenarioConFichaCompleta } from '../nucleo/semillas';
 
-const ASUNTO_ENLACE = /^Tu enlace para entrar a Validasoft$/;
+const ASUNTO_ENLACE = /^Tu enlace para entrar a AvalaSoft$/;
 
 recorrido(
   {
     dominio: 'tercero',
     actor: 'Tercero',
-    titulo: 'Entra a Validasoft con tu correo cuando ya tienes una invitación',
+    titulo: 'Entra a AvalaSoft con tu correo cuando ya tienes una invitación',
     resumen:
       'Un proveedor que ya fue invitado no abre el enlace del correo: entra por «/entrar», escribe el correo de la invitación y recibe un enlace de un solo uso. Desde «Mis empresas» ve todas sus empresas y abre la que le interesa. Si el correo no está registrado, la pantalla responde igual.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y un flujo de Proveedor publicado.',
-      'Un tercero invitado por esa empresa, que nunca ha entrado a Validasoft con su correo.',
+      'Un tercero invitado por esa empresa, que nunca ha entrado a AvalaSoft con su correo.',
     ],
     relacionados: ['tercero/aceptar-invitacion-persona-juridica', 'tercero/invitacion-vencida-o-usada'],
   },
@@ -36,7 +36,7 @@ recorrido(
       resaltar: [page.getByRole('textbox', { name: 'Correo de la invitación' }), page.getByRole('button', { name: 'Enviarme el enlace' })],
       variantes: [
         { cuando: 'Escribes un correo que no es válido', entonces: 'La pantalla te pide un correo válido, por ejemplo nombre@empresa.com, y no envía nada.' },
-        { cuando: 'Ya tienes una sesión abierta', entonces: 'No ves esta pantalla: Validasoft te lleva directo a «Mis empresas».' },
+        { cuando: 'Ya tienes una sesión abierta', entonces: 'No ves esta pantalla: AvalaSoft te lleva directo a «Mis empresas».' },
       ],
     });
 

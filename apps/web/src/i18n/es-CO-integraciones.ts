@@ -3,7 +3,7 @@
 export const webhooks = {
   titulo: 'Webhooks',
   ayuda:
-    'Validasoft le avisa a tus sistemas cada vez que pasa algo (un vínculo activo, un expediente aprobado, un certificado emitido…) con un POST firmado a la dirección que registres aquí.',
+    'AvalaSoft le avisa a tus sistemas cada vez que pasa algo (un vínculo activo, un expediente aprobado, un certificado emitido…) con un POST firmado a la dirección que registres aquí.',
   nuevo: 'Nuevo webhook',
   crear: 'Crear webhook',
   creado: 'Webhook creado.',

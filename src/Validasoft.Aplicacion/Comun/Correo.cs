@@ -104,10 +104,10 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         var enlace = correo.Ruta is null ? null : $"{UrlApp}#{correo.Ruta}";
         var saludo = $"Hola, {correo.Nombre}.";
         var texto = saludo + "\n\n" + string.Join("\n", correo.Lineas) +
-                    (enlace is null ? string.Empty : $"\n\nÁbrelo en Validasoft:\n{enlace}") +
+                    (enlace is null ? string.Empty : $"\n\nÁbrelo en AvalaSoft:\n{enlace}") +
                     "\n\nPuedes apagar estos correos en tus preferencias de notificación.";
         var html = $"<p>{WebUtility.HtmlEncode(saludo)}</p>" + string.Concat(correo.Lineas.Select(l => $"<p>{WebUtility.HtmlEncode(l)}</p>")) +
-                   (enlace is null ? string.Empty : MarcoDeCorreo.Boton(enlace, "Abrir en Validasoft")) +
+                   (enlace is null ? string.Empty : MarcoDeCorreo.Boton(enlace, "Abrir en AvalaSoft")) +
                    "<p>Puedes apagar estos correos en tus preferencias de notificación.</p>";
         return new MensajeDeCorreo(correo.Para, correo.Asunto, texto, html);
     }
@@ -121,14 +121,14 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         var fecha = FechaYHora(correo.AceptadaEn, zonaHoraria);
         var lineas = correo.Textos.Select(t => $"{t.Titulo}, versión {t.Version} (huella {Corta(t.Hash)})").ToList();
         var asunto = $"Constancia de tu aceptación con {correo.Empresa}";
-        var texto = $"El {fecha} aceptaste la invitación de {correo.Empresa} en Validasoft y estos textos:\n\n" +
+        var texto = $"El {fecha} aceptaste la invitación de {correo.Empresa} en AvalaSoft y estos textos:\n\n" +
                     string.Join("\n", lineas.Select(l => "- " + l)) +
-                    "\n\nGuarda este correo como constancia. Puedes consultar los textos completos al entrar a Validasoft " +
+                    "\n\nGuarda este correo como constancia. Puedes consultar los textos completos al entrar a AvalaSoft " +
                     $"({UrlPublica}) con tu correo.";
-        var html = $"<p>El {WebUtility.HtmlEncode(fecha)} aceptaste la invitación de <b>{WebUtility.HtmlEncode(correo.Empresa)}</b> en Validasoft y estos textos:</p><ul>" +
+        var html = $"<p>El {WebUtility.HtmlEncode(fecha)} aceptaste la invitación de <b>{WebUtility.HtmlEncode(correo.Empresa)}</b> en AvalaSoft y estos textos:</p><ul>" +
                    string.Concat(lineas.Select(l => $"<li>{WebUtility.HtmlEncode(l)}</li>")) + "</ul>" +
                    "<p>Guarda este correo como constancia. Puedes consultar los textos completos al entrar a " +
-                   $"<a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> con tu correo.</p>";
+                   $"<a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">AvalaSoft</a> con tu correo.</p>";
         return new MensajeDeCorreo(correo.Para, asunto, texto, html);
     }
 
@@ -145,33 +145,33 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         {
             PlantillaCorreo.Invitacion => ConEnlace(correo.Para,
                 $"{correo.Empresa} te invita a validar tu vínculo como {Minuscula(correo.TipoVinculo)}",
-                $"{correo.Empresa} te invitó a Validasoft para validar tu vínculo como {Minuscula(correo.TipoVinculo)}.",
+                $"{correo.Empresa} te invitó a AvalaSoft para validar tu vínculo como {Minuscula(correo.TipoVinculo)}.",
                 $"{UrlPublica}/e/{secreto}", vence),
             PlantillaCorreo.AccesoAutorregistro => ConEnlace(correo.Para,
-                "Tu enlace de acceso a Validasoft",
-                "Recibimos tu registro en Validasoft. Con este enlace entras a tu bóveda y ves las empresas que te han invitado.",
+                "Tu enlace de acceso a AvalaSoft",
+                "Recibimos tu registro en AvalaSoft. Con este enlace entras a tu bóveda y ves las empresas que te han invitado.",
                 $"{UrlPublica}/e/{secreto}", vence),
             PlantillaCorreo.AccesoPorCorreo => ConEnlace(correo.Para,
-                "Tu enlace para entrar a Validasoft",
-                "Pediste entrar a Validasoft. Con este enlace ves las empresas con las que tienes un vínculo y respondes lo que te pidan.",
+                "Tu enlace para entrar a AvalaSoft",
+                "Pediste entrar a AvalaSoft. Con este enlace ves las empresas con las que tienes un vínculo y respondes lo que te pidan.",
                 $"{UrlPublica}/e/{secreto}", vence),
             PlantillaCorreo.SolicitudDeAcceso => ConEnlace(correo.Para,
-                $"{correo.Empresa} invitó a {correo.CorreoInvitado} a tu información en Validasoft",
-                $"{correo.Empresa} invitó al correo {correo.CorreoInvitado} a validar la información que Validasoft guarda de tu empresa" +
+                $"{correo.Empresa} invitó a {correo.CorreoInvitado} a tu información en AvalaSoft",
+                $"{correo.Empresa} invitó al correo {correo.CorreoInvitado} a validar la información que AvalaSoft guarda de tu empresa" +
                 (string.IsNullOrWhiteSpace(correo.TipoVinculo) ? string.Empty : $" como {Minuscula(correo.TipoVinculo)}") +
                 ", y ese correo no figura entre los contactos verificados de tu empresa. Mientras nadie lo apruebe, esa persona entra con acceso aislado: " +
                 "solo ve y sube lo de su relación con esa empresa y no ve tu bóveda de documentos ni tu información. " +
                 "Entra para aprobarlo o rechazarlo; si no lo reconoces, recházalo.",
                 $"{UrlPublica}/e/{secreto}", vence),
             PlantillaCorreo.ContactoEnRevision => ConEnlace(correo.Para,
-                $"{correo.CorreoInvitado} pasó a acceso aislado en tu información de Validasoft",
+                $"{correo.CorreoInvitado} pasó a acceso aislado en tu información de AvalaSoft",
                 $"El correo {correo.CorreoInvitado} figuraba como contacto de tu empresa, pero no estaba verificado, y otro contacto se verificó: el verificado prevalece. " +
                 "Mientras tanto esa persona entra con acceso aislado: no ve tu bóveda de documentos ni tu información, y los documentos que subió a tu bóveda quedaron marcados " +
                 "para revisión (las empresas con las que están compartidos también se enteran). Entra para aprobarla de nuevo o rechazarla; si no la reconoces, recházala " +
                 "y retira esas versiones.",
                 $"{UrlPublica}/e/{secreto}", vence),
             PlantillaCorreo.CodigoDeIngreso => new MensajeDeCorreo(correo.Para,
-                "Tu código para ingresar a Validasoft",
+                "Tu código para ingresar a AvalaSoft",
                 $"Tu código para ingresar es {secreto}. Vence el {vence} y solo sirve una vez.\n\n" +
                 "Si no pediste ingresar, ignora este correo: sin este código nadie entra a tu cuenta.",
                 $"<p>Tu código para ingresar es</p><p style=\"font-size:24px;letter-spacing:4px\"><b>{secreto}</b></p>" +
@@ -179,7 +179,7 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
                 "<p>Si no pediste ingresar, ignora este correo: sin este código nadie entra a tu cuenta.</p>"),
             PlantillaCorreo.InvitacionDeUsuario => Invitar(correo),
             PlantillaCorreo.CodigoOtp => new MensajeDeCorreo(correo.Para,
-                "Tu código de acceso a Validasoft",
+                "Tu código de acceso a AvalaSoft",
                 $"Tu código de acceso es {secreto}. Vence el {vence} y solo sirve para el enlace que acabas de abrir.\n\n" +
                 "Si no fuiste tú, ignora este correo.",
                 $"<p>Tu código de acceso es</p><p style=\"font-size:24px;letter-spacing:4px\"><b>{secreto}</b></p>" +
@@ -198,12 +198,12 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         var rol = string.IsNullOrWhiteSpace(correo.TipoVinculo) ? string.Empty : $" como {correo.TipoVinculo}";
         var url = UrlApp;
         return new MensajeDeCorreo(correo.Para,
-            $"{correo.Empresa} te invitó a Validasoft",
-            $"{correo.Empresa} te dio acceso a Validasoft{rol}.\n\nEntra a {url} con este mismo correo: te enviaremos un código de 6 dígitos cada vez que ingreses. " +
+            $"{correo.Empresa} te invitó a AvalaSoft",
+            $"{correo.Empresa} te dio acceso a AvalaSoft{rol}.\n\nEntra a {url} con este mismo correo: te enviaremos un código de 6 dígitos cada vez que ingreses. " +
             "No hay contraseña que crear; si tu rol lo exige, te guiaremos para registrar una passkey (tu huella, tu rostro o una llave de seguridad).\n\n" +
             "Si no esperabas esta invitación, ignora este correo.",
-            $"<p>{WebUtility.HtmlEncode(correo.Empresa ?? "Una empresa")} te dio acceso a Validasoft{WebUtility.HtmlEncode(rol)}.</p>" +
-            MarcoDeCorreo.Boton(url, "Entrar a Validasoft") +
+            $"<p>{WebUtility.HtmlEncode(correo.Empresa ?? "Una empresa")} te dio acceso a AvalaSoft{WebUtility.HtmlEncode(rol)}.</p>" +
+            MarcoDeCorreo.Boton(url, "Entrar a AvalaSoft") +
             "<p>Usa este mismo correo: te enviaremos un código de 6 dígitos cada vez que ingreses. No hay contraseña que crear; si tu rol lo exige, " +
             "te guiaremos para registrar una passkey (tu huella, tu rostro o una llave de seguridad).</p>" +
             "<p>Si no esperabas esta invitación, ignora este correo.</p>");
@@ -214,7 +214,7 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
             $"{introduccion}\n\nAbre este enlace (es personal, de un solo uso y vence el {vence}):\n{url}\n\n" +
             "Si no esperabas este correo, ignóralo.",
             $"<p>{WebUtility.HtmlEncode(introduccion)}</p>" +
-            MarcoDeCorreo.Boton(url, "Abrir Validasoft") +
+            MarcoDeCorreo.Boton(url, "Abrir AvalaSoft") +
             $"<p>El enlace es personal, de un solo uso y vence el {WebUtility.HtmlEncode(vence)}.</p>" +
             "<p>Si no esperabas este correo, ignóralo.</p>");
 
@@ -276,12 +276,12 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         {
             var asuntoAprobado = $"{correo.Empresa} aprobó tu validación {correo.Folio}";
             var textoAprobado = $"{correo.Empresa} aprobó tu validación {correo.Folio}: tu vínculo está activo y ya tienes tu certificado.\n\n" +
-                                $"Entra a Validasoft ({UrlPublica}) con tu correo para verlo y compartirlo.";
+                                $"Entra a AvalaSoft ({UrlPublica}) con tu correo para verlo y compartirlo.";
             // La aprobación es el momento bueno del proceso: abre con el GIF de éxito de marca (MA-1).
             var htmlAprobado = MarcoDeCorreo.ImagenDeExito("Tu validación fue aprobada") +
                                $"<p>{WebUtility.HtmlEncode(correo.Empresa)} aprobó tu validación <b>{WebUtility.HtmlEncode(correo.Folio)}</b>: " +
                                "tu vínculo está activo y ya tienes tu certificado.</p>" +
-                               $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> con tu correo para verlo y compartirlo.</p>";
+                               $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">AvalaSoft</a> con tu correo para verlo y compartirlo.</p>";
             return new MensajeDeCorreo(correo.Para, asuntoAprobado, textoAprobado, htmlAprobado);
         }
 
@@ -326,9 +326,9 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         var asunto = $"{correo.Empresa} volvió a revisar tu validación {correo.Folio}";
         var parrafo = $"{correo.Empresa} devolvió a revisión tu validación {correo.Folio}, que ya estaba aprobada. Tu vínculo queda en validación mientras la revisa; " +
                       "no tienes que hacer nada por ahora y te avisamos cuando termine.";
-        var texto = parrafo + $"\n\nPuedes ver el estado en Validasoft ({UrlPublica}) entrando con tu correo.";
+        var texto = parrafo + $"\n\nPuedes ver el estado en AvalaSoft ({UrlPublica}) entrando con tu correo.";
         var html = $"<p>{WebUtility.HtmlEncode(parrafo)}</p>" +
-                   $"<p>Puedes ver el estado en <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> entrando con tu correo.</p>";
+                   $"<p>Puedes ver el estado en <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">AvalaSoft</a> entrando con tu correo.</p>";
         return new MensajeDeCorreo(correo.Para, asunto, texto, html);
     }
 
@@ -344,13 +344,13 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         {
             Notificaciones.ModoDeReintegro.SinRevalidar => (
                 $"{correo.Empresa} reintegró tu vínculo sin pedirte documentos nuevos: quedó como estaba antes y tu certificado se emitió de nuevo.",
-                $"Puedes verlo y compartirlo en Validasoft ({UrlPublica}) entrando con tu correo."),
+                $"Puedes verlo y compartirlo en AvalaSoft ({UrlPublica}) entrando con tu correo."),
             Notificaciones.ModoDeReintegro.ConRenovacion => (
                 $"{correo.Empresa} reintegró tu vínculo y abrió una nueva validación{folio}.",
-                $"Entra a Validasoft ({UrlPublica}) con tu correo, sube o confirma tus documentos y completa la validación."),
+                $"Entra a AvalaSoft ({UrlPublica}) con tu correo, sube o confirma tus documentos y completa la validación."),
             _ => (
                 $"{correo.Empresa} reintegró tu vínculo: falta que completes la validación de tu información para dejarlo activo.",
-                $"Entra a Validasoft ({UrlPublica}) con tu correo para completarla.")
+                $"Entra a AvalaSoft ({UrlPublica}) con tu correo para completarla.")
         };
         return new MensajeDeCorreo(correo.Para, asunto, parrafo + "\n\n" + siguiente,
             $"<p>{WebUtility.HtmlEncode(parrafo)}</p><p>{WebUtility.HtmlEncode(siguiente)}</p>");
@@ -365,10 +365,10 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         var fecha = FechaLarga(correo.VigenteHasta);
         var asunto = $"Tu {correo.Documento} venció para {correo.Empresa}";
         var texto = $"Tu {correo.Documento} venció para {correo.Empresa} (vigente hasta el {fecha}) y ya pasó el plazo de gracia.\n\n" +
-                    $"Entra a Validasoft ({UrlPublica}) con tu correo y sube la versión nueva para seguir al día.";
+                    $"Entra a AvalaSoft ({UrlPublica}) con tu correo y sube la versión nueva para seguir al día.";
         var html = $"<p>Tu {WebUtility.HtmlEncode(correo.Documento)} venció para {WebUtility.HtmlEncode(correo.Empresa)} " +
                    $"(vigente hasta el {WebUtility.HtmlEncode(fecha)}) y ya pasó el plazo de gracia.</p>" +
-                   $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> con tu correo y sube la versión nueva para seguir al día.</p>";
+                   $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">AvalaSoft</a> con tu correo y sube la versión nueva para seguir al día.</p>";
         return new MensajeDeCorreo(correo.Para, asunto, texto, html);
     }
 
@@ -386,10 +386,10 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
             : $"Tienes {correo.Documentos.Count} documentos por vencer";
         var texto = "Estos documentos que entregaste están por vencer. Actualízalos antes de la fecha para seguir al día:\n\n" +
                     string.Join("\n", lineas.Select(l => "- " + l)) +
-                    $"\n\nEntra a Validasoft ({UrlPublica}) y pide un enlace con tu correo para subir la versión nueva.";
+                    $"\n\nEntra a AvalaSoft ({UrlPublica}) y pide un enlace con tu correo para subir la versión nueva.";
         var html = "<p>Estos documentos que entregaste están por vencer. Actualízalos antes de la fecha para seguir al día:</p><ul>" +
                    string.Concat(lineas.Select(l => $"<li>{WebUtility.HtmlEncode(l)}</li>")) + "</ul>" +
-                   $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> y pide un enlace con tu correo para subir la versión nueva.</p>";
+                   $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">AvalaSoft</a> y pide un enlace con tu correo para subir la versión nueva.</p>";
         return new MensajeDeCorreo(correo.Para, asunto, texto, html);
     }
 
@@ -420,11 +420,11 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
         };
 
         var entrar = token is null
-            ? $"Entra a Validasoft ({UrlPublica}) y pide un enlace con tu correo."
+            ? $"Entra a AvalaSoft ({UrlPublica}) y pide un enlace con tu correo."
             : $"Abre este enlace (es personal, de un solo uso y vence el {Fecha(correo.EnlaceExpira, zonaHoraria)}):\n{UrlPublica}/e/{token}";
         var entrarHtml = token is null
-            ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> y pide un enlace con tu correo.</p>"
-            : MarcoDeCorreo.Boton($"{UrlPublica}/e/{token}", "Completar en Validasoft") +
+            ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">AvalaSoft</a> y pide un enlace con tu correo.</p>"
+            : MarcoDeCorreo.Boton($"{UrlPublica}/e/{token}", "Completar en AvalaSoft") +
               $"<p>El enlace es personal, de un solo uso y vence el {WebUtility.HtmlEncode(Fecha(correo.EnlaceExpira, zonaHoraria))}.</p>";
         var caducado = correo.Aviso == Expedientes.AvisoDePlazo.Caducado;
         return new MensajeDeCorreo(correo.Para, asunto,
@@ -444,16 +444,16 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
 
     private string ComoEntrar(string? token, DateTimeOffset? expira, string? zonaHoraria) =>
         token is null
-            ? $"Entra a Validasoft ({UrlPublica}) y pide un enlace con tu correo para responder y reenviar."
+            ? $"Entra a AvalaSoft ({UrlPublica}) y pide un enlace con tu correo para responder y reenviar."
             : $"Para responder y reenviar, abre este enlace (es personal, de un solo uso y vence el {Fecha(expira, zonaHoraria)}):\n{UrlPublica}/e/{token}\n\n" +
               $"Si ya venció, entra a {UrlPublica} y pide uno nuevo con tu correo.";
 
     private string ComoEntrarHtml(string? token, DateTimeOffset? expira, string? zonaHoraria) =>
         token is null
-            ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> y pide un enlace con tu correo para responder.</p>"
-            : MarcoDeCorreo.Boton($"{UrlPublica}/e/{token}", "Responder en Validasoft") +
+            ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">AvalaSoft</a> y pide un enlace con tu correo para responder.</p>"
+            : MarcoDeCorreo.Boton($"{UrlPublica}/e/{token}", "Responder en AvalaSoft") +
               $"<p>El enlace es personal, de un solo uso y vence el {WebUtility.HtmlEncode(Fecha(expira, zonaHoraria))}. Si ya venció, entra a " +
-              $"<a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> y pide uno nuevo con tu correo.</p>";
+              $"<a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">AvalaSoft</a> y pide uno nuevo con tu correo.</p>";
 
     private string Fecha(DateTimeOffset? fecha, string? zonaHoraria) => fecha is { } instante ? FechaYHora(instante, zonaHoraria) : "pronto";
 

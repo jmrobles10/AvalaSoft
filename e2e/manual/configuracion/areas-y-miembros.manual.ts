@@ -14,7 +14,7 @@ recorrido(
       'La administradora de Constructora Sur crea el área Jurídica para una etapa de revisión, agrega a Sofía como miembro y, cuando ya no recibe trabajo, la desactiva. Las áreas son de la empresa y sus miembros deciden quién ve cada expediente.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con Sofía como miembro.',
-      'Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
     ],
     relacionados: ['configuracion/flujo-etapas-y-areas-en-paralelo', 'configuracion/usuarios-y-roles'],
   },

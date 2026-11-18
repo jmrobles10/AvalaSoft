@@ -337,7 +337,7 @@ public sealed partial class EsquemaGeneral : EsquemaDeSeccion<DatosGenerales>
                 throw JsonDeFicha.Error("identificacion-no-editable", "numero",
                     "El número de identificación es el del registro del tercero; no se cambia desde la ficha.");
             if (dvDelNumero is { Length: > 0 } && dvDelNumero != dv)
-                throw JsonDeFicha.Error("dv-no-editable", "numero", $"El dígito de verificación lo calcula Validasoft (DIAN módulo 11): para {id.Numero} es {dv}.");
+                throw JsonDeFicha.Error("dv-no-editable", "numero", $"El dígito de verificación lo calcula AvalaSoft (DIAN módulo 11): para {id.Numero} es {dv}.");
         }
 
         if (Texto(d.Dv) is { } dvDeclarado && dvDeclarado != dv)
@@ -346,7 +346,7 @@ public sealed partial class EsquemaGeneral : EsquemaDeSeccion<DatosGenerales>
                     ? $"{id.Tipo} no lleva dígito de verificación."
                     : tipoId is { DvDeclarado: true }
                         ? $"El dígito de verificación es el del registro del tercero ({dv}); no se cambia desde la ficha."
-                        : $"El dígito de verificación lo calcula Validasoft (DIAN módulo 11): para {id.Numero} es {dv}.");
+                        : $"El dígito de verificación lo calcula AvalaSoft (DIAN módulo 11): para {id.Numero} es {dv}.");
 
         AsegurarCamposDelTipoDePersona(d, contexto);
 
@@ -954,7 +954,7 @@ public sealed class EsquemaLegal : EsquemaDeSeccion<DatosLegales>
                 }
                 else if (p.Dv != id.DigitoVerificacion)
                 {
-                    r.Formato($"{campo}.dv", "dv-no-editable", $"El dígito de verificación lo calcula Validasoft (DIAN módulo 11): para {id.Numero} es {id.DigitoVerificacion}.");
+                    r.Formato($"{campo}.dv", "dv-no-editable", $"El dígito de verificación lo calcula AvalaSoft (DIAN módulo 11): para {id.Numero} es {id.DigitoVerificacion}.");
                 }
             }
 

@@ -67,11 +67,11 @@ describe('de vuelta del proveedor de identidad de la empresa (PI-1)', () => {
 
   it('si no se puede canjear, vuelve al correo y dice por qué', async () => {
     window.history.replaceState(null, '', `/#/ingreso?sso=${DESAFIO}`);
-    simularApi({ 'POST /api/v1/ingreso/sso/completar': new ProblemaSimulado(403, 'sso-sin-cuenta', 'Tu empresa aún no te dio acceso a Validasoft.') });
+    simularApi({ 'POST /api/v1/ingreso/sso/completar': new ProblemaSimulado(403, 'sso-sin-cuenta', 'Tu empresa aún no te dio acceso a AvalaSoft.') });
 
     montar();
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Tu empresa aún no te dio acceso a Validasoft. Pide a un administrador de tu grupo que te invite.');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Tu empresa aún no te dio acceso a AvalaSoft. Pide a un administrador de tu grupo que te invite.');
     expect(screen.getByLabelText('Correo')).toBeInTheDocument();
   });
 
@@ -108,7 +108,7 @@ describe('de vuelta del proveedor de identidad de la empresa (PI-1)', () => {
   it('sin retorno en la dirección es el ingreso de siempre', () => {
     simularApi({});
     montar();
-    expect(screen.getByRole('heading', { name: 'Ingresa a Validasoft' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });

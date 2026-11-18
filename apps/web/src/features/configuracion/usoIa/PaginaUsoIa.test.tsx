@@ -126,7 +126,7 @@ describe('Plan y uso de IA', () => {
     montar(() => ({ ...USO, plan: { ...USO.plan, configurado: true, activo: false } }));
 
     expect(await screen.findByText('La revisión automática no está contratada')).toBeInTheDocument();
-    expect(screen.getByText(/lo configura Validasoft desde Plataforma/)).toBeInTheDocument();
+    expect(screen.getByText(/lo configura AvalaSoft desde Plataforma/)).toBeInTheDocument();
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
   });

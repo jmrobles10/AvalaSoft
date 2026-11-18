@@ -215,7 +215,7 @@ describe('Mi información de un tercero de República Dominicana: Información l
 });
 
 describe('lo que se envía y cómo se reconoce una sociedad', () => {
-  it('el DV solo viaja cuando lo declara el tercero; el que calcula Validasoft nunca', () => {
+  it('el DV solo viaja cuando lo declara el tercero; el que calcula AvalaSoft nunca', () => {
     const general = { razon_social: 'X', tipo_persona: 'Juridica', tipo_identificacion: 'RUC', numero: '1', dv: '56', pais: 'PA' };
     expect(datosParaEnviar('FICHA_GENERAL', general, PERFIL_PANAMA)).toEqual({ razon_social: 'X', pais: 'PA', dv: '56' });
     expect(datosParaEnviar('FICHA_GENERAL', general, PERFIL_COLOMBIA)).toEqual({ razon_social: 'X', pais: 'PA' });

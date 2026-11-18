@@ -245,7 +245,7 @@ public sealed class DesafioDeIngreso
         var navegadorCorrecto = !string.IsNullOrEmpty(secretoDeNavegador) && IgualesEnTiempoConstante(HashSimple(secretoDeNavegador), Sso.NavegadorHash);
         if (!estadoCorrecto || !navegadorCorrecto)
             throw ReglaDeNegocioException.Prohibido("sso-estado-invalido",
-                "Este inicio de sesión no lo empezaste en este navegador o ya no es válido. Empieza de nuevo desde Validasoft.");
+                "Este inicio de sesión no lo empezaste en este navegador o ya no es válido. Empieza de nuevo desde AvalaSoft.");
     }
 
     /// <summary>La identidad que declaró el proveedor tras el regreso: el desafío queda a la espera de que la app complete el ingreso.</summary>

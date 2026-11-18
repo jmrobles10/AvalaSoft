@@ -110,13 +110,13 @@ public class CorreoTests
     {
         var botones = new List<(string Html, string Texto)>
         {
-            (Redactor().Redactar(Acceso(PlantillaCorreo.AccesoPorCorreo), "tok").Html, "Abrir Validasoft"),
-            (Redactor().Redactar(Acceso(PlantillaCorreo.Invitacion), "tok").Html, "Abrir Validasoft"),
+            (Redactor().Redactar(Acceso(PlantillaCorreo.AccesoPorCorreo), "tok").Html, "Abrir AvalaSoft"),
+            (Redactor().Redactar(Acceso(PlantillaCorreo.Invitacion), "tok").Html, "Abrir AvalaSoft"),
             (Redactor().RedactarObservacion(new CorreoDeObservacionPendiente("ana@aceros.co", "Norte", "N-E-1", [new ObservacionParaCorreo(["Ilegible"], null)]), "tok").Html,
-                "Responder en Validasoft"),
+                "Responder en AvalaSoft"),
             (Redactor().RedactarPlazoDeCargue(new Validasoft.Aplicacion.Expedientes.CorreoDePlazoDeCarguePendiente("ana@aceros.co", "Norte", "N-E-1",
-                Validasoft.Aplicacion.Expedientes.AvisoDePlazo.Recordatorio, Vence, 3), "tok").Html, "Completar en Validasoft"),
-            (Redactor().Redactar(Acceso(PlantillaCorreo.InvitacionDeUsuario) with { Empresa = "Grupo Norte" }, "-").Html, "Entrar a Validasoft"),
+                Validasoft.Aplicacion.Expedientes.AvisoDePlazo.Recordatorio, Vence, 3), "tok").Html, "Completar en AvalaSoft"),
+            (Redactor().Redactar(Acceso(PlantillaCorreo.InvitacionDeUsuario) with { Empresa = "Grupo Norte" }, "-").Html, "Entrar a AvalaSoft"),
         };
 
         foreach (var (html, texto) in botones)

@@ -8,7 +8,7 @@ recorrido(
     actor: 'Tercero',
     titulo: 'Lee y acepta los textos legales de una empresa',
     resumen:
-      'Antes de compartir sus documentos con una empresa, el tercero lee cada texto legal vigente con su versión y lo marca como aceptado. Validasoft registra qué aceptó y en qué versión; si un texto cambia mientras lo lee, debe volver a marcarlo.',
+      'Antes de compartir sus documentos con una empresa, el tercero lee cada texto legal vigente con su versión y lo marca como aceptado. AvalaSoft registra qué aceptó y en qué versión; si un texto cambia mientras lo lee, debe volver a marcarlo.',
     precondiciones: [
       'Un grupo con Constructora Norte, con sus textos legales publicados, que invitó a un tercero por correo.',
       'El tercero abre el enlace de la invitación desde su correo y escribe el código de acceso.',
@@ -28,7 +28,7 @@ recorrido(
     await paso(page, {
       titulo: 'Lee los textos legales de la empresa',
       explicacion:
-        'En «Lo que aceptas» aparece cada texto legal que la empresa exige, con su nombre (por ejemplo, el aviso de tratamiento de datos de Validasoft y la autorización de la empresa), la versión publicada y la fecha de publicación. ' +
+        'En «Lo que aceptas» aparece cada texto legal que la empresa exige, con su nombre (por ejemplo, el aviso de tratamiento de datos de AvalaSoft y la autorización de la empresa), la versión publicada y la fecha de publicación. ' +
         'Lee el texto completo dentro de su recuadro antes de marcarlo: la aceptación queda registrada con esa versión exacta.',
       resaltar: page.getByRole('heading', { name: 'Lo que aceptas', exact: true }),
       variantes: [

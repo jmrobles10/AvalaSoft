@@ -56,7 +56,7 @@ public sealed class EnviadorDeCorreo(ITransporteDeCorreo transporte, IEntornos e
         if (dominio is { Estado: EstadoDeDominioDeCorreo.Verificado })
         {
             await using var global = store.QuerySession();
-            remitente = dominio.RemitenteSiVerificado((await global.LoadAsync<Empresa>(empresaId, ct))?.Nombre ?? "Validasoft");
+            remitente = dominio.RemitenteSiVerificado((await global.LoadAsync<Empresa>(empresaId, ct))?.Nombre ?? "AvalaSoft");
         }
 
         cache.Set(llave, remitente, VigenciaDelRemitente);

@@ -44,10 +44,10 @@ public static class RedaccionDeCorreosDeHabeas
         {
             asunto = $"Recibimos tu solicitud de {derecho} ({correo.Radicado})";
             texto = $"Recibimos tu solicitud de {derecho} dirigida a {correo.Destino}.\n\nRadicado: {correo.Radicado}\nLa responderemos a más tardar el {fecha}, " +
-                    $"dentro del plazo de la Ley 1581 de 2012.\n\nPuedes seguirla en Validasoft ({redactor.UrlPublica}/privacidad) entrando con tu correo.";
+                    $"dentro del plazo de la Ley 1581 de 2012.\n\nPuedes seguirla en AvalaSoft ({redactor.UrlPublica}/privacidad) entrando con tu correo.";
             html = $"<p>Recibimos tu solicitud de {WebUtility.HtmlEncode(derecho)} dirigida a <b>{WebUtility.HtmlEncode(correo.Destino)}</b>.</p>" +
                    $"<p>Radicado: <b>{WebUtility.HtmlEncode(correo.Radicado)}</b><br>La responderemos a más tardar el {WebUtility.HtmlEncode(fecha)}, dentro del plazo de la Ley 1581 de 2012.</p>" +
-                   $"<p>Puedes seguirla en <a href=\"{WebUtility.HtmlEncode(redactor.UrlPublica + "/privacidad")}\">Validasoft</a> entrando con tu correo.</p>";
+                   $"<p>Puedes seguirla en <a href=\"{WebUtility.HtmlEncode(redactor.UrlPublica + "/privacidad")}\">AvalaSoft</a> entrando con tu correo.</p>";
         }
         else
         {
@@ -75,10 +75,10 @@ public static class RedaccionDeCorreosDeHabeas
         var hasta = redactor.FechaYHora(correo.ExpiraEn);
         var enlace = redactor.UrlPublica + "/privacidad";
         return new MensajeDeCorreo(correo.Para, "Tu exportación de la bóveda está lista",
-            $"Tu exportación de la bóveda ({correo.Archivos} archivos) está lista. Descárgala en Validasoft ({enlace}) entrando con tu correo; estará disponible hasta el {hasta}.",
+            $"Tu exportación de la bóveda ({correo.Archivos} archivos) está lista. Descárgala en AvalaSoft ({enlace}) entrando con tu correo; estará disponible hasta el {hasta}.",
             $"<p>Tu exportación de la bóveda ({correo.Archivos} archivos) está lista.</p>" +
             MarcoDeCorreo.Boton(enlace, "Descargar mi exportación") +
-            $"<p>Entra a Validasoft con tu correo para descargarla; estará disponible hasta el {WebUtility.HtmlEncode(hasta)}.</p>");
+            $"<p>Entra a AvalaSoft con tu correo para descargarla; estará disponible hasta el {WebUtility.HtmlEncode(hasta)}.</p>");
     }
 }
 

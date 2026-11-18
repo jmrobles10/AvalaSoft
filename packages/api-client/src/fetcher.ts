@@ -126,7 +126,7 @@ async function enviar(config: ConfigPeticion, opciones: OpcionesPeticion, acepta
     });
   } catch (causa) {
     if (causa instanceof DOMException && causa.name === 'AbortError') throw causa;
-    throw new ErrorDeRed('No pudimos comunicarnos con Validasoft. Revisa tu conexión e intenta de nuevo.', causa);
+    throw new ErrorDeRed('No pudimos comunicarnos con AvalaSoft. Revisa tu conexión e intenta de nuevo.', causa);
   }
 
   if (!respuesta.ok) {

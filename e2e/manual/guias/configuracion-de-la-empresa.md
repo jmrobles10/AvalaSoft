@@ -17,8 +17,8 @@ Ruta `/e/{empresa}/datos-marca` · permiso `empresas:administrar`.
 |---|---|---|---|
 | Razón social, identificación y prefijo de folio | Solo lectura: se fijan al crear la empresa y el prefijo ya está en los folios emitidos. | Los de la creación | — |
 | Contacto de soporte para terceros | Enlace `mailto:` al pie del portal del tercero. No se usa como `Reply-To` de los correos. | Sin valor (opcional) | Correo válido de hasta 254 caracteres; vacío lo quita (`contacto-soporte-invalido`). |
-| Logo | Se ve en el portal del tercero y en los datos públicos del certificado, el PDF de la declaración PEP y la exportación del expediente. Los correos llevan siempre el logotipo de Validasoft. | Sin logo (se usa el de Validasoft) | Desde la pantalla: SVG o PNG de hasta 200 KB; la API acepta además una URL `https` de hasta 2048 caracteres. «Quitar logo». Errores `logo-invalido` y `logo-demasiado-grande`. |
-| Color de marca | Deriva la paleta del portal del tercero (botones y enlaces) con contraste garantizado. | Sin color: tema de Validasoft | `#RRGGBB`, se guarda en mayúsculas; vacío lo quita (`color-marca-invalido`). |
+| Logo | Se ve en el portal del tercero y en los datos públicos del certificado, el PDF de la declaración PEP y la exportación del expediente. Los correos llevan siempre el logotipo de AvalaSoft. | Sin logo (se usa el de AvalaSoft) | Desde la pantalla: SVG o PNG de hasta 200 KB; la API acepta además una URL `https` de hasta 2048 caracteres. «Quitar logo». Errores `logo-invalido` y `logo-demasiado-grande`. |
+| Color de marca | Deriva la paleta del portal del tercero (botones y enlaces) con contraste garantizado. | Sin color: tema de AvalaSoft | `#RRGGBB`, se guarda en mayúsculas; vacío lo quita (`color-marca-invalido`). |
 
 Fuente: `apps/web/src/features/configuracion/datosMarca/modelo.ts`, `src/Validasoft.Dominio/Plataforma/Plataforma.cs`, `apps/public/src/shared/MarcaDeEmpresa.tsx`.
 
@@ -28,9 +28,9 @@ Ruta `/e/{empresa}/plantillas` · ver y vista previa con `configuracion:leer`; e
 
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
-| Correo a personalizar | Cada correo que Validasoft envía en nombre de la empresa. | «Predeterminada», versión 0 | Catálogo cerrado de 14: `invitacion`, `observacion`, `resultado`, `certificado`, `caducidad`, `recordatorio-observaciones`, `desaprobacion`, `reintegro`, `consentimiento-empresa`, `vencido`, `retiro-version` (llega al personal de la empresa), `pre-vencimiento`, `vigencia-vencida` y `renovacion`. Cada uno admite sus propias variables (por ejemplo `empresa`, `tipoVinculo`, `folio`, `documento`, `fecha`). El código OTP, los enlaces de acceso, el autorregistro y el aviso consolidado de vencimiento no se personalizan. |
+| Correo a personalizar | Cada correo que AvalaSoft envía en nombre de la empresa. | «Predeterminada», versión 0 | Catálogo cerrado de 14: `invitacion`, `observacion`, `resultado`, `certificado`, `caducidad`, `recordatorio-observaciones`, `desaprobacion`, `reintegro`, `consentimiento-empresa`, `vencido`, `retiro-version` (llega al personal de la empresa), `pre-vencimiento`, `vigencia-vencida` y `renovacion`. Cada uno admite sus propias variables (por ejemplo `empresa`, `tipoVinculo`, `folio`, `documento`, `fecha`). El código OTP, los enlaces de acceso, el autorregistro y el aviso consolidado de vencimiento no se personalizan. |
 | Asunto | Reemplaza el asunto del correo. | Vacío: el asunto de siempre | Hasta 150 caracteres y una sola línea. |
-| Cabecera y pie | Texto plano antes y después del cuerpo, que arma Validasoft. | Vacío | Hasta 2000 caracteres cada uno; variables como `{{empresa}}`, solo las permitidas del correo (`variable-no-permitida`). Hoy no hay Liquid. |
+| Cabecera y pie | Texto plano antes y después del cuerpo, que arma AvalaSoft. | Vacío | Hasta 2000 caracteres cada uno; variables como `{{empresa}}`, solo las permitidas del correo (`variable-no-permitida`). Hoy no hay Liquid. |
 | Restaurar predeterminado | Quita asunto, cabecera y pie; la versión sube igual. | — | — |
 | Enviar recordatorios automáticos | Mientras el expediente siga devuelto al tercero se le recuerda por correo y en su portal, a lo sumo una vez al día; se detiene cuando responde. Cada flujo puede sobrescribirlo. | Apagado | Encendido o apagado. |
 | Cada (días) | Frecuencia del recordatorio, contada desde la devolución o desde el último recordatorio. | 3 | Entero de 1 a 60 (`dias-invalidos`). |

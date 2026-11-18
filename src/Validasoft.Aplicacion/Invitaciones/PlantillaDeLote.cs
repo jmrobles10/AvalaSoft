@@ -407,7 +407,7 @@ public static class PlantillaDeLoteXlsx
     {
         var xml = new StringBuilder();
         xml.Append("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""")
-            .Append("""<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors><author>Validasoft</author></authors><commentList>""");
+            .Append("""<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><authors><author>AvalaSoft</author></authors><commentList>""");
         foreach (var (referencia, texto) in notas)
             xml.Append($"<comment ref=\"{referencia}\" authorId=\"0\"><text><t xml:space=\"preserve\">{HojaDeCalculo.Xml(texto)}</t></text></comment>");
         return xml.Append("</commentList></comments>").ToString();
@@ -442,7 +442,7 @@ public static class PlantillaDeLoteXlsx
                 "Número de Identificación Tributaria (NIT)"),
             "numeroIdentificacion" => ("Solo el número, sin puntos ni espacios. Con NIT puedes escribir el dígito de verificación con guion (900123456-7) o ponerlo en la columna DV. " +
                                        "La columna es de texto: Excel no le quita los ceros de la izquierda.", "900123456"),
-            "digitoVerificacion" => ("Si la dejas vacía, Validasoft lo calcula; si lo escribes, lo comprueba.", DigitoVerificacion.Calcular(AlgoritmoDv.NitColombia, "900123456") ?? "7"),
+            "digitoVerificacion" => ("Si la dejas vacía, AvalaSoft lo calcula; si lo escribes, lo comprueba.", DigitoVerificacion.Calcular(AlgoritmoDv.NitColombia, "900123456") ?? "7"),
             "tipoPersona" => ("Natural, Jurídica o Consorcio. Si la dejas vacía: Jurídica con NIT y Natural con los demás tipos.", "Jurídica"),
             "nombre" => ("Razón social de la empresa o nombres y apellidos de la persona (hasta 200 caracteres).", "Aceros del Norte S.A.S."),
             "nombreComercial" => ("Nombre con el que se conoce al tercero (hasta 200 caracteres).", "Aceros del Norte"),
@@ -495,7 +495,7 @@ public static class PlantillaDeLoteXlsx
         Texto("A", "Plantilla de invitación por lote", EstiloTitulo);
         hoja.Append("</row>");
         fila++;
-        Parrafo(null, $"Para {empresa}. Las listas desplegables de la hoja «{ArchivoDeLote.HojaDeDatos}» salen de su configuración en Validasoft.", EstiloAtenuado, 150);
+        Parrafo(null, $"Para {empresa}. Las listas desplegables de la hoja «{ArchivoDeLote.HojaDeDatos}» salen de su configuración en AvalaSoft.", EstiloAtenuado, 150);
         fila++;
 
         hoja.Append($"<row r=\"{fila}\" ht=\"20\" customHeight=\"1\">");
@@ -507,7 +507,7 @@ public static class PlantillaDeLoteXlsx
             $"Escribe una fila por cada tercero en la hoja «{ArchivoDeLote.HojaDeDatos}». No cambies los nombres de las columnas ni borres la fila de encabezados.",
             "Las columnas con asterisco (*) son obligatorias; las demás son opcionales. Donde la celda ofrece una lista desplegable, elige el valor de la lista.",
             "Si el tercero no es colombiano, elige primero el país: la lista de tipos de identificación depende de él.",
-            "Guarda el archivo como Excel (.xlsx) y súbelo en «Nuevo lote»: antes de invitar, Validasoft revisa cada fila y te dice qué corregir."
+            "Guarda el archivo como Excel (.xlsx) y súbelo en «Nuevo lote»: antes de invitar, AvalaSoft revisa cada fila y te dice qué corregir."
         };
         if (catalogo.Atributos.Count > 0)
             pasos.Add("Las columnas «Atributo: …» son los atributos de los tipos de vínculo: llena las de cada fila según su tipo de vínculo y deja vacías las que ese tipo no tiene (un valor en un atributo que el " +

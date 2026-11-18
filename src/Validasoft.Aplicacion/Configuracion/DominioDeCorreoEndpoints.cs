@@ -50,7 +50,7 @@ public static class DominioDeCorreoEndpoints
 
     /// <summary>La dirección con la que sale el correo de la plataforma (<c>Validasoft:Correo:Remitente</c>).</summary>
     public static string RemitenteDeLaPlataforma(IConfiguration configuracion) =>
-        configuracion["Validasoft:Correo:Remitente"] is { Length: > 0 } remitente ? remitente : "Validasoft <no-responder@validasoft.local>";
+        configuracion["Validasoft:Correo:Remitente"] is { Length: > 0 } remitente ? remitente : "AvalaSoft <no-responder@validasoft.local>";
 
     public static DominioDeCorreoDto ADto(Empresa empresa, DominioDeCorreoEmpresa? dominio, IProveedorDeDominiosDeCorreo proveedor, IConfiguration configuracion)
     {

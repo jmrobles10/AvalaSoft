@@ -18,7 +18,7 @@ public class MarcoDeCorreoTests
 
         html.ShouldContain("<p>Hola, <b>Ana</b>.</p>");
         html.ShouldContain($"src=\"cid:{MarcoDeCorreo.IdLogotipo}\"");
-        html.ShouldContain("alt=\"Validasoft\"");
+        html.ShouldContain("alt=\"AvalaSoft\"");
         html.IndexOf("cid:validasoft-logotipo", StringComparison.Ordinal).ShouldBeLessThan(html.IndexOf("<p>Hola", StringComparison.Ordinal));
         // Sin colores que dependan del modo del cliente de correo: la tarjeta es blanca con el texto de marca.
         html.ShouldContain("#FFFFFF");
@@ -73,10 +73,10 @@ public class MarcoDeCorreoTests
     [Fact]
     public void El_boton_es_el_enlace_con_el_color_de_la_accion_principal_de_la_marca_y_texto_blanco_sin_subrayado()
     {
-        var boton = MarcoDeCorreo.Boton("https://valida.test/e/tok", "Abrir Validasoft");
+        var boton = MarcoDeCorreo.Boton("https://valida.test/e/tok", "Abrir AvalaSoft");
 
         boton.ShouldContain("href=\"https://valida.test/e/tok\"");
-        boton.ShouldContain(">Abrir Validasoft</a>");
+        boton.ShouldContain(">Abrir AvalaSoft</a>");
         // El azul de acción de packages/ui/src/tokens.ts, en la celda (Outlook) y en el enlace, y el texto en blanco: ningún color depende del cliente de correo.
         boton.ShouldContain($"bgcolor=\"{MarcoDeCorreo.ColorDeAccion}\"");
         boton.ShouldContain($"background-color:{MarcoDeCorreo.ColorDeAccion}");

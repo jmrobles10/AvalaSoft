@@ -10,7 +10,7 @@ recorrido(
     actor: 'Tercero',
     titulo: 'Qué pasa cuando un enlace de invitación ya se usó, venció o no existe',
     resumen:
-      'Cada enlace de invitación sirve una sola vez y tiene fecha de vencimiento. Cuando el tercero intenta abrir uno usado, vencido o inexistente, Validasoft no lo deja entrar y le dice qué hacer: pedir a la empresa una invitación nueva.',
+      'Cada enlace de invitación sirve una sola vez y tiene fecha de vencimiento. Cuando el tercero intenta abrir uno usado, vencido o inexistente, AvalaSoft no lo deja entrar y le dice qué hacer: pedir a la empresa una invitación nueva.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y un flujo de Proveedor que pide código por correo.',
       'Un tercero invitado cuya invitación ya fue abierta y aceptada una vez desde su correo.',
@@ -29,7 +29,7 @@ recorrido(
     await paso(page, {
       titulo: 'Usa el enlace del correo una sola vez',
       explicacion:
-        'Al abrir el enlace y aceptar la invitación, el enlace queda consumido: Validasoft lo guarda como usado. Desde ahora tu acceso a esta empresa es tu sesión, no el enlace. ' +
+        'Al abrir el enlace y aceptar la invitación, el enlace queda consumido: AvalaSoft lo guarda como usado. Desde ahora tu acceso a esta empresa es tu sesión, no el enlace. ' +
         'Si cierras el navegador, entra por «/entrar» con tu correo: no necesitas el enlace otra vez.',
       resaltar: page.getByRole('heading', { level: 1, name: `Tu revisión con ${e.sur.nombre}` }),
       variantes: [
@@ -46,7 +46,7 @@ recorrido(
       titulo: 'Intenta abrir un enlace que ya se usó',
       explicacion:
         'La pantalla dice «Este enlace ya se usó» y explica que cada enlace sirve una sola vez. Si cerraste la página sin terminar, pide a la empresa que te reenvíe la invitación: te llegará un correo con un enlace nuevo. ' +
-        'Validasoft no te deja entrar con un enlace usado, aunque sea tuyo.',
+        'AvalaSoft no te deja entrar con un enlace usado, aunque sea tuyo.',
       resaltar: otra.getByRole('heading', { name: 'Este enlace ya se usó' }),
       variantes: [
         { cuando: 'El enlace venció por fecha', entonces: 'La pantalla dice «Este enlace venció» y pide a la empresa un enlace nuevo.' },

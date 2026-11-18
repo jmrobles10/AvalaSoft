@@ -51,7 +51,7 @@ recorrido(
     actor: 'Tercero',
     titulo: 'Muestra la bóveda y la ficha del tercero dentro de tu sistema',
     resumen:
-      'Un sistema ajeno a Validasoft muestra al tercero su bóveda de documentos y su ficha dentro de sus propias pantallas. El tercero no ve marca, menú ni inicio de sesión de Validasoft: ' +
+      'Un sistema ajeno a AvalaSoft muestra al tercero su bóveda de documentos y su ficha dentro de sus propias pantallas. El tercero no ve marca, menú ni inicio de sesión de AvalaSoft: ' +
       'el sistema pide una sesión corta para cada pantalla y la entrega al marco.',
     precondiciones: [
       'Un grupo con Constructora Norte, un tercero que aceptó su invitación de cliente, y el sistema integrado E2E con su página de ejemplo.',
@@ -76,11 +76,11 @@ recorrido(
     await paso(contextoLimpio, {
       titulo: 'Abre la pantalla del tercero en tu sistema',
       explicacion:
-        'La página de tu sistema tiene una lista con las pantallas de Validasoft que puede mostrar al tercero: la bóveda de documentos, el expediente y la ficha. ' +
-        'Eliges una y pulsas «Abrir». Tu sistema pide para esa pantalla una sesión a su backend, que la pide a Validasoft con su llave de API.',
+        'La página de tu sistema tiene una lista con las pantallas de AvalaSoft que puede mostrar al tercero: la bóveda de documentos, el expediente y la ficha. ' +
+        'Eliges una y pulsas «Abrir». Tu sistema pide para esa pantalla una sesión a su backend, que la pide a AvalaSoft con su llave de API.',
       resaltar: [contextoLimpio.getByLabel('Pantalla del tercero'), contextoLimpio.getByRole('button', { name: 'Abrir' })],
       variantes: [
-        { cuando: 'Pides una pantalla de un origen que no registraste', entonces: 'Validasoft no emite la sesión (403 «origen-no-permitido») y la pantalla no se abre.' },
+        { cuando: 'Pides una pantalla de un origen que no registraste', entonces: 'AvalaSoft no emite la sesión (403 «origen-no-permitido») y la pantalla no se abre.' },
       ],
     });
 
@@ -92,7 +92,7 @@ recorrido(
     await paso(contextoLimpio, {
       titulo: 'Revisa la bóveda dentro de tu sistema',
       explicacion:
-        'La bóveda aparece en el marco de tu sistema, sin marca, menú ni botón de salir de Validasoft, y sin pedirle al tercero el correo ni una contraseña. ' +
+        'La bóveda aparece en el marco de tu sistema, sin marca, menú ni botón de salir de AvalaSoft, y sin pedirle al tercero el correo ni una contraseña. ' +
         'El tercero ve sus documentos y puede subir los que le pida la empresa. Tu sistema recibe los mensajes de la pantalla, como el tamaño para ajustar el marco.',
       resaltar: contextoLimpio.locator('#validasoft'),
     });

@@ -50,7 +50,7 @@ public sealed partial class RequisitosApiTests
         await CrearVinculoAsync(norte, "PROVEEDOR", correo);
         var mensaje = await fixture.Correos.EsperarAsync(correo);
         mensaje.Asunto.ShouldBe("Norte S.A.S. te espera");
-        mensaje.Texto.ShouldStartWith("Bienvenido al registro de proveedores de Norte S.A.S.\n<b>Gracias</b>\n\nNorte S.A.S. te invitó a Validasoft");
+        mensaje.Texto.ShouldStartWith("Bienvenido al registro de proveedores de Norte S.A.S.\n<b>Gracias</b>\n\nNorte S.A.S. te invitó a AvalaSoft");
         mensaje.Texto.ShouldEndWith("\n\nCompras · compras@norte.co");
         mensaje.Html.ShouldContain("&lt;b&gt;Gracias&lt;/b&gt;</p>");
         mensaje.Html.ShouldNotContain("<b>Gracias</b>");
@@ -89,7 +89,7 @@ public sealed partial class RequisitosApiTests
         await CrearVinculoAsync(norte, "PROVEEDOR", otroCorreo);
         var predeterminado = await fixture.Correos.EsperarAsync(otroCorreo);
         predeterminado.Asunto.ShouldBe("Norte S.A.S. te invita a validar tu vínculo como proveedor");
-        predeterminado.Texto.ShouldStartWith("Norte S.A.S. te invitó a Validasoft");
+        predeterminado.Texto.ShouldStartWith("Norte S.A.S. te invitó a AvalaSoft");
         (await ApiAsync<PaginaDto<RegistroAuditoriaDto>>("GET", "/api/v1/auditoria?entidad=PlantillaNotificacion", Admin(norte), null, 200))
             .Datos.Select(r => r.Accion).ShouldBe(["Modificado", "Creado"]);
     }

@@ -80,7 +80,7 @@ describe('montarEmbebido', () => {
     vi.unstubAllGlobals();
   });
 
-  it('inserta el iframe con la URL sin token y entrega la sesión solo al origen de Validasoft cuando está listo', () => {
+  it('inserta el iframe con la URL sin token y entrega la sesión solo al origen de AvalaSoft cuando está listo', () => {
     const e = entornoFalso();
     const alMensaje = vi.fn<(m: MensajeDelEmbebido) => void>();
     montarEmbebido({ contenedor: e.contenedor, sesion: sesion(), alMensaje, titulo: 'Mi bóveda' });
@@ -110,7 +110,7 @@ describe('montarEmbebido', () => {
     expect(alMensaje).not.toHaveBeenCalled();
   });
 
-  it('pide otra sesión a su backend cuando Validasoft la requiere y la entrega al mismo origen', async () => {
+  it('pide otra sesión a su backend cuando AvalaSoft la requiere y la entrega al mismo origen', async () => {
     const e = entornoFalso();
     const renovarSesion = vi.fn(() => Promise.resolve(sesion('nuevo.token.firma')));
     montarEmbebido({ contenedor: e.contenedor, sesion: sesion(), renovarSesion });

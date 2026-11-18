@@ -63,7 +63,7 @@ recorrido(
     await paso(page, {
       titulo: 'Descarga el informe en Excel',
       explicacion:
-        '«Descargar Excel» baja el informe con los filtros que tengas puestos en ese momento. El archivo trae las mismas filas que ves en la tabla, para trabajar con ellas fuera de Validasoft.',
+        '«Descargar Excel» baja el informe con los filtros que tengas puestos en ese momento. El archivo trae las mismas filas que ves en la tabla, para trabajar con ellas fuera de AvalaSoft.',
       resaltar: app.getByRole('button', { name: 'Descargar Excel' }),
     });
   },

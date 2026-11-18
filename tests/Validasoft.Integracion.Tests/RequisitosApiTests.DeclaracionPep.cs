@@ -267,8 +267,8 @@ public sealed partial class RequisitosApiTests
         pdf.Nombre.ShouldNotBeNull().ShouldStartWith("declaracion-pep-ana-perez-");
         var texto = Encoding.Latin1.GetString(pdf.Contenido);
         texto.ShouldStartWith("%PDF-1.7");
-        texto.ShouldContain("(Validasoft)");
-        texto.ShouldContain("(alida) Tj");            // el logotipo de Validasoft: la «V» verde y «alida» «Soft»
+        texto.ShouldContain("(AvalaSoft)");
+        texto.ShouldContain("0.054902 0.54902 0.603922 rg");   // el logotipo de AvalaSoft: el círculo verde y «avala» en contornos (verde azulado)
         texto.ShouldContain("0.133333 0.827451 0.541176 rg");
         texto.ShouldContain("/Subtype /Image");       // la firma
         texto.ShouldContain("(Alcalde municipal)");
@@ -355,9 +355,9 @@ public sealed partial class RequisitosApiTests
         async Task FijarLogoAsync(string logo) =>
             await ApiAsync("PUT", $"/api/v1/empresas/{e.Norte.Datos.Id}", Admin(e.Norte), new ActualizarEmpresaDto(LogoUrl: logo), 200);
 
-        // Sin logo configurado: el logotipo de Validasoft (vectores: la «V» verde y «alida» «Soft») y la firma como única imagen.
+        // Sin logo configurado: el logotipo de AvalaSoft (vectores: el círculo verde y «avalasoft» en contornos) y la firma como única imagen.
         var sinLogo = await PdfAsync();
-        sinLogo.ShouldContain("(alida) Tj");
+        sinLogo.ShouldContain("0.054902 0.54902 0.603922 rg");
         sinLogo.Split("/Subtype /Image").Length.ShouldBe(2);
 
         // Un logo PNG: su imagen (80×24) en el encabezado, además de la firma, y ya no el de Validasoft.
@@ -365,7 +365,7 @@ public sealed partial class RequisitosApiTests
         var conPng = await PdfAsync();
         conPng.ShouldContain("/Width 80 /Height 24");
         conPng.Split("/Subtype /Image").Length.ShouldBe(3);
-        conPng.ShouldNotContain("(alida) Tj");
+        conPng.ShouldNotContain("0.054902 0.54902 0.603922 rg");
 
         // Un logo SVG: vectores (sin imagen nueva), con el color del logo.
         var svg = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 30"><rect width="100" height="30" rx="5" fill="#E07A1F"/><circle cx="15" cy="15" r="8" fill="#FFFFFF"/></svg>""";
@@ -373,16 +373,16 @@ public sealed partial class RequisitosApiTests
         var conSvg = await PdfAsync();
         conSvg.ShouldContain("0.878431 0.478431 0.121569 rg");
         conSvg.Split("/Subtype /Image").Length.ShouldBe(2);
-        conSvg.ShouldNotContain("(alida) Tj");
+        conSvg.ShouldNotContain("0.054902 0.54902 0.603922 rg");
 
         // Un SVG con texto no se puede dibujar fielmente: el PDF lleva el de Validasoft en vez de un logo a medias. Y por URL (no se descarga) también.
         await FijarLogoAsync($"data:image/svg+xml;base64,{Convert.ToBase64String(Encoding.UTF8.GetBytes("""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><text>Norte</text></svg>"""))}");
-        (await PdfAsync()).ShouldContain("(alida) Tj");
+        (await PdfAsync()).ShouldContain("0.054902 0.54902 0.603922 rg");
         await FijarLogoAsync("https://cdn.norte.example/logo.png");
-        (await PdfAsync()).ShouldContain("(alida) Tj");
+        (await PdfAsync()).ShouldContain("0.054902 0.54902 0.603922 rg");
 
         // Quitar el logo (cadena vacía) devuelve al de Validasoft.
         await FijarLogoAsync(string.Empty);
-        (await PdfAsync()).ShouldContain("(alida) Tj");
+        (await PdfAsync()).ShouldContain("0.054902 0.54902 0.603922 rg");
     }
 }

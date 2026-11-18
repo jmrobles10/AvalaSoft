@@ -10,7 +10,7 @@ namespace Validasoft.Sdk;
 public sealed class ExcepcionValidasoft : Exception
 {
     public ExcepcionValidasoft(HttpStatusCode estado, string? codigo, string? detalle, string? correlacion)
-        : base($"Validasoft respondió {(int)estado}{(codigo is null ? string.Empty : " " + codigo)}: {detalle ?? "sin detalle"}")
+        : base($"AvalaSoft respondió {(int)estado}{(codigo is null ? string.Empty : " " + codigo)}: {detalle ?? "sin detalle"}")
     {
         Estado = estado;
         Codigo = codigo;

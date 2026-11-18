@@ -5,7 +5,7 @@ orden: 11
 resumen: "Los proyectos .NET y sus dependencias, los módulos de la capa de aplicación, el patrón de un caso de uso, el modelo de errores y los paquetes del frontend."
 ---
 
-Validasoft es un **monolito modular**: un solo repositorio, una sola base de datos y un solo proceso, organizado en proyectos que solo se pueden referenciar en un sentido (decisión ADR-0001, `docs/adr/0001-monolito-modular.md`). Extraer un módulo en el futuro sería cambiar el transporte local de mensajes por uno de red.
+AvalaSoft es un **monolito modular**: un solo repositorio, una sola base de datos y un solo proceso, organizado en proyectos que solo se pueden referenciar en un sentido (decisión ADR-0001, `docs/adr/0001-monolito-modular.md`). Extraer un módulo en el futuro sería cambiar el transporte local de mensajes por uno de red.
 
 ## La solución .NET
 

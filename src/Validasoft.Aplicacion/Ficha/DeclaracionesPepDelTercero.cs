@@ -55,7 +55,7 @@ public sealed class AccesoADeclaracionPep
 public static class DeclaracionesPepDelTerceroEndpoints
 {
     /// <summary>Nombre del emisor del PDF del tercero (la declaración es de su ficha, no de una empresa).</summary>
-    public const string Emisor = "Validasoft";
+    public const string Emisor = "AvalaSoft";
 
     /// <summary>
     /// <c>GET /public/v1/ficha/{seccion}/declaracion-pep/pdf?persona={índice}</c> (<c>FICHA_GENERAL</c> sin índice, <c>FICHA_LEGAL</c> con el de la

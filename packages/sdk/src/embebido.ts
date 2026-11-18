@@ -109,7 +109,7 @@ export function montarEmbebido(opciones: OpcionesDeMontaje): EmbebidoMontado {
   let sesion = opciones.sesion;
   let origenDelIframe = origenDeUrl(sesion.url);
   const iframe = document.createElement('iframe');
-  iframe.title = opciones.titulo ?? 'Validasoft';
+  iframe.title = opciones.titulo ?? 'AvalaSoft';
   iframe.src = sesion.url;
   iframe.style.cssText = `display:block;width:100%;height:${String(opciones.altoInicial ?? 480)}px;border:0`;
   iframe.setAttribute('referrerpolicy', 'origin');

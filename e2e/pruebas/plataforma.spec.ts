@@ -38,7 +38,7 @@ test('Alta de una empresa nueva desde la consola, su plan de IA con llave y su p
   await consola.getByRole('textbox', { name: 'Código' }).fill('ERP');
   await consola.getByRole('textbox', { name: 'Nombre del sistema' }).fill('ERP de Andina');
   await consola.getByRole('textbox', { name: 'Clave pública (PEM)' }).fill(claves.publica);
-  await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar Validasoft (opcional)' }).fill(ORIGEN_SISTEMA);
+  await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar AvalaSoft (opcional)' }).fill(ORIGEN_SISTEMA);
   await consola.getByRole('button', { name: 'Crear grupo' }).click();
 
   // 2. Las llaves se muestran una sola vez: la del sistema la usa su backend.

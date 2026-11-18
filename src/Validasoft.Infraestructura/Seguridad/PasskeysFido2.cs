@@ -80,7 +80,7 @@ public sealed class ServicioDePasskeysFido2(IConfiguration configuracion, IHttpC
         }
 
         var passkey = await buscar(Base64UrlEncoder.Encode(respuesta.RawId), ct)
-                      ?? throw ReglaDeNegocioException.NoAutenticado("passkey-invalida", "Esa passkey no está registrada en Validasoft.");
+                      ?? throw ReglaDeNegocioException.NoAutenticado("passkey-invalida", "Esa passkey no está registrada en AvalaSoft.");
         passkey.AsegurarActiva();
 
         try
@@ -128,7 +128,7 @@ public sealed class ServicioDePasskeysFido2(IConfiguration configuracion, IHttpC
         return new Fido2(new Fido2Configuration
         {
             RPID = rpId,
-            RPName = configuracion["Validasoft:Ingreso:Passkeys:Nombre"] is { Length: > 0 } nombre ? nombre : "Validasoft",
+            RPName = configuracion["Validasoft:Ingreso:Passkeys:Nombre"] is { Length: > 0 } nombre ? nombre : "AvalaSoft",
             Origins = origenes,
             TimestampDriftTolerance = 300_000
         });

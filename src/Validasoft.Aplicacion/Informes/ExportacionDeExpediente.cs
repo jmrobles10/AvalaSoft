@@ -112,7 +112,7 @@ public static partial class ExportacionDeExpedienteEndpoints
                     if (ficha?.Versiones.FirstOrDefault(v => v.Numero == requisito.VersionActual!.Numero) is not { } version)
                         continue;
                     foreach (var (nombreArchivo, bytes) in Ficha.DeclaracionesPepEndpoints.PdfsDeLaVersion(requisito.Seccion!, requisito.Nombre, version,
-                                 empresaDatos?.Nombre ?? "Validasoft", tercero?.Nombre ?? string.Empty, declaraciones, ahora, empresaDatos?.LogoUrl))
+                                 empresaDatos?.Nombre ?? "AvalaSoft", tercero?.Nombre ?? string.Empty, declaraciones, ahora, empresaDatos?.LogoUrl))
                     {
                         var ruta = $"declaraciones-pep/{nombreArchivo}";
                         await EscribirAsync(archivo, ruta, bytes, ct);
@@ -179,7 +179,7 @@ public static partial class ExportacionDeExpedienteEndpoints
 
         return new DocumentoPdf(empresa?.Nombre ?? "Empresa", InformeEstadoExpedientesEndpoints.IdentificacionDe(empresa), "Expediente",
             $"Expediente {e.Folio}", $"{e.TerceroNombre} ({InformeEstadoExpedientesEndpoints.Identificacion(e.TerceroIdentificacion)}) · {e.TipoVinculoNombre}",
-            ahora, $"Exportado el {Exportaciones.Momento(ahora)} · Validasoft", Horizontal: true,
+            ahora, $"Exportado el {Exportaciones.Momento(ahora)} · AvalaSoft", Horizontal: true,
             [
                 new DatosPdf("Datos del expediente",
                 [

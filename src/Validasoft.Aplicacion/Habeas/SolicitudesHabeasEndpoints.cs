@@ -29,7 +29,7 @@ public sealed record DatosDelTitular(string Nombre, string Identificacion, strin
 public static class ServicioDeSolicitudesHabeas
 {
     public const string Entidad = "SolicitudHabeas";
-    public const string NombreDeLaPlataforma = "Validasoft";
+    public const string NombreDeLaPlataforma = "AvalaSoft";
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
     public static string Plazo(SolicitudHabeas s, DateOnly hoy)

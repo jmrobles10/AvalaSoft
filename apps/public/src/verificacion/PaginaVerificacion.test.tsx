@@ -57,10 +57,10 @@ describe('verificación pública del certificado', () => {
     expect(screen.getByText('Emisión 1')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Descargar PDF' })).toBeEnabled();
 
-    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló Validasoft.')).toBeInTheDocument();
+    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló AvalaSoft.')).toBeInTheDocument();
     expect(screen.getByText('El contenido sellado da exactamente la huella del certificado.')).toBeInTheDocument();
     expect(screen.getByText(/La huella del enlace \([0-9a-f]{12}\) es la de este contenido\./)).toBeInTheDocument();
-    expect(screen.getByText('Lo selló la clave vigente de Validasoft (vs-prueba).')).toBeInTheDocument();
+    expect(screen.getByText('Lo selló la clave vigente de AvalaSoft (vs-prueba).')).toBeInTheDocument();
     expect(screen.getByText('La firma digital (Ed25519) corresponde a este contenido.')).toBeInTheDocument();
 
     // La consulta lleva el folio y la huella del QR; las claves salen de la ruta fija de esta página.
@@ -97,7 +97,7 @@ describe('verificación pública del certificado', () => {
     expect(screen.getByText('Dejó de valer el 20/11/2026 y no puede volver a usarse. Constructora Verificación S.A.S. puede decirte el motivo.')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Descargar PDF' })).not.toBeInTheDocument();
     expect(screen.getByText('El PDF solo se entrega mientras el certificado está vigente.')).toBeInTheDocument();
-    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló Validasoft.')).toBeInTheDocument();
+    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló AvalaSoft.')).toBeInTheDocument();
   });
 
   it('reemplazado: enlace a la emisión actual', async () => {
@@ -123,7 +123,7 @@ describe('verificación pública del certificado', () => {
     montar(ruta(certificado), () => json(certificado), () => new Response('<!doctype html>', { headers: { 'Content-Type': 'text/html' } }));
 
     expect(await screen.findByText('No pudimos completar la verificación del sello. Inténtalo de nuevo en unos minutos.')).toBeInTheDocument();
-    expect(screen.getByText('No pudimos obtener las claves públicas de Validasoft.')).toBeInTheDocument();
+    expect(screen.getByText('No pudimos obtener las claves públicas de AvalaSoft.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Reintentar' })).toBeInTheDocument();
   });
 

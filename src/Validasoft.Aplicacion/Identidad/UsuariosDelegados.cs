@@ -149,7 +149,7 @@ public sealed class RegistroDeUsuariosDelegados(IDocumentStore store, IEntornos 
     private static void AsegurarActivo(Usuario usuario)
     {
         if (!usuario.Activo)
-            throw ReglaDeNegocioException.NoAutenticado("usuario-inactivo", "El usuario está desactivado en Validasoft.");
+            throw ReglaDeNegocioException.NoAutenticado("usuario-inactivo", "El usuario está desactivado en AvalaSoft.");
     }
 
     /// <summary>Actor de los cambios hechos durante la autenticación: la API key del sistema integrado.</summary>

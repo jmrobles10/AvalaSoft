@@ -40,7 +40,7 @@ public static class MarcoDeCorreo
         return "<div style=\"margin:0;padding:24px 12px;background-color:#F1F4FA;\">" +
                "<div style=\"max-width:560px;margin:0 auto;padding:24px;background-color:#FFFFFF;border:1px solid #E3E8F1;border-radius:12px;" +
                "font-family:'Segoe UI',Arial,sans-serif;font-size:15px;line-height:22px;color:#0A0F1C;\">" +
-               $"<img src=\"cid:{IdLogotipo}\" alt=\"Validasoft\" width=\"{ancho / 2}\" height=\"{alto / 2}\" style=\"display:block;border:0;margin:0 0 20px 0;\">" +
+               $"<img src=\"cid:{IdLogotipo}\" alt=\"AvalaSoft\" width=\"{ancho / 2}\" height=\"{alto / 2}\" style=\"display:block;border:0;margin:0 0 20px 0;\">" +
                html + "</div></div>";
     }
 

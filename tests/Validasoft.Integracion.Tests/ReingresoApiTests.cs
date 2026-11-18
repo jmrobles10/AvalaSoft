@@ -183,7 +183,7 @@ public sealed partial class ReingresoApiTests(ApiFixture fixture)
         JsonDocument.Parse(existente).RootElement.GetProperty("mensaje").GetString()
             .ShouldBe("Si tu correo está registrado, te enviamos un enlace para entrar.");
 
-        var acceso = await Correos.EsperarAsync(correo, m => m.Asunto == "Tu enlace para entrar a Validasoft");
+        var acceso = await Correos.EsperarAsync(correo, m => m.Asunto == "Tu enlace para entrar a AvalaSoft");
         acceso.Texto.ShouldContain($"{ApiFixture.UrlPublica}/e/");
         var canje = await PublicoAsync("POST", $"/public/v1/enlaces/{TokenDe(acceso)}/canjear", null, 200);
         var sesion = (await canje.ReadAsJsonAsync<SesionTerceroDto>())!;
@@ -234,7 +234,7 @@ public sealed partial class ReingresoApiTests(ApiFixture fixture)
 
     // ---------- utilidades ----------
 
-    private static bool EsDeAcceso(MensajeDeCorreo m) => m.Asunto == "Tu enlace para entrar a Validasoft";
+    private static bool EsDeAcceso(MensajeDeCorreo m) => m.Asunto == "Tu enlace para entrar a AvalaSoft";
 
     /// <summary>Tercero con un vínculo CLIENTE (sin OTP): canjea y devuelve la sesión y la cookie de refresco.</summary>
     private async Task<(SesionTerceroDto Sesion, string Cookie)> SesionDeClienteAsync()

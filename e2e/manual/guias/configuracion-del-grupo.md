@@ -5,7 +5,7 @@ orden: 31
 resumen: "Cada ajuste de alcance grupo en la app de la empresa: dónde está, qué cambia, su valor por defecto y sus variantes. Comprobado contra el código."
 ---
 
-El **grupo** (el tenant) es el cliente de Validasoft: una o varias empresas (razones sociales) con una administración común. Estas secciones de **Configuración** valen para todas las empresas del grupo. Las de alcance empresa están en [Configuración de la empresa](guia:configuracion-de-la-empresa) y las de la consola de Plataforma en [Configuración de Plataforma](guia:configuracion-de-plataforma).
+El **grupo** (el tenant) es el cliente de AvalaSoft: una o varias empresas (razones sociales) con una administración común. Estas secciones de **Configuración** valen para todas las empresas del grupo. Las de alcance empresa están en [Configuración de la empresa](guia:configuracion-de-la-empresa) y las de la consola de Plataforma en [Configuración de Plataforma](guia:configuracion-de-plataforma).
 
 > **Nota:** las rutas de la app son `/e/{empresa}/{sección}` dentro del hash de la app web (por ejemplo `/app/#/e/{empresa}/usuarios`); no existe el segmento `/configuracion/`. Una sección no aparece en la barra lateral si la persona no tiene su permiso. Los permisos de administración del grupo (`empresas:administrar`, `usuarios:administrar`, `api-keys:administrar`, `sistemas:administrar`, `sandbox:administrar`) solo los da un rol asignado a **todo el grupo**: un administrador de una sola empresa no los tiene.
 
@@ -59,7 +59,7 @@ Ruta `/e/{empresa}/ingreso` · permiso `usuarios:administrar`. Define cómo entr
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
 | Desde el sistema integrado (modo Delegado) | El sistema integrado (SRM, Marco, Portal) autentica a la persona con una identidad firmada; es lo que usan las pantallas embebidas. | Marcado | Apagado, las sesiones delegadas responden 403 `modo-de-ingreso-no-admitido`. Esas sesiones duran 30 minutos fijos. |
-| Directo a Validasoft (modo Directo) | La persona entra con correo y código de 6 dígitos, y con passkey si aplica. | Desmarcado | Encenderlo completa el grupo de los usuarios antiguos; apagarlo cierra las sesiones directas abiertas. Debe haber al menos un modo (422 `modos-de-ingreso-invalidos`). Activar el SSO exige este modo. |
+| Directo a AvalaSoft (modo Directo) | La persona entra con correo y código de 6 dígitos, y con passkey si aplica. | Desmarcado | Encenderlo completa el grupo de los usuarios antiguos; apagarlo cierra las sesiones directas abiertas. Debe haber al menos un modo (422 `modos-de-ingreso-invalidos`). Activar el SSO exige este modo. |
 | Duración máxima de la sesión | Pasado ese tiempo hay que ingresar de nuevo; no se extiende al renovar. Solo vale para ingreso directo. | 8 horas | La pantalla ofrece 1, 2, 4, 8, 12 y 24 horas; la API acepta de 1 a 24 (422 `sesion-invalida`). |
 | Cerrar por inactividad | Cierra la sesión si no hay actividad en ese tiempo. | 30 minutos | La pantalla ofrece 5, 10, 15, 30, 60, 120, 240 y 480; la API acepta de 5 a 480 y no más que la sesión (422 `inactividad-invalida`). |
 | Exigir passkey a todas las personas del grupo | Todas deben registrar passkey en su próximo ingreso. | Apagado | Apagado: la exigen solo Administrador, Oficial y Auditor. Un ingreso por SSO con varios factores declarados no pide passkey. |
@@ -77,7 +77,7 @@ Ruta `/e/{empresa}/sso` · permiso `usuarios:administrar`; guardar pide reautent
 | Activar el inicio de sesión único | Las personas de los dominios verificados ven «Entrar con {nombre}». | Apagado | Pide un dominio verificado (422 `sso-sin-dominios`) y que el grupo admita ingreso directo (409 `ingreso-directo-apagado`). |
 | Proveedor | Con qué proveedor se entra. | `oidc` | `oidc` (Entra ID, Google Workspace u otro OpenID Connect) o `workos` (deshabilitado si la instalación no lo tiene: 409 `workos-no-configurado`). |
 | Nombre del botón | Texto «Entrar con {nombre}». | Sin valor: debe configurarse | De 1 a 60 caracteres. |
-| Emisor (issuer), Client ID y secreto del cliente (OIDC) | Dónde publica el proveedor su configuración y cómo se identifica Validasoft. El secreto se guarda cifrado y nunca vuelve a mostrarse. | Sin valor; secreto vacío (cliente público con PKCE) | Emisor `https` (http solo a localhost y en desarrollo) de hasta 500 caracteres; Client ID hasta 300; secreto de 8 a 2000 caracteres. |
+| Emisor (issuer), Client ID y secreto del cliente (OIDC) | Dónde publica el proveedor su configuración y cómo se identifica AvalaSoft. El secreto se guarda cifrado y nunca vuelve a mostrarse. | Sin valor; secreto vacío (cliente público con PKCE) | Emisor `https` (http solo a localhost y en desarrollo) de hasta 500 caracteres; Client ID hasta 300; secreto de 8 a 2000 caracteres. |
 | Organización o Conexión (WorkOS) | Identifican a la empresa en WorkOS. | Vacío | Al menos una de las dos (422 `conexion-workos-requerida`); hasta 100 caracteres cada una. |
 | URL de retorno | Es el URI de redirección que se registra en el proveedor. | La de la instalación | Solo lectura. |
 | Dominios de correo | Solo valen los correos de dominios verificados; un dominio verificado pertenece a un solo grupo. | Ninguno | Hasta 20. Se verifica publicando `validasoft-verificacion=…` en `https://{dominio}/.well-known/validasoft-verificacion.txt`. Rechaza dominios públicos (gmail, hotmail, outlook, yahoo, icloud, proton…: 409 `dominio-publico`). No se puede quitar el último verificado con el SSO activo. |
@@ -177,8 +177,8 @@ Ruta `/e/{empresa}/sistemas` · permiso `sistemas:administrar`.
 |---|---|---|---|
 | Código (iss) | Es el emisor de las aserciones del sistema y su código en las referencias externas. | Sin valor: debe configurarse | Empieza con letra; `A-Z`, `0-9` y `_`; hasta 20; inmutable (409 `sistema-duplicado`). |
 | Nombre | Nombre visible. | Sin valor: debe configurarse | Obligatorio. |
-| Clave pública (PEM) | Validasoft verifica con ella las identidades firmadas; solo se guarda la pública. | Sin valor: debe configurarse | RSA de 2048 bits o más, o EC P-256 (422 `clave-publica-invalida`). |
-| Sitios que pueden incrustar Validasoft (orígenes) | Alimenta `frame-ancestors` y la lista de `postMessage` para las pantallas embebidas; se aplica en menos de un minuto. | Ninguno: nadie puede incrustar | Hasta 20, `https://host[:puerto]`, sin ruta, consulta, comodines ni usuario (422 `origen-invalido`, `origenes-excesivos`). |
+| Clave pública (PEM) | AvalaSoft verifica con ella las identidades firmadas; solo se guarda la pública. | Sin valor: debe configurarse | RSA de 2048 bits o más, o EC P-256 (422 `clave-publica-invalida`). |
+| Sitios que pueden incrustar AvalaSoft (orígenes) | Alimenta `frame-ancestors` y la lista de `postMessage` para las pantallas embebidas; se aplica en menos de un minuto. | Ninguno: nadie puede incrustar | Hasta 20, `https://host[:puerto]`, sin ruta, consulta, comodines ni usuario (422 `origen-invalido`, `origenes-excesivos`). |
 | Rotar clave | Desde ya solo valen las aserciones firmadas con la clave nueva. | — | Solo si el sistema está activo; pide reautenticación. |
 | Desactivar sistema | Revoca todas sus API keys (también las de prueba), corta sus sesiones y aserciones y quita sus orígenes; reactivarlo no restaura las llaves. | Activo | Desde Plataforma («Sistemas» de cada grupo) o por API; la acción pide reautenticación. |
 

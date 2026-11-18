@@ -62,7 +62,7 @@ public static class ClavesDeArranque
             return;
 
         throw new InvalidOperationException(
-            $"Validasoft no arranca en el entorno «{entorno.EnvironmentName}» con claves de desarrollo o sin las claves obligatorias:{Environment.NewLine}" +
+            $"AvalaSoft no arranca en el entorno «{entorno.EnvironmentName}» con claves de desarrollo o sin las claves obligatorias:{Environment.NewLine}" +
             string.Join(Environment.NewLine, problemas.Select(p => $"  - {p}")) + Environment.NewLine +
             "Genera claves propias para este entorno y entrégalas como secretos de configuración (variables de entorno, archivo _FILE o Key Vault); " +
             "cómo se generan está en docs/manual/guias/variables-de-entorno.md, sección «Claves propias del entorno». " +

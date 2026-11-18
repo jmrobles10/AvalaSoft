@@ -431,7 +431,7 @@ public sealed class IngresoTests
     {
         var mensaje = Redactor().Redactar(new CorreoDeAccesoPendiente(PlantillaCorreo.CodigoDeIngreso, "ana@aceros.co", "x", Ahora.AddMinutes(5), null, null), "482915");
 
-        mensaje.Asunto.ShouldBe("Tu código para ingresar a Validasoft");
+        mensaje.Asunto.ShouldBe("Tu código para ingresar a AvalaSoft");
         mensaje.Texto.ShouldContain("482915");
         mensaje.Html.ShouldContain("482915");
         mensaje.Texto.ShouldNotContain("/e/");
@@ -442,7 +442,7 @@ public sealed class IngresoTests
     {
         var mensaje = Redactor().Redactar(new CorreoDeAccesoPendiente(PlantillaCorreo.InvitacionDeUsuario, "ana@aceros.co", "x", Ahora, "Grupo Norte", "Administrador, Auditor"), "-");
 
-        mensaje.Asunto.ShouldBe("Grupo Norte te invitó a Validasoft");
+        mensaje.Asunto.ShouldBe("Grupo Norte te invitó a AvalaSoft");
         mensaje.Texto.ShouldContain("como Administrador, Auditor");
         mensaje.Texto.ShouldContain("https://valida.test/app/");
         mensaje.Texto.ShouldContain("contraseña", Case.Insensitive);

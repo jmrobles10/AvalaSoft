@@ -108,7 +108,7 @@ public static class InformeEstadoExpedientesEndpoints
 
         var documento = new DocumentoPdf(empresaDatos?.Nombre ?? "Empresa", IdentificacionDe(empresaDatos), "Informe", "Estado de expedientes",
             string.Join(" · ", descripcion.Select(d => $"{d.Etiqueta}: {d.Valor}")), ahora,
-            $"Generado el {Exportaciones.Momento(ahora)} · Validasoft", Horizontal: true,
+            $"Generado el {Exportaciones.Momento(ahora)} · AvalaSoft", Horizontal: true,
             [
                 new DatosPdf("Resumen", DatosDelResumen(resumen)),
                 new TablaPdf("Tiempos por área (días en revisión)",

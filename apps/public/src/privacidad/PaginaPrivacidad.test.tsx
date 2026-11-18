@@ -29,7 +29,7 @@ function solicitud(cambios: Partial<SolicitudHabeasDto> = {}): SolicitudHabeasDt
     alcance: null,
     estado: 'Recibida',
     resultado: null,
-    destino: { empresaId: null, nombre: 'Validasoft' },
+    destino: { empresaId: null, nombre: 'AvalaSoft' },
     recibidaEn: '2026-11-02T15:00:00Z',
     venceEl: '2026-11-16',
     diasHabiles: 10,
@@ -143,7 +143,7 @@ describe('Privacidad y mis datos', () => {
     await usuario.click(within(dialogo).getByRole('radio', { name: /Suprimir mis datos/ }));
     expect(within(dialogo).getByText(/la ley nos obliga a guardarlo/)).toBeInTheDocument();
     await usuario.click(within(dialogo).getByRole('radio', { name: 'Solo mis documentos' }));
-    expect(within(dialogo).getByText(/Validasoft \(mi bóveda\) recibe tu solicitud ahora y te responde en máximo 15 días hábiles/)).toBeInTheDocument();
+    expect(within(dialogo).getByText(/AvalaSoft \(mi bóveda\) recibe tu solicitud ahora y te responde en máximo 15 días hábiles/)).toBeInTheDocument();
     await usuario.click(within(dialogo).getByRole('button', { name: 'Enviar solicitud' }));
 
     await waitFor(() => expect(mutaciones).toHaveLength(1));

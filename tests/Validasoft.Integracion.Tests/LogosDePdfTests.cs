@@ -189,32 +189,33 @@ public sealed class LogosDePdfTests
     }
 
     [Fact]
-    public void La_V_del_logotipo_de_Validasoft_es_el_check_verde_relleno_con_sus_curvas()
+    public void El_logotipo_de_AvalaSoft_es_un_dibujo_vectorial_con_el_circulo_verde_y_la_palabra_en_contornos()
     {
-        var v = SvgDibujable.Leer(LogosDePdf.VDeValidasoft).ShouldNotBeNull();
-        v.Ancho.ShouldBe(64);
-        v.Alto.ShouldBe(60);
-        var pdf = Contenido(v, 64, 60);
-        pdf.ShouldContain("0.133333 0.827451 0.541176 rg");  // #22D38A
-        pdf.ShouldContain(" c\n");                            // las curvas del trazo caligráfico
+        var logotipo = SvgDibujable.Leer(LogosDePdf.LogotipoDeValidasoft).ShouldNotBeNull();
+        (logotipo.Ancho, logotipo.Alto).ShouldBe((522.74, 77.7));
+        var pdf = Contenido(logotipo, 522.74, 77.7);
+        pdf.ShouldContain("0.133333 0.827451 0.541176 rg");  // #22D38A: el círculo
+        pdf.ShouldContain("1 1 1 rg");                        // el check blanco
+        pdf.ShouldContain("0.054902 0.54902 0.603922 rg");   // #0E8C9A: «avala»
+        pdf.ShouldContain("0.043137 0.121569 0.227451 rg");  // #0B1F3A: «soft»
+        pdf.ShouldContain(" c\n");                           // las curvas de las letras (contornos, no texto)
+        pdf.ShouldNotContain("Tj");                           // sin texto: no depende de ninguna fuente
         pdf.ShouldNotContain("/ShadingType");                // sin degradado
         pdf.ShouldNotContain("/Subtype /Image");             // vectores, no una imagen
     }
 
     [Fact]
-    public void El_logotipo_de_Validasoft_dibuja_la_V_y_alida_y_Soft_pegadas_con_su_color_y_sin_deformarse()
+    public void El_logotipo_de_AvalaSoft_se_dibuja_sin_deformarse()
     {
         var pdf = new Validasoft.Infraestructura.Certificados.LienzoPdf();
         LogosDePdf.Validasoft.Dibujar(pdf, 48, 700, 110, 34);
         var texto = Encoding.Latin1.GetString(pdf.Construir("t", "a", new DateTimeOffset(2026, 11, 12, 0, 0, 0, TimeSpan.Zero), (_, _) => { }));
-        texto.ShouldContain("0.133333 0.827451 0.541176 rg");   // la «V» verde
-        texto.ShouldContain("0.039216 0.058824 0.109804 rg");   // «alida»: #0A0F1C
-        texto.ShouldContain("0.184314 0.333333 0.85098 rg");    // «Soft»: #2F55D9
-        texto.ShouldContain("(alida) Tj");
-        texto.ShouldContain("(Soft) Tj");
-        // «alida» va en la fuente negrita (F2) y «Soft» en la normal (F1).
-        texto.ShouldContain("/F2 ");
-        texto.ShouldContain("/F1 ");
+        texto.ShouldContain("0.133333 0.827451 0.541176 rg");   // el círculo verde
+        texto.ShouldContain("0.054902 0.54902 0.603922 rg");    // «avala»: #0E8C9A
+        texto.ShouldContain("0.043137 0.121569 0.227451 rg");   // «soft»: #0B1F3A
+        texto.ShouldNotContain("Tj");
+        // 110 × 34 con un logotipo de 522,74 × 77,7: manda el ancho (110 / 522,74 = 0,2104) y el alto queda en 16,35 puntos, centrado en la caja.
+        texto.ShouldContain("0.21043 0 0 -0.21043");
     }
 
     [Fact]
@@ -245,8 +246,8 @@ public sealed class LogosDePdfTests
             LogosDePdf.Resolver(sinLogo).ShouldBeSameAs(LogosDePdf.Validasoft);
         }
 
-        // El logotipo no es cuadrado: la «V» (64/60 de la letra), pegada a «alida» y «Soft» (−0,23) y las dos palabras en Helvetica, ≈ 4,9 de ancho por 1 de alto.
-        LogosDePdf.Validasoft.Proporcion.ShouldBeInRange(4.7, 5.1);
+        // El logotipo no es cuadrado: el círculo, el aire y «avalasoft» ocupan 522,74 × 77,7 (≈ 6,7 de ancho por 1 de alto).
+        LogosDePdf.Validasoft.Proporcion.ShouldBeInRange(6.6, 6.8);
     }
 
     // ---------- El PDF ----------
@@ -297,7 +298,7 @@ public sealed class LogosDePdfTests
         conPng.ShouldContain("/Subtype /Image");
         conPng.ShouldContain("/Width 120 /Height 40");
         conPng.ShouldNotContain("/Pattern");
-        conPng.ShouldNotContain("(alida)");   // el logo de la empresa reemplaza al de Validasoft
+        conPng.ShouldNotContain("0.054902 0.54902 0.603922 rg");   // el logo de la empresa reemplaza al de AvalaSoft
         conPng.ShouldContain("(Constructora Norte S.A.S.)");
 
         // SVG de la empresa: vectores, sin imagen.
@@ -305,14 +306,14 @@ public sealed class LogosDePdfTests
         var conSvg = Encoding.Latin1.GetString(GenerarPdf("Constructora Sur S.A.S.", svg, "logo-svg"));
         conSvg.ShouldNotContain("/Subtype /Image");
         conSvg.ShouldContain("0.878431 0.478431 0.121569 rg"); // #E07A1F
-        conSvg.ShouldNotContain("(alida)");
+        conSvg.ShouldNotContain("0.054902 0.54902 0.603922 rg");
 
-        // Sin logo, o con uno que no se puede dibujar: el logotipo de Validasoft (la «V» verde y «alida» «Soft»).
+        // Sin logo, o con uno que no se puede dibujar: el logotipo de AvalaSoft (el círculo verde y «avalasoft» en contornos).
         foreach (var (logo, nombre) in new (string?, string)[] { (null, "logo-validasoft"), ("https://ejemplo.co/logo.png", "logo-url") })
         {
-            var texto = Encoding.Latin1.GetString(GenerarPdf("Validasoft", logo, nombre));
+            var texto = Encoding.Latin1.GetString(GenerarPdf("AvalaSoft", logo, nombre));
             texto.ShouldContain("0.133333 0.827451 0.541176 rg");
-            texto.ShouldContain("(alida) Tj");
+            texto.ShouldContain("0.054902 0.54902 0.603922 rg");
             texto.ShouldNotContain("/Subtype /Image");
         }
     }
@@ -336,7 +337,7 @@ public sealed class LogosDePdfTests
             FirmanteTipoIdentificacion = "CC",
             FirmanteNumero = "80123456"
         };
-        var texto = Encoding.Latin1.GetString(GenerarPdf("Validasoft", null, "pep-relacionadas-apoderado", declaracion));
+        var texto = Encoding.Latin1.GetString(GenerarPdf("AvalaSoft", null, "pep-relacionadas-apoderado", declaracion));
 
         texto.ShouldContain("(Carlos Ruiz)");
         texto.ShouldContain("(Ana Mora)");

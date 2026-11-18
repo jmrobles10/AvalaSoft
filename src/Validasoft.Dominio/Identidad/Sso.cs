@@ -188,7 +188,7 @@ public sealed partial class ConfiguracionDeSso
             autoridad = ValidarAutoridad(cambios.Autoridad, permitirHttpLocal);
             clientId = (cambios.ClientId ?? string.Empty).Trim();
             if (clientId.Length is 0 or > 300 || clientId.Any(char.IsWhiteSpace))
-                throw ReglaDeNegocioException.Validacion("client-id-requerido", "Escribe el client id que el proveedor le dio a Validasoft (sin espacios).");
+                throw ReglaDeNegocioException.Validacion("client-id-requerido", "Escribe el client id que el proveedor le dio a AvalaSoft (sin espacios).");
         }
 
         var organizacion = Limpio(cambios.OrganizacionWorkOs, 100);
@@ -333,7 +333,7 @@ public sealed partial class ConfiguracionDeSso
     {
         var grupo = (r.Grupo ?? string.Empty).Trim();
         if (grupo.Length is 0 or > 300 || !Enum.IsDefined(r.Rol))
-            throw ReglaDeNegocioException.Validacion("regla-sso-invalida", "Cada regla necesita el grupo del proveedor (hasta 300 caracteres) y un rol de Validasoft.");
+            throw ReglaDeNegocioException.Validacion("regla-sso-invalida", "Cada regla necesita el grupo del proveedor (hasta 300 caracteres) y un rol de AvalaSoft.");
         return new ReglaDeGrupoSso { Grupo = grupo, Rol = r.Rol, EmpresaId = r.EmpresaId };
     }
 

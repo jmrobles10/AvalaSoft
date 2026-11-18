@@ -2,10 +2,10 @@
 titulo: "Guía de integración, resumida"
 seccion: "Integración"
 orden: 40
-resumen: "Lo esencial para conectar un sistema a Validasoft: llave de API, idempotencia, webhooks firmados con su verificación, sandbox y los SDK de .NET y TypeScript, con enlaces a la guía completa y a la referencia de la API."
+resumen: "Lo esencial para conectar un sistema a AvalaSoft: llave de API, idempotencia, webhooks firmados con su verificación, sandbox y los SDK de .NET y TypeScript, con enlaces a la guía completa y a la referencia de la API."
 ---
 
-Cualquier sistema (un ERP, un portal, un CRM) se conecta a Validasoft por **API REST**, **webhooks** firmados y, si quiere mostrar pantallas, **iframes** con una sesión corta. Esta página resume lo esencial; la guía completa de punta a punta es [docs/integracion.md](repo:docs/integracion.md) y cada operación está en la [referencia de la API](api:), que se genera del contrato OpenAPI.
+Cualquier sistema (un ERP, un portal, un CRM) se conecta a AvalaSoft por **API REST**, **webhooks** firmados y, si quiere mostrar pantallas, **iframes** con una sesión corta. Esta página resume lo esencial; la guía completa de punta a punta es [docs/integracion.md](repo:docs/integracion.md) y cada operación está en la [referencia de la API](api:), que se genera del contrato OpenAPI.
 
 > **Verdad:** todo lo de esta página se comprobó contra el código (cabeceras, tiempos, reintentos y firma) y contra `docs/integracion.md`. Donde `docs/05` §6.1 todavía cita otros valores (10 segundos, reintentos hasta 24 horas, deshabilitación a los 7 días, cabecera `Validasoft-Event`), manda el código: 5 segundos, 1 minuto a 6 horas, 20 fallos y `Validasoft-Event-Type`.
 
@@ -49,7 +49,7 @@ Todo `POST` que crea algo lleva `Idempotency-Key` (hasta 100 caracteres), una ca
 
 ## Invitar a un tercero
 
-El sistema crea el **vínculo** con su referencia y Validasoft reconcilia al tercero por su identificación (si ya existe en la plataforma, lo reutiliza sin tocar sus datos) y le envía la invitación por correo:
+El sistema crea el **vínculo** con su referencia y AvalaSoft reconcilia al tercero por su identificación (si ya existe en la plataforma, lo reutiliza sin tocar sus datos) y le envía la invitación por correo:
 
 ```bash
 curl -s https://{host}/api/v1/vinculos \
@@ -66,7 +66,7 @@ El tercero abre el enlace del correo (de un solo uso), acepta los textos legales
 
 ## Webhooks firmados
 
-Validasoft avisa de cada evento con un `POST` firmado a la URL que se registra (`POST /api/v1/webhooks`, permiso `webhooks:administrar`, o en [Webhooks](guia:configuracion-del-grupo#webhooks)). La URL debe ser `https` y pública: no se aceptan IP privadas, `localhost` ni redirecciones. El secreto (`whsec_…`) se muestra **una sola vez**. `tipos: ["*"]` recibe todos y el catálogo (42 tipos) sale de `GET /api/v1/eventos/tipos`.
+AvalaSoft avisa de cada evento con un `POST` firmado a la URL que se registra (`POST /api/v1/webhooks`, permiso `webhooks:administrar`, o en [Webhooks](guia:configuracion-del-grupo#webhooks)). La URL debe ser `https` y pública: no se aceptan IP privadas, `localhost` ni redirecciones. El secreto (`whsec_…`) se muestra **una sola vez**. `tipos: ["*"]` recibe todos y el catálogo (42 tipos) sale de `GET /api/v1/eventos/tipos`.
 
 **El mensaje** es un `POST` con `Content-Type: application/json`, el sobre como cuerpo y estas cabeceras:
 
@@ -121,7 +121,7 @@ printf '%s.%s' "$T" "$(cat cuerpo.json)" | openssl dgst -sha256 -hmac "$SECRETO"
 
 **Reglas del receptor:** responder `2xx` en **menos de 5 segundos** y procesar después; sin redirecciones; idempotente (cada evento puede llegar más de una vez, se deduplica por `Validasoft-Event-Id`); no asumir orden entre agregados distintos (el `cursor` ordena dentro del grupo).
 
-**Reintentos.** Si no hay `2xx` a tiempo, Validasoft reintenta con espera creciente: **1 min, 5 min, 30 min, 2 h y 6 h** (seis intentos). Luego la entrega queda `Fallida` y se puede **reenviar a mano** (`POST /api/v1/webhooks/{id}/entregas/{entregaId}/reenviar`; la lista en `GET …/entregas`). Tras **20 fallos seguidos** la suscripción se **deshabilita** y los administradores reciben un aviso; al arreglar el receptor se activa (`POST /api/v1/webhooks/{id}/activar`) y se reenvía lo perdido o se lee por pull. **Rotar el secreto** (`POST /api/v1/webhooks/{id}/rotar-secreto`) deja el anterior firmando 24 horas, y el receptor acepta los dos mientras tanto.
+**Reintentos.** Si no hay `2xx` a tiempo, AvalaSoft reintenta con espera creciente: **1 min, 5 min, 30 min, 2 h y 6 h** (seis intentos). Luego la entrega queda `Fallida` y se puede **reenviar a mano** (`POST /api/v1/webhooks/{id}/entregas/{entregaId}/reenviar`; la lista en `GET …/entregas`). Tras **20 fallos seguidos** la suscripción se **deshabilita** y los administradores reciben un aviso; al arreglar el receptor se activa (`POST /api/v1/webhooks/{id}/activar`) y se reenvía lo perdido o se lee por pull. **Rotar el secreto** (`POST /api/v1/webhooks/{id}/rotar-secreto`) deja el anterior firmando 24 horas, y el receptor acepta los dos mientras tanto.
 
 ### Qué hito produce qué evento
 
@@ -154,7 +154,7 @@ curl -si "https://{host}/api/v1/consultas/certificacion?pais=CO&tipoIdentificaci
 
 La respuesta trae `certificado`, `folio`, `estado`, `estadoVinculo`, `vigenteHasta`, `revalidacionPendiente[]`, `documentosVencidos[]`, `bloqueado`, `motivoBloqueo`, `cuentaDesignada`, `enRevision` y `enVerificacion` (estas dos, informativas). **Regla de oro: pagar solo si `certificado: true` y `bloqueado: false`.** `bloqueado` es `true` por `Bloqueo` (vínculo bloqueado o certificado suspendido), `Revocado` (certificado revocado o vínculo anulado o desvinculado), `Vencido` o `PlazoRevalidacion` (un certificado con pendientes cuyo plazo venció). Sin vínculo con la empresa responde `200 { certificado: false, estadoVinculo: "SinVinculo" }` y no revela si el tercero está en la plataforma.
 
-Con `ETag`: dentro de los 5 minutos (`max-age=300`) se usa la copia; después se pregunta con `If-None-Match` y un `304` confirma que sigue igual. Si Validasoft no responde (más de 2 segundos o 5xx), el sistema responde el mismo contrato desde su copia local, marcando `fuenteRespaldo: true` y la antigüedad, y la alimenta con los eventos.
+Con `ETag`: dentro de los 5 minutos (`max-age=300`) se usa la copia; después se pregunta con `If-None-Match` y un `304` confirma que sigue igual. Si AvalaSoft no responde (más de 2 segundos o 5xx), el sistema responde el mismo contrato desde su copia local, marcando `fuenteRespaldo: true` y la antigüedad, y la alimenta con los eventos.
 
 ## Identidad delegada y pantallas embebidas
 
@@ -209,7 +209,7 @@ Toda respuesta de error es `application/problem+json` (RFC 9457) con un `codigo`
 | 412 | `If-Match` desactualizado | Releer y reintentar. |
 | 422 | Regla de negocio o dato inválido | Corregir el dato. |
 | 429 | Demasiadas peticiones o límite del plan | Esperar `Retry-After`. |
-| 5xx | Falla de Validasoft | Reintentar con espera (el SDK lo hace con lo idempotente). |
+| 5xx | Falla de AvalaSoft | Reintentar con espera (el SDK lo hace con lo idempotente). |
 
 | Límite | Valor |
 |---|---|
@@ -235,4 +235,4 @@ La API se versiona por URL (`/api/v1`): dentro de `v1` los cambios son **aditivo
 - Los orígenes registrados, si se embeben pantallas.
 - La llave de prueba, fuera del código de producción.
 
-La referencia completa de cada recurso está en la [API de Validasoft](api:), con las [convenciones comunes](api:convenciones) y, por ejemplo, [vínculos](api:vinculos), [expedientes](api:expedientes), [certificados](api:certificados), [integración](api:integracion) y [sandbox](api:sandbox).
+La referencia completa de cada recurso está en la [API de AvalaSoft](api:), con las [convenciones comunes](api:convenciones) y, por ejemplo, [vínculos](api:vinculos), [expedientes](api:expedientes), [certificados](api:certificados), [integración](api:integracion) y [sandbox](api:sandbox).

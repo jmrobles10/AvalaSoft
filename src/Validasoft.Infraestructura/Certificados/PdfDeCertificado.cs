@@ -465,7 +465,7 @@ internal sealed class LienzoPdf
             Fuente1("Courier"),
             Fuente1("Courier-Bold"),
             $"<< /Title ({Cadena(titulo)}) /Subject ({Cadena(asunto)}) " +
-            $"/Creator (Validasoft) /Producer (Validasoft) /CreationDate ({Fecha(fecha)}) >>"
+            $"/Creator (AvalaSoft) /Producer (AvalaSoft) /CreationDate ({Fecha(fecha)}) >>"
         };
 
         // Las imágenes (la firma de una declaración PEP) van como objetos propios; el binario viaja en Latin-1 para conservar cada byte.

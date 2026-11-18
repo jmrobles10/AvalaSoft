@@ -5,7 +5,7 @@ orden: 14
 resumen: "Cómo entra cada actor, qué credencial usa, qué permisos tiene, cómo se aíslan los datos y qué se cifra: código por correo, passkeys, SSO, API keys, identidad delegada y confirmación con passkey."
 ---
 
-Validasoft no usa contraseñas. Cada actor entra por un camino distinto, con una credencial propia y permisos propios; todos terminan en el mismo contexto de petición: un **grupo**, una **empresa activa** y un conjunto de **permisos**.
+AvalaSoft no usa contraseñas. Cada actor entra por un camino distinto, con una credencial propia y permisos propios; todos terminan en el mismo contexto de petición: un **grupo**, una **empresa activa** y un conjunto de **permisos**.
 
 ## Cómo entra cada actor
 
@@ -48,15 +48,15 @@ Cada operación exige un **permiso** (*scope*) con nombre `recurso:acción`, por
 
 ## Identidad delegada
 
-Para que un sistema actúe como una persona suya, cada petición lleva su API key y la cabecera `X-Usuario-Delegado` con una **aserción**: un JWT firmado (RS256 o ES256) con la clave **privada** del sistema, que Validasoft verifica con la **pública** registrada. Vale 5 minutos (`exp`) y **una sola vez** (`jti`); `iss` es el código del sistema y `aud` es `validasoft`. Rotar la clave del sistema invalida de inmediato las aserciones anteriores. La primera vez que llega una persona nueva, se crea o se enlaza con quien ya tiene ese correo. Los errores y el detalle están en la [guía de integración](guia:guia-de-integracion#identidad-delegada-y-pantallas-embebidas).
+Para que un sistema actúe como una persona suya, cada petición lleva su API key y la cabecera `X-Usuario-Delegado` con una **aserción**: un JWT firmado (RS256 o ES256) con la clave **privada** del sistema, que AvalaSoft verifica con la **pública** registrada. Vale 5 minutos (`exp`) y **una sola vez** (`jti`); `iss` es el código del sistema y `aud` es `validasoft`. Rotar la clave del sistema invalida de inmediato las aserciones anteriores. La primera vez que llega una persona nueva, se crea o se enlaza con quien ya tiene ese correo. Los errores y el detalle están en la [guía de integración](guia:guia-de-integracion#identidad-delegada-y-pantallas-embebidas).
 
 ## Confirmar con passkey
 
 Las acciones sensibles piden una confirmación con la passkey dentro de los últimos **5 minutos**: cambiar roles, desactivar a una persona, revocar una passkey, crear o rotar llaves, rotar la clave de un sistema, guardar el SSO y, en Plataforma, operadores, clave de arranque y listas. Solo aplica a quien entró de forma directa; las sesiones delegadas y las llaves no la piden. Sin confirmación reciente la API responde 403 `reautenticacion-requerida` y la web abre el diálogo y repite la petición.
 
-## Embeber Validasoft en otro sistema
+## Embeber AvalaSoft en otro sistema
 
-Un sistema integrado registra los **orígenes** desde los que puede mostrar Validasoft en un `<iframe>`: de ahí salen la cabecera `frame-ancestors` y la lista de orígenes permitidos para `postMessage`. La sesión de 30 minutos la canjea el backend del sistema; el navegador nunca ve la API key. Si el sistema se desactiva, sus sesiones dejan de valer en segundos y sus orígenes salen de la lista.
+Un sistema integrado registra los **orígenes** desde los que puede mostrar AvalaSoft en un `<iframe>`: de ahí salen la cabecera `frame-ancestors` y la lista de orígenes permitidos para `postMessage`. La sesión de 30 minutos la canjea el backend del sistema; el navegador nunca ve la API key. Si el sistema se desactiva, sus sesiones dejan de valer en segundos y sus orígenes salen de la lista.
 
 ## Qué se cifra y cómo
 

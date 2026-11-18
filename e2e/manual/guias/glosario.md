@@ -2,7 +2,7 @@
 titulo: "Glosario"
 seccion: "Configuración y glosario"
 orden: 30
-resumen: "El vocabulario de Validasoft: quién es quién, qué es un vínculo, un expediente o un certificado, y los estados de cada cosa tal como los guarda el sistema."
+resumen: "El vocabulario de AvalaSoft: quién es quién, qué es un vínculo, un expediente o un certificado, y los estados de cada cosa tal como los guarda el sistema."
 ---
 
 Las palabras de esta página son las que usan la aplicación, la API y los documentos de diseño (`docs/10-glosario.md` es la referencia larga con las equivalencias del SRM y el Portal). Los estados se escriben como los guarda el sistema: son texto, nunca números.
@@ -11,7 +11,7 @@ Las palabras de esta página son las que usan la aplicación, la API y los docum
 
 | Término | Qué es |
 |---|---|
-| Grupo (tenant) | El cliente de Validasoft: un grupo empresarial con administración común. Toda credencial, usuario y configuración pertenece a un grupo. |
+| Grupo (tenant) | El cliente de AvalaSoft: un grupo empresarial con administración común. Toda credencial, usuario y configuración pertenece a un grupo. |
 | Empresa | Una razón social del grupo. Cada empresa decide en privado: sus flujos, sus áreas, sus aprobaciones y sus bloqueos. Casi toda llamada a la API es de una empresa (cabecera `X-Empresa`). |
 | Tercero | La persona o empresa que se valida (proveedor, cliente, empleado, aliado). Es **único en toda la plataforma** por país, tipo y número de identificación: sube cada documento una vez y lo comparte con cada empresa que lo invita. |
 | Persona de la empresa | Quien trabaja en la app web: Administrador, Revisor, Oficial de cumplimiento o Auditor. |

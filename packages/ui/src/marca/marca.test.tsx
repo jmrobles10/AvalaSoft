@@ -10,18 +10,23 @@ import {
   ARCO_DE_CARGA,
   ARO_ABIERTO,
   CAJA_ICONO,
-  CAJA_V,
+  CAJA_LOGOTIPO,
   CHECK_RELLENO,
   coloresDeLogo,
+  ESPACIO_SIMBOLO,
   FAVICON,
   GUIA_CHECK,
   LONGITUD_ARO,
   LONGITUD_GUIA,
-  MARGEN_V,
+  PROPORCION_SIMBOLO,
+  SIMBOLO_LOGOTIPO,
   TIEMPOS_CARGA,
   TIEMPOS_EXITO,
   TRANSFORMACION_CHECK_ICONO,
+  TRANSFORMACION_PALABRA,
+  TRANSFORMACION_SIMBOLO,
 } from './geometria';
+import { PALABRA } from './palabra';
 import { Logo } from './Logo';
 import { usePrimeraVez } from './movimiento';
 
@@ -61,17 +66,36 @@ afterEach(() => {
 });
 
 describe('colores del logo (MA-1)', () => {
-  it('son los del encargo: claro #3D6BFF / #22D38A / #0A0F1C / #2F55D9 y oscuro #6E8FFF / #2BE29A / #F2F5FB / #7C9BFF', () => {
-    expect(coloresDeLogo('light')).toMatchObject({ aro: '#3D6BFF', check: '#22D38A', texto: '#0A0F1C', soft: '#2F55D9' });
-    expect(coloresDeLogo('dark')).toMatchObject({ aro: '#6E8FFF', check: '#2BE29A', texto: '#F2F5FB', soft: '#7C9BFF' });
+  it('son los del encargo: aro y círculo del design system y la palabra en verde azulado y azul muy oscuro (en oscuro, más claros)', () => {
+    expect(coloresDeLogo('light')).toMatchObject({ aro: '#3D6BFF', check: '#22D38A', avala: '#0E8C9A', soft: '#0B1F3A', blanco: '#FFFFFF' });
+    expect(coloresDeLogo('dark')).toMatchObject({ aro: '#6E8FFF', check: '#2BE29A', avala: '#3FC1CE', soft: '#EEF3FA', blanco: '#FFFFFF' });
   });
 
-  it('salen de los tokens del design system y llegan a la paleta del tema', () => {
+  it('el aro y el círculo salen de los tokens del design system, que siguen llegando a la paleta del tema', () => {
     for (const modo of ['light', 'dark'] as const) {
       const c = COLOR[modo];
-      expect(coloresDeLogo(modo)).toMatchObject({ aro: c.marcaAzul, check: c.marcaVerde, texto: c.marcaTexto, soft: c.marcaSoft });
+      expect(coloresDeLogo(modo)).toMatchObject({ aro: c.marcaAzul, check: c.marcaVerde });
       const { marca } = createValidasoftTheme(modo).palette;
       expect([marca.azul, marca.verde, marca.texto, marca.soft]).toEqual([c.marcaAzul, c.marcaVerde, c.marcaTexto, c.marcaSoft]);
+    }
+  });
+
+  it('la palabra cumple contraste AA de texto grande (3:1) sobre los fondos de cada modo, y «soft» también el de texto normal (4,5:1)', () => {
+    const luminancia = (hex: string) => {
+      const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+      return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (b ?? 0);
+    };
+    const contraste = (a: string, b: string) => {
+      const [claro, oscuro] = [luminancia(a), luminancia(b)].sort((x, y) => y - x);
+      return ((claro ?? 0) + 0.05) / ((oscuro ?? 0) + 0.05);
+    };
+    for (const fondo of ['#FFFFFF', '#FAFBFD']) {
+      expect(contraste(coloresDeLogo('light').avala, fondo)).toBeGreaterThanOrEqual(3);
+      expect(contraste(coloresDeLogo('light').soft, fondo)).toBeGreaterThanOrEqual(4.5);
+    }
+    for (const fondo of ['0B1120', '060A14'].map((f) => `#${f}`)) {
+      expect(contraste(coloresDeLogo('dark').avala, fondo)).toBeGreaterThanOrEqual(4.5);
+      expect(contraste(coloresDeLogo('dark').soft, fondo)).toBeGreaterThanOrEqual(4.5);
     }
   });
 });
@@ -90,8 +114,6 @@ describe('geometría del logo', () => {
     expect(ARO_ABIERTO).toBe('M71.1 10.3 A45 45 0 1 0 89 27.5');
     expect(TRANSFORMACION_CHECK_ICONO).toBe('translate(47 70) scale(1.15) translate(-47 -70)');
     expect(CAJA_ICONO).toEqual({ x: -3, y: -6, ancho: 110, alto: 110 });
-    expect(CAJA_V).toEqual({ x: 22, y: 16, ancho: 64, alto: 60 });
-    expect(MARGEN_V).toBe(-0.23);
   });
 
   it('los tiempos del éxito suman 1,45 s y los de la carga son 1 s de vuelta y 1,4 s de check', () => {
@@ -102,56 +124,83 @@ describe('geometría del logo', () => {
 });
 
 describe('Logo', () => {
-  it('el logotipo se anuncia como «Validasoft» y no lee sus letras sueltas', () => {
-    conTema(<Logo />);
-    const logo = screen.getByRole('img', { name: 'Validasoft' });
-    expect(logo).toBeInTheDocument();
-    expect(logo.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThanOrEqual(2);
-    expect(logo).toHaveTextContent('alidaSoft');
+  it('el logotipo se anuncia como «AvalaSoft» y es un dibujo: no hay texto que se lea suelto', () => {
+    const { container } = conTema(<Logo />);
+    const logo = screen.getByRole('img', { name: 'AvalaSoft' });
+    expect(logo.tagName.toLowerCase()).toBe('svg');
+    expect(logo).toHaveTextContent('');
+    expect(container.querySelector('text')).toBeNull();
   });
 
-  it('la «V» es el check verde recortado a su caja y «alida» y «Soft» llevan sus pesos y colores (claro)', () => {
+  it('es el círculo verde con el check blanco y la palabra «avalasoft» en contornos, en dos tonos (claro)', () => {
     const { container } = conTema(<Logo tamano={40} />);
-    const svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('viewBox', '22 16 64 60');
-    const check = container.querySelector('path');
+    const svg = screen.getByRole('img', { name: 'AvalaSoft' });
+    expect(svg).toHaveAttribute('viewBox', `0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}`);
+    expect(svg).toHaveAttribute('height', String(CAJA_LOGOTIPO.alto * 0.4));
+    const simbolo = container.querySelector('[data-parte="simbolo"]');
+    expect(simbolo).toHaveAttribute('transform', TRANSFORMACION_SIMBOLO);
+    expect(simbolo?.querySelector('circle')).toHaveAttribute('fill', '#22D38A');
+    expect(simbolo?.querySelector('circle')).toHaveAttribute('r', String(FAVICON.radio));
+    const check = simbolo?.querySelector('path');
     expect(check).toHaveAttribute('d', CHECK_RELLENO);
-    expect(check).toHaveAttribute('fill', '#22D38A');
-    expect(container.querySelector('circle')).toBeNull();
-    const cuerpo = container.querySelector('[data-parte="texto"]');
-    const soft = cuerpo?.querySelector('span');
-    expect(cuerpo).toHaveStyle({ color: '#0A0F1C', fontWeight: '500' });
-    expect(soft).toHaveTextContent('Soft');
-    expect(soft).toHaveStyle({ color: '#2F55D9', fontWeight: '400' });
+    expect(check).toHaveAttribute('fill', '#FFFFFF');
+    expect(container.querySelector('[data-parte="palabra"]')).toHaveAttribute('transform', TRANSFORMACION_PALABRA);
+    expect(container.querySelector('[data-parte="avala"]')).toHaveAttribute('d', PALABRA.avala);
+    expect(container.querySelector('[data-parte="avala"]')).toHaveAttribute('fill', '#0E8C9A');
+    expect(container.querySelector('[data-parte="soft"]')).toHaveAttribute('d', PALABRA.soft);
+    expect(container.querySelector('[data-parte="soft"]')).toHaveAttribute('fill', '#0B1F3A');
   });
 
-  it('la «V» mide lo que la letra y va pegada a la «a» (margen −0,23 del tamaño)', () => {
-    const { container } = conTema(<Logo tamano={40} />);
-    const v = container.querySelector('[data-parte="v"]');
-    expect(v).toHaveStyle({ height: '40px', width: `${String((40 * 64) / 60)}px`, marginRight: '-9.200000000000001px' });
+  it('el círculo mide ≈ 1,05 veces las ascendentes, está centrado entre la línea base y su altura y deja un quinto de su diámetro hasta la palabra', () => {
+    const d = SIMBOLO_LOGOTIPO.diametro;
+    expect(PROPORCION_SIMBOLO).toBe(1.05);
+    expect(d / PALABRA.altoAscendente).toBeCloseTo(1.05, 2);
+    // Centro del círculo a la altura de la caja: arriba + radio; el de las ascendentes: la línea base menos la mitad de su altura.
+    const centroDelCirculo = SIMBOLO_LOGOTIPO.arriba + d / 2;
+    const centroDeLasAscendentes = CAJA_LOGOTIPO.base - PALABRA.altoAscendente / 2;
+    expect(Math.abs(centroDelCirculo - centroDeLasAscendentes)).toBeLessThan(0.05);
+    // Su borde inferior cae bajo la línea base y el superior sobre las ascendentes.
+    expect(centroDelCirculo + d / 2).toBeGreaterThan(CAJA_LOGOTIPO.base);
+    expect(centroDelCirculo - d / 2).toBeLessThanOrEqual(CAJA_LOGOTIPO.base - PALABRA.altoAscendente);
+    expect(SIMBOLO_LOGOTIPO.separacion / d).toBeCloseTo(ESPACIO_SIMBOLO, 2);
+    // El punto más a la izquierda de la palabra queda a `separacion` del borde derecho del círculo.
+    expect(CAJA_LOGOTIPO.inicioPalabra + PALABRA.limites.x0 - d).toBeCloseTo(SIMBOLO_LOGOTIPO.separacion, 1);
+    // La caja envuelve el círculo y la palabra sin recortarlos.
+    expect(SIMBOLO_LOGOTIPO.arriba).toBeGreaterThanOrEqual(0);
+    expect(CAJA_LOGOTIPO.base + PALABRA.limites.y1).toBeLessThanOrEqual(CAJA_LOGOTIPO.alto + 0.01);
+    expect(CAJA_LOGOTIPO.inicioPalabra + PALABRA.limites.x1).toBeLessThanOrEqual(CAJA_LOGOTIPO.ancho + 0.01);
+  });
+
+  it('la palabra va inclinada 10° y toda en minúsculas: su dibujo no trae más letras que «avalasoft»', () => {
+    expect(PALABRA.inclinacion).toBe(10);
+    expect(PALABRA.fuente).toContain('Quicksand Bold');
+    // Nueve letras en dos trazados: «avala» (a, v, a, l, a) y «soft» (s, o, f, t); cada contorno empieza con una «M» (la «a» y la «o» traen uno más, el de su hueco).
+    const contornos = (d: string) => (d.match(/M/g) ?? []).length;
+    expect(contornos(PALABRA.avala)).toBe(8);
+    expect(contornos(PALABRA.soft)).toBe(5);
   });
 
   it('cambia con el tema: en oscuro usa los colores del modo oscuro', () => {
     const { container } = conTema(<Logo />, 'dark');
-    expect(container.querySelector('path')).toHaveAttribute('fill', '#2BE29A');
-    expect(container.querySelector('[data-parte="texto"]')).toHaveStyle({ color: '#F2F5FB' });
-    expect(container.querySelector('[data-parte="texto"] span')).toHaveStyle({ color: '#7C9BFF' });
+    expect(container.querySelector('circle')).toHaveAttribute('fill', '#2BE29A');
+    expect(container.querySelector('[data-parte="avala"]')).toHaveAttribute('fill', '#3FC1CE');
+    expect(container.querySelector('[data-parte="soft"]')).toHaveAttribute('fill', '#EEF3FA');
   });
 
   it('`modo` fuerza los colores aunque el tema sea otro', () => {
     const { container } = conTema(<Logo modo="dark" />, 'light');
-    expect(container.querySelector('path')).toHaveAttribute('fill', '#2BE29A');
+    expect(container.querySelector('circle')).toHaveAttribute('fill', '#2BE29A');
   });
 
   it('no toma el color de la empresa aunque la página use su paleta', () => {
     const { container } = conTema(<Logo />, 'light', '#C2410C');
-    expect(container.querySelector('path')).toHaveAttribute('fill', '#22D38A');
-    expect(container.querySelector('[data-parte="texto"] span')).toHaveStyle({ color: '#2F55D9' });
+    expect(container.querySelector('circle')).toHaveAttribute('fill', '#22D38A');
+    expect(container.querySelector('[data-parte="avala"]')).toHaveAttribute('fill', '#0E8C9A');
   });
 
   it('el ícono es el aro abierto y el check escalado desde su vértice, en los colores del modo', () => {
     const { container, rerender } = conTema(<Logo variante="icono" tamano={48} />);
-    const svg = screen.getByRole('img', { name: 'Validasoft' });
+    const svg = screen.getByRole('img', { name: 'AvalaSoft' });
     expect(svg).toHaveAttribute('viewBox', '-3 -6 110 110');
     expect(svg).toHaveAttribute('width', '48');
     const [aro, check] = Array.from(container.querySelectorAll('path'));
@@ -190,8 +239,8 @@ describe('Logo', () => {
   });
 
   it('el nombre accesible se puede cambiar', () => {
-    conTema(<Logo titulo="Validasoft, inicio" />);
-    expect(screen.getByRole('img', { name: 'Validasoft, inicio' })).toBeInTheDocument();
+    conTema(<Logo titulo="AvalaSoft, inicio" />);
+    expect(screen.getByRole('img', { name: 'AvalaSoft, inicio' })).toBeInTheDocument();
   });
 });
 

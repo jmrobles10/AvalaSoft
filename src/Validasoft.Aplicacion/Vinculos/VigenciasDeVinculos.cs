@@ -116,11 +116,11 @@ public static class CorreoDeVigenciaPendienteHandler
         };
 
         var entrar = token is null
-            ? $"Entra a Validasoft ({urlPublica}) y pide un enlace con tu correo."
+            ? $"Entra a AvalaSoft ({urlPublica}) y pide un enlace con tu correo."
             : $"Abre este enlace (es personal, de un solo uso y vence el {(correo.EnlaceExpira is { } vence ? FechasDeCorreo.Larga(vence, zonaHoraria) : "pronto")}):\n{urlPublica}/e/{token}";
         var entrarHtml = token is null
-            ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(urlPublica)}\">Validasoft</a> y pide un enlace con tu correo.</p>"
-            : MarcoDeCorreo.Boton($"{urlPublica}/e/{token}", "Ratificar mi información en Validasoft") +
+            ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(urlPublica)}\">AvalaSoft</a> y pide un enlace con tu correo.</p>"
+            : MarcoDeCorreo.Boton($"{urlPublica}/e/{token}", "Ratificar mi información en AvalaSoft") +
               "<p>El enlace es personal y de un solo uso.</p>";
         return new MensajeDeCorreo(correo.Para, asunto, parrafo + "\n\n" + entrar, $"<p>{WebUtility.HtmlEncode(parrafo)}</p>" + entrarHtml);
     }

@@ -37,7 +37,7 @@ export class ErrorValidasoft extends Error {
     readonly detalle: string | undefined,
     readonly correlacion: string | undefined,
   ) {
-    super(`Validasoft respondió ${String(estado)}${codigo ? ` ${codigo}` : ''}: ${detalle ?? 'sin detalle'}`);
+    super(`AvalaSoft respondió ${String(estado)}${codigo ? ` ${codigo}` : ''}: ${detalle ?? 'sin detalle'}`);
     this.name = 'ErrorValidasoft';
   }
 }
@@ -205,7 +205,7 @@ export class ClienteValidasoft {
   /** @param derivado Uso interno de {@link paraEmpresa} y {@link comoUsuario}. */
   constructor(opciones: OpcionesCliente, derivado?: { empresaId: string | undefined; usuario: UsuarioDelegado | undefined }) {
     if (!opciones.apiKey) throw new Error('Configura la API key (apiKey).');
-    if (!opciones.urlBase) throw new Error('Configura la URL de Validasoft (urlBase).');
+    if (!opciones.urlBase) throw new Error('Configura la URL de AvalaSoft (urlBase).');
     this.ctx = {
       opciones: { reintentos: 2, esperaMs: 300, ...opciones },
       empresaId: derivado ? derivado.empresaId : opciones.empresaId,

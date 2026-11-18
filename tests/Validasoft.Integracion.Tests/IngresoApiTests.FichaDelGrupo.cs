@@ -218,7 +218,7 @@ public sealed partial class IngresoApiTests
         (await CodigoDeErrorAsync(await Anonimo("/api/v1/ingreso/passkey/verificar", new VerificarPasskeyDto(opciones.Desafio, a.Autenticador.Firmar(opciones.Opciones)), 401))).ShouldBe("passkey-revocada");
 
         // La persona del correo nuevo recibe la invitación y entra con su código: como su rol exige passkey, registra otra.
-        var invitacion = await Correos.EsperarAsync(correoNuevo, c => c.Asunto.Contains("te invitó a Validasoft"));
+        var invitacion = await Correos.EsperarAsync(correoNuevo, c => c.Asunto.Contains("te invitó a AvalaSoft"));
         invitacion.Texto.ShouldContain("Administrador");
         (await IngresarConCodigoAsync(correoNuevo)).Paso.Estado.ShouldBe("RegistrarPasskey");
 
@@ -258,7 +258,7 @@ public sealed partial class IngresoApiTests
         await PedirCodigoAsync(correoMalo);
         await Task.Delay(800);
         Correos.Para(correoMalo).Count(c => c.Asunto == AsuntoCodigo).ShouldBe(codigosDelMalo);
-        Correos.Para(correoBueno).Count(c => c.Asunto.Contains("te invitó a Validasoft")).ShouldBe(0);
+        Correos.Para(correoBueno).Count(c => c.Asunto.Contains("te invitó a AvalaSoft")).ShouldBe(0);
         (await IngresarConCodigoAsync(correoBueno)).Paso.Estado.ShouldBe("RegistrarPasskey");
     }
 
@@ -328,9 +328,9 @@ public sealed partial class IngresoApiTests
 
         var invitada = await ApiAsync<UsuarioDto>("POST", RutaDeGrupo(g.TenantId, $"/usuarios/{admin.Id}/invitar"), ApiFixture.ClavePlataforma, null, null, 200);
         invitada.InvitadoEn.ShouldNotBeNull();
-        (await Correos.EsperarAsync(admin.Correo, c => c.Asunto.Contains("te invitó a Validasoft"))).Texto.ShouldContain("Administrador");
+        (await Correos.EsperarAsync(admin.Correo, c => c.Asunto.Contains("te invitó a AvalaSoft"))).Texto.ShouldContain("Administrador");
         await ApiAsync<UsuarioDto>("POST", RutaDeGrupo(g.TenantId, $"/usuarios/{admin.Id}/invitar"), ApiFixture.ClavePlataforma, null, null, 200);
-        await Correos.EsperarAsync(admin.Correo, c => c.Asunto.Contains("te invitó a Validasoft"), cuantos: 2);
+        await Correos.EsperarAsync(admin.Correo, c => c.Asunto.Contains("te invitó a AvalaSoft"), cuantos: 2);
         await using (var consulta = Almacen.QuerySession())
         {
             var sujeto = admin.Id.ToString();

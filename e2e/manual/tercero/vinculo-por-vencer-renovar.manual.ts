@@ -105,7 +105,7 @@ recorrido(
     await paso(page, {
       titulo: 'Confirma que la renovación quedó hecha',
       explicacion:
-        'Validasoft confirma que ratificaste la sección y que la empresa la dio por renovada. El vínculo vuelve a «Activo» y su vigencia se cuenta de nuevo desde esa aprobación, con los días que fije el flujo.',
+        'AvalaSoft confirma que ratificaste la sección y que la empresa la dio por renovada. El vínculo vuelve a «Activo» y su vigencia se cuenta de nuevo desde esa aprobación, con los días que fije el flujo.',
       resaltar: page.getByText(`Confirmaste tu información de Información general. ${e.sur.nombre} la dio por renovada.`),
     });
   },

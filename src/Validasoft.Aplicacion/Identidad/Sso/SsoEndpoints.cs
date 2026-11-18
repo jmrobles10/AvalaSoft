@@ -258,7 +258,7 @@ public static class SsoConfiguracionEndpoints
         new()
         {
             Grupo = r.Grupo,
-            Rol = Enum.TryParse<Rol>(r.Rol, ignoreCase: true, out var rol) ? rol : throw ReglaDeNegocioException.Validacion("regla-sso-invalida", $"«{r.Rol}» no es un rol de Validasoft."),
+            Rol = Enum.TryParse<Rol>(r.Rol, ignoreCase: true, out var rol) ? rol : throw ReglaDeNegocioException.Validacion("regla-sso-invalida", $"«{r.Rol}» no es un rol de AvalaSoft."),
             EmpresaId = r.EmpresaId
         };
 

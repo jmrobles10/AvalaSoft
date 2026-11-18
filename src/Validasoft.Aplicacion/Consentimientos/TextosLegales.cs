@@ -53,11 +53,11 @@ public static class TextosLegales
     /// operación puede reemplazarlo publicando una versión nueva (<c>PUT /api/v1/plataforma/textos-legales/aviso</c>).
     /// </summary>
     public const string AvisoPlataformaInicial =
-        "Autorización para el tratamiento de datos personales en Validasoft.\n\n" +
+        "Autorización para el tratamiento de datos personales en AvalaSoft.\n\n" +
         "Con tu aceptación autorizas, de manera previa, expresa e informada, el tratamiento de tus datos personales y de los " +
-        "documentos que cargues en Validasoft, conforme a la Ley 1581 de 2012, el Decreto 1377 de 2013 y las demás normas " +
+        "documentos que cargues en AvalaSoft, conforme a la Ley 1581 de 2012, el Decreto 1377 de 2013 y las demás normas " +
         "colombianas de protección de datos.\n\n" +
-        "Roles: Validasoft actúa como encargado del tratamiento, por cuenta de cada empresa con la que aceptes vincularte, que " +
+        "Roles: AvalaSoft actúa como encargado del tratamiento, por cuenta de cada empresa con la que aceptes vincularte, que " +
         "es la responsable de tus datos. Tus documentos se guardan una sola vez en tu bóveda y solo se comparten con las " +
         "empresas cuya invitación aceptes.\n\n" +
         "Finalidad: validar la identidad, la vigencia y la legalidad de los documentos que presentas ante cada empresa, y " +

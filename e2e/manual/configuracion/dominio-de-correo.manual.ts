@@ -8,10 +8,10 @@ recorrido(
     actor: 'Administrador de empresa',
     titulo: 'Registra el dominio de correo y verifícalo',
     resumen:
-      'La administradora registra un dominio propio para que los correos de la empresa salgan desde él, crea los registros DNS que pide Validasoft y lo verifica. Después quita el dominio y el correo vuelve al remitente de la plataforma.',
+      'La administradora registra un dominio propio para que los correos de la empresa salgan desde él, crea los registros DNS que pide AvalaSoft y lo verifica. Después quita el dominio y el correo vuelve al remitente de la plataforma.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», sin dominio de correo registrado.',
-      'Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
     ],
     relacionados: ['configuracion/plantillas-de-correo'],
   },
@@ -32,7 +32,7 @@ recorrido(
       configuracion: {
         ajuste: 'Dominio de correo',
         ruta: 'Configuración › Dominio de correo (/dominio-correo)',
-        efecto: 'Define desde qué dirección de correo le escribe Validasoft a los terceros de la empresa.',
+        efecto: 'Define desde qué dirección de correo le escribe AvalaSoft a los terceros de la empresa.',
       },
       variantes: [{ cuando: 'No tienes permiso para administrar la empresa', entonces: 'La pantalla no muestra el formulario ni los registros: solo se puede ver con permiso de administración.' }],
     });

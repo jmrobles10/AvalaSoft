@@ -301,7 +301,7 @@ public static class ServiciosInfraestructura
         servicios.AgregarPersistencia(configuracion);
 
         servicios.AddAuthentication(EsquemaPorDefecto)
-            .AddPolicyScheme(EsquemaPorDefecto, "Sesión del tercero, API key o sesión de Validasoft", opciones =>
+            .AddPolicyScheme(EsquemaPorDefecto, "Sesión del tercero, API key o sesión de AvalaSoft", opciones =>
                 opciones.ForwardDefaultSelector = http =>
                     http.Request.Path.StartsWithSegments(RutaPublica, StringComparison.OrdinalIgnoreCase)
                         ? EmisorDeSesionesTercero.Esquema

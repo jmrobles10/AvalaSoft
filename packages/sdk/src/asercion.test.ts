@@ -12,7 +12,7 @@ function partes(jwt: string) {
 }
 
 describe('aserciones de identidad delegada', () => {
-  it('con RSA firma RS256 con los reclamos que exige Validasoft y un jti por aserción', async () => {
+  it('con RSA firma RS256 con los reclamos que exige AvalaSoft y un jti por aserción', async () => {
     const { privateKey, publicKey } = generateKeyPairSync('rsa', {
       modulusLength: 2048,
       privateKeyEncoding: { type: 'pkcs8', format: 'pem' },

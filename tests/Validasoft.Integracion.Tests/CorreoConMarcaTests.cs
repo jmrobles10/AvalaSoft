@@ -11,7 +11,7 @@ namespace Validasoft.Integracion.Tests;
 public class CorreoConMarcaTests
 {
     private static MimeMessage Armar(string html, string texto = "Hola.", RemitenteDeCorreo? remitente = null) =>
-        EnviadorSmtp.ArmarMensaje(new MensajeDeCorreo("ana@aceros.co", "Asunto", texto, html, Remitente: remitente), "Validasoft <avisos@validasoft.test>");
+        EnviadorSmtp.ArmarMensaje(new MensajeDeCorreo("ana@aceros.co", "Asunto", texto, html, Remitente: remitente), "AvalaSoft <avisos@validasoft.test>");
 
     private static string Html(MimeMessage correo) => correo.HtmlBody.ShouldNotBeNull();
 
@@ -65,7 +65,7 @@ public class CorreoConMarcaTests
     public void El_correo_de_soporte_de_la_empresa_va_como_Reply_To_y_sin_el_las_respuestas_van_al_remitente()
     {
         var conSoporte = EnviadorSmtp.ArmarMensaje(
-            new MensajeDeCorreo("ana@aceros.co", "Asunto", "Hola.", "<p>Hola.</p>", ResponderA: "proveedores@norte.example"), "Validasoft <avisos@validasoft.test>");
+            new MensajeDeCorreo("ana@aceros.co", "Asunto", "Hola.", "<p>Hola.</p>", ResponderA: "proveedores@norte.example"), "AvalaSoft <avisos@validasoft.test>");
         conSoporte.ReplyTo.Mailboxes.Single().Address.ShouldBe("proveedores@norte.example");
         conSoporte.From.Mailboxes.Single().Address.ShouldBe("avisos@validasoft.test"); // el remitente no cambia
 

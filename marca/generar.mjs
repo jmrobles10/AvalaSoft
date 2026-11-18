@@ -1,7 +1,8 @@
-// Generador de los recursos de marca de Validasoft (MA-1, docs/marca.md). Reproducible: pinta los componentes REALES de
+// Generador de los recursos de marca de AvalaSoft (MA-1, docs/marca.md). Reproducible: pinta los componentes REALES de
 // `@validasoft/ui` (Logo, AnimacionExito, Cargando) en un navegador (Playwright + Vite), captura los cuadros y escribe:
 //
 //   marca/svg/     logotipo e ícono en claro y oscuro, y el favicon (con `prefers-color-scheme`)
+//                  (el logotipo es solo trazados: los contornos de «avalasoft» salen de `contornos.mjs` y no hace falta ninguna fuente)
 //   splash         la carga de marca que ven las dos apps mientras llega su JavaScript (entre las marcas de `index.html`)
 //   marca/png/     favicon 16/32/48, ícono de la app 192/512 (y maskable), apple-touch-icon, avatar, logotipos @2x y la hoja de la marca
 //   marca/gif/     éxito y carga, en claro y oscuro (2× para nitidez, con el fondo de cada modo)
@@ -55,7 +56,7 @@ const navegador = await chromium.launch();
 
 /** Abre una escena del arnés y espera a que la tipografía y el dibujo estén asentados. */
 async function abrir(parametros, { escala = 1 } = {}) {
-  const contexto = await navegador.newContext({ viewport: { width: 1900, height: 900 }, deviceScaleFactor: escala });
+  const contexto = await navegador.newContext({ viewport: { width: 2100, height: 900 }, deviceScaleFactor: escala });
   const pagina = await contexto.newPage();
   pagina.on('pageerror', (error) => console.error('Error en el arnés:', error.message));
   await pagina.goto(`${origen}?${new URLSearchParams(parametros).toString()}`);
@@ -73,36 +74,31 @@ async function png(parametros, escala = 1) {
 
 const { pagina: paginaMarca, contexto: contextoMarca } = await abrir({ escena: 'logotipo', tamano: '100' });
 const marca = await paginaMarca.evaluate('window.marca');
-const medidasLogotipo = await paginaMarca.evaluate(() => {
-  const v = document.querySelector('[data-parte="v"]')?.getBoundingClientRect();
-  const texto = document.querySelector('[data-parte="texto"]')?.getBoundingClientRect();
-  const raiz = document.querySelector('#escena [role="img"]')?.getBoundingClientRect();
-  if (!v || !texto || !raiz) throw new Error('Faltan las partes del logotipo.');
-  return { textoX: texto.left - raiz.left, anchoTexto: texto.width, ancho: raiz.width, alto: v.height };
-});
 await contextoMarca.close();
 
-const FUENTE_SVG = "Geist, 'Geist Variable', 'Segoe UI', system-ui, sans-serif";
 const caja = marca.cajaIcono;
 
-/** SVG del logotipo (sin aro): la «V» y el texto con la tipografía de marca (Geist; sin ella, la fuente del sistema). */
+/** El círculo verde con el check blanco del favicon, como símbolo del logotipo (no se inclina). */
+function simboloLogotipo(c) {
+  const f = marca.favicon;
+  return `<g transform="${marca.transformacionSimbolo}"><circle cx="${marca.aro.cx}" cy="${marca.aro.cy}" r="${f.radio}" fill="${c.check}"/><path d="${marca.checkRelleno}" fill="${c.blanco}" stroke="${c.blanco}" stroke-width="${f.contorno}" stroke-linejoin="round" transform="${f.transformacion}"/></g>`;
+}
+
+/** SVG del logotipo: el círculo con el check y la palabra «avalasoft» ya en contornos (inclinada), sin texto ni fuentes. */
 function svgLogotipo(c) {
-  const { ancho, alto, textoX, anchoTexto } = medidasLogotipo;
-  const anchoV = (alto * marca.cajaV.ancho) / marca.cajaV.alto;
-  const escala = alto / marca.cajaV.alto;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${redondear(ancho)} ${redondear(alto)}" width="${redondear(ancho)}" height="${redondear(alto)}" role="img" aria-label="Validasoft">
-  <title>Validasoft</title>
-  <g transform="scale(${redondear(escala)}) translate(${-marca.cajaV.x} ${-marca.cajaV.y})"><path d="${marca.checkRelleno}" fill="${c.check}"/></g>
-  <text x="${redondear(textoX)}" y="${redondear(alto)}" font-family="${FUENTE_SVG}" font-size="${redondear(alto)}" letter-spacing="-0.015em" textLength="${redondear(anchoTexto)}" lengthAdjust="spacing"><tspan font-weight="500" fill="${c.texto}">${marca.textoLogotipo.cuerpo}</tspan><tspan font-weight="400" fill="${c.soft}">${marca.textoLogotipo.marca}</tspan></text>
-  <!-- anchoV ${redondear(anchoV)}: la «V» va pegada a la «a» (margen ${marca.margenV} del tamaño de letra) -->
+  const { ancho, alto } = marca.cajaLogotipo;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" role="img" aria-label="AvalaSoft">
+  <title>AvalaSoft</title>
+  ${simboloLogotipo(c)}
+  <g transform="${marca.transformacionPalabra}"><path d="${marca.palabra.avala}" fill="${c.avala}"/><path d="${marca.palabra.soft}" fill="${c.soft}"/></g>
 </svg>
 `;
 }
 
 /** SVG del ícono (aro abierto y check). */
 function svgIcono(c) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${caja.x} ${caja.y} ${caja.ancho} ${caja.alto}" width="${caja.ancho}" height="${caja.alto}" role="img" aria-label="Validasoft">
-  <title>Validasoft</title>
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${caja.x} ${caja.y} ${caja.ancho} ${caja.alto}" width="${caja.ancho}" height="${caja.alto}" role="img" aria-label="AvalaSoft">
+  <title>AvalaSoft</title>
   <path d="${marca.aroAbierto}" fill="none" stroke="${c.aro}" stroke-width="${marca.aro.grosor}" stroke-linecap="round"/>
   <path d="${marca.checkRelleno}" fill="${c.check}" transform="${marca.transformacionCheckIcono}"/>
 </svg>
@@ -114,7 +110,7 @@ function svgFavicon() {
   const { light, dark } = marca.colores;
   const f = marca.favicon;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <title>Validasoft</title>
+  <title>AvalaSoft</title>
   <style>
     .disco { fill: ${light.check}; }
     .check { fill: ${light.blanco}; stroke: ${light.blanco}; stroke-width: ${f.contorno}; stroke-linejoin: round; }
@@ -125,8 +121,6 @@ function svgFavicon() {
 </svg>
 `;
 }
-
-const redondear = (valor) => Math.round(valor * 100) / 100;
 
 if (partes.has('svg')) {
   console.log('SVG');
@@ -187,8 +181,8 @@ if (partes.has('png')) {
   }
 
   const apps = [
-    { carpeta: 'apps/web/public', nombre: 'Validasoft', corto: 'Validasoft', descripcion: 'Validación documental de terceros para las personas de la empresa.' },
-    { carpeta: 'apps/public/public', nombre: 'Validasoft · Mis documentos', corto: 'Validasoft', descripcion: 'Tu información y tus documentos, una sola vez para todas tus empresas.' },
+    { carpeta: 'apps/web/public', nombre: 'AvalaSoft', corto: 'AvalaSoft', descripcion: 'Validación documental de terceros para las personas de la empresa.' },
+    { carpeta: 'apps/public/public', nombre: 'AvalaSoft · Mis documentos', corto: 'AvalaSoft', descripcion: 'Tu información y tus documentos, una sola vez para todas tus empresas.' },
   ];
   const comunes = ['favicon-16.png', 'favicon-32.png', 'favicon-48.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
   console.log('Apps');
@@ -226,7 +220,7 @@ function splash({ oscuro }) {
       @keyframes vs-pulso { 50% { opacity: 0.55; } }${modoOscuro}
       @media (prefers-reduced-motion: reduce) { .vs-splash svg { animation: vs-pulso 2s ease-in-out infinite; } .vs-giro { animation: none; } .vs-guia { animation: none; stroke-dashoffset: 0; } }
     </style>
-    <div class="vs-splash" role="status" aria-label="Cargando Validasoft">
+    <div class="vs-splash" role="status" aria-label="Cargando AvalaSoft">
       <svg viewBox="${c.x} ${c.y} ${c.ancho} ${c.alto}" aria-hidden="true" focusable="false">
         <defs><mask id="vs-mascara" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><path class="vs-guia" d="${marca.guiaCheck}" fill="none" stroke="#FFFFFF" stroke-width="${marca.grosorGuia}" stroke-linecap="round" stroke-linejoin="round"/></mask></defs>
         <circle class="vs-aro" cx="${marca.aro.cx}" cy="${marca.aro.cy}" r="${marca.aro.r}" fill="none" stroke-width="${marca.aro.grosor}" opacity="0.2"/>

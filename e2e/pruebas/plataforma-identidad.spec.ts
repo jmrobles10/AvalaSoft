@@ -27,7 +27,7 @@ async function capturar(page: Page, nombre: string): Promise<void> {
   if (original) await page.setViewportSize(original);
 }
 
-const TEXTO_ASUNTO_CODIGO = 'Tu código para ingresar a Validasoft';
+const TEXTO_ASUNTO_CODIGO = 'Tu código para ingresar a AvalaSoft';
 const ASUNTO_CODIGO = new RegExp(TEXTO_ASUNTO_CODIGO);
 const barraDeSecciones = (page: Page) => page.getByRole('navigation', { name: 'Secciones' });
 
@@ -199,7 +199,7 @@ test('Mi cuenta: generar códigos de recuperación pide la passkey y uno de ello
   // Pierde la passkey: sale, pide el código del correo y, en el paso de la passkey, usa un código de recuperación.
   await page.getByRole('button', { name: 'Menú de tu cuenta' }).click();
   await page.getByRole('menuitem', { name: 'Cerrar sesión' }).click();
-  await expect(page.getByRole('heading', { name: 'Ingresa a Validasoft' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
   await virtual.cdp.send('WebAuthn.clearCredentials', { authenticatorId: virtual.id });
   await entrarConCodigo(page, g.correoAdmin);
   await expect(page.getByRole('heading', { name: 'Confirma que eres tú' })).toBeVisible();
@@ -220,7 +220,7 @@ test('Mi cuenta: generar códigos de recuperación pide la passkey y uno de ello
   // Y el mismo código no sirve dos veces.
   await page.getByRole('button', { name: 'Menú de tu cuenta' }).click();
   await page.getByRole('menuitem', { name: 'Cerrar sesión' }).click();
-  await expect(page.getByRole('heading', { name: 'Ingresa a Validasoft' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
   await virtual.cdp.send('WebAuthn.clearCredentials', { authenticatorId: virtual.id });
   await entrarConCodigo(page, g.correoAdmin);
   await expect(page.getByRole('heading', { name: 'Confirma que eres tú' })).toBeVisible();

@@ -68,8 +68,8 @@ public sealed class PoliticaDeIngreso(IDocumentStore store, IMemoryCache cache, 
         if (tenant is null || !tenant.Activo || !tenant.ModosDeIngreso.HasFlag(modo))
             throw ReglaDeNegocioException.Prohibido("modo-de-ingreso-no-admitido",
                 modo == ModoDeIngreso.Delegado
-                    ? "Este grupo no admite el ingreso por identidad delegada del sistema integrado: sus personas entran directo a Validasoft."
-                    : "Este grupo no admite el ingreso directo a Validasoft: sus personas entran desde el sistema integrado.");
+                    ? "Este grupo no admite el ingreso por identidad delegada del sistema integrado: sus personas entran directo a AvalaSoft."
+                    : "Este grupo no admite el ingreso directo a AvalaSoft: sus personas entran desde el sistema integrado.");
     }
 
     public string Tipo => TiposDeInvalidacion.PoliticaDeIngreso;

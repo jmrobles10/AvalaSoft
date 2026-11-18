@@ -63,8 +63,8 @@ public static partial class TraductorDelPortal
             if ((tipo == TipoPersona.Natural) != (tercero.TipoPersona == TipoPersona.Natural))
             {
                 avisos.Rechazar("tipo_persona", "tipo-persona-distinto",
-                    $"El tercero ya está registrado en Validasoft como persona {tipo.ToString().ToLowerInvariant()} y el Portal dice {tercero.TipoPersona.ToString().ToLowerInvariant()}.",
-                    origen.InformacionGeneral?.TigTipoPersona, "Revisar el tipo de persona en el Portal o en Validasoft antes de importar.");
+                    $"El tercero ya está registrado en AvalaSoft como persona {tipo.ToString().ToLowerInvariant()} y el Portal dice {tercero.TipoPersona.ToString().ToLowerInvariant()}.",
+                    origen.InformacionGeneral?.TigTipoPersona, "Revisar el tipo de persona en el Portal o en AvalaSoft antes de importar.");
                 tercero = null;
             }
             else

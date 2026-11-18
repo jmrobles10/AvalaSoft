@@ -13,7 +13,7 @@ function solicitud(parcial: Partial<SolicitudHabeasDto>): SolicitudHabeasDto {
     alcance: null,
     estado: 'Recibida',
     resultado: null,
-    destino: { empresaId: null, nombre: 'Validasoft' },
+    destino: { empresaId: null, nombre: 'AvalaSoft' },
     recibidaEn: '2026-11-11T15:00:00Z',
     venceEl: '2026-11-26',
     diasHabiles: 10,

@@ -35,12 +35,12 @@ afterEach(() => {
 });
 
 describe('AppShell', () => {
-  it('lleva el logotipo de Validasoft en la barra (la «V» y «alidaSoft»), con su nombre accesible', () => {
+  it('lleva el logotipo de AvalaSoft en la barra (el círculo con el check y «avalasoft»), con su nombre accesible', () => {
     permisos.scopes = new Set([SCOPES.vinculosLeer]);
     montar('/e/emp/vinculos');
-    const logo = screen.getByRole('img', { name: 'Validasoft' });
-    expect(logo).toHaveTextContent('alidaSoft');
-    expect(within(screen.getByRole('banner')).getByRole('img', { name: 'Validasoft' })).toBe(logo);
+    const logo = screen.getByRole('img', { name: 'AvalaSoft' });
+    expect(logo.querySelector('[data-parte="palabra"]')).not.toBeNull();
+    expect(within(screen.getByRole('banner')).getByRole('img', { name: 'AvalaSoft' })).toBe(logo);
   });
 
   it('sin auditoria:leer no muestra la pestaña Auditoría', () => {

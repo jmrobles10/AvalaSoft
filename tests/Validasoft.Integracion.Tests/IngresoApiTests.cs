@@ -15,7 +15,7 @@ namespace Validasoft.Integracion.Tests;
 [Trait("Requiere", "Docker")]
 public sealed partial class IngresoApiTests(ApiFixture fixture)
 {
-    private const string AsuntoCodigo = "Tu código para ingresar a Validasoft";
+    private const string AsuntoCodigo = "Tu código para ingresar a AvalaSoft";
     private const string Cookie = "vs_usuario";
 
     private IAlbaHost Host => fixture.Host;
@@ -619,7 +619,7 @@ public sealed partial class IngresoApiTests(ApiFixture fixture)
         var correo = CorreoNuevo();
         var persona = await ApiAsync<UsuarioDto>("POST", "/api/v1/usuarios", g.Admin, null,
             new CrearUsuarioDto("Carla Auditora", correo, null, [new RolAsignadoDto("Auditor", g.Empresa.Id)], null, Invitar: true), 201);
-        var invitacion = await Correos.EsperarAsync(correo, c => c.Asunto.Contains("te invitó a Validasoft"));
+        var invitacion = await Correos.EsperarAsync(correo, c => c.Asunto.Contains("te invitó a AvalaSoft"));
         invitacion.Texto.ShouldContain("Auditor");
         invitacion.Texto.ShouldContain($"{ApiFixture.UrlPublica}/app/");
         persona.ExigePasskey.ShouldBeTrue();
@@ -631,7 +631,7 @@ public sealed partial class IngresoApiTests(ApiFixture fixture)
         sesiones.Select(s => s.Id).ShouldContain(sesion.SesionId);
 
         await ApiAsync<UsuarioDto>("POST", $"/api/v1/usuarios/{persona.Id}/invitar", g.Admin, null, null, 200);
-        await Correos.EsperarAsync(correo, c => c.Asunto.Contains("te invitó a Validasoft"), cuantos: 2);
+        await Correos.EsperarAsync(correo, c => c.Asunto.Contains("te invitó a AvalaSoft"), cuantos: 2);
 
         // Cerrar la sesión de un dispositivo.
         await Anonimo($"/api/v1/usuarios/{persona.Id}/sesiones/{sesion.SesionId}/cerrar", null, 204, apiKey: g.Admin);
@@ -718,7 +718,7 @@ public sealed partial class IngresoApiTests(ApiFixture fixture)
             new CrearOperadorDto("Paula Plataforma", correo), 201);
         creado.Directo.ShouldBeTrue();
         creado.Id.ShouldBe("DIRECTO:" + correo);
-        await Correos.EsperarAsync(correo, c => c.Asunto.Contains("te invitó a Validasoft"));
+        await Correos.EsperarAsync(correo, c => c.Asunto.Contains("te invitó a AvalaSoft"));
         await ApiAsync<OperadorDePlataformaDto>("POST", "/api/v1/plataforma/operadores", ApiFixture.ClavePlataforma, null, new CrearOperadorDto("Otra", correo.ToUpperInvariant()), 409);
 
         // Siempre exige passkey: el código solo sirve para registrar la primera.

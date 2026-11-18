@@ -31,7 +31,7 @@ describe('base64url', () => {
 
 describe('opciones del servidor', () => {
   const registro = {
-    rp: { id: 'validasoft.co', name: 'Validasoft' },
+    rp: { id: 'validasoft.co', name: 'AvalaSoft' },
     user: { id: bytesABase64Url(new Uint8Array([1, 2, 3])), name: 'ana@aceros.co', displayName: 'Ana' },
     challenge: bytesABase64Url(new Uint8Array([9, 9, 9, 9])),
     pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
@@ -45,7 +45,7 @@ describe('opciones del servidor', () => {
     const opciones = opcionesDeRegistro(registro);
     expect([...new Uint8Array(opciones.challenge as ArrayBuffer)]).toEqual([9, 9, 9, 9]);
     expect([...new Uint8Array(opciones.user.id as ArrayBuffer)]).toEqual([1, 2, 3]);
-    expect(opciones.rp).toEqual({ id: 'validasoft.co', name: 'Validasoft' });
+    expect(opciones.rp).toEqual({ id: 'validasoft.co', name: 'AvalaSoft' });
     expect(opciones.user.name).toBe('ana@aceros.co');
     expect(opciones.excludeCredentials).toHaveLength(1);
     expect([...new Uint8Array(opciones.excludeCredentials?.[0]?.id as ArrayBuffer)]).toEqual([7, 7]);

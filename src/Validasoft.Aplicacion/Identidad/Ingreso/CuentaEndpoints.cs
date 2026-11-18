@@ -22,7 +22,7 @@ public static class SesionPropia
         TimeProvider reloj, CancellationToken ct)
     {
         if (!Guid.TryParse(http.User.FindFirstValue(ReclamosDeIngreso.SesionId), out var id))
-            throw ReglaDeNegocioException.Prohibido("solo-ingreso-directo", "Esta pantalla es de quienes entraron directo a Validasoft (no desde un sistema integrado).");
+            throw ReglaDeNegocioException.Prohibido("solo-ingreso-directo", "Esta pantalla es de quienes entraron directo a AvalaSoft (no desde un sistema integrado).");
 
         await using var consulta = sesiones.ConsultaGlobal();
         var sesion = await consulta.LoadAsync<SesionDeUsuario>(id, ct);

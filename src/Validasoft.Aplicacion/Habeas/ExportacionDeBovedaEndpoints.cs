@@ -254,7 +254,7 @@ public static class GenerarExportacionDeBovedaHandler
             }), ct));
             archivos.Add(await EscribirJsonAsync(zip, "datos/solicitudes-habeas-data.json", solicitudes.Select(s => new
             {
-                s.Radicado, tipo = s.Tipo.ToString(), alcance = s.Alcance?.ToString(), destino = s.EmpresaId is { } e ? empresas.GetValueOrDefault(e) ?? "una empresa" : "Validasoft",
+                s.Radicado, tipo = s.Tipo.ToString(), alcance = s.Alcance?.ToString(), destino = s.EmpresaId is { } e ? empresas.GetValueOrDefault(e) ?? "una empresa" : "AvalaSoft",
                 estado = s.Estado.ToString(), resultado = s.Resultado?.ToString(), s.RecibidaEn, s.VenceEl, s.ResueltaEn, s.ConstanciaHash
             }), ct));
 
@@ -279,16 +279,16 @@ public static class GenerarExportacionDeBovedaHandler
     }
 
     private static string Leeme(string kid, string hashManifiesto) =>
-        "Exportación de tu bóveda de Validasoft\n" +
+        "Exportación de tu bóveda de AvalaSoft\n" +
         "=====================================\n\n" +
         "documentos/        tus archivos, uno por versión.\n" +
         "datos/             tus datos en JSON (tu información, documentos, ficha, cuentas con el número enmascarado, vínculos, certificados y solicitudes).\n" +
         "manifiesto.json    la ruta, el tamaño y el SHA-256 de cada archivo (JSON canónico, RFC 8785).\n" +
-        "manifiesto.firma.json  la firma Ed25519 de Validasoft sobre los bytes exactos de manifiesto.json.\n\n" +
+        "manifiesto.firma.json  la firma Ed25519 de AvalaSoft sobre los bytes exactos de manifiesto.json.\n\n" +
         "Cómo verificarla\n" +
         "1. Calcula el SHA-256 de cada archivo y compáralo con el del manifiesto.\n" +
         $"2. Calcula el SHA-256 de manifiesto.json: debe ser {hashManifiesto}.\n" +
-        $"3. Verifica la firma Ed25519 (clave {kid}) con la clave pública que Validasoft publica en /.well-known/validasoft-certificados.json.\n";
+        $"3. Verifica la firma Ed25519 (clave {kid}) con la clave pública que AvalaSoft publica en /.well-known/validasoft-certificados.json.\n";
 
     /// <summary>Copia un objeto del almacenamiento a una entrada del ZIP calculando su SHA-256 y su tamaño al pasar.</summary>
     private static async Task<(string Sha256, long Bytes)> CopiarAsync(ZipArchive zip, string ruta, Stream origen, CancellationToken ct)

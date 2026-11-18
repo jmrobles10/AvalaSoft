@@ -5,9 +5,9 @@ orden: 30
 resumen: "Guía para Producto: con la base local en blanco, configura a mano una constructora como funciona hoy en el SRM (grupo, empresa, áreas, documentos, flujo, motivos y textos), invita a un proveedor y recorre la validación completa hasta verificar su certificado."
 ---
 
-Esta guía es para probar Validasoft **a mano**, en el entorno local, partiendo de una base en blanco: solo existe el operador de la consola de Plataforma (lo deja `pnpm semilla:plataforma`). Al terminar tendrás una constructora configurada como funciona hoy en el SRM y un proveedor validado de punta a punta, con su certificado verificado.
+Esta guía es para probar AvalaSoft **a mano**, en el entorno local, partiendo de una base en blanco: solo existe el operador de la consola de Plataforma (lo deja `pnpm semilla:plataforma`). Al terminar tendrás una constructora configurada como funciona hoy en el SRM y un proveedor validado de punta a punta, con su certificado verificado.
 
-Está en tres partes: primero **los conceptos** en lenguaje llano y su equivalente en el SRM y el Portal; después **cómo está configurada hoy una constructora en el SRM** y dónde va cada cosa en Validasoft; y por último **los pasos, pantalla por pantalla**, con qué escribir en cada campo y cómo comprobar que quedó bien. Al final están los **errores típicos**.
+Está en tres partes: primero **los conceptos** en lenguaje llano y su equivalente en el SRM y el Portal; después **cómo está configurada hoy una constructora en el SRM** y dónde va cada cosa en AvalaSoft; y por último **los pasos, pantalla por pantalla**, con qué escribir en cada campo y cómo comprobar que quedó bien. Al final están los **errores típicos**.
 
 Cada paso dice si es **Obligatorio** (sin él el flujo no avanza) u **Opcional** (enriquece la prueba, pero se puede saltar). El detalle de cada pantalla, con pantallazos, está en los recorridos del manual que se enlazan; aquí no se repiten.
 
@@ -40,18 +40,18 @@ Tres cosas que conviene saber antes:
 
 ### El mapa
 
-![Cómo se relacionan los conceptos de Validasoft](diagramas/conceptos-empresa.svg)
+![Cómo se relacionan los conceptos de AvalaSoft](diagramas/conceptos-empresa.svg)
 
 Léelo de arriba abajo: **Plataforma** (Sincosoft) da de alta a un cliente, que es un **grupo empresarial**. El grupo tiene una o varias **empresas** (razones sociales). Cada empresa **invita** a un **tercero** en un **tipo de vínculo** (Proveedor); eso crea un **vínculo**. Cuando el tercero acepta, se abre un **expediente** con el **flujo aprobatorio** de la empresa; las **áreas** revisan por **etapas** y, si todo se aprueba, sale un **certificado**. El tercero es uno solo en toda la plataforma: su **bóveda** (documentos) y su **ficha** (información) le sirven para todas las empresas que lo invitan.
 
 ### Grupo empresarial y empresa
 
-Esta es la distinción que más confunde. En Validasoft:
+Esta es la distinción que más confunde. En AvalaSoft:
 
 - La **empresa** es una **razón social** con NIT: la que exige documentos, revisa, decide y certifica. Es exactamente lo que en el SRM y en el Portal se llama **constructora**. Cada empresa tiene sus propias áreas, flujos, textos legales y folios, y **sus decisiones son privadas**: ni siquiera otra empresa del mismo grupo ve lo que aprobó u observó.
-- El **grupo empresarial** (en el código, el *tenant*) es el **cliente** de Validasoft: el conjunto de empresas que comparten administración. Comparte las personas y sus roles, el catálogo de tipos de documento, los tipos de vínculo, los motivos, el sistema integrado y las API keys. En el ERP Sinco equivale a **la base de datos de un cliente**: cada cliente tiene su base, con una o varias empresas (`dbo.Empresas`), y la sesión del ERP trae el `IdEmpresa` de quien entra (`ConstruirSession`). En el Portal no existe como tal: cada constructora es una fila de `dbo.Constructoras`, enlazada al ERP de su cliente (`ConstRuta_API`), y un cliente con cinco constructoras son cinco filas sueltas.
+- El **grupo empresarial** (en el código, el *tenant*) es el **cliente** de AvalaSoft: el conjunto de empresas que comparten administración. Comparte las personas y sus roles, el catálogo de tipos de documento, los tipos de vínculo, los motivos, el sistema integrado y las API keys. En el ERP Sinco equivale a **la base de datos de un cliente**: cada cliente tiene su base, con una o varias empresas (`dbo.Empresas`), y la sesión del ERP trae el `IdEmpresa` de quien entra (`ConstruirSession`). En el Portal no existe como tal: cada constructora es una fila de `dbo.Constructoras`, enlazada al ERP de su cliente (`ConstRuta_API`), y un cliente con cinco constructoras son cinco filas sueltas.
 
-> **Diferencia importante con el SRM:** allá los maestros de proveedores (`adp_srm.*`, `adp_srm_apr.*`: documentos requeridos, flujos, perfiles, sectores, grupos de acceso) **no tienen columna de empresa**: valen para toda la base, y en la práctica cada base opera una sola constructora. En Validasoft lo que es de la empresa (áreas, flujos, textos legales, plantillas, folios) se configura **por empresa**, y lo que es del cliente (personas, tipos de documento, motivos, grupos de acceso) **por grupo**.
+> **Diferencia importante con el SRM:** allá los maestros de proveedores (`adp_srm.*`, `adp_srm_apr.*`: documentos requeridos, flujos, perfiles, sectores, grupos de acceso) **no tienen columna de empresa**: valen para toda la base, y en la práctica cada base opera una sola constructora. En AvalaSoft lo que es de la empresa (áreas, flujos, textos legales, plantillas, folios) se configura **por empresa**, y lo que es del cliente (personas, tipos de documento, motivos, grupos de acceso) **por grupo**.
 
 Regla práctica: si tu cliente tiene **una sola** constructora, creas **un grupo con una empresa**. Si tiene varias razones sociales (por ejemplo, la constructora y la inmobiliaria), creas **un grupo con varias empresas**.
 
@@ -61,9 +61,9 @@ Es la primera persona del cliente: la que Plataforma nombra al crear el grupo. T
 
 ### Sistema integrado y API key
 
-El **sistema integrado** es el software del cliente que habla con Validasoft: en producción será el **SRM o el ERP Sinco**, que crea vínculos por API, consulta si un proveedor está certificado antes de pagarle y abre las pantallas de Validasoft dentro de las suyas (embebidas), firmando quién es la persona con una clave pública. La **API key** es la credencial de ese sistema (`X-Api-Key`), con permisos y empresas.
+El **sistema integrado** es el software del cliente que habla con AvalaSoft: en producción será el **SRM o el ERP Sinco**, que crea vínculos por API, consulta si un proveedor está certificado antes de pagarle y abre las pantallas de AvalaSoft dentro de las suyas (embebidas), firmando quién es la persona con una clave pública. La **API key** es la credencial de ese sistema (`X-Api-Key`), con permisos y empresas.
 
-En el SRM el equivalente es el par de credenciales con que el SRM y el Portal se hablan hoy (`TokenAdproveedor.Token_Zuppla` hacia el Portal y `Constructoras.ConsApiKey` del lado del Portal). **Para esta prueba a mano no lo necesitas**: crea el grupo solo con «Directo a Validasoft» y todo se hace desde las pantallas.
+En el SRM el equivalente es el par de credenciales con que el SRM y el Portal se hablan hoy (`TokenAdproveedor.Token_Zuppla` hacia el Portal y `Constructoras.ConsApiKey` del lado del Portal). **Para esta prueba a mano no lo necesitas**: crea el grupo solo con «Directo a AvalaSoft» y todo se hace desde las pantallas.
 
 ### Tipo de vínculo y vínculo
 
@@ -83,7 +83,7 @@ El **tercero** es el proveedor (persona jurídica, natural o consorcio), identif
 ### Requisitos y tipos de documento (canónicos y propios)
 
 - Un **tipo de documento** es lo que se puede pedir: RUT, Cámara de comercio, Certificación bancaria, un formato propio… Es del **grupo**. Define el formato (PDF, imagen), el peso, la **vigencia** («vale N días desde su expedición», «N días desde que se entrega» o «no vence»), los días de aviso y de gracia, una plantilla para descargar y, si quieres, un formulario con campos.
-- Un tipo **canónico** («documento de la plataforma») parte de uno conocido por Validasoft (RUT, CAMARA_COMERCIO, CEDULA, ESTADOS_FINANCIEROS, CERTIFICACION_BANCARIA, POLIZA, FORMATO_VINCULACION…): es el que hace que el RUT de una empresa y el RUT de otra sean **el mismo documento** compartido en la bóveda, y trae techos de formato y vigencia que no se pueden relajar. Un tipo **propio** («Ninguno: es un documento propio») es privado de cada vínculo y no se comparte. En el Portal todo era `TipoAdjuntoTercero`, con ids mágicos (12 Cámara persona jurídica, 18 persona natural, 1011 tratamiento de datos…).
+- Un tipo **canónico** («documento de la plataforma») parte de uno conocido por AvalaSoft (RUT, CAMARA_COMERCIO, CEDULA, ESTADOS_FINANCIEROS, CERTIFICACION_BANCARIA, POLIZA, FORMATO_VINCULACION…): es el que hace que el RUT de una empresa y el RUT de otra sean **el mismo documento** compartido en la bóveda, y trae techos de formato y vigencia que no se pueden relajar. Un tipo **propio** («Ninguno: es un documento propio») es privado de cada vínculo y no se comparte. En el Portal todo era `TipoAdjuntoTercero`, con ids mágicos (12 Cámara persona jurídica, 18 persona natural, 1011 tratamiento de datos…).
 - Un **requisito** es una línea del expediente: «este expediente exige el RUT, obligatorio, lo revisa Compras». Sale del flujo al abrir el expediente. Es la `DocumentacionPendiente` del SRM.
 
 ### Expediente, certificado y ficha del tercero
@@ -100,7 +100,7 @@ El **tercero** es el proveedor (persona jurídica, natural o consorcio), identif
 
 ### Resumen de equivalencias
 
-| Validasoft | SRM | Portal de Proveedores |
+| AvalaSoft | SRM | Portal de Proveedores |
 |---|---|---|
 | Grupo empresarial (tenant) | La base del ERP de un cliente, con sus empresas (`dbo.Empresas`) | No existe: constructoras sueltas |
 | Empresa | Empresa del ERP (`IdEmpresa`): la constructora | `dbo.Constructoras` |
@@ -124,7 +124,7 @@ El **tercero** es el proveedor (persona jurídica, natural o consorcio), identif
 
 Lo que sigue se leyó del código del SRM y del Portal (sin conectarse a ninguna base). Los repositorios **no traen los datos** de los catálogos (los nombres de los tipos de documento, los motivos, los grupos y las especialidades): para replicar una constructora real, abre su SRM y copia de sus pantallas de maestros los valores de cada fila de esta tabla.
 
-| Maestro en el SRM | Qué configura y dónde vive | Dónde va en Validasoft |
+| Maestro en el SRM | Qué configura y dónde vive | Dónde va en AvalaSoft |
 |---|---|---|
 | **Tipos de documento** | Catálogo global del Portal (`dbo.TipoAdjuntoTercero`, por región). Un documento sirve para todas las constructoras, salvo las declaraciones propias de cada una (ids 1011, 1013, 1015, 1019, 1183, 1185). La constructora puede escribir una observación por tipo (`DocumentosObservacionConstructora`). | Configuración › **Tipos de documento** (del grupo). Los conocidos se crean desde su canónico y se comparten; las declaraciones propias son tipos **propios**, «solo de este vínculo». La observación es la **Ayuda de documentos** de la empresa. |
 | **Matriz de exigencia** | `adp_srm.DocumentosRequeridos`: qué tipo se exige a quién (`TipoRequerido`: 0 Todos, 1 Grupos, 2 Categorías, 3 Especialidad, 4 Tipo de persona N/J, 5 Etiquetas), con días de vencimiento y plantilla. Pantalla «Maestro de especialidades». Se replica al Portal en `DocumentosVencimientoConstructora`. | **Documentos que pide** el flujo, con «Se pide a»: Todos, Solo jurídicas, Solo naturales o «Según la ficha» (especialidades o CIIU). Los días de vencimiento van en el **tipo de documento** y la plantilla también. Grupos, categorías y etiquetas: ver «Sin equivalente». |
@@ -133,10 +133,10 @@ Lo que sigue se leyó del código del SRM y del Portal (sin conectarse a ninguna
 | **Sectores** | Secciones de la ficha (`TipoSectoresEnum`: General, Legal, Bancaria, Tributaria, SISO, Documentos, Especialidades, Financiera, Sagrilaft…). Responsable de cada uno en las actualizaciones (`SectoresActualizacion.IdUsuarioResponsable`); interesados por sección (`NotificacionesGenerales`). | Las **secciones de la información** que pide el flujo y el **Responsable por sector** del flujo (un área, no una persona). La bancaria la cubre la **cuenta designada** con dos aprobadores. |
 | **Grupos de acceso** | `GruposAcceso`, `UsuariosGrupo`, `OpcionesAcceso` (4 opciones) y `SectoresAcceso` (40 sectores de pantalla). Pantalla «Grupos de acceso». Solo ocultan pantallas. | Configuración › **Grupos de acceso**: permisos del catálogo más sectores de la ficha con «Ver» o «Ver y decidir»; el servidor los exige. |
 | **Motivos** | Maestro global del Portal `apr.MotivoRechazo` (`MotCodigo`, `MotTexto`), más los propios tipos de documento como motivo; categoría documento, formulario o contacto (código que empieza por «20»). | Configuración › **Motivos**: ocho de la plataforma más los propios, con categoría (Documento, Formulario, Contacto, Otro), si sirven para observar o rechazar y el texto al tercero. |
-| **Vigencias** | Tres fuentes que no se cruzan: días por documento en la matriz (`DiasVencimiento`), vigencia por sección (`SectoresVencimiento`: 365 días y 90 de aviso por defecto) y el plazo para completar la documentación (180 días). Parámetros en `ADPConfig` (`FechaOrigenVence`, `DiasVtoNotificaProv`). Proceso nocturno del Portal a las 22:00. | Una por cosa: la **vigencia del tipo de documento** (días desde la expedición o la entrega, avisos y gracia), la **vigencia de cada sección** en el flujo, la **vigencia del vínculo** del flujo y el **plazo de cargue** (30 días por defecto). Los ejecuta el propio Validasoft. |
+| **Vigencias** | Tres fuentes que no se cruzan: días por documento en la matriz (`DiasVencimiento`), vigencia por sección (`SectoresVencimiento`: 365 días y 90 de aviso por defecto) y el plazo para completar la documentación (180 días). Parámetros en `ADPConfig` (`FechaOrigenVence`, `DiasVtoNotificaProv`). Proceso nocturno del Portal a las 22:00. | Una por cosa: la **vigencia del tipo de documento** (días desde la expedición o la entrega, avisos y gracia), la **vigencia de cada sección** en el flujo, la **vigencia del vínculo** del flujo y el **plazo de cargue** (30 días por defecto). Los ejecuta el propio AvalaSoft. |
 | **SAGRILAFT y oficial de cumplimiento** | Estudio del oficial (`EstudioSeguridad`: estado, nivel de riesgo, días de vigencia; aprobación con lista restrictiva, conflicto de interés y debida diligencia), consulta a listas por un proveedor externo (`AdjuntosSarlaft`), listas vinculantes (`Listavinculantes`), y en `ADPConfig` si el oficial es obligatorio (`SRM_ValidaOficial`, `AplicaSarlaft`). PEP, socios y beneficiarios en la ficha legal. | **Verificaciones de cumplimiento** del flujo (Listas restrictivas y Estudio del oficial, bloqueantes), el rol **Oficial de cumplimiento** con su bandeja, la **matriz de riesgo** y las **listas restrictivas** de la empresa, y la **declaración PEP** y personas relacionadas del tercero. |
 | **Evaluación del proveedor** | Preguntas de selección para proveedores nuevos (`PreguntaEvaluacionTerceroNuevo`, puntajes por solicitud). Sin reevaluación. | Configuración › **Cuestionarios**: preguntas con peso, eliminatorias, umbral, quién responde y repetición periódica; el flujo lo pide. |
-| **Plantillas de correo** | 37 plantillas `.txt` por NIT de la empresa (`ADP_CS.PlantillasNotificacion`): invitación, rechazo, documentación pendiente, vencimientos… | Configuración › **Plantillas de correo**: asunto, cabecera y pie por correo; el cuerpo lo arma Validasoft. |
+| **Plantillas de correo** | 37 plantillas `.txt` por NIT de la empresa (`ADP_CS.PlantillasNotificacion`): invitación, rechazo, documentación pendiente, vencimientos… | Configuración › **Plantillas de correo**: asunto, cabecera y pie por correo; el cuerpo lo arma AvalaSoft. |
 | **Textos legales** | Declaración y autorización por NIT (`Plantillas\DeclaracionAutorizacion\{NIT}_…txt`), aceptada en el Portal (`TercerosConstructora.Autorizo` y el adjunto 1011). | Configuración › **Empresas del grupo** › textos legales: autorización de datos y términos, versionados, con constancia de aceptación. |
 | **Perfil de la constructora** | Datos, documentos y publicaciones de la constructora (`DatosConstructora`, `DocumentosConstructora`). | **Datos y marca** de la empresa (contacto de soporte, logo y color de marca). |
 | **Invitación** | Desde el SRM (`Solicitudes` + correo con usuario y contraseña) o por lote (`InvitacionLote`); autorregistro en el Portal. | **Invitar tercero** (uno) o **Invitar por lote** (varios) en la app, `POST /vinculos` desde el sistema integrado o autorregistro. Sin contraseñas: enlace de un solo uso más código. |
@@ -146,10 +146,10 @@ Lo que sigue se leyó del código del SRM y del Portal (sin conectarse a ninguna
 - **Grupos, categorías y etiquetas de proveedor** (`GruposTercero`, `CategoriasTercero`, `TagProveedor`) **no existen como catálogo**. Lo más cercano son los **atributos del tipo de vínculo** (el Proveedor sembrado trae `categorias` con Materiales, Servicios, Equipos y Mano de obra, y `nivelRiesgo`), que un flujo puede usar en «Se pide a» como `vinculo.atributos.categorias`; esa condición se arma por API (la pantalla la muestra como «personalizada») y la pantalla ofrece los atajos por tipo de persona y por la ficha. Las **especialidades** sí están, en la ficha del tercero.
 - **Clasificación por tamaño de empresa** (`TamanoEmpresa`, UVT): no existe.
 - **Aprobación inicial** (`UserAprInicial`, estado -7) como paso aparte: no existe tal cual. Se modela como una primera etapa del flujo o con la **aprobación antes de invitar** del tipo de vínculo.
-- **Perfil de aprobación = perfil del ERP:** en Validasoft un área tiene personas, no perfiles. Las personas entran por correo o desde el sistema integrado.
-- **Crear el proveedor en AyF** al aprobar: lo hace el sistema integrado al recibir el webhook `expediente.aprobado` o al consultar la certificación; Validasoft no escribe en el ERP.
+- **Perfil de aprobación = perfil del ERP:** en AvalaSoft un área tiene personas, no perfiles. Las personas entran por correo o desde el sistema integrado.
+- **Crear el proveedor en AyF** al aprobar: lo hace el sistema integrado al recibir el webhook `expediente.aprobado` o al consultar la certificación; AvalaSoft no escribe en el ERP.
 - **Listas vinculantes** (maestro propio de listas): no existe. Las listas las consulta el proveedor configurado (Infolaft, Stradata, Compliance; en local, un simulador).
-- **Formulario de origen de fondos o de conocimiento ampliado:** tampoco existe en el SRM; en Validasoft se puede crear como tipo de documento con formulario o como cuestionario.
+- **Formulario de origen de fondos o de conocimiento ampliado:** tampoco existe en el SRM; en AvalaSoft se puede crear como tipo de documento con formulario o como cuestionario.
 - **El certificado verificable** y la **bóveda compartida con decisiones privadas** son nuevos: no existían en el SRM ni en el Portal.
 
 ## Parte 3. Los pasos, pantalla por pantalla
@@ -166,16 +166,16 @@ Sigue el orden: cada paso deja listo algo que el siguiente necesita.
 | Identificador | Se propone solo (`grupo-andino`). Minúsculas, números y guiones; **no cambia después** y va dentro de las API keys. |
 | Zona horaria | Déjala en `America/Bogota`. |
 | Primera empresa: país y tipo | `CO` y `NIT` |
-| Número | `900123456` (el dígito de verificación es opcional: Validasoft lo calcula y lo compara) |
+| Número | `900123456` (el dígito de verificación es opcional: AvalaSoft lo calcula y lo compara) |
 | Razón social | `Constructora Andina S.A.S.` |
 | Prefijo de folio | `CAND` (de 2 a 10 mayúsculas o números; **después solo Plataforma puede corregirlo**, y los folios ya emitidos conservan el anterior; encabeza los folios `CAND-E-2026-…` y `CAND-C-2026-…`) |
 | Administrador: nombre y correo | `Ana Administradora`, `ana@andina.test` |
 | Su usuario en el sistema | Vacío |
-| Cómo entra la gente del grupo | Marca **solo «Directo a Validasoft»**. Así no aparece la sección del sistema integrado y no necesitas una clave pública. |
+| Cómo entra la gente del grupo | Marca **solo «Directo a AvalaSoft»**. Así no aparece la sección del sistema integrado y no necesitas una clave pública. |
 
 Pulsa **Crear grupo**. La pantalla muestra la **API key de administración una sola vez**: para esta prueba no la necesitas, pero si quieres probar la API después, cópiala ahora.
 
-Al crear el grupo, Validasoft siembra solo los **tipos de vínculo** (Proveedor, Cliente, Empleado, Usuario) y seis **tipos de documento** enlazados a su canónico (RUT, Cámara de comercio, Cédula, Estados financieros, Certificación bancaria y Póliza). No se pide ninguno hasta que un flujo lo incluya. Con «Directo a Validasoft», Ana recibe además un correo de invitación en Mailpit.
+Al crear el grupo, AvalaSoft siembra solo los **tipos de vínculo** (Proveedor, Cliente, Empleado, Usuario) y seis **tipos de documento** enlazados a su canónico (RUT, Cámara de comercio, Cédula, Estados financieros, Certificación bancaria y Póliza). No se pide ninguno hasta que un flujo lo incluya. Con «Directo a AvalaSoft», Ana recibe además un correo de invitación en Mailpit.
 
 **Comprueba:** «Volver a los grupos» muestra `Grupo Andino` con `Constructora Andina S.A.S.` dentro; en Mailpit hay un correo para `ana@andina.test`.
 
@@ -192,8 +192,8 @@ Sin plan de IA los documentos se revisan **a mano** (nivel Manual), que es como 
 ### Paso 3. Entra como administradora con el código de Mailpit (Obligatorio)
 
 1. En otro perfil del navegador abre `http://localhost:5173`, escribe `ana@andina.test` y pulsa **Continuar**.
-2. En Mailpit abre el correo «Tu código para ingresar a Validasoft» y escribe el código (vale 5 minutos y admite 5 intentos).
-3. Como Ana es Administradora, Validasoft le pide **registrar una passkey**: acepta y usa tu huella, rostro o PIN de Windows Hello. Sin passkey el código solo sirve para registrarla.
+2. En Mailpit abre el correo «Tu código para ingresar a AvalaSoft» y escribe el código (vale 5 minutos y admite 5 intentos).
+3. Como Ana es Administradora, AvalaSoft le pide **registrar una passkey**: acepta y usa tu huella, rostro o PIN de Windows Hello. Sin passkey el código solo sirve para registrarla.
 
 **Comprueba:** entras a `Inicio` de Constructora Andina con la barra lateral de Administrador y el engranaje de **Configuración**. Si recargas, no pide código otra vez.
 
@@ -365,7 +365,7 @@ Todo esto en el **portal del tercero** (`http://localhost:5181`), en otra ventan
 
 1. **Abre el enlace** del correo de invitación en Mailpit. Es de un solo uso.
 2. **Escribe el código** que llega en otro correo (lo exige el tipo Proveedor).
-3. **Acepta los textos**: el aviso de privacidad de Validasoft y la autorización y los términos de Constructora Andina. En ese momento se abre el expediente y el vínculo pasa a «En validación».
+3. **Acepta los textos**: el aviso de privacidad de AvalaSoft y la autorización y los términos de Constructora Andina. En ese momento se abre el expediente y el vínculo pasa a «En validación».
 4. **Mi información:** completa las secciones que pide el flujo (general, tributaria, legal con su representante legal). La barra muestra lo que falta.
 5. **Sube los documentos** desde «Tu revisión con Constructora Andina»: RUT, Cámara de comercio (con fecha de expedición de menos de 30 días) y Certificación bancaria, en PDF de hasta 20 MB.
 6. **Mis cuentas:** registra la cuenta bancaria, respáldala con la certificación bancaria y **desígnala** para Constructora Andina.
@@ -427,7 +427,7 @@ El recorrido completo, con todos los hitos y sus eventos, está en [Del vínculo
 
 | Lo que ves | Qué significa | Qué hacer |
 |---|---|---|
-| No llega el código a Mailpit | El correo no tiene cuenta: Validasoft responde igual para no revelar quién existe, pero no envía nada. | Revisa que el correo esté bien escrito y que la persona exista en Usuarios y roles. |
+| No llega el código a Mailpit | El correo no tiene cuenta: AvalaSoft responde igual para no revelar quién existe, pero no envía nada. | Revisa que el correo esté bien escrito y que la persona exista en Usuarios y roles. |
 | El código ya no sirve | Vence a los 5 minutos y admite 5 intentos. | Pide otro desde la pantalla de ingreso. |
 | Después del código pide registrar una passkey | El rol (Administrador, Oficial, Auditor) la exige. | Regístrala con Windows Hello; sin ella no se entra. |
 | «Tu rol ahora exige passkey» y la sesión se cierra | Le diste a alguien un rol que exige passkey. | Que entre de nuevo y la registre. |

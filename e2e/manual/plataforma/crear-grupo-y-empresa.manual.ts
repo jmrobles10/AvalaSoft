@@ -10,7 +10,7 @@ recorrido(
     actor: 'Plataforma',
     titulo: 'Crea un grupo con su primera empresa',
     resumen:
-      'El operador de Plataforma da de alta un cliente completo desde la consola: el grupo, su primera empresa, la persona que lo administra y el sistema desde el que su gente entra a Validasoft. Al terminar, la pantalla muestra las API keys una sola vez.',
+      'El operador de Plataforma da de alta un cliente completo desde la consola: el grupo, su primera empresa, la persona que lo administra y el sistema desde el que su gente entra a AvalaSoft. Al terminar, la pantalla muestra las API keys una sola vez.',
     precondiciones: ['Un operador de Plataforma con la consola abierta.', 'La clave pública PEM del sistema integrado (nunca la privada).'],
     relacionados: ['plataforma/lista-de-grupos', 'plataforma/agregar-empresa-a-un-grupo', 'plataforma/sistemas-de-un-grupo'],
   },
@@ -29,7 +29,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre el formulario de un grupo nuevo',
       explicacion:
-        'Desde «Grupos y empresas», el botón «Nuevo grupo» abre el formulario de alta. Un grupo es el cliente de Validasoft: nace con una primera empresa, con la persona que lo administra y, si lo pides, con el sistema desde el que esa gente entra. ' +
+        'Desde «Grupos y empresas», el botón «Nuevo grupo» abre el formulario de alta. Un grupo es el cliente de AvalaSoft: nace con una primera empresa, con la persona que lo administra y, si lo pides, con el sistema desde el que esa gente entra. ' +
         'El alta se envía completa en una sola acción.',
       resaltar: consola.getByRole('link', { name: 'Nuevo grupo' }),
       configuracion: {
@@ -84,7 +84,7 @@ recorrido(
     await paso(page, {
       titulo: 'Nombra al administrador del grupo',
       explicacion:
-        'El administrador tiene el rol Administrador en todo el grupo: crea usuarios, áreas y flujos. Validasoft no guarda su contraseña; esta persona entra desde el sistema integrado o, si eliges el ingreso directo, con un correo. ' +
+        'El administrador tiene el rol Administrador en todo el grupo: crea usuarios, áreas y flujos. AvalaSoft no guarda su contraseña; esta persona entra desde el sistema integrado o, si eliges el ingreso directo, con un correo. ' +
         'Si el sistema identifica a sus personas con un usuario propio, escríbelo; si lo dejas vacío, la persona se enlaza por su correo la primera vez que entre. Si el correo quedó mal, se corrige después en la ficha del grupo (Administradores › Editar).',
       resaltar: [
         consola.getByRole('textbox', { name: 'Nombre', exact: true }),
@@ -97,11 +97,11 @@ recorrido(
     await paso(page, {
       titulo: 'Elige cómo entra la gente del grupo',
       explicacion:
-        'Marca al menos una forma de ingreso. «Desde el sistema integrado» hace que las personas entren desde el ERP o portal del cliente, que firma sus aserciones; «Directo a Validasoft» permite entrar con un correo. ' +
+        'Marca al menos una forma de ingreso. «Desde el sistema integrado» hace que las personas entren desde el ERP o portal del cliente, que firma sus aserciones; «Directo a AvalaSoft» permite entrar con un correo. ' +
         'Si no marcas ninguna, el formulario no se puede enviar. Con la primera opción aparece la sección del sistema integrado.',
       resaltar: consola.getByRole('checkbox', { name: 'Desde el sistema integrado' }),
       variantes: [
-        { cuando: 'Solo «Directo a Validasoft»', entonces: 'La sección del sistema integrado desaparece y el grupo no recibe API key de sistema.' },
+        { cuando: 'Solo «Directo a AvalaSoft»', entonces: 'La sección del sistema integrado desaparece y el grupo no recibe API key de sistema.' },
         { cuando: 'Las dos', entonces: 'Aparece la sección del sistema y el grupo recibe las dos llaves.' },
       ],
     });
@@ -109,16 +109,16 @@ recorrido(
     await consola.getByRole('textbox', { name: 'Código' }).fill('ERP');
     await consola.getByRole('textbox', { name: 'Nombre del sistema' }).fill('ERP de Cumbre');
     await consola.getByRole('textbox', { name: 'Clave pública (PEM)' }).fill(claves.publica);
-    await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar Validasoft (opcional)' }).fill(ORIGEN_SISTEMA);
+    await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar AvalaSoft (opcional)' }).fill(ORIGEN_SISTEMA);
     await paso(page, {
       titulo: 'Registra el sistema integrado',
       explicacion:
         'El sistema del cliente se registra con un código (es el «iss» de sus aserciones), un nombre y su clave pública en formato PEM: RSA de 2048 bits o más, o EC P-256. Solo se pega la clave pública; la privada se queda en el sistema del cliente. ' +
-        'Los sitios que pueden incrustar Validasoft se escriben uno por línea, como https://erp.cliente.co. Sin ellos, el sistema solo usa la API.',
+        'Los sitios que pueden incrustar AvalaSoft se escriben uno por línea, como https://erp.cliente.co. Sin ellos, el sistema solo usa la API.',
       resaltar: [
         consola.getByRole('textbox', { name: 'Código' }),
         consola.getByRole('textbox', { name: 'Clave pública (PEM)' }),
-        consola.getByRole('textbox', { name: 'Sitios que pueden incrustar Validasoft (opcional)' }),
+        consola.getByRole('textbox', { name: 'Sitios que pueden incrustar AvalaSoft (opcional)' }),
       ],
       variantes: [
         { cuando: 'Falta la clave pública', entonces: 'El botón «Crear grupo» queda deshabilitado y el campo pide pegar la clave en PEM.' },

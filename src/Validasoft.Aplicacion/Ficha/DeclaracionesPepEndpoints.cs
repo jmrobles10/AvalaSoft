@@ -81,7 +81,7 @@ public static class DeclaracionesPepEndpoints
 
         var datosEmpresa = await empresa.Sesion.LoadAsync<Empresa>(empresa.EmpresaId, ct);
         var ahora = reloj.GetUtcNow();
-        var bytes = generador.Generar(new DatosDelPdfDeDeclaracionPep(datosEmpresa?.Nombre ?? "Validasoft", tercero.Nombre, definicion.Nombre, elegida.Numero,
+        var bytes = generador.Generar(new DatosDelPdfDeDeclaracionPep(datosEmpresa?.Nombre ?? "AvalaSoft", tercero.Nombre, definicion.Nombre, elegida.Numero,
             elegida.Fecha, rol, declaracion, ahora, datosEmpresa?.LogoUrl));
         var nombre = NombreDelArchivo(declaracion, ahora);
         return await Exportaciones.EntregarAsync(empresa, contexto, http, reloj,

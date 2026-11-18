@@ -44,7 +44,7 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   await consola.getByRole('textbox', { name: 'Código' }).fill('ERP');
   await consola.getByRole('textbox', { name: 'Nombre del sistema' }).fill('ERP de Cumbre');
   await consola.getByRole('textbox', { name: 'Clave pública (PEM)' }).fill(claves.publica);
-  await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar Validasoft (opcional)' }).fill(ORIGEN_SISTEMA);
+  await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar AvalaSoft (opcional)' }).fill(ORIGEN_SISTEMA);
   await consola.getByRole('button', { name: 'Crear grupo' }).click();
   await expect(consola.getByRole('heading', { level: 1, name: `${grupo} creado` })).toBeVisible();
   const llave = (await consola.getByLabel('API key del sistema ERP', { exact: true }).textContent())?.trim() ?? '';
@@ -155,7 +155,7 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   await publica.goto(await enlaceDeVerificacion(detalle));
   await expect(publica.getByRole('heading', { level: 2, name: 'Este certificado está vigente' })).toBeVisible();
   await expect(publica.getByRole('main')).toContainText(`${empresa} validó los documentos de ${proveedor}`);
-  await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló Validasoft.' })).toBeVisible();
+  await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló AvalaSoft.' })).toBeVisible();
   await expect(publica.getByRole('main')).not.toContainText(correoProveedor);
   expect(publica.url()).toContain(`/verificar/${prefijo}-C-`);
 });

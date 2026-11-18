@@ -70,7 +70,7 @@ export const empresasGrupo = {
 
 export const apiKeys = {
   titulo: 'API keys',
-  ayuda: 'Claves para que otros sistemas llamen a la API de Validasoft. Los permisos dicen qué puede hacer cada una; el alcance, en qué empresas.',
+  ayuda: 'Claves para que otros sistemas llamen a la API de AvalaSoft. Los permisos dicen qué puede hacer cada una; el alcance, en qué empresas.',
   nueva: 'Nueva API key',
   crear: 'Crear API key',
   vacio: 'Aún no hay API keys.',
@@ -265,7 +265,7 @@ export const datosMarca = {
   quitarLogo: 'Quitar logo',
   logoAyuda: 'SVG o PNG con fondo transparente, máximo 200 KB.',
   color: 'Color de marca',
-  colorAyuda: 'Hexadecimal, como #E07A1F. Validasoft deriva tonos que cumplen contraste.',
+  colorAyuda: 'Hexadecimal, como #E07A1F. AvalaSoft deriva tonos que cumplen contraste.',
   vistaPrevia: 'Así lo verá el tercero',
   vistaPreviaTexto: '{{empresa}} te pide estos documentos.',
   vistaPreviaBoton: 'Subir documento',
@@ -281,7 +281,7 @@ export const datosMarca = {
 /** Accesos temporales de soporte de la Plataforma (B-6, CF-2). */
 export const accesosSoporte = {
   titulo: 'Accesos de soporte',
-  ayuda: 'El soporte de Validasoft no ve nada de tu grupo salvo que se lo concedas: por una empresa, por unas horas y con una razón.',
+  ayuda: 'El soporte de AvalaSoft no ve nada de tu grupo salvo que se lo concedas: por una empresa, por unas horas y con una razón.',
   conceder: 'Conceder acceso',
   concedido: 'Acceso de soporte concedido.',
   revocado: 'Acceso de soporte revocado.',
@@ -300,6 +300,6 @@ export const accesosSoporte = {
   revocarTitulo: '¿Revocar el acceso de soporte a {{empresa}}?',
   revocarTexto: 'El soporte deja de entrar de inmediato. Si lo vuelve a necesitar, concede un acceso nuevo.',
   vacio: 'No has concedido accesos de soporte.',
-  vacioAyuda: 'Si el soporte de Validasoft necesita revisar algo, concédele un acceso temporal.',
+  vacioAyuda: 'Si el soporte de AvalaSoft necesita revisar algo, concédele un acceso temporal.',
   errores: { 'texto-demasiado-largo': 'Máximo 500 caracteres.' },
 } as const;

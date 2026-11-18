@@ -56,7 +56,7 @@ recorrido(
     await paso(page, {
       titulo: 'Comprueba que el vínculo quedó anulado',
       explicacion:
-        'Validasoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle, que ahora muestra el estado «Anulado» con su fecha (1). ' +
+        'AvalaSoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle, que ahora muestra el estado «Anulado» con su fecha (1). ' +
         'El vínculo deja de aparecer entre los vigentes de la empresa y ya no recibe invitaciones ni expedientes.',
       resaltar: chip,
       avisos: true,

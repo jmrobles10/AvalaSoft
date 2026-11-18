@@ -5,7 +5,7 @@ orden: 17
 resumen: "La imagen Docker, el compose local con sus perfiles, el arranque de la base, la salud, las réplicas, qué respaldar y qué verifica el CI."
 ---
 
-Validasoft se despliega como **una imagen** más sus tres dependencias: PostgreSQL, un almacén S3 y un servidor SMTP. Debe poder correr completo en un portátil y en un servidor del cliente (decisión de `docs/04`: Docker Compose como contrato de despliegue). Todas las variables están en [Variables de entorno](guia:variables-de-entorno).
+AvalaSoft se despliega como **una imagen** más sus tres dependencias: PostgreSQL, un almacén S3 y un servidor SMTP. Debe poder correr completo en un portátil y en un servidor del cliente (decisión de `docs/04`: Docker Compose como contrato de despliegue). Todas las variables están en [Variables de entorno](guia:variables-de-entorno).
 
 ## La imagen
 

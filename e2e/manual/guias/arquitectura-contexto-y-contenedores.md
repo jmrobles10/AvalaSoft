@@ -2,16 +2,16 @@
 titulo: "Contexto y contenedores"
 seccion: "Arquitectura"
 orden: 10
-resumen: "Quién usa Validasoft, con qué sistemas se conecta y qué piezas lo forman: las dos apps, el proceso .NET, PostgreSQL, el almacén de archivos y los servicios externos."
+resumen: "Quién usa AvalaSoft, con qué sistemas se conecta y qué piezas lo forman: las dos apps, el proceso .NET, PostgreSQL, el almacén de archivos y los servicios externos."
 ---
 
-Validasoft es una plataforma que valida a terceros (proveedores, clientes, empleados, aliados) para varias empresas a la vez. Esta guía y las siguientes de la sección **Arquitectura** describen cómo está construida. Todo lo que dicen se comprobó contra el código y contra `docs/04-arquitectura-plataforma.md`; donde el código difiere del diseño original, se dice.
+AvalaSoft es una plataforma que valida a terceros (proveedores, clientes, empleados, aliados) para varias empresas a la vez. Esta guía y las siguientes de la sección **Arquitectura** describen cómo está construida. Todo lo que dicen se comprobó contra el código y contra `docs/04-arquitectura-plataforma.md`; donde el código difiere del diseño original, se dice.
 
 > **Verdad:** el diseño original (`docs/04` §1) preveía un proceso `Api` y otro `Worker` con la misma imagen. Hoy **no existe un Worker separado**: la API, las colas, el daemon de eventos y los procesos periódicos corren en un solo proceso (`Validasoft.Api`) y una sola imagen Docker. Separarlos es posible más adelante porque la mensajería ya pasa por colas durables, pero no está hecho.
 
-## Contexto: quién usa Validasoft
+## Contexto: quién usa AvalaSoft
 
-![Contexto de Validasoft: las personas y sistemas que lo usan y los servicios externos que consume](diagramas/contexto.svg)
+![Contexto de AvalaSoft: las personas y sistemas que lo usan y los servicios externos que consume](diagramas/contexto.svg)
 
 | Actor | Cómo entra | Qué hace |
 |---|---|---|
@@ -23,7 +23,7 @@ Validasoft es una plataforma que valida a terceros (proveedores, clientes, emple
 
 ### Servicios externos detrás de interfaces
 
-Ningún proveedor externo está cableado en el dominio: cada uno vive detrás de una interfaz de la capa de aplicación y se elige por configuración. Sin ellos, Validasoft funciona (la IA cae a revisión manual y las listas a un proveedor simulado en desarrollo).
+Ningún proveedor externo está cableado en el dominio: cada uno vive detrás de una interfaz de la capa de aplicación y se elige por configuración. Sin ellos, AvalaSoft funciona (la IA cae a revisión manual y las listas a un proveedor simulado en desarrollo).
 
 | Servicio | Interfaz | Implementaciones |
 |---|---|---|
@@ -36,7 +36,7 @@ Ningún proveedor externo está cableado en el dominio: cada uno vive detrás de
 
 ## Contenedores: qué piezas lo forman
 
-![Contenedores de Validasoft: apps React, proceso .NET único, PostgreSQL con Marten, almacén S3, SMTP y servicios externos](diagramas/contenedores.svg)
+![Contenedores de AvalaSoft: apps React, proceso .NET único, PostgreSQL con Marten, almacén S3, SMTP y servicios externos](diagramas/contenedores.svg)
 
 | Pieza | Tecnología | Responsabilidad |
 |---|---|---|

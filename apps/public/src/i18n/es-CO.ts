@@ -16,7 +16,7 @@ export const esCO = {
       textoRespuesta: 'Esta revisión cambió mientras escribías tu respuesta. Actualiza para verlo; lo que escribiste se conserva.',
       accion: 'Actualizar',
     },
-    marca: 'Validasoft',
+    marca: 'AvalaSoft',
     misDocumentos: 'Mis documentos',
     cargando: 'Cargando…',
     reintentar: 'Reintentar',
@@ -25,7 +25,7 @@ export const esCO = {
     volver: 'Volver',
     continuar: 'Continuar',
     pie: 'Tus documentos, una sola vez para todas tus empresas',
-    conValidasoft: 'con Validasoft',
+    conValidasoft: 'con AvalaSoft',
     version: 'Versión {{n}}',
   },
   nav: {
@@ -95,7 +95,7 @@ export const esCO = {
         texto: 'Por seguridad bloqueamos este enlace después de 5 códigos incorrectos. Pide a la empresa que te envíe una invitación nueva.',
       },
       'demasiadas-peticiones': { titulo: 'Espera un momento', texto: 'Hicimos demasiadas solicitudes seguidas desde tu conexión. Inténtalo de nuevo en un minuto.' },
-      red: { titulo: 'Sin conexión', texto: 'No pudimos comunicarnos con Validasoft. Revisa tu conexión e inténtalo de nuevo.' },
+      red: { titulo: 'Sin conexión', texto: 'No pudimos comunicarnos con AvalaSoft. Revisa tu conexión e inténtalo de nuevo.' },
       otro: { titulo: 'No pudimos abrir tu invitación', texto: 'Inténtalo de nuevo en unos minutos. Si sigue fallando, escribe a la empresa que te invitó.' },
     },
   },
@@ -149,7 +149,7 @@ export const esCO = {
     sub: 'Vínculo como {{tipo}}. Para compartir tus documentos con {{empresa}}, lee y acepta estos textos.',
     textos: 'Lo que aceptas',
     tipos: {
-      AvisoPlataforma: 'Aviso de tratamiento de datos de Validasoft',
+      AvisoPlataforma: 'Aviso de tratamiento de datos de AvalaSoft',
       AutorizacionEmpresa: 'Autorización de tratamiento de datos de {{empresa}}',
       TerminosEmpresa: 'Términos y condiciones de {{empresa}}',
     },
@@ -607,10 +607,10 @@ export const esCO = {
     soloVigente: 'El PDF solo se entrega mientras el certificado está vigente.',
     cripto: {
       titulo: 'Autenticidad',
-      sub: 'Tu navegador lo comprueba por su cuenta: recalcula el contenido sellado y valida la firma con la clave pública de Validasoft.',
+      sub: 'Tu navegador lo comprueba por su cuenta: recalcula el contenido sellado y valida la firma con la clave pública de AvalaSoft.',
       verificando: 'Verificando en tu navegador…',
       conclusiones: {
-        autentico: 'Auténtico: el contenido está íntegro y lo selló Validasoft.',
+        autentico: 'Auténtico: el contenido está íntegro y lo selló AvalaSoft.',
         'no-autentico': 'No confíes en este certificado: la verificación falló.',
         'no-soportado': 'Tu navegador no permite verificar el sello. Ábrelo en una versión reciente de Chrome, Edge, Firefox o Safari.',
         incompleto: 'No pudimos completar la verificación del sello. Inténtalo de nuevo en unos minutos.',
@@ -632,11 +632,11 @@ export const esCO = {
         },
         clave: {
           titulo: 'Clave de la plataforma',
-          ok: 'Lo selló la clave vigente de Validasoft ({{kid}}).',
-          anterior: 'Lo selló una clave anterior de Validasoft ({{kid}}), que se sigue publicando para verificar emisiones previas.',
+          ok: 'Lo selló la clave vigente de AvalaSoft ({{kid}}).',
+          anterior: 'Lo selló una clave anterior de AvalaSoft ({{kid}}), que se sigue publicando para verificar emisiones previas.',
           'fuera-de-plazo': 'La clave {{kid}} ya fue retirada y no vale para este certificado: se emitió después de su retiro o venció su plazo de verificación.',
-          desconocida: 'La clave {{kid}} no está entre las que publica Validasoft.',
-          'no-disponible': 'No pudimos obtener las claves públicas de Validasoft.',
+          desconocida: 'La clave {{kid}} no está entre las que publica AvalaSoft.',
+          'no-disponible': 'No pudimos obtener las claves públicas de AvalaSoft.',
         },
         sello: {
           titulo: 'Sello válido',
@@ -657,7 +657,7 @@ export const esCO = {
     fallos: {
       'certificado-no-encontrado': {
         titulo: 'No encontramos este certificado',
-        texto: 'Revisa que el folio y la huella estén completos, como aparecen en el PDF. Si escaneaste el código QR, puede que el documento no sea un certificado de Validasoft.',
+        texto: 'Revisa que el folio y la huella estén completos, como aparecen en el PDF. Si escaneaste el código QR, puede que el documento no sea un certificado de AvalaSoft.',
       },
       'huella-invalida': {
         titulo: 'La huella no es válida',
@@ -665,13 +665,13 @@ export const esCO = {
       },
       'folio-ambiguo': { titulo: 'Falta la huella', texto: 'Hay más de un certificado con ese folio. Abre el enlace completo del código QR: incluye la huella.' },
       'demasiadas-peticiones': { titulo: 'Espera un momento', texto: 'Hicimos demasiadas consultas seguidas desde tu conexión. Inténtalo de nuevo en un minuto.' },
-      red: { titulo: 'Sin conexión', texto: 'No pudimos comunicarnos con Validasoft. Revisa tu conexión e inténtalo de nuevo.' },
+      red: { titulo: 'Sin conexión', texto: 'No pudimos comunicarnos con AvalaSoft. Revisa tu conexión e inténtalo de nuevo.' },
       'no-disponible': { titulo: 'La verificación no está disponible', texto: 'No pudimos consultar el certificado. Inténtalo de nuevo en unos minutos.' },
     },
   },
   errores: {
     ...erroresPrivacidad,
-    red: 'No pudimos comunicarnos con Validasoft. Revisa tu conexión e inténtalo de nuevo.',
+    red: 'No pudimos comunicarnos con AvalaSoft. Revisa tu conexión e inténtalo de nuevo.',
     'certificado-no-encontrado': 'No encontramos este certificado. Revisa el folio y la huella.',
     'certificado-no-vigente': 'El certificado ya no está vigente, así que su PDF no se entrega. Recarga la página para ver su estado.',
     'pdf-pendiente': 'El PDF todavía se está generando. Inténtalo de nuevo en unos segundos.',
@@ -686,7 +686,7 @@ export const esCO = {
     'acceso-aislado': 'Tu acceso está pendiente de que un contacto del tercero lo apruebe: esto aún no está a tu alcance.',
     'acceso-rechazado': 'Los contactos del tercero rechazaron el acceso de este correo. Pide a la empresa que te invite con otro correo.',
     'acceso-propio': 'Nadie decide sobre su propio acceso: lo decide otro contacto del tercero.',
-    'alcance-de-sesion': 'Esta sesión se abrió para una parte de Validasoft y no alcanza lo que pides.',
+    'alcance-de-sesion': 'Esta sesión se abrió para una parte de AvalaSoft y no alcanza lo que pides.',
     'solicitud-no-encontrada': 'Esa solicitud de acceso ya no existe. Recarga la página.',
     'solicitud-ya-aprobada': 'Ese correo ya es contacto de tu empresa: no se puede rechazar.',
     'sesion-no-encontrada': 'Esa sesión ya se cerró o venció. Recarga la página.',

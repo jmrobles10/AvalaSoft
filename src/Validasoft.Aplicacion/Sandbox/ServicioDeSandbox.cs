@@ -32,7 +32,7 @@ public sealed class ServicioDeSandbox(ISesiones sesiones, IDocumentStore store, 
     private const int TamanoDeBloque = 500;
 
     /// <summary>Texto de la autorización y los términos de las empresas del sandbox cuando la empresa real aún no los publicó.</summary>
-    private const string TextoDePrueba = "Texto de prueba del sandbox de Validasoft: no tiene validez legal ni se usa en producción.";
+    private const string TextoDePrueba = "Texto de prueba del sandbox de AvalaSoft: no tiene validez legal ni se usa en producción.";
 
     /// <summary>Validaciones de IA por mes de cada empresa del sandbox: las responde el proveedor simulado, sin costo.</summary>
     private const int ValidacionesDeIaDelSandbox = 100_000;

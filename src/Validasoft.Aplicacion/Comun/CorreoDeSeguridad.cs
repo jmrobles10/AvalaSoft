@@ -39,18 +39,18 @@ public static class CorreoDeSeguridadPendienteHandler
 
         var (asunto, que) = correo.Tipo switch
         {
-            TiposDeAvisoDeSeguridad.PasskeyRegistrada => ("Registraste una passkey en Validasoft", $"Se registró {detalle} en tu cuenta de Validasoft el {cuando}{desde}."),
-            TiposDeAvisoDeSeguridad.PasskeyRevocada => ("Se revocó una passkey de tu cuenta de Validasoft", $"Se revocó {detalle} de tu cuenta el {cuando}. {quien}: esa passkey ya no sirve para entrar."),
-            TiposDeAvisoDeSeguridad.PasskeyEliminada => ("Eliminaste una passkey de tu cuenta de Validasoft", $"Se eliminó {detalle} de tu cuenta el {cuando}{desde}."),
-            TiposDeAvisoDeSeguridad.CodigosGenerados => ("Generaste códigos de recuperación en Validasoft", $"Se generó un juego nuevo de códigos de recuperación de tu cuenta el {cuando}{desde}. Los anteriores dejaron de valer."),
-            TiposDeAvisoDeSeguridad.RecuperacionUsada => ("Usaste un código de recuperación en Validasoft", $"Se usó un código de recuperación para entrar a tu cuenta el {cuando}{desde}.{(string.IsNullOrWhiteSpace(correo.Detalle) ? string.Empty : " " + correo.Detalle)}"),
+            TiposDeAvisoDeSeguridad.PasskeyRegistrada => ("Registraste una passkey en AvalaSoft", $"Se registró {detalle} en tu cuenta de AvalaSoft el {cuando}{desde}."),
+            TiposDeAvisoDeSeguridad.PasskeyRevocada => ("Se revocó una passkey de tu cuenta de AvalaSoft", $"Se revocó {detalle} de tu cuenta el {cuando}. {quien}: esa passkey ya no sirve para entrar."),
+            TiposDeAvisoDeSeguridad.PasskeyEliminada => ("Eliminaste una passkey de tu cuenta de AvalaSoft", $"Se eliminó {detalle} de tu cuenta el {cuando}{desde}."),
+            TiposDeAvisoDeSeguridad.CodigosGenerados => ("Generaste códigos de recuperación en AvalaSoft", $"Se generó un juego nuevo de códigos de recuperación de tu cuenta el {cuando}{desde}. Los anteriores dejaron de valer."),
+            TiposDeAvisoDeSeguridad.RecuperacionUsada => ("Usaste un código de recuperación en AvalaSoft", $"Se usó un código de recuperación para entrar a tu cuenta el {cuando}{desde}.{(string.IsNullOrWhiteSpace(correo.Detalle) ? string.Empty : " " + correo.Detalle)}"),
             _ => throw new ArgumentOutOfRangeException(nameof(correo), correo.Tipo, "Tipo de aviso desconocido.")
         };
 
         var texto = $"Hola, {correo.Nombre}.\n\n{que}\n\nSi fuiste tú, no tienes que hacer nada.\n\n" +
                     $"Si no fuiste tú, entra a {urlApp}, revisa «Mi cuenta» (passkeys y sesiones), revoca lo que no reconozcas y avisa a un administrador de tu grupo.";
         var html = $"<p>Hola, {WebUtility.HtmlEncode(correo.Nombre)}.</p><p>{WebUtility.HtmlEncode(que)}</p><p>Si fuiste tú, no tienes que hacer nada.</p>" +
-                   $"<p>Si no fuiste tú, entra a <a href=\"{WebUtility.HtmlEncode(urlApp)}\">Validasoft</a>, revisa «Mi cuenta» (passkeys y sesiones), revoca lo que no reconozcas y avisa a un administrador de tu grupo.</p>";
+                   $"<p>Si no fuiste tú, entra a <a href=\"{WebUtility.HtmlEncode(urlApp)}\">AvalaSoft</a>, revisa «Mi cuenta» (passkeys y sesiones), revoca lo que no reconozcas y avisa a un administrador de tu grupo.</p>";
         return new MensajeDeCorreo(correo.Para, asunto, texto, html);
     }
 }

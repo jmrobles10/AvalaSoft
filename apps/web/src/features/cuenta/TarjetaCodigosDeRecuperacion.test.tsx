@@ -96,9 +96,9 @@ describe('copiar e imprimir los códigos', () => {
   });
 
   it('la hoja impresa lleva los códigos y escapa lo que no debe interpretarse como HTML', () => {
-    const html = documentoParaImprimir({ codigos: ['AB3CD-EFGH2'], generadosEn: '2026-11-11T15:00:00Z' }, 'Códigos <b>de</b> Validasoft', 'Guarda "esta" hoja & listo');
+    const html = documentoParaImprimir({ codigos: ['AB3CD-EFGH2'], generadosEn: '2026-11-11T15:00:00Z' }, 'Códigos <b>de</b> AvalaSoft', 'Guarda "esta" hoja & listo');
     expect(html).toContain('<li>AB3CD-EFGH2</li>');
-    expect(html).toContain('Códigos &lt;b&gt;de&lt;/b&gt; Validasoft');
+    expect(html).toContain('Códigos &lt;b&gt;de&lt;/b&gt; AvalaSoft');
     expect(html).toContain('Guarda &quot;esta&quot; hoja &amp; listo');
     expect(html).not.toContain('<b>de</b>');
     expect(html).not.toContain('<script');

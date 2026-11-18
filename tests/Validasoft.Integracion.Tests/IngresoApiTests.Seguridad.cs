@@ -21,11 +21,11 @@ namespace Validasoft.Integracion.Tests;
 /// </summary>
 public sealed partial class IngresoApiTests
 {
-    private const string AsuntoPasskeyRegistrada = "Registraste una passkey en Validasoft";
-    private const string AsuntoPasskeyRevocada = "Se revocó una passkey de tu cuenta de Validasoft";
-    private const string AsuntoPasskeyEliminada = "Eliminaste una passkey de tu cuenta de Validasoft";
-    private const string AsuntoCodigosGenerados = "Generaste códigos de recuperación en Validasoft";
-    private const string AsuntoRecuperacionUsada = "Usaste un código de recuperación en Validasoft";
+    private const string AsuntoPasskeyRegistrada = "Registraste una passkey en AvalaSoft";
+    private const string AsuntoPasskeyRevocada = "Se revocó una passkey de tu cuenta de AvalaSoft";
+    private const string AsuntoPasskeyEliminada = "Eliminaste una passkey de tu cuenta de AvalaSoft";
+    private const string AsuntoCodigosGenerados = "Generaste códigos de recuperación en AvalaSoft";
+    private const string AsuntoRecuperacionUsada = "Usaste un código de recuperación en AvalaSoft";
 
     /// <summary>Confirma con la passkey la sesión del token: las acciones sensibles se aceptan unos minutos.</summary>
     private async Task ReautenticarAsync(AutenticadorVirtual autenticador, string token)
@@ -398,7 +398,7 @@ public sealed partial class IngresoApiTests
         // Reactivarlo envía la invitación; sus passkeys revocadas no vuelven, así que registra una nueva con el código del correo.
         await PostJsonAsync<OperadorDePlataformaDto>($"/api/v1/plataforma/operadores/{ruta}/reactivar", null, token);
         (await CodigoDeErrorAsync(await ComoPersonaAsync("POST", $"/api/v1/plataforma/operadores/{ruta}/reactivar", null, token, 409))).ShouldBe("operador-activo");
-        await Correos.EsperarAsync(otro.Correo, c => c.Asunto.Contains("te invitó a Validasoft"), cuantos: 2);
+        await Correos.EsperarAsync(otro.Correo, c => c.Asunto.Contains("te invitó a AvalaSoft"), cuantos: 2);
         var paso = (await VerificarCodigoAsync(await PedirCodigoAsync(otro.Correo), await CodigoDelCorreoAsync(otro.Correo, 2))).Paso;
         paso.Estado.ShouldBe("RegistrarPasskey");
         var nuevo = await RegistrarEnIngresoAsync(paso, new AutenticadorVirtual(ApiFixture.OrigenDeLaApp), "Llave nueva");

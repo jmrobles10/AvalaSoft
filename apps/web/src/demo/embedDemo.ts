@@ -111,7 +111,7 @@ function abrir() {
   if (!marco) return;
   marco.replaceChildren();
   iframe = document.createElement('iframe');
-  iframe.title = 'Validasoft';
+  iframe.title = 'AvalaSoft';
   iframe.src = `${import.meta.env.BASE_URL}index.html#/`;
   marco.append(iframe);
   botonRenovar.disabled = false;

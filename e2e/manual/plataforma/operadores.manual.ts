@@ -48,7 +48,7 @@ recorrido(
     await paso(page, {
       titulo: 'Da de alta al nuevo operador',
       explicacion:
-        'Escribe el nombre y el correo de la persona. Al crearla, Validasoft le envía un correo para entrar: no hay contraseña que compartir. ' +
+        'Escribe el nombre y el correo de la persona. Al crearla, AvalaSoft le envía un correo para entrar: no hay contraseña que compartir. ' +
         'Entra con su correo, un código y una passkey obligatoria, que registra en su primer ingreso.',
       resaltar: [dialogo.getByRole('textbox', { name: 'Nombre' }), dialogo.getByRole('textbox', { name: 'Correo' })],
       variantes: [

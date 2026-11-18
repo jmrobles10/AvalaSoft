@@ -40,7 +40,7 @@ function montar(sistema: SistemaIntegradoDto, respuesta: (cuerpo: unknown) => Re
 
 afterEach(() => reiniciarCliente());
 
-describe('Sitios que pueden incrustar Validasoft', () => {
+describe('Sitios que pueden incrustar AvalaSoft', () => {
   it('explica para qué sirve, normaliza lo escrito y guarda la lista completa con PUT', async () => {
     const usuario = userEvent.setup();
     const peticiones = montar(SISTEMA, (cuerpo) => json({ ...SISTEMA, origenesPermitidos: (cuerpo as { origenes: string[] }).origenes }));
