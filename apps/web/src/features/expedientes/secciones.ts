@@ -15,6 +15,14 @@ export function esRequisitoDeSeccion(requisito: Pick<RequisitoExpedienteDto, 'ti
 }
 
 /**
+ * Una sección con versión pero sin datos: el grupo de acceso de quien consulta no ve el sector de esa sección y la API le deja
+ * `Seccion.Datos` en nulo (con sus soportes, cambios y cruce vacíos). Una sección que el tercero aún no llena no tiene versión.
+ */
+export function seccionSinAcceso(requisito: Pick<RequisitoExpedienteDto, 'versionActual' | 'seccion'>): boolean {
+  return Boolean(requisito.versionActual) && Boolean(requisito.seccion) && (requisito.seccion?.datos ?? null) === null;
+}
+
+/**
  * El soporte en el visor si es un documento de la bóveda compartido con el vínculo (en esa versión); `null` si la
  * empresa no lo puede ver (un adjunto propio de la ficha o una versión no compartida).
  */

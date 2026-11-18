@@ -295,6 +295,8 @@ export const expedientes = {
     verDatos: 'Ver datos',
     verDatosAccesible: 'Ver los datos de {{documento}}, versión {{n}}',
     soloDatos: 'Esta versión es un formulario: no tiene archivo para ver ni descargar.',
+    seccionDeLaFicha: 'Sección de la ficha del tercero',
+    seccionSinAcceso: 'No tienes acceso a los datos de esta sección: tu grupo de acceso solo ve las secciones de sus sectores.',
   },
   /** Vigencia de una versión para este vínculo (TD-6). */
   vigencia: {
