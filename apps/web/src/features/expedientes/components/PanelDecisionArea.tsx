@@ -10,8 +10,9 @@ import { VisorDocumento, type DocumentoEnVisor } from '../../documentos/VisorDoc
 import { ChipEstadoArea } from '../componentes';
 import { bloqueoDecisionArea, documentosDelArea, documentosPorDecidir, type BloqueoDecisionArea } from '../decisionArea';
 import type { ContextoRevisor, DialogoExpediente } from '../reglas';
-import { documentoEnVisor, tieneRequisitos } from '../requisitos';
+import { documentoEnVisor, requisitosDe, tieneRequisitos } from '../requisitos';
 import { BotonVerVersion } from './BotonVerVersion';
+import { VisorSeccionRequisito } from './VisorSeccionRequisito';
 
 /** Bloqueos que se explican a quien revisa; los demás (sin permiso, cerrado) no dicen nada útil. */
 const EXPLICADOS = ['expediente-observado', 'vinculo-bloqueado', 'area-esperando', 'no-es-miembro', 'nada-por-decidir'] as const;
@@ -22,7 +23,7 @@ function seExplica(bloqueo: BloqueoDecisionArea | null): bloqueo is (typeof EXPL
 
 /**
  * La decisión de cada área de la etapa en curso, como en el SRM: sus documentos con versión, vigencia y «Ver» (o «Ver
- * datos» si la versión es solo un formulario), y una sola
+ * datos» si la versión es solo un formulario o una sección de la ficha: esta abre el detalle de la sección), y una sola
  * decisión: «Aprobar área (n documentos)» u «Observar». El detalle por documento queda en «Documentos que pide el
  * flujo» («Decidir por documento»). Solo en flujos con requisitos.
  */
@@ -37,10 +38,14 @@ export function PanelDecisionArea({
 }) {
   const { t } = useTranslation();
   const [abierto, setAbierto] = useState<DocumentoEnVisor | null>(null);
+  // Los datos de una sección de la ficha no son un archivo ni un formulario de documento: van en su propio detalle.
+  const [seccionAbierta, setSeccionAbierta] = useState<string | null>(null);
   if (!tieneRequisitos(expediente) || !['EnRevision', 'Observado'].includes(expediente.estado)) return null;
   const etapa = expediente.etapas.find((e) => e.orden === expediente.etapaActual);
   const areas = (etapa?.areas ?? []).filter((a) => documentosDelArea(expediente, a.areaId).length > 0);
   const puedeVer = contexto(null).scopes.has(SCOPES.documentosDescargar);
+  const puedeLeerDocumentos = contexto(null).scopes.has(SCOPES.documentosLeer);
+  const requisitoAbierto = seccionAbierta ? requisitosDe(expediente).find((r) => r.id === seccionAbierta) : undefined;
   if (areas.length === 0) return null;
 
   return (
@@ -75,7 +80,7 @@ export function PanelDecisionArea({
                       </Typography>
                       {version?.vigencia && <ChipVigencia vigencia={version.vigencia} />}
                       {areaRequisito.estado !== 'Esperando' && <ChipEstado estado={areaRequisito.estado} />}
-                      {documento && <BotonVerVersion documento={documento} puedeVerArchivo={puedeVer} variante="text" onVer={setAbierto} />}
+                      {documento && <BotonVerVersion documento={documento} puedeVerArchivo={puedeVer} variante="text" onVer={requisito.seccion ? () => setSeccionAbierta(requisito.id) : setAbierto} />}
                     </Stack>
                   );
                 })}
@@ -100,6 +105,18 @@ export function PanelDecisionArea({
         })}
       </Stack>
       {abierto && <VisorDocumento empresaId={expediente.empresaId} vinculoId={expediente.vinculoId} documento={abierto} onCerrar={() => setAbierto(null)} />}
+      {requisitoAbierto?.seccion && (
+        <VisorSeccionRequisito
+          empresaId={expediente.empresaId}
+          vinculoId={expediente.vinculoId}
+          terceroId={expediente.tercero.id}
+          requisito={requisitoAbierto}
+          seccion={requisitoAbierto.seccion}
+          puedeVerArchivo={puedeVer}
+          puedeLeerDocumentos={puedeLeerDocumentos}
+          onCerrar={() => setSeccionAbierta(null)}
+        />
+      )}
     </Tarjeta>
   );
 }
