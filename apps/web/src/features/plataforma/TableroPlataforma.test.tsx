@@ -64,7 +64,8 @@ function montar(solicitudes: SolicitudDeAccesoDePlataformaDto[] | ProblemaSimula
 }
 
 beforeEach(() => {
-  vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-11-18T09:00:00-05:00') });
+  // Hora local (no con zona): el saludo usa `getHours()` y el CI corre en UTC; «09:00-05:00» allá son las 14:00 («Buenas tardes»).
+  vi.useFakeTimers({ toFake: ['Date'], now: new Date(2026, 10, 18, 9, 0, 0) });
   useSesion.setState({ sesion: { nombre: 'Paula Plataforma', usuarioId: 'op-1' } as SesionAvalasoft, estado: 'activa' });
 });
 
