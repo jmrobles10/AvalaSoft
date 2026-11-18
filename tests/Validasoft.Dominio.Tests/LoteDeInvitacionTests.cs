@@ -149,7 +149,8 @@ public sealed class LoteDeInvitacionTests
     {
         var (contenido, _, nombre) = ArchivoDeLote.Plantilla("xlsx");
         nombre.ShouldEndWith(".xlsx");
-        LectorDeHojaDeCalculo.Leer(contenido).ShouldHaveSingleItem().ShouldBe(ArchivoDeLote.Columnas.Select(c => c.Encabezado));
+        // La hoja de datos solo trae el encabezado; las obligatorias llevan asterisco, que el importador ignora al reconocer la columna.
+        LectorDeHojaDeCalculo.Leer(contenido).ShouldHaveSingleItem().ShouldBe(ArchivoDeLote.Columnas.Select(c => c.Obligatoria ? $"{c.Encabezado} *" : c.Encabezado));
 
         // Un libro con filas (el escritor del informe) se lee igual: texto, números y celdas vacías intermedias.
         var libro = HojaDeCalculo.Crear("Hoja", [.. ArchivoDeLote.Columnas.Select(c => c.Encabezado)],

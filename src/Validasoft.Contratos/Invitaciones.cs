@@ -45,6 +45,34 @@ public sealed record VistaPreviaLoteDto(string? Archivo, int Total, int Validas,
 public sealed record CrearLoteDto(string? Nombre = null, ArchivoDeLoteDto? Archivo = null, IReadOnlyList<FilaDeLoteEntradaDto>? Filas = null,
     int VigenciaHoras = 168);
 
+/// <summary>
+/// Invitar a un tercero a mano (formulario de la app): los mismos datos que una fila del lote —identificación (<see cref="Pais"/> por omisión <c>CO</c>), tipo de
+/// persona (si falta: <c>Juridica</c> con NIT, si no <c>Natural</c>), razón social o nombres, correo, tipo de vínculo y, opcionales, flujo (código), nombre comercial,
+/// contacto y teléfono— y la vigencia del enlace (1 hora a 30 días; 7 días por omisión, como el lote).
+/// </summary>
+public sealed record InvitarTerceroDto(
+    string? Pais = null,
+    string? TipoIdentificacion = null,
+    string? NumeroIdentificacion = null,
+    string? DigitoVerificacion = null,
+    string? TipoPersona = null,
+    string? Nombre = null,
+    string? NombreComercial = null,
+    string? Correo = null,
+    string? TipoVinculo = null,
+    string? Flujo = null,
+    string? Contacto = null,
+    string? Telefono = null,
+    int VigenciaHoras = 168);
+
+/// <summary>
+/// Lo que hizo la invitación individual, igual que una fila del lote. <see cref="Accion"/>: <c>Invitado</c> (vínculo nuevo), <c>Reinvitado</c> (el vínculo ya existía
+/// y aún no aceptaba: se reenvió al correo indicado) o <c>SinCambios</c> (el tercero ya aceptó: no se reenvía; <see cref="Detalle"/> lo dice).
+/// <see cref="PorAprobar"/> (decisión AI): el tipo de vínculo exige aprobación antes de invitar y la invitación quedó retenida hasta que otra persona la decida; no ha
+/// salido ningún correo. <see cref="TerceroCreado"/>: el tercero no existía en la plataforma y se registró con estos datos.
+/// </summary>
+public sealed record InvitacionDeTerceroDto(string Accion, Guid TerceroId, Guid VinculoId, bool TerceroCreado, bool PorAprobar, string? Detalle);
+
 public sealed record TotalesLoteDto(int Filas, int Procesadas, int Pendientes, int Exitosas, int Fallidas, int Duplicadas, int Invalidas);
 
 /// <summary>

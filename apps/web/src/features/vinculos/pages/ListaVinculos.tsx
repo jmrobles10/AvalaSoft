@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
-import { EstadoVinculo, esErrorApi, SCOPES, type VinculoDto } from '@validasoft/api-client';
+import { EstadoVinculo, esErrorApi, puede, SCOPES, type VinculoDto } from '@validasoft/api-client';
 import {
   APARIENCIA_ESTADO,
   BarraFiltros,
@@ -13,7 +13,7 @@ import {
   usePaginacionCursor,
   type ColumnaTabla,
 } from '@validasoft/ui';
-import { ClipboardCheck, FileUp, Search } from 'lucide-react';
+import { ClipboardCheck, FileUp, Search, UserPlus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -23,6 +23,7 @@ import { mensajeDeError } from '../../../shared/errores';
 import { usePermisos } from '../../../shared/usePermisos';
 import { useAvisos } from '../../../shared/useAvisos';
 import { useEmpresaActiva } from '../../empresas/useEmpresas';
+import { DialogoInvitarTercero } from '../../invitaciones/DialogoInvitarTercero';
 import { buscarPorReferencia, useTiposVinculo, useVinculos } from '../api';
 import { NombreTercero } from '../components/NombreTercero';
 import { EN_REVISION, estadoVisibleDelVinculo, parametrosDeEstado, type EstadoVisibleDelVinculo } from '../estadoVisible';
@@ -36,9 +37,10 @@ const ESTADOS: EstadoVisibleDelVinculo[] = Object.values(EstadoVinculo).flatMap(
 export function ListaVinculos() {
   const { t } = useTranslation();
   const navegar = useNavigate();
-  const { empresa } = useEmpresaActiva();
+  const { empresa, empresas } = useEmpresaActiva();
   const permisos = usePermisos(empresa.id);
-  const sistemaSesion = useSesion((s) => s.sesion?.sistema ?? null);
+  const sesion = useSesion((s) => s.sesion);
+  const sistemaSesion = sesion?.sistema ?? null;
   const mostrar = useAvisos((s) => s.mostrar);
   const [filtros, setFiltros] = useSearchParams();
   const estado = filtros.get('estado') ?? '';
@@ -47,6 +49,7 @@ export function ListaVinculos() {
   const { reiniciar } = paginacion;
   const [busqueda, setBusqueda] = useState('');
   const [sinCoincidencia, setSinCoincidencia] = useState<string | null>(null);
+  const [invitando, setInvitando] = useState(false);
 
   useEffect(() => {
     reiniciar();
@@ -60,6 +63,11 @@ export function ListaVinculos() {
   });
   const tipos = useTiposVinculo(empresa.id, permisos.puede(SCOPES.configuracionLeer));
   const conFicha = permisos.puede(SCOPES.tercerosLeer);
+  // «Invitar tercero» deja elegir entre las empresas donde la persona puede invitar (la activa siempre está).
+  const empresasQueInvitan = useMemo(
+    () => (sesion ? empresas.filter((e) => e.id === empresa.id || (e.activa && puede(sesion, SCOPES.vinculosEscribir, e.id))) : [empresa]),
+    [sesion, empresas, empresa],
+  );
 
   const columnas = useMemo<ColumnaTabla<VinculoDto>[]>(
     () => [
@@ -154,9 +162,14 @@ export function ListaVinculos() {
               </Button>
             )}
             {permisos.puede(SCOPES.vinculosEscribir) && (
-              <Button variant="outlined" startIcon={<FileUp size={16} aria-hidden />} onClick={() => void navegar(`/e/${empresa.id}/invitaciones/lotes`)}>
-                {t('lotes.irALotes')}
-              </Button>
+              <>
+                <Button variant="outlined" startIcon={<FileUp size={16} aria-hidden />} onClick={() => void navegar(`/e/${empresa.id}/invitaciones/lotes`)}>
+                  {t('lotes.irALotes')}
+                </Button>
+                <Button variant="contained" startIcon={<UserPlus size={16} aria-hidden />} onClick={() => setInvitando(true)}>
+                  {t('invitaciones.invitarTercero.boton')}
+                </Button>
+              </>
             )}
           </>
         }
@@ -194,6 +207,8 @@ export function ListaVinculos() {
           </Button>
         )}
       </BarraFiltros>
+
+      {invitando && <DialogoInvitarTercero empresas={empresasQueInvitan} empresaInicial={empresa.id} onCerrar={() => setInvitando(false)} />}
 
       <TablaConCursor
         etiqueta={t('vinculos.titulo')}

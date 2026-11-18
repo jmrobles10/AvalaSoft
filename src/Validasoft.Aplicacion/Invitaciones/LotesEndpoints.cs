@@ -25,12 +25,19 @@ public static class LotesEndpoints
 {
     public const int MaximoFilasPorOmision = 10_000;
 
-    /// <summary>Plantilla vacía con los encabezados (<c>formato=xlsx</c> por omisión, o <c>csv</c> separado por punto y coma).</summary>
+    /// <summary>
+    /// Plantilla vacía (<c>formato=xlsx</c> por omisión, o <c>csv</c> separado por punto y coma). El Excel es la <b>plantilla de la empresa activa</b>: hoja «Invitaciones» con el encabezado
+    /// de marca (obligatorias con asterisco y nota de ayuda), listas desplegables con los países, los tipos de identificación del país elegido, el tipo de persona, los tipos de vínculo
+    /// activos de la empresa y sus flujos publicados (como «Nombre (CÓDIGO)»; el importador entiende los dos), una hoja «Instrucciones» y la hoja oculta «Listas». El importador y la vista
+    /// previa leen la primera hoja, igual que siempre.
+    /// </summary>
     [WolverineGet("/api/v1/invitaciones/lotes/plantilla")]
     [Authorize(Policy = Permisos.VinculosEscribir)]
-    public static IResult Plantilla(string? formato)
+    public static async Task<IResult> Plantilla(string? formato, SesionDeEmpresa empresa, CancellationToken ct)
     {
-        var (contenido, tipo, nombre) = ArchivoDeLote.Plantilla(formato);
+        // El CSV son solo los encabezados: no consulta la empresa.
+        var catalogo = string.Equals(formato, "csv", StringComparison.OrdinalIgnoreCase) ? null : await CatalogoDePlantilla.CargarAsync(empresa, ct);
+        var (contenido, tipo, nombre) = ArchivoDeLote.Plantilla(formato, catalogo);
         return Results.File(contenido, tipo, nombre);
     }
 

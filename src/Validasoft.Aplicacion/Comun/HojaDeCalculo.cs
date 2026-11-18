@@ -146,9 +146,9 @@ public static class HojaDeCalculo
 
     private static string Recortar(string nombre) => nombre.Length <= 31 ? nombre : nombre[..31];
 
-    private static string Xml(string texto) => SecurityElement.Escape(new string([.. texto.Where(c => c is '\t' or '\n' or '\r' || c >= ' ')]));
+    internal static string Xml(string texto) => SecurityElement.Escape(new string([.. texto.Where(c => c is '\t' or '\n' or '\r' || c >= ' ')]));
 
-    private static void Escribir(ZipArchive zip, string ruta, string contenido)
+    internal static void Escribir(ZipArchive zip, string ruta, string contenido)
     {
         using var flujo = zip.CreateEntry(ruta, CompressionLevel.Optimal).Open();
         var bytes = new UTF8Encoding(false).GetBytes(contenido);

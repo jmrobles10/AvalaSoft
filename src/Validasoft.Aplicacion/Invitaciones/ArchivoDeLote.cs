@@ -1,8 +1,10 @@
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using Validasoft.Aplicacion.Comun;
 using Validasoft.Contratos;
 using Validasoft.Dominio.Comun;
+using Validasoft.Dominio.Identificaciones;
 using Validasoft.Dominio.Invitaciones;
 
 namespace Validasoft.Aplicacion.Invitaciones;
@@ -12,7 +14,7 @@ namespace Validasoft.Aplicacion.Invitaciones;
 /// empresa. Los encabezados se reconocen sin importar mayúsculas, tildes, espacios ni guiones («Número de identificación»,
 /// «numero_identificacion» o «NIT»); las columnas que no se reconocen se ignoran y las filas vacías se saltan.
 /// </summary>
-public static class ArchivoDeLote
+public static partial class ArchivoDeLote
 {
     /// <summary>Columnas en el orden de la plantilla; las obligatorias van primero.</summary>
     public static readonly IReadOnlyList<(string Campo, string Encabezado, bool Obligatoria)> Columnas =
@@ -54,16 +56,72 @@ public static class ArchivoDeLote
 
     public const string TipoCsv = "text/csv; charset=utf-8";
 
-    /// <summary>La plantilla vacía (solo encabezados) en el formato pedido: <c>xlsx</c> (por omisión) o <c>csv</c>.</summary>
-    public static (byte[] Contenido, string Tipo, string Nombre) Plantilla(string? formato)
+    /// <summary>Nombre de la hoja de datos de la plantilla Excel: la primera, la que lee el importador y la vista previa.</summary>
+    public const string HojaDeDatos = "Invitaciones";
+
+    /// <summary>
+    /// La plantilla vacía en el formato pedido: <c>xlsx</c> (por omisión) o <c>csv</c>. El Excel es la plantilla de la empresa (<paramref name="catalogo"/>: sus tipos de vínculo
+    /// activos y sus flujos publicados), con formato, listas desplegables e instrucciones (<see cref="PlantillaDeLoteXlsx"/>); el CSV son solo los encabezados.
+    /// </summary>
+    public static (byte[] Contenido, string Tipo, string Nombre) Plantilla(string? formato, CatalogoDePlantilla? catalogo = null)
     {
-        var encabezado = Columnas.Select(c => c.Encabezado).ToList();
         if (string.Equals(formato, "csv", StringComparison.OrdinalIgnoreCase))
-            return (Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(string.Join(';', encabezado) + "\r\n")).ToArray(), TipoCsv,
+            return (Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(string.Join(';', Columnas.Select(c => c.Encabezado)) + "\r\n")).ToArray(), TipoCsv,
                 "plantilla-invitacion-masiva.csv");
         if (formato is not null && !string.Equals(formato, "xlsx", StringComparison.OrdinalIgnoreCase))
             throw ReglaDeNegocioException.Validacion("formato-invalido", "El formato de la plantilla es xlsx o csv.");
-        return (HojaDeCalculo.Crear("Invitaciones", encabezado, []), HojaDeCalculo.TipoContenido, "plantilla-invitacion-masiva.xlsx");
+        return (PlantillaDeLoteXlsx.Crear(catalogo ?? CatalogoDePlantilla.Vacio), HojaDeCalculo.TipoContenido, "plantilla-invitacion-masiva.xlsx");
+    }
+
+    [GeneratedRegex(@"\(([^()]+)\)\s*$")]
+    private static partial Regex RegexCodigoEntreParentesis();
+
+    /// <summary>
+    /// El código de un valor de lista: las listas de la plantilla ofrecen «Nombre (CÓDIGO)» y el importador entiende tanto eso («Cédula de ciudadanía (CC)» ⇒ <c>CC</c>) como el código
+    /// solo. Sin paréntesis al final el valor queda como está.
+    /// </summary>
+    public static string? CodigoDe(string? valor)
+    {
+        if (string.IsNullOrWhiteSpace(valor))
+            return null;
+        var texto = valor.Trim();
+        return RegexCodigoEntreParentesis().Match(texto) is { Success: true } m ? m.Groups[1].Value.Trim() : texto;
+    }
+
+    /// <summary>
+    /// El país como código ISO: «Colombia (CO)», <c>CO</c> o el nombre del país del catálogo («Colombia»). Un país que no se reconoce queda como se escribió (la validación de la
+    /// fila dice «pais-invalido»).
+    /// </summary>
+    public static string? PaisDe(string? valor)
+    {
+        var codigo = CodigoDe(valor);
+        if (codigo is null || codigo.Length == 2)
+            return codigo;
+        var buscado = Normalizar(codigo);
+        return CatalogoIdentificacion.Paises.FirstOrDefault(p => Normalizar(p.Nombre) == buscado)?.Codigo ?? codigo;
+    }
+
+    /// <summary>
+    /// El tipo de identificación como código: «Cédula de ciudadanía (CC)», <c>CC</c> o el nombre del tipo en el catálogo del país de la fila («Cédula de ciudadanía»). Un valor que no se
+    /// reconoce queda como se escribió (la validación de la fila dice «tipo-identificacion-invalido»).
+    /// </summary>
+    public static string? TipoIdentificacionDe(string? valor, string? pais)
+    {
+        var codigo = CodigoDe(valor);
+        if (codigo is null)
+            return null;
+        try
+        {
+            var tipos = CatalogoIdentificacion.TiposDe(pais ?? "CO");
+            if (tipos.Any(t => t.Codigo == codigo.ToUpperInvariant()))
+                return codigo;
+            var buscado = Normalizar(valor);
+            return tipos.FirstOrDefault(t => Normalizar(t.Nombre) == buscado)?.Codigo ?? codigo;
+        }
+        catch (ReglaDeNegocioException)
+        {
+            return codigo; // el país no es válido: la validación de la fila lo dice
+        }
     }
 
     /// <summary>
@@ -113,10 +171,15 @@ public static class ArchivoDeLote
             indices.TryGetValue(campo, out var i) && i < fila.Count && !string.IsNullOrWhiteSpace(fila[i]) ? fila[i].Trim() : null;
 
         var resultado = new List<FilaDeLoteEntrada>();
+        // Las listas de la plantilla ofrecen «Nombre (CÓDIGO)»: el importador toma el código (país, tipo de identificación, tipo de vínculo y flujo).
         foreach (var fila in filas.Skip(inicio + 1).Where(f => f.Any(c => !string.IsNullOrWhiteSpace(c))))
-            resultado.Add(new FilaDeLoteEntrada(Valor(fila, "pais"), Valor(fila, "tipoIdentificacion"), Valor(fila, "numeroIdentificacion"),
+        {
+            var pais = PaisDe(Valor(fila, "pais"));
+            resultado.Add(new FilaDeLoteEntrada(pais, TipoIdentificacionDe(Valor(fila, "tipoIdentificacion"), pais), Valor(fila, "numeroIdentificacion"),
                 Valor(fila, "digitoVerificacion"), Valor(fila, "tipoPersona"), Valor(fila, "nombre"), Valor(fila, "nombreComercial"), Valor(fila, "correo"),
-                Valor(fila, "tipoVinculo"), Valor(fila, "flujo"), Valor(fila, "contacto"), Valor(fila, "telefono")));
+                CodigoDe(Valor(fila, "tipoVinculo")), CodigoDe(Valor(fila, "flujo")), Valor(fila, "contacto"), Valor(fila, "telefono")));
+        }
+
         if (resultado.Count == 0)
             throw ReglaDeNegocioException.Validacion("lote-sin-filas", "El archivo no tiene filas debajo del encabezado.");
         return resultado;
@@ -201,10 +264,13 @@ public static class ArchivoDeLote
         return filas;
     }
 
-    public static FilaDeLoteEntrada ADominio(this FilaDeLoteEntradaDto f) =>
-        new(Recortar(f.Pais), Recortar(f.TipoIdentificacion), Recortar(f.NumeroIdentificacion), Recortar(f.DigitoVerificacion), Recortar(f.TipoPersona),
-            Recortar(f.Nombre), Recortar(f.NombreComercial), Recortar(f.Correo), Recortar(f.TipoVinculo), Recortar(f.Flujo), Recortar(f.Contacto),
-            Recortar(f.Telefono));
+    public static FilaDeLoteEntrada ADominio(this FilaDeLoteEntradaDto f)
+    {
+        var pais = PaisDe(Recortar(f.Pais));
+        return new FilaDeLoteEntrada(pais, TipoIdentificacionDe(Recortar(f.TipoIdentificacion), pais), Recortar(f.NumeroIdentificacion), Recortar(f.DigitoVerificacion),
+            Recortar(f.TipoPersona), Recortar(f.Nombre), Recortar(f.NombreComercial), Recortar(f.Correo), CodigoDe(Recortar(f.TipoVinculo)), CodigoDe(Recortar(f.Flujo)),
+            Recortar(f.Contacto), Recortar(f.Telefono));
+    }
 
     public static FilaDeLoteEntradaDto ADto(this FilaDeLoteEntrada f) =>
         new(f.Pais, f.TipoIdentificacion, f.NumeroIdentificacion, f.DigitoVerificacion, f.TipoPersona, f.Nombre, f.NombreComercial, f.Correo,

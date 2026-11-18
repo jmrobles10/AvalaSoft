@@ -1,6 +1,6 @@
 # Referencia de la API
 
-Todas las operaciones del contrato (463) agrupadas por recurso. Generada de `packages/api-client/openapi/v1.json` y del código de los endpoints con `pnpm manual`; no se edita a mano.
+Todas las operaciones del contrato (464) agrupadas por recurso. Generada de `packages/api-client/openapi/v1.json` y del código de los endpoints con `pnpm manual`; no se edita a mano.
 
 - [Convenciones](convenciones.md): autenticación, empresa activa, idempotencia, errores y límites.
 
@@ -25,7 +25,7 @@ Todas las operaciones del contrato (463) agrupadas por recurso. Generada de `pac
 - [Informes](informes.md) — Exportación de expediente, Informe estado expedientes, Informe sagrilaft, Informe vínculos (9)
 - [Integración](integracion.md) — Consulta certificacion (1)
 - [Interesado](interesado.md) — Acceso por correo, Accesos solicitados, Autorregistro, Enlaces públicos, Invitaciones públicas, Migracion de acceso aislado, Sesión pública, Sesiones del tercero (16)
-- [Invitaciones](invitaciones.md) — Lotes (13)
+- [Invitaciones](invitaciones.md) — Invitaciones, Lotes (14)
 - [Notificaciones](notificaciones.md) — Eventos, Notificaciones, Notificaciones del tercero, Webhooks (25)
 - [Personas](personas.md) — Personas del vínculo, Personas relacionadas (6)
 - [Plataforma](plataforma.md) — Auditoría de operadores, Catálogos, Clave de arranque, Empresas de grupo, Listas de plataforma, Operadores de plataforma, Operadores directos, Plan del grupo, Secretos, Sistemas de grupo, Sistemas de plataforma estado, Solicitudes de acceso de la plataforma, Tenants (43)

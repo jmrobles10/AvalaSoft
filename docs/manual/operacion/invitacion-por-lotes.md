@@ -40,7 +40,7 @@ Desde Vínculos, el botón «Invitar por lote» muestra los lotes de la empresa.
 
 ## Paso 2. Descarga la plantilla
 
-La plantilla trae las columnas obligatorias: tipo y número de identificación, razón social o nombres, correo y tipo de vínculo. Las opcionales son país, DV, tipo de persona, nombre comercial, flujo, contacto y teléfono. Puedes bajarla en Excel o en CSV; las dos tienen las mismas columnas.
+La plantilla trae las columnas obligatorias: tipo y número de identificación, razón social o nombres, correo y tipo de vínculo. Las opcionales son país, DV, tipo de persona, nombre comercial, flujo, contacto y teléfono. Puedes bajarla en Excel o en CSV; las dos tienen las mismas columnas. La de Excel es la de la empresa: marca con asterisco las obligatorias, explica cada columna con una nota y una hoja de instrucciones, y ofrece listas desplegables con los países, los tipos de identificación del país elegido, los tipos de vínculo activos y los flujos publicados de la empresa; lo que eliges de una lista («Proveedor (PROVEEDOR)») el importador lo entiende igual que el código solo.
 
 > **Pantalla:** `/e/{empresa}/invitaciones/lotes/nuevo`
 

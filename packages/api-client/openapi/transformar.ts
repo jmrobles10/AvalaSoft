@@ -452,6 +452,8 @@ const NOMBRES: Record<string, string> = {
   'POST /api/v1/plataforma/sla/revisar': 'revisarSlaDeRevision',
   'POST /api/v1/plataforma/verificaciones/revisar': 'revisarVerificaciones',
   // Invitación masiva por lote (H8, LT-5…LT-10).
+  // Invitar a un tercero a mano (decisión IM): lo que hace una fila del lote, sin esperar a un archivo.
+  'POST /api/v1/invitaciones': 'invitarTercero',
   'GET /api/v1/invitaciones/lotes/plantilla': 'descargarPlantillaLote',
   'POST /api/v1/invitaciones/lotes/vista-previa': 'previsualizarLote',
   'POST /api/v1/invitaciones/lotes': 'crearLote',
@@ -616,6 +618,8 @@ const RESPUESTAS_REALES: Record<string, Record<string, string | null>> = {
   importarPortal: { '202': 'CorridaImportacionPortalDto' },
   // 202: el lote queda en proceso; su avance se consulta con obtenerLote.
   crearLote: { '202': 'LoteDto' },
+  // 201 con el vínculo nuevo; 200 si el vínculo ya existía (se reenvió la invitación o el tercero ya aceptó).
+  invitarTercero: { '200': 'InvitacionDeTerceroDto', '201': 'InvitacionDeTerceroDto' },
   // 202: la campaña queda en proceso; su avance se consulta con obtenerCampania.
   crearCampania: { '202': 'CampaniaDto' },
   // 201 con la solicitud y su radicado; 202: la exportación queda encolada y su estado se consulta con obtenerExportacionBoveda.
@@ -834,6 +838,19 @@ export function transformarOpenApi(entrada: unknown): DocumentoOpenApi {
     properties: { requiereOtp: { type: 'boolean' }, expira: { type: 'string', format: 'date-time' } },
   };
   esquemas.SolicitudRecibidaDto = { type: 'object', required: ['mensaje'], properties: { mensaje: { type: 'string' } } };
+  // Invitar a un tercero a mano (IM): `accion` = Invitado, Reinvitado o SinCambios; `porAprobar` cuando el tipo exige aprobación (AI) y la invitación quedó retenida.
+  esquemas.InvitacionDeTerceroDto = {
+    type: 'object',
+    required: ['accion', 'terceroId', 'vinculoId', 'terceroCreado', 'porAprobar', 'detalle'],
+    properties: {
+      accion: { type: 'string' },
+      terceroId: { type: 'string', format: 'uuid' },
+      vinculoId: { type: 'string', format: 'uuid' },
+      terceroCreado: { type: 'boolean' },
+      porAprobar: { type: 'boolean' },
+      detalle: { oneOf: [{ type: 'null' }, { type: 'string' }] },
+    },
+  };
   esquemas.InstruccionCargaDto = {
     type: 'object',
     required: ['metodo', 'url', 'cabeceras', 'expira'],

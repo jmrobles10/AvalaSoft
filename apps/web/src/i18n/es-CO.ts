@@ -183,7 +183,8 @@ export const esCO = {
     invitacionPorAprobar: 'Invitación por aprobar',
     sinReferencias: 'Sin referencias',
     vacio: '{{empresa}} aún no tiene vínculos.',
-    vacioAyuda: 'Los vínculos llegan desde los sistemas integrados (ERP, portales…) o por invitación.',
+    vacioAyuda:
+      'Los vínculos nacen al invitar a un tercero —uno a uno con «Invitar tercero» o varios con un archivo en «Invitar por lote»— o llegan desde los sistemas integrados (ERP, portales…).',
     vacioFiltros: 'Ningún vínculo coincide con esos filtros.',
     errorLista: 'No pudimos cargar los vínculos.',
     abrir: 'Abrir vínculo de {{tercero}}',
