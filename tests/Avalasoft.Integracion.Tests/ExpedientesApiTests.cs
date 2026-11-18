@@ -112,9 +112,11 @@ public sealed partial class ExpedientesApiTests(ApiFixture fixture)
         reenviado.Estado.ShouldBe("EnRevision");
         reenviado.Observaciones.ShouldBeEmpty();
 
-        // Ambas aprueban ⇒ expediente Aprobado y vínculo Activo.
-        await ApiAsync<ExpedienteDto>("POST", $"/api/v1/expedientes/{expedienteId}/areas/{e.Aprobador.Id}/veredicto",
+        // Ambas aprueban ⇒ expediente Aprobado y vínculo Activo; con una sola aprobada sigue en revisión, también para el tercero.
+        var primera = await ApiAsync<ExpedienteDto>("POST", $"/api/v1/expedientes/{expedienteId}/areas/{e.Aprobador.Id}/veredicto",
             Delegado(e, e.Laura), new VeredictoDto("Aprobado"), 200);
+        primera.Estado.ShouldBe("EnRevision");
+        (await TerceroAsync<ExpedientePublicoDto>("GET", $"/public/v1/expedientes/{expedienteId}", sesion.AccessToken, null, 200)).Estado.ShouldBe("EnRevision");
         var aprobado = await ApiAsync<ExpedienteDto>("POST", $"/api/v1/expedientes/{expedienteId}/areas/{e.Cumplimiento.Id}/veredicto",
             Delegado(e, e.Carlos), new VeredictoDto("Aprobado"), 200);
         aprobado.Estado.ShouldBe("Aprobado");
@@ -124,6 +126,12 @@ public sealed partial class ExpedientesApiTests(ApiFixture fixture)
         var activo = await ApiAsync<VinculoDto>("GET", $"/api/v1/vinculos/{vinculo.Id}", Admin(e), null, 200);
         activo.Estado.ShouldBe("Activo");
         activo.ExpedienteAbiertoId.ShouldBeNull();
+
+        // El tercero lo ve aprobado y recibe el correo de que su vínculo está activo y ya tiene su certificado.
+        (await TerceroAsync<ExpedientePublicoDto>("GET", $"/public/v1/expedientes/{expedienteId}", sesion.AccessToken, null, 200)).Estado.ShouldBe("Aprobado");
+        var avisoAprobado = await Correos.EsperarAsync(correoTercero, m => m.Asunto.Contains("aprobó tu validación"));
+        avisoAprobado.Asunto.ShouldBe($"{e.Empresa.Nombre} aprobó tu validación {expediente.Folio}");
+        avisoAprobado.Texto.ShouldContain("tu vínculo está activo y ya tienes tu certificado");
 
         var historial = await ApiAsync<List<EventoHistorialDto>>("GET", $"/api/v1/expedientes/{expedienteId}/historial", Admin(e), null, 200);
         historial.Select(h => h.Tipo).ShouldBe(
@@ -282,7 +290,10 @@ public sealed partial class ExpedientesApiTests(ApiFixture fixture)
         (await CodigoAsync(sinPersona)).ShouldBe("usuario-delegado-requerido");
 
         var una = await ApiAsync<ExpedienteDto>("POST", url, Delegado(e, e.Laura), new VeredictoDto("Aprobado"), 200);
+        una.Estado.ShouldBe("EnRevision"); // con la primera aprobación el área y el expediente siguen pendientes
         var area = una.Etapas[0].Areas[0];
+        area.Estado.ShouldBe("Pendiente");
+        area.AprobadoresRequeridos.ShouldBe(2);
         area.Aprobaciones.ShouldBe(1);
         area.AprobacionesFaltantes.ShouldBe(1);
         area.MiembrosPendientes.ShouldBe([e.Pedro.Usuario.Id]);

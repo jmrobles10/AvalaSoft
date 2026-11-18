@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { ACCIONES_VINCULO, configurarCliente, reiniciarCliente, type AccionVinculo, type VinculoDto } from '@avalasoft/api-client';
 import { createAvalasoftTheme } from '@avalasoft/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { useAvisos } from '../../../shared/useAvisos';
 import { DialogoAccion } from './DialogoAccion';
 
 const vinculo: VinculoDto = {
@@ -73,7 +74,10 @@ function preparar(accion: AccionVinculo, respuesta: () => Response, base: Vincul
 const json = (estado: number, cuerpo: unknown) =>
   new Response(JSON.stringify(cuerpo), { status: estado, headers: { 'Content-Type': 'application/json' } });
 
-afterEach(() => reiniciarCliente());
+afterEach(() => {
+  reiniciarCliente();
+  useAvisos.getState().cerrar();
+});
 
 describe('DialogoAccion', () => {
   it('sin motivo el botón de enviar está deshabilitado y dice qué falta; el error sale al dejar el campo', async () => {
@@ -125,6 +129,35 @@ describe('DialogoAccion', () => {
     await usuario.type(screen.getByLabelText(/Escribe ANULAR/), 'r');
     expect(screen.getByRole('button', { name: 'Anular vínculo' })).toBeEnabled();
     expect(peticiones).toHaveLength(0);
+  });
+
+  it('anular con la palabra de confirmación envía el motivo, cierra y avisa «Vínculo anulado.»', async () => {
+    const usuario = userEvent.setup();
+    const { peticiones, onCerrar } = preparar('anular', () => json(200, { ...vinculo, estado: 'Anulado', version: 8 }));
+
+    await usuario.type(screen.getByLabelText(/Motivo/), 'Se creó por error.');
+    await usuario.type(screen.getByLabelText(/Escribe ANULAR/), 'ANULAR');
+    await usuario.click(screen.getByRole('button', { name: 'Anular vínculo' }));
+
+    await waitFor(() => expect(onCerrar).toHaveBeenCalled());
+    expect(peticiones).toHaveLength(1);
+    expect(peticiones[0]?.url).toBe('/api/v1/vinculos/v1/anular');
+    expect(peticiones[0]?.cuerpo).toEqual({ motivo: 'Se creó por error.' });
+    expect(useAvisos.getState().actual?.mensaje).toBe('Vínculo anulado.');
+  });
+
+  it('desvincular envía el motivo, cierra y avisa «Tercero desvinculado.»', async () => {
+    const usuario = userEvent.setup();
+    const { peticiones, onCerrar } = preparar('desvincular', () => json(200, { ...vinculo, estado: 'Desvinculado', version: 8 }));
+
+    await usuario.type(screen.getByLabelText(/Motivo/), 'Terminó la relación comercial.');
+    await usuario.click(screen.getByRole('button', { name: 'Desvincular' }));
+
+    await waitFor(() => expect(onCerrar).toHaveBeenCalled());
+    expect(peticiones).toHaveLength(1);
+    expect(peticiones[0]?.url).toBe('/api/v1/vinculos/v1/desvincular');
+    expect(peticiones[0]?.cuerpo).toEqual({ motivo: 'Terminó la relación comercial.' });
+    expect(useAvisos.getState().actual?.mensaje).toBe('Tercero desvinculado.');
   });
 
   it('ante un 412 explica que el vínculo cambió, conserva lo escrito y ofrece recargar', async () => {

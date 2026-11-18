@@ -45,7 +45,7 @@ const FILAS: RevalidacionDto[] = [
   revalidacion({ expedienteId: 'e3', requisitoId: 'r3', tipoDocumento: 'Cámara de comercio', tercero: { id: 't3', nombre: 'Cementos Andes', identificacion: 'NIT 901' }, comparacion: 'SinCambios', aprobableEnLote: true }),
 ];
 
-function montar() {
+function montar(filas: readonly RevalidacionDto[] = FILAS) {
   const peticiones: { url: string; metodo: string; cuerpo: unknown }[] = [];
   configurarCliente({
     fetch: vi.fn((entrada: RequestInfo | URL, init?: RequestInit) => {
@@ -55,7 +55,7 @@ function montar() {
       if (metodo === 'POST') {
         return Promise.resolve(json({ enviados: 1, omitidos: 0, detalle: [{ expedienteId: 'e1', folio: 'NOR-2026-00001', resultado: 'Enviado' }] }));
       }
-      return Promise.resolve(json({ datos: FILAS, siguienteCursor: null }));
+      return Promise.resolve(json({ datos: filas, siguienteCursor: null }));
     }),
   });
   render(
@@ -126,5 +126,31 @@ describe('Revalidaciones: recordar al tercero lo devuelto', () => {
 
     expect(await screen.findByRole('checkbox', { name: 'Seleccionar RUT de Aceros del Norte' })).toBeDisabled();
     expect(screen.queryByRole('button', { name: 'Recordar a los observados' })).not.toBeInTheDocument();
+  });
+});
+
+describe('Revalidaciones: lo que ve la empresa de un documento que el tercero actualizó', () => {
+  it('lo lista con la versión aceptada, la nueva, que cambió y el plazo, y dice que ninguna se aprueba en lote', async () => {
+    permisos.scopes = new Set([SCOPES.expedientesLeer, SCOPES.expedientesRevisar]);
+    montar([revalidacion({ estadoRequisito: 'EnRevision', diasRestantes: 15 })]);
+
+    const fila = (await screen.findByText('Aceros del Norte')).closest('tr');
+    if (!fila) throw new Error('sin fila de la revalidación');
+    expect(within(fila).getByText('RUT')).toBeInTheDocument();
+    expect(within(fila).getByText('v1 → v2')).toBeInTheDocument();
+    expect(within(fila).getByText('Distinta')).toBeInTheDocument();
+    expect(within(fila).getByText('Quedan 15 días')).toBeInTheDocument();
+    expect(screen.getByText(/Ninguna se puede aprobar en lote/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Aprobar .* sin cambios/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+  });
+
+  it('cuando alguna no cambió sí se aprueba en lote y no aparece el aviso de que ninguna se puede', async () => {
+    permisos.scopes = new Set([SCOPES.expedientesLeer, SCOPES.expedientesRevisar]);
+    montar([revalidacion({ comparacion: 'SinCambios', aprobableEnLote: true, diasRestantes: 1 })]);
+
+    expect(await screen.findByText('Queda 1 día')).toBeInTheDocument();
+    expect(screen.queryByText(/Ninguna se puede aprobar en lote/)).not.toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: 'Seleccionar RUT de Aceros del Norte' })).toBeEnabled();
   });
 });

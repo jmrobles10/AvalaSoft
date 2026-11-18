@@ -129,6 +129,22 @@ describe('DialogoDecision', () => {
     expect(onCerrar).not.toHaveBeenCalled();
   });
 
+  it('con separación de funciones, a quien invitó al tercero le explica por qué no decide y deja el diálogo abierto', async () => {
+    const usuario = userEvent.setup();
+    const { onCerrar } = preparar({
+      inicial: enRevision,
+      dialogo: { tipo: 'veredicto', area: pendiente },
+      respuesta: () => json(403, { codigo: 'separacion-de-funciones', detail: 'El flujo exige separación de funciones: quien invitó o abrió el expediente no puede decidir sobre él.' }),
+      recarga: null,
+    });
+
+    await usuario.click(screen.getByRole('button', { name: 'Aprobar' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/separación de funciones y tú invitaste al tercero o abriste el expediente/);
+    expect(onCerrar).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Aprobar' })).toBeEnabled();
+  });
+
   it('el reenvío también se cierra con la respuesta aunque el expediente deje de estar observado', async () => {
     const usuario = userEvent.setup();
     const observado = expediente('Observado', [area({ estado: 'Observada', veredictos: [veredicto({ veredicto: 'Observado' })] })]);
