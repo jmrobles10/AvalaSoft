@@ -123,6 +123,27 @@ public class AccesoAisladoTests
         AccesoDelTercero.EnmascararNombre("X").ShouldBe("X");
     }
 
+    [Theory]
+    [InlineData("juana.perez@aceros.co", "j•••••••••@aceros.co")]
+    [InlineData("  Ana@Aceros.CO ", "A••@Aceros.CO")]
+    [InlineData("a@aceros.co", "a@aceros.co")]
+    [InlineData("una.direccion.muy.larga.de.correo@aceros.co", "u•••••••••@aceros.co")]
+    public void El_correo_del_codigo_se_dice_con_la_parte_local_tapada_y_el_dominio_a_la_vista(string correo, string esperado)
+    {
+        AccesoDelTercero.EnmascararCorreo(correo).ShouldBe(esperado);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("sin-arroba")]
+    [InlineData("@aceros.co")]
+    [InlineData("ana@")]
+    public void Lo_que_no_tiene_forma_de_correo_no_se_dice(string? correo)
+    {
+        AccesoDelTercero.EnmascararCorreo(correo).ShouldBeNull();
+    }
+
     // ---------- la solicitud de acceso ----------
 
     [Fact]

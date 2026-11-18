@@ -21,7 +21,12 @@ afterEach(() => {
 describe('canje del enlace', () => {
   it('distingue la sesión del 202 que pide código', () => {
     expect(interpretarCanje(sesion([]))).toEqual({ tipo: 'sesion', sesion: sesion([]) });
-    expect(interpretarCanje({ requiereOtp: true, expira: '2026-11-06T22:10:00Z' })).toEqual({ tipo: 'otp', expira: '2026-11-06T22:10:00Z' });
+    expect(interpretarCanje({ requiereOtp: true, expira: '2026-11-06T22:10:00Z' })).toEqual({ tipo: 'otp', expira: '2026-11-06T22:10:00Z', correo: null });
+    expect(interpretarCanje({ requiereOtp: true, expira: '2026-11-06T22:10:00Z', correoEnmascarado: 'j•••@aceros.co' })).toEqual({
+      tipo: 'otp',
+      expira: '2026-11-06T22:10:00Z',
+      correo: 'j•••@aceros.co',
+    });
   });
 
   it('canjea una sola vez por token aunque el efecto corra dos veces (el enlace es de un solo uso)', async () => {

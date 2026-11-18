@@ -1,11 +1,16 @@
 import { canjearEnlace, esErrorApi, esErrorDeRed, type OtpRequeridoDto, type SesionTerceroDto } from '@validasoft/api-client';
 import { normalizarCodigoNumerico } from '@validasoft/ui';
 
-/** Lo que devuelve el canje: la sesión, o que el tipo de vínculo exige un código y ya salió al correo. */
-export type ResultadoCanje = { tipo: 'sesion'; sesion: SesionTerceroDto } | { tipo: 'otp'; expira: string };
+/**
+ * Lo que devuelve el canje: la sesión, o que el tipo de vínculo exige un código y ya salió al correo (`correo`: ese correo con la parte local tapada,
+ * si el servidor lo dice; la pantalla del código le avisa a la persona a cuál buzón mirar).
+ */
+export type ResultadoCanje = { tipo: 'sesion'; sesion: SesionTerceroDto } | { tipo: 'otp'; expira: string; correo: string | null };
 
 export function interpretarCanje(respuesta: SesionTerceroDto | OtpRequeridoDto): ResultadoCanje {
-  return 'accessToken' in respuesta ? { tipo: 'sesion', sesion: respuesta } : { tipo: 'otp', expira: respuesta.expira };
+  return 'accessToken' in respuesta
+    ? { tipo: 'sesion', sesion: respuesta }
+    : { tipo: 'otp', expira: respuesta.expira, correo: respuesta.correoEnmascarado ?? null };
 }
 
 /**

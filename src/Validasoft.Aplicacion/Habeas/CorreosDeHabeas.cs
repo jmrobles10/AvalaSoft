@@ -72,12 +72,13 @@ public static class RedaccionDeCorreosDeHabeas
 
     public static MensajeDeCorreo Redactar(this RedactorDeCorreos redactor, CorreoDeExportacionListaPendiente correo)
     {
-        var hasta = correo.ExpiraEn.UtcDateTime.ToString("d 'de' MMMM 'de' yyyy, HH:mm 'UTC'", Cultura);
+        var hasta = redactor.FechaYHora(correo.ExpiraEn);
         var enlace = redactor.UrlPublica + "/privacidad";
         return new MensajeDeCorreo(correo.Para, "Tu exportación de la bóveda está lista",
             $"Tu exportación de la bóveda ({correo.Archivos} archivos) está lista. Descárgala en Validasoft ({enlace}) entrando con tu correo; estará disponible hasta el {hasta}.",
             $"<p>Tu exportación de la bóveda ({correo.Archivos} archivos) está lista.</p>" +
-            $"<p><a href=\"{WebUtility.HtmlEncode(enlace)}\">Descárgala en Validasoft</a> entrando con tu correo; estará disponible hasta el {WebUtility.HtmlEncode(hasta)}.</p>");
+            MarcoDeCorreo.Boton(enlace, "Descargar mi exportación") +
+            $"<p>Entra a Validasoft con tu correo para descargarla; estará disponible hasta el {WebUtility.HtmlEncode(hasta)}.</p>");
     }
 }
 

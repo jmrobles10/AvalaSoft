@@ -83,6 +83,15 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
 
     public string UrlPublica => (configuracion["Validasoft:Correo:UrlPublica"] ?? "http://localhost:5173").TrimEnd('/');
 
+    /// <summary>La zona con la que se escriben las fechas con hora cuando el correo no es de un grupo (<c>Validasoft:ZonaHoraria</c>; Bogotá por omisión).</summary>
+    public string ZonaPorOmision => FechasDeCorreo.ZonaDeLaPlataforma(configuracion);
+
+    /// <summary>
+    /// Una fecha con hora como se lee en el correo —«17 de noviembre de 2026, 10:08 p. m. (hora de Colombia)»—: en <paramref name="zonaHoraria"/> (la del grupo
+    /// que lo origina) o, sin ella, la de la plataforma. Nunca en UTC. Es la única forma en que los redactores escriben una fecha con hora.
+    /// </summary>
+    public string FechaYHora(DateTimeOffset instante, string? zonaHoraria = null) => FechasDeCorreo.Larga(instante, zonaHoraria ?? ZonaPorOmision);
+
     /// <summary>
     /// URL de <c>apps/web</c> (rutas con <c>#</c>) para los enlaces de los correos a revisores y administradores
     /// (<c>Validasoft:Correo:UrlApp</c>; por defecto <c>{UrlPublica}/app/</c>, SE-3).
@@ -98,7 +107,7 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
                     (enlace is null ? string.Empty : $"\n\nÁbrelo en Validasoft:\n{enlace}") +
                     "\n\nPuedes apagar estos correos en tus preferencias de notificación.";
         var html = $"<p>{WebUtility.HtmlEncode(saludo)}</p>" + string.Concat(correo.Lineas.Select(l => $"<p>{WebUtility.HtmlEncode(l)}</p>")) +
-                   (enlace is null ? string.Empty : $"<p><a href=\"{WebUtility.HtmlEncode(enlace)}\">Abrir en Validasoft</a></p>") +
+                   (enlace is null ? string.Empty : MarcoDeCorreo.Boton(enlace, "Abrir en Validasoft")) +
                    "<p>Puedes apagar estos correos en tus preferencias de notificación.</p>";
         return new MensajeDeCorreo(correo.Para, correo.Asunto, texto, html);
     }
@@ -107,9 +116,9 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
     /// Constancia al tercero de lo que aceptó (plantilla <c>consentimiento-empresa</c>, NW-10): cada texto con su versión y
     /// huella SHA-256 y la fecha. No incluye la IP ni otros datos de la evidencia.
     /// </summary>
-    public MensajeDeCorreo RedactarConstancia(Notificaciones.CorreoDeConstanciaPendiente correo)
+    public MensajeDeCorreo RedactarConstancia(Notificaciones.CorreoDeConstanciaPendiente correo, string? zonaHoraria = null)
     {
-        var fecha = correo.AceptadaEn.UtcDateTime.ToString("d 'de' MMMM 'de' yyyy, HH:mm 'UTC'", Cultura);
+        var fecha = FechaYHora(correo.AceptadaEn, zonaHoraria);
         var lineas = correo.Textos.Select(t => $"{t.Titulo}, versión {t.Version} (huella {Corta(t.Hash)})").ToList();
         var asunto = $"Constancia de tu aceptación con {correo.Empresa}";
         var texto = $"El {fecha} aceptaste la invitación de {correo.Empresa} en Validasoft y estos textos:\n\n" +
@@ -125,9 +134,13 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
 
     private static string Corta(string hash) => hash.Length > 16 ? hash[..16] : hash;
 
-    public MensajeDeCorreo Redactar(CorreoDeAccesoPendiente correo, string secreto)
+    /// <summary>
+    /// El correo de acceso: <paramref name="zonaHoraria"/> es la del grupo que lo origina (nula = la de la plataforma): el vencimiento del enlace o del
+    /// código se escribe en esa hora local, no en UTC.
+    /// </summary>
+    public MensajeDeCorreo Redactar(CorreoDeAccesoPendiente correo, string secreto, string? zonaHoraria = null)
     {
-        var vence = correo.Expira.UtcDateTime.ToString("d 'de' MMMM 'de' yyyy, HH:mm 'UTC'", Cultura);
+        var vence = FechaYHora(correo.Expira, zonaHoraria);
         return correo.Plantilla switch
         {
             PlantillaCorreo.Invitacion => ConEnlace(correo.Para,
@@ -190,7 +203,7 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
             "No hay contraseña que crear; si tu rol lo exige, te guiaremos para registrar una passkey (tu huella, tu rostro o una llave de seguridad).\n\n" +
             "Si no esperabas esta invitación, ignora este correo.",
             $"<p>{WebUtility.HtmlEncode(correo.Empresa ?? "Una empresa")} te dio acceso a Validasoft{WebUtility.HtmlEncode(rol)}.</p>" +
-            $"<p><a href=\"{WebUtility.HtmlEncode(url)}\">Entrar a Validasoft</a></p>" +
+            MarcoDeCorreo.Boton(url, "Entrar a Validasoft") +
             "<p>Usa este mismo correo: te enviaremos un código de 6 dígitos cada vez que ingreses. No hay contraseña que crear; si tu rol lo exige, " +
             "te guiaremos para registrar una passkey (tu huella, tu rostro o una llave de seguridad).</p>" +
             "<p>Si no esperabas esta invitación, ignora este correo.</p>");
@@ -201,7 +214,7 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
             $"{introduccion}\n\nAbre este enlace (es personal, de un solo uso y vence el {vence}):\n{url}\n\n" +
             "Si no esperabas este correo, ignóralo.",
             $"<p>{WebUtility.HtmlEncode(introduccion)}</p>" +
-            $"<p><a href=\"{WebUtility.HtmlEncode(url)}\">Abrir Validasoft</a></p>" +
+            MarcoDeCorreo.Boton(url, "Abrir Validasoft") +
             $"<p>El enlace es personal, de un solo uso y vence el {WebUtility.HtmlEncode(vence)}.</p>" +
             "<p>Si no esperabas este correo, ignóralo.</p>");
 
@@ -210,18 +223,18 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
     /// los revisores ni a las áreas internas. Con <paramref name="token"/> lleva un enlace de acceso de un solo uso (RE-4);
     /// sin él (mensajes encolados antes de RE-4) remite a pedir uno con el correo.
     /// </summary>
-    public MensajeDeCorreo RedactarObservacion(CorreoDeObservacionPendiente correo, string? token = null)
+    public MensajeDeCorreo RedactarObservacion(CorreoDeObservacionPendiente correo, string? token = null, string? zonaHoraria = null)
     {
         var asunto = $"{correo.Empresa} tiene observaciones sobre tu validación {correo.Folio}";
         var lineas = correo.Observaciones.Select(o =>
             (o.Requisito is null ? string.Empty : $"{o.Requisito}: ") + UnirMotivos(o.Motivos) +
             (string.IsNullOrWhiteSpace(o.Observacion) ? string.Empty : $" — {o.Observacion.Trim()}")).ToList();
         var texto = $"{correo.Empresa} revisó tu validación {correo.Folio} y necesita que corrijas lo siguiente:\n\n" +
-                    string.Join("\n", lineas.Select(l => "- " + l)) + "\n\n" + ComoEntrar(token, correo.EnlaceExpira);
+                    string.Join("\n", lineas.Select(l => "- " + l)) + "\n\n" + ComoEntrar(token, correo.EnlaceExpira, zonaHoraria);
         var html = $"<p>{WebUtility.HtmlEncode(correo.Empresa)} revisó tu validación <b>{WebUtility.HtmlEncode(correo.Folio)}</b> " +
                    "y necesita que corrijas lo siguiente:</p><ul>" +
                    string.Concat(lineas.Select(l => $"<li>{WebUtility.HtmlEncode(l)}</li>")) + "</ul>" +
-                   ComoEntrarHtml(token, correo.EnlaceExpira);
+                   ComoEntrarHtml(token, correo.EnlaceExpira, zonaHoraria);
         return new MensajeDeCorreo(correo.Para, asunto, texto, html);
     }
 
@@ -230,7 +243,8 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
     /// correo de observación, con los días que lleva devuelto el expediente y un enlace de acceso nuevo de un solo uso. Nunca
     /// nombra a los revisores ni a las áreas.
     /// </summary>
-    public MensajeDeCorreo RedactarRecordatorioDeObservaciones(Expedientes.CorreoDeRecordatorioDeObservacionesPendiente correo, string? token = null)
+    public MensajeDeCorreo RedactarRecordatorioDeObservaciones(Expedientes.CorreoDeRecordatorioDeObservacionesPendiente correo, string? token = null,
+        string? zonaHoraria = null)
     {
         var asunto = $"{correo.Empresa} te recuerda las observaciones de tu validación {correo.Folio}";
         var lineas = correo.Observaciones.Select(o =>
@@ -243,11 +257,11 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
             var dias => $"lleva {dias} días con observaciones pendientes"
         };
         var texto = $"{correo.Empresa} sigue esperando tu respuesta: tu validación {correo.Folio} {pendiente}. Esto es lo que falta corregir:\n\n" +
-                    string.Join("\n", lineas.Select(l => "- " + l)) + "\n\n" + ComoEntrar(token, correo.EnlaceExpira);
+                    string.Join("\n", lineas.Select(l => "- " + l)) + "\n\n" + ComoEntrar(token, correo.EnlaceExpira, zonaHoraria);
         var html = $"<p>{WebUtility.HtmlEncode(correo.Empresa)} sigue esperando tu respuesta: tu validación <b>{WebUtility.HtmlEncode(correo.Folio)}</b> " +
                    $"{WebUtility.HtmlEncode(pendiente)}. Esto es lo que falta corregir:</p><ul>" +
                    string.Concat(lineas.Select(l => $"<li>{WebUtility.HtmlEncode(l)}</li>")) + "</ul>" +
-                   ComoEntrarHtml(token, correo.EnlaceExpira);
+                   ComoEntrarHtml(token, correo.EnlaceExpira, zonaHoraria);
         return new MensajeDeCorreo(correo.Para, asunto, texto, html);
     }
 
@@ -385,7 +399,7 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
     /// Plazo de cargue del expediente inicial (plantilla <c>caducidad</c>, LT-2, LT-3): recordatorio con los días que quedan,
     /// aviso de caducidad (la empresa puede reabrirlo) o reapertura con el plazo nuevo y un enlace de acceso.
     /// </summary>
-    public MensajeDeCorreo RedactarPlazoDeCargue(Expedientes.CorreoDePlazoDeCarguePendiente correo, string? token = null)
+    public MensajeDeCorreo RedactarPlazoDeCargue(Expedientes.CorreoDePlazoDeCarguePendiente correo, string? token = null, string? zonaHoraria = null)
     {
         var hasta = FechaLarga(Dominio.Documentos.CalculadoraDeVigencia.Fecha(correo.PlazoHasta));
         var (asunto, parrafo) = correo.Aviso switch
@@ -407,11 +421,11 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
 
         var entrar = token is null
             ? $"Entra a Validasoft ({UrlPublica}) y pide un enlace con tu correo."
-            : $"Abre este enlace (es personal, de un solo uso y vence el {Fecha(correo.EnlaceExpira)}):\n{UrlPublica}/e/{token}";
+            : $"Abre este enlace (es personal, de un solo uso y vence el {Fecha(correo.EnlaceExpira, zonaHoraria)}):\n{UrlPublica}/e/{token}";
         var entrarHtml = token is null
             ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> y pide un enlace con tu correo.</p>"
-            : $"<p><a href=\"{WebUtility.HtmlEncode($"{UrlPublica}/e/{token}")}\">Completar en Validasoft</a></p>" +
-              $"<p>El enlace es personal, de un solo uso y vence el {WebUtility.HtmlEncode(Fecha(correo.EnlaceExpira))}.</p>";
+            : MarcoDeCorreo.Boton($"{UrlPublica}/e/{token}", "Completar en Validasoft") +
+              $"<p>El enlace es personal, de un solo uso y vence el {WebUtility.HtmlEncode(Fecha(correo.EnlaceExpira, zonaHoraria))}.</p>";
         var caducado = correo.Aviso == Expedientes.AvisoDePlazo.Caducado;
         return new MensajeDeCorreo(correo.Para, asunto,
             parrafo + (caducado ? string.Empty : "\n\n" + entrar),
@@ -428,21 +442,20 @@ public sealed class RedactorDeCorreos(IConfiguration configuracion)
             .Where(m => m.Length > 0)
             .Select(m => m[^1] is '.' or '!' or '?' ? m : m + "."));
 
-    private string ComoEntrar(string? token, DateTimeOffset? expira) =>
+    private string ComoEntrar(string? token, DateTimeOffset? expira, string? zonaHoraria) =>
         token is null
             ? $"Entra a Validasoft ({UrlPublica}) y pide un enlace con tu correo para responder y reenviar."
-            : $"Para responder y reenviar, abre este enlace (es personal, de un solo uso y vence el {Fecha(expira)}):\n{UrlPublica}/e/{token}\n\n" +
+            : $"Para responder y reenviar, abre este enlace (es personal, de un solo uso y vence el {Fecha(expira, zonaHoraria)}):\n{UrlPublica}/e/{token}\n\n" +
               $"Si ya venció, entra a {UrlPublica} y pide uno nuevo con tu correo.";
 
-    private string ComoEntrarHtml(string? token, DateTimeOffset? expira) =>
+    private string ComoEntrarHtml(string? token, DateTimeOffset? expira, string? zonaHoraria) =>
         token is null
             ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> y pide un enlace con tu correo para responder.</p>"
-            : $"<p><a href=\"{WebUtility.HtmlEncode($"{UrlPublica}/e/{token}")}\">Responder en Validasoft</a></p>" +
-              $"<p>El enlace es personal, de un solo uso y vence el {WebUtility.HtmlEncode(Fecha(expira))}. Si ya venció, entra a " +
+            : MarcoDeCorreo.Boton($"{UrlPublica}/e/{token}", "Responder en Validasoft") +
+              $"<p>El enlace es personal, de un solo uso y vence el {WebUtility.HtmlEncode(Fecha(expira, zonaHoraria))}. Si ya venció, entra a " +
               $"<a href=\"{WebUtility.HtmlEncode(UrlPublica)}\">Validasoft</a> y pide uno nuevo con tu correo.</p>";
 
-    private static string Fecha(DateTimeOffset? fecha) =>
-        fecha?.UtcDateTime.ToString("d 'de' MMMM 'de' yyyy, HH:mm 'UTC'", Cultura) ?? "pronto";
+    private string Fecha(DateTimeOffset? fecha, string? zonaHoraria) => fecha is { } instante ? FechaYHora(instante, zonaHoraria) : "pronto";
 
     private static string Minuscula(string? texto) => (texto ?? string.Empty).ToLower(Cultura);
 }
@@ -462,12 +475,13 @@ public sealed record CorreoDeObservacionPendiente(
 public static class CorreoDeObservacionPendienteHandler
 {
     public static async Task Handle(CorreoDeObservacionPendiente correo, IEnviadorDeCorreo enviador, IProtectorDeSecretos protector,
-        RedactorDeCorreos redactor, PlantillasDeCorreo plantillas, PreferenciasDeCorreoDelTercero preferencias, CancellationToken ct)
+        RedactorDeCorreos redactor, PlantillasDeCorreo plantillas, PreferenciasDeCorreoDelTercero preferencias, ZonasDeCorreo zonas, CancellationToken ct)
     {
         // El tercero puede apagar el correo de este tipo (NT-1): la campana de su portal avisa igual.
         if (!await preferencias.QuiereAsync(correo.TerceroId, TiposNotificacionTercero.Observado, ct))
             return;
-        var mensaje = redactor.RedactarObservacion(correo, correo.EnlaceProtegido is null ? null : protector.Desproteger(correo.EnlaceProtegido));
+        var mensaje = redactor.RedactarObservacion(correo, correo.EnlaceProtegido is null ? null : protector.Desproteger(correo.EnlaceProtegido),
+            await zonas.DelTenantAsync(correo.TenantId, ct));
         await enviador.EnviarAsync((await plantillas.AplicarAsync(mensaje, CatalogoDePlantillas.Observacion, correo.TenantId, correo.EmpresaId,
             EjemplosDeCorreo.VariablesDe(correo.Empresa, correo.Folio), ct)).DeTenant(correo.TenantId, correo.EmpresaId), ct);
     }
@@ -495,11 +509,14 @@ public static class CorreoDeResultadoPendienteHandler
 /// <summary>Despacha los correos del outbox. Wolverine reintenta si el servidor SMTP falla.</summary>
 public static class CorreoDeAccesoPendienteHandler
 {
-    /// <summary>Solo la invitación es de una empresa y lleva su plantilla (PL-1); OTP y enlaces de acceso no se personalizan.</summary>
+    /// <summary>
+    /// Solo la invitación es de una empresa y lleva su plantilla (PL-1); OTP y enlaces de acceso no se personalizan. Las fechas salen en la hora local del
+    /// grupo que origina el correo (el acceso general del tercero, sin empresa, en la de la plataforma).
+    /// </summary>
     public static async Task Handle(CorreoDeAccesoPendiente correo, IEnviadorDeCorreo enviador, IProtectorDeSecretos protector,
-        RedactorDeCorreos redactor, PlantillasDeCorreo plantillas, CancellationToken ct)
+        RedactorDeCorreos redactor, PlantillasDeCorreo plantillas, ZonasDeCorreo zonas, CancellationToken ct)
     {
-        var mensaje = redactor.Redactar(correo, protector.Desproteger(correo.SecretoProtegido));
+        var mensaje = redactor.Redactar(correo, protector.Desproteger(correo.SecretoProtegido), await zonas.DelTenantAsync(correo.TenantId, ct));
         if (correo.Plantilla == PlantillaCorreo.Invitacion)
             mensaje = await plantillas.AplicarAsync(mensaje, CatalogoDePlantillas.Invitacion, correo.TenantId, correo.EmpresaId,
                 EjemplosDeCorreo.VariablesDe(correo.Empresa, tipoVinculo: correo.TipoVinculo), ct);

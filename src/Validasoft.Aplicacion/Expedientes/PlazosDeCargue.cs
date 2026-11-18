@@ -48,11 +48,12 @@ public sealed record CorreoDePlazoDeCarguePendiente(string Para, string Empresa,
 public static class CorreoDePlazoDeCarguePendienteHandler
 {
     public static async Task Handle(CorreoDePlazoDeCarguePendiente correo, IEnviadorDeCorreo enviador, IProtectorDeSecretos protector,
-        RedactorDeCorreos redactor, PlantillasDeCorreo plantillas, PreferenciasDeCorreoDelTercero preferencias, CancellationToken ct)
+        RedactorDeCorreos redactor, PlantillasDeCorreo plantillas, PreferenciasDeCorreoDelTercero preferencias, ZonasDeCorreo zonas, CancellationToken ct)
     {
         if (!await preferencias.QuiereAsync(correo.TerceroId, TiposNotificacionTercero.PlazoDeCargue, ct))
             return;
-        var mensaje = redactor.RedactarPlazoDeCargue(correo, correo.EnlaceProtegido is null ? null : protector.Desproteger(correo.EnlaceProtegido));
+        var mensaje = redactor.RedactarPlazoDeCargue(correo, correo.EnlaceProtegido is null ? null : protector.Desproteger(correo.EnlaceProtegido),
+            await zonas.DelTenantAsync(correo.TenantId, ct));
         await enviador.EnviarAsync((await plantillas.AplicarAsync(mensaje, CatalogoDePlantillas.Caducidad, correo.TenantId, correo.EmpresaId,
             EjemplosDeCorreo.VariablesDe(correo.Empresa, correo.Folio), ct)).DeTenant(correo.TenantId, correo.EmpresaId), ct);
     }

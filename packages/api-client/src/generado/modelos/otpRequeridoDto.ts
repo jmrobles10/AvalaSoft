@@ -8,4 +8,6 @@
 export interface OtpRequeridoDto {
   requiereOtp: boolean;
   expira: string;
+  /** @nullable */
+  correoEnmascarado?: string | null;
 }

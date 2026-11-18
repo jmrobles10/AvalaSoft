@@ -74,12 +74,13 @@ public static class CorreoDeVigenciaPendienteHandler
     private static readonly CultureInfo Cultura = CultureInfo.GetCultureInfo("es-CO");
 
     public static async Task Handle(CorreoDeVigenciaPendiente correo, IEnviadorDeCorreo enviador, IProtectorDeSecretos protector, RedactorDeCorreos redactor,
-        PlantillasDeCorreo plantillas, PreferenciasDeCorreoDelTercero preferencias, CancellationToken ct)
+        PlantillasDeCorreo plantillas, PreferenciasDeCorreoDelTercero preferencias, ZonasDeCorreo zonas, CancellationToken ct)
     {
         // El tercero puede apagar este correo: la campana de su portal avisa igual (NT-5).
         if (!await preferencias.QuiereAsync(correo.TerceroId, TiposNotificacionTercero.Vigencia, ct))
             return;
-        var mensaje = Redactar(correo, redactor.UrlPublica, correo.EnlaceProtegido is null ? null : protector.Desproteger(correo.EnlaceProtegido));
+        var mensaje = Redactar(correo, redactor.UrlPublica, correo.EnlaceProtegido is null ? null : protector.Desproteger(correo.EnlaceProtegido),
+            await zonas.DelTenantAsync(correo.TenantId, ct));
         var evento = correo.Aviso switch
         {
             AvisoDeVigencia.PorVencer => CatalogoDePlantillas.PreVencimiento,
@@ -92,7 +93,7 @@ public static class CorreoDeVigenciaPendienteHandler
 
     internal static string FechaLarga(DateOnly fecha) => fecha.ToString("d 'de' MMMM 'de' yyyy", Cultura);
 
-    internal static MensajeDeCorreo Redactar(CorreoDeVigenciaPendiente correo, string urlPublica, string? token)
+    internal static MensajeDeCorreo Redactar(CorreoDeVigenciaPendiente correo, string urlPublica, string? token, string? zonaHoraria = null)
     {
         var fecha = FechaLarga(correo.VigenteHasta);
         var cuando = correo.DiasRestantes switch
@@ -116,10 +117,10 @@ public static class CorreoDeVigenciaPendienteHandler
 
         var entrar = token is null
             ? $"Entra a Validasoft ({urlPublica}) y pide un enlace con tu correo."
-            : $"Abre este enlace (es personal, de un solo uso y vence el {correo.EnlaceExpira?.UtcDateTime.ToString("d 'de' MMMM 'de' yyyy", Cultura)}):\n{urlPublica}/e/{token}";
+            : $"Abre este enlace (es personal, de un solo uso y vence el {(correo.EnlaceExpira is { } vence ? FechasDeCorreo.Larga(vence, zonaHoraria) : "pronto")}):\n{urlPublica}/e/{token}";
         var entrarHtml = token is null
             ? $"<p>Entra a <a href=\"{WebUtility.HtmlEncode(urlPublica)}\">Validasoft</a> y pide un enlace con tu correo.</p>"
-            : $"<p><a href=\"{WebUtility.HtmlEncode($"{urlPublica}/e/{token}")}\">Ratificar mi información en Validasoft</a></p>" +
+            : MarcoDeCorreo.Boton($"{urlPublica}/e/{token}", "Ratificar mi información en Validasoft") +
               "<p>El enlace es personal y de un solo uso.</p>";
         return new MensajeDeCorreo(correo.Para, asunto, parrafo + "\n\n" + entrar, $"<p>{WebUtility.HtmlEncode(parrafo)}</p>" + entrarHtml);
     }

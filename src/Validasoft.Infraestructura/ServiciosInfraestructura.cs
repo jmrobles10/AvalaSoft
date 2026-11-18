@@ -177,6 +177,7 @@ public static class ServiciosInfraestructura
         servicios.AgregarProcesoDelLider<Aplicacion.Plataforma.ProgramadorDePlanes>();
         servicios.AddSingleton<RedactorDeCorreos>();
         servicios.AddScoped<PlantillasDeCorreo>(); // plantillas de la empresa al enviar (PL-1)
+        servicios.AddScoped<ZonasDeCorreo>(); // la zona horaria con la que se escriben las fechas de un correo (la del grupo o la de la plataforma)
         servicios.AddSingleton<CookieDeSesionTercero>();
         // Ingreso directo sin contraseñas (ING-1…ING-7): código por correo, passkeys (WebAuthn) y sesiones propias de las personas del grupo.
         servicios.AddSingleton<CookieDeSesionDeUsuario>();
