@@ -1,4 +1,4 @@
-import type { GrupoDeAccesoDto } from '@validasoft/api-client';
+import type { GrupoDeAccesoDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { aAsignaciones, aFilasDeGrupos, gruposElegibles, rolesComoGrupos } from './grupos';
 import { ALCANCE_TENANT } from './roles';

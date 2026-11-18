@@ -1,6 +1,6 @@
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { completarSsoIngreso, type PasoDeIngresoDto } from '@validasoft/api-client';
+import { completarSsoIngreso, type PasoDeIngresoDto } from '@avalasoft/api-client';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 

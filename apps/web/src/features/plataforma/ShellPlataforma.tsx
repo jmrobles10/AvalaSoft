@@ -1,6 +1,6 @@
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
-import { esSesionDePlataforma } from '@validasoft/api-client';
-import { Logo, VARIABLE_TOPE } from '@validasoft/ui';
+import { esSesionDePlataforma } from '@avalasoft/api-client';
+import { Logo, VARIABLE_TOPE } from '@avalasoft/ui';
 import { Moon, ShieldCheck, Sun } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

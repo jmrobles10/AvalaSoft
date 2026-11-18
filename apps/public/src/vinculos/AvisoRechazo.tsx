@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, Typography } from '@mui/material';
-import type { VinculoPublicoDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { VinculoPublicoDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

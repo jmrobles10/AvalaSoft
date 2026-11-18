@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type CertificadoPublicoDto, type ClavesDeCertificadosDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type CertificadoPublicoDto, type ClavesDeCertificadosDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { certificadoSellado } from '../pruebas/certificados';
@@ -24,7 +24,7 @@ function montar(ruta: string, certificado: Respuesta, claves: Respuesta) {
   const fetch = vi.fn((entrada: RequestInfo | URL) => Promise.resolve(urlDe(entrada).includes('/.well-known/') ? claves() : certificado()));
   configurarCliente({ fetch });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter initialEntries={[ruta]}>
           <Routes>
@@ -66,7 +66,7 @@ describe('verificación pública del certificado', () => {
     // La consulta lleva el folio y la huella del QR; las claves salen de la ruta fija de esta página.
     const urls = fetch.mock.calls.map(([entrada]) => urlDe(entrada));
     expect(urls).toContain(`/public/v1/verificar/VERIF-C-2026-000001-1?huella=${certificado.hashContenido.slice(0, 12)}`);
-    expect(urls).toContain('/.well-known/validasoft-certificados.json');
+    expect(urls).toContain('/.well-known/avalasoft-certificados.json');
   });
 
   it('en verificación (VR-11): sigue vigente, lo dice sin alarma, con su fecha de vencimiento y ofrece el PDF', async () => {

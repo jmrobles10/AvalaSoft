@@ -1,5 +1,5 @@
 {
-  "name": "@validasoft/public",
+  "name": "@avalasoft/public",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,15 +10,15 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@avalasoft/api-client": "workspace:*",
+    "@avalasoft/sdk": "workspace:*",
+    "@avalasoft/ui": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource-variable/geist": "^5.2.0",
     "@fontsource-variable/geist-mono": "^5.2.0",
     "@mui/material": "^9.5.0",
     "@tanstack/react-query": "^5.90.0",
-    "@validasoft/api-client": "workspace:*",
-    "@validasoft/sdk": "workspace:*",
-    "@validasoft/ui": "workspace:*",
     "i18next": "^25.6.0",
     "lucide-react": "^1.70.0",
     "react": "^19.3.1",

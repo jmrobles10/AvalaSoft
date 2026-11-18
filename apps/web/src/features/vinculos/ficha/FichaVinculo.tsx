@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Button, Drawer, IconButton, Stack, Typography } from '@mui/material';
-import { accionesDisponibles, SCOPES, type DefinicionAccion, type VinculoDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import { accionesDisponibles, SCOPES, type DefinicionAccion, type VinculoDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { History, Lock, X } from 'lucide-react';
 import { useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';

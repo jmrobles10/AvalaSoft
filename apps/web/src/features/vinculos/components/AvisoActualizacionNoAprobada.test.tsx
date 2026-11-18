@@ -1,13 +1,13 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { AvisoActualizacionNoAprobada } from './AvisoActualizacionNoAprobada';
 
 function montar(vinculo: Parameters<typeof AvisoActualizacionNoAprobada>[0]['vinculo']) {
   return render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <MemoryRouter>
         <AvisoActualizacionNoAprobada vinculo={vinculo} empresaId="emp" />
       </MemoryRouter>

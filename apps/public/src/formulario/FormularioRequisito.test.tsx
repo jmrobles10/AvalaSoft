@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type CampoFormularioDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type CampoFormularioDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FormularioRequisito } from './FormularioRequisito';
@@ -25,7 +25,7 @@ function montar(respuesta: () => Response) {
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <MemoryRouter>
           <FormularioRequisito tipo="Declaración de origen de fondos" campos={CAMPOS} destino={{ tipoDocumentoTenantId: 't1', vinculoId: 'v1' }} volver="/expediente/e1" />

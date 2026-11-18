@@ -1,4 +1,4 @@
-/* Contornos de la palabra «avalasoft» del logotipo. GENERADO por marca/contornos.mjs (pnpm --filter @validasoft/marca contornos); no editar a mano.
+/* Contornos de la palabra «avalasoft» del logotipo. GENERADO por marca/contornos.mjs (pnpm --filter @avalasoft/marca contornos); no editar a mano.
  * Fuente: Quicksand Bold (SIL OFL 1.1), convertida a trazados, con seguimiento de -0,04 em y espaciado parejo por pares, e inclinada 10°.
  * Tamaño de la letra: 100 unidades; línea base en y = 0 y hacia arriba, negativo. */
 

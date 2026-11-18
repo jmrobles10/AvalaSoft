@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, Stack, Typography } from '@mui/material';
-import { SCOPES, type AreaDeRequisitoDto, type AreaExpedienteDto, type DocumentoVistaEmpresaDto, type ExpedienteDto, type HechosDto, type RequisitoExpedienteDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFecha, textoDelPorQue } from '@validasoft/ui';
+import { SCOPES, type AreaDeRequisitoDto, type AreaExpedienteDto, type DocumentoVistaEmpresaDto, type ExpedienteDto, type HechosDto, type RequisitoExpedienteDto } from '@avalasoft/api-client';
+import { ChipEstado, formatearFecha, textoDelPorQue } from '@avalasoft/ui';
 import { ClipboardList, Clock, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';

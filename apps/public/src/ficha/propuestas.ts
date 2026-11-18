@@ -1,4 +1,4 @@
-import type { PropuestaDeSeccionDto, SoporteSeccionDto } from '@validasoft/api-client';
+import type { PropuestaDeSeccionDto, SoporteSeccionDto } from '@avalasoft/api-client';
 
 /**
  * Actualizar desde el documento (F5, FM-14): lo que la versión vigente de un documento (RUT, Cámara…) propone para una sección.

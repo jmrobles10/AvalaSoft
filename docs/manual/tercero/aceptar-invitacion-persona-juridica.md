@@ -40,7 +40,7 @@ Una empresa invita a un proveedor persona jurídica. Recibe el correo, entra con
 
 ## Paso 1. Abre la invitación que llega a tu correo
 
-La empresa te escribe desde Validasoft con el asunto «Constructora Sur S.A.S. te invita a validar tu vínculo como proveedor». El correo dice quién te invita y trae el enlace «Abrir Validasoft». El enlace es personal, de un solo uso y tiene fecha de vencimiento; si lo pierdes o se vence, la empresa puede enviarte otra invitación.
+La empresa te escribe desde AvalaSoft con el asunto «Constructora Sur S.A.S. te invita a validar tu vínculo como proveedor». El correo dice quién te invita y trae el enlace «Abrir AvalaSoft». El enlace es personal, de un solo uso y tiene fecha de vencimiento; si lo pierdes o se vence, la empresa puede enviarte otra invitación.
 
 ![Paso 1: Abre la invitación que llega a tu correo (escritorio)](../../../salida/manual/img/tercero/aceptar-invitacion-persona-juridica/01-abre-la-invitacion-que-llega-a-tu-correo-claro.webp)
 
@@ -56,7 +56,7 @@ La empresa te escribe desde Validasoft con el asunto «Constructora Sur S.A.S. t
 
 ## Paso 2. Escribe el código de acceso
 
-Como el tipo de vínculo «Proveedor» exige verificar el correo, Validasoft envía un código de 6 dígitos a la misma dirección de la invitación. Escríbelo en los seis recuadros y pulsa «Continuar». Si no llega, revisa la carpeta de spam; si el código se venció, abre de nuevo el enlace del correo para recibir otro. No necesitas crear contraseña.
+Como el tipo de vínculo «Proveedor» exige verificar el correo, AvalaSoft envía un código de 6 dígitos a la misma dirección de la invitación. Escríbelo en los seis recuadros y pulsa «Continuar». Si no llega, revisa la carpeta de spam; si el código se venció, abre de nuevo el enlace del correo para recibir otro. No necesitas crear contraseña.
 
 > **Pantalla:** `/e/{enlace}`
 
@@ -74,7 +74,7 @@ Como el tipo de vínculo «Proveedor» exige verificar el correo, Validasoft env
 
 ## Paso 3. Lee y acepta los textos legales
 
-Antes de entregar nada ves quién te invita y los textos que debes aceptar: el aviso de tratamiento de datos de Validasoft y los que la empresa publicó (su autorización y sus términos y condiciones). Cada texto muestra su versión y la fecha en que se publicó. Marca «Leí y acepto este texto» en cada uno; si pulsas «Aceptar» con alguno sin marcar, la pantalla te pide marcar cada texto para continuar. Al aceptar, Validasoft guarda la versión de cada texto, la fecha y tu conexión como constancia, y desde ese momento tus documentos se comparten con la empresa.
+Antes de entregar nada ves quién te invita y los textos que debes aceptar: el aviso de tratamiento de datos de AvalaSoft y los que la empresa publicó (su autorización y sus términos y condiciones). Cada texto muestra su versión y la fecha en que se publicó. Marca «Leí y acepto este texto» en cada uno; si pulsas «Aceptar» con alguno sin marcar, la pantalla te pide marcar cada texto para continuar. Al aceptar, AvalaSoft guarda la versión de cada texto, la fecha y tu conexión como constancia, y desde ese momento tus documentos se comparten con la empresa.
 
 > **Pantalla:** `/empresas/{id}`
 
@@ -175,7 +175,7 @@ La sección no queda completa solo con el representante legal: la empresa exige 
 
 ## Paso 10. Registra la información financiera
 
-Indica la fecha de corte del último cierre y las cifras de activos, pasivos, patrimonio, ingresos y gastos. Validasoft comprueba que activos = pasivos + patrimonio y te avisa si no cuadra. El título de la sección lleva el año del periodo.
+Indica la fecha de corte del último cierre y las cifras de activos, pasivos, patrimonio, ingresos y gastos. AvalaSoft comprueba que activos = pasivos + patrimonio y te avisa si no cuadra. El título de la sección lleva el año del periodo.
 
 > **Pantalla:** `/ficha/financiera`
 
@@ -225,7 +225,7 @@ Con las seis secciones guardadas, «Mi información» muestra «Tu información 
 
 ## Paso 15. Elige el archivo del documento
 
-Cada documento tiene su propia pantalla de carga con las reglas del tipo: formatos permitidos, tamaño máximo y, si aplica, los datos que debes escribir (por ejemplo, la fecha de expedición). Pulsa «Elegir archivo» y selecciona el PDF (también puedes arrastrarlo a la pantalla); Validasoft lo guarda en tu bóveda.
+Cada documento tiene su propia pantalla de carga con las reglas del tipo: formatos permitidos, tamaño máximo y, si aplica, los datos que debes escribir (por ejemplo, la fecha de expedición). Pulsa «Elegir archivo» y selecciona el PDF (también puedes arrastrarlo a la pantalla); AvalaSoft lo guarda en tu bóveda.
 
 > **Pantalla:** `/boveda/subir`
 
@@ -239,7 +239,7 @@ Cada documento tiene su propia pantalla de carga con las reglas del tipo: format
 
 ## Paso 16. Confirma la versión que quedó guardada
 
-Validasoft confirma «Listo. Es tu versión 1» del documento y dice qué empresa ya la tiene. Si más adelante subes otro archivo del mismo documento, quedará como versión 2 y las empresas que lo usan vuelven a revisarlo. Pulsa «Volver a mi revisión» para seguir con el siguiente documento; también puedes ver tu bóveda o elegir otro archivo.
+AvalaSoft confirma «Listo. Es tu versión 1» del documento y dice qué empresa ya la tiene. Si más adelante subes otro archivo del mismo documento, quedará como versión 2 y las empresas que lo usan vuelven a revisarlo. Pulsa «Volver a mi revisión» para seguir con el siguiente documento; también puedes ver tu bóveda o elegir otro archivo.
 
 > **Pantalla:** `/boveda/subir`
 

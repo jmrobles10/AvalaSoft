@@ -196,7 +196,7 @@ describe('ci.yml y la réplica local', () => {
 
 describe('servicios del e2e en una red propia', () => {
   it('lo que appsettings.Development.json apunta a localhost lo cubre la réplica', () => {
-    const desarrollo = JSON.parse(leer('src/Validasoft.Api/appsettings.Development.json'));
+    const desarrollo = JSON.parse(leer('src/Avalasoft.Api/appsettings.Development.json'));
     const aplanar = (objeto, prefijo = []) =>
       Object.entries(objeto).flatMap(([clave, valor]) =>
         valor !== null && typeof valor === 'object' && !Array.isArray(valor) ? aplanar(valor, [...prefijo, clave]) : [[[...prefijo, clave].join('__'), valor]],
@@ -204,7 +204,7 @@ describe('servicios del e2e en una red propia', () => {
     const conLocalhost = aplanar(desarrollo).filter(([, valor]) => JSON.stringify(valor).includes('localhost'));
     const cubiertas = Object.keys(variablesDeLaApi());
     // Lo demás con «localhost» no es un servicio de la red: origen de las passkeys (el navegador) y enlaces que api.mjs reemplaza.
-    const noSonServicios = ['Validasoft__Ingreso__Passkeys__RpId', 'Validasoft__Ingreso__Passkeys__Origenes', 'Validasoft__Correo__UrlPublica'];
+    const noSonServicios = ['Avalasoft__Ingreso__Passkeys__RpId', 'Avalasoft__Ingreso__Passkeys__Origenes', 'Avalasoft__Correo__UrlPublica'];
     for (const [clave] of conLocalhost) {
       expect(cubiertas.concat(noSonServicios), `«${clave}» apunta a localhost: si es un servicio, agrégalo a variablesDeLaApi() en infra/ci-local/lib/plan.mjs`).toContain(clave);
     }
@@ -214,17 +214,17 @@ describe('servicios del e2e en una red propia', () => {
   });
 
   it('los puertos que la API usa en desarrollo son los que compose publica para cada servicio', () => {
-    const desarrollo = JSON.parse(leer('src/Validasoft.Api/appsettings.Development.json'));
+    const desarrollo = JSON.parse(leer('src/Avalasoft.Api/appsettings.Development.json'));
     const servicios = serviciosDeCompose(leerYaml(archivos.compose));
     const puerto = (servicio, interno) => servicios.find((s) => s.servicio === servicio && s.interno === interno)?.publicado;
-    expect(desarrollo.ConnectionStrings.Validasoft).toContain(`Port=${String(puerto('postgres', 5432))}`);
-    expect(desarrollo.Validasoft.Correo.Puerto).toBe(puerto('mailpit', 1025));
-    expect(desarrollo.Validasoft.Almacen.Endpoint).toContain(`:${String(puerto('minio', 9000))}`);
+    expect(desarrollo.ConnectionStrings.Avalasoft).toContain(`Port=${String(puerto('postgres', 5432))}`);
+    expect(desarrollo.Avalasoft.Correo.Puerto).toBe(puerto('mailpit', 1025));
+    expect(desarrollo.Avalasoft.Almacen.Endpoint).toContain(`:${String(puerto('minio', 9000))}`);
     // …y la réplica los llama por nombre de servicio con el puerto interno.
     const variables = variablesDeLaApi();
-    expect(variables.ConnectionStrings__Validasoft).toContain('Host=postgres;Port=5432');
-    expect(variables.Validasoft__Correo__Host).toBe('mailpit');
-    expect(variables.Validasoft__Almacen__Endpoint).toBe('http://minio:9000');
+    expect(variables.ConnectionStrings__Avalasoft).toContain('Host=postgres;Port=5432');
+    expect(variables.Avalasoft__Correo__Host).toBe('mailpit');
+    expect(variables.Avalasoft__Almacen__Endpoint).toBe('http://minio:9000');
   });
 
   it('pasa de localhost:<puerto publicado> a <servicio>:<puerto interno>', () => {

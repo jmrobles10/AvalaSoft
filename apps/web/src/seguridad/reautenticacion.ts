@@ -1,4 +1,4 @@
-import type { ErrorApi } from '@validasoft/api-client';
+import type { ErrorApi } from '@avalasoft/api-client';
 import { create } from 'zustand';
 
 /**

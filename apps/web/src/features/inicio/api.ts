@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getObtenerIndicadoresQueryOptions, getObtenerMisPendientesQueryOptions } from '@validasoft/api-client';
+import { getObtenerIndicadoresQueryOptions, getObtenerMisPendientesQueryOptions } from '@avalasoft/api-client';
 import { conEmpresa } from '../../shared/consultas';
 
 /** Lo que le toca a quien consulta (`GET /mis-pendientes`); se vuelve a pedir cada vez que se abre el inicio. */

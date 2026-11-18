@@ -1,4 +1,4 @@
-import { ErrorApi, SCOPES, type ExpedienteDto } from '@validasoft/api-client';
+import { ErrorApi, SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { area, expediente, requisito } from './datosPrueba';
 import {

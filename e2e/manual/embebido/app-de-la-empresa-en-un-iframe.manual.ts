@@ -26,7 +26,7 @@ recorrido(
       explicacion:
         'Tu sistema muestra AvalaSoft en un marco (iframe) dentro de sus propias pantallas. Rubén no ingresa con usuario y contraseña: cuando la app necesita sesión, el sistema le pide a su backend una sesión para Rubén y se la entrega a la app. ' +
         'La app aparece sin barra de ingreso y sin el marco de AvalaSoft, con la navegación propia de la empresa.',
-      resaltar: page.locator('#validasoft'),
+      resaltar: page.locator('#avalasoft'),
       variantes: [
         { cuando: 'El sistema no entrega sesión', entonces: 'La app se queda en «Conectando con tu sistema…» y, si tarda más de 10 segundos, pide volver a abrirla desde el sistema.' },
       ],
@@ -65,8 +65,8 @@ recorrido(
     await paginaAna.keyboard.press('Escape');
 
     await page.evaluate(() => {
-      const marco = document.getElementById('validasoft') as HTMLIFrameElement | null;
-      marco?.contentWindow?.postMessage({ tipo: 'validasoft:cerrar-sesion' }, '*');
+      const marco = document.getElementById('avalasoft') as HTMLIFrameElement | null;
+      marco?.contentWindow?.postMessage({ tipo: 'avalasoft:cerrar-sesion' }, '*');
     });
     await expect(app.getByText('Cerraste la sesión', { exact: true })).toBeVisible();
     await paso(page, {

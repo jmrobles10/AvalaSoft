@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ConfirmarRatificacion } from './ConfirmarRatificacion';
@@ -19,7 +19,7 @@ function montar(respuesta: () => Response, props: Partial<ComponentProps<typeof 
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <ConfirmarRatificacion expedienteId="e1" requisitoId="r1" documento="Registro Único Tributario" empresa="Constructora Norte" {...props} />
       </QueryClientProvider>

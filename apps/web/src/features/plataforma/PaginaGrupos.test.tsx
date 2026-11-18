@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type EmpresaDeGrupoDto, type GrupoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type EmpresaDeGrupoDto, type GrupoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { desplazarVentana, simularDisenoDeLista } from '../../pruebas/listaVirtual';
@@ -64,7 +64,7 @@ function montar({ grupos = TODOS, fallaEn = () => false }: Opciones = {}, ruta =
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter initialEntries={[ruta]}>
           <Routes>

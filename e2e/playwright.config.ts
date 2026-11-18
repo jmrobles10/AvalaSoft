@@ -1,15 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Pruebas de punta a punta de Validasoft (docs/04 §12): navegador real contra la API que sirve las dos apps, con
+ * Pruebas de punta a punta de AvalaSoft (docs/04 §12): navegador real contra la API que sirve las dos apps, con
  * PostgreSQL, Mailpit y MinIO de verdad. Cada prueba crea su propio tenant, así que corren en paralelo sin pisarse.
  *
- *   pnpm --filter @validasoft/e2e test                 -> compila, publica y levanta la API en :5090 (soporte/api.mjs)
+ *   pnpm --filter @avalasoft/e2e test                 -> compila, publica y levanta la API en :5090 (soporte/api.mjs)
  *   E2E_BASE_URL=http://localhost:5080 pnpm ... test   -> usa una API ya levantada (debe servir /app/ y /)
  *
  * Requiere `docker compose -f infra/compose/compose.yaml up -d` (PostgreSQL, Mailpit y MinIO).
  */
-// En local las pruebas van aisladas del entorno de desarrollo: base `validasoft_e2e` y Mailpit propio en :8026 (si
+// En local las pruebas van aisladas del entorno de desarrollo: base `avalasoft_e2e` y Mailpit propio en :8026 (si
 // compartieran la base, la API de desarrollo tomaría sus mensajes de la cola y mandaría sus correos al Mailpit de
 // desarrollo). En CI el entorno ya es limpio. E2E_COMPARTIDO=1 usa la base y el Mailpit de desarrollo.
 const aislado = !process.env.CI && process.env.E2E_COMPARTIDO !== '1' && !process.env.E2E_BASE_URL;

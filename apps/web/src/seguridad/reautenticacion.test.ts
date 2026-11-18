@@ -1,4 +1,4 @@
-import { ErrorApi } from '@validasoft/api-client';
+import { ErrorApi } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { peticionDesde, resolverReautenticacion, rutaDeMiCuenta, solicitarReautenticacion, useReautenticacion } from './reautenticacion';
 

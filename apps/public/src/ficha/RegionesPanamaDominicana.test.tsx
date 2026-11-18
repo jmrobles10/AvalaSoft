@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type PerfilDeFichaDto } from '@validasoft/api-client';
+import { reiniciarCliente, type PerfilDeFichaDto } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { datosParaEnviar } from './useEditorSeccion';
 import { esSociedad } from './legal/personas';

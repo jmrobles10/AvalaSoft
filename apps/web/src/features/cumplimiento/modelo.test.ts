@@ -1,4 +1,4 @@
-import { SCOPES, type ResultadoDeMatrizDto } from '@validasoft/api-client';
+import { SCOPES, type ResultadoDeMatrizDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { expediente, requisito } from '../expedientes/datosPrueba';
 import { estudio, listas, matrizDePrueba, resultadoDeMatriz } from './datosPrueba';

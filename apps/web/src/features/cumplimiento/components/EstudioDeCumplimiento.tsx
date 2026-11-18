@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
-import type { ExpedienteDto, VerificacionDto } from '@validasoft/api-client';
-import { Dato, formatearFecha, RejillaDatos } from '@validasoft/ui';
+import type { ExpedienteDto, VerificacionDto } from '@avalasoft/api-client';
+import { Dato, formatearFecha, RejillaDatos } from '@avalasoft/ui';
 import { ClipboardCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import { Box, Button, Chip } from '@mui/material';
-import { SCOPES, type VinculoDto } from '@validasoft/api-client';
-import { Dato } from '@validasoft/ui';
+import { SCOPES, type VinculoDto } from '@avalasoft/api-client';
+import { Dato } from '@avalasoft/ui';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

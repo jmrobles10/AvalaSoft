@@ -77,7 +77,7 @@ recorrido(
       titulo: 'Entiende cómo verificar la copia',
       explicacion:
         'Debajo de la exportación, «Cómo verificarla» explica el proceso: manifiesto.json lista la huella SHA-256 de cada archivo y manifiesto.firma.json trae la firma de AvalaSoft. ' +
-        'La firma se comprueba con la clave pública que AvalaSoft publica en /.well-known/validasoft-certificados.json; si todo coincide, el contenido no cambió desde la exportación.',
+        'La firma se comprueba con la clave pública que AvalaSoft publica en /.well-known/avalasoft-certificados.json; si todo coincide, el contenido no cambió desde la exportación.',
       resaltar: page.getByText(/manifiesto\.json lista el SHA-256/),
     });
   },

@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Button, Card, Chip, Stack, Typography } from '@mui/material';
-import type { EvaluacionPublicaResumenDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { EvaluacionPublicaResumenDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { ClipboardCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

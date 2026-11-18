@@ -1,6 +1,6 @@
 import { Box, Chip, Typography } from '@mui/material';
-import type { FilaVistaPreviaCampaniaDto } from '@validasoft/api-client';
-import { BarraFiltros, ChipEstado, EstadoVacio, FiltroMenu, TablaConCursor, type ColumnaTabla, type EstadoPaginacionCursor } from '@validasoft/ui';
+import type { FilaVistaPreviaCampaniaDto } from '@avalasoft/api-client';
+import { BarraFiltros, ChipEstado, EstadoVacio, FiltroMenu, TablaConCursor, type ColumnaTabla, type EstadoPaginacionCursor } from '@avalasoft/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ACCIONES_DE_VISTA_PREVIA, esEstadoDeCampania, filasConAccion, formatearDia, identificacionLegible, paginar, type AccionDeVistaPrevia } from './modelo';

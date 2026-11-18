@@ -6,7 +6,7 @@ import {
   type ArchivoDescargado,
   type ListarVencimientosParams,
   type RecordarVencimientosDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 
 /** Vencimientos de la empresa activa (`GET /vencimientos`); se vuelven a pedir al abrir la pantalla. */
@@ -42,4 +42,4 @@ export function useDescargarExcelVencimientos(empresaId: string) {
 }
 
 /** Ofrece el archivo al navegador con un `<a download>` temporal (vive en el paquete compartido; se reexporta porque aquí lo importan las pantallas de informes). */
-export { guardarArchivo } from '@validasoft/ui';
+export { guardarArchivo } from '@avalasoft/ui';

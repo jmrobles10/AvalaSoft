@@ -12,7 +12,7 @@ export interface Entrega {
 }
 
 /**
- * Receptor de webhooks del «sistema integrado»: un servidor HTTP local (Validasoft en desarrollo admite http hacia
+ * Receptor de webhooks del «sistema integrado»: un servidor HTTP local (AvalaSoft en desarrollo admite http hacia
  * localhost) que guarda cada entrega y responde 200, o 500 si `fallar` está encendido.
  */
 export class Receptor {
@@ -35,7 +35,7 @@ export class Receptor {
           tipo: json.tipo ?? '',
           id: json.id ?? '',
           cuerpo,
-          firma: String(peticion.headers['validasoft-signature'] ?? ''),
+          firma: String(peticion.headers['avalasoft-signature'] ?? ''),
           datos: json.datos ?? {},
         });
         respuesta.statusCode = ref.receptor?.fallar ? 500 : 200;
@@ -44,7 +44,7 @@ export class Receptor {
     });
     await new Promise<void>((listo) => servidor.listen(0, '127.0.0.1', listo));
     const { port } = servidor.address() as AddressInfo;
-    ref.receptor = new Receptor(servidor, `http://localhost:${String(port)}/validasoft`);
+    ref.receptor = new Receptor(servidor, `http://localhost:${String(port)}/avalasoft`);
     return ref.receptor;
   }
 
@@ -64,7 +64,7 @@ export class Receptor {
   }
 }
 
-/** `Validasoft-Signature: t={hora},v1={hex}` con `v1 = HMAC-SHA256(secreto, "{hora}.{cuerpo}")`, a menos de 5 minutos. */
+/** `Avalasoft-Signature: t={hora},v1={hex}` con `v1 = HMAC-SHA256(secreto, "{hora}.{cuerpo}")`, a menos de 5 minutos. */
 export function firmaValida(secreto: string, firma: string, cuerpo: string): boolean {
   const partes = Object.fromEntries(firma.split(',').map((p) => p.split('=') as [string, string]));
   const t = partes.t;

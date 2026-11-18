@@ -1,4 +1,4 @@
-import type { FijarTarifaDeIaDto } from '@validasoft/api-client';
+import type { FijarTarifaDeIaDto } from '@avalasoft/api-client';
 
 /**
  * Consumo de IA por cliente (PI-12): periodos, formato de cifras y la tarifa del adicional. Solo lógica pura; lo que se ve está en `PaginaConsumoIa`.

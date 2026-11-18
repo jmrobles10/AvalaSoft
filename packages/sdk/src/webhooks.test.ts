@@ -76,9 +76,9 @@ describe('verificador de webhooks', () => {
   });
 
   it('lee la firma de cabeceras de Node (minúsculas, arreglos) y de fetch', () => {
-    expect(leerCabecera({ 'validasoft-signature': 't=1,v1=x', 'content-type': 'application/json' }, 'Validasoft-Signature')).toBe('t=1,v1=x');
-    expect(leerCabecera({ 'Validasoft-Signature': ['t=2,v1=y'] }, CABECERA_FIRMA)).toBe('t=2,v1=y');
-    expect(leerCabecera(new Headers({ 'Validasoft-Signature': 't=3,v1=z' }), CABECERA_FIRMA)).toBe('t=3,v1=z');
+    expect(leerCabecera({ 'avalasoft-signature': 't=1,v1=x', 'content-type': 'application/json' }, 'Avalasoft-Signature')).toBe('t=1,v1=x');
+    expect(leerCabecera({ 'Avalasoft-Signature': ['t=2,v1=y'] }, CABECERA_FIRMA)).toBe('t=2,v1=y');
+    expect(leerCabecera(new Headers({ 'Avalasoft-Signature': 't=3,v1=z' }), CABECERA_FIRMA)).toBe('t=3,v1=z');
     expect(leerCabecera({}, CABECERA_FIRMA)).toBeUndefined();
   });
 });

@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAvisos } from '../../shared/useAvisos';
@@ -43,7 +43,7 @@ function api(responder: (p: Peticion) => Response | undefined) {
 
 function pintar(contenido: React.ReactNode) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <MemoryRouter>{contenido}</MemoryRouter>
       </QueryClientProvider>

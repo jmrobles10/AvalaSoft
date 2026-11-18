@@ -35,7 +35,7 @@ Una empresa invita a una persona natural como cliente. Recibe el correo, acepta 
 
 ## Paso 1. Abre la invitación que llega a tu correo
 
-La empresa te escribe desde Validasoft con el asunto «Constructora Sur S.A.S. te invita a validar tu vínculo como cliente». El correo dice quién te invita y trae el enlace «Abrir Validasoft». El enlace es personal, de un solo uso y tiene fecha de vencimiento; si se vence, la empresa puede enviarte otra invitación.
+La empresa te escribe desde AvalaSoft con el asunto «Constructora Sur S.A.S. te invita a validar tu vínculo como cliente». El correo dice quién te invita y trae el enlace «Abrir AvalaSoft». El enlace es personal, de un solo uso y tiene fecha de vencimiento; si se vence, la empresa puede enviarte otra invitación.
 
 ![Paso 1: Abre la invitación que llega a tu correo (escritorio)](../../../salida/manual/img/tercero/aceptar-invitacion-persona-natural/01-abre-la-invitacion-que-llega-a-tu-correo-claro.webp)
 
@@ -52,7 +52,7 @@ La empresa te escribe desde Validasoft con el asunto «Constructora Sur S.A.S. t
 
 ## Paso 2. Lee y acepta los textos legales
 
-Como cliente, el enlace te lleva directo a la invitación: no escribes ningún código. Ves quién te invita y los textos que debes aceptar, el aviso de tratamiento de datos de Validasoft y los que la empresa publicó. Marca «Leí y acepto este texto» en cada uno y pulsa «Aceptar». Al aceptar, Validasoft guarda la versión de cada texto y la fecha como constancia.
+Como cliente, el enlace te lleva directo a la invitación: no escribes ningún código. Ves quién te invita y los textos que debes aceptar, el aviso de tratamiento de datos de AvalaSoft y los que la empresa publicó. Marca «Leí y acepto este texto» en cada uno y pulsa «Aceptar». Al aceptar, AvalaSoft guarda la versión de cada texto y la fecha como constancia.
 
 > **Pantalla:** `/empresas/{id}`
 
@@ -112,7 +112,7 @@ La información legal (socios, junta directiva, revisor fiscal) y la financiera 
 
 ## Paso 6. Diligencia tu información general
 
-Tus nombres y apellidos llegan prellenados con lo que la empresa registró al invitarte; revísalos. En lugar de la razón social, pide la fecha y el lugar de expedición de tu documento. Completa también el teléfono, el domicilio y tu actividad económica, y responde las preguntas de persona expuesta políticamente (PEP): si lo eres, o si tienes vínculo con una, Validasoft te pedirá los datos. Mientras falte un dato, «Guardar y continuar» queda deshabilitado.
+Tus nombres y apellidos llegan prellenados con lo que la empresa registró al invitarte; revísalos. En lugar de la razón social, pide la fecha y el lugar de expedición de tu documento. Completa también el teléfono, el domicilio y tu actividad económica, y responde las preguntas de persona expuesta políticamente (PEP): si lo eres, o si tienes vínculo con una, AvalaSoft te pedirá los datos. Mientras falte un dato, «Guardar y continuar» queda deshabilitado.
 
 > **Pantalla:** `/ficha/general`
 
@@ -166,7 +166,7 @@ Con las cuatro secciones guardadas, «Mi información» muestra «Tu informació
 
 ## Paso 11. Sube tu cédula de ciudadanía
 
-Cada documento tiene su pantalla de carga con sus reglas: formatos permitidos, tamaño máximo y, si aplica, los datos que debes escribir. Pulsa «Elegir archivo» y selecciona el PDF de tu cédula; Validasoft lo guarda en tu bóveda y te confirma la versión.
+Cada documento tiene su pantalla de carga con sus reglas: formatos permitidos, tamaño máximo y, si aplica, los datos que debes escribir. Pulsa «Elegir archivo» y selecciona el PDF de tu cédula; AvalaSoft lo guarda en tu bóveda y te confirma la versión.
 
 > **Pantalla:** `/boveda/subir`
 

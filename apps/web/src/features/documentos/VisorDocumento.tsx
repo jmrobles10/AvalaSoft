@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Dialog, IconButton, Skeleton, Stack, Typography } from '@mui/material';
-import type { DatoDeclaradoDto, HechosDto, VigenciaDto } from '@validasoft/api-client';
-import { abrirDescarga, formatearFecha } from '@validasoft/ui';
+import type { DatoDeclaradoDto, HechosDto, VigenciaDto } from '@avalasoft/api-client';
+import { abrirDescarga, formatearFecha } from '@avalasoft/ui';
 import { Download, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../shared/errores';

@@ -1,4 +1,4 @@
-import { esErrorApi, type RequisitoDelFlujoDto } from '@validasoft/api-client';
+import { esErrorApi, type RequisitoDelFlujoDto } from '@avalasoft/api-client';
 import { MAXIMO_PERIODOS, seccionFicha, type CodigoRespaldo } from '../terceros/ficha/secciones';
 import type { ErrorFlujo, RequisitoEnEditor } from './editor';
 import { MAXIMO_DIAS_REVALIDACION, MAXIMO_VIGENCIA_VINCULO_DIAS } from './vigencia';

@@ -37,7 +37,7 @@ recorrido(
       titulo: 'Firma quién es la persona',
       explicacion:
         'Tu sistema firma con su clave privada un JWT con los datos de la persona: «sub» (su identificador en tu sistema), «name» y «email». ' +
-        'El campo «iss» es el código de tu sistema y «aud» es validasoft. La aserción vale como máximo 5 minutos, y su «jti» identifica esta firma: AvalaSoft lo recuerda para que no se pueda reutilizar.',
+        'El campo «iss» es el código de tu sistema y «aud» es avalasoft. La aserción vale como máximo 5 minutos, y su «jti» identifica esta firma: AvalaSoft lo recuerda para que no se pueda reutilizar.',
       resaltar: aserciones,
       variantes: [
         { cuando: 'La aserción vence en más de 5 minutos', entonces: 'AvalaSoft la rechaza con 401 «asercion-vigencia-excesiva»: firma una nueva, con vigencia corta.' },

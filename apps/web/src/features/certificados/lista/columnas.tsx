@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import type { FilaCertificadoDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFecha, type ColumnaTabla } from '@validasoft/ui';
+import type { FilaCertificadoDto } from '@avalasoft/api-client';
+import { ChipEstado, formatearFecha, type ColumnaTabla } from '@avalasoft/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatearFechaDeclarada } from '../../documentos/formatoDatos';

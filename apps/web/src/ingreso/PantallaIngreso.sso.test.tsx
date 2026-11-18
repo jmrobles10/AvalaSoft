@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente } from '@validasoft/api-client';
+import { reiniciarCliente } from '@avalasoft/api-client';
 import { StrictMode } from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { montarPantalla } from '../pruebas/montar';
@@ -10,7 +10,7 @@ import { useSesion } from '../sesion/sesionStore';
 import { PantallaIngreso } from './PantallaIngreso';
 
 const DESAFIO = '0d0e5a3a-5f0e-47fa-a0a1-6c1e0f9bd7a1';
-const token = (exp: number) => `e30.${Buffer.from(JSON.stringify({ sub: 'u1', exp, 'validasoft:tenant': 't1' })).toString('base64url')}.firma`;
+const token = (exp: number) => `e30.${Buffer.from(JSON.stringify({ sub: 'u1', exp, 'avalasoft:tenant': 't1' })).toString('base64url')}.firma`;
 const SESION = () => ({
   estado: 'Sesion',
   desafio: DESAFIO,

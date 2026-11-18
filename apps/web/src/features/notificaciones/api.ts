@@ -11,7 +11,7 @@ import {
   type BandejaNotificacionesDto,
   type ListarNotificacionesParams,
   type PreferenciasNotificacionDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { conEmpresa } from '../../shared/consultas';
 
 /** Página de la campana: las 30 más recientes (el total de no leídas viene aparte en `noLeidas`). */

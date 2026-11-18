@@ -1,5 +1,5 @@
 import { Alert, Box, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import { FaltaParaEnviar } from '@validasoft/ui';
+import { FaltaParaEnviar } from '@avalasoft/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CamposFormulario } from '../formulario/CamposFormulario';

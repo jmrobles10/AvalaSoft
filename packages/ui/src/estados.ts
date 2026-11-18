@@ -1,4 +1,4 @@
-/* Validasoft: mapa canónico estado → tono, ícono y texto. Un mismo nombre se ve igual en cualquier entidad. */
+/* AvalaSoft: mapa canónico estado → tono, ícono y texto. Un mismo nombre se ve igual en cualquier entidad. */
 import {
   Archive, Ban, CalendarX, CircleAlert, CircleCheck, CircleDashed, CircleDot, CircleEllipsis, CircleMinus, CirclePause, CircleX,
   Clock, Eye, FileUp, FolderOpen, History, Hourglass, Inbox, Lock, Mail, OctagonAlert, RefreshCw, Replace, ScanSearch,

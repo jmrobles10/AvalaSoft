@@ -1,4 +1,4 @@
-import type { ComparticionPublicaDto, VigenciaDto } from '@validasoft/api-client';
+import type { ComparticionPublicaDto, VigenciaDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import i18n from '../i18n';
 import { extraerDeCorreo } from '../dev/correos';

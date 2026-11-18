@@ -2,13 +2,13 @@ import { FormControlLabel, Switch, ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { AlineadoConCampo, medidasDeCampo } from './campos';
-import { createValidasoftTheme } from './tema';
+import { createAvalasoftTheme } from './tema';
 import { COLOR } from './tokens';
 import { contraste } from './marcaEmpresa';
 
 function celda(app: 'web' | 'public', conEtiqueta = true) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app })}>
       <AlineadoConCampo conEtiqueta={conEtiqueta}>
         <span data-testid="contenido">x</span>
       </AlineadoConCampo>
@@ -44,7 +44,7 @@ describe('switch del tema', () => {
 
   it('el switch apagado se renderiza habilitado y con su etiqueta', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <FormControlLabel control={<Switch checked={false} onChange={() => undefined} />} label="Automática" />
       </ThemeProvider>,
     );
@@ -54,7 +54,7 @@ describe('switch del tema', () => {
   });
 
   it('size="small" y "medium" comparten la geometría: pista 36 × 20 y perilla 14 centrada con 3 px por lado', () => {
-    const tema = createValidasoftTheme('light');
+    const tema = createAvalasoftTheme('light');
     const raiz = tema.components?.MuiSwitch?.styleOverrides?.root as Record<string, Record<string, unknown>>;
     const geometria = raiz['&, &.MuiSwitch-sizeSmall, &.MuiSwitch-sizeMedium'];
     expect(geometria).toMatchObject({ width: 36, height: 20, padding: 0 });
@@ -66,7 +66,7 @@ describe('switch del tema', () => {
 
 describe('avisos (Alert) con botón de cerrar', () => {
   it('ícono, primera línea y botón comparten la fila de 32 px: el aviso no se ve descentrado', () => {
-    const tema = createValidasoftTheme('light');
+    const tema = createAvalasoftTheme('light');
     const raiz = tema.components?.MuiAlert?.styleOverrides?.root;
     if (typeof raiz !== 'function') throw new Error('MuiAlert.root debería ser una función del ownerState');
     const conCerrar = raiz({ ownerState: { severity: 'success', onClose: () => undefined }, theme: tema }) as Record<string, Record<string, unknown>>;

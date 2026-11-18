@@ -31,11 +31,11 @@ svg.diagrama{--d-fondo:#ffffff;--d-superficie:#ffffff;--d-superficie2:#eef1f5;--
 .diagrama .d-marca-peligro{fill:var(--d-peligro)}
 </style>
 <rect class="d-fondo" width="100%" height="100%"/>
-<title id="titulo">Contexto de Validasoft</title>
-<desc id="descripcion">Validasoft en el centro. A la izquierda las personas que lo usan, arriba los sistemas integradores, abajo el público que verifica certificados y a la derecha los servicios externos detrás de interfaces.</desc>
+<title id="titulo">Contexto de AvalaSoft</title>
+<desc id="descripcion">AvalaSoft en el centro. A la izquierda las personas que lo usan, arriba los sistemas integradores, abajo el público que verifica certificados y a la derecha los servicios externos detrás de interfaces.</desc>
 <defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca" d="M0 0L10 5L0 10z"/></marker><marker id="f-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-a" d="M0 0L10 5L0 10z"/></marker><marker id="f-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-ok" d="M0 0L10 5L0 10z"/></marker><marker id="f-peligro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-peligro" d="M0 0L10 5L0 10z"/></marker></defs>
 <rect class="d-caja-a" x="380" y="100" width="300" height="410" rx="10"/>
-<text class="d-t-h d-c" x="530" y="126">Validasoft</text>
+<text class="d-t-h d-c" x="530" y="126">AvalaSoft</text>
 <text class="d-t-s d-c" x="530" y="143">Validación de terceros para varios</text>
 <text class="d-t-s d-c" x="530" y="158">grupos de empresas</text>
 <rect class="d-caja" x="400" y="190" width="260" height="62" rx="10"/>

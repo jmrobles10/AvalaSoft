@@ -8,7 +8,7 @@ import {
   responderEvaluacionDelTercero,
   type AdjuntoDeEvaluacionDto,
   type ResponderEvaluacionDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 
 /** Las evaluaciones que una empresa le pide al tercero (autoevaluaciones): las pendientes y las que ya envió, nunca las anuladas ni las vencidas. */
 export const useEvaluacionesDelVinculo = (vinculoId: string, habilitado = true) => useQuery({ ...getListarEvaluacionesDelTerceroQueryOptions(vinculoId), enabled: habilitado });

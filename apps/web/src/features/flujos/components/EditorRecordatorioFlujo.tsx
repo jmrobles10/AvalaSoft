@@ -1,5 +1,5 @@
 import { Box, MenuItem, TextField, Typography } from '@mui/material';
-import { CampoNumero } from '@validasoft/ui';
+import { CampoNumero } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import type { BorradorFlujo, ErrorFlujo } from '../editor';
 import { MODOS_RECORDATORIO, type ModoRecordatorio } from '../recordatorio';

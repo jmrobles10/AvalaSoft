@@ -38,7 +38,7 @@ En Configuración, «Plazos de revisión» define en horas el tiempo que tiene c
 
 ## Paso 2. Guarda el plazo del área
 
-Con 10 horas en Compras, cada expediente que llegue a esa área tiene 10 horas para decidirse. Al guardar, Validasoft confirma el cambio y aplica el plazo a los expedientes que entren de ahí en adelante.
+Con 10 horas en Compras, cada expediente que llegue a esa área tiene 10 horas para decidirse. Al guardar, AvalaSoft confirma el cambio y aplica el plazo a los expedientes que entren de ahí en adelante.
 
 > **Pantalla:** `/e/{empresa}/plazos-de-revision`
 

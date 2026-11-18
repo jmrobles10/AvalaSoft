@@ -4,7 +4,7 @@
 |---|---|---|
 | Borrador (decisiones del registro propagadas) | 2026-10-28 | Arquitectura |
 
-**Propósito.** Definir el modelo de dominio de Validasoft: lenguaje, contextos, agregados event-sourced con sus estados, comandos, eventos e invariantes, el motor de reglas de exigencia, el modelo de áreas y veredictos, las vigencias en dos capas con revalidación obligatoria, la revisión automática por niveles, las proyecciones de lectura y las garantías de consistencia. Es la referencia que el código del Hito 1 en adelante debe implementar literalmente. **Este documento es el dueño de los nombres de estados, eventos de dominio y proyecciones**; 05, 06 y 10 se alinean a él.
+**Propósito.** Definir el modelo de dominio de AvalaSoft: lenguaje, contextos, agregados event-sourced con sus estados, comandos, eventos e invariantes, el motor de reglas de exigencia, el modelo de áreas y veredictos, las vigencias en dos capas con revalidación obligatoria, la revisión automática por niveles, las proyecciones de lectura y las garantías de consistencia. Es la referencia que el código del Hito 1 en adelante debe implementar literalmente. **Este documento es el dueño de los nombres de estados, eventos de dominio y proyecciones**; 05, 06 y 10 se alinean a él.
 
 **Relacionados.** [00-vision-y-alcance.md](00-vision-y-alcance.md) · [01-analisis-legado-srm-portal.md](01-analisis-legado-srm-portal.md) · [02-modelo-documental-compartido.md](02-modelo-documental-compartido.md) · [04-arquitectura-plataforma.md](04-arquitectura-plataforma.md) · [05-api-contratos-y-webhooks.md](05-api-contratos-y-webhooks.md) · [07-seguridad-identidad-y-tenancy.md](07-seguridad-identidad-y-tenancy.md) · [10-glosario.md](10-glosario.md) · [decisiones/registro.md](decisiones/registro.md) · ADR-0004, ADR-0005, ADR-0008, ADR-0009, ADR-0010.
 
@@ -484,12 +484,12 @@ No existe certificado parcial (P-8-4). La vista pública expone solo razón soci
 
 | Aspecto | Regla |
 |---|---|
-| Esquema | `validasoft.certificado.v1` (campo `esquema` dentro del contenido; cambios incompatibles ⇒ `v2`, los certificados viejos se verifican con su esquema) |
+| Esquema | `avalasoft.certificado.v1` (campo `esquema` dentro del contenido; cambios incompatibles ⇒ `v2`, los certificados viejos se verifican con su esquema) |
 | Qué entra | `folio`, `emision`, `empresa {id, nombre, identificacion}`, `tercero {nombre, identificacionEnmascarada, pais, tipoPersona}`, `tipoVinculo`, `flujo {codigo, version}`, `requisitos[] {codigo, versionN, sha256 \| hashDatos, vigenteHasta, eximido, justificacion}` ordenados por `codigo`, `verificaciones[] {tipo, proveedor, resultado, fecha}`, `areas[] {area, origen: Humano \| Sistema \| Administrador, fecha}`, `emitidoEn`, `vigenteHasta` (`CertificadoContenidoDto` en [05 §4](05-api-contratos-y-webhooks.md)) |
 | Qué **no** entra | Contactos, direcciones, nombres de revisores, URLs de descarga, decisiones de otras empresas, datos privados del tenant |
 | Canonicalización | JSON Canonicalization Scheme **RFC 8785** (claves ordenadas, sin espacios, UTF-8, números sin ceros a la izquierda), fechas ISO-8601 en UTC con `Z`, `null` omitidos |
 | `HashContenido` | `sha256(bytes del JSON canónico)`; se muestra como **huella** en formato `xxxx·xxxx·xxxx` (primeros 12 hex) y completo en el PDF y en `GET /certificados/{folio}` |
-| Sello | `SelloPlataforma = firma Ed25519 del HashContenido` con la clave de la plataforma (rotación anual, clave pública publicada en `/.well-known/validasoft-certificados.json`); sello de tiempo RFC 3161 opcional en H11 (P-8-3) |
+| Sello | `SelloPlataforma = firma Ed25519 del HashContenido` con la clave de la plataforma (rotación anual, clave pública publicada en `/.well-known/avalasoft-certificados.json`); sello de tiempo RFC 3161 opcional en H11 (P-8-3) |
 | Verificación pública | `GET /public/v1/verificar/{folio}` devuelve `CertificadoPublico` + `huella`; la UI recalcula el hash a partir del contenido canónico que también devuelve (`contenidoCanonico`) y compara; el PDF incluye el QR con `urlVerificacion` y el hash completo |
 | PDF/A-2b | Plantilla por tenant (`plantillaCertificado` en `FlujoDefinicion`): logo y colores de la empresa, bloque de datos (los mismos del contenido canónico), tabla de requisitos, tabla de áreas, QR (abajo a la derecha, 25 mm), huella y folio en Geist Mono, bloque bilingüe opcional (P-8-5); se genera en la saga `EmisionCertificado` y se guarda con Object Lock |
 | Reemisión | Cada `CertificadoReemplazado` genera un contenido nuevo (sufijo `-{n+1}`) y un hash nuevo; el anterior sigue verificable como `Reemplazado` |
@@ -748,7 +748,7 @@ ContextoDeExigencia.Ficha: { ruta → valor JSON }    -- FichaParaExigencia, fun
 | `EntregasNotificacion` | Async | Notificaciones | Evidencia de envío/entrega/apertura (adición 4) |
 | `UsoTenant` | Async | Todos | Medición desde H1 (usuarios, vínculos activos, GB, lecturas IA —informativas—, decisiones IA —facturables—, webhooks) |
 | `SolicitudesSupresion` | Inline | Habeas data | Estado y constancias |
-| `EntregasWebhook` | Async | Webhooks | Log de entregas por suscripción (`Validasoft-Event-Id`, intentos, respuesta) |
+| `EntregasWebhook` | Async | Webhooks | Log de entregas por suscripción (`Avalasoft-Event-Id`, intentos, respuesta) |
 | `InformeEstadoExpedientes` | Async | `Expediente`, `Vinculo` | Informe/Excel de estado por flujo y empresa |
 | `Auditoria` | Vista sobre streams `auditoria-*` + `auditoria_identidad` + `acceso_documento` | — | `GET /auditoria?tipo=` |
 | `LotesImportacion` | Inline | Importación | Estado, rechazos CSV |
@@ -759,7 +759,7 @@ ContextoDeExigencia.Ficha: { ruta → valor JSON }    -- FichaParaExigencia, fun
 
 ## 15. Idempotencia, concurrencia y consistencia
 
-- **Idempotencia.** `Idempotency-Key` en todo comando externo; tabla `comandos_idempotentes` con la definición de [05 §3.1](05-api-contratos-y-webhooks.md) (`tenant_id, clave, hash_cuerpo, codigo_respuesta, cuerpo_respuesta, creado_en, expira_en`) en la misma transacción Marten. Claves naturales internas: `(VersionId, TipoHecho)`, `(ExpedienteId, Tipo, ReferenciaExterna)`, `(VinculoId, TipoTenantId, VersionId)`. Webhooks: dedupe en el receptor por `Validasoft-Event-Id` (T-6).
+- **Idempotencia.** `Idempotency-Key` en todo comando externo; tabla `comandos_idempotentes` con la definición de [05 §3.1](05-api-contratos-y-webhooks.md) (`tenant_id, clave, hash_cuerpo, codigo_respuesta, cuerpo_respuesta, creado_en, expira_en`) en la misma transacción Marten. Claves naturales internas: `(VersionId, TipoHecho)`, `(ExpedienteId, Tipo, ReferenciaExterna)`, `(VinculoId, TipoTenantId, VersionId)`. Webhooks: dedupe en el receptor por `Avalasoft-Event-Id` (T-6).
 - **Streams de auditoría.** `auditoria-configuracion-{tenantId}`, `auditoria-configuracion-plataforma`, `auditoria-accesos-{terceroId}`; tabla `auditoria_identidad` (#38).
 - **Concurrencia.** `FetchForWriting<T>(id, versionEsperada)`; `ETag`/`If-Match`; 412 en conflicto; veredicto sobre versión superada ⇒ 409.
 - **Invariantes cruzados.** Unicidad de vínculo → índice inline. Un expediente abierto → `Vinculo` decide y la saga crea/compensa. Versión adjuntada actual → `BovedaTercero` inline. Folio → secuencia por empresa. Retiro → `ReferenciasDeVersion`.

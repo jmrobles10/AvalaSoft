@@ -86,7 +86,7 @@ recorrido(
     // 4. Un correo sin invitación responde igual, desde una sesión sin entrar (con sesión, /entrar lleva a Mis empresas).
     const anonimo = await (await browser.newContext()).newPage();
     await anonimo.goto('/entrar');
-    const desconocido = `nadie.${Date.now().toString(36)}@e2e.validasoft.co`;
+    const desconocido = `nadie.${Date.now().toString(36)}@e2e.avalasoft.co`;
     await anonimo.getByRole('textbox', { name: 'Correo de la invitación' }).fill(desconocido);
     await anonimo.getByRole('button', { name: 'Enviarme el enlace' }).click();
     await expect(anonimo.getByRole('heading', { name: 'Revisa tu correo' })).toBeVisible();

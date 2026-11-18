@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { CampoDeFichaDto, CondicionDto } from '@validasoft/api-client';
+import type { CampoDeFichaDto, CondicionDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { montarPantalla } from '../../../pruebas/montar';

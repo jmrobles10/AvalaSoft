@@ -1,4 +1,4 @@
-import type { AccesoSolicitadoDto, ContactoDelTerceroDto, SesionActivaDto } from '@validasoft/api-client';
+import type { AccesoSolicitadoDto, ContactoDelTerceroDto, SesionActivaDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { decididas, estadoDelContacto, listaDeEmpresas, nombreDelTercero, ordenarContactos, ordenarSesiones, porDecidir, porDecidirPorMi, puedoDecidir, reconocerDispositivo } from './modelo';
 

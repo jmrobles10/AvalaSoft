@@ -1,6 +1,6 @@
 import { Alert, Button, Stack } from '@mui/material';
-import { SCOPES } from '@validasoft/api-client';
-import { EsqueletoTabla, EsqueletoTarjeta } from '@validasoft/ui';
+import { SCOPES } from '@avalasoft/api-client';
+import { EsqueletoTabla, EsqueletoTarjeta } from '@avalasoft/ui';
 import { Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';

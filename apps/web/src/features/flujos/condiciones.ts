@@ -1,4 +1,4 @@
-import type { AtributoPermitidoDto, CampoDeFichaDto, CondicionDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto, CampoDeFichaDto, CondicionDto } from '@avalasoft/api-client';
 import type { TFunction } from 'i18next';
 
 /**

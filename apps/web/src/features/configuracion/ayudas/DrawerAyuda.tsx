@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Drawer, IconButton, Stack, TextField, Typography } from '@mui/material';
-import type { AyudaDeDocumentoDto } from '@validasoft/api-client';
+import type { AyudaDeDocumentoDto } from '@avalasoft/api-client';
 import { Undo2, X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

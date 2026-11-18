@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { reiniciarCliente, SCOPES, type CondicionDto, type FlujoDeExpedienteDto, type VinculoDto } from '@validasoft/api-client';
+import { reiniciarCliente, SCOPES, type CondicionDto, type FlujoDeExpedienteDto, type VinculoDto } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../../i18n';
 import { montarPantalla } from '../../pruebas/montar';

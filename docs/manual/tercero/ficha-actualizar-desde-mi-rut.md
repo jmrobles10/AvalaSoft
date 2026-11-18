@@ -3,7 +3,7 @@ id: "tercero/ficha-actualizar-desde-mi-rut"
 titulo: "Actualiza tu información desde un RUT nuevo"
 actor: "Tercero"
 dominio: "tercero"
-resumen: "Cuando subes un RUT nuevo con datos distintos a los de tu información, Validasoft te avisa y te propone los cambios. Revisas lo que dice el RUT campo por campo y aplicas solo lo que es correcto; nada se guarda hasta que tú guardes."
+resumen: "Cuando subes un RUT nuevo con datos distintos a los de tu información, AvalaSoft te avisa y te propone los cambios. Revisas lo que dice el RUT campo por campo y aplicas solo lo que es correcto; nada se guarda hasta que tú guardes."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Tercero · **Dominio:** Portal del tercero
 
-Cuando subes un RUT nuevo con datos distintos a los de tu información, Validasoft te avisa y te propone los cambios. Revisas lo que dice el RUT campo por campo y aplicas solo lo que es correcto; nada se guarda hasta que tú guardes.
+Cuando subes un RUT nuevo con datos distintos a los de tu información, AvalaSoft te avisa y te propone los cambios. Revisas lo que dice el RUT campo por campo y aplicas solo lo que es correcto; nada se guarda hasta que tú guardes.
 
 **Antes de empezar**
 

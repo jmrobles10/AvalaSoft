@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Button, Chip, LinearProgress, Paper, Stack, Typography } from '@mui/material';
-import type { EstadoSeccionFichaDto } from '@validasoft/api-client';
-import { AnimacionExitoUnaVez, formatearFecha } from '@validasoft/ui';
+import type { EstadoSeccionFichaDto } from '@avalasoft/api-client';
+import { AnimacionExitoUnaVez, formatearFecha } from '@avalasoft/ui';
 import { ArrowRight, ChevronRight, TriangleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

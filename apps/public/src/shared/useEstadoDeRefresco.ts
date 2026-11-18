@@ -1,4 +1,4 @@
-import type { EstadoConexion } from '@validasoft/api-client';
+import type { EstadoConexion } from '@avalasoft/api-client';
 import { create } from 'zustand';
 
 /** Cuánto se espera, tras subir un documento, a que la cola lo ponga en el expediente (RQ-2) antes de dejar de sondear rápido. */

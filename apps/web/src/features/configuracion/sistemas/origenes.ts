@@ -1,5 +1,5 @@
 /**
- * Orígenes permitidos de un sistema integrado: los sitios desde los que se puede incrustar Validasoft en un iframe
+ * Orígenes permitidos de un sistema integrado: los sitios desde los que se puede incrustar AvalaSoft en un iframe
  * (`frame-ancestors` y el puente `postMessage`). Misma regla que la API (`OrigenWeb.Normalizar`), para avisar antes de
  * guardar; la API sigue siendo quien decide (422 `origen-invalido`, `origenes-excesivos`):
  * - `https://host[:puerto]`, sin ruta, consulta, fragmento, usuario ni comodines; esquema y host en minúsculas y sin el

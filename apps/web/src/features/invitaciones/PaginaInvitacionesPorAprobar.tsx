@@ -1,6 +1,6 @@
 import { Box, Button, Chip, FormControlLabel, Stack, Switch, Typography } from '@mui/material';
-import { SCOPES, type InvitacionPorAprobarItemDto, type LoteDto } from '@validasoft/api-client';
-import { EstadoVacio, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@validasoft/ui';
+import { SCOPES, type InvitacionPorAprobarItemDto, type LoteDto } from '@avalasoft/api-client';
+import { EstadoVacio, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@avalasoft/ui';
 import { CircleCheck, CircleSlash } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

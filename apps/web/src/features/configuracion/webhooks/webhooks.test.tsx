@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type EmpresaDto, type SistemaIntegradoDto, type WebhookDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type EmpresaDto, type SistemaIntegradoDto, type WebhookDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { useState, type ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DetalleWebhook } from './DetalleWebhook';
@@ -28,7 +28,7 @@ const WEBHOOK: WebhookDto = {
   id: 'w1',
   sistemaId: 's1',
   sistema: 'SRM',
-  url: 'https://srm.cliente.co/validasoft',
+  url: 'https://srm.cliente.co/avalasoft',
   descripcion: 'SRM producción',
   tipos: [TODOS],
   empresas: [TODOS],
@@ -56,7 +56,7 @@ function montar(ui: ReactNode, responder: (url: string, metodo: string, cuerpo: 
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>{ui}</QueryClientProvider>
     </ThemeProvider>,
   );

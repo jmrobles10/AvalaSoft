@@ -16,7 +16,7 @@ La administradora crea un tipo de documento propio (archivo con fecha de expedic
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con una persona como miembro y un flujo de Proveedor ya publicado.
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 
@@ -87,7 +87,7 @@ Marca los formatos permitidos (ninguno marcado equivale a PDF, JPG, PNG o WebP) 
 
 ## Paso 5. Define la vigencia y los avisos
 
-Indica cuánto tiempo sirve el documento: siempre, un número de días desde su expedición (la fecha que declara el proveedor), un número de días desde que lo entrega o un periodo mínimo. Los días de aviso son los momentos antes del vencimiento en que Validasoft le escribe al proveedor para que lo renueve; los días de gracia son los que sigue valiendo después de vencer mientras lo renueva.
+Indica cuánto tiempo sirve el documento: siempre, un número de días desde su expedición (la fecha que declara el proveedor), un número de días desde que lo entrega o un periodo mínimo. Los días de aviso son los momentos antes del vencimiento en que AvalaSoft le escribe al proveedor para que lo renueve; los días de gracia son los que sigue valiendo después de vencer mientras lo renueva.
 
 > **Pantalla:** `/e/{empresa}/tipos-documento`
 
@@ -180,7 +180,7 @@ Con «Crear borrador» el flujo queda guardado como borrador v1: todavía no lo 
 
 ## Paso 12. Publica la versión
 
-Antes de publicar, Validasoft te avisa qué va a pasar: los expedientes nuevos usarán esta versión, los que ya están abiertos siguen con la suya y la versión publicada anterior queda retirada. Al confirmar, la versión queda congelada y se registra en la auditoría de configuración.
+Antes de publicar, AvalaSoft te avisa qué va a pasar: los expedientes nuevos usarán esta versión, los que ya están abiertos siguen con la suya y la versión publicada anterior queda retirada. Al confirmar, la versión queda congelada y se registra en la auditoría de configuración.
 
 > **Pantalla:** `/e/{empresa}/flujos/{id}`
 

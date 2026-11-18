@@ -1,5 +1,5 @@
 import { Box, Chip, FormControlLabel, IconButton, MenuItem, Stack, Switch, TextField, Tooltip, Typography } from '@mui/material';
-import type { PreguntaDeCuestionarioDto, TipoDePregunta } from '@validasoft/api-client';
+import type { PreguntaDeCuestionarioDto, TipoDePregunta } from '@avalasoft/api-client';
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CampoDecimal } from '../CampoDecimal';

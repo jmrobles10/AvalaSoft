@@ -21,7 +21,7 @@ export interface GrupoDirecto {
 /** Un grupo con ingreso directo, su primera empresa y un administrador de todo el grupo (sin passkey aún). */
 export async function crearGrupoDirecto(opciones: { passkeyParaTodos?: boolean; nombre?: string } = {}): Promise<GrupoDirecto> {
   const sufijo = `${Date.now().toString(36)}${randomUUID().slice(0, 4)}`;
-  const correoAdmin = `ana.${sufijo}@e2e.validasoft.co`;
+  const correoAdmin = `ana.${sufijo}@e2e.avalasoft.co`;
   const slug = `ing-${sufijo}`;
   const nombre = opciones.nombre ?? `Grupo Ingreso ${sufijo}`;
   const creado = await llamar<{ tenant: { id: string }; apiKeyAdministrador: { valor: string } }>('POST', '/api/v1/plataforma/tenants', {

@@ -1,5 +1,5 @@
 import { Autocomplete, TextField } from '@mui/material';
-import type { EntradaCatalogoDto } from '@validasoft/api-client';
+import type { EntradaCatalogoDto } from '@avalasoft/api-client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { etiquetaEntrada, useBusquedaCatalogo, useEntradasCatalogo, type Catalogo } from './api';

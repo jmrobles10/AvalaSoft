@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
-import { SCOPES } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { SCOPES } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AppShell } from './AppShell';
@@ -19,7 +19,7 @@ vi.mock('../sesion/useYo', () => ({ useYo: () => ({ data: undefined }) }));
 
 function montar(ruta: string) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <MemoryRouter initialEntries={[ruta]}>
         <Routes>
           <Route path="/e/:empresaId/*" element={<AppShell />} />

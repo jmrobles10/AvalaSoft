@@ -1,6 +1,6 @@
 import { Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import type { FilaVistaPreviaDto } from '@validasoft/api-client';
-import { EstadoVacio, MarcoTabla } from '@validasoft/ui';
+import type { FilaVistaPreviaDto } from '@avalasoft/api-client';
+import { EstadoVacio, MarcoTabla } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { conProblemas, identificacionDeFila } from './modelo';
 

@@ -1,4 +1,4 @@
-import { esErrorApi, type ActualizarPlantillaNotificacionDto, type PlantillaNotificacionDto } from '@validasoft/api-client';
+import { esErrorApi, type ActualizarPlantillaNotificacionDto, type PlantillaNotificacionDto } from '@avalasoft/api-client';
 
 /** Igual que `PlantillaNotificacion.MaximoAsunto` y `MaximoTexto` del dominio (PL-1). */
 export const MAXIMO_ASUNTO = 150;

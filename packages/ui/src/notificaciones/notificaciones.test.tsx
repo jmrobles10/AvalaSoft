@@ -3,7 +3,7 @@ import { act, render, renderHook, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { useState, type ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createValidasoftTheme } from '../tema';
+import { createAvalasoftTheme } from '../tema';
 import { CampanaDeNotificaciones } from './CampanaDeNotificaciones';
 import { haceCuanto, textoContador, useAhora } from './formato';
 import type { NotificacionVisible } from './ItemDeNotificacion';
@@ -33,7 +33,7 @@ const aviso = (id: string, cambios: Partial<NotificacionVisible> = {}): Notifica
   ...cambios,
 });
 
-const conTema = (nodo: ReactNode) => render(<ThemeProvider theme={createValidasoftTheme('light')}>{nodo}</ThemeProvider>);
+const conTema = (nodo: ReactNode) => render(<ThemeProvider theme={createAvalasoftTheme('light')}>{nodo}</ThemeProvider>);
 
 function panel(cambios: Partial<PanelDeNotificacionesProps<NotificacionVisible>> = {}) {
   const acciones = { onReintentar: vi.fn(), onAbrir: vi.fn(), onMarcarTodas: vi.fn(), onPreferencias: vi.fn() };

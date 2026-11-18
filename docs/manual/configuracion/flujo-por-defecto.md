@@ -17,7 +17,7 @@ La administradora de Constructora Sur tiene un flujo de proveedores ya en uso y 
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» y un flujo de Proveedor ya publicado como por defecto.
 - Un segundo flujo de Proveedor publicado (se siembra por la API del sistema de pruebas, sin documentos).
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 

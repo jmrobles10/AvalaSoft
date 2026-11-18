@@ -1,5 +1,5 @@
 import { Box, Button, ButtonBase, Collapse, LinearProgress, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
-import type { EstadoFichaDto, EstadoSeccionFichaDto } from '@validasoft/api-client';
+import type { EstadoFichaDto, EstadoSeccionFichaDto } from '@avalasoft/api-client';
 import { ArrowLeft, CheckCircle2, ChevronDown, Circle, CircleAlert } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';

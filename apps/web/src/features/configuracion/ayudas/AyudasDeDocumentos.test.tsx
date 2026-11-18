@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type AyudaDeDocumentoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type AyudaDeDocumentoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAvisos } from '../../../shared/useAvisos';
 import { PaginaAyudasDeDocumentos } from './PaginaAyudasDeDocumentos';
@@ -58,7 +58,7 @@ function montar(responderPut: (cuerpo: unknown) => Response = () => json(RUT), l
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <PaginaAyudasDeDocumentos />
       </QueryClientProvider>

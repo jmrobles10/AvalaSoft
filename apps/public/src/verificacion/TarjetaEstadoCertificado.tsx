@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Card, Stack, Typography } from '@mui/material';
-import type { CertificadoPublicoDto } from '@validasoft/api-client';
-import { AnimacionExito, ChipEstado, tonoDe } from '@validasoft/ui';
+import type { CertificadoPublicoDto } from '@avalasoft/api-client';
+import { AnimacionExito, ChipEstado, tonoDe } from '@avalasoft/ui';
 import { ArrowRight, Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

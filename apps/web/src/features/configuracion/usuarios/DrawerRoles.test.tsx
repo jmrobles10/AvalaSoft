@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { fireEvent, render, screen } from '@testing-library/react';
-import type { EmpresaDto, GrupoDeAccesoDto, UsuarioDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import type { EmpresaDto, GrupoDeAccesoDto, UsuarioDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { describe, expect, it, vi } from 'vitest';
 import { DrawerRoles } from './DrawerRoles';
 
@@ -29,7 +29,7 @@ const USUARIO: UsuarioDto = {
 describe('DrawerRoles', () => {
   it('cada fila de roles tiene el nombre accesible de sus dos selectores, no solo la primera', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <DrawerRoles usuario={USUARIO} empresas={EMPRESAS} guardando={false} error={null} onGuardar={vi.fn()} onCerrar={vi.fn()} />
       </ThemeProvider>,
     );
@@ -46,7 +46,7 @@ describe('DrawerRoles', () => {
 
   it('sin grupos propios en el grupo empresarial solo asigna roles y manda a crearlos', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <DrawerRoles usuario={USUARIO} empresas={EMPRESAS} grupos={[]} guardando={false} error={null} onGuardar={vi.fn()} onCerrar={vi.fn()} />
       </ThemeProvider>,
     );
@@ -64,7 +64,7 @@ describe('DrawerRoles', () => {
     ];
     const usuario: UsuarioDto = { ...USUARIO, roles: [{ rol: 'Auditor', empresaId: null }], grupos: [{ grupoId: 'g2', empresaId: 'e1' }] };
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <DrawerRoles usuario={usuario} empresas={EMPRESAS} grupos={grupos} guardando={false} error={null} onGuardar={onGuardar} onCerrar={vi.fn()} />
       </ThemeProvider>,
     );

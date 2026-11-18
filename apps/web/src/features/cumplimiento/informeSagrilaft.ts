@@ -1,5 +1,5 @@
-import type { Estado } from '@validasoft/ui';
-import type { FilaTerceroSagrilafDto, InformeSagrilaftDto, MesDeCumplimientoDto, PersonaInformeDto } from '@validasoft/api-client';
+import type { Estado } from '@avalasoft/ui';
+import type { FilaTerceroSagrilafDto, InformeSagrilaftDto, MesDeCumplimientoDto, PersonaInformeDto } from '@avalasoft/api-client';
 
 /** Lógica pura del informe SAGRILAFT completo: filtros de la tabla, distribución del riesgo, tendencia de 12 meses y estados. */
 

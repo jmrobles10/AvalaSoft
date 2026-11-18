@@ -55,7 +55,7 @@ En un celular la barra no cabe: aparece un solo botón con el nombre de la secci
 
 ## Paso 3. Usa el tema oscuro del sistema
 
-Si tu sistema tiene el tema oscuro activo, envía su preferencia a la app y Validasoft cambia a colores oscuros al momento. La app no guarda esa preferencia por su cuenta: sigue el tema que le indique el sistema que la aloja.
+Si tu sistema tiene el tema oscuro activo, envía su preferencia a la app y AvalaSoft cambia a colores oscuros al momento. La app no guarda esa preferencia por su cuenta: sigue el tema que le indique el sistema que la aloja.
 
 > **Pantalla:** `/e/{empresa}/bandeja`
 

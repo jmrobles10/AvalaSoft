@@ -1,6 +1,6 @@
 import { Alert, Box, Card, Chip, Stack, Typography } from '@mui/material';
-import type { ContactoDelTerceroDto, EntradaDeHistorialDeContactoDto } from '@validasoft/api-client';
-import { EsqueletoTarjetas, formatearFecha } from '@validasoft/ui';
+import type { ContactoDelTerceroDto, EntradaDeHistorialDeContactoDto } from '@avalasoft/api-client';
+import { EsqueletoTarjetas, formatearFecha } from '@avalasoft/ui';
 import { ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ErrorRecuperable } from '../shared/componentes';

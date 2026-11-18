@@ -16,7 +16,7 @@ export async function abrirConsolaDePlataforma(page: Page, operador?: PersonaDel
     llave: CLAVE_PLATAFORMA,
     cuerpo: { nombre: 'Backoffice E2E', clavePublicaPem: claves.publica, origenesPermitidos: [ORIGEN_SISTEMA] },
   });
-  const persona = operador ?? { sub: 'paula', nombre: 'Paula Plataforma', correo: 'paula@validasoft.e2e' };
+  const persona = operador ?? { sub: 'paula', nombre: 'Paula Plataforma', correo: 'paula@avalasoft.e2e' };
   const sesion = async () =>
     (await llamar<{ token: string }>('POST', '/api/v1/plataforma/sesiones', { llave: CLAVE_PLATAFORMA, delegado: asercion(codigo, claves.privada, persona) })).token;
   return abrirEmbebidoCon(page, { empresaId: null, rutaInicial: 'plataforma/grupos', sesion });

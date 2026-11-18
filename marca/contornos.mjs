@@ -4,7 +4,7 @@
 // `packages/ui/src/marca/palabra.ts`. A partir de ahí el logotipo es geometría: `Logo`, los SVG, los PNG y el PDF dibujan esos trazados y
 // no dependen de ninguna fuente instalada ni cargada.
 //
-//   pnpm --filter @validasoft/marca contornos
+//   pnpm --filter @avalasoft/marca contornos
 //
 // Solo hace falta correrlo para cambiar la fuente, el peso, el seguimiento o la inclinación; el resultado se versiona.
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -162,7 +162,7 @@ const limites = {
 };
 const redondear = (n) => Math.round(n * 10 ** DECIMALES) / 10 ** DECIMALES;
 
-const salida = `/* Contornos de la palabra «avalasoft» del logotipo. GENERADO por marca/contornos.mjs (pnpm --filter @validasoft/marca contornos); no editar a mano.
+const salida = `/* Contornos de la palabra «avalasoft» del logotipo. GENERADO por marca/contornos.mjs (pnpm --filter @avalasoft/marca contornos); no editar a mano.
  * Fuente: ${FUENTE.nombre}, convertida a trazados, con seguimiento de ${String(SEGUIMIENTO / 100).replace('.', ',')} em y espaciado parejo por pares, e inclinada ${String(INCLINACION)}°.
  * Tamaño de la letra: ${String(TAMANO)} unidades; línea base en y = 0 y hacia arriba, negativo. */
 

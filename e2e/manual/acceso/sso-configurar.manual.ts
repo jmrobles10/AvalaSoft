@@ -20,7 +20,7 @@ recorrido(
     const g = await crearGrupoDirecto();
     await entrarYRegistrarPasskey(page, g);
     const sufijo = randomUUID().replace(/-/g, '').slice(0, 6);
-    const dominio = `sso-${sufijo}.e2e.validasoft.co`;
+    const dominio = `sso-${sufijo}.e2e.avalasoft.co`;
 
     await page.goto(`/app/#/e/${g.empresaId}/sso`);
     await expect(page.getByRole('heading', { level: 1, name: 'Inicio de sesión único' })).toBeVisible();
@@ -39,7 +39,7 @@ recorrido(
 
     await page.getByLabel('Nombre del botón').fill('Andina');
     await page.getByLabel('Emisor (issuer)').fill('http://localhost:9/v2.0');
-    await page.getByLabel('Client ID').fill('validasoft-e2e');
+    await page.getByLabel('Client ID').fill('avalasoft-e2e');
     await page.getByRole('button', { name: 'Escribir secreto' }).click();
     await page.getByLabel('Secreto del cliente').fill('secreto-e2e-12345');
     await page.getByLabel('Dominio', { exact: true }).fill(dominio);
@@ -50,7 +50,7 @@ recorrido(
     await paso(page, {
       titulo: 'Declara el dominio de correo de tu empresa',
       explicacion:
-        'Escribe el dominio de los correos de tu empresa y pulsa «Agregar». AvalaSoft muestra el dominio como «Por verificar» y el texto validasoft-verificacion=… que debes publicar en el archivo /.well-known/validasoft-verificacion.txt de ese dominio, y luego pulsar «Verificar». ' +
+        'Escribe el dominio de los correos de tu empresa y pulsa «Agregar». AvalaSoft muestra el dominio como «Por verificar» y el texto avalasoft-verificacion=… que debes publicar en el archivo /.well-known/avalasoft-verificacion.txt de ese dominio, y luego pulsar «Verificar». ' +
         'El inicio de sesión único solo vale para los correos de dominios que demuestres que son tuyos: mientras esté por verificar, no aplica a sus correos.',
       resaltar: page.getByText('Por verificar', { exact: true }),
     });

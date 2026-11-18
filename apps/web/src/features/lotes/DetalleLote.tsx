@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, Link, Stack, Typography } from '@mui/material';
-import { esErrorApi, SCOPES, type EstadoFilaLote, type FilaLoteDto } from '@validasoft/api-client';
-import { BarraFiltros, Dato, EsqueletoTarjeta, EstadoVacio, FiltroMenu, formatearFecha, PaginaEstado, RejillaDatos, TablaConCursor, type ColumnaTabla, usePaginacionCursor } from '@validasoft/ui';
+import { esErrorApi, SCOPES, type EstadoFilaLote, type FilaLoteDto } from '@avalasoft/api-client';
+import { BarraFiltros, Dato, EsqueletoTarjeta, EstadoVacio, FiltroMenu, formatearFecha, PaginaEstado, RejillaDatos, TablaConCursor, type ColumnaTabla, usePaginacionCursor } from '@avalasoft/ui';
 import { Ban, CircleCheck, CircleSlash, Download, Pause, Play, RotateCcw, SearchX } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

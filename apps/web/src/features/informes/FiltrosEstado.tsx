@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
-import { SCOPES } from '@validasoft/api-client';
-import { BarraFiltros, CampoFecha, FiltroMenu } from '@validasoft/ui';
+import { SCOPES } from '@avalasoft/api-client';
+import { BarraFiltros, CampoFecha, FiltroMenu } from '@avalasoft/ui';
 import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';

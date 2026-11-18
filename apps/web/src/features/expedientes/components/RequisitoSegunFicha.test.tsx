@@ -1,5 +1,5 @@
 import { screen, within } from '@testing-library/react';
-import { SCOPES, type RequisitoExpedienteDto } from '@validasoft/api-client';
+import { SCOPES, type RequisitoExpedienteDto } from '@avalasoft/api-client';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { montarPantalla } from '../../../pruebas/montar';
 import { simularApi } from '../../../pruebas/simularApi';

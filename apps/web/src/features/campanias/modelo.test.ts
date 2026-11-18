@@ -1,4 +1,4 @@
-import type { CampaniaDto, FilaVistaPreviaCampaniaDto, TotalesCampaniaDto } from '@validasoft/api-client';
+import type { CampaniaDto, FilaVistaPreviaCampaniaDto, TotalesCampaniaDto } from '@avalasoft/api-client';
 import i18n from 'i18next';
 import { describe, expect, it } from 'vitest';
 import {

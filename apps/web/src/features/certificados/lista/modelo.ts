@@ -1,4 +1,4 @@
-import type { FilaCertificadoDto, ListarCertificadosParams } from '@validasoft/api-client';
+import type { FilaCertificadoDto, ListarCertificadosParams } from '@avalasoft/api-client';
 
 /**
  * Estados por los que filtra la pantalla (`GET /certificados`). `Bloqueante` no es un estado: son los certificados que la

@@ -20,7 +20,7 @@ export const privacidad = {
     descargando: 'Empezó la descarga de tu exportación.',
     comoVerificar: 'Cómo verificarla',
     comoVerificarTexto:
-      'Dentro del ZIP, manifiesto.json lista el SHA-256 de cada archivo y manifiesto.firma.json trae la firma de AvalaSoft (clave {{kid}}), que se verifica con la clave pública de /.well-known/validasoft-certificados.json. El LEEME.txt explica los pasos.',
+      'Dentro del ZIP, manifiesto.json lista el SHA-256 de cada archivo y manifiesto.firma.json trae la firma de AvalaSoft (clave {{kid}}), que se verifica con la clave pública de /.well-known/avalasoft-certificados.json. El LEEME.txt explica los pasos.',
   },
   solicitudes: {
     titulo: 'Mis solicitudes sobre mis datos',

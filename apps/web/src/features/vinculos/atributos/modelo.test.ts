@@ -1,4 +1,4 @@
-import type { AtributoPermitidoDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { cuerpoDeAtributos, validarAtributos, valoresIniciales } from './modelo';
 

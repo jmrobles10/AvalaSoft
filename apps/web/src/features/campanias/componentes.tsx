@@ -1,5 +1,5 @@
 import { Box, Chip, LinearProgress, Typography } from '@mui/material';
-import type { CampaniaDto, EstadoCampania } from '@validasoft/api-client';
+import type { CampaniaDto, EstadoCampania } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { porcentaje, TONO_CAMPANIA } from './modelo';
 

@@ -1,7 +1,7 @@
 import { Box, Chip, Skeleton, Stack, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { esErrorApi, getObtenerMiCuentaQueryOptions, type MiCuentaDto } from '@validasoft/api-client';
-import { Dato, DosColumnas, PaginaEstado, RejillaDatos } from '@validasoft/ui';
+import { esErrorApi, getObtenerMiCuentaQueryOptions, type MiCuentaDto } from '@avalasoft/api-client';
+import { Dato, DosColumnas, PaginaEstado, RejillaDatos } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 import { UserX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -73,7 +73,7 @@ function TarjetaPerfil({ cuenta }: { cuenta: MiCuentaDto }) {
   );
 }
 
-/** Mi cuenta (ING-3): quién soy, cómo entré, mis passkeys y mis sesiones abiertas. Solo para quienes entraron directo a Validasoft. */
+/** Mi cuenta (ING-3): quién soy, cómo entré, mis passkeys y mis sesiones abiertas. Solo para quienes entraron directo a AvalaSoft. */
 export function PaginaMiCuenta() {
   const { t } = useTranslation();
   const consulta = useQuery(getObtenerMiCuentaQueryOptions({ request: { empresa: null } }));

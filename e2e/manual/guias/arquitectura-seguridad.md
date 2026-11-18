@@ -48,7 +48,7 @@ Cada operación exige un **permiso** (*scope*) con nombre `recurso:acción`, por
 
 ## Identidad delegada
 
-Para que un sistema actúe como una persona suya, cada petición lleva su API key y la cabecera `X-Usuario-Delegado` con una **aserción**: un JWT firmado (RS256 o ES256) con la clave **privada** del sistema, que AvalaSoft verifica con la **pública** registrada. Vale 5 minutos (`exp`) y **una sola vez** (`jti`); `iss` es el código del sistema y `aud` es `validasoft`. Rotar la clave del sistema invalida de inmediato las aserciones anteriores. La primera vez que llega una persona nueva, se crea o se enlaza con quien ya tiene ese correo. Los errores y el detalle están en la [guía de integración](guia:guia-de-integracion#identidad-delegada-y-pantallas-embebidas).
+Para que un sistema actúe como una persona suya, cada petición lleva su API key y la cabecera `X-Usuario-Delegado` con una **aserción**: un JWT firmado (RS256 o ES256) con la clave **privada** del sistema, que AvalaSoft verifica con la **pública** registrada. Vale 5 minutos (`exp`) y **una sola vez** (`jti`); `iss` es el código del sistema y `aud` es `avalasoft`. Rotar la clave del sistema invalida de inmediato las aserciones anteriores. La primera vez que llega una persona nueva, se crea o se enlaza con quien ya tiene ese correo. Los errores y el detalle están en la [guía de integración](guia:guia-de-integracion#identidad-delegada-y-pantallas-embebidas).
 
 ## Confirmar con passkey
 
@@ -62,11 +62,11 @@ Un sistema integrado registra los **orígenes** desde los que puede mostrar Aval
 
 | Qué | Cómo |
 |---|---|
-| Secretos en reposo (llaves de OpenAI, secretos de webhook, números de cuenta, credenciales de listas) | AES-GCM con la **clave maestra** (`Validasoft:Secretos:ClaveMaestra`); el texto cifrado lleva el identificador de la clave, así se rota con re-cifrado desde la consola. Sin clave maestra la API no arranca. |
+| Secretos en reposo (llaves de OpenAI, secretos de webhook, números de cuenta, credenciales de listas) | AES-GCM con la **clave maestra** (`Avalasoft:Secretos:ClaveMaestra`); el texto cifrado lleva el identificador de la clave, así se rota con re-cifrado desde la consola. Sin clave maestra la API no arranca. |
 | Credenciales de Stradata y Compliance, y campos privados de un grupo | AES-GCM con una clave derivada **por grupo** de la clave maestra. |
 | Lo personal que viaja en eventos | Cifrado con una **llave de datos por tercero**: destruirla anula esos datos (*crypto-shredding*) sin reescribir el event store. |
-| Sesiones y tokens | JWT firmados con `Validasoft:Sesiones:ClaveFirma` (al menos 32 bytes). |
-| Certificados | Contenido canónico (RFC 8785) sellado con Ed25519; las claves públicas están en `/.well-known/validasoft-certificados.json` ([Documentos](guia:arquitectura-documentos)). |
+| Sesiones y tokens | JWT firmados con `Avalasoft:Sesiones:ClaveFirma` (al menos 32 bytes). |
+| Certificados | Contenido canónico (RFC 8785) sellado con Ed25519; las claves públicas están en `/.well-known/avalasoft-certificados.json` ([Documentos](guia:arquitectura-documentos)). |
 | Webhooks | Cada entrega va firmada con HMAC-SHA256; el destino se resuelve y se rechazan las IP privadas, locales y reservadas (protección contra SSRF) al conectar. |
 | Documentos | Nunca pasan por la API: URLs prefirmadas, claves por SHA-256 y descargas auditadas. |
 

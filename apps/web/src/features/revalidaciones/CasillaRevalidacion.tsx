@@ -1,6 +1,6 @@
 import { Checkbox, Tooltip } from '@mui/material';
-import type { RevalidacionDto } from '@validasoft/api-client';
-import { APARIENCIA_ESTADO, ChipEstado, type Estado } from '@validasoft/ui';
+import type { RevalidacionDto } from '@avalasoft/api-client';
+import { APARIENCIA_ESTADO, ChipEstado, type Estado } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { esDevuelta } from './modelo';
 

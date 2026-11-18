@@ -1,5 +1,5 @@
 import { Box, IconButton, MenuItem, TextField } from '@mui/material';
-import { visualmenteOculto } from '@validasoft/ui';
+import { visualmenteOculto } from '@avalasoft/ui';
 import { Trash2 } from 'lucide-react';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';

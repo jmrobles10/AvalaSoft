@@ -52,7 +52,7 @@ interface Grupo {
 /** Un grupo con ingreso directo, su primera empresa y un administrador de todo el grupo (sin passkey aún). */
 async function crearGrupoDirecto(): Promise<Grupo> {
   const sufijo = `${Date.now().toString(36)}${randomUUID().slice(0, 4)}`;
-  const correoAdmin = `ana.${sufijo}@e2e.validasoft.co`;
+  const correoAdmin = `ana.${sufijo}@e2e.avalasoft.co`;
   const slug = `pi-${sufijo}`;
   const nombre = `Grupo Identidad ${sufijo}`;
   const creado = await llamar<{ tenant: { id: string }; apiKeyAdministrador: { valor: string } }>('POST', '/api/v1/plataforma/tenants', {
@@ -242,10 +242,10 @@ test('Configuración › Inicio de sesión único: el secreto no vuelve, el domi
 
   await page.getByLabel('Nombre del botón').fill('Andina');
   await page.getByLabel('Emisor (issuer)').fill('http://localhost:9/v2.0');
-  await page.getByLabel('Client ID').fill('validasoft-e2e');
+  await page.getByLabel('Client ID').fill('avalasoft-e2e');
   await page.getByRole('button', { name: 'Escribir secreto' }).click();
   await page.getByLabel('Secreto del cliente').fill('secreto-e2e-12345');
-  await page.getByLabel('Dominio', { exact: true }).fill(`sso-${sufijo}.e2e.validasoft.co`);
+  await page.getByLabel('Dominio', { exact: true }).fill(`sso-${sufijo}.e2e.avalasoft.co`);
   // El botón «Agregar» tiene el mismo alto que su campo (no se estira con la etiqueta del campo).
   const cajaDelCampo = await page.getByLabel('Dominio', { exact: true }).locator('xpath=ancestor::div[contains(@class, "MuiOutlinedInput-root")]').boundingBox();
   const cajaDelBoton = await page.getByRole('button', { name: 'Agregar', exact: true }).boundingBox();
@@ -253,9 +253,9 @@ test('Configuración › Inicio de sesión único: el secreto no vuelve, el domi
   await page.getByRole('button', { name: 'Agregar', exact: true }).click();
   // Agregar un dominio puede pedir confirmar con la passkey (configurar el SSO es una acción sensible).
   if (await page.getByRole('dialog', { name: 'Confirma que eres tú' }).isVisible({ timeout: 2_000 }).catch(() => false)) await confirmarConPasskey(page);
-  await expect(page.getByText(`@sso-${sufijo}.e2e.validasoft.co`)).toBeVisible();
+  await expect(page.getByText(`@sso-${sufijo}.e2e.avalasoft.co`)).toBeVisible();
   await expect(page.getByText('Por verificar', { exact: true })).toBeVisible();
-  await expect(page.getByText(/validasoft-verificacion=/)).toBeVisible();
+  await expect(page.getByText(/avalasoft-verificacion=/)).toBeVisible();
   await capturar(page, 'configuracion-sso-dominio');
 
   await page.getByRole('button', { name: 'Guardar' }).click();

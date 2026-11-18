@@ -1,4 +1,4 @@
-// Versión única de los SDK (docs/08 §2.4): Validasoft.Contratos, Validasoft.Sdk (NuGet) y @validasoft/sdk (npm) salen juntos con la
+// Versión única de los SDK (docs/08 §2.4): Avalasoft.Contratos, Avalasoft.Sdk (NuGet) y @avalasoft/sdk (npm) salen juntos con la
 // misma versión semántica, que vive en dos sitios (src/Empaquetado.props y packages/sdk/package.json) y en la cabecera del CHANGELOG.
 //
 //   node infra/sdk/version.mjs                    muestra la versión actual
@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 const raiz = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const propiedades = join(raiz, 'src', 'Empaquetado.props');
 const paquete = join(raiz, 'packages', 'sdk', 'package.json');
-const cambiosNet = join(raiz, 'src', 'Validasoft.Sdk', 'CHANGELOG.md');
+const cambiosNet = join(raiz, 'src', 'Avalasoft.Sdk', 'CHANGELOG.md');
 const cambiosNpm = join(raiz, 'packages', 'sdk', 'CHANGELOG.md');
 
 const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;

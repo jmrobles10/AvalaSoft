@@ -1,25 +1,25 @@
 <!doctype html>
 <!--
   Sistema anfitrión ficticio (IO-5, docs/integracion.md §8.1): una página de «cualquier sistema» (un ERP, un portal, un CRM) que embebe la bóveda,
-  el expediente o la ficha del tercero de Validasoft en un iframe, sin librerías.
+  el expediente o la ficha del tercero de AvalaSoft en un iframe, sin librerías.
 
   El sistema NUNCA pone la API key en esta página: el token de la sesión lo pide el BACKEND del sistema (ver servidor.mjs, que llama a
   POST /api/v1/sesiones-tercero) y la página solo lo recibe. Contrato por postMessage (docs/06 §3.2; el mismo que implementa
-  `montarEmbebido` de @validasoft/sdk para quien usa un empaquetador):
+  `montarEmbebido` de @avalasoft/sdk para quien usa un empaquetador):
 
-    iframe → página   { tipo: 'validasoft:ready', version }                  el iframe espera la sesión
-                      { tipo: 'validasoft:sesion-requerida', motivo }        falta, está por vencer o venció: pedir otra
-                      { tipo: 'validasoft:resize', height }                  alto del contenido
-    página → iframe   { tipo: 'validasoft:sesion', token }                   solo al origen exacto de Validasoft, nunca «*»
+    iframe → página   { tipo: 'avalasoft:ready', version }                  el iframe espera la sesión
+                      { tipo: 'avalasoft:sesion-requerida', motivo }        falta, está por vencer o venció: pedir otra
+                      { tipo: 'avalasoft:resize', height }                  alto del contenido
+    página → iframe   { tipo: 'avalasoft:sesion', token }                   solo al origen exacto de AvalaSoft, nunca «*»
 
-  Fuente de la sesión: `window.obtenerSesionDeValidasoft(componente, motivo)` si existe (las pruebas e2e la inyectan) o, si no,
+  Fuente de la sesión: `window.obtenerSesionDeAvalasoft(componente, motivo)` si existe (las pruebas e2e la inyectan) o, si no,
   `POST /sesion` del backend de este mismo sistema.
 -->
 <html lang="es-CO">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sistema anfitrión (ficticio) · Validasoft embebido</title>
+    <title>Sistema anfitrión (ficticio) · AvalaSoft embebido</title>
     <style>
       :root { font-family: 'Segoe UI', system-ui, sans-serif; color: #1d2533; background: #eef1f5; }
       body { margin: 0; }
@@ -46,13 +46,13 @@
         <button id="abrir" class="primario" type="button">Abrir</button>
       </div>
       <div id="contenedor" aria-live="polite"></div>
-      <ol id="bitacora" aria-label="Mensajes con Validasoft"></ol>
+      <ol id="bitacora" aria-label="Mensajes con AvalaSoft"></ol>
     </main>
 
     <script>
       const contenedor = document.getElementById('contenedor');
       const bitacora = document.getElementById('bitacora');
-      window.mensajesDeValidasoft = [];
+      window.mensajesDeAvalasoft = [];
       let actual = null; // { iframe, sesion, origen, alRecibir }
 
       const registrar = (flecha, mensaje) => {
@@ -63,7 +63,7 @@
 
       /** El backend del sistema canjea la sesión con su API key; esta página solo recibe el resultado. */
       async function pedirSesion(componente, motivo) {
-        if (typeof window.obtenerSesionDeValidasoft === 'function') return window.obtenerSesionDeValidasoft(componente, motivo);
+        if (typeof window.obtenerSesionDeAvalasoft === 'function') return window.obtenerSesionDeAvalasoft(componente, motivo);
         const respuesta = await fetch('/sesion', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -76,29 +76,29 @@
       async function abrir(componente) {
         cerrar();
         const sesion = await pedirSesion(componente, 'inicial');
-        const origenValidasoft = new URL(sesion.url).origin;
+        const origenAvalasoft = new URL(sesion.url).origin;
         const iframe = document.createElement('iframe');
-        iframe.id = 'validasoft';
-        iframe.title = 'Validasoft';
+        iframe.id = 'avalasoft';
+        iframe.title = 'AvalaSoft';
         iframe.src = sesion.url; // sin el token: va por postMessage
         iframe.style.cssText = 'display:block;width:100%;height:480px;border:0';
-        iframe.setAttribute('referrerpolicy', 'origin'); // Validasoft comprueba desde dónde se le embebe
+        iframe.setAttribute('referrerpolicy', 'origin'); // AvalaSoft comprueba desde dónde se le embebe
 
-        const enviarSesion = (s) => iframe.contentWindow.postMessage({ tipo: 'validasoft:sesion', token: s.token }, origenValidasoft);
+        const enviarSesion = (s) => iframe.contentWindow.postMessage({ tipo: 'avalasoft:sesion', token: s.token }, origenAvalasoft);
         const alRecibir = async (evento) => {
-          // Solo del iframe que montamos y del origen de Validasoft.
-          if (evento.source !== iframe.contentWindow || evento.origin !== origenValidasoft) return;
+          // Solo del iframe que montamos y del origen de AvalaSoft.
+          if (evento.source !== iframe.contentWindow || evento.origin !== origenAvalasoft) return;
           const mensaje = evento.data;
           if (!mensaje || typeof mensaje.tipo !== 'string') return;
-          window.mensajesDeValidasoft.push(mensaje);
+          window.mensajesDeAvalasoft.push(mensaje);
           registrar('←', mensaje);
-          if (mensaje.tipo === 'validasoft:ready') enviarSesion(sesion);
-          else if (mensaje.tipo === 'validasoft:sesion-requerida') {
+          if (mensaje.tipo === 'avalasoft:ready') enviarSesion(sesion);
+          else if (mensaje.tipo === 'avalasoft:sesion-requerida') {
             if (mensaje.motivo === 'inicial') return enviarSesion(sesion);
             const nueva = await pedirSesion(componente, mensaje.motivo); // otra sesión del backend
             sesion.token = nueva.token;
             enviarSesion(nueva);
-          } else if (mensaje.tipo === 'validasoft:resize') iframe.style.height = `${Math.ceil(mensaje.height)}px`;
+          } else if (mensaje.tipo === 'avalasoft:resize') iframe.style.height = `${Math.ceil(mensaje.height)}px`;
         };
         window.addEventListener('message', alRecibir);
         contenedor.append(iframe);

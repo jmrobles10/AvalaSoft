@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
-import type { ConstanciaHabeasDto, SolicitudHabeasDto } from '@validasoft/api-client';
-import { ChipEstado, EsqueletoTarjetas, formatearDiaCivil, type Estado } from '@validasoft/ui';
+import type { ConstanciaHabeasDto, SolicitudHabeasDto } from '@avalasoft/api-client';
+import { ChipEstado, EsqueletoTarjetas, formatearDiaCivil, type Estado } from '@avalasoft/ui';
 import { FileCheck2, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

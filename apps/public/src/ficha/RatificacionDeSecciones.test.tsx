@@ -1,5 +1,5 @@
 import { screen, within } from '@testing-library/react';
-import { reiniciarCliente, type VinculoPublicoDto } from '@validasoft/api-client';
+import { reiniciarCliente, type VinculoPublicoDto } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { GENERAL_POR_RATIFICAR, renovacionConSecciones } from '../expediente/pruebasSeccion';
 import { estadoFicha, filaEstado, montarFicha, seccion } from './pruebas/montar';

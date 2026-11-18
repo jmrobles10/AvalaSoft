@@ -8,7 +8,7 @@ import {
   getObtenerContactosDelTerceroQueryOptions,
   getListarSesionesDelTerceroQueryOptions,
   rechazarAccesoSolicitado,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 
 /** Las solicitudes de acceso de otros correos al tercero; solo las puede pedir quien ya es contacto (una sesión aislada recibe 403). */
 export const useAccesosSolicitados = (habilitado = true) => useQuery({ ...getListarAccesosSolicitadosQueryOptions(), enabled: habilitado, retry: false });

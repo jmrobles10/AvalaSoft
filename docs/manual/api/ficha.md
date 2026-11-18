@@ -251,7 +251,7 @@ curl -X GET "https://{host}/api/v1/terceros/3fa85f64-5717-4562-b3fc-2c963f66afa6
 
 ## Declaraciones PEP del tercero
 
-El tercero descarga el PDF de su propia declaración jurada PEP (HU 49093, DP-16): solo la de la versión vigente de su ficha, solo de quien responde «Sí» a «¿Es PEP?» y tiene declaración, y solo la suya (el tercero sale de su sesión: no hay forma de pedir la de otro, ni siquiera con un identificador cambiado). El PDF no está dirigido a ninguna empresa: lleva el nombre y el logo de Validasoft. Cada descarga queda en `AccesoADeclaracionPep`.
+El tercero descarga el PDF de su propia declaración jurada PEP (HU 49093, DP-16): solo la de la versión vigente de su ficha, solo de quien responde «Sí» a «¿Es PEP?» y tiene declaración, y solo la suya (el tercero sale de su sesión: no hay forma de pedir la de otro, ni siquiera con un identificador cambiado). El PDF no está dirigido a ninguna empresa: lleva el nombre y el logo de AvalaSoft. Cada descarga queda en `AccesoADeclaracionPep`.
 
 ### `GET /public/v1/ficha/{seccion}/declaracion-pep/pdf`
 

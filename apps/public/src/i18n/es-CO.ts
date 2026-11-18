@@ -25,7 +25,7 @@ export const esCO = {
     volver: 'Volver',
     continuar: 'Continuar',
     pie: 'Tus documentos, una sola vez para todas tus empresas',
-    conValidasoft: 'con AvalaSoft',
+    conAvalasoft: 'con AvalaSoft',
     version: 'Versión {{n}}',
   },
   nav: {

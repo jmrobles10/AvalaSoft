@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type ExpedienteDto, type MotivoTipificadoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type ExpedienteDto, type MotivoTipificadoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAvisos } from '../../../shared/useAvisos';
 import { area, expediente, requisito, requisitoSeccion } from '../datosPrueba';
@@ -31,7 +31,7 @@ function abrir(dialogo: DialogoDeArea, requisitos = [requisito(), CAMARA], respu
   configurarCliente({ fetch });
   const datos: ExpedienteDto = { ...expediente('EnRevision'), requisitos };
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>
         <DialogoDecisionArea dialogo={dialogo} expediente={datos} empresaId="emp" motivos={[MOTIVO]} aplica onCerrar={() => undefined} />
       </QueryClientProvider>

@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Skeleton, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { SCOPES, type CuestionarioDto, type QuienResponde } from '@validasoft/api-client';
-import { EstadoVacio, FormularioDeDialogo, MarcoTabla } from '@validasoft/ui';
+import { SCOPES, type CuestionarioDto, type QuienResponde } from '@avalasoft/api-client';
+import { EstadoVacio, FormularioDeDialogo, MarcoTabla } from '@avalasoft/ui';
 import { Plus } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,5 +1,5 @@
 // Generador de los recursos de marca de AvalaSoft (MA-1, docs/marca.md). Reproducible: pinta los componentes REALES de
-// `@validasoft/ui` (Logo, AnimacionExito, Cargando) en un navegador (Playwright + Vite), captura los cuadros y escribe:
+// `@avalasoft/ui` (Logo, AnimacionExito, Cargando) en un navegador (Playwright + Vite), captura los cuadros y escribe:
 //
 //   marca/svg/     logotipo e ícono en claro y oscuro, y el favicon (con `prefers-color-scheme`)
 //                  (el logotipo es solo trazados: los contornos de «avalasoft» salen de `contornos.mjs` y no hace falta ninguna fuente)
@@ -8,13 +8,13 @@
 //   marca/gif/     éxito y carga, en claro y oscuro (2× para nitidez, con el fondo de cada modo)
 //
 // y los copia a donde el producto los usa: `apps/web/public`, `apps/public/public` (con su manifest) y los recursos incrustados
-// de los correos (`src/Validasoft.Aplicacion/Comun/RecursosDeMarca`).
+// de los correos (`src/Avalasoft.Aplicacion/Comun/RecursosDeMarca`).
 //
-//   pnpm --filter @validasoft/marca generar            # todo
-//   pnpm --filter @validasoft/marca generar -- --solo svg,png   # solo una parte (svg, png, gif, splash)
+//   pnpm --filter @avalasoft/marca generar            # todo
+//   pnpm --filter @avalasoft/marca generar -- --solo svg,png   # solo una parte (svg, png, gif, splash)
 //
 // Requiere Node 23.6 o superior (lee `gif.ts` y `png.ts` quitando los tipos) y Chromium de Playwright
-// (`pnpm --filter @validasoft/e2e navegadores`). El resultado se versiona; `sincronia.test.ts` vigila que las copias no se separen.
+// (`pnpm --filter @avalasoft/e2e navegadores`). El resultado se versiona; `sincronia.test.ts` vigila que las copias no se separen.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import react from '@vitejs/plugin-react';
@@ -288,7 +288,7 @@ if (partes.has('gif')) {
 
 if (partes.has('png') || partes.has('gif')) {
   // Recursos incrustados en la API para los correos (se adjuntan en línea con `cid:`; ver Comun/MarcoDeCorreo.cs).
-  const correo = join(repo, 'src', 'Validasoft.Aplicacion', 'Comun', 'RecursosDeMarca');
+  const correo = join(repo, 'src', 'Avalasoft.Aplicacion', 'Comun', 'RecursosDeMarca');
   console.log('Correos');
   if (partes.has('png')) escribir(join(correo, 'logotipo.png'), readFileSync(join(aqui, 'png', 'logotipo-claro@2x.png')));
   if (partes.has('gif')) escribir(join(correo, 'exito.gif'), readFileSync(join(aqui, 'gif', 'exito-claro.gif')));

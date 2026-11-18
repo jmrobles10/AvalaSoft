@@ -16,7 +16,7 @@ La administradora agrega a un flujo de proveedores dos secciones de «Mi informa
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con miembros y los tipos de documento base.
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 

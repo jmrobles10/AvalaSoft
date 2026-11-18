@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { describe, expect, it, vi } from 'vitest';
 import type { DeclaracionPep } from '../tipos';
 import { datosBasicos, type DatosBasicos } from './declaracion';
@@ -48,7 +48,7 @@ function montar(props: { basicos?: DatosBasicos; previa?: DeclaracionPep | null;
   const onConfirmar = vi.fn();
   const onSalir = vi.fn();
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <DialogoDeclaracionPep basicos={props.basicos ?? NATURAL} previa={props.previa ?? null} mensajeServidor={props.mensajeServidor} onConfirmar={onConfirmar} onSalir={onSalir} />
     </ThemeProvider>,
   );

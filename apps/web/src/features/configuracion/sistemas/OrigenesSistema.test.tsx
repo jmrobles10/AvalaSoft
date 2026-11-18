@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type SistemaIntegradoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type SistemaIntegradoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { OrigenesSistema } from './OrigenesSistema';
 
@@ -29,7 +29,7 @@ function montar(sistema: SistemaIntegradoDto, respuesta: (cuerpo: unknown) => Re
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>
         <OrigenesSistema sistema={sistema} />
       </QueryClientProvider>

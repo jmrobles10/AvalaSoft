@@ -1,6 +1,6 @@
 import { Divider, Stack, Typography } from '@mui/material';
-import type { ContactoDto, TerceroDto } from '@validasoft/api-client';
-import { Dato, formatearFecha, RejillaDatos } from '@validasoft/ui';
+import type { ContactoDto, TerceroDto } from '@avalasoft/api-client';
+import { Dato, formatearFecha, RejillaDatos } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';
 import { identificacionDe } from '../vinculos/tercero';

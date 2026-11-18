@@ -43,7 +43,7 @@ La bandeja de revisión lista los expedientes que esperan decisión de tus área
 **Variantes**
 
 - **Un expediente ya se recordó hoy:** Se omite y el resultado lo dice: «1 omitido: ya se les recordó hoy».
-- **Eliges más de 200 expedientes a la vez:** Validasoft no envía: usa «Recordar a los observados».
+- **Eliges más de 200 expedientes a la vez:** AvalaSoft no envía: usa «Recordar a los observados».
 
 ## Paso 3. Comprueba el resultado del envío
 
@@ -55,7 +55,7 @@ El resultado dice a cuántos terceros se recordó y cuántos se omitieron, con e
 
 ## Paso 4. Intenta recordar de nuevo el mismo día
 
-Como ya se les recordó hoy, un segundo envío no hace nada: Validasoft lo indica sin enviar correos. El recordatorio se puede repetir al día siguiente.
+Como ya se les recordó hoy, un segundo envío no hace nada: AvalaSoft lo indica sin enviar correos. El recordatorio se puede repetir al día siguiente.
 
 > **Pantalla:** `/e/{empresa}/bandeja`
 

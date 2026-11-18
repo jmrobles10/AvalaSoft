@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import type { TenantCreadoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import type { TenantCreadoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { ResultadoAlta } from './ResultadoAlta';
@@ -19,7 +19,7 @@ function alta(nombre: string): TenantCreadoDto {
 
 function montar(nombre: string) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <MemoryRouter>
         <ResultadoAlta alta={alta(nombre)} />
       </MemoryRouter>

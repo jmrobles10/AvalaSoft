@@ -1,5 +1,5 @@
-// Design system de Validasoft, dirección "Registro" (docs/06 §2): tokens, tema MUI, estados canónicos y componentes.
-// Fuente: artifact "Design System" de Validasoft (tokens.json → tokens.ts generado; tema, estados y marca por empresa).
+// Design system de AvalaSoft, dirección "Registro" (docs/06 §2): tokens, tema MUI, estados canónicos y componentes.
+// Fuente: artifact "Design System" de AvalaSoft (tokens.json → tokens.ts generado; tema, estados y marca por empresa).
 export * from './tokens';
 export * from './tema';
 export * from './estados';

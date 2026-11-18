@@ -1,4 +1,4 @@
-import { CampoCodigo } from '@validasoft/ui';
+import { CampoCodigo } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 
 /**

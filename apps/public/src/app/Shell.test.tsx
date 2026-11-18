@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useSesionTercero } from '../sesion/sesionTercero';
@@ -16,7 +16,7 @@ vi.mock('../embebido/usePuenteEmbebido', () => ({ usePuenteEmbebido: () => undef
 
 function montar(ruta: string) {
   return render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <MemoryRouter initialEntries={[ruta]}>
         <Routes>
           <Route element={<Shell />}>
@@ -61,7 +61,7 @@ describe('Shell del tercero: la marca', () => {
     const pie = screen.getByRole('contentinfo');
     expect(pie).toHaveTextContent('con AvalaSoft');
     expect(pie.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
-    // El nombre «Validasoft» del logotipo es solo el de la barra: el ícono del pie no lo repite a los lectores de pantalla.
+    // El nombre «AvalaSoft» del logotipo es solo el de la barra: el ícono del pie no lo repite a los lectores de pantalla.
     expect(within(pie).queryByRole('img', { name: 'AvalaSoft' })).not.toBeInTheDocument();
   });
 });

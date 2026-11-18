@@ -19,7 +19,7 @@ import {
   type InvitacionPorAprobarDto,
   type ListarVinculosParams,
   type VinculoDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 
 /** Las claves llevan la empresa: el mismo id de vínculo en otra empresa es otro recurso (404). */

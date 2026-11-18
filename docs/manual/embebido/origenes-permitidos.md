@@ -1,17 +1,17 @@
 ---
 id: "embebido/origenes-permitidos"
-titulo: "Declara qué páginas pueden mostrar Validasoft"
+titulo: "Declara qué páginas pueden mostrar AvalaSoft"
 actor: "Sistema integrador"
 dominio: "embebido"
-resumen: "Tu sistema declara los orígenes (dirección y puerto) desde los que se muestran sus pantallas de Validasoft. Solo esos orígenes pueden embeber la app y pedir sesiones para ella: un origen que no declaraste recibe un rechazo y su página no muestra nada del tercero."
+resumen: "Tu sistema declara los orígenes (dirección y puerto) desde los que se muestran sus pantallas de AvalaSoft. Solo esos orígenes pueden embeber la app y pedir sesiones para ella: un origen que no declaraste recibe un rechazo y su página no muestra nada del tercero."
 pasos: 4
 ---
 
-# Declara qué páginas pueden mostrar Validasoft
+# Declara qué páginas pueden mostrar AvalaSoft
 
 **Actor:** Sistema integrador · **Dominio:** Uso embebido
 
-Tu sistema declara los orígenes (dirección y puerto) desde los que se muestran sus pantallas de Validasoft. Solo esos orígenes pueden embeber la app y pedir sesiones para ella: un origen que no declaraste recibe un rechazo y su página no muestra nada del tercero.
+Tu sistema declara los orígenes (dirección y puerto) desde los que se muestran sus pantallas de AvalaSoft. Solo esos orígenes pueden embeber la app y pedir sesiones para ella: un origen que no declaraste recibe un rechazo y su página no muestra nada del tercero.
 
 **Antes de empezar**
 
@@ -26,7 +26,7 @@ Tu sistema declara los orígenes (dirección y puerto) desde los que se muestran
 
 ## Paso 1. Declara los orígenes permitidos
 
-Con PUT /api/v1/sistemas/{id}/origenes reemplazas la lista de orígenes de tu sistema. Cada origen es esquema, dominio y puerto, como «https://portal.tuempresa.co», sin ruta ni comodines: Validasoft rechaza una página o un asterisco. Esa misma lista decide qué páginas pueden embeber la app y qué orígenes pueden pedir sesiones para ella.
+Con PUT /api/v1/sistemas/{id}/origenes reemplazas la lista de orígenes de tu sistema. Cada origen es esquema, dominio y puerto, como «https://portal.tuempresa.co», sin ruta ni comodines: AvalaSoft rechaza una página o un asterisco. Esa misma lista decide qué páginas pueden embeber la app y qué orígenes pueden pedir sesiones para ella.
 
 ![Paso 1: Declara los orígenes permitidos (escritorio)](../../../salida/manual/img/embebido/origenes-permitidos/01-declara-los-origenes-permitidos-claro.webp)
 
@@ -43,7 +43,7 @@ La app consulta esta lista en tiempo de ejecución y la usa para dos cosas: acep
 
 ## Paso 3. Un origen ajeno no obtiene sesión
 
-Cuando una página pide una sesión para un origen que no está en la lista, la API responde 403 «origen-no-permitido» y no emite ningún token. Sin token, la página no puede mostrar la bóveda ni la ficha del tercero, aunque cargue el marco de Validasoft.
+Cuando una página pide una sesión para un origen que no está en la lista, la API responde 403 «origen-no-permitido» y no emite ningún token. Sin token, la página no puede mostrar la bóveda ni la ficha del tercero, aunque cargue el marco de AvalaSoft.
 
 ![Paso 3: Un origen ajeno no obtiene sesión (escritorio)](../../../salida/manual/img/embebido/origenes-permitidos/03-un-origen-ajeno-no-obtiene-sesion-claro.webp)
 

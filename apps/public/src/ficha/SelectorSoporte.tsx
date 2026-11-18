@@ -1,6 +1,6 @@
 import { Alert, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Paper, Skeleton, Typography } from '@mui/material';
-import type { DocumentoBovedaDto, SoporteSeccionDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { DocumentoBovedaDto, SoporteSeccionDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

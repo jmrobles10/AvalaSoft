@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Divider, Drawer, IconButton, Stack, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { actualizarPlantillaNotificacion, type ActualizarPlantillaNotificacionDto, type PlantillaNotificacionDto } from '@validasoft/api-client';
+import { actualizarPlantillaNotificacion, type ActualizarPlantillaNotificacionDto, type PlantillaNotificacionDto } from '@avalasoft/api-client';
 import { RotateCcw, X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

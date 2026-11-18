@@ -30,7 +30,7 @@ import type {
 import type { SesionEmbebidaDto } from './embebido.js';
 
 /** Respuesta de error de la API (Problem Details): `codigo` es el código estable de la regla para decidir en el integrador. */
-export class ErrorValidasoft extends Error {
+export class ErrorAvalasoft extends Error {
   constructor(
     readonly estado: number,
     readonly codigo: string | undefined,
@@ -38,7 +38,7 @@ export class ErrorValidasoft extends Error {
     readonly correlacion: string | undefined,
   ) {
     super(`AvalaSoft respondió ${String(estado)}${codigo ? ` ${codigo}` : ''}: ${detalle ?? 'sin detalle'}`);
-    this.name = 'ErrorValidasoft';
+    this.name = 'ErrorAvalasoft';
   }
 }
 
@@ -49,7 +49,7 @@ export interface OpcionesCliente {
   apiKey: string;
   /** Empresa interna por defecto (`X-Empresa`). */
   empresaId?: string;
-  /** Firma las aserciones `X-Usuario-Delegado` para {@link ClienteValidasoft.comoUsuario}. */
+  /** Firma las aserciones `X-Usuario-Delegado` para {@link ClienteAvalasoft.comoUsuario}. */
   firmante?: FirmanteDeAserciones;
   /** `fetch` a usar (por defecto el global). */
   fetch?: typeof fetch;
@@ -98,7 +98,7 @@ async function enviar(ctx: Contexto, p: Peticion): Promise<RespuestaCondicional<
     if (p.conEmpresa !== false && ctx.empresaId) cabeceras['X-Empresa'] = ctx.empresaId;
     if (ctx.usuario) {
       if (!opciones.firmante) throw new Error('Para actuar como usuario configura `firmante` con la clave privada del sistema.');
-      // Una aserción por intento: Validasoft rechaza un jti repetido (SE-4).
+      // Una aserción por intento: AvalaSoft rechaza un jti repetido (SE-4).
       cabeceras['X-Usuario-Delegado'] = await opciones.firmante.firmar(ctx.usuario);
     }
     if (clave) cabeceras['Idempotency-Key'] = clave;
@@ -129,7 +129,7 @@ async function enviar(ctx: Contexto, p: Peticion): Promise<RespuestaCondicional<
   }
 }
 
-function error(respuesta: Response, texto: string): ErrorValidasoft {
+function error(respuesta: Response, texto: string): ErrorAvalasoft {
   let codigo: string | undefined;
   let detalle: string | undefined;
   try {
@@ -139,7 +139,7 @@ function error(respuesta: Response, texto: string): ErrorValidasoft {
   } catch {
     detalle = texto.slice(0, 300) || undefined;
   }
-  return new ErrorValidasoft(respuesta.status, codigo, detalle, respuesta.headers.get('X-Correlation-Id') ?? undefined);
+  return new ErrorAvalasoft(respuesta.status, codigo, detalle, respuesta.headers.get('X-Correlation-Id') ?? undefined);
 }
 
 const esperar = (ms: number) => new Promise<void>((resolver) => setTimeout(resolver, ms));
@@ -155,7 +155,7 @@ async function condicional<T>(ctx: Contexto, p: Peticion): Promise<RespuestaCond
 
 const q = encodeURIComponent;
 
-/** ¿La respuesta de {@link ClienteValidasoft.invitaciones} `.enviar` es una invitación retenida a la espera de aprobación (y no el enlace que salió)? */
+/** ¿La respuesta de {@link ClienteAvalasoft.invitaciones} `.enviar` es una invitación retenida a la espera de aprobación (y no el enlace que salió)? */
 export function invitacionRetenida(respuesta: EnlaceInvitacionDto | InvitacionPorAprobarDto): respuesta is InvitacionPorAprobarDto {
   return !('expira' in respuesta);
 }
@@ -185,7 +185,7 @@ function correosDe(ctx: Contexto, filtro: FiltroCorreos): Promise<PaginaDto<Corr
   return obtener<PaginaDto<CorreoDePruebaDto>>(ctx, { metodo: 'GET', ruta: `api/v1/sandbox/correos${consulta ? `?${consulta}` : ''}`, conEmpresa: false });
 }
 
-async function* recorrer(cliente: ClienteValidasoft, filtro: FiltroEventos): AsyncGenerator<EventoPublicoDto> {
+async function* recorrer(cliente: ClienteAvalasoft, filtro: FiltroEventos): AsyncGenerator<EventoPublicoDto> {
   let desde = filtro.desde;
   for (;;) {
     const pagina = await cliente.eventos.listar({ ...filtro, desde, limite: filtro.limite ?? 100 });
@@ -199,7 +199,7 @@ async function* recorrer(cliente: ClienteValidasoft, filtro: FiltroEventos): Asy
  * Cliente de la API v1 para un sistema integrador (H9, docs/08 §2): vínculos, invitaciones, expedientes, certificados,
  * consulta de certificación, eventos (pull) y sesiones para pantallas embebidas. Lógica de negocio: ninguna.
  */
-export class ClienteValidasoft {
+export class ClienteAvalasoft {
   private readonly ctx: Contexto;
 
   /** @param derivado Uso interno de {@link paraEmpresa} y {@link comoUsuario}. */
@@ -214,13 +214,13 @@ export class ClienteValidasoft {
   }
 
   /** El mismo cliente sobre otra empresa interna (`X-Empresa`). */
-  paraEmpresa(empresaId: string): ClienteValidasoft {
-    return new ClienteValidasoft(this.ctx.opciones, { empresaId, usuario: this.ctx.usuario });
+  paraEmpresa(empresaId: string): ClienteAvalasoft {
+    return new ClienteAvalasoft(this.ctx.opciones, { empresaId, usuario: this.ctx.usuario });
   }
 
   /** El mismo cliente en nombre de una persona del sistema (identidad delegada); requiere `firmante`. */
-  comoUsuario(usuario: UsuarioDelegado): ClienteValidasoft {
-    return new ClienteValidasoft(this.ctx.opciones, { empresaId: this.ctx.empresaId, usuario });
+  comoUsuario(usuario: UsuarioDelegado): ClienteAvalasoft {
+    return new ClienteAvalasoft(this.ctx.opciones, { empresaId: this.ctx.empresaId, usuario });
   }
 
   readonly vinculos = {
@@ -370,7 +370,7 @@ export class ClienteValidasoft {
       obtener<SesionEmbebidaDto>(this.ctx, { metodo: 'POST', ruta: 'api/v1/sesiones-tercero', cuerpo: sesion }),
     /**
      * Canjea la identidad delegada por un token de 30 minutos para el iframe (`Authorization: Bearer`). Solo desde
-     * {@link ClienteValidasoft.comoUsuario}.
+     * {@link ClienteAvalasoft.comoUsuario}.
      */
     crear: () => {
       if (!this.ctx.usuario) return Promise.reject(new Error('La sesión es de una persona: usa cliente.comoUsuario(usuario).sesiones.crear().'));

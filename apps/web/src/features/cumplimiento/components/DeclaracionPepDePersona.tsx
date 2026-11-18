@@ -1,5 +1,5 @@
 import { Button, Chip, Tooltip } from '@mui/material';
-import type { PersonaInformeDto } from '@validasoft/api-client';
+import type { PersonaInformeDto } from '@avalasoft/api-client';
 import { FileDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../../shared/errores';

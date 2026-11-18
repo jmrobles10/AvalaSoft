@@ -1,4 +1,4 @@
-# Contexto de `docker build` = raíz del repositorio (src/Validasoft.Api/Dockerfile).
+# Contexto de `docker build` = raíz del repositorio (src/Avalasoft.Api/Dockerfile).
 .git
 .github
 .claude

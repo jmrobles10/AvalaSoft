@@ -1,6 +1,6 @@
 import { Chip, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import { SCOPES, type EvaluacionResumenDto } from '@validasoft/api-client';
-import { EstadoVacio, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@validasoft/ui';
+import { SCOPES, type EvaluacionResumenDto } from '@avalasoft/api-client';
+import { EstadoVacio, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@avalasoft/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

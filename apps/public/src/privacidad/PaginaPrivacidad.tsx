@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { EsqueletoTarjetas, EstadoVacio } from '@validasoft/ui';
+import { EsqueletoTarjetas, EstadoVacio } from '@avalasoft/ui';
 import { Plus, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ import { TarjetaSolicitud } from './TarjetaSolicitud';
 
 /**
  * Privacidad y mis datos (Ley 1581 de 2012, OD-1, OD-9): el tercero se lleva una copia firmada de su bóveda y ejerce sus derechos de
- * consulta, corrección y supresión ante Validasoft o ante una empresa, con su radicado, su plazo en días hábiles y la constancia de la
+ * consulta, corrección y supresión ante AvalaSoft o ante una empresa, con su radicado, su plazo en días hábiles y la constancia de la
  * respuesta.
  */
 export function PaginaPrivacidad() {

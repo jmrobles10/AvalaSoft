@@ -16,7 +16,7 @@ La administradora agrega a una persona al grupo con un rol en una empresa y otro
 **Antes de empezar**
 
 - Un grupo empresarial con las empresas «Constructora Norte S.A.S.» y «Constructora Sur S.A.S.», y personas con roles (Rubén, Olga, Sofía).
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 
@@ -38,7 +38,7 @@ La tabla lista las personas del grupo con sus roles, agrupados por empresa: «To
 
 **Variantes**
 
-- **Una persona no tiene roles:** Aparece «Sin roles» y no puede hacer nada en Validasoft hasta que le agregues al menos uno.
+- **Una persona no tiene roles:** Aparece «Sin roles» y no puede hacer nada en AvalaSoft hasta que le agregues al menos uno.
 
 **Configuración que lo afecta**
 
@@ -46,7 +46,7 @@ La tabla lista las personas del grupo con sus roles, agrupados por empresa: «To
 
 ## Paso 2. Agrega una persona con sus roles
 
-Escribe el nombre y el correo de la persona. Luego agrega un rol por cada empresa o uno para todo el grupo: cada fila elige la empresa (o «Todo el grupo») y el rol. Los roles son Administrador, Revisor, Oficial de cumplimiento y Auditor. Aquí la persona es Revisora en Constructora Sur y Auditora de todo el grupo. Sin ningún rol la persona no puede hacer nada en Validasoft.
+Escribe el nombre y el correo de la persona. Luego agrega un rol por cada empresa o uno para todo el grupo: cada fila elige la empresa (o «Todo el grupo») y el rol. Los roles son Administrador, Revisor, Oficial de cumplimiento y Auditor. Aquí la persona es Revisora en Constructora Sur y Auditora de todo el grupo. Sin ningún rol la persona no puede hacer nada en AvalaSoft.
 
 > **Pantalla:** `/e/{empresa}/usuarios`
 
@@ -79,7 +79,7 @@ El panel «Editar roles» muestra la persona y sus filas de roles, con los mismo
 
 **Variantes**
 
-- **Quitas todas las filas de roles:** La pantalla avisa que sin roles la persona no puede hacer nada en Validasoft.
+- **Quitas todas las filas de roles:** La pantalla avisa que sin roles la persona no puede hacer nada en AvalaSoft.
 
 ## Paso 5. Confirma los roles nuevos
 

@@ -1,4 +1,4 @@
-import type { ExportacionBovedaDto, SolicitudHabeasDto } from '@validasoft/api-client';
+import type { ExportacionBovedaDto, SolicitudHabeasDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import {
   BORRADOR_VACIO, cuerpoDeSolicitud, DESTINO_PLATAFORMA, diasHabilesDe, enCurso, estadoDePlazo, hayIgualEnTramite, intervaloDeRefresco, ordenarSolicitudes, tamanoLegible,

@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type UsoIaDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type UsoIaDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PaginaUsoIa } from './PaginaUsoIa';
@@ -53,7 +53,7 @@ function montar(uso: (url: URL) => UsoIaDto = () => USO, ruta = '/e/emp/uso-ia')
   });
   const router = createMemoryRouter([{ path: '/e/:empresaId/uso-ia', element: <PaginaUsoIa /> }], { initialEntries: [ruta] });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <RouterProvider router={router} />
       </QueryClientProvider>

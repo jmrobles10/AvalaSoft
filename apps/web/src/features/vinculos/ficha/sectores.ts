@@ -1,10 +1,10 @@
-import type { ExpedienteDto, RequisitoExpedienteDto } from '@validasoft/api-client';
+import type { ExpedienteDto, RequisitoExpedienteDto } from '@avalasoft/api-client';
 import { Award, ClipboardCheck, Contact, CreditCard, FileSignature, FileStack, HardHat, History, Landmark, Receipt, Scale, ShieldCheck, Star, Wallet, type LucideIcon } from 'lucide-react';
 
 /**
  * Sectores de la ficha del vínculo, con los nombres y el orden de la ficha del proveedor del SRM (MenuProveedor): lista plana, todos
  * visibles. Los de información reúnen lo que el expediente pide de ese tema y lo que el tercero declaró en su ficha. Certificado e
- * Historial son propios de Validasoft y van al final; «Aprobación inicial» y «Adjuntos constructora» del SRM no tienen equivalente.
+ * Historial son propios de AvalaSoft y van al final; «Aprobación inicial» y «Adjuntos constructora» del SRM no tienen equivalente.
  */
 export const SECTORES = [
   'general',

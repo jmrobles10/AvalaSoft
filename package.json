@@ -1,5 +1,5 @@
 {
-  "name": "validasoft-frontend",
+  "name": "avalasoft-frontend",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.34.7",
@@ -7,19 +7,19 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "pnpm --filter @validasoft/web dev",
+    "dev": "pnpm --filter @avalasoft/web dev",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "pnpm -r --parallel typecheck",
     "build": "pnpm -r build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "generar:api": "pnpm --filter @validasoft/api-client generar",
-    "semilla:dev": "pnpm --filter @validasoft/web semilla",
-    "semilla:plataforma": "pnpm --filter @validasoft/web semilla:plataforma",
-    "dev:public": "pnpm --filter @validasoft/public dev",
-    "e2e": "pnpm --filter @validasoft/e2e test",
+    "generar:api": "pnpm --filter @avalasoft/api-client generar",
+    "semilla:dev": "pnpm --filter @avalasoft/web semilla",
+    "semilla:plataforma": "pnpm --filter @avalasoft/web semilla:plataforma",
+    "dev:public": "pnpm --filter @avalasoft/public dev",
+    "e2e": "pnpm --filter @avalasoft/e2e test",
     "manual": "node e2e/manual/generador/manual.mjs",
-    "manual:recorrer": "pnpm --filter @validasoft/e2e manual:recorrer",
+    "manual:recorrer": "pnpm --filter @avalasoft/e2e manual:recorrer",
     "manual:todo": "pnpm manual:recorrer && pnpm manual"
   },
   "devDependencies": {

@@ -1,21 +1,21 @@
 ---
 id: "plataforma/acceso-de-soporte-a-una-empresa"
-titulo: "Concede a soporte de Validasoft un acceso temporal y lo revoca"
+titulo: "Concede a soporte de AvalaSoft un acceso temporal y lo revoca"
 actor: "Administrador de empresa"
 dominio: "plataforma"
-resumen: "La administradora de una empresa concede al soporte de Validasoft un acceso temporal de lectura: por una empresa, por unas horas y con una razón. Mientras está vigente, el soporte puede leer la configuración, los flujos, los vínculos y los expedientes, pero nunca documentos. Puede revocarlo antes de que venza."
+resumen: "La administradora de una empresa concede al soporte de AvalaSoft un acceso temporal de lectura: por una empresa, por unas horas y con una razón. Mientras está vigente, el soporte puede leer la configuración, los flujos, los vínculos y los expedientes, pero nunca documentos. Puede revocarlo antes de que venza."
 pasos: 4
 ---
 
-# Concede a soporte de Validasoft un acceso temporal y lo revoca
+# Concede a soporte de AvalaSoft un acceso temporal y lo revoca
 
 **Actor:** Administrador de empresa · **Dominio:** Consola de Plataforma
 
-La administradora de una empresa concede al soporte de Validasoft un acceso temporal de lectura: por una empresa, por unas horas y con una razón. Mientras está vigente, el soporte puede leer la configuración, los flujos, los vínculos y los expedientes, pero nunca documentos. Puede revocarlo antes de que venza.
+La administradora de una empresa concede al soporte de AvalaSoft un acceso temporal de lectura: por una empresa, por unas horas y con una razón. Mientras está vigente, el soporte puede leer la configuración, los flujos, los vínculos y los expedientes, pero nunca documentos. Puede revocarlo antes de que venza.
 
 **Antes de empezar**
 
-- Una empresa del grupo con su administradora en Validasoft.
+- Una empresa del grupo con su administradora en AvalaSoft.
 - Sin accesos de soporte vigentes.
 
 **Pasos**
@@ -27,7 +27,7 @@ La administradora de una empresa concede al soporte de Validasoft un acceso temp
 
 ## Paso 1. Abre Accesos de soporte
 
-El soporte de Validasoft no ve nada de tu grupo salvo que se lo concedas. Aquí quedan registrados los accesos temporales que concediste, con su estado y cuándo expiran. Mientras no concedas ninguno, la lista está vacía.
+El soporte de AvalaSoft no ve nada de tu grupo salvo que se lo concedas. Aquí quedan registrados los accesos temporales que concediste, con su estado y cuándo expiran. Mientras no concedas ninguno, la lista está vacía.
 
 > **Pantalla:** `/e/{empresa}/accesos-soporte`
 

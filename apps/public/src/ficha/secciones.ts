@@ -1,4 +1,4 @@
-import type { DocumentoBovedaDto, EstadoFichaDto, EstadoSeccionFichaDto, FaltanteSeccionDto } from '@validasoft/api-client';
+import type { DocumentoBovedaDto, EstadoFichaDto, EstadoSeccionFichaDto, FaltanteSeccionDto } from '@avalasoft/api-client';
 
 /** Canónico con el que el tercero sube un soporte ad hoc de cualquier sección (FM-20). */
 export const SOPORTE_FICHA = 'SOPORTE_FICHA';

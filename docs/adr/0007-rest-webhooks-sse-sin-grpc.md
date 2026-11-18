@@ -9,7 +9,7 @@ Los consumidores son el SRM (.NET 7), el Portal (.NET 8), el ERP Marco, integrad
 
 ## Decisión
 - **REST JSON v1** (`/api/v1`, OpenAPI 3.1, camelCase, ProblemDetails RFC 9457, `Idempotency-Key`, paginación por cursor, `ETag/If-Match`, rate limit) como única API pública; SDKs .NET y TS **generados** del contrato.
-- **Webhooks salientes firmados** (`Validasoft-Signature: v1=hmac_sha256(secreto, "{ts}.{body}")`; **dedupe en el receptor por `Validasoft-Event-Id`**, mientras `Validasoft-Delivery` identifica cada intento (T-6); reintentos con backoff, log de entregas, reenvío manual) y modo **pull** (`GET /eventos?desde=cursor`) para consumidores detrás de firewall. El evento canónico de emisión de certificado es **`certificado.emitido`**; no existe `expediente.certificado` (T-15).
+- **Webhooks salientes firmados** (`Avalasoft-Signature: v1=hmac_sha256(secreto, "{ts}.{body}")`; **dedupe en el receptor por `Avalasoft-Event-Id`**, mientras `Avalasoft-Delivery` identifica cada intento (T-6); reintentos con backoff, log de entregas, reenvío manual) y modo **pull** (`GET /eventos?desde=cursor`) para consumidores detrás de firewall. El evento canónico de emisión de certificado es **`certificado.emitido`**; no existe `expediente.certificado` (T-15).
 - **SSE** para las dos SPAs (bandejas y expediente del tercero en vivo).
 - **Sin gRPC en el MVP.** Se reevaluará (ADR nuevo) solo para una consulta interna de muy alto volumen (p. ej. `consultas/certificacion` desde el ERP) si REST con ETag y caché no alcanza el objetivo de p99 < 50 ms a 500 rps.
 

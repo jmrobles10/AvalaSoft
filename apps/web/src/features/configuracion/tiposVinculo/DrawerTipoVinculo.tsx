@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Drawer, FormControlLabel, IconButton, Stack, Switch, TextField, Typography } from '@mui/material';
-import type { TipoVinculoDto } from '@validasoft/api-client';
-import { FaltaParaEnviar } from '@validasoft/ui';
+import type { TipoVinculoDto } from '@avalasoft/api-client';
+import { FaltaParaEnviar } from '@avalasoft/ui';
 import { X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

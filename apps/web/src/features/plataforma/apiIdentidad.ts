@@ -17,7 +17,7 @@ import {
   type ArchivoDescargado,
   type FijarTarifaDeIaDto,
   type ListarIngresosOperadoresParams,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { invalidarRuta } from '../../shared/consultas';
 import { cuerpoCorregirEmpresa, cuerpoCrearEmpresa, type BorradorEmpresa } from '../configuracion/empresas/modelo';
 

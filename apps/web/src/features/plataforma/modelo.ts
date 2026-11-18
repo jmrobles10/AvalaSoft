@@ -4,7 +4,7 @@ import type {
   EmpresaDeGrupoDto,
   PlanIaEmpresaDto,
   TipoIdentificacionDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { cuerpoCrearEmpresa, validarEmpresa, type BorradorEmpresa, type ErrorEmpresa } from '../configuracion/empresas/modelo';
 import { origenesDeTexto } from '../configuracion/sistemas/origenes';
 import { aNumero, leerPrecio, precioDePlan } from './modeloConsumo';
@@ -45,7 +45,7 @@ export interface BorradorGrupo {
   sistemaClave: string;
   /** Uno por línea (o separados por coma). */
   sistemaOrigenes: string;
-  /** Cómo entran las personas del grupo (ING-1): desde el sistema integrado (identidad delegada), directo a Validasoft, o ambos. */
+  /** Cómo entran las personas del grupo (ING-1): desde el sistema integrado (identidad delegada), directo a AvalaSoft, o ambos. */
   ingresoDelegado: boolean;
   ingresoDirecto: boolean;
 }

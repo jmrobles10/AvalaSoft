@@ -48,7 +48,7 @@ La plantilla trae las columnas obligatorias: tipo y número de identificación, 
 
 **Variantes**
 
-- **El archivo no tiene una de las columnas obligatorias:** Validasoft lo rechaza: «Al archivo le faltan columnas de la plantilla».
+- **El archivo no tiene una de las columnas obligatorias:** AvalaSoft lo rechaza: «Al archivo le faltan columnas de la plantilla».
 
 ## Paso 3. Revisa la vista previa fila por fila
 

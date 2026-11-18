@@ -87,12 +87,12 @@ El aro y el verde del check salen de `tokens.ts`; los dos tonos de la palabra so
 |---|---|
 | Geometría, colores y tiempos | `packages/ui/src/marca/geometria.ts`, `packages/ui/src/tokens.ts` |
 | Contornos de la palabra «avalasoft» | `packages/ui/src/marca/palabra.ts` (generado por `marca/contornos.mjs`) |
-| Componentes | `Logo` (`logotipo`, `icono`, `favicon`), `AnimacionExito`, `AnimacionExitoUnaVez`, `Cargando` en `@validasoft/ui` |
+| Componentes | `Logo` (`logotipo`, `icono`, `favicon`), `AnimacionExito`, `AnimacionExitoUnaVez`, `Cargando` en `@avalasoft/ui` |
 | Recursos generados | `marca/svg/`, `marca/png/` (incluye `hoja-de-marca.png`), `marca/gif/` |
 | Favicon, íconos y manifest de las apps | `apps/web/public/` y `apps/public/public/`; enlazados en cada `index.html` |
 | Carga previa al JavaScript | Entre las marcas `marca:splash:inicio` y `marca:splash:fin` de cada `index.html` |
-| Marco y recursos de los correos | `src/Validasoft.Aplicacion/Comun/MarcoDeCorreo.cs` y `Comun/RecursosDeMarca/` |
-| Logotipo en los PDF | `src/Validasoft.Infraestructura/Ficha/LogosDePdf.cs` (`LogotipoDeValidasoft`, un SVG de trazados que repite los de la web) |
+| Marco y recursos de los correos | `src/Avalasoft.Aplicacion/Comun/MarcoDeCorreo.cs` y `Comun/RecursosDeMarca/` |
+| Logotipo en los PDF | `src/Avalasoft.Infraestructura/Ficha/LogosDePdf.cs` (`LogotipoDeAvalasoft`, un SVG de trazados que repite los de la web) |
 
 ### Correos
 
@@ -105,13 +105,13 @@ El logo de la **empresa** (PNG o SVG que configuró) sigue siendo el primero en 
 ## 6. Cómo se regenera
 
 ```bash
-pnpm --filter @validasoft/e2e navegadores      # la primera vez: Chromium de Playwright
-pnpm --filter @validasoft/marca generar        # SVG, PNG, GIF, carga previa al JavaScript y los recursos de los correos
-pnpm --filter @validasoft/marca generar -- --solo svg,png   # solo una parte (svg, png, gif, splash)
-pnpm --filter @validasoft/marca contornos      # solo si cambia la fuente, el peso, el seguimiento o la inclinación de la palabra
+pnpm --filter @avalasoft/e2e navegadores      # la primera vez: Chromium de Playwright
+pnpm --filter @avalasoft/marca generar        # SVG, PNG, GIF, carga previa al JavaScript y los recursos de los correos
+pnpm --filter @avalasoft/marca generar -- --solo svg,png   # solo una parte (svg, png, gif, splash)
+pnpm --filter @avalasoft/marca contornos      # solo si cambia la fuente, el peso, el seguimiento o la inclinación de la palabra
 ```
 
-Requiere **Node 23.6 o superior** (el generador lee `gif.ts` y `png.ts` sin compilar). El generador abre un arnés (`marca/harness`) con los **componentes reales** de `@validasoft/ui`, congela cada animación en cada instante (Web Animations) y captura los cuadros con Playwright: lo que se ve en la app es lo que sale en el GIF. Los GIF van a 2× (96 px en pantalla = 192 px) con el fondo de cada modo; un codificador propio (`marca/gif.ts`: paleta por mediana, LZW, solo el rectángulo que cambia) los deja en ≈ 80 KB. El GIF de carga usa un ciclo de 2 s (dos vueltas del arco y un ciclo del check algo más lento que el de 1,4 s de la app) para repetirse sin saltos.
+Requiere **Node 23.6 o superior** (el generador lee `gif.ts` y `png.ts` sin compilar). El generador abre un arnés (`marca/harness`) con los **componentes reales** de `@avalasoft/ui`, congela cada animación en cada instante (Web Animations) y captura los cuadros con Playwright: lo que se ve en la app es lo que sale en el GIF. Los GIF van a 2× (96 px en pantalla = 192 px) con el fondo de cada modo; un codificador propio (`marca/gif.ts`: paleta por mediana, LZW, solo el rectángulo que cambia) los deja en ≈ 80 KB. El GIF de carga usa un ciclo de 2 s (dos vueltas del arco y un ciclo del check algo más lento que el de 1,4 s de la app) para repetirse sin saltos.
 
 El resultado **se versiona**. Para que no se separe de la geometría hay pruebas que solo leen archivos (`marca/sincronia.test.ts`, en `pnpm test`): las copias de las apps y de los correos son idénticas a lo generado, los SVG llevan los números de `geometria.ts`, la carga de `index.html` y el PDF repiten la misma geometría y los mismos colores.
 

@@ -35,7 +35,7 @@ Arriba de la pantalla está «Exportar mi bóveda» y debajo «Mis solicitudes s
 
 ## Paso 2. Elige qué quieres hacer y a quién se lo pides
 
-El formulario te pregunta qué quieres hacer (conocer, corregir o suprimir tus datos) y a quién se lo pides: Validasoft, por lo que guarda en tu bóveda, o una empresa con la que tienes vínculo. Antes de enviar, el aviso te dice quién recibe la solicitud y en cuántos días hábiles te responde; «Enviar solicitud» la radica.
+El formulario te pregunta qué quieres hacer (conocer, corregir o suprimir tus datos) y a quién se lo pides: AvalaSoft, por lo que guarda en tu bóveda, o una empresa con la que tienes vínculo. Antes de enviar, el aviso te dice quién recibe la solicitud y en cuántos días hábiles te responde; «Enviar solicitud» la radica.
 
 > **Pantalla:** `/privacidad`
 

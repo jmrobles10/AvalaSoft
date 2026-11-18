@@ -1,5 +1,5 @@
 import { Button, Stack } from '@mui/material';
-import type { ExpedienteDto } from '@validasoft/api-client';
+import type { ExpedienteDto } from '@avalasoft/api-client';
 import { OctagonX } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

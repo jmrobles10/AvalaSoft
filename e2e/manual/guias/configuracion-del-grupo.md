@@ -26,7 +26,7 @@ Ruta `/e/{empresa}/empresas` · permiso `empresas:administrar`. Los textos legal
 | Límite de empresas del plan | Con el bloqueo suave activo y el tope alcanzado, el alta responde 409 `limite-del-plan-alcanzado`. | Sin límite si no hay plan | Cuentan solo las empresas activas. |
 | Textos legales: autorización de tratamiento de datos y términos y condiciones | Es lo que acepta el tercero al vincularse. Cada publicación es una versión nueva, vigente de inmediato, y los terceros vinculados deben aceptarla de nuevo. | Sin valor: sin publicar, los terceros no pueden aceptar invitaciones. | De 1 a 100 000 caracteres. La pantalla impide publicar un texto igual al vigente. |
 
-Fuente: `apps/web/src/features/configuracion/empresas/modelo.ts`, `src/Validasoft.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`, `src/Validasoft.Dominio/Plataforma/Plataforma.cs`.
+Fuente: `apps/web/src/features/configuracion/empresas/modelo.ts`, `src/Avalasoft.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`, `src/Avalasoft.Dominio/Plataforma/Plataforma.cs`.
 
 ## Usuarios y roles
 
@@ -50,7 +50,7 @@ Ruta `/e/{empresa}/usuarios` · permiso `usuarios:administrar`.
 | Oficial de cumplimiento | Lecturas más `vinculos:escribir`, `vinculos:bloquear`, `cuentas:aprobar`, `expedientes:revisar`, `expedientes:exportar`, `verificaciones:escribir`, `cumplimiento:decidir`, `auditoria:leer` y `supresiones:resolver`. | Sí |
 | Auditor | Lecturas más `auditoria:leer`, `auditoria:exportar` y `expedientes:exportar`. | Sí |
 
-Fuente: `src/Validasoft.Dominio/Identidad/Usuario.cs`, `src/Validasoft.Aplicacion/Comun/Permisos.cs`, `src/Validasoft.Aplicacion/Identidad/IdentidadEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Identidad/Usuario.cs`, `src/Avalasoft.Aplicacion/Comun/Permisos.cs`, `src/Avalasoft.Aplicacion/Identidad/IdentidadEndpoints.cs`.
 
 ## Ingreso
 
@@ -66,7 +66,7 @@ Ruta `/e/{empresa}/ingreso` · permiso `usuarios:administrar`. Define cómo entr
 
 Parámetros fijos, no configurables: el código del correo vence a los 5 minutos y admite 5 intentos; la ceremonia dura 10 minutos; un correo sin cuenta recibe un desafío señuelo para no revelar quién existe.
 
-Fuente: `src/Validasoft.Dominio/Plataforma/Plataforma.cs`, `src/Validasoft.Dominio/Identidad/Ingreso.cs`, `src/Validasoft.Aplicacion/Identidad/Ingreso/GestionEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Plataforma/Plataforma.cs`, `src/Avalasoft.Dominio/Identidad/Ingreso.cs`, `src/Avalasoft.Aplicacion/Identidad/Ingreso/GestionEndpoints.cs`.
 
 ## Inicio de sesión único (SSO)
 
@@ -80,14 +80,14 @@ Ruta `/e/{empresa}/sso` · permiso `usuarios:administrar`; guardar pide reautent
 | Emisor (issuer), Client ID y secreto del cliente (OIDC) | Dónde publica el proveedor su configuración y cómo se identifica AvalaSoft. El secreto se guarda cifrado y nunca vuelve a mostrarse. | Sin valor; secreto vacío (cliente público con PKCE) | Emisor `https` (http solo a localhost y en desarrollo) de hasta 500 caracteres; Client ID hasta 300; secreto de 8 a 2000 caracteres. |
 | Organización o Conexión (WorkOS) | Identifican a la empresa en WorkOS. | Vacío | Al menos una de las dos (422 `conexion-workos-requerida`); hasta 100 caracteres cada una. |
 | URL de retorno | Es el URI de redirección que se registra en el proveedor. | La de la instalación | Solo lectura. |
-| Dominios de correo | Solo valen los correos de dominios verificados; un dominio verificado pertenece a un solo grupo. | Ninguno | Hasta 20. Se verifica publicando `validasoft-verificacion=…` en `https://{dominio}/.well-known/validasoft-verificacion.txt`. Rechaza dominios públicos (gmail, hotmail, outlook, yahoo, icloud, proton…: 409 `dominio-publico`). No se puede quitar el último verificado con el SSO activo. |
+| Dominios de correo | Solo valen los correos de dominios verificados; un dominio verificado pertenece a un solo grupo. | Ninguno | Hasta 20. Se verifica publicando `avalasoft-verificacion=…` en `https://{dominio}/.well-known/avalasoft-verificacion.txt`. Rechaza dominios públicos (gmail, hotmail, outlook, yahoo, icloud, proton…: 409 `dominio-publico`). No se puede quitar el último verificado con el SSO activo. |
 | Convivencia con el código del correo | Define si el SSO acompaña o reemplaza al código. | `Complementario` | `Complementario`: SSO o código. `Exclusivo`: las personas de los dominios verificados solo entran por SSO; el código y la passkey sola responden 403 `sso-obligatorio`. No afecta al ingreso delegado. |
 | Crear a las personas en su primer ingreso (JIT) | Crea la cuenta al entrar por primera vez. | Apagado | Apagado y sin cuenta: 403 `sso-sin-cuenta`. Encendido exige un rol por omisión o una regla (422 `rol-por-omision-requerido`). |
 | Roles por omisión, reglas por grupo del proveedor y reclamo de grupos | Qué roles recibe quien llega, según los grupos que declara el proveedor (se unen los de las reglas que coinciden). | Sin roles ni reglas; reclamo `groups` | Hasta 20 roles por omisión y 100 reglas. «El proveedor manda sobre los roles» reemplaza en cada ingreso los roles de la persona por los de sus grupos (apagado por defecto). |
 | Alcances OIDC | Solo por API. | `openid`, `email`, `profile` | Debe incluir `openid`; hasta 20. |
 | Probar la conexión | Comprueba el descubrimiento y el emisor con lo guardado; no inicia sesión. | — | Solo si hay algo guardado y sin cambios pendientes. |
 
-Fuente: `src/Validasoft.Dominio/Identidad/Sso.cs`, `src/Validasoft.Aplicacion/Identidad/Sso/SsoEndpoints.cs`, `src/Validasoft.Aplicacion/Identidad/Ingreso/ServicioDeIngreso.Sso.cs`.
+Fuente: `src/Avalasoft.Dominio/Identidad/Sso.cs`, `src/Avalasoft.Aplicacion/Identidad/Sso/SsoEndpoints.cs`, `src/Avalasoft.Aplicacion/Identidad/Ingreso/ServicioDeIngreso.Sso.cs`.
 
 ## Tipos de vínculo
 
@@ -103,7 +103,7 @@ Ruta `/e/{empresa}/tipos-vinculo` · se ve con `configuracion:leer` y se escribe
 | Estado | Un tipo inactivo no se usa en flujos ni vínculos nuevos (422 `tipo-vinculo-invalido`); lo ya creado no cambia. | Activo | Activar o desactivar. |
 | Tipos sembrados al crear el grupo | — | PROVEEDOR, CLIENTE, EMPLEADO, USUARIO | — |
 
-Fuente: `src/Validasoft.Dominio/Configuracion/TipoVinculo.cs`, `src/Validasoft.Dominio/Configuracion/ValidadorDeAtributos.cs`.
+Fuente: `src/Avalasoft.Dominio/Configuracion/TipoVinculo.cs`, `src/Avalasoft.Dominio/Configuracion/ValidadorDeAtributos.cs`.
 
 ## Tipos de documento
 
@@ -129,7 +129,7 @@ Ruta `/e/{empresa}/tipos-documento` · se ve con `configuracion:leer` y se crea 
 
 > **Ojo:** con la regla `Ninguna`, un documento que declara `fecha_vencimiento` sí vence y sí genera avisos, aunque la pantalla diga «no pierde vigencia». No existen ajustes del tipo por empresa (los «overrides» de empresa que mencionan docs/02 y docs/03 no están construidos): lo único por empresa es la ayuda del documento y los ajustes del requisito dentro del flujo.
 
-Fuente: `src/Validasoft.Dominio/Documentos/TipoDocumentoTenant.cs`, `src/Validasoft.Dominio/Documentos/CatalogoCanonico.cs`, `src/Validasoft.Dominio/Documentos/Vigencia.cs`, `src/Validasoft.Dominio/Documentos/Formularios.cs`.
+Fuente: `src/Avalasoft.Dominio/Documentos/TipoDocumentoTenant.cs`, `src/Avalasoft.Dominio/Documentos/CatalogoCanonico.cs`, `src/Avalasoft.Dominio/Documentos/Vigencia.cs`, `src/Avalasoft.Dominio/Documentos/Formularios.cs`.
 
 ## Motivos
 
@@ -145,7 +145,7 @@ Ruta `/e/{empresa}/motivos` · se ve con `configuracion:leer` y se escribe con `
 | Disponible para los revisores | Si está inactivo, ya no se resuelve en veredictos nuevos. | Activo | Activo o inactivo. |
 | Motivos de la plataforma | Ocho fijos que no se editan (409 `motivo-base`): ilegible, incompleto, vencido, no corresponde al tercero, datos no coinciden, formato no vigente, firma faltante, frescura incumplida. | Siempre activos | Todos sirven para observar y para rechazar. |
 
-Fuente: `src/Validasoft.Dominio/Configuracion/Motivo.cs`, `src/Validasoft.Aplicacion/Configuracion/MotivosEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Configuracion/Motivo.cs`, `src/Avalasoft.Aplicacion/Configuracion/MotivosEndpoints.cs`.
 
 ## Webhooks
 
@@ -153,13 +153,13 @@ Ruta `/e/{empresa}/webhooks` · permiso `webhooks:administrar`. El detalle del m
 
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
-| Dirección (URL) | Destino del POST firmado de cada evento. | Sin valor: debe configurarse | Absoluta, hasta 2000 caracteres, `https` (http solo a localhost con `Validasoft:Webhooks:PermitirHttpLocal`); sin IP privadas ni locales (`PermitirDestinosPrivados`). 422 `url-invalida` o `url-no-permitida`. |
+| Dirección (URL) | Destino del POST firmado de cada evento. | Sin valor: debe configurarse | Absoluta, hasta 2000 caracteres, `https` (http solo a localhost con `Avalasoft:Webhooks:PermitirHttpLocal`); sin IP privadas ni locales (`PermitirDestinosPrivados`). 422 `url-invalida` o `url-no-permitida`. |
 | Descripción | Para reconocer la suscripción. | Vacío | Hasta 200 caracteres. |
 | Qué eventos recibe | Solo recibe los tipos marcados. | `*` (todos, también los futuros) | `*` o hasta 100 tipos del catálogo de 42 (abajo). Vacío: 422 `tipos-requeridos`; desconocido: 422 `tipos-invalidos`. |
 | De qué empresas | Un evento sin empresa (de grupo) solo llega con `*`. | `*` (las del alcance de quien lo crea) | `*` o ids de empresas del grupo (422 `empresas-fuera-de-alcance`). |
-| Secreto de firma y rotación | Cada entrega lleva `Validasoft-Signature: t={ts},v1={HMAC-SHA256}`; el secreto (`whsec_…`) se muestra una sola vez. | Se genera al crear | Al rotar, el anterior sigue firmando 24 horas por omisión (`HorasSolapamientoRotacion`, de 0 a 168); la cabecera lleva dos `v1` durante ese tiempo. |
+| Secreto de firma y rotación | Cada entrega lleva `Avalasoft-Signature: t={ts},v1={HMAC-SHA256}`; el secreto (`whsec_…`) se muestra una sola vez. | Se genera al crear | Al rotar, el anterior sigue firmando 24 horas por omisión (`HorasSolapamientoRotacion`, de 0 a 168); la cabecera lleva dos `v1` durante ese tiempo. |
 | Tiempo de espera por intento | Éxito = respuesta 2xx dentro del plazo. | 5 s (`TimeoutSegundos`, de 1 a 30) | No editable en la pantalla. |
-| Reintentos | Espera creciente tras cada fallo, con los eventos en orden de cursor. | 1 min, 5 min, 30 min, 2 h y 6 h (seis intentos) | `Validasoft:Webhooks:Reintentos`. Estados de entrega: Pendiente, Entregada, Reintentando, Fallida, Cancelada. |
+| Reintentos | Espera creciente tras cada fallo, con los eventos en orden de cursor. | 1 min, 5 min, 30 min, 2 h y 6 h (seis intentos) | `Avalasoft:Webhooks:Reintentos`. Estados de entrega: Pendiente, Entregada, Reintentando, Fallida, Cancelada. |
 | Deshabilitación automática | Al llegar al umbral de intentos fallidos seguidos la suscripción se deshabilita (causa `fallos-consecutivos`), se audita y se avisa a los administradores por campana y correo; sus reintentos pendientes quedan Cancelada. | 20 (`FallosParaDeshabilitar`) | Un éxito reinicia la cuenta. Activar de nuevo reinicia los fallos. |
 | Reenviar entrega | Un intento manual ahora, aunque esté entregada, fallida o cancelada o la suscripción esté desactivada. | — | Si falla, no programa reintentos. |
 
@@ -167,7 +167,7 @@ Ruta `/e/{empresa}/webhooks` · permiso `webhooks:administrar`. El detalle del m
 
 > **Ojo:** el formulario de alta de la pantalla no envía `sistemaId`, y la API lo exige cuando la credencial no es de un sistema integrado (422 `sistema-requerido`); con una sesión de ingreso directo esa alta puede fallar. Se diagnosticó leyendo el código, no ejecutándolo.
 
-Fuente: `src/Validasoft.Dominio/Integraciones/SuscripcionWebhook.cs`, `src/Validasoft.Aplicacion/Notificaciones/Webhooks.cs`, `src/Validasoft.Aplicacion/Notificaciones/EventosPublicos.cs`.
+Fuente: `src/Avalasoft.Dominio/Integraciones/SuscripcionWebhook.cs`, `src/Avalasoft.Aplicacion/Notificaciones/Webhooks.cs`, `src/Avalasoft.Aplicacion/Notificaciones/EventosPublicos.cs`.
 
 ## Sistemas integrados
 
@@ -182,7 +182,7 @@ Ruta `/e/{empresa}/sistemas` · permiso `sistemas:administrar`.
 | Rotar clave | Desde ya solo valen las aserciones firmadas con la clave nueva. | — | Solo si el sistema está activo; pide reautenticación. |
 | Desactivar sistema | Revoca todas sus API keys (también las de prueba), corta sus sesiones y aserciones y quita sus orígenes; reactivarlo no restaura las llaves. | Activo | Desde Plataforma («Sistemas» de cada grupo) o por API; la acción pide reautenticación. |
 
-Fuente: `src/Validasoft.Dominio/Identidad/SistemaIntegrado.cs`, `src/Validasoft.Aplicacion/Identidad/IdentidadEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Identidad/SistemaIntegrado.cs`, `src/Avalasoft.Aplicacion/Identidad/IdentidadEndpoints.cs`.
 
 ## API keys
 
@@ -199,7 +199,7 @@ Ruta `/e/{empresa}/api-keys` · permiso `api-keys:administrar`; crear, rotar y r
 | Rotar | Emite una llave nueva con los mismos permisos, alcance, sistema y expiración; la anterior sigue valiendo el solapamiento elegido y la nueva se muestra una sola vez. | Solapamiento de 24 horas | La pantalla ofrece ahora, 1 hora, 24 horas y 7 días; la API acepta hasta 30 días y nunca más allá de la expiración. 409 `api-key-ya-rotada` o `api-key-vencida`. |
 | Revocar | Deja de autenticar; se aplica en segundos (con la caché de verificación de 5 minutos como tope). | — | No se deshace. |
 
-Fuente: `src/Validasoft.Dominio/Identidad/ApiKey.cs`, `src/Validasoft.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`, `src/Validasoft.Infraestructura/Seguridad/Seguridad.cs`.
+Fuente: `src/Avalasoft.Dominio/Identidad/ApiKey.cs`, `src/Avalasoft.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`, `src/Avalasoft.Infraestructura/Seguridad/Seguridad.cs`.
 
 ## Accesos de soporte
 
@@ -214,7 +214,7 @@ Ruta `/e/{empresa}/accesos-soporte` · permiso `empresas:administrar`.
 
 Mientras está vigente, el soporte solo lee (`configuracion:leer`, `flujos:leer`, `vinculos:leer`, `terceros:leer`, `expedientes:leer`, `certificados:leer`, `auditoria:leer`) y nunca ve documentos. Entra con la cabecera `X-Acceso-Soporte`.
 
-Fuente: `src/Validasoft.Dominio/Identidad/AccesoSoporte.cs`, `src/Validasoft.Aplicacion/Configuracion/AccesosSoporteEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Identidad/AccesoSoporte.cs`, `src/Avalasoft.Aplicacion/Configuracion/AccesosSoporteEndpoints.cs`.
 
 ## Plan del grupo
 
@@ -227,6 +227,6 @@ Ruta `/e/{empresa}/plan-grupo` · permiso `configuracion:leer`. Es de solo lectu
 | Usuarios, empresas y vínculos activos | Máximos por grupo. «Vínculos activos» cuenta los que no están anulados ni desvinculados. | Sin límite | Entero o vacío (sin límite); 0 es un límite real. |
 | Almacenamiento (MB) | Suma los documentos de la bóveda compartidos con el grupo (cada objeto cuenta una vez; sin suprimidos); la medición puede tener hasta 5 minutos. | Sin límite | Entero o vacío. |
 | Llamadas a la API por mes | Cuenta las peticiones del mes (calendario en la zona del grupo) con API key de producción; no cuentan sandbox ni las sesiones de las pantallas. | Sin límite | Entero o vacío. |
-| Niveles de uso y avisos | Normal por debajo del 80 %; por agotar del 80 % al 100 %; agotado desde el 100 %. Cada umbral se avisa una vez por periodo a los administradores (campana y correo). | Evaluación cada 15 minutos | `Validasoft:Plan:Intervalo` (`00:00:00` la apaga). |
+| Niveles de uso y avisos | Normal por debajo del 80 %; por agotar del 80 % al 100 %; agotado desde el 100 %. Cada umbral se avisa una vez por periodo a los administradores (campana y correo). | Evaluación cada 15 minutos | `Avalasoft:Plan:Intervalo` (`00:00:00` la apaga). |
 
-Fuente: `src/Validasoft.Dominio/Plataforma/PlanDelGrupo.cs`, `src/Validasoft.Aplicacion/Plataforma/PlanDelGrupoEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Plataforma/PlanDelGrupo.cs`, `src/Avalasoft.Aplicacion/Plataforma/PlanDelGrupoEndpoints.cs`.

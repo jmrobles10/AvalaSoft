@@ -1,4 +1,4 @@
-import type { ActualizarEmpresaDto, EmpresaDto } from '@validasoft/api-client';
+import type { ActualizarEmpresaDto, EmpresaDto } from '@avalasoft/api-client';
 
 /** Igual que `Empresa.TamanoMaximoLogo` del dominio (CF-1). */
 export const TAMANO_MAXIMO_LOGO = 200 * 1024;

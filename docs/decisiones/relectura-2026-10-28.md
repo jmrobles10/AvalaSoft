@@ -41,12 +41,12 @@ Verificaciones sin hallazgos: ningún documento menciona ya `Proponer`/`Ignorar`
 
 | Id | Documento | Decisión | Propuesta | Quién decide |
 |---|---|---|---|---|
-| A-1 | 00 | Nombre definitivo del producto | Mantener "Validasoft" hasta registro de marca | Producto |
+| A-1 | 00 | Nombre definitivo del producto | **Cerrada (2026-11-18)**: AvalaSoft, en todo el repositorio | Producto |
 | ~~A-2 (= D-8)~~ | 00, 02 | Plazo de revalidación por defecto y si bloquea | **Cerrada (Producto, 2026-10-28)**: 15 días de aviso y luego el certificado `ConPendientes` pasa a bloqueante hasta revalidar; `desactualizadaBloquea = true` por defecto | — |
 | A-3 | 00, 09 | Tenant piloto y fecha de corte | Constructora con menos proveedores activos y contrato de listas vigente; corte al cerrar H10 | Producto y Operaciones |
 | A-4 | 01, 08 | Dónde vive el aplicador de cambios en AyF (SRM vs Marco) | SRM en H9; Marco cuando exponga API de terceros | Arquitectura + equipo Marco |
 | A-5 | 01 | Proveedores de listas restrictivas a mantener | Solo los activos; el resto como adaptadores opcionales | Producto con Operaciones |
-| A-6 | 01 | Retiro de las páginas HTML legacy del SRM | Reemplazarlas por enlaces a Validasoft con token exchange al activar el flag | Arquitectura + Producto |
+| A-6 | 01 | Retiro de las páginas HTML legacy del SRM | Reemplazarlas por enlaces a AvalaSoft con token exchange al activar el flag | Arquitectura + Producto |
 | ~~A-7~~ | 03 | Ratificación con aprobación humana | **Cerrada (Producto, 2026-10-28)**: nunca pasa por área; "si no cambia ni la información ni el documento, con la declaración basta" | — |
 | ~~A-8~~ | 02, 03, 07 | Exclusión de empresas por el tercero | **Cerrada (Producto, 2026-10-28)**: el tercero **no puede excluir** a ninguna empresa, de ningún tipo de documento | — |
 | A-9 | 04 | Modelo de IA por defecto por tipo (Opus vs Sonnet) | Opus para Cámara/EEFF/pólizas; Sonnet para cédula/RUT; decidir tras H2 con fixtures | Producto + Arquitectura |
@@ -64,7 +64,7 @@ Verificaciones sin hallazgos: ningún documento menciona ya `Proponer`/`Ignorar`
 | A-21 | 07 | Passkeys/WebAuthn | H8 | Producto |
 | A-22 | 07 | Mecanismo de validación del token del ERP | Introspección por tenant; si no existe, firma compartida rotable | Arquitectura + equipo ERP |
 | A-23 | 08 | Folio de certificados retroactivos en migración | Emitir con sufijo `-M` y fecha original | Producto |
-| A-24 | 08 | Autorregistro del Portal en fase P1 | Crear el tercero en Validasoft desde P1 | Equipo Portal |
+| A-24 | 08 | Autorregistro del Portal en fase P1 | Crear el tercero en AvalaSoft desde P1 | Equipo Portal |
 | A-25 | 08 | Agrupamiento de constructoras en tenants para la migración | Lista de Comercial confirmada por Producto antes del primer dry-run | Producto |
 | A-26 | 09 | Fecha de inicio de H1 y equipo | 2026-11-03, 3 personas | Producto |
 | A-27 | 09 | Vender la revisión automática desde el MVP o tras medir | Medir en H5–H6, vender en H8 | Producto/Comercial |
@@ -127,7 +127,7 @@ Dos auditores sin contexto previo revisaron el conjunto: uno de **negocio** (30 
 
 ### 5.2 Hallazgos técnicos cerrados (resumen por número del informe)
 
-#1 tres esquemas + `identidad` (T-1) · #2 `RevalidacionVencida` eliminado (T-8) · #3 nombres de 05 en 08 · #4 dedupe por `Validasoft-Event-Id` (T-6) · #5 `RequiereRevalidacion` → hechos + saga por empresa (T-7) · #6 gracia 15 · #7 `politicaDesactualizada` único · #8 folios `-E-`/`-C-` (T-9) · #9 códigos del Anexo A (T-10) · #10 `Antivirus` con cuatro valores (T-11) · #11 `ExcepcionDto.tipo` PascalCase + `CoherenciaSoporte` · #12 `EstadoCuentaDesignada` en 06 · #13 `RevalidacionDto` único · #14 `RevisionAutomaticaConfigDto` consolidado · #15 `EventoAuditoriaDto` retirado · #16 `LoteImportacionDto`/`ImportacionLoteDto` y `/importacion/binarios` · #17 404 para otro tenant/empresa (T-4) · #18 `CertificadoPublicoDto` completo · #19 proyecciones faltantes en 03 §14 (`MisPendientes` = consulta compuesta) · #20 eventos CRUD/sagas en 03 §16-bis · #21 17 plantillas en 05 §8 · #22 consulta de certificación alineada · #23 ruta de confirmación · #24 autorregistro en H4 (T-13) · #25 cuentas en H6 · #26 Ed25519 (T-12) · #27 corte por empresa (T-18) · #28 p99 < 50 ms en H11 · #29 reglas 2 y 4 del motor · #30 soporte (B-6) · #31 `NovedadDto.cuerpo` · #32 `ApiKeyDto` único · #33 saga incluye `EnValidacion` · #34–#62 nomenclatura, DDL, permisos, SDK multi-target (T-16), WebP (T-17), P-11-3/P-13-4 por empresa (T-18), plantilla ADR y excepciones de convención.
+#1 tres esquemas + `identidad` (T-1) · #2 `RevalidacionVencida` eliminado (T-8) · #3 nombres de 05 en 08 · #4 dedupe por `Avalasoft-Event-Id` (T-6) · #5 `RequiereRevalidacion` → hechos + saga por empresa (T-7) · #6 gracia 15 · #7 `politicaDesactualizada` único · #8 folios `-E-`/`-C-` (T-9) · #9 códigos del Anexo A (T-10) · #10 `Antivirus` con cuatro valores (T-11) · #11 `ExcepcionDto.tipo` PascalCase + `CoherenciaSoporte` · #12 `EstadoCuentaDesignada` en 06 · #13 `RevalidacionDto` único · #14 `RevisionAutomaticaConfigDto` consolidado · #15 `EventoAuditoriaDto` retirado · #16 `LoteImportacionDto`/`ImportacionLoteDto` y `/importacion/binarios` · #17 404 para otro tenant/empresa (T-4) · #18 `CertificadoPublicoDto` completo · #19 proyecciones faltantes en 03 §14 (`MisPendientes` = consulta compuesta) · #20 eventos CRUD/sagas en 03 §16-bis · #21 17 plantillas en 05 §8 · #22 consulta de certificación alineada · #23 ruta de confirmación · #24 autorregistro en H4 (T-13) · #25 cuentas en H6 · #26 Ed25519 (T-12) · #27 corte por empresa (T-18) · #28 p99 < 50 ms en H11 · #29 reglas 2 y 4 del motor · #30 soporte (B-6) · #31 `NovedadDto.cuerpo` · #32 `ApiKeyDto` único · #33 saga incluye `EnValidacion` · #34–#62 nomenclatura, DDL, permisos, SDK multi-target (T-16), WebP (T-17), P-11-3/P-13-4 por empresa (T-18), plantilla ADR y excepciones de convención.
 
 Observaciones de diseño atendidas: store único conjoined con tenants técnicos (T-2, spike en H1); `ISesionDeEmpresa` (T-3); `certificado.emitido` canónico (T-15); Object Lock compliance (T-14); `MisPendientes` como consulta compuesta; tabla de casos "expediente abierto × evento" (03 §5); `X-Empresa` como cabecera (T-5).
 

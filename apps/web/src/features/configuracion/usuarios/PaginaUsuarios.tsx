@@ -12,8 +12,8 @@ import {
   type AsignacionDeGrupoDto,
   type RolAsignadoDto,
   type UsuarioDto,
-} from '@validasoft/api-client';
-import { AvatarActor, BarraFiltros, CampoBusqueda, EstadoVacio, FiltroMenu, FilasEsqueleto, formatearFechaHora, MarcoTabla, visualmenteOculto } from '@validasoft/ui';
+} from '@avalasoft/api-client';
+import { AvatarActor, BarraFiltros, CampoBusqueda, EstadoVacio, FiltroMenu, FilasEsqueleto, formatearFechaHora, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
 import { Ban, CircleCheck, KeyRound, Mail, Pencil, Plus, UserX } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

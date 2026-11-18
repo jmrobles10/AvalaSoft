@@ -181,7 +181,7 @@ describe('esquemas OpenAPI', () => {
 
 describe('código de los endpoints', () => {
   const FUENTE = `
-namespace Validasoft.Aplicacion.Flujos;
+namespace Avalasoft.Aplicacion.Flujos;
 
 /// <summary>Flujos aprobatorios de la empresa activa (<c>X-Empresa</c>).</summary>
 public static class FlujosEndpoints
@@ -202,7 +202,7 @@ public static class FlujosEndpoints
 
   it('lee ruta, descripción, permiso, empresa activa y errores', () => {
     const analizado = analizarCSharp(FUENTE);
-    expect(analizado.clase).toBe('Validasoft.Aplicacion.Flujos.FlujosEndpoints');
+    expect(analizado.clase).toBe('Avalasoft.Aplicacion.Flujos.FlujosEndpoints');
     expect(analizado.resumenDeClase).toBe('Flujos aprobatorios de la empresa activa (`X-Empresa`).');
     const [crear, leer] = analizado.endpoints;
     expect(crear).toMatchObject({
@@ -240,20 +240,20 @@ describe('referencia de la API', () => {
     paths: {
       '/api/v1/flujos/{id}': {
         post: {
-          tags: ['Validasoft.Aplicacion.Flujos.FlujosEndpoints'],
+          tags: ['Avalasoft.Aplicacion.Flujos.FlujosEndpoints'],
           operationId: 'POST_api_v1_flujos_id',
           parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } }],
           requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Cuerpo' } } } },
           responses: { 200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/IResult' } } } }, 404: { description: 'Not Found' } },
         },
       },
-      '/health/ready': { get: { tags: ['Validasoft.Api'], responses: { 200: { description: 'OK' } } } },
+      '/health/ready': { get: { tags: ['Avalasoft.Api'], responses: { 200: { description: 'OK' } } } },
     },
     components: { schemas: { Cuerpo: { type: 'object', required: ['nombre'], properties: { nombre: { type: 'string' } } }, IResult: { type: 'object' } } },
   };
   const fuentes = {
-    endpoints: new Map([['POST /api/v1/flujos/{id}', { resumen: 'Crea algo.', acceso: { tipo: 'politica', politica: 'Permisos.FlujosEscribir' }, alcanceEmpresa: true, errores: [{ estado: 409, codigo: 'duplicado' }], parametros: { id: 'Id del flujo.' }, clase: 'Validasoft.Aplicacion.Flujos.FlujosEndpoints' }]]),
-    clases: new Map([['Validasoft.Aplicacion.Flujos.FlujosEndpoints', 'Flujos de la empresa.']]),
+    endpoints: new Map([['POST /api/v1/flujos/{id}', { resumen: 'Crea algo.', acceso: { tipo: 'politica', politica: 'Permisos.FlujosEscribir' }, alcanceEmpresa: true, errores: [{ estado: 409, codigo: 'duplicado' }], parametros: { id: 'Id del flujo.' }, clase: 'Avalasoft.Aplicacion.Flujos.FlujosEndpoints' }]]),
+    clases: new Map([['Avalasoft.Aplicacion.Flujos.FlujosEndpoints', 'Flujos de la empresa.']]),
     permisos: new Map([['Permisos.FlujosEscribir', 'flujos:escribir']]),
   };
 

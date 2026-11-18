@@ -1,6 +1,6 @@
 import { Box, Button, MenuItem, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import type { FilaTerceroSagrilafDto } from '@validasoft/api-client';
-import { EstadoVacio } from '@validasoft/ui';
+import type { FilaTerceroSagrilafDto } from '@avalasoft/api-client';
+import { EstadoVacio } from '@avalasoft/ui';
 import { Users } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

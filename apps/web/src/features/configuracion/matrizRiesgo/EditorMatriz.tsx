@@ -1,6 +1,6 @@
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, Typography } from '@mui/material';
-import type { MatrizDeRiesgoDto } from '@validasoft/api-client';
-import { EstadoVacio, formatearFecha } from '@validasoft/ui';
+import type { MatrizDeRiesgoDto } from '@avalasoft/api-client';
+import { EstadoVacio, formatearFecha } from '@avalasoft/ui';
 import { Gauge, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

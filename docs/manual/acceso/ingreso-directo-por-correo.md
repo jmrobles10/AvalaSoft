@@ -1,13 +1,13 @@
 ---
 id: "acceso/ingreso-directo-por-correo"
-titulo: "Entra a Validasoft con tu correo y un código"
+titulo: "Entra a AvalaSoft con tu correo y un código"
 actor: "Revisor/área"
 dominio: "acceso"
 resumen: "Rita entra sin contraseña: escribe su correo, recibe un código de seis caracteres en su bandeja y lo escribe en la pantalla. Después la sesión sigue abierta al recargar la página, hasta que cierra sesión."
 pasos: 5
 ---
 
-# Entra a Validasoft con tu correo y un código
+# Entra a AvalaSoft con tu correo y un código
 
 **Actor:** Revisor/área · **Dominio:** Acceso y cuenta
 
@@ -27,7 +27,7 @@ Rita entra sin contraseña: escribe su correo, recibe un código de seis caracte
 
 ## Paso 1. Abre la pantalla de ingreso
 
-Validasoft no pide contraseña. Escribe tu correo en el campo «Correo» y pulsa «Continuar». Si tu cuenta ya tiene una passkey, puedes usar el botón «Entrar con una passkey» en su lugar.
+AvalaSoft no pide contraseña. Escribe tu correo en el campo «Correo» y pulsa «Continuar». Si tu cuenta ya tiene una passkey, puedes usar el botón «Entrar con una passkey» en su lugar.
 
 > **Pantalla:** `/`
 
@@ -40,7 +40,7 @@ Validasoft no pide contraseña. Escribe tu correo en el campo «Correo» y pulsa
 
 ## Paso 2. Revisa tu correo y escribe el código
 
-Validasoft envía un correo con el asunto «Tu código para ingresar a Validasoft». Escribe el código que trae en las casillas de esta pantalla; no hace falta pulsar nada más. El código entra solo al escribirlo completo.
+AvalaSoft envía un correo con el asunto «Tu código para ingresar a AvalaSoft». Escribe el código que trae en las casillas de esta pantalla; no hace falta pulsar nada más. El código entra solo al escribirlo completo.
 
 > **Pantalla:** `/`
 
@@ -48,7 +48,7 @@ Validasoft envía un correo con el asunto «Tu código para ingresar a Validasof
 
 ## Paso 3. Entra a la app con el código
 
-Con el código correcto entras directo a la app, con las secciones de tu rol. Como tu cuenta aún no tiene passkey, Validasoft te sugiere registrar una para entrar más rápido, sin código.
+Con el código correcto entras directo a la app, con las secciones de tu rol. Como tu cuenta aún no tiene passkey, AvalaSoft te sugiere registrar una para entrar más rápido, sin código.
 
 > **Pantalla:** `/e/{empresa}/inicio`
 
@@ -56,7 +56,7 @@ Con el código correcto entras directo a la app, con las secciones de tu rol. Co
 
 ## Paso 4. Recarga sin volver a pedir el código
 
-Al recargar la página, Validasoft recupera tu sesión con la cookie de inicio y no te pide otro código. Así no tienes que volver a ingresar en cada pestaña.
+Al recargar la página, AvalaSoft recupera tu sesión con la cookie de inicio y no te pide otro código. Así no tienes que volver a ingresar en cada pestaña.
 
 > **Pantalla:** `/e/{empresa}/inicio`
 

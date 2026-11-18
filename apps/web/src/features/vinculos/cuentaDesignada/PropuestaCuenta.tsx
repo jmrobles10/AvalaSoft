@@ -1,6 +1,6 @@
 import { Alert, Button, Stack, Typography } from '@mui/material';
-import type { CuentaDesignadaDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { CuentaDesignadaDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { Check, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { DatosCuenta, SeccionCuenta } from './DatosCuenta';

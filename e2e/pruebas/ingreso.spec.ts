@@ -29,7 +29,7 @@ interface Grupo {
 /** Un grupo con ingreso directo, su primera empresa y un administrador de todo el grupo (sin passkey aún). */
 async function crearGrupoDirecto(opciones: { passkeyParaTodos?: boolean } = {}): Promise<Grupo> {
   const sufijo = `${Date.now().toString(36)}${randomUUID().slice(0, 4)}`;
-  const correoAdmin = `ana.${sufijo}@e2e.validasoft.co`;
+  const correoAdmin = `ana.${sufijo}@e2e.avalasoft.co`;
   const creado = await llamar<{ tenant: { id: string }; apiKeyAdministrador: { valor: string } }>('POST', '/api/v1/plataforma/tenants', {
     llave: CLAVE_PLATAFORMA,
     cuerpo: {
@@ -79,7 +79,7 @@ const barraDeSecciones = (page: Page) => page.getByRole('navigation', { name: 'S
 
 test('una persona entra con el código del correo, recarga sin volver a pedirlo y cierra la sesión', async ({ page }) => {
   const g = await crearGrupoDirecto();
-  const correo = `rita.${Date.now().toString(36)}@e2e.validasoft.co`;
+  const correo = `rita.${Date.now().toString(36)}@e2e.avalasoft.co`;
   await crearUsuario(g, 'Rita Revisora', 'Revisor', correo);
 
   await page.goto('/app/');
@@ -111,7 +111,7 @@ test('una persona entra con el código del correo, recarga sin volver a pedirlo 
 
 test('un código incorrecto dice cuántos intentos quedan y un correo sin cuenta no revela nada', async ({ page }) => {
   const g = await crearGrupoDirecto();
-  const correo = `rita.${Date.now().toString(36)}@e2e.validasoft.co`;
+  const correo = `rita.${Date.now().toString(36)}@e2e.avalasoft.co`;
   await crearUsuario(g, 'Rita Revisora', 'Revisor', correo);
 
   await page.goto('/app/');
@@ -126,7 +126,7 @@ test('un código incorrecto dice cuántos intentos quedan y un correo sin cuenta
 
   // Un correo inventado llega a la misma pantalla de código y recibe el mismo mensaje.
   await page.getByRole('button', { name: 'Usar otro correo' }).click();
-  await page.getByLabel('Correo').fill(`nadie.${Date.now().toString(36)}@e2e.validasoft.co`);
+  await page.getByLabel('Correo').fill(`nadie.${Date.now().toString(36)}@e2e.avalasoft.co`);
   await page.getByRole('button', { name: 'Continuar' }).click();
   await expect(page.getByRole('heading', { name: 'Revisa tu correo' })).toBeVisible();
   await page.keyboard.type('123456');
@@ -214,7 +214,7 @@ test('un administrador invita por correo, ve el acceso de la persona y revoca su
   expect(await credenciales(virtual)).toBe(1);
 
   // Configuración › Usuarios: agrega a una auditora con la invitación por correo.
-  const correoAuditora = `carla.${Date.now().toString(36)}@e2e.validasoft.co`;
+  const correoAuditora = `carla.${Date.now().toString(36)}@e2e.avalasoft.co`;
   await page.goto(`/app/#/e/${g.empresaId}/usuarios`);
   await page.getByRole('button', { name: 'Agregar persona' }).click();
   const panel = page.locator('[aria-labelledby="titulo-roles"]');
@@ -266,7 +266,7 @@ test('un administrador invita por correo, ve el acceso de la persona y revoca su
 });
 
 test('un operador de Plataforma entra con correo, código y passkey a la consola', async ({ page }) => {
-  const correo = `paula.${Date.now().toString(36)}@e2e.validasoft.co`;
+  const correo = `paula.${Date.now().toString(36)}@e2e.avalasoft.co`;
   await llamar('POST', '/api/v1/plataforma/operadores', { llave: CLAVE_PLATAFORMA, cuerpo: { nombre: 'Paula Plataforma', correo } });
   const virtual = await autenticadorVirtual(page);
 

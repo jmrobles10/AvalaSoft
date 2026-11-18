@@ -1,5 +1,5 @@
 import { useQueries } from '@tanstack/react-query';
-import { getObtenerExpedientePublicoQueryOptions, type ExpedientePublicoDto } from '@validasoft/api-client';
+import { getObtenerExpedientePublicoQueryOptions, type ExpedientePublicoDto } from '@avalasoft/api-client';
 import { useVinculosPublicos } from '../shared/api';
 
 /** Una sección que una empresa le pide ratificar al tercero en la renovación de su vínculo (VV-3). */

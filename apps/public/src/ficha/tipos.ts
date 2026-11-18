@@ -1,5 +1,5 @@
 // Datos de cada sección tal como viajan en `datos` (docs/14 §4, FM-19): claves en snake_case; `null` o ausente = sin
-// diligenciar (distinto de 0 o false). Son los `record` de `Validasoft.Dominio/Ficha/DatosDeSecciones.cs`.
+// diligenciar (distinto de 0 o false). Son los `record` de `Avalasoft.Dominio/Ficha/DatosDeSecciones.cs`.
 
 export interface DireccionEstructurada {
   tipo_via?: string | null;

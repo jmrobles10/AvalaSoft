@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { act, screen, waitFor } from '@testing-library/react';
-import { reiniciarCliente, reiniciarEdiciones } from '@validasoft/api-client';
+import { reiniciarCliente, reiniciarEdiciones } from '@avalasoft/api-client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { useSesion } from '../../sesion/sesionStore';
 import { MAPA_WEB } from './cambios';

@@ -1,4 +1,4 @@
-import { SCOPES, type MotivoTipificadoDto } from '@validasoft/api-client';
+import { SCOPES, type MotivoTipificadoDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import {
   accionesDeExpediente,

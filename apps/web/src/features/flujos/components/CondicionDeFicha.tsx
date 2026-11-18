@@ -1,5 +1,5 @@
 import { Autocomplete, Box, MenuItem, Skeleton, TextField, Typography } from '@mui/material';
-import type { CampoDeFichaDto, CondicionDto } from '@validasoft/api-client';
+import type { CampoDeFichaDto, CondicionDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBuscarEnCatalogo, useCamposDeFicha, useNombresDeCatalogo } from '../api';

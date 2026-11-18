@@ -1,7 +1,7 @@
 import { Alert, Box, Button, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { actualizarOrigenesSistema, type SistemaIntegradoDto } from '@validasoft/api-client';
-import { AlineadoConCampo, FaltaParaEnviar } from '@validasoft/ui';
+import { actualizarOrigenesSistema, type SistemaIntegradoDto } from '@avalasoft/api-client';
+import { AlineadoConCampo, FaltaParaEnviar } from '@avalasoft/ui';
 import { Globe, Plus, X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { useAvisos } from '../../../shared/useAvisos';
 import { agregarOrigen, MAXIMO_ORIGENES, mismosOrigenes, type ErrorOrigen } from './origenes';
 
 /**
- * Sitios desde los que se puede incrustar Validasoft para este sistema (`PUT /sistemas/{id}/origenes`, reemplaza la
+ * Sitios desde los que se puede incrustar AvalaSoft para este sistema (`PUT /sistemas/{id}/origenes`, reemplaza la
  * lista). Se edita en la página y se guarda de una vez; el padre la monta con `key={sistema.id}` para empezar de nuevo
  * al cambiar de sistema.
  */

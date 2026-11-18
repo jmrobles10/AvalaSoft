@@ -1,4 +1,4 @@
-import { esErrorApi, type ErrorApi, type FaltanteSeccionDto, type JsonElement, type PerfilDeFichaDto, type SeccionFichaDto, type SeccionGuardadaDto, type SoporteSeccionDto } from '@validasoft/api-client';
+import { esErrorApi, type ErrorApi, type FaltanteSeccionDto, type JsonElement, type PerfilDeFichaDto, type SeccionFichaDto, type SeccionGuardadaDto, type SoporteSeccionDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { useGuardarSeccion } from './api';
 import { estaSenalado } from './etiquetas';
@@ -19,7 +19,7 @@ export function prellenadoDe(inicial: Pick<SeccionFichaDto, 'version' | 'datos' 
 
 /**
  * Lo que no edita el tercero (lo fija la API con su registro, FM-19) no se envía. El DV sí viaja cuando lo declara el tercero (el RUC de Panamá,
- * RG-2): el de su identificación en la General y el de cada persona cuyo tipo lo declara en la Legal; el resto lo calcula Validasoft.
+ * RG-2): el de su identificación en la General y el de cada persona cuyo tipo lo declara en la Legal; el resto lo calcula AvalaSoft.
  */
 export function datosParaEnviar(codigo: CodigoSeccion, datos: object, perfil?: PerfilDeFichaDto | null): JsonElement {
   const copia: Record<string, unknown> = { ...datos };

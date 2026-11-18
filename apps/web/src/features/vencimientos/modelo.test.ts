@@ -1,4 +1,4 @@
-import type { VencimientoDto } from '@validasoft/api-client';
+import type { VencimientoDto } from '@avalasoft/api-client';
 import i18n from 'i18next';
 import { describe, expect, it } from 'vitest';
 import { baseVencimiento, claveVencimiento, estadoVencimiento, leerFiltros, lote, mensajeRecordatorio, tercerosDelLote, textoDias, tonoVencimiento } from './modelo';

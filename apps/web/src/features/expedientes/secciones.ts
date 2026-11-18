@@ -1,4 +1,4 @@
-import type { CambioDeCampoDto, DocumentoVistaEmpresaDto, RequisitoExpedienteDto, SoporteSeccionDto } from '@validasoft/api-client';
+import type { CambioDeCampoDto, DocumentoVistaEmpresaDto, RequisitoExpedienteDto, SoporteSeccionDto } from '@avalasoft/api-client';
 import type { TFunction } from 'i18next';
 import { datosDe, esVersionSinArchivo } from '../documentos/formatoDatos';
 import type { DocumentoEnVisor } from '../documentos/VisorDocumento';

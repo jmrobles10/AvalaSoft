@@ -1,0 +1,297 @@
+using Marten;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Avalasoft.Aplicacion.Comun;
+using Avalasoft.Aplicacion.Interesado;
+using Avalasoft.Contratos;
+using Avalasoft.Dominio.Comun;
+using Avalasoft.Dominio.Documentos;
+using Avalasoft.Dominio.Plataforma;
+using Wolverine;
+using Wolverine.Http;
+
+namespace Avalasoft.Aplicacion.Documentos;
+
+/// <summary>
+/// La bóveda vista por su dueño (sesión <c>Tercero</c>): sus documentos, la versión actual y, por cada empresa de su sesión,
+/// si se le compartió. Un documento de otro tercero responde 404. Una sesión aislada (su correo no es contacto conocido del tercero) no
+/// entra a la bóveda: solo ve y descarga lo que subió para su vínculo, que está en cuarentena.
+/// </summary>
+public static class BovedaEndpoints
+{
+    [WolverineGet("/public/v1/boveda")]
+    [Authorize(Policy = ReclamosTercero.Politica)]
+    public static async Task<BovedaDto> Obtener(HttpContext http, ISesiones sesiones, TimeProvider reloj, CancellationToken ct)
+    {
+        var tercero = SesionDeTercero.De(http.User, GrupoDeAcceso.Boveda);
+        var terceroId = tercero.TerceroId;
+        var hoy = reloj.Hoy();
+        await using var consulta = sesiones.ConsultaBoveda();
+        var documentos = await consulta.Query<Documento>().Where(d => d.TerceroId == terceroId).OrderBy(d => d.CreadoEn).ToListAsync(ct);
+        var vinculos = await VinculosAsync(sesiones, tercero, ct);
+        var expedientes = await ExpedientesAsync(sesiones, vinculos, ct);
+
+        return new BovedaDto(terceroId,
+        [
+            .. documentos.Where(d => !d.EnCuarentena && (d.Ambito == AmbitoDocumento.Global || tercero.Vinculos.Any(v => v.VinculoId == d.VinculoId))).Select(d => new DocumentoBovedaDto(d.Id, d.Resumen(), d.Ambito.ToString(), d.Clase.ToString(), d.VinculoId,
+                d.VersionActual is { } actual ? d.VersionRequerida(actual).ADto(d.Id, null, hoy) : null, d.Versiones.Count, d.PorEmpresa(vinculos, expedientes, hoy)))
+        ]);
+    }
+
+    [WolverineGet("/public/v1/boveda/documentos/{documentoId}")]
+    [Authorize(Policy = ReclamosTercero.Politica)]
+    public static async Task<DocumentoDto> ObtenerDocumento(Guid documentoId, HttpContext http, ISesiones sesiones, TimeProvider reloj,
+        CancellationToken ct)
+    {
+        var tercero = SesionDeTercero.De(http.User, GrupoDeAcceso.Boveda);
+        await using var consulta = sesiones.ConsultaBoveda();
+        var documento = DelTercero(await consulta.LoadAsync<Documento>(documentoId, ct), tercero);
+        var vinculos = await VinculosAsync(sesiones, tercero, ct);
+        return documento.ADto(vinculos, await ExpedientesAsync(sesiones, vinculos, ct), reloj.Hoy());
+    }
+
+    /// <summary>
+    /// Qué pasará si el tercero retira esta versión (RT-1), antes de pedirle el motivo: qué versión queda vigente, qué empresas la
+    /// recibieron, aprobaron o revisan (solo eso, nada de sus decisiones), qué expedientes abiertos cambian de versión y qué
+    /// secciones de su información la tienen de soporte. Solo lectura; una versión que no se puede retirar responde lo mismo que el
+    /// retiro (409 <c>estado-invalido</c>).
+    /// </summary>
+    [WolverineGet("/public/v1/boveda/documentos/{documentoId}/versiones/{numero}/retiro/impacto")]
+    [Authorize(Policy = ReclamosTercero.Politica)]
+    public static async Task<ImpactoDeRetiroDto> ImpactoDelRetiro(Guid documentoId, int numero, HttpContext http, ISesiones sesiones, CancellationToken ct)
+    {
+        var tercero = SesionDeTercero.De(http.User, GrupoDeAcceso.Boveda);
+        await using var boveda = sesiones.ConsultaBoveda();
+        var documento = DelTercero(await boveda.LoadAsync<Documento>(documentoId, ct), tercero);
+        await using var global = sesiones.ConsultaGlobal();
+        var vistos = await VistaDelTercero.CargarAsync(global, tercero, [.. tercero.Vinculos.Select(v => v.VinculoId)], ct);
+        return await ImpactoDeRetiroDelTercero.CalcularAsync(global, boveda, documento, numero, vistos, ct);
+    }
+
+    /// <summary>URL prefirmada GET de una versión propia; queda como <c>DocumentoAccedido</c> con el tercero como actor.</summary>
+    [WolverinePost("/public/v1/boveda/documentos/{documentoId}/versiones/{numero}/descarga")]
+    [Authorize(Policy = ReclamosTercero.Politica)]
+    public static async Task<DescargaDto> Descargar(Guid documentoId, int numero, HttpContext http, ISesiones sesiones, IContextoSolicitud contexto,
+        IAlmacenDeArchivos almacen, ReglasDeCarga reglas, TimeProvider reloj, CancellationToken ct)
+    {
+        var tercero = SesionDeTercero.De(http.User, GrupoDeAcceso.Descarga);
+        // El acceso se anota en el stream del documento, donde también escriben las vigencias y la compartición en segundo
+        // plano: si una de ellas gana la carrera, se reintenta en lugar de responder 412 a quien solo quería descargar.
+        var documento = await Peticiones.ConReintentosAsync(async () =>
+        {
+            await using var sesion = sesiones.Boveda();
+            var stream = await sesion.Events.FetchForExclusiveWriting<Documento>(documentoId, ct);
+            var delTercero = DelTercero(stream.Aggregate, tercero);
+            stream.AppendOne(delTercero.RegistrarAcceso(numero, null, ActorTipo.Tercero.ToString(), contexto.ActorId, Ip(http), UserAgent(http),
+                "Descarga del tercero", reloj.GetUtcNow()));
+            await sesion.SaveChangesAsync(ct);
+            return delTercero;
+        });
+        return await UrlDeDescargaAsync(almacen, reglas, documento.VersionRequerida(numero), ct);
+    }
+
+    /// <summary>
+    /// El tercero retira una versión (no se borra si alguna empresa la recibió o la descargó, docs/02 §10.3). Si era la
+    /// actual vuelve la anterior, se comparte con quien corresponda y los expedientes abiertos que la tenían la reciben de
+    /// vuelta (RQ-2). Devuelta o retirada ⇒ 409 <c>estado-invalido</c>.
+    /// </summary>
+    [WolverinePost("/public/v1/boveda/documentos/{documentoId}/versiones/{numero}/retirar")]
+    [Authorize(Policy = ReclamosTercero.Politica)]
+    public static async Task<RetiroDto> Retirar(Guid documentoId, int numero, RetirarVersionDto dto, HttpContext http, ISesiones sesiones,
+        IContextoSolicitud contexto, IMessageBus mensajes, IAlmacenDeArchivos almacen, TimeProvider reloj, CancellationToken ct)
+    {
+        var tercero = SesionDeTercero.De(http.User, GrupoDeAcceso.Boveda);
+        var ahora = reloj.GetUtcNow();
+        await using var sesion = sesiones.Boveda(mensajes);
+        var stream = await sesion.Events.FetchForExclusiveWriting<Documento>(documentoId, ct);
+        var documento = DelTercero(stream.Aggregate, tercero);
+        var version = documento.VersionRequerida(numero);
+
+        var eventos = documento.RetirarVersion(numero, dto.Motivo, ahora);
+        foreach (var evento in eventos)
+            stream.AppendOne(evento);
+        var proyectado = documento.Proyectar(eventos);
+        var compartidos = proyectado.VersionActual is not null && proyectado.VersionActual != documento.VersionActual
+            ? await ComparticionDeDocumentos.CompartirActualAsync(sesion, stream, proyectado, OrigenComparticion.Automatica, ahora, ct, mensajes, contexto)
+            : [];
+        // Quienes ya tenían la versión restituida también deben volver a ella en sus requisitos.
+        if (proyectado.VersionActual is { } restituida && restituida != documento.VersionActual)
+        {
+            await ComparticionDeDocumentos.PedirSincronizacionAsync(mensajes,
+                proyectado.Comparticiones.Where(c => c.Numero == restituida).Select(c => (c.TenantId, c.VinculoId)), contexto);
+            await mensajes.PublishAsync(new CalcularVigenciasDelDocumento(documento.Id));
+        }
+
+        // El objeto es content-addressed: solo se elimina si nadie lo vio y ninguna otra versión del tercero apunta a él (una
+        // versión solo de formulario no tiene binario).
+        var nadieLoVio = version.TieneArchivo && !documento.Comparticiones.Any(c => c.Numero == numero) && !version.AccedidaPorEmpresa;
+        var terceroId = tercero.TerceroId;
+        var otros = nadieLoVio
+            ? await sesion.Query<Documento>().Where(d => d.TerceroId == terceroId).ToListAsync(ct)
+            : [];
+        var eliminar = nadieLoVio && !otros.SelectMany(d => d.Versiones.Select(v => (d.Id, v)))
+            .Any(x => (x.Id != documento.Id || x.v.Numero != numero) && x.v.Bucket == version.Bucket && x.v.ClaveObjeto == version.ClaveObjeto);
+
+        await sesion.SaveChangesAsync(ct);
+        if (eliminar)
+            await almacen.EliminarAsync(version.Bucket, version.ClaveObjeto, ct);
+
+        var vinculos = await VinculosAsync(sesiones, tercero, ct);
+        return new RetiroDto(proyectado.ADto(vinculos, await ExpedientesAsync(sesiones, vinculos, ct)), eliminar, compartidos);
+    }
+
+    /// <summary>
+    /// El documento existe y es del tercero de la sesión (un <c>PorVinculo</c>, además, de un vínculo de su sesión); si no, 404. Una sesión aislada solo ve
+    /// lo de sus vínculos —su cuarentena y sus documentos por vínculo—, nunca un documento global. Un token embebido de un expediente ve lo de su vínculo y
+    /// lo global ya compartido con él (<paramref name="paraSubida"/>: al confirmar una subida el global aún no se comparte, y el alcance del vínculo
+    /// ya lo comprobó el paso 1).
+    /// </summary>
+    internal static Documento DelTercero(Documento? documento, SesionDeTercero tercero, bool paraSubida = false) =>
+        documento is not null && documento.TerceroId == tercero.TerceroId && Visible(documento, tercero, paraSubida)
+            ? documento
+            : throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento en tu bóveda.");
+
+    private static bool Visible(Documento documento, SesionDeTercero tercero, bool paraSubida)
+    {
+        if (documento.Ambito == AmbitoDocumento.PorVinculo)
+            return tercero.Vinculos.Any(v => v.VinculoId == documento.VinculoId);
+        if (tercero.Aislada)
+            return false;
+        return paraSubida || !tercero.EsDeUnExpediente ||
+               tercero.Vinculos.Any(v => documento.Comparticiones.Any(c => c.VinculoId == v.VinculoId));
+    }
+
+    internal static async Task<DescargaDto> UrlDeDescargaAsync(IAlmacenDeArchivos almacen, ReglasDeCarga reglas, VersionDocumento version,
+        CancellationToken ct)
+    {
+        var mime = version.Hechos?.MimeReal ?? version.MimeDeclarado;
+        var url = await almacen.UrlDeDescargaAsync(version.Bucket, version.ClaveObjeto, version.NombreOriginal, mime, reglas.VigenciaDescarga, ct);
+        return new DescargaDto(url.Url, url.Expira, version.NombreOriginal, mime);
+    }
+
+    internal static string Ip(HttpContext http) => http.Connection.RemoteIpAddress?.ToString() ?? "desconocida";
+
+    internal static string UserAgent(HttpContext http) => http.Request.Headers.UserAgent.ToString();
+
+    /// <summary>Último expediente aprobado y expediente abierto de cada vínculo del tercero: lo que cada empresa hizo con sus documentos (RT-5).</summary>
+    private static async Task<IReadOnlyDictionary<Guid, ExpedientesDelVinculo>> ExpedientesAsync(ISesiones sesiones,
+        IReadOnlyList<(Guid VinculoId, Empresa? Empresa, Guid EmpresaId)> vinculos, CancellationToken ct)
+    {
+        await using var consulta = sesiones.ConsultaGlobal();
+        return await ExpedientesDeLaBoveda.CargarAsync(consulta, vinculos.Select(v => v.VinculoId), ct);
+    }
+
+    private static async Task<IReadOnlyList<(Guid VinculoId, Empresa? Empresa, Guid EmpresaId)>> VinculosAsync(ISesiones sesiones,
+        SesionDeTercero tercero, CancellationToken ct)
+    {
+        await using var consulta = sesiones.ConsultaGlobal();
+        var vistos = await VistaDelTercero.CargarAsync(consulta, tercero, [.. tercero.Vinculos.Select(v => v.VinculoId)], ct);
+        return [.. vistos.Select(v => (v.Vinculo.Id, v.Empresa, v.Vinculo.EmpresaId))];
+    }
+}
+
+/// <summary>
+/// Documentos de un vínculo vistos por la empresa (<c>X-Empresa</c>): solo las versiones compartidas con ese vínculo, que
+/// existen únicamente tras la aceptación de la invitación (B-1). Lo no compartido responde 404 (T-4), nunca 403.
+/// </summary>
+public static class DocumentosDeVinculoEndpoints
+{
+    [WolverineGet("/api/v1/vinculos/{id}/documentos")]
+    [Authorize(Policy = Permisos.DocumentosLeer)]
+    public static async Task<IReadOnlyList<DocumentoVistaEmpresaDto>> Listar(Guid id, SesionDeEmpresa empresa, ISesiones sesiones,
+        TimeProvider reloj, CancellationToken ct)
+    {
+        var vinculo = await empresa.CargarVinculoAsync(id, ct);
+        if (!Visible(vinculo))
+            return [];
+
+        var terceroId = vinculo.TerceroId;
+        await using var consulta = sesiones.ConsultaBoveda();
+        var documentos = await consulta.Query<Documento>().Where(d => d.TerceroId == terceroId).OrderBy(d => d.CreadoEn).ToListAsync(ct);
+        var hoy = reloj.Hoy();
+        var conIa = await ValidacionesDeIaAsync(empresa, documentos, ct);
+        return [.. documentos.Select(d => Vista(d, id, hoy, conIa)).OfType<DocumentoVistaEmpresaDto>()];
+    }
+
+    [WolverineGet("/api/v1/vinculos/{id}/documentos/{documentoId}")]
+    [Authorize(Policy = Permisos.DocumentosLeer)]
+    public static async Task<DocumentoVistaEmpresaDto> Obtener(Guid id, Guid documentoId, SesionDeEmpresa empresa, ISesiones sesiones,
+        TimeProvider reloj, CancellationToken ct)
+    {
+        var vinculo = await empresa.CargarVinculoAsync(id, ct);
+        await using var consulta = sesiones.ConsultaBoveda();
+        var documento = await consulta.LoadAsync<Documento>(documentoId, ct);
+        if (!Visible(vinculo) || documento is null || !EsDelVinculo(documento, vinculo))
+            throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento para el vínculo.");
+        return Vista(documento, id, reloj.Hoy(), await ValidacionesDeIaAsync(empresa, [documento], ct))
+               ?? throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento para el vínculo.");
+    }
+
+    /// <summary>Versiones (documento, número) cuya validación de IA consumió la empresa activa: solo en ellas ve los hechos de IA (IA-3).</summary>
+    internal static async Task<IReadOnlySet<(Guid DocumentoId, int Numero)>> ValidacionesDeIaAsync(SesionDeEmpresa empresa,
+        IReadOnlyList<Documento> documentos, CancellationToken ct)
+    {
+        var ids = documentos.Where(d => d.Versiones.Any(v => v.Ia is not null)).Select(d => d.Id).ToArray();
+        if (ids.Length == 0)
+            return new HashSet<(Guid, int)>();
+        var empresaId = empresa.EmpresaId;
+        var consumidas = await empresa.Sesion.Query<Dominio.Ia.ValidacionIaConsumida>()
+            .Where(v => v.EmpresaId == empresaId && v.DocumentoId.IsOneOf(ids))
+            .ToListAsync(ct);
+        return consumidas.Select(v => (v.DocumentoId, v.Numero)).ToHashSet();
+    }
+
+    /// <summary>URL prefirmada GET (5 min) de una versión compartida con el vínculo; registra <c>DocumentoAccedido</c> con el actor.</summary>
+    [WolverinePost("/api/v1/vinculos/{id}/documentos/{documentoId}/versiones/{numero}/descarga")]
+    [Authorize(Policy = Permisos.DocumentosDescargar)]
+    public static async Task<DescargaDto> Descargar(Guid id, Guid documentoId, int numero, HttpContext http, SesionDeEmpresa empresa,
+        ISesiones sesiones, IContextoSolicitud contexto, IAlmacenDeArchivos almacen, ReglasDeCarga reglas, TimeProvider reloj, CancellationToken ct)
+    {
+        var vinculo = await empresa.CargarVinculoAsync(id, ct);
+        if (!Visible(vinculo))
+            throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento para el vínculo.");
+
+        var destino = new DestinoDeComparticion(contexto.TenantRequerido(), vinculo.EmpresaId, vinculo.Id);
+        // Mismo criterio que la descarga del tercero: el acceso se reintenta si un proceso en segundo plano escribió antes.
+        var documento = await Peticiones.ConReintentosAsync(async () =>
+        {
+            await using var sesion = sesiones.Boveda();
+            var stream = await sesion.Events.FetchForExclusiveWriting<Documento>(documentoId, ct);
+            var encontrado = stream.Aggregate;
+            if (encontrado is null || !EsDelVinculo(encontrado, vinculo))
+                throw ReglaDeNegocioException.NoEncontrado("documento-no-encontrado", "No existe ese documento para el vínculo.");
+            stream.AppendOne(encontrado.RegistrarAcceso(numero, destino, contexto.ActorTipo.ToString(), contexto.ActorId, BovedaEndpoints.Ip(http),
+                BovedaEndpoints.UserAgent(http), "Descarga", reloj.GetUtcNow()));
+            await sesion.SaveChangesAsync(ct);
+            return encontrado;
+        });
+        return await BovedaEndpoints.UrlDeDescargaAsync(almacen, reglas, documento.VersionRequerida(numero), ct);
+    }
+
+    /// <summary>
+    /// El documento es del tercero del vínculo o, si es global de otra persona (una persona relacionada con él, ADR-0010), se compartió con este vínculo: solo así lo
+    /// ve la empresa. Una bóveda de otra persona que nadie compartió con el vínculo responde 404 como cualquier documento ajeno.
+    /// </summary>
+    internal static bool EsDelVinculo(Documento documento, Dominio.Vinculos.Vinculo vinculo) =>
+        documento.TerceroId == vinculo.TerceroId ||
+        (documento.Ambito == AmbitoDocumento.Global && documento.Comparticiones.Any(c => c.VinculoId == vinculo.Id));
+
+    /// <summary>docs/07 §5.2: invitación aceptada y vínculo no anulado (desvinculado o bloqueado conserva lo ya compartido).</summary>
+    internal static bool Visible(Dominio.Vinculos.Vinculo vinculo) =>
+        vinculo.InvitacionAceptada && vinculo.Estado != Dominio.Vinculos.EstadoVinculo.Anulado;
+
+    /// <summary>
+    /// Solo las versiones compartidas con el vínculo, cada una con sus datos declarados, la vigencia de este vínculo y, si la
+    /// empresa consumió su validación (<paramref name="conIa"/>), los hechos de IA.
+    /// </summary>
+    internal static DocumentoVistaEmpresaDto? Vista(Documento documento, Guid vinculoId, DateOnly hoy, IReadOnlySet<(Guid DocumentoId, int Numero)> conIa)
+    {
+        var numeros = documento.Comparticiones.Where(c => c.VinculoId == vinculoId).Select(c => c.Numero).ToHashSet();
+        if (numeros.Count == 0)
+            return null;
+
+        var actual = documento.VersionActual is { } n && numeros.Contains(n) ? n : (int?)null;
+        return new DocumentoVistaEmpresaDto(documento.Id, documento.Resumen(), documento.Ambito.ToString(), actual,
+            [.. documento.Versiones.Where(v => numeros.Contains(v.Numero)).OrderBy(v => v.Numero).Select(v => v.ADto(documento.Id, vinculoId, hoy, conIa.Contains((documento.Id, v.Numero))))]);
+    }
+}

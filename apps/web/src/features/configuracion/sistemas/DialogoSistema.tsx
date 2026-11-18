@@ -1,7 +1,7 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { crearSistema, rotarClavePublicaSistema, type SistemaIntegradoDto } from '@validasoft/api-client';
-import { FaltaParaEnviar, FormularioDeDialogo } from '@validasoft/ui';
+import { crearSistema, rotarClavePublicaSistema, type SistemaIntegradoDto } from '@avalasoft/api-client';
+import { FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../../shared/componentes';

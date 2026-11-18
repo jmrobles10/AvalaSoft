@@ -15,7 +15,7 @@ interface PreferenciasState {
 /** Almacenamiento que no falla si el navegador bloquea localStorage (iframes de terceros, modo privado). */
 const almacenamientoSeguro = createJSONStorage(() => {
   try {
-    const prueba = '__validasoft__';
+    const prueba = '__avalasoft__';
     window.localStorage.setItem(prueba, prueba);
     window.localStorage.removeItem(prueba);
     return window.localStorage;
@@ -40,7 +40,7 @@ export const usePreferencias = create<PreferenciasState>()(
       recordarEmpresa: (usuarioId, empresaId) => set((s) => ({ ultimaEmpresa: { ...s.ultimaEmpresa, [usuarioId]: empresaId } })),
     }),
     {
-      name: 'validasoft:preferencias',
+      name: 'avalasoft:preferencias',
       storage: almacenamientoSeguro,
       partialize: (s) => ({ modo: s.modo, ultimaEmpresa: s.ultimaEmpresa }),
     },

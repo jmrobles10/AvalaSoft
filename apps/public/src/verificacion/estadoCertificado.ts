@@ -1,5 +1,5 @@
-import { esErrorApi, esErrorDeRed, type CertificadoPublicoDto } from '@validasoft/api-client';
-import { formatearDiaCivil, formatearFecha, type EstadoCertificado } from '@validasoft/ui';
+import { esErrorApi, esErrorDeRed, type CertificadoPublicoDto } from '@avalasoft/api-client';
+import { formatearDiaCivil, formatearFecha, type EstadoCertificado } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 
 /** Estados que puede traer `CertificadoPublicoDto.estado` (`ConPendientes` llega con H6). */

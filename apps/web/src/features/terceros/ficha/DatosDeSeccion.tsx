@@ -1,5 +1,5 @@
 import { Box, Divider, Stack, Typography } from '@mui/material';
-import { Dato, RejillaDatos } from '@validasoft/ui';
+import { Dato, RejillaDatos } from '@avalasoft/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeclaracionPep } from './DeclaracionPep';

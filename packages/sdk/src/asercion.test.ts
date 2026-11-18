@@ -23,7 +23,7 @@ describe('aserciones de identidad delegada', () => {
     const otra = partes(await firmante.firmar(LAURA));
 
     expect(una.cabecera).toEqual({ alg: 'RS256', typ: 'JWT' });
-    expect(una.carga).toMatchObject({ iss: 'SRM', aud: 'validasoft', sub: 'srm-laura', name: 'Laura Revisora', email: 'laura@constructora.co' });
+    expect(una.carga).toMatchObject({ iss: 'SRM', aud: 'avalasoft', sub: 'srm-laura', name: 'Laura Revisora', email: 'laura@constructora.co' });
     const exp = una.carga.exp as number;
     const iat = una.carga.iat as number;
     expect(exp - iat).toBeLessThanOrEqual(300);

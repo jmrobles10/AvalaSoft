@@ -1,4 +1,4 @@
-import { esErrorApi, type ActualizarConfiguracionSlaDto, type ConfiguracionSlaDto } from '@validasoft/api-client';
+import { esErrorApi, type ActualizarConfiguracionSlaDto, type ConfiguracionSlaDto } from '@avalasoft/api-client';
 
 /** Igual que `Expediente.PorcentajeDeAvisoMinimo`/`Maximo` y `ConfiguracionDeSla.MaximoHoras` (90 días) del backend. */
 export const PORCENTAJE_MINIMO = 50;

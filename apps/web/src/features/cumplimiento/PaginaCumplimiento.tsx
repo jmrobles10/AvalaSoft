@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Stack, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, Typography } from '@mui/material';
-import { SCOPES, type FilaCumplimientoDto } from '@validasoft/api-client';
-import { ChipEstado, EstadoVacio, formatearFecha } from '@validasoft/ui';
+import { SCOPES, type FilaCumplimientoDto } from '@avalasoft/api-client';
+import { ChipEstado, EstadoVacio, formatearFecha } from '@avalasoft/ui';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useSearchParams } from 'react-router';

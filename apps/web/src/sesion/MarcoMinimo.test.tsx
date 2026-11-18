@@ -1,12 +1,12 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { describe, expect, it } from 'vitest';
 import { MarcoMinimo } from './MarcoMinimo';
 
 const montar = (modo: 'light' | 'dark') =>
   render(
-    <ThemeProvider theme={createValidasoftTheme(modo)}>
+    <ThemeProvider theme={createAvalasoftTheme(modo)}>
       <MarcoMinimo>
         <p>contenido</p>
       </MarcoMinimo>

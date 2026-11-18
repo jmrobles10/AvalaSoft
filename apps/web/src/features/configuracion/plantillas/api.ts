@@ -3,7 +3,7 @@ import {
   getListarPlantillasNotificacionQueryOptions,
   previsualizarPlantillaNotificacion,
   type ActualizarPlantillaNotificacionDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { useEffect, useState } from 'react';
 import { conEmpresa } from '../../../shared/consultas';
 import { cuerpoDe, type BorradorPlantilla } from './modelo';

@@ -10,7 +10,7 @@ import { ORIGEN_SISTEMA } from '../soporte/semilla';
 /**
  * Consola de Plataforma (PT-4…PT-6): un operador da de alta un grupo nuevo con su primera empresa, su administradora y su
  * sistema integrado; configura el plan de IA de la empresa con su llave de OpenAI (que nunca vuelve en claro) y la prueba;
- * y la empresa nueva queda operable: su sistema invita a un proveedor y la administradora lo ve en Validasoft.
+ * y la empresa nueva queda operable: su sistema invita a un proveedor y la administradora lo ve en AvalaSoft.
  */
 test('Alta de una empresa nueva desde la consola, su plan de IA con llave y su primera invitación', async ({ page, browser }) => {
   const sufijo = randomUUID().replace(/-/g, '').slice(0, 6);

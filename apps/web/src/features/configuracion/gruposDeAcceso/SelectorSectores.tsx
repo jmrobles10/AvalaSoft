@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import { NivelDeSector } from '@validasoft/api-client';
+import { NivelDeSector } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { nombreSeccion, SECCIONES_FICHA } from '../../terceros/ficha/secciones';
 import { alternarSector, cambiarNivel, type SectorEnEditor } from './modelo';

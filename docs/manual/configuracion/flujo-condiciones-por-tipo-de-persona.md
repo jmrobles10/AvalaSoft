@@ -16,7 +16,7 @@ La administradora arma un flujo de proveedores en el que el RUT se pide a todos,
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con miembros y los tipos de documento RUT, Cámara de comercio y Cédula.
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 

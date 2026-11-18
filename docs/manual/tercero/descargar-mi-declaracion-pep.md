@@ -39,7 +39,7 @@ Con la declaración guardada, en la sección de información general aparece el 
 
 ## Paso 2. Descarga el PDF y guárdalo
 
-El PDF tiene tus datos de la declaración tal como quedaron firmados, con la firma que dibujaste. El PDF lleva el logo de Validasoft y, si la empresa que te invitó tiene logo, también el suyo. Guárdalo en tu equipo.
+El PDF tiene tus datos de la declaración tal como quedaron firmados, con la firma que dibujaste. El PDF lleva el logo de AvalaSoft y, si la empresa que te invitó tiene logo, también el suyo. Guárdalo en tu equipo.
 
 > **Pantalla:** `/ficha/general`
 

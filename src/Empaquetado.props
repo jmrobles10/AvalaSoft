@@ -1,18 +1,19 @@
 <Project>
   <!--
-    Metadatos y versión de los paquetes NuGet del SDK: Validasoft.Contratos y Validasoft.Sdk (docs/08 §2.4).
-    La versión es la de todo el SDK —la misma de @validasoft/sdk en npm— y se cambia con `node infra/sdk/version.mjs <versión>`, que
+    Metadatos y versión de los paquetes NuGet del SDK: Avalasoft.Contratos y Avalasoft.Sdk (docs/08 §2.4).
+    La versión es la de todo el SDK —la misma de @avalasoft/sdk en npm— y se cambia con `node infra/sdk/version.mjs <versión>`, que
     también actualiza packages/sdk/package.json; el workflow sdk-publicar.yml exige que el tag sdk-v<versión> coincida con las dos.
     Cada proyecto aporta su README.md; el CHANGELOG y la licencia son los del SDK.
   -->
   <PropertyGroup>
     <VersionSdk>1.0.0</VersionSdk>
     <Version>$(VersionSdk)</Version>
-    <Authors>Validasoft</Authors>
-    <Company>Validasoft</Company>
-    <Copyright>Copyright (c) 2026 Validasoft</Copyright>
-    <PackageProjectUrl>https://github.com/jmrobles10/ValidaSoft/tree/main/src/Validasoft.Sdk</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/jmrobles10/ValidaSoft</RepositoryUrl>
+    <Authors>AvalaSoft</Authors>
+    <Company>AvalaSoft</Company>
+    <Copyright>Copyright (c) 2026 AvalaSoft</Copyright>
+    <!-- Las URL del repositorio no se escriben aquí: salen de GITHUB_REPOSITORY cuando el paquete se arma en GitHub Actions. -->
+    <PackageProjectUrl Condition="'$(GITHUB_REPOSITORY)' != ''">https://github.com/$(GITHUB_REPOSITORY)/tree/main/src/Avalasoft.Sdk</PackageProjectUrl>
+    <RepositoryUrl Condition="'$(GITHUB_REPOSITORY)' != ''">https://github.com/$(GITHUB_REPOSITORY)</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseFile>LICENCIA-SDK.md</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -27,7 +28,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
-    <None Include="$(MSBuildThisFileDirectory)Validasoft.Sdk\CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)Avalasoft.Sdk\CHANGELOG.md" Pack="true" PackagePath="\" />
     <None Include="$(MSBuildThisFileDirectory)..\LICENCIA-SDK.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@ id: "plataforma/crear-grupo-y-empresa"
 titulo: "Crea un grupo con su primera empresa"
 actor: "Plataforma"
 dominio: "plataforma"
-resumen: "El operador de Plataforma da de alta un cliente completo desde la consola: el grupo, su primera empresa, la persona que lo administra y el sistema desde el que su gente entra a Validasoft. Al terminar, la pantalla muestra las API keys una sola vez."
+resumen: "El operador de Plataforma da de alta un cliente completo desde la consola: el grupo, su primera empresa, la persona que lo administra y el sistema desde el que su gente entra a AvalaSoft. Al terminar, la pantalla muestra las API keys una sola vez."
 pasos: 8
 ---
 
@@ -11,7 +11,7 @@ pasos: 8
 
 **Actor:** Plataforma · **Dominio:** Consola de Plataforma
 
-El operador de Plataforma da de alta un cliente completo desde la consola: el grupo, su primera empresa, la persona que lo administra y el sistema desde el que su gente entra a Validasoft. Al terminar, la pantalla muestra las API keys una sola vez.
+El operador de Plataforma da de alta un cliente completo desde la consola: el grupo, su primera empresa, la persona que lo administra y el sistema desde el que su gente entra a AvalaSoft. Al terminar, la pantalla muestra las API keys una sola vez.
 
 **Antes de empezar**
 
@@ -31,7 +31,7 @@ El operador de Plataforma da de alta un cliente completo desde la consola: el gr
 
 ## Paso 1. Abre el formulario de un grupo nuevo
 
-Desde «Grupos y empresas», el botón «Nuevo grupo» abre el formulario de alta. Un grupo es el cliente de Validasoft: nace con una primera empresa, con la persona que lo administra y, si lo pides, con el sistema desde el que esa gente entra. El alta se envía completa en una sola acción.
+Desde «Grupos y empresas», el botón «Nuevo grupo» abre el formulario de alta. Un grupo es el cliente de AvalaSoft: nace con una primera empresa, con la persona que lo administra y, si lo pides, con el sistema desde el que esa gente entra. El alta se envía completa en una sola acción.
 
 > **Pantalla:** `/plataforma/grupos`
 
@@ -71,7 +71,7 @@ La primera empresa es la razón social que valida a sus terceros. Eliges el paí
 
 ## Paso 4. Nombra al administrador del grupo
 
-El administrador tiene el rol Administrador en todo el grupo: crea usuarios, áreas y flujos. Validasoft no guarda su contraseña; esta persona entra desde el sistema integrado o, si eliges el ingreso directo, con un correo. Si el sistema identifica a sus personas con un usuario propio, escríbelo; si lo dejas vacío, la persona se enlaza por su correo la primera vez que entre. Si el correo quedó mal, se corrige después en la ficha del grupo (Administradores › Editar).
+El administrador tiene el rol Administrador en todo el grupo: crea usuarios, áreas y flujos. AvalaSoft no guarda su contraseña; esta persona entra desde el sistema integrado o, si eliges el ingreso directo, con un correo. Si el sistema identifica a sus personas con un usuario propio, escríbelo; si lo dejas vacío, la persona se enlaza por su correo la primera vez que entre. Si el correo quedó mal, se corrige después en la ficha del grupo (Administradores › Editar).
 
 > **Pantalla:** `/plataforma/grupos/nuevo`
 
@@ -83,7 +83,7 @@ El administrador tiene el rol Administrador en todo el grupo: crea usuarios, ár
 
 ## Paso 5. Elige cómo entra la gente del grupo
 
-Marca al menos una forma de ingreso. «Desde el sistema integrado» hace que las personas entren desde el ERP o portal del cliente, que firma sus aserciones; «Directo a Validasoft» permite entrar con un correo. Si no marcas ninguna, el formulario no se puede enviar. Con la primera opción aparece la sección del sistema integrado.
+Marca al menos una forma de ingreso. «Desde el sistema integrado» hace que las personas entren desde el ERP o portal del cliente, que firma sus aserciones; «Directo a AvalaSoft» permite entrar con un correo. Si no marcas ninguna, el formulario no se puede enviar. Con la primera opción aparece la sección del sistema integrado.
 
 > **Pantalla:** `/plataforma/grupos/nuevo`
 
@@ -91,12 +91,12 @@ Marca al menos una forma de ingreso. «Desde el sistema integrado» hace que las
 
 **Variantes**
 
-- **Solo «Directo a Validasoft»:** La sección del sistema integrado desaparece y el grupo no recibe API key de sistema.
+- **Solo «Directo a AvalaSoft»:** La sección del sistema integrado desaparece y el grupo no recibe API key de sistema.
 - **Las dos:** Aparece la sección del sistema y el grupo recibe las dos llaves.
 
 ## Paso 6. Registra el sistema integrado
 
-El sistema del cliente se registra con un código (es el «iss» de sus aserciones), un nombre y su clave pública en formato PEM: RSA de 2048 bits o más, o EC P-256. Solo se pega la clave pública; la privada se queda en el sistema del cliente. Los sitios que pueden incrustar Validasoft se escriben uno por línea, como https://erp.cliente.co. Sin ellos, el sistema solo usa la API.
+El sistema del cliente se registra con un código (es el «iss» de sus aserciones), un nombre y su clave pública en formato PEM: RSA de 2048 bits o más, o EC P-256. Solo se pega la clave pública; la privada se queda en el sistema del cliente. Los sitios que pueden incrustar AvalaSoft se escriben uno por línea, como https://erp.cliente.co. Sin ellos, el sistema solo usa la API.
 
 > **Pantalla:** `/plataforma/grupos/nuevo`
 

@@ -1,6 +1,6 @@
 import { Box, Button, Chip, MenuItem, Skeleton, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { SCOPES, type FlujoDto } from '@validasoft/api-client';
-import { EstadoVacio, MarcoTabla } from '@validasoft/ui';
+import { SCOPES, type FlujoDto } from '@avalasoft/api-client';
+import { EstadoVacio, MarcoTabla } from '@avalasoft/ui';
 import { ListOrdered, Plus, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

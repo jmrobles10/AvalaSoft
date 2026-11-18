@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type AreaDto, type CandidatoDeDelegacionDto, type DelegacionDto, type SesionValidasoft } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type AreaDto, type CandidatoDeDelegacionDto, type DelegacionDto, type SesionAvalasoft } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSesion } from '../../../sesion/sesionStore';
@@ -71,7 +71,7 @@ function montar(responderPost: (cuerpo: unknown) => Response = () => json(delega
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <MemoryRouter initialEntries={['/e/emp/delegaciones']}>
           <PaginaDelegaciones />
@@ -83,7 +83,7 @@ function montar(responderPost: (cuerpo: unknown) => Response = () => json(delega
 }
 
 function iniciarSesion() {
-  const sesion: SesionValidasoft = {
+  const sesion: SesionAvalasoft = {
     token: 'tok',
     expira: new Date(Date.now() + 30 * 60_000),
     usuarioId: 'yo',

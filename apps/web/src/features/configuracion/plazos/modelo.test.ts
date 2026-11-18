@@ -1,4 +1,4 @@
-import { ErrorApi, type ConfiguracionSlaDto } from '@validasoft/api-client';
+import { ErrorApi, type ConfiguracionSlaDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { aActualizarDto, borradorDeSla, errorDelPorcentaje, errorDeHoras, errorDePorcentaje, esValido, hayCambios } from './modelo';
 

@@ -1,5 +1,5 @@
-import type { BandejaNotificacionesDto, NotificacionDto } from '@validasoft/api-client';
-import { PanelDeNotificaciones } from '@validasoft/ui';
+import type { BandejaNotificacionesDto, NotificacionDto } from '@avalasoft/api-client';
+import { PanelDeNotificaciones } from '@avalasoft/ui';
 import { CheckCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../shared/componentes';

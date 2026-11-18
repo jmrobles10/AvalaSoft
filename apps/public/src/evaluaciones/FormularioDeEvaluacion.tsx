@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Stack } from '@mui/material';
-import { esErrorApi, type AdjuntoDeEvaluacionDto, type EvaluacionPublicaDto } from '@validasoft/api-client';
+import { esErrorApi, type AdjuntoDeEvaluacionDto, type EvaluacionPublicaDto } from '@avalasoft/api-client';
 import {
   aSeccionesDeFormulario,
   borradorDesdeRespuestas,
@@ -10,7 +10,7 @@ import {
   type BorradorDeRespuestas,
   type TextosDelFormulario,
   type VisibilidadDeFormulario,
-} from '@validasoft/ui';
+} from '@avalasoft/ui';
 import { Send } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

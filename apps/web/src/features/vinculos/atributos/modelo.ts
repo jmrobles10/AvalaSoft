@@ -1,4 +1,4 @@
-import type { AtributoPermitidoDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto } from '@avalasoft/api-client';
 
 /**
  * Los valores de los atributos del vínculo en un formulario (decisión IM): uno por atributo permitido de su tipo de vínculo. Cada control guarda texto (número, fecha, opción, sí/no

@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
-import type { DocumentoDePersonaDto, RelacionEntreTercerosDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFecha } from '@validasoft/ui';
+import type { DocumentoDePersonaDto, RelacionEntreTercerosDto } from '@avalasoft/api-client';
+import { ChipEstado, formatearFecha } from '@avalasoft/ui';
 import { FileText, Upload, UserRoundX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

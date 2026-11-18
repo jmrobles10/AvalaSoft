@@ -1,4 +1,4 @@
-import type { CuestionarioDto, DefinicionDeCuestionarioDto, EvaluacionDto, EvaluacionDeExpedienteDto, ResultadoDeEvaluacionDto } from '@validasoft/api-client';
+import type { CuestionarioDto, DefinicionDeCuestionarioDto, EvaluacionDto, EvaluacionDeExpedienteDto, ResultadoDeEvaluacionDto } from '@avalasoft/api-client';
 
 /** Datos de prueba de cuestionarios y evaluaciones (solo para las pruebas de esta carpeta). */
 export const DEFINICION: DefinicionDeCuestionarioDto = {

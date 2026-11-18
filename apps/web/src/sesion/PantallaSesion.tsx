@@ -1,5 +1,5 @@
 import { Box, Button, Skeleton, Stack } from '@mui/material';
-import { Cargando, EsqueletoFormulario, PaginaEstado } from '@validasoft/ui';
+import { Cargando, EsqueletoFormulario, PaginaEstado } from '@avalasoft/ui';
 import { Clock, LogOut, ShieldAlert } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';

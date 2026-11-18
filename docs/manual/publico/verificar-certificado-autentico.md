@@ -3,7 +3,7 @@ id: "publico/verificar-certificado-autentico"
 titulo: "Verifica que un certificado es auténtico"
 actor: "Público"
 dominio: "publico"
-resumen: "Cualquier persona con el enlace del código QR o el folio de un certificado vigente lo consulta sin iniciar sesión: ve quién lo emite, a quién certifica y si la firma de Validasoft corresponde a su contenido, y descarga el PDF."
+resumen: "Cualquier persona con el enlace del código QR o el folio de un certificado vigente lo consulta sin iniciar sesión: ve quién lo emite, a quién certifica y si la firma de AvalaSoft corresponde a su contenido, y descarga el PDF."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Público · **Dominio:** Verificación pública
 
-Cualquier persona con el enlace del código QR o el folio de un certificado vigente lo consulta sin iniciar sesión: ve quién lo emite, a quién certifica y si la firma de Validasoft corresponde a su contenido, y descarga el PDF.
+Cualquier persona con el enlace del código QR o el folio de un certificado vigente lo consulta sin iniciar sesión: ve quién lo emite, a quién certifica y si la firma de AvalaSoft corresponde a su contenido, y descarga el PDF.
 
 **Antes de empezar**
 
@@ -39,7 +39,7 @@ La página abre con el estado: «Este certificado está vigente» y la empresa q
 
 ## Paso 2. Comprueba la autenticidad
 
-La sección «Autenticidad» la comprueba tu propio navegador: recalcula el contenido sellado, compara su huella con la del enlace y valida la firma con la clave pública de Validasoft. Si las cuatro comprobaciones salen en «Correcto», el mensaje dice «Auténtico»; si alguna falla, el certificado no debe aceptarse.
+La sección «Autenticidad» la comprueba tu propio navegador: recalcula el contenido sellado, compara su huella con la del enlace y valida la firma con la clave pública de AvalaSoft. Si las cuatro comprobaciones salen en «Correcto», el mensaje dice «Auténtico»; si alguna falla, el certificado no debe aceptarse.
 
 > **Pantalla:** `/verificar/SM82B8-C-2026-000001-1`
 

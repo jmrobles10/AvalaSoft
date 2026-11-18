@@ -1,5 +1,5 @@
 import { Box, Button, MenuItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
-import { BarraFiltros, CampoBusqueda, Dato, EstadoVacio, RejillaDatos, TablaEsqueleto } from '@validasoft/ui';
+import { BarraFiltros, CampoBusqueda, Dato, EstadoVacio, RejillaDatos, TablaEsqueleto } from '@avalasoft/ui';
 import { Download, SearchX, Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

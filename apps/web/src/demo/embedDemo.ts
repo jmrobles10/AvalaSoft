@@ -1,12 +1,12 @@
 /**
- * Página de demostración: hace de sistema integrado que aloja Validasoft en un iframe (ID-3). Muestra el contrato
+ * Página de demostración: hace de sistema integrado que aloja AvalaSoft en un iframe (ID-3). Muestra el contrato
  * postMessage de `sesion/puenteEmbed.ts` desde el lado del contenedor: responde a `sesion-requerida` emitiendo una
  * sesión, ajusta la altura con `resize`, hace scroll hasta la región de `visible` y envía el tema.
  */
 import { abrirSesionDelegada } from '../dev/firmarAsercion';
 import { cargarSemilla, type SemillaDemo } from '../dev/semilla';
 
-interface MensajeDeValidasoft {
+interface MensajeDeAvalasoft {
   tipo: string;
   motivo?: string;
   height?: number;
@@ -15,7 +15,7 @@ interface MensajeDeValidasoft {
 }
 
 /**
- * `validasoft:visible`: la región `top..top+height` del iframe (un diálogo o panel recién abierto) debe verse. Solo
+ * `avalasoft:visible`: la región `top..top+height` del iframe (un diálogo o panel recién abierto) debe verse. Solo
  * desplaza si hace falta y lo mínimo; si la región es más alta que la ventana, muestra su borde superior.
  */
 function mostrarRegion(marcoIframe: HTMLIFrameElement, top: number, alto: number) {
@@ -93,8 +93,8 @@ async function canjear() {
       limite,
     ]);
     enviar(
-      { tipo: 'validasoft:sesion', token: sesion.token, empresaId: empresa.value || null },
-      `validasoft:sesion (${elegida.nombre}, vence ${new Date(sesion.expira).toLocaleTimeString('es-CO')})`,
+      { tipo: 'avalasoft:sesion', token: sesion.token, empresaId: empresa.value || null },
+      `avalasoft:sesion (${elegida.nombre}, vence ${new Date(sesion.expira).toLocaleTimeString('es-CO')})`,
     );
   } catch (error) {
     const mensaje = error instanceof Error ? error.message : 'No se pudo abrir la sesión.';
@@ -104,7 +104,7 @@ async function canjear() {
 }
 
 function enviarTema() {
-  enviar({ tipo: 'validasoft:tema', mode: tema.value }, `validasoft:tema ${tema.value}`);
+  enviar({ tipo: 'avalasoft:tema', mode: tema.value }, `avalasoft:tema ${tema.value}`);
 }
 
 function abrir() {
@@ -119,27 +119,27 @@ function abrir() {
   registrar('saliente', 'iframe creado');
 }
 
-window.addEventListener('message', (evento: MessageEvent<MensajeDeValidasoft>) => {
+window.addEventListener('message', (evento: MessageEvent<MensajeDeAvalasoft>) => {
   // Solo el iframe propio y su origen: cualquier otro mensaje se ignora.
   if (!iframe) return;
   if (evento.source !== iframe.contentWindow || evento.origin !== ORIGEN) return;
   const { tipo } = evento.data;
 
   switch (tipo) {
-    case 'validasoft:ready':
-      registrar('entrante', `validasoft:ready (protocolo v${String(evento.data.version ?? '?')})`);
+    case 'avalasoft:ready':
+      registrar('entrante', `avalasoft:ready (protocolo v${String(evento.data.version ?? '?')})`);
       enviarTema();
       break;
-    case 'validasoft:sesion-requerida':
-      registrar('entrante', `validasoft:sesion-requerida (${evento.data.motivo ?? '—'})`);
+    case 'avalasoft:sesion-requerida':
+      registrar('entrante', `avalasoft:sesion-requerida (${evento.data.motivo ?? '—'})`);
       void entregarSesion();
       break;
-    case 'validasoft:resize':
+    case 'avalasoft:resize':
       if (typeof evento.data.height === 'number') iframe.style.height = `${String(Math.max(640, evento.data.height))}px`;
       break;
-    case 'validasoft:visible':
+    case 'avalasoft:visible':
       if (typeof evento.data.top === 'number' && typeof evento.data.height === 'number') {
-        registrar('entrante', `validasoft:visible (top ${String(evento.data.top)}, alto ${String(evento.data.height)})`);
+        registrar('entrante', `avalasoft:visible (top ${String(evento.data.top)}, alto ${String(evento.data.height)})`);
         mostrarRegion(iframe, evento.data.top, evento.data.height);
       }
       break;
@@ -150,7 +150,7 @@ window.addEventListener('message', (evento: MessageEvent<MensajeDeValidasoft>) =
 
 botonAbrir.addEventListener('click', abrir);
 botonRenovar.addEventListener('click', () => void entregarSesion());
-botonCerrar.addEventListener('click', () => enviar({ tipo: 'validasoft:cerrar-sesion' }, 'validasoft:cerrar-sesion'));
+botonCerrar.addEventListener('click', () => enviar({ tipo: 'avalasoft:cerrar-sesion' }, 'avalasoft:cerrar-sesion'));
 tema.addEventListener('change', enviarTema);
 persona.addEventListener('change', () => {
   if (iframe) void entregarSesion();

@@ -119,7 +119,7 @@ export const ficha = {
     identificacion: 'Identificación',
     identificacionAyuda: 'La toma AvalaSoft de tu registro; no se cambia aquí.',
     identificacionPendiente: 'Se completa con tu registro al guardar',
-    // El DV de algunos números (RUC de Panamá) no lo calcula Validasoft: lo declara el tercero (RG-2).
+    // El DV de algunos números (RUC de Panamá) no lo calcula AvalaSoft: lo declara el tercero (RG-2).
     dv: 'Dígito de verificación (DV)',
     dvAyuda: 'Son 2 dígitos y figuran junto a tu RUC.',
     tipoPersona: 'Tipo de persona',

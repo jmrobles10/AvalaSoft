@@ -1,6 +1,6 @@
 import { Box, Button, Stack } from '@mui/material';
-import { esErrorApi, SCOPES, type CampaniaDto } from '@validasoft/api-client';
-import { BarraFiltros, Dato, EsqueletoTarjeta, EstadoVacio, FiltroMenu, formatearFecha, PaginaEstado, RejillaDatos, TablaConCursor, usePaginacionCursor } from '@validasoft/ui';
+import { esErrorApi, SCOPES, type CampaniaDto } from '@avalasoft/api-client';
+import { BarraFiltros, Dato, EsqueletoTarjeta, EstadoVacio, FiltroMenu, formatearFecha, PaginaEstado, RejillaDatos, TablaConCursor, usePaginacionCursor } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 import { Ban, Download, Pause, Play, RotateCcw, SearchX } from 'lucide-react';
 import { useEffect, useState } from 'react';

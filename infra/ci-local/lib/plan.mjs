@@ -314,9 +314,9 @@ export function haciaLaRed(texto, serviciosDeLaRed) {
  */
 export function variablesDeLaApi() {
   return {
-    ConnectionStrings__Validasoft: 'Host=postgres;Port=5432;Database=validasoft;Username=validasoft;Password=validasoft',
-    Validasoft__Correo__Host: 'mailpit',
-    Validasoft__Correo__Puerto: '1025',
-    Validasoft__Almacen__Endpoint: 'http://minio:9000',
+    ConnectionStrings__Avalasoft: 'Host=postgres;Port=5432;Database=avalasoft;Username=avalasoft;Password=avalasoft',
+    Avalasoft__Correo__Host: 'mailpit',
+    Avalasoft__Correo__Puerto: '1025',
+    Avalasoft__Almacen__Endpoint: 'http://minio:9000',
   };
 }

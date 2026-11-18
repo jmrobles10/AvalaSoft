@@ -3,7 +3,7 @@ id: "acceso/mi-cuenta-sesiones-y-codigos"
 titulo: "Revisa tus sesiones abiertas y cierra la que no reconoces"
 actor: "Revisor/área"
 dominio: "acceso"
-resumen: "En Mi cuenta, Rita ve cómo entra a Validasoft (código del correo, passkey o inicio de sesión de su empresa), en qué dispositivos tiene sesiones abiertas y puede cerrar cualquiera de ellas. Desde la misma pantalla están sus passkeys y sus códigos de recuperación."
+resumen: "En Mi cuenta, Rita ve cómo entra a AvalaSoft (código del correo, passkey o inicio de sesión de su empresa), en qué dispositivos tiene sesiones abiertas y puede cerrar cualquiera de ellas. Desde la misma pantalla están sus passkeys y sus códigos de recuperación."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Revisor/área · **Dominio:** Acceso y cuenta
 
-En Mi cuenta, Rita ve cómo entra a Validasoft (código del correo, passkey o inicio de sesión de su empresa), en qué dispositivos tiene sesiones abiertas y puede cerrar cualquiera de ellas. Desde la misma pantalla están sus passkeys y sus códigos de recuperación.
+En Mi cuenta, Rita ve cómo entra a AvalaSoft (código del correo, passkey o inicio de sesión de su empresa), en qué dispositivos tiene sesiones abiertas y puede cerrar cualquiera de ellas. Desde la misma pantalla están sus passkeys y sus códigos de recuperación.
 
 **Antes de empezar**
 
@@ -25,7 +25,7 @@ En Mi cuenta, Rita ve cómo entra a Validasoft (código del correo, passkey o in
 
 ## Paso 1. Revisa cómo entras y tus sesiones
 
-Mi cuenta muestra cómo entras a Validasoft (con el código del correo o con tu passkey) y la lista de sesiones abiertas. La sesión de este navegador aparece marcada como «Esta sesión». Cada sesión muestra dónde y cuándo se abrió, para que reconozcas la que no es tuya.
+Mi cuenta muestra cómo entras a AvalaSoft (con el código del correo o con tu passkey) y la lista de sesiones abiertas. La sesión de este navegador aparece marcada como «Esta sesión». Cada sesión muestra dónde y cuándo se abrió, para que reconozcas la que no es tuya.
 
 > **Pantalla:** `/e/{empresa}/mi-cuenta`
 
@@ -55,4 +55,4 @@ El botón «Cerrar esta sesión» cierra la sesión del navegador en el que est�
 
 - [Registra una passkey y entra con tu huella o tu rostro](ingreso-con-passkey.md)
 - [Genera códigos de recuperación por si pierdes tu passkey](codigos-de-recuperacion.md)
-- [Entra a Validasoft con tu correo y un código](ingreso-directo-por-correo.md)
+- [Entra a AvalaSoft con tu correo y un código](ingreso-directo-por-correo.md)

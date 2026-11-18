@@ -1,5 +1,5 @@
 import { Box, Button, Tab, Tabs, Typography } from '@mui/material';
-import { BarraFiltros, CampoBusqueda, CampoFecha, FiltroMenu } from '@validasoft/ui';
+import { BarraFiltros, CampoBusqueda, CampoFecha, FiltroMenu } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useBusquedaEnUrl } from '../../shared/useBusquedaEnUrl';

@@ -80,7 +80,7 @@ svg.diagrama{--d-fondo:#ffffff;--d-superficie:#ffffff;--d-superficie2:#eef1f5;--
 <rect class="d-caja" x="620" y="300" width="200" height="100" rx="10"/>
 <text class="d-t-b d-c" x="720" y="323">Cola webhooks</text>
 <text class="d-t-s d-c" x="720" y="340">secuencial: en orden</text>
-<text class="d-t-s d-c" x="720" y="355">POST con Validasoft-Signature</text>
+<text class="d-t-s d-c" x="720" y="355">POST con Avalasoft-Signature</text>
 <text class="d-t-s d-c" x="720" y="370">reintentos de 1 min a 6 h</text>
 <rect class="d-caja-gris" x="870" y="300" width="200" height="100" rx="10"/>
 <text class="d-t-b d-c" x="970" y="323">Receptor del integrador</text>

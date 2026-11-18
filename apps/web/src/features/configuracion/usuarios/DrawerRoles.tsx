@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Checkbox, Drawer, FormControlLabel, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import type { AsignacionDeGrupoDto, EmpresaDto, GrupoDeAccesoDto, RolAsignadoDto, UsuarioDto } from '@validasoft/api-client';
-import { AvatarActor, AlineadoConCampo } from '@validasoft/ui';
+import type { AsignacionDeGrupoDto, EmpresaDto, GrupoDeAccesoDto, RolAsignadoDto, UsuarioDto } from '@avalasoft/api-client';
+import { AvatarActor, AlineadoConCampo } from '@avalasoft/ui';
 import { Ban, Plus, X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

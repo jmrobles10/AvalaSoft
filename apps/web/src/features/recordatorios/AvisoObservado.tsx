@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Button, Tooltip } from '@mui/material';
-import { SCOPES, type ExpedienteDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import { SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { BellRing } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Chip, Stack, Tooltip, Typography } from '@mui/material';
-import type { HechosDto, HechosIaDto } from '@validasoft/api-client';
-import { formatearFecha, LOCALE } from '@validasoft/ui';
+import type { HechosDto, HechosIaDto } from '@avalasoft/api-client';
+import { formatearFecha, LOCALE } from '@avalasoft/ui';
 import { Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { camposExtraidos, confianzaDe, estadoRevision, tipoNoCoincide, UMBRAL_CONFIANZA } from './revisionIa';

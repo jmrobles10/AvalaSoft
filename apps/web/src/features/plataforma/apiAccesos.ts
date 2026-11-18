@@ -4,7 +4,7 @@ import {
   getListarSolicitudesDeAccesoDePlataformaQueryOptions,
   rechazarSolicitudDeAccesoDePlataforma,
   verificarContactoDelTercero,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { invalidarRuta } from '../../shared/consultas';
 
 /** La consola de Plataforma no tiene empresa activa ni tenant (PT-4). */

@@ -1,4 +1,4 @@
-import type { ActualizarMatrizDeRiesgoDto, DebidaDiligencia, MatrizDeRiesgoDto, OrigenDelFactor } from '@validasoft/api-client';
+import type { ActualizarMatrizDeRiesgoDto, DebidaDiligencia, MatrizDeRiesgoDto, OrigenDelFactor } from '@avalasoft/api-client';
 
 /**
  * Reglas de la matriz de riesgo de la empresa (CU-17), las mismas que valida la API (`MatrizDeRiesgoEmpresa.Actualizar`):

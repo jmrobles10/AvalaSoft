@@ -3,7 +3,7 @@ id: "vinculos/referencias-externas"
 titulo: "Localiza un vínculo por la referencia de un sistema externo"
 actor: "Sistema integrador"
 dominio: "vinculos"
-resumen: "Un sistema integrado crea vínculos con su propio identificador, como el código de proveedor de su sistema. En Validasoft, la lista muestra esas referencias, el buscador abre un vínculo escribiendo el sistema y su referencia, y el detalle las muestra con su sistema."
+resumen: "Un sistema integrado crea vínculos con su propio identificador, como el código de proveedor de su sistema. En AvalaSoft, la lista muestra esas referencias, el buscador abre un vínculo escribiendo el sistema y su referencia, y el detalle las muestra con su sistema."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Sistema integrador · **Dominio:** Vínculos y terceros
 
-Un sistema integrado crea vínculos con su propio identificador, como el código de proveedor de su sistema. En Validasoft, la lista muestra esas referencias, el buscador abre un vínculo escribiendo el sistema y su referencia, y el detalle las muestra con su sistema.
+Un sistema integrado crea vínculos con su propio identificador, como el código de proveedor de su sistema. En AvalaSoft, la lista muestra esas referencias, el buscador abre un vínculo escribiendo el sistema y su referencia, y el detalle las muestra con su sistema.
 
 **Antes de empezar**
 

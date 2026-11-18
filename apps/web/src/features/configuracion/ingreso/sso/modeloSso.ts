@@ -1,4 +1,4 @@
-import { Rol, type ConfiguracionDeSsoDto, type FijarSsoDto, type ReglaDeGrupoSsoDto, type RolAsignadoDto } from '@validasoft/api-client';
+import { Rol, type ConfiguracionDeSsoDto, type FijarSsoDto, type ReglaDeGrupoSsoDto, type RolAsignadoDto } from '@avalasoft/api-client';
 
 /** Proveedores de identidad que ofrece la instalación: OIDC genérico (Entra, Google Workspace…) y WorkOS (si está configurado). */
 export const PROVEEDORES_SSO = ['oidc', 'workos'] as const;

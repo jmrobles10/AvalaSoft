@@ -1,6 +1,6 @@
-# @validasoft/sdk
+# @avalasoft/sdk
 
-Cliente TypeScript de la API v1 de [Validasoft](https://github.com/jmrobles10/ValidaSoft): la plataforma que valida a terceros
+Cliente TypeScript de la API v1 de AvalaSoft: la plataforma que valida a terceros
 (proveedores, clientes, empleados…) para varias empresas. Pensado para el backend del SRM, de Marco, del Portal u otro ERP.
 
 - **Sin dependencias**: `fetch` y Web Crypto. Node 20+ (o un navegador, solo para verificar webhooks: la API key nunca va en el navegador).
@@ -11,38 +11,38 @@ Cliente TypeScript de la API v1 de [Validasoft](https://github.com/jmrobles10/Va
 - **Webhooks**: verificación de la firma con tolerancia de 5 minutos y varios secretos durante una rotación.
 - `Idempotency-Key` automática en todo POST (la misma en los reintentos); solo se reintenta lo idempotente.
 
-La guía completa, de punta a punta, está en [docs/integracion.md](https://github.com/jmrobles10/ValidaSoft/blob/main/docs/integracion.md).
+La guía completa, de punta a punta, está en `docs/integracion.md` (en el repositorio).
 
 ## Instalar
 
 ```bash
-npm install @validasoft/sdk
-# o: pnpm add @validasoft/sdk
+npm install @avalasoft/sdk
+# o: pnpm add @avalasoft/sdk
 ```
 
 ## Configurar
 
 ```ts
-import { ClienteValidasoft, crearFirmanteDeAserciones } from '@validasoft/sdk';
+import { ClienteAvalasoft, crearFirmanteDeAserciones } from '@avalasoft/sdk';
 
-const validasoft = new ClienteValidasoft({
-  urlBase: process.env.VALIDASOFT_URL!,
-  apiKey: process.env.VALIDASOFT_API_KEY!, // vsk_live_… (o vsk_test_… en el sandbox); del gestor de secretos
-  empresaId: process.env.VALIDASOFT_EMPRESA_ID, // X-Empresa
+const avalasoft = new ClienteAvalasoft({
+  urlBase: process.env.AVALASOFT_URL!,
+  apiKey: process.env.AVALASOFT_API_KEY!, // vsk_live_… (o vsk_test_… en el sandbox); del gestor de secretos
+  empresaId: process.env.AVALASOFT_EMPRESA_ID, // X-Empresa
   // Solo si el sistema actúa en nombre de una persona (identidad delegada):
-  firmante: crearFirmanteDeAserciones('SRM', process.env.VALIDASOFT_CLAVE_PRIVADA_PKCS8!),
+  firmante: crearFirmanteDeAserciones('SRM', process.env.AVALASOFT_CLAVE_PRIVADA_PKCS8!),
 });
 ```
 
 ```js
 // CommonJS
-const { ClienteValidasoft } = require('@validasoft/sdk');
+const { ClienteAvalasoft } = require('@avalasoft/sdk');
 ```
 
 ## Invitar a un tercero
 
 ```ts
-const vinculo = await validasoft.vinculos.crear(
+const vinculo = await avalasoft.vinculos.crear(
   {
     tercero: {
       identificacion: { pais: 'CO', tipo: 'NIT', numero: '900123456' },
@@ -61,7 +61,7 @@ const vinculo = await validasoft.vinculos.crear(
 ## Consultar la certificación antes de pagar
 
 ```ts
-const r = await validasoft.consultas.certificacion({ tipoIdentificacion: 'NIT', numero: '900123456', tipoVinculo: 'PROVEEDOR' }, copia?.etag);
+const r = await avalasoft.consultas.certificacion({ tipoIdentificacion: 'NIT', numero: '900123456', tipoVinculo: 'PROVEEDOR' }, copia?.etag);
 const datos = r.noModificado ? copia.datos : r.datos; // 304: sigue valiendo tu copia
 if (datos?.bloqueado) {
   // no pagar: datos.motivoBloqueo dice por qué
@@ -71,12 +71,12 @@ if (datos?.bloqueado) {
 ## Recibir webhooks
 
 ```ts
-import { validarWebhook, leerCabecera } from '@validasoft/sdk';
+import { validarWebhook, leerCabecera } from '@avalasoft/sdk';
 
 // Con el cuerpo CRUDO (sin parsear), como llegó.
 const evento = await validarWebhook({
   secretos: [secretoActual, secretoAnterior], // el anterior solo durante una rotación
-  firma: leerCabecera(req.headers, 'validasoft-signature'),
+  firma: leerCabecera(req.headers, 'avalasoft-signature'),
   cuerpo: cuerpoCrudo,
 }); // lanza WebhookInvalidoError si la firma no coincide
 ```
@@ -87,7 +87,7 @@ Una API key `vsk_test_…` opera en un entorno aislado: con la configuración de
 en un buzón y con los proveedores de IA y de listas simulados.
 
 ```ts
-const sandbox = new ClienteValidasoft({ urlBase, apiKey: llaveDePrueba, empresaId: empresaDeSandbox });
+const sandbox = new ClienteAvalasoft({ urlBase, apiKey: llaveDePrueba, empresaId: empresaDeSandbox });
 const estado = await sandbox.sandbox.obtener(); // las empresas del sandbox y su id para X-Empresa
 await sandbox.vinculos.crear(/* … */);
 const correo = await sandbox.sandbox.esperarCorreo('ana@aceros.co'); // la invitación no salió: está en el buzón
@@ -97,7 +97,7 @@ await sandbox.sandbox.reiniciar(); // vuelve a empezar de cero
 
 ## Errores
 
-Toda respuesta de error es un `ErrorValidasoft` con `estado` (HTTP), `codigo` (estable: decide con él, no con el texto), `detalle` y
+Toda respuesta de error es un `ErrorAvalasoft` con `estado` (HTTP), `codigo` (estable: decide con él, no con el texto), `detalle` y
 `correlacion` (cítala al pedir soporte).
 
 ## Versionado

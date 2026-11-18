@@ -9,7 +9,7 @@ ADR-0005 compartía la versión actual con un vínculo **al crearse** el víncul
 
 ## Decisión
 1. **Ninguna versión se comparte con un vínculo antes de `InvitacionAceptada` + `ConsentimientosRegistrados` para esa empresa.** No existe fila en `comparticion_version` para un vínculo sin `invitacion_aceptada_en`.
-2. Entre la creación del vínculo y la aceptación, la empresa solo ve: "tercero existente en Validasoft; N de tus requisitos podrían quedar cubiertos con lo que ya tiene", sin nombres de documentos, versiones ni fechas.
+2. Entre la creación del vínculo y la aceptación, la empresa solo ve: "tercero existente en AvalaSoft; N de tus requisitos podrían quedar cubiertos con lo que ya tiene", sin nombres de documentos, versiones ni fechas.
 3. Al aceptar, la saga `ProcesoDeValidacion` ejecuta `CompartirConVinculo` para cada tipo exigido con versión actual; si todos los requisitos obligatorios quedan `Cargado`, el expediente pasa solo a `EnRevision`.
 4. Las versiones **futuras** se comparten automáticamente con todos los vínculos ya aceptados que exigen el tipo: M-7 y A-8 siguen intactas.
 5. Desvinculación y bloqueo **congelan** la compartición hacia adelante (`ComparticionCongelada`): no llegan versiones nuevas, pero lo ya compartido sigue legible durante la retención de la empresa. El desbloqueo la reanuda.

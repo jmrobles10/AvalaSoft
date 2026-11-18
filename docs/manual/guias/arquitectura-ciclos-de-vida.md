@@ -8,7 +8,7 @@ resumen: "Los estados de cada cosa y sus transiciones, dibujados y explicados: q
 
 Los estados de cada cosa y sus transiciones, dibujados y explicados: qué las dispara, qué regla las limita y qué evento o webhook producen.
 
-Cada agregado de Validasoft es una máquina de estados pequeña y explícita: el estado es un texto, cada transición la produce un método del dominio y deja un evento. Las transiciones que el dominio no permite responden 409 con un `codigo` estable. Esta guía reúne los cuatro ciclos; el vocabulario está en el [Glosario](glosario.md).
+Cada agregado de AvalaSoft es una máquina de estados pequeña y explícita: el estado es un texto, cada transición la produce un método del dominio y deja un evento. Las transiciones que el dominio no permite responden 409 con un `codigo` estable. Esta guía reúne los cuatro ciclos; el vocabulario está en el [Glosario](glosario.md).
 
 ## Documento
 

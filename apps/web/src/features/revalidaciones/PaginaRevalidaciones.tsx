@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Button, Tooltip, Typography } from '@mui/material';
-import { SCOPES, type FalloDeLoteDto, type RevalidacionDto } from '@validasoft/api-client';
-import { BarraFiltros, ChipEstado, EstadoVacio, FiltroMenu, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@validasoft/ui';
+import { SCOPES, type FalloDeLoteDto, type RevalidacionDto } from '@avalasoft/api-client';
+import { BarraFiltros, ChipEstado, EstadoVacio, FiltroMenu, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@avalasoft/ui';
 import { CheckCheck } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

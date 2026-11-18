@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react';
 import type { CSSProperties } from 'react';
 import { describe, expect, it } from 'vitest';
 import { EncabezadoFijo, VARIABLE_TOPE } from './encabezado';
-import { createValidasoftTheme } from './tema';
+import { createAvalasoftTheme } from './tema';
 
 describe('EncabezadoFijo', () => {
   it('pone título, subtítulo y acciones en una franja pegada arriba del contenedor de scroll', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         {/* El contenedor de scroll fija la distancia al tope con la variable; la franja la hereda. */}
         <div style={{ [VARIABLE_TOPE]: '12px' } as CSSProperties}>
         <EncabezadoFijo
@@ -32,7 +32,7 @@ describe('EncabezadoFijo', () => {
 
   it('sin acciones no deja un grupo vacío', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <EncabezadoFijo titulo="Áreas" etiquetaAcciones="Acciones de la página" />
       </ThemeProvider>,
     );

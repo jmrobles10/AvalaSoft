@@ -1,0 +1,91 @@
+using System.Text;
+using System.Text.RegularExpressions;
+using Avalasoft.Infraestructura.Certificados;
+
+namespace Avalasoft.Infraestructura.Ficha;
+
+/// <summary>Un logo que el PDF sabe dibujar: su proporción y cómo se pinta dentro de un rectángulo sin deformarlo.</summary>
+internal abstract class LogoDePdf
+{
+    /// <summary>Ancho dividido por alto.</summary>
+    public abstract double Proporcion { get; }
+
+    /// <summary>Dibuja el logo centrado en el rectángulo cuya esquina inferior izquierda es (<paramref name="x"/>, <paramref name="y"/>).</summary>
+    public abstract void Dibujar(LienzoPdf pdf, double x, double y, double ancho, double alto);
+}
+
+/// <summary>Un logo PNG ya decodificado (con su transparencia compuesta sobre blanco).</summary>
+internal sealed class LogoRaster(ImagenRgb imagen) : LogoDePdf
+{
+    public override double Proporcion => (double)imagen.Ancho / imagen.Alto;
+
+    public override void Dibujar(LienzoPdf pdf, double x, double y, double ancho, double alto)
+    {
+        var escala = Math.Min(ancho / imagen.Ancho, alto / imagen.Alto);
+        var (w, h) = (imagen.Ancho * escala, imagen.Alto * escala);
+        pdf.Imagen(x + (ancho - w) / 2, y + (alto - h) / 2, w, h, imagen.Ancho, imagen.Alto, imagen.Rgb);
+    }
+}
+
+/// <summary>Un logo SVG dibujado como vectores.</summary>
+internal sealed class LogoVectorial(SvgDibujable svg) : LogoDePdf
+{
+    public override double Proporcion => svg.Ancho / svg.Alto;
+
+    public override void Dibujar(LienzoPdf pdf, double x, double y, double ancho, double alto) => svg.Dibujar(pdf, x, y, ancho, alto);
+}
+
+/// <summary>
+/// Los logos de los PDF del producto: el de la empresa si tiene uno configurado que se pueda dibujar (PNG o SVG embebido como data URI,
+/// que es como la configuración lo guarda) y, si no, el de AvalaSoft. Un logo por URL <c>https</c> no se descarga: generar un PDF no abre
+/// conexiones de salida a direcciones que escribió un administrador (SSRF); se sube el archivo y queda embebido.
+/// </summary>
+internal static partial class LogosDePdf
+{
+    /// <summary>
+    /// El logotipo de AvalaSoft (MA-1, docs/marca.md) en sus colores del modo claro: el círculo verde con el check blanco y la palabra
+    /// «avalasoft» ya en contornos (Comfortaa Bold inclinada 10°; «avala» en verde azulado y «soft» en azul muy oscuro), dibujado como
+    /// vectores: sin fuentes. Los trazados, las transformaciones y los colores son los de <c>packages/ui/src/marca/geometria.ts</c> y
+    /// <c>palabra.ts</c>; <c>marca/sincronia.test.ts</c> comprueba que no se separen.
+    /// </summary>
+    public const string LogotipoDeAvalasoft =
+        """
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 522.74 77.7">
+          <g transform="translate(0 0) scale(0.8094) translate(-2 -2)"><circle cx="50" cy="50" r="48" fill="#22D38A"/><path d="M24 38 C26 34 30 34 32 37 L47 61 C56 45 66 32 80 19 C82 17 85 19 83 22 C70 37 60 52 51 71 C49 75 44 75 42 71 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2.4" stroke-linejoin="round" transform="translate(50 50) scale(1.12) translate(-54.5 -46)"/></g>
+          <g transform="translate(85.14 75.85)"><path d="M59.9-54.5L59.9-54.5Q62.5-54.5 63.9-52.8Q65.3-51.1 64.8-48.4L64.8-48.4L57.4-6.1Q56.9-3.5 54.9-1.8Q52.9 0 50.3 0Q47.7 0 46.3-1.8L46.3-1.8Q44.9-3.5 45.4-6L45.4-6Q43.9-4.6 41.9-3.3L41.9-3.3Q39.2-1.5 35.7-0.3Q32.2 1 28.4 1L28.4 1Q21.5 1 16.5-2.6Q11.6-6.1 9.4-12.4Q7.3-18.6 8.7-26.7L8.7-26.7Q10.2-34.9 14.5-41.2Q18.9-47.4 25.0-51.0Q31.1-54.5 37.8-54.5L37.8-54.5Q42.1-54.5 45.5-53.2Q48.9-51.9 51.2-49.9L51.2-49.9Q52.1-49.1 52.8-48.3L52.8-48.3L52.8-48.4Q53.3-51 55.3-52.8Q57.3-54.5 59.9-54.5ZM31.9-10L31.9-10Q36.3-10 40.0-12.2Q43.6-14.4 46.2-18.2Q48.7-22 49.5-26.7L49.5-26.7Q50.4-31.5 49.2-35.3Q48.0-39.1 45.1-41.3Q42.2-43.5 37.8-43.5L37.8-43.5Q33.5-43.5 29.8-41.3Q26.1-39.1 23.6-35.3Q21.1-31.5 20.2-26.7L20.2-26.7Q19.4-22 20.6-18.2Q21.7-14.4 24.7-12.2Q27.6-10 31.9-10ZM76.4-53.5L76.4-53.5Q78.3-53.5 79.8-52.6Q81.2-51.6 81.7-49.7L81.7-49.7L89.9-18.1L109.1-49.6Q111.5-53.6 115.1-53.4L115.1-53.4Q117.6-53.4 118.9-51.9Q120.2-50.3 119.8-48L119.8-48Q119.6-47.3 119.2-46.5Q118.9-45.7 118.4-45L118.4-45L92.5-3.8Q90.2-0.2 86.7 0L86.7 0Q84.7 0.3 83.2-0.7Q81.6-1.7 81.1-3.8L81.1-3.8L69.7-45Q69.6-45.5 69.5-46.3Q69.4-47.1 69.6-48.2L69.6-48.2Q69.9-50 71.8-51.8Q73.7-53.5 76.4-53.5ZM168.8-54.5L168.8-54.5Q171.4-54.5 172.8-52.8Q174.2-51.1 173.7-48.4L173.7-48.4L166.3-6.1Q165.8-3.5 163.8-1.8Q161.8 0 159.2 0Q156.6 0 155.2-1.8L155.2-1.8Q153.8-3.5 154.3-6L154.3-6Q152.8-4.6 150.8-3.3L150.8-3.3Q148.1-1.5 144.6-0.3Q141.1 1 137.3 1L137.3 1Q130.4 1 125.5-2.6Q120.5-6.1 118.3-12.4Q116.2-18.6 117.6-26.7L117.6-26.7Q119.1-34.9 123.4-41.2Q127.8-47.4 133.9-51.0Q140.0-54.5 146.7-54.5L146.7-54.5Q151.0-54.5 154.4-53.2Q157.8-51.9 160.1-49.9L160.1-49.9Q161.0-49.1 161.7-48.3L161.7-48.3L161.7-48.4Q162.2-51 164.2-52.8Q166.2-54.5 168.8-54.5ZM140.8-10L140.8-10Q145.2-10 148.9-12.2Q152.6-14.4 155.1-18.2Q157.6-22 158.4-26.7L158.4-26.7Q159.3-31.5 158.1-35.3Q156.9-39.1 154.0-41.3Q151.1-43.5 146.7-43.5L146.7-43.5Q142.4-43.5 138.7-41.3Q135.0-39.1 132.5-35.3Q130.0-31.5 129.1-26.7L129.1-26.7Q128.3-22 129.5-18.2Q130.7-14.4 133.6-12.2Q136.5-10 140.8-10ZM202.9-67.9L192.0-6.1Q191.6-3.5 189.5-1.8Q187.5 0 184.9 0L184.9 0Q182.4 0 181.0-1.8Q179.6-3.5 180.0-6.1L180.0-6.1L190.9-67.9Q191.4-70.5 193.4-72.3Q195.5-74 198.1-74L198.1-74Q200.7-74 202.0-72.3Q203.4-70.5 202.9-67.9L202.9-67.9ZM256.5-54.5L256.5-54.5Q259.1-54.5 260.5-52.8Q261.9-51.1 261.4-48.4L261.4-48.4L253.9-6.1Q253.5-3.5 251.5-1.8Q249.5 0 246.9 0Q244.3 0 242.9-1.8L242.9-1.8Q241.5-3.5 241.9-6L241.9-6Q240.5-4.6 238.5-3.3L238.5-3.3Q235.7-1.5 232.3-0.3Q228.8 1 225.0 1L225.0 1Q218.1 1 213.1-2.6Q208.1-6.1 206.0-12.4Q203.9-18.6 205.3-26.7L205.3-26.7Q206.7-34.9 211.1-41.2Q215.4-47.4 221.6-51.0Q227.7-54.5 234.4-54.5L234.4-54.5Q238.7-54.5 242.1-53.2Q245.4-51.9 247.8-49.9L247.8-49.9Q248.6-49.1 249.4-48.3L249.4-48.3L249.4-48.4Q249.9-51 251.9-52.8Q253.9-54.5 256.5-54.5ZM228.4-10L228.4-10Q232.8-10 236.5-12.2Q240.2-14.4 242.7-18.2Q245.3-22 246.1-26.7L246.1-26.7Q246.9-31.5 245.7-35.3Q244.6-39.1 241.7-41.3Q238.7-43.5 234.3-43.5L234.3-43.5Q230.0-43.5 226.4-41.3Q222.7-39.1 220.1-35.3Q217.6-31.5 216.8-26.7L216.8-26.7Q216.0-22 217.1-18.2Q218.3-14.4 221.2-12.2Q224.1-10 228.4-10Z" fill="#0E8C9A"/><path d="M262.7-8.3L262.7-8.3Q261.9-9.7 262.4-11.9Q262.9-14.1 265.7-15.7L265.7-15.7Q267.4-16.7 269.2-16.6Q271.0-16.4 272.4-14.7L272.4-14.7Q274.8-11.8 277.7-10.2Q280.6-8.6 285.4-8.6L285.4-8.6Q286.9-8.7 288.8-9.1Q290.7-9.4 292.2-10.7Q293.8-11.9 294.3-14.5L294.3-14.5Q294.6-16.7 293.4-18Q292.1-19.3 289.8-20.2Q287.5-21.1 284.7-21.9L284.7-21.9Q281.7-22.8 278.7-23.9Q275.6-25 273.2-26.8Q270.8-28.5 269.6-31.4Q268.5-34.3 269.2-38.7L269.2-38.7Q270.1-43.7 273.5-47.2Q276.9-50.7 281.7-52.6Q286.5-54.5 291.4-54.5L291.4-54.5Q294.5-54.5 297.8-53.8Q301.0-53 303.9-51.4Q306.7-49.7 308.3-47L308.3-47Q309.1-45.5 309.0-43.4Q308.8-41.3 306.4-39.6L306.4-39.6Q304.7-38.4 302.7-38.6Q300.7-38.7 299.6-39.9L299.6-39.9Q298.3-42.1 295.7-43.4Q293.1-44.7 289.4-44.7L289.4-44.7Q287.9-44.7 286.1-44.4Q284.3-44 282.8-42.9Q281.3-41.7 280.8-39.2L280.8-39.2Q280.4-36.9 281.7-35.6Q282.9-34.2 285.3-33.4Q287.7-32.5 290.5-31.7L290.5-31.7Q293.4-30.9 296.3-29.8Q299.2-28.7 301.4-26.9Q303.7-25.1 304.8-22.3Q305.9-19.4 305.1-15L305.1-15Q304.2-9.9 300.6-6.3Q297.0-2.7 292.2-0.9Q287.3 1 282.6 1L282.6 1Q276.7 1 271.2-1.1Q265.7-3.1 262.7-8.3ZM365.5-26.7L365.5-26.7Q364.0-18.5 359.3-12.3Q354.5-6 347.7-2.5Q341.0 1 333.4 1L333.4 1Q325.8 1 320.2-2.5Q314.7-6 312.2-12.3Q309.6-18.5 311.1-26.7L311.1-26.7Q312.5-34.9 317.3-41.2Q322.0-47.4 328.8-51.0Q335.6-54.5 343.2-54.5L343.2-54.5Q350.8-54.5 356.3-51.0Q361.8-47.4 364.4-41.2Q366.9-34.9 365.5-26.7ZM353.5-26.7L353.5-26.7Q354.4-31.8 353.0-35.6Q351.6-39.3 348.5-41.4Q345.4-43.5 341.2-43.5L341.2-43.5Q337.0-43.5 333.2-41.4Q329.4-39.3 326.7-35.6Q324.0-31.8 323.1-26.7L323.1-26.7Q322.2-21.7 323.6-17.9Q325.0-14.2 328.0-12.1Q331.1-10 335.3-10L335.3-10Q339.5-10 343.3-12.1Q347.2-14.2 349.9-17.9Q352.6-21.7 353.5-26.7ZM405.5-74L405.5-74Q407.7-74 409.7-73.4Q411.7-72.8 412.8-71.5Q414.0-70.1 413.6-67.9L413.6-67.9Q413.2-65.4 411.5-64.0Q409.8-62.5 407.9-62.5L407.9-62.5Q407.0-62.5 405.2-63.0Q403.5-63.4 401.8-63.4L401.8-63.4Q399.3-63.4 397.8-62.3Q396.2-61.2 395.5-59.8Q394.7-58.3 394.5-57.2L394.5-57.2L393.7-52.5L402.8-52.5Q405.2-52.5 406.5-51.0Q407.8-49.4 407.4-47Q407.0-44.6 405.1-43.1Q403.2-41.5 400.8-41.5L400.8-41.5L391.7-41.5L385.5-6.1Q385.0-3.5 383.0-1.8Q381.0 0 378.4 0Q375.8 0 374.4-1.8Q373.0-3.5 373.5-6.1L373.5-6.1L379.7-41.5L374.3-41.5Q371.9-41.5 370.6-43.1Q369.3-44.6 369.7-47Q370.1-49.4 372.0-51.0Q373.9-52.5 376.3-52.5L376.3-52.5L381.7-52.5L382.5-57.1Q383.8-64.2 389.6-69.1Q395.5-74 405.5-74ZM409.2-52.5L409.2-52.5L413.8-52.5L414.9-58.9Q415.3-61.5 417.4-63.3Q419.5-65 422.1-65Q424.7-65 426.0-63.3Q427.3-61.5 426.9-58.9L426.9-58.9L425.8-52.5L432.9-52.5Q435.3-52.5 436.6-50.9Q437.9-49.3 437.5-46.9L437.5-46.9Q437.1-44.6 435.2-43.1Q433.3-41.5 430.9-41.5L430.9-41.5L423.8-41.5L419.0-14.4Q418.8-13 419.2-12.1Q419.6-11.2 420.5-10.8Q421.3-10.4 422.4-10.4L422.4-10.4Q423.6-10.4 424.7-10.9Q425.8-11.3 427.1-11.3L427.1-11.3Q428.5-11.3 429.4-10Q430.3-8.7 429.9-6.4L429.9-6.4Q429.4-3.6 426.1-1.8Q422.7 0 419.2 0L419.2 0Q417.1 0 414.6-0.4Q412.1-0.7 410.1-2.1Q408.1-3.4 407.1-6.2Q406.1-9 407.0-13.9L407.0-13.9L411.8-41.5L407.2-41.5Q404.8-41.5 403.5-43.1Q402.2-44.7 402.6-47.1L402.6-47.1Q403.0-49.4 404.9-51.0Q406.8-52.5 409.2-52.5Z" fill="#0B1F3A"/></g>
+        </svg>
+        """;
+
+    private static readonly Lazy<LogoDePdf> DeAvalasoft = new(() =>
+        new LogoVectorial(SvgDibujable.Leer(LogotipoDeAvalasoft) ?? throw new InvalidOperationException("El logotipo de AvalaSoft no se pudo leer.")));
+
+    /// <summary>El logo de AvalaSoft.</summary>
+    public static LogoDePdf Avalasoft => DeAvalasoft.Value;
+
+    /// <summary>El logo de la empresa, o el de AvalaSoft si no tiene uno o no se puede dibujar.</summary>
+    public static LogoDePdf Resolver(string? logoUrl) => DeLaEmpresa(logoUrl) ?? Avalasoft;
+
+    /// <summary>El logo de la empresa si es una imagen PNG o SVG embebida que se pueda dibujar; nulo en cualquier otro caso (sin logo, URL, archivo dañado).</summary>
+    public static LogoDePdf? DeLaEmpresa(string? logoUrl)
+    {
+        if (string.IsNullOrWhiteSpace(logoUrl) || RegexDataUri().Match(logoUrl.Trim()) is not { Success: true } datos)
+            return null;
+
+        byte[] bytes;
+        try
+        {
+            bytes = Convert.FromBase64String(datos.Groups[2].Value);
+        }
+        catch (FormatException)
+        {
+            return null;
+        }
+
+        if (datos.Groups[1].Value == "image/png")
+            return DecodificadorPng.Decodificar(bytes) is { } imagen ? new LogoRaster(imagen) : null;
+        return SvgDibujable.Leer(Encoding.UTF8.GetString(bytes)) is { } svg ? new LogoVectorial(svg) : null;
+    }
+
+    [GeneratedRegex(@"^data:(image/svg\+xml|image/png);base64,([A-Za-z0-9+/=]+)$")]
+    private static partial Regex RegexDataUri();
+}

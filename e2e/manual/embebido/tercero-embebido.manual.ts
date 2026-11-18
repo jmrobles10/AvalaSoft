@@ -67,7 +67,7 @@ recorrido(
     const contextoLimpio = await (await browser.newContext()).newPage();
     const pedidas: string[] = [];
     await contextoLimpio.route(`${ORIGEN_SISTEMA}/**`, (ruta) => ruta.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: PAGINA_ANFITRIONA }));
-    await contextoLimpio.exposeFunction('obtenerSesionDeValidasoft', async (componente: string) => {
+    await contextoLimpio.exposeFunction('obtenerSesionDeAvalasoft', async (componente: string) => {
       pedidas.push(componente);
       return canjear(componente);
     });
@@ -86,7 +86,7 @@ recorrido(
 
     await contextoLimpio.getByLabel('Pantalla del tercero').selectOption('boveda');
     await contextoLimpio.getByRole('button', { name: 'Abrir' }).click();
-    const boveda = contextoLimpio.frameLocator('#validasoft');
+    const boveda = contextoLimpio.frameLocator('#avalasoft');
     await expect(boveda.getByRole('heading', { level: 1, name: 'Mi bóveda' })).toBeVisible();
     await expect(boveda.getByText('Aún no tienes documentos')).toBeVisible();
     await paso(contextoLimpio, {
@@ -94,18 +94,18 @@ recorrido(
       explicacion:
         'La bóveda aparece en el marco de tu sistema, sin marca, menú ni botón de salir de AvalaSoft, y sin pedirle al tercero el correo ni una contraseña. ' +
         'El tercero ve sus documentos y puede subir los que le pida la empresa. Tu sistema recibe los mensajes de la pantalla, como el tamaño para ajustar el marco.',
-      resaltar: contextoLimpio.locator('#validasoft'),
+      resaltar: contextoLimpio.locator('#avalasoft'),
     });
 
     await contextoLimpio.getByLabel('Pantalla del tercero').selectOption('ficha');
     await contextoLimpio.getByRole('button', { name: 'Abrir' }).click();
-    await expect(contextoLimpio.frameLocator('#validasoft').getByRole('heading', { level: 1, name: 'Mi información' })).toBeVisible();
+    await expect(contextoLimpio.frameLocator('#avalasoft').getByRole('heading', { level: 1, name: 'Mi información' })).toBeVisible();
     await paso(contextoLimpio, {
       titulo: 'Abre la ficha del mismo tercero',
       explicacion:
         'La ficha es «Mi información»: los datos generales, tributarios y financieros del tercero. Es la misma persona, pero cada pantalla tiene su propia sesión corta: ' +
         'tu sistema pidió una sesión para la bóveda y otra para la ficha, y las dos vencen en 10 minutos.',
-      resaltar: contextoLimpio.locator('#validasoft'),
+      resaltar: contextoLimpio.locator('#avalasoft'),
     });
     expect(pedidas).toEqual(['boveda', 'ficha']);
   },

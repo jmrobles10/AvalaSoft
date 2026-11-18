@@ -3,7 +3,7 @@ id: "tercero/invitacion-vencida-o-usada"
 titulo: "Qué pasa cuando un enlace de invitación ya se usó, venció o no existe"
 actor: "Tercero"
 dominio: "tercero"
-resumen: "Cada enlace de invitación sirve una sola vez y tiene fecha de vencimiento. Cuando el tercero intenta abrir uno usado, vencido o inexistente, Validasoft no lo deja entrar y le dice qué hacer: pedir a la empresa una invitación nueva."
+resumen: "Cada enlace de invitación sirve una sola vez y tiene fecha de vencimiento. Cuando el tercero intenta abrir uno usado, vencido o inexistente, AvalaSoft no lo deja entrar y le dice qué hacer: pedir a la empresa una invitación nueva."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Tercero · **Dominio:** Portal del tercero
 
-Cada enlace de invitación sirve una sola vez y tiene fecha de vencimiento. Cuando el tercero intenta abrir uno usado, vencido o inexistente, Validasoft no lo deja entrar y le dice qué hacer: pedir a la empresa una invitación nueva.
+Cada enlace de invitación sirve una sola vez y tiene fecha de vencimiento. Cuando el tercero intenta abrir uno usado, vencido o inexistente, AvalaSoft no lo deja entrar y le dice qué hacer: pedir a la empresa una invitación nueva.
 
 **Antes de empezar**
 
@@ -26,7 +26,7 @@ Cada enlace de invitación sirve una sola vez y tiene fecha de vencimiento. Cuan
 
 ## Paso 1. Usa el enlace del correo una sola vez
 
-Al abrir el enlace y aceptar la invitación, el enlace queda consumido: Validasoft lo guarda como usado. Desde ahora tu acceso a esta empresa es tu sesión, no el enlace. Si cierras el navegador, entra por «/entrar» con tu correo: no necesitas el enlace otra vez.
+Al abrir el enlace y aceptar la invitación, el enlace queda consumido: AvalaSoft lo guarda como usado. Desde ahora tu acceso a esta empresa es tu sesión, no el enlace. Si cierras el navegador, entra por «/entrar» con tu correo: no necesitas el enlace otra vez.
 
 > **Pantalla:** `/expediente/{id}`
 
@@ -40,7 +40,7 @@ Al abrir el enlace y aceptar la invitación, el enlace queda consumido: Validaso
 
 ## Paso 2. Intenta abrir un enlace que ya se usó
 
-La pantalla dice «Este enlace ya se usó» y explica que cada enlace sirve una sola vez. Si cerraste la página sin terminar, pide a la empresa que te reenvíe la invitación: te llegará un correo con un enlace nuevo. Validasoft no te deja entrar con un enlace usado, aunque sea tuyo.
+La pantalla dice «Este enlace ya se usó» y explica que cada enlace sirve una sola vez. Si cerraste la página sin terminar, pide a la empresa que te reenvíe la invitación: te llegará un correo con un enlace nuevo. AvalaSoft no te deja entrar con un enlace usado, aunque sea tuyo.
 
 > **Pantalla:** `/e/{enlace}`
 
@@ -65,4 +65,4 @@ Si el enlace está incompleto o ya no existe, la pantalla dice «No encontramos 
 ## Recorridos relacionados
 
 - [Acepta la invitación y completa tu información como persona jurídica](aceptar-invitacion-persona-juridica.md)
-- [Entra a Validasoft con tu correo cuando ya tienes una invitación](entrar-sin-invitacion.md)
+- [Entra a AvalaSoft con tu correo cuando ya tienes una invitación](entrar-sin-invitacion.md)

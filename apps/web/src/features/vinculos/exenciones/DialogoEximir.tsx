@@ -16,8 +16,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { SCOPES } from '@validasoft/api-client';
-import { CampoFecha, FaltaParaEnviar, FormularioDeDialogo } from '@validasoft/ui';
+import { SCOPES } from '@avalasoft/api-client';
+import { CampoFecha, FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
 import { ShieldOff } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

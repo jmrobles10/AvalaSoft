@@ -100,7 +100,7 @@ export async function crearEscenario(opciones: OpcionesEscenario = {}): Promise<
   });
 
   const crearPersona = async (sub: string, nombre: string, roles: { rol: string; empresaId: string | null }[]): Promise<Persona> => {
-    const correo = `${sub}.${sufijo}@e2e.validasoft.co`;
+    const correo = `${sub}.${sufijo}@e2e.avalasoft.co`;
     const usuario = await llamar<{ id: string }>('POST', '/api/v1/usuarios', {
       llave: admin,
       cuerpo: { nombre, correo, identificacion: null, roles, identidades: [{ sistemaId: sistema.id, idExterno: sub }] },
@@ -214,7 +214,7 @@ export interface Tercero {
 
 export function nuevoTercero(nombre = 'Aceros del Norte S.A.S.'): Tercero {
   const identificacion = nitAleatorio();
-  return { nombre, identificacion, correo: `proveedor.${identificacion.numero}.${randomUUID().slice(0, 6)}@e2e.validasoft.co` };
+  return { nombre, identificacion, correo: `proveedor.${identificacion.numero}.${randomUUID().slice(0, 6)}@e2e.avalasoft.co` };
 }
 
 /** Persona natural con cédula de ciudadanía. */
@@ -223,7 +223,7 @@ export function nuevaPersonaNatural(nombre = 'Ana María Pérez'): Tercero {
   return {
     nombre,
     identificacion: { pais: 'CO', tipo: 'CC', numero, digitoVerificacion: null },
-    correo: `persona.${numero}.${randomUUID().slice(0, 6)}@e2e.validasoft.co`,
+    correo: `persona.${numero}.${randomUUID().slice(0, 6)}@e2e.avalasoft.co`,
     tipoPersona: 'Natural',
   };
 }
@@ -238,7 +238,7 @@ export interface Invitacion {
   referencia: string;
 }
 
-/** El sistema integrado crea el vínculo (empresa, tercero, tipo) y Validasoft envía la invitación por correo. */
+/** El sistema integrado crea el vínculo (empresa, tercero, tipo) y AvalaSoft envía la invitación por correo. */
 export async function invitar(e: Escenario, empresa: Empresa, tercero: Tercero, tipo: 'PROVEEDOR' | 'CLIENTE' = 'PROVEEDOR'): Promise<Invitacion> {
   const referencia = `${tipo.slice(0, 3)}-${tercero.identificacion.numero}-${empresa.prefijo}`;
   const vinculo = await llamar<{ id: string; terceroId: string }>('POST', '/api/v1/vinculos', {

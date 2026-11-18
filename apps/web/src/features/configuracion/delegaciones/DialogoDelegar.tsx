@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
-import type { AreaDto, CandidatoDeDelegacionDto } from '@validasoft/api-client';
-import { CampoFecha, FaltaParaEnviar, FormularioDeDialogo } from '@validasoft/ui';
+import type { AreaDto, CandidatoDeDelegacionDto } from '@avalasoft/api-client';
+import { CampoFecha, FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
 import { UserRoundCheck } from 'lucide-react';
 import { useMemo, useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

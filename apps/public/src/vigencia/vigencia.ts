@@ -1,5 +1,5 @@
-import type { VigenciaDto } from '@validasoft/api-client';
-import { formatearDiaCivil, type Estado } from '@validasoft/ui';
+import type { VigenciaDto } from '@avalasoft/api-client';
+import { formatearDiaCivil, type Estado } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 
 /** Estado de la vigencia de una versión para una empresa (TD-6), calculado por la API con la fecha de hoy. */

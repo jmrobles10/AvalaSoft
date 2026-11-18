@@ -18,7 +18,7 @@ recorrido(
   },
   async ({ page }) => {
     const g = await crearGrupoDirecto();
-    const correo = `rita.${Date.now().toString(36)}@e2e.validasoft.co`;
+    const correo = `rita.${Date.now().toString(36)}@e2e.avalasoft.co`;
     await crearUsuario(g, 'Rita Revisora', 'Revisor', correo);
     await autenticadorVirtual(page);
     await page.goto('/app/');

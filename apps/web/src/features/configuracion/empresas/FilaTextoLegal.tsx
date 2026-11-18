@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
-import type { TextoLegalDto } from '@validasoft/api-client';
-import { FaltaParaEnviar, formatearFecha } from '@validasoft/ui';
+import type { TextoLegalDto } from '@avalasoft/api-client';
+import { FaltaParaEnviar, formatearFecha } from '@avalasoft/ui';
 import { Eye, EyeOff, FilePen, Send } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

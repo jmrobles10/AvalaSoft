@@ -1,5 +1,5 @@
 import { Box, TextField, Typography } from '@mui/material';
-import { CampoNumero } from '@validasoft/ui';
+import { CampoNumero } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import type { BorradorFlujo, ErrorFlujo } from '../editor';
 import { MAXIMO_GRACIA_VIGENCIA_DIAS, MAXIMO_VIGENCIA_VINCULO_DIAS } from '../vigencia';

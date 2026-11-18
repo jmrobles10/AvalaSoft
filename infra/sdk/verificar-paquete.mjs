@@ -1,5 +1,5 @@
 // Humo del paquete construido: las dos salidas (ESM y CJS) cargan, exponen lo mismo y validan un webhook firmado de punta a punta.
-// Corre después de `pnpm --filter @validasoft/sdk build` (script `verificar` del paquete).
+// Corre después de `pnpm --filter @avalasoft/sdk build` (script `verificar` del paquete).
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -12,11 +12,11 @@ const funciones = ['crearFirmanteDeAserciones', 'verificarWebhook', 'validarWebh
 const grupos = ['vinculos', 'invitaciones', 'expedientes', 'certificados', 'consultas', 'eventos', 'sesiones', 'sandbox'];
 
 for (const [nombre, modulo] of [['ESM', esm], ['CJS', cjs]]) {
-  for (const exportado of ['ClienteValidasoft', 'ErrorValidasoft', 'WebhookInvalidoError', ...funciones]) {
+  for (const exportado of ['ClienteAvalasoft', 'ErrorAvalasoft', 'WebhookInvalidoError', ...funciones]) {
     if (typeof modulo[exportado] !== 'function') throw new Error(`${nombre}: falta ${exportado}.`);
   }
 
-  const cliente = new modulo.ClienteValidasoft({ urlBase: 'https://valida.test', apiKey: 'vsk_test_x_0' });
+  const cliente = new modulo.ClienteAvalasoft({ urlBase: 'https://valida.test', apiKey: 'vsk_test_x_0' });
   for (const grupo of grupos) {
     if (typeof cliente[grupo] !== 'object') throw new Error(`${nombre}: el cliente no tiene «${grupo}».`);
   }
@@ -30,4 +30,4 @@ for (const [nombre, modulo] of [['ESM', esm], ['CJS', cjs]]) {
   if (await modulo.verificarWebhook({ secretos: secreto, firma, cuerpo: cuerpo.replace('e1', 'e2') })) throw new Error(`${nombre}: aceptó un cuerpo alterado.`);
 }
 
-console.log('✓ @validasoft/sdk: ESM y CJS cargan, exponen lo mismo y validan un webhook firmado.');
+console.log('✓ @avalasoft/sdk: ESM y CJS cargan, exponen lo mismo y validan un webhook firmado.');

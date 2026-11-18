@@ -1,6 +1,6 @@
 import { Box, Button, FormControlLabel, IconButton, Stack, Switch, TextField, Typography } from '@mui/material';
-import type { OpcionDePreguntaDto, PreguntaDeCuestionarioDto, RangoDeNumeroDto } from '@validasoft/api-client';
-import { CampoNumero } from '@validasoft/ui';
+import type { OpcionDePreguntaDto, PreguntaDeCuestionarioDto, RangoDeNumeroDto } from '@avalasoft/api-client';
+import { CampoNumero } from '@avalasoft/ui';
 import { Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CampoDecimal } from '../CampoDecimal';

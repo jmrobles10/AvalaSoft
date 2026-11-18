@@ -1,6 +1,6 @@
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
-import { SCOPES } from '@validasoft/api-client';
-import { Logo, SelectorEmpresa, VARIABLE_TOPE, visualmenteOculto } from '@validasoft/ui';
+import { SCOPES } from '@avalasoft/api-client';
+import { Logo, SelectorEmpresa, VARIABLE_TOPE, visualmenteOculto } from '@avalasoft/ui';
 import { Link2, Moon, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate } from 'react-router';

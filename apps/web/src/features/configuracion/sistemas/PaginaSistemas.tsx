@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { desactivarSistema, getListarSistemasQueryOptions, SCOPES, type SistemaIntegradoDto } from '@validasoft/api-client';
-import { AvatarActor, Dato, EstadoVacio, FilasEsqueleto, formatearFecha, MarcoTabla, RejillaDatos } from '@validasoft/ui';
+import { desactivarSistema, getListarSistemasQueryOptions, SCOPES, type SistemaIntegradoDto } from '@avalasoft/api-client';
+import { AvatarActor, Dato, EstadoVacio, FilasEsqueleto, formatearFecha, MarcoTabla, RejillaDatos } from '@avalasoft/ui';
 import { Ban, CircleCheck, Plug, Plus, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -37,7 +37,7 @@ La pantalla muestra el plan de IA de la empresa para el mes elegido. «Validacio
 
 **Configuración que lo afecta**
 
-- **Plan de IA de la empresa** (`Configuración › Plan y uso de IA (/uso-ia)`): El plan lo configura Validasoft desde Plataforma; aquí solo se consulta el uso.
+- **Plan de IA de la empresa** (`Configuración › Plan y uso de IA (/uso-ia)`): El plan lo configura AvalaSoft desde Plataforma; aquí solo se consulta el uso.
 
 ## Paso 2. Revisa cómo se cuenta una validación
 

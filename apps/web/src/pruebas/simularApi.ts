@@ -1,4 +1,4 @@
-import { configurarCliente } from '@validasoft/api-client';
+import { configurarCliente } from '@avalasoft/api-client';
 import { vi } from 'vitest';
 
 /** Una petición que la app le hizo a la API simulada. `ruta` va sin la consulta (`?a=b`), `url` con ella. */

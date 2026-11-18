@@ -46,7 +46,7 @@ El diálogo propone el correo de contacto del tercero; puedes cambiarlo si el te
 
 ## Paso 3. Comprueba el nuevo envío en el detalle
 
-Validasoft confirma con un aviso que la invitación se envió a ese correo y el detalle actualiza «Invitación» con el número de envíos. El historial registra el reenvío con su fecha y quién lo hizo.
+AvalaSoft confirma con un aviso que la invitación se envió a ese correo y el detalle actualiza «Invitación» con el número de envíos. El historial registra el reenvío con su fecha y quién lo hizo.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 

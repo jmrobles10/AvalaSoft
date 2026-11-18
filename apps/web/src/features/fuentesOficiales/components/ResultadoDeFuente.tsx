@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, Stack, Typography } from '@mui/material';
-import type { CampoCotejadoDto, DatosOficialesDto, DecisionCoincidencia, FuenteOficialDto } from '@validasoft/api-client';
-import { Dato, formatearDiaCivil, formatearFecha, RejillaDatos } from '@validasoft/ui';
+import type { CampoCotejadoDto, DatosOficialesDto, DecisionCoincidencia, FuenteOficialDto } from '@avalasoft/api-client';
+import { Dato, formatearDiaCivil, formatearFecha, RejillaDatos } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { ordenarCotejo, puedeDecidirCampo, resumenDeCotejo } from '../modelo';
 

@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
-import { configurarCliente } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import type { ReactElement } from 'react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
@@ -47,7 +47,7 @@ export function simularApi(manejadores: Readonly<Record<string, Manejador>>): Ll
 
 export function renderizar(ui: ReactElement, ruta = '/') {
   return render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <MemoryRouter initialEntries={[ruta]}>{ui}</MemoryRouter>
       </QueryClientProvider>

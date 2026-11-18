@@ -1,4 +1,4 @@
-import type { EventoHistorialDto } from '@validasoft/api-client';
+import type { EventoHistorialDto } from '@avalasoft/api-client';
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,7 +35,7 @@ function aSnake(nombre: string): string {
 /** Los eventos que el dominio aplica a un agregado (`void Apply(Evento e)`): lo que puede aparecer en su historial. */
 function eventosDelDominio(carpeta: string): string[] {
   // Este archivo está en apps/web/src/features/vinculos: la raíz del repositorio queda cinco carpetas arriba.
-  const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../..', 'src', 'Validasoft.Dominio', carpeta);
+  const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../..', 'src', 'Avalasoft.Dominio', carpeta);
   return readdirSync(dir)
     .filter((archivo) => archivo.endsWith('.cs'))
     .flatMap((archivo) => [...readFileSync(resolve(dir, archivo), 'utf8').matchAll(/void Apply\((\w+) /g)].map((m) => aSnake(m[1] ?? '')));

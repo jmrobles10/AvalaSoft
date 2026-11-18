@@ -1,6 +1,6 @@
 import { Box, Button, Card, Typography } from '@mui/material';
-import type { CuentaBancariaPublicaDto, VinculoPublicoDto } from '@validasoft/api-client';
-import { ChipEstado } from '@validasoft/ui';
+import type { CuentaBancariaPublicaDto, VinculoPublicoDto } from '@avalasoft/api-client';
+import { ChipEstado } from '@avalasoft/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FilaEmpresa } from '../shared/componentes';

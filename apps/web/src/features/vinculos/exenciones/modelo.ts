@@ -1,5 +1,5 @@
-import { esErrorApi, type EximirVinculoDto, type ExencionDeVinculoDto, type ObjetivoDeExencionDto, type VinculoDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import { esErrorApi, type EximirVinculoDto, type ExencionDeVinculoDto, type ObjetivoDeExencionDto, type VinculoDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 import { formatearFechaDeclarada } from '../../documentos/formatoDatos';
 import { mensajeDeError } from '../../../shared/errores';

@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import type { AdjuntoDeCumplimientoDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { AdjuntoDeCumplimientoDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { FileDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../../shared/componentes';

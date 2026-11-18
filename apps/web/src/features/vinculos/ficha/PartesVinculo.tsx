@@ -1,6 +1,6 @@
 import { Box, Button, ListItemIcon, ListItemText, Menu, MenuItem, Skeleton, Stack, Typography } from '@mui/material';
-import type { DefinicionAccion, VinculoDto } from '@validasoft/api-client';
-import { AvatarActor, ChipEstado, Dato, EstadoVacio, formatearFecha, LineaDeTiempo, MarcoTabla, RejillaDatos, ValorLargo } from '@validasoft/ui';
+import type { DefinicionAccion, VinculoDto } from '@avalasoft/api-client';
+import { AvatarActor, ChipEstado, Dato, EstadoVacio, formatearFecha, LineaDeTiempo, MarcoTabla, RejillaDatos, ValorLargo } from '@avalasoft/ui';
 import { ChevronDown } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -71,8 +71,8 @@ recorrido(
     await page.keyboard.press('Escape');
 
     await page.evaluate(() => {
-      const marco = document.getElementById('validasoft') as HTMLIFrameElement | null;
-      marco?.contentWindow?.postMessage({ tipo: 'validasoft:tema', mode: 'dark' }, '*');
+      const marco = document.getElementById('avalasoft') as HTMLIFrameElement | null;
+      marco?.contentWindow?.postMessage({ tipo: 'avalasoft:tema', mode: 'dark' }, '*');
     });
     await expect(app.getByRole('heading', { level: 1, name: 'Bandeja de revisión' })).toBeVisible();
     await paso(page, {

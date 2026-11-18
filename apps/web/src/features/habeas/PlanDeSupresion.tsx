@@ -1,6 +1,6 @@
 import { Alert, Box, Stack, Typography } from '@mui/material';
-import type { PlanDeSupresionDto } from '@validasoft/api-client';
-import { EsqueletoTarjetas, formatearDiaCivil } from '@validasoft/ui';
+import type { PlanDeSupresionDto } from '@avalasoft/api-client';
+import { EsqueletoTarjetas, formatearDiaCivil } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../shared/errores';
 import { usePlanDeSupresion } from './api';

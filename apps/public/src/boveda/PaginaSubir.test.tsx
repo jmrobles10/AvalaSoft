@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type ExpedientePublicoDto, type TipoDocumentoRequisitoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type ExpedientePublicoDto, type TipoDocumentoRequisitoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PaginaSubir } from './PaginaSubir';
@@ -47,7 +47,7 @@ function montar(tipo: TipoDocumentoRequisitoDto) {
   });
   const ruta = `/boveda/subir?nombre=${encodeURIComponent(tipo.nombre)}&volver=%2Fexpediente%2Fe1&expediente=e1&requisito=r1&tipoDocumentoTenantId=t1&vinculoId=v1`;
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter initialEntries={[ruta]}>
           <PaginaSubir />

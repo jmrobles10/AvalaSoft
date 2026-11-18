@@ -112,14 +112,14 @@ recorrido(
       const pagina = await mostrarCodigo(page, {
         titulo: 'Así llega cada entrega a tu sistema',
         peticion: `POST ${receptor.url}`,
-        cabeceras: { 'Content-Type': 'application/json', 'Validasoft-Signature': entrega.firma },
+        cabeceras: { 'Content-Type': 'application/json', 'Avalasoft-Signature': entrega.firma },
         cuerpo,
         respuesta: { estado: 200 },
       });
       await paso(page, {
         titulo: 'Verifica la firma de cada entrega',
         explicacion:
-          'Cada entrega trae la cabecera Validasoft-Signature con una hora (t) y una firma (v1): el HMAC-SHA256 de la hora y el cuerpo con tu secreto. ' +
+          'Cada entrega trae la cabecera Avalasoft-Signature con una hora (t) y una firma (v1): el HMAC-SHA256 de la hora y el cuerpo con tu secreto. ' +
           'Recalcúlala en tu sistema y rechaza las firmas que no coincidan o que tengan más de 5 minutos. Tu sistema responde 2xx y procesa el evento después.',
         resaltar: [pagina.peticion, pagina.respuesta],
         celular: false,

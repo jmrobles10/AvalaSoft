@@ -1,5 +1,5 @@
 import { screen, within } from '@testing-library/react';
-import { reiniciarCliente, SCOPES } from '@validasoft/api-client';
+import { reiniciarCliente, SCOPES } from '@avalasoft/api-client';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';

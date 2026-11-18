@@ -1,5 +1,5 @@
 import { Stack, TextField } from '@mui/material';
-import type { PerfilDeFichaDto } from '@validasoft/api-client';
+import type { PerfilDeFichaDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { CampoCifra, CampoFechaFicha, CampoSiNo, CampoTexto, Rejilla } from '../campos';
 import { PAISES } from '../paises';

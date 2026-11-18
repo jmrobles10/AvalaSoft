@@ -9,8 +9,8 @@ import {
   type MotivoTipificadoDto,
   type RequisitoExpedienteDto,
   type VeredictoEmitidoDto,
-} from '@validasoft/api-client';
-import type { Estado } from '@validasoft/ui';
+} from '@avalasoft/api-client';
+import type { Estado } from '@avalasoft/ui';
 import { bloqueoDecisionArea, documentosPorDecidir, type DocumentoPorDecidir } from './decisionArea';
 import { bloqueoRequisito, puedeEximir, versionVigente } from './requisitos';
 

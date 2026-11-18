@@ -1,5 +1,5 @@
-import { esErrorApi, type AprobacionDeCuentaDto, type CuentaDesignadaDto } from '@validasoft/api-client';
-import type { EstadoCuentaDesignada } from '@validasoft/ui';
+import { esErrorApi, type AprobacionDeCuentaDto, type CuentaDesignadaDto } from '@avalasoft/api-client';
+import type { EstadoCuentaDesignada } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 import { cuentas } from '../../../i18n/es-CO-cuentas';
 import { mensajeDeError } from '../../../shared/errores';

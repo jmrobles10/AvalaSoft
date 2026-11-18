@@ -72,7 +72,7 @@ export const webhooks = {
     copiar: 'Copiar secreto',
     copiado: 'Copiado',
     comoVerificar:
-      'Cada entrega trae la cabecera Validasoft-Signature: t={hora},v1={HMAC-SHA256 de «{hora}.{cuerpo}» con este secreto}. Recalcúlala en tu sistema y rechaza firmas que no coincidan o de más de 5 minutos.',
+      'Cada entrega trae la cabecera Avalasoft-Signature: t={hora},v1={HMAC-SHA256 de «{hora}.{cuerpo}» con este secreto}. Recalcúlala en tu sistema y rechaza firmas que no coincidan o de más de 5 minutos.',
     anteriorVence: 'El secreto anterior sigue firmando hasta el {{fecha}}.',
     listo: 'Ya lo guardé',
   },

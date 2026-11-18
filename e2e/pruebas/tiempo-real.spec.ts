@@ -29,7 +29,7 @@ async function sigueSinRecargar(destino: Page | Frame): Promise<boolean> {
   return destino.evaluate(() => (window as ConMarca).__sinRecargar === 'viva');
 }
 
-/** La ventana (frame) de Validasoft embebido, para sellarla y revisarla. */
+/** La ventana (frame) de AvalaSoft embebido, para sellarla y revisarla. */
 async function marcoDe(app: FrameLocator): Promise<Frame> {
   const frame = await (await app.owner().elementHandle()).contentFrame();
   if (!frame) throw new Error('No se encontró la ventana de AvalaSoft embebido.');

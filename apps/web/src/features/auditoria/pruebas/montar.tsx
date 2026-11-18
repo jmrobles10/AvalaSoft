@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
-import { configurarCliente, type JsonElement, type PaginaDtoOfRegistroAuditoriaDto, type RegistroAuditoriaDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, type JsonElement, type PaginaDtoOfRegistroAuditoriaDto, type RegistroAuditoriaDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 import { PaginaAuditoria } from '../PaginaAuditoria';
@@ -81,7 +81,7 @@ export function montar(paginas: (url: string) => PaginaDtoOfRegistroAuditoriaDto
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter initialEntries={[ruta]}>
           <Routes>

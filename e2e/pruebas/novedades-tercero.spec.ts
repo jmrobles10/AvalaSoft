@@ -25,7 +25,7 @@ async function proveedorEnRevision(page: Page, e: Escenario, nombre?: string): P
   return invitacion;
 }
 
-/** Ventana aparte (otra persona, otro navegador) con Validasoft embebido; en el expediente del tercero si se indica el área. */
+/** Ventana aparte (otra persona, otro navegador) con AvalaSoft embebido; en el expediente del tercero si se indica el área. */
 async function enEmpresa(browser: Browser, e: Escenario, persona: Persona, expediente?: { tercero: string; area: string }): Promise<FrameLocator> {
   const app = await abrirEmbebido(await (await browser.newContext()).newPage(), e, persona);
   if (expediente) await abrirDesdeBandeja(app, expediente.tercero, expediente.area);

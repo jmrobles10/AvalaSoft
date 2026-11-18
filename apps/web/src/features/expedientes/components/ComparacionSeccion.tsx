@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import type { CambioDeCampoDto } from '@validasoft/api-client';
+import type { CambioDeCampoDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { filasDeCambio, type FilaDeCambio } from '../secciones';
 

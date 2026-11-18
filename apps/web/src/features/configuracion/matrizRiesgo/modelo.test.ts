@@ -1,4 +1,4 @@
-import type { MatrizDeRiesgoDto } from '@validasoft/api-client';
+import type { MatrizDeRiesgoDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import {
   actualizarFactor,

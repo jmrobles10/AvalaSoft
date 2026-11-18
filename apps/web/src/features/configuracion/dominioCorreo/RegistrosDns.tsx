@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import type { DominioDeCorreoDto, RegistroDnsDto } from '@validasoft/api-client';
-import { ChipEstado } from '@validasoft/ui';
+import type { DominioDeCorreoDto, RegistroDnsDto } from '@avalasoft/api-client';
+import { ChipEstado } from '@avalasoft/ui';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

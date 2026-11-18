@@ -1,4 +1,4 @@
-import type { ActualizarPlanDelGrupoDto, MedicionDePlanDto, PlanDelGrupoDto } from '@validasoft/api-client';
+import type { ActualizarPlanDelGrupoDto, MedicionDePlanDto, PlanDelGrupoDto } from '@avalasoft/api-client';
 
 /** Lo que el plan del grupo mide, en el orden en que se muestra (OD-14). */
 export const METRICAS = ['Usuarios', 'Empresas', 'VinculosActivos', 'Almacenamiento', 'LlamadasApi'] as const;

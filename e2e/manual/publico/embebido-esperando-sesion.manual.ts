@@ -11,9 +11,9 @@ interface SesionEmbebida {
 }
 
 /**
- * Página de «un sistema cualquiera» con el iframe de Validasoft y la lista de mensajes que le llegan. Si `token` es null, el sistema no responde a la
- * petición de sesión (como si su backend tardara o fallara); si lo trae, lo entrega por `postMessage` solo al origen de Validasoft, como hace el ejemplo
- * de `docs/ejemplos/anfitrion-tercero`. El iframe no se llama `validasoft` a propósito: así el pantallazo es de la página completa, con los mensajes.
+ * Página de «un sistema cualquiera» con el iframe de AvalaSoft y la lista de mensajes que le llegan. Si `token` es null, el sistema no responde a la
+ * petición de sesión (como si su backend tardara o fallara); si lo trae, lo entrega por `postMessage` solo al origen de AvalaSoft, como hace el ejemplo
+ * de `docs/ejemplos/anfitrion-tercero`. El iframe no se llama `avalasoft` a propósito: así el pantallazo es de la página completa, con los mensajes.
  */
 function paginaAnfitriona(url: string, token: string | null): string {
   const origen = new URL(url).origin;
@@ -42,15 +42,15 @@ function paginaAnfitriona(url: string, token: string | null): string {
   let entregado = false; // solo la primera vez: un sistema real pediría otra sesión a su backend; aquí no hay otra que entregar
   window.addEventListener('message', (evento) => {
     if (evento.origin !== ORIGEN || evento.source !== marco.contentWindow || !evento.data || typeof evento.data.tipo !== 'string') return;
-    if (evento.data.tipo === 'validasoft:resize') return;
+    if (evento.data.tipo === 'avalasoft:resize') return;
     const fila = document.createElement('li');
     fila.textContent = '← ' + JSON.stringify(evento.data);
     bitacora.append(fila);
-    if (TOKEN !== null && !entregado && (evento.data.tipo === 'validasoft:ready' || evento.data.tipo === 'validasoft:sesion-requerida')) {
+    if (TOKEN !== null && !entregado && (evento.data.tipo === 'avalasoft:ready' || evento.data.tipo === 'avalasoft:sesion-requerida')) {
       entregado = true;
-      marco.contentWindow.postMessage({ tipo: 'validasoft:sesion', token: TOKEN }, ORIGEN);
+      marco.contentWindow.postMessage({ tipo: 'avalasoft:sesion', token: TOKEN }, ORIGEN);
       const respuesta = document.createElement('li');
-      respuesta.textContent = '→ {"tipo":"validasoft:sesion","token":"…"}';
+      respuesta.textContent = '→ {"tipo":"avalasoft:sesion","token":"…"}';
       bitacora.append(respuesta);
     }
   });
@@ -101,11 +101,11 @@ recorrido(
     await enEspera.goto(`${ORIGEN_SISTEMA}/`);
     const marcoEnEspera = enEspera.frameLocator('#marco');
     await expect(marcoEnEspera.getByLabel('Conectando con tu sistema…')).toBeVisible();
-    await expect(enEspera.getByRole('list', { name: 'Mensajes de AvalaSoft' })).toContainText('validasoft:ready');
+    await expect(enEspera.getByRole('list', { name: 'Mensajes de AvalaSoft' })).toContainText('avalasoft:ready');
     await paso(enEspera, {
       titulo: 'Mira qué pide la pantalla al sistema anfitrión',
       explicacion:
-        'Dentro del iframe de un sistema permitido, la pantalla avisa al sistema que está lista (`validasoft:ready`) y espera. El sistema debe responder con la sesión que su backend pidió a AvalaSoft (`validasoft:sesion`). ' +
+        'Dentro del iframe de un sistema permitido, la pantalla avisa al sistema que está lista (`avalasoft:ready`) y espera. El sistema debe responder con la sesión que su backend pidió a AvalaSoft (`avalasoft:sesion`). ' +
         'Mientras no llegue, el iframe sigue en «Conectando con tu sistema…» (1) y la lista de mensajes (2) solo muestra lo que la pantalla pidió.',
       resaltar: [marcoEnEspera.getByLabel('Conectando con tu sistema…'), enEspera.getByRole('list', { name: 'Mensajes de AvalaSoft' })],
       esperarCarga: false,
@@ -126,7 +126,7 @@ recorrido(
       titulo: 'Entrega una sesión que no corresponde',
       explicacion:
         'La sesión que entrega el sistema solo vale para el origen para el que se emitió. Aquí la página está en otro origen permitido del mismo sistema, pero el token se pidió para el primero: ' +
-        'la pantalla lo rechaza, pide otra sesión al sistema (`validasoft:sesion-requerida` con motivo «rechazada») y muestra «Esta pantalla solo se muestra dentro de tu sistema» (1) con un botón «Reintentar» (2), sin mostrar nada del tercero. Hay que volver a pedir la sesión para el origen correcto.',
+        'la pantalla lo rechaza, pide otra sesión al sistema (`avalasoft:sesion-requerida` con motivo «rechazada») y muestra «Esta pantalla solo se muestra dentro de tu sistema» (1) con un botón «Reintentar» (2), sin mostrar nada del tercero. Hay que volver a pedir la sesión para el origen correcto.',
       resaltar: [titulo, marcoEquivocado.getByRole('button', { name: 'Reintentar' })],
       variantes: [
         { cuando: 'El origen de la página no está registrado en el sistema', entonces: 'El navegador ni siquiera dibuja el iframe: AvalaSoft solo permite que lo aloje un origen permitido, y no se ve nada del tercero.' },

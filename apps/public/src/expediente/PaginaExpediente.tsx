@@ -1,7 +1,7 @@
 import { Alert, AlertTitle, Box, Button, Card, Stack, TextField, Typography } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { aplicarCambiosPendientes, esErrorApi, useCambiosPendientes, useEdicionEnCurso } from '@validasoft/api-client';
-import { AnimacionExitoUnaVez, AvisoCambiosNuevos, ChipEstado, formatearFecha, PaginaEstado } from '@validasoft/ui';
+import { aplicarCambiosPendientes, esErrorApi, useCambiosPendientes, useEdicionEnCurso } from '@avalasoft/api-client';
+import { AnimacionExitoUnaVez, AvisoCambiosNuevos, ChipEstado, formatearFecha, PaginaEstado } from '@avalasoft/ui';
 import { SearchX, Upload } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

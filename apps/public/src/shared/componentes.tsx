@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { ErrorEnLinea } from '@validasoft/ui';
+import { ErrorEnLinea } from '@avalasoft/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from './errores';
@@ -23,8 +23,8 @@ export function CabeceraPagina({ titulo, sub, accion }: { titulo: string; sub?: 
   );
 }
 
-/** Esqueleto de tarjetas mientras carga (ver `esqueletos.tsx` de `@validasoft/ui`). */
-export { EsqueletoTarjetas } from '@validasoft/ui';
+/** Esqueleto de tarjetas mientras carga (ver `esqueletos.tsx` de `@avalasoft/ui`). */
+export { EsqueletoTarjetas } from '@avalasoft/ui';
 
 export function ErrorRecuperable({ error, onReintentar }: { error: unknown; onReintentar: () => void }) {
   const { t } = useTranslation();

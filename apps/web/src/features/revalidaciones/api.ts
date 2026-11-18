@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { aprobarRevalidaciones, getListarRevalidacionesQueryOptions, type AprobarRevalidacionesDto, type ListarRevalidacionesParams } from '@validasoft/api-client';
+import { aprobarRevalidaciones, getListarRevalidacionesQueryOptions, type AprobarRevalidacionesDto, type ListarRevalidacionesParams } from '@avalasoft/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 
 /** Bandeja de revalidaciones (`GET /revalidaciones`); como la de revisión, se vuelve a pedir al abrirla. */

@@ -1,5 +1,5 @@
-// Levanta Validasoft para las pruebas e2e como en producción: un solo origen que sirve la API, la app embebible en
-// /app/ y la del tercero en / (src/Validasoft.Api/Dockerfile). Lo usa `webServer` de playwright.config.ts cuando no
+// Levanta AvalaSoft para las pruebas e2e como en producción: un solo origen que sirve la API, la app embebible en
+// /app/ y la del tercero en / (src/Avalasoft.Api/Dockerfile). Lo usa `webServer` de playwright.config.ts cuando no
 // se indica E2E_BASE_URL.
 //
 //   1. Compila las dos apps (pnpm build) y publica la API en e2e/.api (carpeta propia: no bloquea las DLL de bin/
@@ -17,7 +17,7 @@ const salida = join(raiz, 'e2e', '.api');
 const puerto = process.env.E2E_PUERTO ?? '5090';
 const aislado = process.env.E2E_AISLADO === '1';
 // E2E_BASE_DATOS: otra base para correr dos suites a la vez (p. ej. desde dos worktrees) sin compartir colas.
-const BASE_AISLADA = process.env.E2E_BASE_DATOS ?? 'validasoft_e2e';
+const BASE_AISLADA = process.env.E2E_BASE_DATOS ?? 'avalasoft_e2e';
 const origen = `http://localhost:${puerto}`;
 
 function ejecutar(comando, argumentos) {
@@ -30,46 +30,46 @@ function docker(argumentos, opciones = {}) {
   return spawnSync('docker', ['compose', '-f', 'infra/compose/compose.yaml', ...argumentos], { cwd: raiz, encoding: 'utf8', ...opciones });
 }
 
-// Aislada (local): Mailpit propio y la base `validasoft_e2e`, creada si no existe (el esquema lo crea la API al arrancar).
+// Aislada (local): Mailpit propio y la base `avalasoft_e2e`, creada si no existe (el esquema lo crea la API al arrancar).
 if (aislado) {
   if (docker(['--profile', 'e2e', 'up', '-d', '--wait', 'mailpit-e2e'], { stdio: 'inherit' }).status !== 0) throw new Error('No se pudo levantar mailpit-e2e.');
-  const existe = docker(['exec', '-T', 'postgres', 'psql', '-U', 'validasoft', '-d', 'postgres', '-tAc', `SELECT 1 FROM pg_database WHERE datname = '${BASE_AISLADA}'`]);
+  const existe = docker(['exec', '-T', 'postgres', 'psql', '-U', 'avalasoft', '-d', 'postgres', '-tAc', `SELECT 1 FROM pg_database WHERE datname = '${BASE_AISLADA}'`]);
   if (existe.status !== 0) throw new Error(`No se pudo consultar PostgreSQL: ${existe.stderr}`);
-  if (existe.stdout.trim() !== '1' && docker(['exec', '-T', 'postgres', 'createdb', '-U', 'validasoft', BASE_AISLADA], { stdio: 'inherit' }).status !== 0) {
+  if (existe.stdout.trim() !== '1' && docker(['exec', '-T', 'postgres', 'createdb', '-U', 'avalasoft', BASE_AISLADA], { stdio: 'inherit' }).status !== 0) {
     throw new Error(`No se pudo crear la base ${BASE_AISLADA}.`);
   }
 }
 
-if (process.env.E2E_SIN_COMPILAR !== '1' || !existsSync(join(salida, 'Validasoft.Api.dll'))) {
-  ejecutar('pnpm', ['--filter', '@validasoft/web', '--filter', '@validasoft/public', 'build']);
-  ejecutar('dotnet', ['publish', 'src/Validasoft.Api/Validasoft.Api.csproj', '-c', 'Release', '-o', salida, '--nologo', '-v', 'q']);
+if (process.env.E2E_SIN_COMPILAR !== '1' || !existsSync(join(salida, 'Avalasoft.Api.dll'))) {
+  ejecutar('pnpm', ['--filter', '@avalasoft/web', '--filter', '@avalasoft/public', 'build']);
+  ejecutar('dotnet', ['publish', 'src/Avalasoft.Api/Avalasoft.Api.csproj', '-c', 'Release', '-o', salida, '--nologo', '-v', 'q']);
 }
 
 const entorno = {
   ...process.env,
   ASPNETCORE_ENVIRONMENT: 'Development',
   ASPNETCORE_URLS: origen,
-  Validasoft__Apps__Web: join(raiz, 'apps', 'web', 'dist'),
-  Validasoft__Apps__Publica: join(raiz, 'apps', 'public', 'dist'),
-  Validasoft__Correo__UrlPublica: origen,
-  Validasoft__LimitePublico__Peticiones: '100000',
+  Avalasoft__Apps__Web: join(raiz, 'apps', 'web', 'dist'),
+  Avalasoft__Apps__Publica: join(raiz, 'apps', 'public', 'dist'),
+  Avalasoft__Correo__UrlPublica: origen,
+  Avalasoft__LimitePublico__Peticiones: '100000',
   // El ingreso directo comparte la IP de la máquina entre todas las pruebas (ING-1).
-  Validasoft__LimiteIngreso__Peticiones: '100000',
+  Avalasoft__LimiteIngreso__Peticiones: '100000',
   // El PDF del certificado se genera casi al instante (por defecto espera unos segundos entre pasadas).
-  Validasoft__Certificados__SegundosProceso: '1',
+  Avalasoft__Certificados__SegundosProceso: '1',
   // Análisis con IA y «Probar llave» sin salir a OpenAI (PT-6): las pruebas nunca usan una llave real.
-  Validasoft__IA__Proveedor: 'Simulado',
+  Avalasoft__IA__Proveedor: 'Simulado',
   // La consulta automática de listas (proveedor simulado) corre casi al instante tras pasar a revisión.
-  Validasoft__Verificadores__SegundosProceso: '1',
+  Avalasoft__Verificadores__SegundosProceso: '1',
   // La revisión automática con IA (Asistido, Automático) revisa casi al instante los documentos que ya tienen su análisis.
-  Validasoft__RevisionAutomatica__SegundosProceso: '1',
+  Avalasoft__RevisionAutomatica__SegundosProceso: '1',
   ...(aislado && {
-    ConnectionStrings__Validasoft: `Host=localhost;Port=5432;Database=${BASE_AISLADA};Username=validasoft;Password=validasoft`,
-    Validasoft__Correo__Puerto: '1026',
+    ConnectionStrings__Avalasoft: `Host=localhost;Port=5432;Database=${BASE_AISLADA};Username=avalasoft;Password=avalasoft`,
+    Avalasoft__Correo__Puerto: '1026',
   }),
 };
 
-const api = spawn('dotnet', [join(salida, 'Validasoft.Api.dll')], { cwd: salida, env: entorno, stdio: 'inherit' });
+const api = spawn('dotnet', [join(salida, 'Avalasoft.Api.dll')], { cwd: salida, env: entorno, stdio: 'inherit' });
 const terminar = () => api.kill();
 process.on('SIGINT', terminar);
 process.on('SIGTERM', terminar);

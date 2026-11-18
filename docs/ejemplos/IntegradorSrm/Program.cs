@@ -1,25 +1,25 @@
-// Ejemplo mínimo de un sistema integrador con Validasoft.Sdk (docs/08 §2.1, CN-7). Muestra las cuatro piezas que necesitan el
+// Ejemplo mínimo de un sistema integrador con Avalasoft.Sdk (docs/08 §2.1, CN-7). Muestra las cuatro piezas que necesitan el
 // SRM y Marco para apagar su lógica documental: (1) receptor de webhooks que verifica la firma, deduplica por id de evento y
 // responde 200 al instante; (2) el mismo procesamiento por pull, para redes que no aceptan webhooks entrantes; (3) consulta de
-// certificación con caché por ETag y respaldo local si Validasoft no responde; (4) sesión para la pantalla embebida en nombre
+// certificación con caché por ETag y respaldo local si AvalaSoft no responde; (4) sesión para la pantalla embebida en nombre
 // de una persona. Los secretos van en configuración (variables de entorno o gestor de secretos), nunca en el repositorio.
 using System.Collections.Concurrent;
 using System.Net;
 using System.Threading.Channels;
-using Validasoft.Contratos;
-using Validasoft.Sdk;
+using Avalasoft.Contratos;
+using Avalasoft.Sdk;
 
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration.GetSection("Validasoft");
+var config = builder.Configuration.GetSection("Avalasoft");
 var archivoClave = config["ClavePrivadaPemArchivo"];
-builder.Services.AddSingleton(new OpcionesValidasoft
+builder.Services.AddSingleton(new OpcionesAvalasoft
 {
     UrlBase = new Uri(config["UrlBase"]!),
     ApiKey = config["ApiKey"]!,
     EmpresaId = Guid.TryParse(config["EmpresaId"], out var empresa) ? empresa : null,
     Firmante = string.IsNullOrEmpty(archivoClave) ? null : new FirmanteDeAsercionesDelegadas(config["CodigoSistema"]!, File.ReadAllText(archivoClave))
 });
-builder.Services.AddHttpClient<IClienteValidasoft, ClienteValidasoft>(http => http.Timeout = TimeSpan.FromSeconds(2));
+builder.Services.AddHttpClient<IClienteAvalasoft, ClienteAvalasoft>(http => http.Timeout = TimeSpan.FromSeconds(2));
 builder.Services.AddSingleton(new VerificadorDeWebhooks(new[] { config["SecretoWebhook"] ?? "", config["SecretoWebhookAnterior"] ?? "" }
     .Where(s => s.Length > 0).DefaultIfEmpty("sin-configurar")));
 builder.Services.AddSingleton(Channel.CreateUnbounded<EventoPublicoDto>());
@@ -32,7 +32,7 @@ if (config.GetValue<bool>("ModoPull"))
 var app = builder.Build();
 
 // (1) Receptor: firma y tolerancia de 5 minutos; 401 si no es auténtico; 200 rápido y se procesa en cola.
-app.MapPost("/api/integracion/validasoft/webhook", async (HttpRequest request, VerificadorDeWebhooks verificador, EventosProcesados procesados,
+app.MapPost("/api/integracion/avalasoft/webhook", async (HttpRequest request, VerificadorDeWebhooks verificador, EventosProcesados procesados,
     Channel<EventoPublicoDto> cola) =>
 {
     using var lector = new StreamReader(request.Body);
@@ -51,8 +51,8 @@ app.MapPost("/api/integracion/validasoft/webhook", async (HttpRequest request, V
     }
 });
 
-// (3) Marco: ¿se le puede pagar a este proveedor? Caché de 5 minutos, 304 con ETag y respaldo si Validasoft no responde.
-app.MapGet("/marco/proveedores/{nit}/certificacion", async (string nit, IClienteValidasoft validasoft, CopiaLocalDeCertificacion copia) =>
+// (3) Marco: ¿se le puede pagar a este proveedor? Caché de 5 minutos, 304 con ETag y respaldo si AvalaSoft no responde.
+app.MapGet("/marco/proveedores/{nit}/certificacion", async (string nit, IClienteAvalasoft avalasoft, CopiaLocalDeCertificacion copia) =>
 {
     var consulta = new ConsultaDeCertificacion("NIT", nit, "PROVEEDOR");
     var guardada = copia.Leer(nit);
@@ -60,13 +60,13 @@ app.MapGet("/marco/proveedores/{nit}/certificacion", async (string nit, ICliente
         return Results.Ok(guardada.Datos);
     try
     {
-        var respuesta = await validasoft.Consultas.CertificacionAsync(consulta, guardada?.ETag);
+        var respuesta = await avalasoft.Consultas.CertificacionAsync(consulta, guardada?.ETag);
         var datos = respuesta.NoModificado ? guardada!.Datos : respuesta.Datos!;
         copia.Guardar(nit, datos, respuesta.ETag);
         return Results.Ok(datos);
     }
     catch (Exception e) when (guardada is not null &&
-                              (e is HttpRequestException or TaskCanceledException || e is ExcepcionValidasoft { Estado: >= HttpStatusCode.InternalServerError }))
+                              (e is HttpRequestException or TaskCanceledException || e is ExcepcionAvalasoft { Estado: >= HttpStatusCode.InternalServerError }))
     {
         // Mismo contrato, marcado como respaldo con su antigüedad (docs/08 §5): la pantalla avisa, no lo oculta.
         var antiguedad = (int)(DateTimeOffset.UtcNow - guardada!.Fecha).TotalSeconds;
@@ -75,12 +75,12 @@ app.MapGet("/marco/proveedores/{nit}/certificacion", async (string nit, ICliente
 });
 
 // (4) Embebido: el backend del SRM pide la sesión de 30 minutos de la persona y se la pasa al iframe por postMessage.
-app.MapPost("/srm/validasoft/sesion", async (UsuarioDelegado usuario, IClienteValidasoft validasoft) =>
-    Results.Ok(await validasoft.ComoUsuario(usuario).Sesiones.CrearAsync()));
+app.MapPost("/srm/avalasoft/sesion", async (UsuarioDelegado usuario, IClienteAvalasoft avalasoft) =>
+    Results.Ok(await avalasoft.ComoUsuario(usuario).Sesiones.CrearAsync()));
 
 app.Run();
 
-/// <summary>Dedupe por <c>Validasoft-Event-Id</c> (T-6). En el SRM es la tabla <c>adp_srm.ValidasoftEntregas</c> con PK <c>evento_id</c>.</summary>
+/// <summary>Dedupe por <c>Avalasoft-Event-Id</c> (T-6). En el SRM es la tabla <c>adp_srm.AvalasoftEntregas</c> con PK <c>evento_id</c>.</summary>
 internal sealed class EventosProcesados
 {
     private readonly ConcurrentDictionary<Guid, DateTimeOffset> _vistos = new();
@@ -88,7 +88,7 @@ internal sealed class EventosProcesados
     public bool Registrar(Guid eventoId) => _vistos.TryAdd(eventoId, DateTimeOffset.UtcNow);
 }
 
-/// <summary>Copia local de la consulta (en Marco, <c>adp_cs.validasoft_certificacion_local</c>).</summary>
+/// <summary>Copia local de la consulta (en Marco, <c>adp_cs.avalasoft_certificacion_local</c>).</summary>
 internal sealed class CopiaLocalDeCertificacion
 {
     internal sealed record Guardada(ConsultaCertificacionDto Datos, string? ETag, DateTimeOffset Fecha);
@@ -120,7 +120,7 @@ internal sealed class ProcesadorDeEventos(Channel<EventoPublicoDto> cola, ILogge
 }
 
 /// <summary>(2) Modo pull: cada minuto lee desde el último cursor y encola lo nuevo (el mismo procesador que el webhook).</summary>
-internal sealed class LectorPorPull(IClienteValidasoft validasoft, Channel<EventoPublicoDto> cola, EventosProcesados procesados,
+internal sealed class LectorPorPull(IClienteAvalasoft avalasoft, Channel<EventoPublicoDto> cola, EventosProcesados procesados,
     ILogger<LectorPorPull> log) : BackgroundService
 {
     // En el SRM el cursor se guarda en base de datos para retomar tras un reinicio.
@@ -132,16 +132,16 @@ internal sealed class LectorPorPull(IClienteValidasoft validasoft, Channel<Event
         {
             try
             {
-                await foreach (var evento in validasoft.Eventos.RecorrerAsync(_cursor, ct: ct))
+                await foreach (var evento in avalasoft.Eventos.RecorrerAsync(_cursor, ct: ct))
                 {
                     if (procesados.Registrar(evento.Id))
                         await cola.Writer.WriteAsync(evento, ct);
                     _cursor = evento.Cursor;
                 }
             }
-            catch (Exception e) when (e is HttpRequestException or ExcepcionValidasoft)
+            catch (Exception e) when (e is HttpRequestException or ExcepcionAvalasoft)
             {
-                log.LogWarning(e, "Validasoft no respondió; se reintenta en un minuto.");
+                log.LogWarning(e, "AvalaSoft no respondió; se reintenta en un minuto.");
             }
 
             await Task.Delay(TimeSpan.FromMinutes(1), ct);

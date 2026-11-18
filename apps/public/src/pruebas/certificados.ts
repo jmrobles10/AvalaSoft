@@ -1,4 +1,4 @@
-import type { CertificadoPublicoDto, ClavesDeCertificadosDto, JsonElement } from '@validasoft/api-client';
+import type { CertificadoPublicoDto, ClavesDeCertificadosDto, JsonElement } from '@avalasoft/api-client';
 import { aHex, sha256 } from '../verificacion/cripto';
 import { bytesCanonicos } from '../verificacion/jcs';
 
@@ -17,8 +17,8 @@ export const CERTIFICADO_REAL: CertificadoPublicoDto = {
   flujo: { codigo: 'VERIFICACION', nombre: 'Flujo de verificación', version: 1 },
   emitidoEn: '2026-11-09T00:02:30.7897957+00:00',
   vigenteHasta: '2026-12-08',
-  huella: '26b4·5bd2·c48a',
-  hashContenido: '26b45bd2c48a439eb52e5eaceaddc9601463c62735536897f0b025683fd6c8f7',
+  huella: '7bbd·48b2·3712',
+  hashContenido: '7bbd48b237123fdeb39b67323e48bb4613016fafd469ed9a48b0cc14e2d14e9b',
   contenidoCanonico: {
     areas: [
       { area: 'Compras', codigo: 'COMPRAS', fecha: '2026-11-09T00:02:30Z', origen: 'Humano' },
@@ -31,7 +31,7 @@ export const CERTIFICADO_REAL: CertificadoPublicoDto = {
       identificacion: { digitoVerificacion: '1', numero: '899999068', pais: 'CO', tipo: 'NIT' },
       nombre: 'Constructora Verificación S.A.S.',
     },
-    esquema: 'validasoft.certificado.v1',
+    esquema: 'avalasoft.certificado.v1',
     flujo: { codigo: 'VERIFICACION', nombre: 'Flujo de verificación', version: 1 },
     folio: 'VERIF-C-2026-000001-1',
     requisitos: [
@@ -72,13 +72,13 @@ export const CERTIFICADO_REAL: CertificadoPublicoDto = {
     verificaciones: [],
     vigenteHasta: '2026-12-08',
   },
-  urlVerificacion: 'http://localhost:5181/verificar/VERIF-C-2026-000001-1?huella=26b45bd2c48a',
+  urlVerificacion: 'http://localhost:5181/verificar/VERIF-C-2026-000001-1?huella=7bbd48b23712',
   pendientes: [],
   firma: {
     algoritmo: 'Ed25519',
     kid: 'vs-desarrollo-solo-local',
-    clavePublicaUrl: 'http://localhost:5181/.well-known/validasoft-certificados.json',
-    valor: 'zipYPq6fX8JG1zKqaloWcwkegPL6BFprRwKZ+vzr0SXV0kWLbVdvJoXiPqOrsTzRpFXPHMirE0osamab24U0AA==',
+    clavePublicaUrl: 'http://localhost:5181/.well-known/avalasoft-certificados.json',
+    valor: 'A6hTXkWKNtTjaz2P4M0MrRWWZ1jMF6xppr7lNf8v6y0uE2YLzA+0UydkUbk7eLOURaIYm9Y3pzV+V35VC3sLCg==',
   },
   estadoDesde: '2026-11-09T00:02:30.7897957+00:00',
   reemplazadoPor: null,
@@ -86,10 +86,10 @@ export const CERTIFICADO_REAL: CertificadoPublicoDto = {
 };
 
 export const CLAVES_REAL: ClavesDeCertificadosDto = {
-  emisor: 'Validasoft',
+  emisor: 'AvalaSoft',
   algoritmo: 'Ed25519',
   mensajeFirmado: 'Ed25519 sobre los 32 bytes del SHA-256 (hashContenido en hexadecimal) del contenidoCanonico canonicalizado con RFC 8785 (JCS).',
-  esquemas: ['validasoft.certificado.v1'],
+  esquemas: ['avalasoft.certificado.v1'],
   claves: [
     {
       kid: 'vs-desarrollo-solo-local',

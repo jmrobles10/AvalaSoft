@@ -1,5 +1,5 @@
 import { Box, FormControlLabel, Stack, Switch, Typography } from '@mui/material';
-import { CampoNumero } from '@validasoft/ui';
+import { CampoNumero } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { TIPOS_VERIFICACION, verificacionNueva, type ErrorFlujo, type VerificacionEnEditor } from '../editor';
 

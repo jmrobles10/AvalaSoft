@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@validasoft/api-client';
-import { ChipEstado } from '@validasoft/ui';
+import { SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@avalasoft/api-client';
+import { ChipEstado } from '@avalasoft/ui';
 import { Check, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

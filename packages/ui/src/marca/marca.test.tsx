@@ -2,7 +2,7 @@ import { ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createValidasoftTheme } from '../tema';
+import { createAvalasoftTheme } from '../tema';
 import { COLOR } from '../tokens';
 import { AnimacionExito, AnimacionExitoUnaVez } from './AnimacionExito';
 import { Cargando } from './Cargando';
@@ -31,7 +31,7 @@ import { Logo } from './Logo';
 import { usePrimeraVez } from './movimiento';
 
 const conTema = (nodo: ReactNode, modo: 'light' | 'dark' = 'light', colorEmpresa?: string) =>
-  render(<ThemeProvider theme={createValidasoftTheme(modo, { app: 'public', ...(colorEmpresa ? { colorEmpresa } : {}) })}>{nodo}</ThemeProvider>);
+  render(<ThemeProvider theme={createAvalasoftTheme(modo, { app: 'public', ...(colorEmpresa ? { colorEmpresa } : {}) })}>{nodo}</ThemeProvider>);
 
 /** Simula `prefers-reduced-motion` (jsdom no trae matchMedia). */
 function menosMovimiento(reducido: boolean) {
@@ -75,7 +75,7 @@ describe('colores del logo (MA-1)', () => {
     for (const modo of ['light', 'dark'] as const) {
       const c = COLOR[modo];
       expect(coloresDeLogo(modo)).toMatchObject({ aro: c.marcaAzul, check: c.marcaVerde });
-      const { marca } = createValidasoftTheme(modo).palette;
+      const { marca } = createAvalasoftTheme(modo).palette;
       expect([marca.azul, marca.verde, marca.texto, marca.soft]).toEqual([c.marcaAzul, c.marcaVerde, c.marcaTexto, c.marcaSoft]);
     }
   });
@@ -211,7 +211,7 @@ describe('Logo', () => {
     expect(check).toHaveAttribute('fill', '#22D38A');
     expect(check).toHaveAttribute('transform', TRANSFORMACION_CHECK_ICONO);
     rerender(
-      <ThemeProvider theme={createValidasoftTheme('dark')}>
+      <ThemeProvider theme={createAvalasoftTheme('dark')}>
         <Logo variante="icono" tamano={48} />
       </ThemeProvider>,
     );

@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Link, Stack, Typography } from '@mui/material';
-import { SCOPES, type VinculoDto } from '@validasoft/api-client';
-import { ChipEstado, Dato, formatearDiaCivil, formatearFecha, RejillaDatos } from '@validasoft/ui';
+import { SCOPES, type VinculoDto } from '@avalasoft/api-client';
+import { ChipEstado, Dato, formatearDiaCivil, formatearFecha, RejillaDatos } from '@avalasoft/ui';
 import { Ban, Download, ExternalLink, ShieldEllipsis } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

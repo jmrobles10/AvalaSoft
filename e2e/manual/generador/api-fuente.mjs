@@ -178,7 +178,7 @@ function archivosCs(carpeta, acumulado = []) {
 }
 
 /**
- * Lee los endpoints de `src/Validasoft.Aplicacion` (y los permisos). Devuelve `{ endpoints: Map('MÉTODO ruta' → endpoint con clase), clases, permisos }`.
+ * Lee los endpoints de `src/Avalasoft.Aplicacion` (y los permisos). Devuelve `{ endpoints: Map('MÉTODO ruta' → endpoint con clase), clases, permisos }`.
  * Si la carpeta no existe devuelve mapas vacíos: la referencia se genera igual, solo sin descripciones ni permisos.
  */
 export function leerFuentes(raizSrc) {

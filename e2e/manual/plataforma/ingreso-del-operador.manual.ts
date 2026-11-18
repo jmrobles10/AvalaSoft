@@ -17,7 +17,7 @@ recorrido(
     relacionados: ['plataforma/operadores', 'plataforma/ingresos-de-los-operadores', 'acceso/ingreso-con-passkey'],
   },
   async ({ page }) => {
-    const correo = `paula.${randomUUID().replace(/-/g, '').slice(0, 8)}@e2e.validasoft.co`;
+    const correo = `paula.${randomUUID().replace(/-/g, '').slice(0, 8)}@e2e.avalasoft.co`;
     await llamar('POST', '/api/v1/plataforma/operadores', { llave: CLAVE_PLATAFORMA, cuerpo: { nombre: 'Paula Plataforma', correo } });
     await autenticadorVirtual(page);
 

@@ -7,7 +7,7 @@
 
 ## 1. Qué se quiere lograr
 
-Validasoft reemplaza la validación de terceros que hoy está repartida entre el **SRM** (dentro del ERP Marco, una
+AvalaSoft reemplaza la validación de terceros que hoy está repartida entre el **SRM** (dentro del ERP Marco, una
 instancia por empresa) y el **Portal de Proveedores**. Es un producto aparte, multi-tenant y consumible por API.
 
 **Objetivo 1 — paridad con el SRM, primero.** Nada de lo que el SRM hace hoy puede faltar, y donde lo hace mal se
@@ -63,7 +63,7 @@ e2e).
 
 ## 3. En curso
 
-### 3.1 Tres ramas de Validasoft (agentes en paralelo)
+### 3.1 Tres ramas de AvalaSoft (agentes en paralelo)
 Cierran los huecos del proceso de validación frente al SRM que encontró la auditoría del 2026-11-10 (§4.1). Cada una
 llega con su verificación completa; se revisa, se abre su PR y se fusiona con el CI en verde.
 
@@ -100,16 +100,16 @@ Sale del lote de integración. Decisiones **OP-1…OP-21** en el [registro](deci
 - **Pendiente:** OP-6 y OP-21 (campañas programadas, delegación por expediente, SLA en días hábiles, escalamiento en dos niveles, filtro de la bandeja por plazo).
 
 ### 3.2 SRM — aplicar en AyF (rama local, en espera)
-Rama **local** `feature/validasoft-ayf` en `C:\Fuentes_Git\SRM` (sale de `Feature_INT_NOVIEMBRE_SRM`, 6 commits, **sin
-push**). Por decisión de Producto (G-4, 2026-11-11) queda en espera: primero se prueba Validasoft solo, sin integrarlo en
-ningún sistema; no se sube ni se crea WI hasta que Producto lo pida. Detalle en `BackEnd\INTEGRACION_VALIDASOFT.md` de esa rama.
+Rama **local** `feature/avalasoft-ayf` en `C:\Fuentes_Git\SRM` (sale de `Feature_INT_NOVIEMBRE_SRM`, 6 commits, **sin
+push**). Por decisión de Producto (G-4, 2026-11-11) queda en espera: primero se prueba AvalaSoft solo, sin integrarlo en
+ningún sistema; no se sube ni se crea WI hasta que Producto lo pida. Detalle en `BackEnd\INTEGRACION_AVALASOFT.md` de esa rama.
 - **Qué hace:**
-  - receptor de webhooks de Validasoft con firma verificada e idempotencia;
+  - receptor de webhooks de AvalaSoft con firma verificada e idempotencia;
   - worker con reintentos;
   - mapa evento → acción: habilitar y aplicar en AyF General, Tributaria, Legal y Bancaria con lo aceptado por la
     empresa; bloquear, desvincular y anular;
   - cliente HTTP con API key por constructora cifrada;
-  - flag `ValidacionDocumental = Legacy | Validasoft` (con `Legacy` nada cambia).
+  - flag `ValidacionDocumental = Legacy | AvalaSoft` (con `Legacy` nada cambia).
 - **Verificación:** compila; 318 pruebas nuevas y 433 de regresión del código de AyF tocado; scripts SQL probados solo
   en una LocalDB temporal.
 - **Decisiones que necesita** (del equipo de Marco y de Producto):
@@ -142,9 +142,9 @@ Rama lista para revisar, **sin push ni PR**. Decisiones **ING-1…ING-9** en el 
   para acciones sensibles, avisos por correo de cambios de passkey y consulta de la auditoría de ingreso de Plataforma.
 
 ### 3.5 Declaración jurada PEP (rama `feature/declaracion-pep`, 2026-11-12)
-Rama lista para revisar (con push, **sin PR**). Cierra «lo mismo de la HU 49093» del SRM y el Portal; decisiones **DP-1…DP-17** en el [registro](decisiones/registro.md#5-sexquinquagies-declaración-jurada-pep-en-la-ficha-hu-49093-2026-11-12) (con la tabla de paridad HU ↔ Validasoft), diseño en [14 §4.2](14-ficha-maestra-del-tercero.md) y contrato en [05 §2.3](05-api-contratos-y-webhooks.md).
-- **Qué hace:** «Sí» a «¿Es PEP?» abre el diálogo «Declaración jurada PEP» (datos básicos, condición PEP, vínculo con otra PEP, juramento y firma dibujada o subida), en la General de la natural y en cada persona de la legal; el **backend** exige la declaración (422 `declaracion-pep-requerida`), sella la firma (huella, fecha, IP) y la versiona con la sección; la empresa la ve en la revisión, la ficha aceptada y Tercero 360 con **Descargar PDF** (por persona, estilo de los PDF de Validasoft); el informe SAGRILAFT muestra «Sin declaración» y el Excel suma columnas; el ZIP del expediente lleva `declaraciones-pep/`; el importador del Portal lee la declaración activa; el canónico `DECLARACION_PEP` se retira.
-- **Extras** (rama `feature/declaracion-pep-extras`, **DP-16 a DP-22**, con push y sin PR): **logo** de la empresa (PNG o SVG, dibujado sin librerías) o de Validasoft en el PDF (DP-18); el **tercero descarga su propia declaración** desde «Mi información» (`GET /public/v1/ficha/{seccion}/declaracion-pep/pdf`, solo la suya y lo guardado, con registro de cada descarga; DP-19); el importador del Portal trae la **imagen de la firma** por una interfaz de archivos (carpeta, URL o simulada) y solo si su huella coincide, y si no, importa sin firma y avisa (DP-20); **«Actualizar desde mi RUT»**: el RUT no trae PEP, se conserva la respuesta y la declaración, y se corrigió un defecto (guardar la dirección que propone el RUT volvía a sellar la declaración firmada; DP-21).
+Rama lista para revisar (con push, **sin PR**). Cierra «lo mismo de la HU 49093» del SRM y el Portal; decisiones **DP-1…DP-17** en el [registro](decisiones/registro.md#5-sexquinquagies-declaración-jurada-pep-en-la-ficha-hu-49093-2026-11-12) (con la tabla de paridad HU ↔ AvalaSoft), diseño en [14 §4.2](14-ficha-maestra-del-tercero.md) y contrato en [05 §2.3](05-api-contratos-y-webhooks.md).
+- **Qué hace:** «Sí» a «¿Es PEP?» abre el diálogo «Declaración jurada PEP» (datos básicos, condición PEP, vínculo con otra PEP, juramento y firma dibujada o subida), en la General de la natural y en cada persona de la legal; el **backend** exige la declaración (422 `declaracion-pep-requerida`), sella la firma (huella, fecha, IP) y la versiona con la sección; la empresa la ve en la revisión, la ficha aceptada y Tercero 360 con **Descargar PDF** (por persona, estilo de los PDF de AvalaSoft); el informe SAGRILAFT muestra «Sin declaración» y el Excel suma columnas; el ZIP del expediente lleva `declaraciones-pep/`; el importador del Portal lee la declaración activa; el canónico `DECLARACION_PEP` se retira.
+- **Extras** (rama `feature/declaracion-pep-extras`, **DP-16 a DP-22**, con push y sin PR): **logo** de la empresa (PNG o SVG, dibujado sin librerías) o de AvalaSoft en el PDF (DP-18); el **tercero descarga su propia declaración** desde «Mi información» (`GET /public/v1/ficha/{seccion}/declaracion-pep/pdf`, solo la suya y lo guardado, con registro de cada descarga; DP-19); el importador del Portal trae la **imagen de la firma** por una interfaz de archivos (carpeta, URL o simulada) y solo si su huella coincide, y si no, importa sin firma y avisa (DP-20); **«Actualizar desde mi RUT»**: el RUT no trae PEP, se conserva la respuesta y la declaración, y se corrigió un defecto (guardar la dirección que propone el RUT volvía a sellar la declaración firmada; DP-21).
 - **Paridad con la rama actual del Portal (DP-22):** varias PEP relacionadas (de 1 a 30, por tipo y con relación de la lista) y firma por apoderado, en dominio, diálogo del tercero, vista de la empresa, PDF e importador; General y Legal a esquema 3.
 - **Pendiente:** idiomas distintos del español y el historial de PDF generados (DP-16).
 
@@ -265,7 +265,7 @@ al cambio se indexan con su próximo evento (o reconstruyendo la proyección del
 
 Hecho en la rama, a la espera de su PR. **Paridad con el oficial del SRM** (revisado solo en lectura: `BackEnd/SRM.Services.Proveedores/OficialCumplimiento`, `Integraciones/ApiSagrilaft`, `Frontend/React/src/pages/Provedores/OficialCumplimiento`):
 
-| Lo que el oficial hace en el SRM | En Validasoft |
+| Lo que el oficial hace en el SRM | En AvalaSoft |
 |---|---|
 | Bandeja por estado (pendiente, aprobado, rechazado, vencido) con filtros por proveedor y riesgo | Bandeja del oficial y, en el informe SAGRILAFT, una fila por tercero con filtros por estado y nivel. **Cubierto** (CU-12) |
 | Estadísticas: tiempos, % de cumplimiento, pendientes y vencidas | Tablero y tiempos del informe. **Cubierto** (CU-12) |
@@ -306,7 +306,7 @@ Hecho en la rama, a la espera de su PR. **Paridad con el oficial del SRM** (revi
 
 ### 4.5 H9 — pendientes
 - ~~Sandbox con datos aislados~~ **Hecho (SB-1…SB-6, 2026-11-11):** tenant hermano con la configuración del grupo, buzón de correo, IA y listas simuladas y reinicio ([05 §2.6.3](05-api-contratos-y-webhooks.md), [07 §5.4](07-seguridad-identidad-y-tenancy.md)). Falta, como mejora, una pantalla en la consola con el buzón y el botón de reinicio (hoy es por API y SDK; la llave de prueba sí se emite desde Configuración › API keys).
-- ~~Embebido del tercero para el Portal: `POST /sesiones-tercero` y el componente `<validasoft-expediente>`.~~ Resuelto en `feature/integracion-abierta` (IO-6) para cualquier sistema: `POST /sesiones-tercero`, `/embed/:componente` (bóveda, expediente, ficha) y `montarEmbebido` en el SDK. Pendiente: los eventos de negocio del iframe (`documento-subido`, `expediente-completo`) y un Web Component empaquetado.
+- ~~Embebido del tercero para el Portal: `POST /sesiones-tercero` y el componente `<avalasoft-expediente>`.~~ Resuelto en `feature/integracion-abierta` (IO-6) para cualquier sistema: `POST /sesiones-tercero`, `/embed/:componente` (bóveda, expediente, ficha) y `montarEmbebido` en el SDK. Pendiente: los eventos de negocio del iframe (`documento-subido`, `expediente-completo`) y un Web Component empaquetado.
 - `POST /documentos` para integraciones.
 - **Carga de la consulta de certificación:** el script k6 (`tests/carga`) y su medida local están hechos; la consulta pasó de cuatro viajes a la base a uno (p50 secuencial 23,5 → 8,1 ms), pero **p99 < 100 ms a 500 rps no se pudo certificar** en la máquina de desarrollo compartida ([11, H9](11-trazabilidad-por-hito.md)). Falta repetirla en un entorno dedicado; si no llega, la proyección persistida `EstadoCertificacionTercero` es el siguiente paso.
 - **Publicar los paquetes NuGet y npm:** el empaquetado, la versión única, los README/CHANGELOG, ESM + CJS y el workflow `sdk-publicar.yml` están listos y probados sin publicar. Faltan **la decisión de licencia de Legal** (hoy `LICENCIA-SDK.md` es provisional), crear el entorno `publicacion-sdk` y los secretos `NUGET_API_KEY` y `NPM_TOKEN`, y poner el primer tag `sdk-v1.0.0` ([08 §2.4](08-integracion-y-migracion.md)). El SRM portó el verificador de firma porque el SDK no está publicado: cuando lo esté, debe adoptarlo.
@@ -387,7 +387,7 @@ Pendiente:
 - **Dónde:** consola `/plataforma` → la empresa → «Plan de IA» → API key. También se puede con
   `PUT /api/v1/plataforma/tenants/{t}/empresas/{e}/plan-ia`.
 - **Cómo se guarda:**
-  - cifrada con AES-256-GCM y la clave maestra `Validasoft:Secretos:ClaveMaestra`, versionada y rotable (docs/07
+  - cifrada con AES-256-GCM y la clave maestra `Avalasoft:Secretos:ClaveMaestra`, versionada y rotable (docs/07
     §6.3);
   - nunca vuelve en claro; solo se muestran los últimos 4 caracteres;
   - no puede ser un hash, porque hay que enviarla a OpenAI.
@@ -424,10 +424,10 @@ Pendiente:
 
 **Sección G cerrada (2026-11-11).** Producto resolvió las decisiones 2, 4 y 5 (registro [G-1…G-4](decisiones/registro.md#5-tresquinquagies-decisiones-de-producto-de-la-sección-g-2026-11-11)); solo queda abierta la 1.
 
-1. 2FA: ¿en Validasoft o en el sistema integrador? (§4.6)
-2. ~~Infolaft: ¿proveedor único para los clientes de Sinco o uno por cliente? ¿Se usa desde el SRM durante la coexistencia? ([15](15-infolaft.md))~~ Resuelta en G-2 y G-4: **uno solo para todos los clientes, con la cuenta de la plataforma**, y solo desde Validasoft. Implementado en PP-4…PP-8: la cuenta de Infolaft está en la configuración de la plataforma (§3.6).
+1. 2FA: ¿en AvalaSoft o en el sistema integrador? (§4.6)
+2. ~~Infolaft: ¿proveedor único para los clientes de Sinco o uno por cliente? ¿Se usa desde el SRM durante la coexistencia? ([15](15-infolaft.md))~~ Resuelta en G-2 y G-4: **uno solo para todos los clientes, con la cuenta de la plataforma**, y solo desde AvalaSoft. Implementado en PP-4…PP-8: la cuenta de Infolaft está en la configuración de la plataforma (§3.6).
 3. ~~¿El oficial de cumplimiento puede rechazar el expediente directamente?~~ Resuelta en CU-7: sí, solo ante un hallazgo (§4.4).
 4. ~~Señal entre empresas: ¿debe compartirse algún hecho grave sin revelar quién decidió?~~ Resuelta en G-1: **no se comparte ningún hecho grave; las decisiones de cada empresa son privadas.**
-5. ~~Integración con el SRM (§3.2): cuándo se sube la rama, cuenta de servicio de AyF y «Bloqueado».~~ Resuelta en G-4: **todavía no; primero se prueba Validasoft solo, sin integrarlo en ningún sistema.** La rama del SRM sigue en espera (§3.2).
+5. ~~Integración con el SRM (§3.2): cuándo se sube la rama, cuenta de servicio de AyF y «Bloqueado».~~ Resuelta en G-4: **todavía no; primero se prueba AvalaSoft solo, sin integrarlo en ningún sistema.** La rama del SRM sigue en espera (§3.2).
 6. ~~Nueva vigencia tras renovar: ¿desde la aprobación o desde el vencimiento anterior?~~ Resuelta en G-3 (ya era VV-12): **desde la aprobación.**
 7. ~~**Vínculo en revisión (VR-8, §3.4):** ¿debe suspenderse el certificado (o decirle `bloqueado: true` a los ERP) mientras el vínculo está «En revisión» por una actualización?~~ Resuelta en VR-11: **no se suspende; sigue vigente y se ve «En verificación»** (con el plazo de A-2/RV-4 vencido bloquea, como antes: pregunta abierta en VR-10).

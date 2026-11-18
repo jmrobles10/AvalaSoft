@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Stack, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
-import { SCOPES, type DelegacionDto, type EstadoDeDelegacion } from '@validasoft/api-client';
-import { BarraFiltros, ChipEstado, EsqueletoTabla, EstadoVacio, FiltroMenu, formatearFecha, MarcoTabla, visualmenteOculto } from '@validasoft/ui';
+import { SCOPES, type DelegacionDto, type EstadoDeDelegacion } from '@avalasoft/api-client';
+import { BarraFiltros, ChipEstado, EsqueletoTabla, EstadoVacio, FiltroMenu, formatearFecha, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
 import { ArrowRight, UserRoundCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,5 +1,5 @@
 import { Box, Button, Stack } from '@mui/material';
-import { EstadoVacio } from '@validasoft/ui';
+import { EstadoVacio } from '@avalasoft/ui';
 import { Landmark, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

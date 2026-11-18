@@ -1,4 +1,4 @@
-/* Validasoft: tema MUI v6 (dirección Registro). createValidasoftTheme(modo, { app, colorEmpresa }). */
+/* AvalaSoft: tema MUI v6 (dirección Registro). createAvalasoftTheme(modo, { app, colorEmpresa }). */
 import { createTheme, type Theme } from '@mui/material';
 import { esES } from '@mui/material/locale';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
@@ -90,7 +90,7 @@ const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /**
  * Textos por omisión de MUI en español (UI-3): `esES` traduce los de todos los componentes (paginador, migas, aviso…); aquí se
- * ajusta lo del autocompletar a la voz de Validasoft («Abrir», no «Abierto») y, mientras busca, muestra un esqueleto de opciones
+ * ajusta lo del autocompletar a la voz de AvalaSoft («Abrir», no «Abierto») y, mientras busca, muestra un esqueleto de opciones
  * en lugar del texto «Cargando…».
  */
 const textosPropios = {
@@ -107,7 +107,7 @@ const textosPropios = {
   },
 };
 
-export function createValidasoftTheme(modo: Modo = 'light', { app = 'web', colorEmpresa = null }: OpcionesTema = {}): Theme {
+export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorEmpresa = null }: OpcionesTema = {}): Theme {
   const c = COLOR[modo];
   const s = SOMBRA[modo];
   const web = app === 'web';

@@ -1,6 +1,6 @@
 import { Button, Link, Stack, TableCell, TableRow, Typography } from '@mui/material';
-import type { FilaTerceroSagrilafDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFecha } from '@validasoft/ui';
+import type { FilaTerceroSagrilafDto } from '@avalasoft/api-client';
+import { ChipEstado, formatearFecha } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { estadoCanonico, estadoDeEstudio, estadoDeListas, revisionDe } from '../informeSagrilaft';

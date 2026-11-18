@@ -265,7 +265,7 @@ export const plataforma = {
     configurada: 'Configurada · …{{ultimos}}',
     sinConfigurar: 'Sin configurar',
     noHabilitado: 'No habilitado en esta instalación',
-    ayudaNoHabilitado: 'La instalación no habilitó a Infolaft (Validasoft:Verificadores): hasta que se habilite, las empresas no consultan con esta cuenta.',
+    ayudaNoHabilitado: 'La instalación no habilitó a Infolaft (Avalasoft:Verificadores): hasta que se habilite, las empresas no consultan con esta cuenta.',
     usuario: 'Usuario de la cuenta',
     clave: 'Clave',
     claveAyuda: 'Solo escritura: se cifra con la clave maestra y no se vuelve a mostrar. Vacío conserva la actual.',
@@ -318,7 +318,7 @@ export const plataforma = {
     confirmar:
       'Cada secreto que no esté con la clave vigente se descifra con su clave anterior y se vuelve a cifrar con la vigente. Su valor no cambia ni se muestra. Los ilegibles se dejan como están.',
     recifrados: 'Se re-cifraron {{cantidad}} secretos.',
-    ayudaIlegibles: 'Hay secretos que ninguna clave configurada puede leer: agrega su clave a Validasoft:Secretos:ClavesAnteriores (docs/07 §6.3).',
+    ayudaIlegibles: 'Hay secretos que ninguna clave configurada puede leer: agrega su clave a Avalasoft:Secretos:ClavesAnteriores (docs/07 §6.3).',
     todoVigente: 'Todo está con la clave vigente.',
   },
 } as const;

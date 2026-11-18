@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
-import type { SolicitudHabeasDto } from '@validasoft/api-client';
-import { FaltaParaEnviar } from '@validasoft/ui';
+import type { SolicitudHabeasDto } from '@avalasoft/api-client';
+import { FaltaParaEnviar } from '@avalasoft/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../shared/componentes';

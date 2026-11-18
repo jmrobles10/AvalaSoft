@@ -1,4 +1,4 @@
-import type { RevalidacionAAprobarDto, RevalidacionDto } from '@validasoft/api-client';
+import type { RevalidacionAAprobarDto, RevalidacionDto } from '@avalasoft/api-client';
 import { seccionFicha } from '../terceros/ficha/secciones';
 
 /** Días desde los que el plazo se marca como urgente. */

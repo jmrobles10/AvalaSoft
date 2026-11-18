@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Typography } from '@mui/material';
-import type { RelacionEntreTercerosDto } from '@validasoft/api-client';
-import { EstadoVacio } from '@validasoft/ui';
+import type { RelacionEntreTercerosDto } from '@avalasoft/api-client';
+import { EstadoVacio } from '@avalasoft/ui';
 import { Plus, UsersRound } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

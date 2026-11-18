@@ -1,5 +1,5 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
-import type { CampoCotejadoDto, DecisionCoincidencia } from '@validasoft/api-client';
+import type { CampoCotejadoDto, DecisionCoincidencia } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../../shared/componentes';

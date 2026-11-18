@@ -1,4 +1,4 @@
-import type { RevalidacionDto } from '@validasoft/api-client';
+import type { RevalidacionDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { claveRevalidacion, devueltosSeleccionados, esDevuelta, esRevalidacionDeSeccion, lote, seleccionables, tonoPlazo } from './modelo';
 

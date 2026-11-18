@@ -1,13 +1,13 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
-import { configurarCliente, type SesionValidasoft } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, type SesionAvalasoft } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { createElement, type ReactNode } from 'react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router';
 import { vi } from 'vitest';
 import { useSesion } from '../../../sesion/sesionStore';
-import { crearCuerpoSse, type CuerpoSse } from '@validasoft/api-client/pruebas/sse';
+import { crearCuerpoSse, type CuerpoSse } from '@avalasoft/api-client/pruebas/sse';
 
 export const json = (estado: number, cuerpo: unknown) => new Response(JSON.stringify(cuerpo), { status: estado, headers: { 'Content-Type': 'application/json' } });
 
@@ -45,7 +45,7 @@ export function prepararApi(responder: (metodo: string, ruta: string) => Respons
 }
 
 export function iniciarSesionDePrueba() {
-  const sesion: SesionValidasoft = {
+  const sesion: SesionAvalasoft = {
     token: 'tok',
     expira: new Date(Date.now() + 30 * 60_000),
     usuarioId: 'u-verif',
@@ -76,7 +76,7 @@ export function montar(elemento: ReactNode) {
   render(
     createElement(
       ThemeProvider,
-      { theme: createValidasoftTheme('light') },
+      { theme: createAvalasoftTheme('light') },
       createElement(QueryClientProvider, { client: cliente }, createElement(MemoryRouter, { initialEntries: ['/e/emp/bandeja'] }, rutas)),
     ),
   );

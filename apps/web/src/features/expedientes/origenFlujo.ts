@@ -1,4 +1,4 @@
-import type { FlujoDeExpedienteDto } from '@validasoft/api-client';
+import type { FlujoDeExpedienteDto } from '@avalasoft/api-client';
 import type { TFunction } from 'i18next';
 import { describirCondicion } from '../flujos/condiciones';
 

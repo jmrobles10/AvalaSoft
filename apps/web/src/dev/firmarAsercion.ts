@@ -1,9 +1,9 @@
 /**
  * Solo desarrollo y demo: hace en el navegador lo que en producción hace el **backend** del sistema integrado
  * (ADR-0011). Firma la aserción `X-Usuario-Delegado` con la clave privada del sistema y la canjea, junto con su API
- * key, por la sesión corta de Validasoft. Una clave privada nunca debe llegar a un navegador fuera de esta demo.
+ * key, por la sesión corta de AvalaSoft. Una clave privada nunca debe llegar a un navegador fuera de esta demo.
  */
-import { crearSesionPlataforma, crearSesionUsuario, type SesionUsuarioDto } from '@validasoft/api-client';
+import { crearSesionPlataforma, crearSesionUsuario, type SesionUsuarioDto } from '@avalasoft/api-client';
 
 export interface PersonaDelegada {
   sub: string;
@@ -63,7 +63,7 @@ async function importarClave(pem: string): Promise<{ clave: CryptoKey; alg: 'RS2
 }
 
 /**
- * JWT RS256/ES256 de 5 minutos: `iss` = código del sistema, `aud` = validasoft, `sub`, `name`, `email` y `jti`
+ * JWT RS256/ES256 de 5 minutos: `iss` = código del sistema, `aud` = avalasoft, `sub`, `name`, `email` y `jti`
  * aleatorio. Cada aserción vale **una sola vez** (SE-4): se firma una nueva para cada petición.
  */
 export async function firmarAsercion(
@@ -79,7 +79,7 @@ export async function firmarAsercion(
   const carga = textoABase64Url(
     JSON.stringify({
       iss: sistema,
-      aud: 'validasoft',
+      aud: 'avalasoft',
       sub: persona.sub,
       name: persona.nombre,
       email: persona.correo,

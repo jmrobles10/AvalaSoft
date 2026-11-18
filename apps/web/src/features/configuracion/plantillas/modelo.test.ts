@@ -1,4 +1,4 @@
-import { ErrorApi } from '@validasoft/api-client';
+import { ErrorApi } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { campoDelError, cuerpoDe, insertarVariable } from './modelo';
 

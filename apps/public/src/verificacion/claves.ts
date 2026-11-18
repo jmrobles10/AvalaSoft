@@ -1,11 +1,11 @@
-import { configuracionCliente, type ClavePublicaDeCertificadosDto, type ClavesDeCertificadosDto } from '@validasoft/api-client';
+import { configuracionCliente, type ClavePublicaDeCertificadosDto, type ClavesDeCertificadosDto } from '@avalasoft/api-client';
 
 /**
  * Claves públicas del sello (`ClavesDeCertificadosDto`). La API las publica en `{UrlPublica}/.well-known/…`, el mismo
  * origen de esta página (no van en el cliente generado). Se piden siempre a esa ruta fija y no a `firma.clavePublicaUrl`:
  * si la respuesta del certificado estuviera alterada, también podría apuntar a otra clave.
  */
-export const RUTA_CLAVES = '/.well-known/validasoft-certificados.json';
+export const RUTA_CLAVES = '/.well-known/avalasoft-certificados.json';
 
 export class ClavesNoDisponibles extends Error {
   override readonly name = 'ClavesNoDisponibles';

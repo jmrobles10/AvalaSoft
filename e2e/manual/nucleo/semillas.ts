@@ -95,7 +95,7 @@ export async function aceptarInvitacionDeClientePorApi(invitacion: Invitacion): 
   if (aceptada.status !== 200) throw new Error(`No se pudo aceptar la invitación (${String(aceptada.status)}).`);
 }
 
-/** Registra un segundo origen para el sistema E2E (además de `ORIGEN_SISTEMA`): una página alojada ahí también puede mostrar Validasoft. */
+/** Registra un segundo origen para el sistema E2E (además de `ORIGEN_SISTEMA`): una página alojada ahí también puede mostrar AvalaSoft. */
 export async function permitirOtroOrigenDelSistema(e: Escenario, otroOrigen: string): Promise<void> {
   const sistemas = await llamar<{ id: string; codigo: string }[]>('GET', '/api/v1/sistemas', { llave: e.admin });
   const sistema = sistemas.find((x) => x.codigo === 'E2E');

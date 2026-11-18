@@ -16,7 +16,7 @@ recorrido(
   async ({ page }) => {
     const sufijo = randomUUID().replace(/-/g, '').slice(0, 6);
     const nombre = `Operador E2E ${sufijo}`;
-    const correo = `operador.${sufijo}@e2e.validasoft.co`;
+    const correo = `operador.${sufijo}@e2e.avalasoft.co`;
 
     const consola = await abrirConsolaDePlataforma(page);
     await irASeccion(consola, 'Operadores');

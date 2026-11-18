@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Drawer, IconButton, Stack, TextField, Typography } from '@mui/material';
-import type { GrupoDeAccesoDto } from '@validasoft/api-client';
+import type { GrupoDeAccesoDto } from '@avalasoft/api-client';
 import { X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

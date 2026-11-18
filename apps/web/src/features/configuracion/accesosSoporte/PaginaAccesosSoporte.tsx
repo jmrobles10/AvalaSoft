@@ -1,7 +1,7 @@
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getListarAccesosSoporteQueryOptions, revocarAccesoSoporte, SCOPES, type AccesoSoporteDto } from '@validasoft/api-client';
-import { EstadoVacio, FilasEsqueleto, formatearFechaHora, MarcoTabla } from '@validasoft/ui';
+import { getListarAccesosSoporteQueryOptions, revocarAccesoSoporte, SCOPES, type AccesoSoporteDto } from '@avalasoft/api-client';
+import { EstadoVacio, FilasEsqueleto, formatearFechaHora, MarcoTabla } from '@avalasoft/ui';
 import { LockKeyhole, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

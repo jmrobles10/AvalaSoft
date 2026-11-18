@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type ReintentoPublicoDto, type VinculoPublicoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type ReintentoPublicoDto, type VinculoPublicoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PaginaEmpresas } from './PaginaEmpresas';
@@ -42,7 +42,7 @@ function mostrar(vinculos: VinculoPublicoDto[], reintentar?: () => Response | Pr
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={cliente}>
         <MemoryRouter initialEntries={['/']}>
           <Routes>

@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type GrupoDto, type PlanIaEmpresaDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type GrupoDto, type PlanIaEmpresaDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { borradorEmpresaNuevo } from '../configuracion/empresas/modelo';
@@ -182,7 +182,7 @@ describe('PaginaPlanIa', () => {
       }),
     });
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
           <MemoryRouter initialEntries={['/plataforma/grupos/t1/empresas/e1/plan-ia']}>
             <Routes>

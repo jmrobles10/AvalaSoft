@@ -9,7 +9,7 @@ import { defineConfig, loadEnv, type Plugin } from 'vite';
  */
 function semillaDeDesarrollo(): Plugin {
   return {
-    name: 'validasoft-semilla-dev',
+    name: 'avalasoft-semilla-dev',
     apply: 'serve',
     configureServer(servidor) {
       servidor.middlewares.use('/__dev/semilla.json', (_peticion, respuesta) => {
@@ -29,7 +29,7 @@ function semillaDeDesarrollo(): Plugin {
 
 export default defineConfig(({ mode }) => {
   const entorno = loadEnv(mode, import.meta.dirname, '');
-  const api = entorno.VALIDASOFT_API_URL ?? 'http://localhost:5080';
+  const api = entorno.AVALASOFT_API_URL ?? 'http://localhost:5080';
 
   return {
     plugins: [react(), semillaDeDesarrollo()],

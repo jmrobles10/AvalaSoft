@@ -3,7 +3,7 @@ id: "publico/pagina-no-encontrada"
 titulo: "Llega a una dirección que no existe y vuelve a entrar"
 actor: "Público"
 dominio: "publico"
-resumen: "Cuando un enlace está roto o se escribe mal una dirección, Validasoft muestra «No encontramos este enlace» con una salida clara: entrar con el correo para llegar a los documentos."
+resumen: "Cuando un enlace está roto o se escribe mal una dirección, AvalaSoft muestra «No encontramos este enlace» con una salida clara: entrar con el correo para llegar a los documentos."
 pasos: 2
 ---
 
@@ -11,7 +11,7 @@ pasos: 2
 
 **Actor:** Público · **Dominio:** Verificación pública
 
-Cuando un enlace está roto o se escribe mal una dirección, Validasoft muestra «No encontramos este enlace» con una salida clara: entrar con el correo para llegar a los documentos.
+Cuando un enlace está roto o se escribe mal una dirección, AvalaSoft muestra «No encontramos este enlace» con una salida clara: entrar con el correo para llegar a los documentos.
 
 **Antes de empezar**
 
@@ -37,7 +37,7 @@ La página dice «No encontramos este enlace» y pide revisar la dirección. Si 
 
 ## Paso 2. Vuelve a entrar con tu correo
 
-Con «Entrar con mi correo» llegas a la entrada del portal. Escribe tu correo y Validasoft te envía un código para entrar; si estabas buscando un certificado, usa el enlace de verificación original.
+Con «Entrar con mi correo» llegas a la entrada del portal. Escribe tu correo y AvalaSoft te envía un código para entrar; si estabas buscando un certificado, usa el enlace de verificación original.
 
 > **Pantalla:** `/entrar`
 

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { actualizarAyudaDeDocumento, getListarAyudasDeDocumentosQueryOptions } from '@validasoft/api-client';
+import { actualizarAyudaDeDocumento, getListarAyudasDeDocumentosQueryOptions } from '@avalasoft/api-client';
 import { conEmpresa, invalidarRuta } from '../../../shared/consultas';
 
 /** Ayuda de cada tipo de documento: la del grupo, la de la empresa activa y la que ve el tercero (`GET /ayudas-de-documentos`). */

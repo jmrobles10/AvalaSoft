@@ -1,6 +1,6 @@
 import { Box, Chip, MenuItem, TextField, Typography } from '@mui/material';
-import type { TipoVinculoDto } from '@validasoft/api-client';
-import { CampoNumero } from '@validasoft/ui';
+import type { TipoVinculoDto } from '@avalasoft/api-client';
+import { CampoNumero } from '@avalasoft/ui';
 import { Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { alternarEstado, diasValidos, ESTADOS_DE_CAMPANIA, type BorradorDeFiltro } from './modelo';

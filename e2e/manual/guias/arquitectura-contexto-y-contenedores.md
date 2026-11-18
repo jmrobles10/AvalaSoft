@@ -7,7 +7,7 @@ resumen: "Quién usa AvalaSoft, con qué sistemas se conecta y qué piezas lo fo
 
 AvalaSoft es una plataforma que valida a terceros (proveedores, clientes, empleados, aliados) para varias empresas a la vez. Esta guía y las siguientes de la sección **Arquitectura** describen cómo está construida. Todo lo que dicen se comprobó contra el código y contra `docs/04-arquitectura-plataforma.md`; donde el código difiere del diseño original, se dice.
 
-> **Verdad:** el diseño original (`docs/04` §1) preveía un proceso `Api` y otro `Worker` con la misma imagen. Hoy **no existe un Worker separado**: la API, las colas, el daemon de eventos y los procesos periódicos corren en un solo proceso (`Validasoft.Api`) y una sola imagen Docker. Separarlos es posible más adelante porque la mensajería ya pasa por colas durables, pero no está hecho.
+> **Verdad:** el diseño original (`docs/04` §1) preveía un proceso `Api` y otro `Worker` con la misma imagen. Hoy **no existe un Worker separado**: la API, las colas, el daemon de eventos y los procesos periódicos corren en un solo proceso (`Avalasoft.Api`) y una sola imagen Docker. Separarlos es posible más adelante porque la mensajería ya pasa por colas durables, pero no está hecho.
 
 ## Contexto: quién usa AvalaSoft
 
@@ -42,12 +42,12 @@ Ningún proveedor externo está cableado en el dominio: cada uno vive detrás de
 |---|---|---|
 | `apps/web` | React, TypeScript, MUI, TanStack Query, Zustand; `react-router` con rutas en el hash (`/app/#/e/{empresa}/…`) | App de la empresa y consola de Plataforma. Se puede embeber en un `<iframe>` de un sistema integrado. |
 | `apps/public` | React, TypeScript, MUI; con manifest web (se instala en el celular) | Portal del tercero, verificador público de certificados y pantallas embebidas (`/embed/{componente}`). |
-| `Validasoft.Api` | .NET 10, Wolverine.Http, OpenAPI | Un solo proceso: sirve la API (`/api/v1` para llaves y sesiones de personas, `/public/v1` para el tercero y el público), sirve las dos apps estáticas, corre las colas locales durables, el daemon de eventos y los procesos periódicos. Expone `/health/live`, `/health/ready` y `/openapi/v1.json`; en desarrollo, `/docs` (Scalar). |
+| `Avalasoft.Api` | .NET 10, Wolverine.Http, OpenAPI | Un solo proceso: sirve la API (`/api/v1` para llaves y sesiones de personas, `/public/v1` para el tercero y el público), sirve las dos apps estáticas, corre las colas locales durables, el daemon de eventos y los procesos periódicos. Expone `/health/live`, `/health/ready` y `/openapi/v1.json`; en desarrollo, `/docs` (Scalar). |
 | PostgreSQL 17 con Marten | Marten 9, Npgsql | Event store, documentos JSON, outbox e inbox de Wolverine y avisos entre servidores (`LISTEN/NOTIFY`). Un solo `DocumentStore`. |
 | Almacén S3 | MinIO u otro S3 compatible | Los binarios de la bóveda. El API nunca proxea los bytes: entrega URLs prefirmadas. |
 | SMTP | Cualquiera; Mailpit en desarrollo | Correo saliente. En el sandbox los correos no salen: quedan en un buzón por API. |
 | Servicios externos | Ver arriba | IA, listas restrictivas e identidad del cliente. |
 
-Por defecto la imagen única se publica con `src/Validasoft.Api/Dockerfile` (tres etapas: compila las dos apps con pnpm, publica la API y las junta en una imagen de ejecución) y escucha en el puerto 8080. Los detalles de arranque, perfiles y variables están en [Despliegue](guia:arquitectura-despliegue).
+Por defecto la imagen única se publica con `src/Avalasoft.Api/Dockerfile` (tres etapas: compila las dos apps con pnpm, publica la API y las junta en una imagen de ejecución) y escucha en el puerto 8080. Los detalles de arranque, perfiles y variables están en [Despliegue](guia:arquitectura-despliegue).
 
 Las demás guías de arquitectura profundizan cada pieza: [módulos de la solución](guia:arquitectura-modulos), [datos y multi-tenencia](guia:arquitectura-datos-y-tenencia), [mensajería y tiempo real](guia:arquitectura-mensajeria-y-tiempo-real), [seguridad](guia:arquitectura-seguridad), [documentos](guia:arquitectura-documentos) y [ciclos de vida](guia:arquitectura-ciclos-de-vida).

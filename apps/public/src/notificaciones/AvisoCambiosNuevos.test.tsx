@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createValidasoftTheme, AvisoCambiosNuevos } from '@validasoft/ui';
+import { createAvalasoftTheme, AvisoCambiosNuevos } from '@avalasoft/ui';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('«Hay cambios nuevos»', () => {
@@ -9,7 +9,7 @@ describe('«Hay cambios nuevos»', () => {
     const usuario = userEvent.setup();
     const actualizar = vi.fn();
     render(
-      <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+      <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
         <AvisoCambiosNuevos titulo="Hay cambios nuevos." texto="Esta información cambió mientras la editabas." accion="Actualizar" onActualizar={actualizar} />
       </ThemeProvider>,
     );

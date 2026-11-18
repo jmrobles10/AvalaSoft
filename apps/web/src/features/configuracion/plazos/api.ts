@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { actualizarConfiguracionSla, getObtenerConfiguracionSlaQueryOptions, type ActualizarConfiguracionSlaDto } from '@validasoft/api-client';
+import { actualizarConfiguracionSla, getObtenerConfiguracionSlaQueryOptions, type ActualizarConfiguracionSlaDto } from '@avalasoft/api-client';
 import { conEmpresa, invalidarRuta } from '../../../shared/consultas';
 
 /** Plazos de revisión de la empresa activa: porcentaje del aviso, avisar a administradores y plazo por defecto de cada área. */

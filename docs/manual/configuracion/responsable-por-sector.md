@@ -16,7 +16,7 @@ La administradora arma un flujo de proveedores con la información tributaria y 
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y su área «Revisión» con miembros.
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 
