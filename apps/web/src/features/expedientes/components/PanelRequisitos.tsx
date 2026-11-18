@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Button, Stack } from '@mui/material';
-import { SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@validasoft/api-client';
+import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type RequisitoExpedienteDto } from '@validasoft/api-client';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
@@ -20,18 +20,27 @@ export function PanelRequisitos({
   contexto,
   nombres,
   onAccion,
+  filtro,
+  titulo,
+  avisoDeCarga = true,
 }: {
   expediente: ExpedienteDto;
   contexto: (area: AreaExpedienteDto | null) => ContextoRevisor;
   nombres: ReadonlyMap<string, string>;
   onAccion: (dialogo: DialogoExpediente) => void;
+  /** Solo los requisitos que cumplen (los de un sector de la ficha del vínculo). */
+  filtro?: (requisito: RequisitoExpedienteDto) => boolean;
+  titulo?: string;
+  /** El aviso de la fase de carga va una sola vez (en Validación), no en cada sector. */
+  avisoDeCarga?: boolean;
 }) {
   const { t } = useTranslation();
   const [abierto, setAbierto] = useState<DocumentoEnVisor | null>(null);
   // La decisión principal es por área (PanelDecisionArea); documento por documento queda como acción secundaria.
   const [porDocumento, setPorDocumento] = useState(false);
   const areas = useMemo(() => new Map(expediente.etapas.flatMap((e) => e.areas.map((a) => [a.areaId, a] as const))), [expediente.etapas]);
-  const requisitos = requisitosDe(expediente);
+  const todos = requisitosDe(expediente);
+  const requisitos = filtro ? todos.filter(filtro) : todos;
   const faltantes = requisitosFaltantes(expediente);
   const puedeVer = contexto(null).scopes.has(SCOPES.documentosDescargar);
   const documentos = useDocumentosVinculo(expediente.empresaId, expediente.vinculoId, contexto(null).scopes.has(SCOPES.documentosLeer));
@@ -42,7 +51,7 @@ export function PanelRequisitos({
 
   return (
     <Tarjeta
-      titulo={t('expedientes.requisitos.titulo')}
+      titulo={titulo ?? t('expedientes.requisitos.titulo')}
       acciones={
         contexto(null).scopes.has(SCOPES.expedientesRevisar) && expediente.estado === 'EnRevision' ? (
           <Button size="small" variant="text" onClick={() => setPorDocumento((v) => !v)} aria-pressed={porDocumento}>
@@ -51,13 +60,13 @@ export function PanelRequisitos({
         ) : undefined
       }
     >
-      {enFaseDeCarga(expediente) && faltantes.length > 0 && (
+      {avisoDeCarga && enFaseDeCarga(expediente) && faltantes.length > 0 && (
         <Alert severity="info" sx={{ mb: 1.5 }}>
           <AlertTitle>{t('expedientes.requisitos.faseCargaTitulo')}</AlertTitle>
           {t('expedientes.requisitos.faseCarga', { count: faltantes.length, documentos: faltantes.map((r) => r.tipoDocumento.nombre).join(', ') })}
         </Alert>
       )}
-      <Stack component="ul" spacing={1.25} sx={{ p: 0, m: 0 }}>
+      <Stack component="ul" sx={{ p: 0, m: 0 }}>
         {requisitos.map((requisito) => (
           <TarjetaRequisito
             key={requisito.id}

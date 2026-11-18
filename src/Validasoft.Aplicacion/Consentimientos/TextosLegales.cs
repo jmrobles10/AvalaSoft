@@ -120,6 +120,26 @@ public static class TextosLegalesEndpoints
         return nuevo.ADto();
     }
 
+    /// <summary>
+    /// Una versión exacta de un texto legal, la que el tercero aceptó (el id viaja en <c>ConsentimientosRegistrados</c>): la ficha del vínculo
+    /// la muestra en «Autorización y declaración». El aviso de la plataforma lo ve cualquiera que lea vínculos; un texto de empresa, solo quien
+    /// puede usar esa empresa. 404 <c>texto-legal-no-encontrado</c> (también si es de otra empresa: no se revela que existe).
+    /// </summary>
+    [WolverineGet("/api/v1/textos-legales/{id}")]
+    [Authorize(Policy = Permisos.VinculosLeer)]
+    public static async Task<TextoLegalDto> ObtenerVersion(Guid id, ISesiones sesiones, IContextoSolicitud contexto, CancellationToken ct)
+    {
+        await using var consulta = sesiones.ConsultaGlobal();
+        var texto = await consulta.LoadAsync<TextoLegal>(id, ct);
+        var visible = texto is not null
+                      && (texto.Ambito == AmbitoTextoLegal.Plataforma
+                          || (texto.TenantId == contexto.TenantRequerido()
+                              && (contexto.Empresas.Contains("*") || contexto.Empresas.Contains(texto.EmpresaId?.ToString() ?? string.Empty))));
+        return visible && texto is not null
+            ? texto.ADto()
+            : throw ReglaDeNegocioException.NoEncontrado("texto-legal-no-encontrado", "No existe ese texto legal.");
+    }
+
     [WolverineGet("/api/v1/empresas/{id}/textos-legales")]
     [Authorize(Policy = Permisos.ConfiguracionLeer)]
     public static async Task<TextosLegalesEmpresaDto> ListarDeEmpresa(Guid id, ISesiones sesiones, IContextoSolicitud contexto, CancellationToken ct)

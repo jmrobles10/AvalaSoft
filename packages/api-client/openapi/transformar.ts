@@ -237,6 +237,7 @@ const NOMBRES: Record<string, string> = {
   'GET /api/v1/plataforma/accesos-soporte': 'listarAccesosSoporteConcedidos',
   'GET /api/v1/empresas/{id}/textos-legales': 'obtenerTextosLegalesEmpresa',
   'PUT /api/v1/empresas/{id}/textos-legales/{tipo}': 'publicarTextoLegalEmpresa',
+  'GET /api/v1/textos-legales/{id}': 'obtenerVersionTextoLegal',
   'POST /api/v1/api-keys': 'crearApiKey',
   'GET /api/v1/api-keys': 'listarApiKeys',
   'DELETE /api/v1/api-keys/{id}': 'revocarApiKey',
