@@ -1,7 +1,17 @@
 import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@validasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { destinoFijo, rutaSegura } from '../boveda/parametrosSubida';
-import { accionDeRequisito, debeRefrescar, enlaceDeSubida, observacionesDeRequisito, observacionesGenerales, requisitosPorGrupo } from './requisitos';
+import {
+  accionDeRequisito,
+  debeRefrescar,
+  enlaceDeSubida,
+  hayProcesamientoEnCurso,
+  observacionesDeRequisito,
+  observacionesGenerales,
+  requisitosPorGrupo,
+  SONDEO_DE_RESPALDO_MS,
+  SONDEO_RAPIDO_MS,
+} from './requisitos';
 
 const requisito = (id: string, estado: RequisitoPublicoDto['estado'], cambios: Partial<RequisitoPublicoDto> = {}): RequisitoPublicoDto => ({
   id,
@@ -78,12 +88,50 @@ describe('documentos que pide la empresa', () => {
     expect(enlaceDeSubida(propio, null, 'e1')).toBeNull();
   });
 
-  it('se refresca rápido mientras falten documentos o esté devuelto, y despacio mientras la empresa revisa', () => {
-    expect(debeRefrescar(expediente('Abierto', []))).toBe(4000);
-    expect(debeRefrescar(expediente('Observado', []))).toBe(4000);
-    expect(debeRefrescar(expediente('EnRevision', []))).toBe(30_000);
-    expect(debeRefrescar(expediente('Aprobado', []))).toBe(false);
-    expect(debeRefrescar(undefined)).toBe(false);
+  describe('refresco del expediente', () => {
+    const ahora = Date.parse('2026-11-06T12:00:30Z');
+    const enAnalisis = (estado: string, cargadaEn: string) =>
+      requisito('rut', 'Cargado', { versionActual: { documentoId: 'doc-rut', n: 1, sha256: 'x', cargadaEn, estado } });
+
+    it('sin stream se pide cada 30 s mientras el expediente esté vivo, sin sondeo rápido', () => {
+      for (const estado of ['Abierto', 'Observado', 'EnRevision'] as const)
+        expect(debeRefrescar(expediente(estado, [requisito('rut', 'Pendiente')]), { streamConectado: false, ahora })).toBe(SONDEO_DE_RESPALDO_MS);
+    });
+
+    it('con el stream conectado no se sondea: los avisos lo refrescan', () => {
+      for (const estado of ['Abierto', 'Observado', 'EnRevision'] as const)
+        expect(debeRefrescar(expediente(estado, [requisito('rut', 'Pendiente')]), { streamConectado: true, ahora })).toBe(false);
+    });
+
+    it('se sondea rápido solo mientras algo se procesa: una versión en análisis o lo recién subido', () => {
+      const recibida = expediente('Abierto', [enAnalisis('Recibida', '2026-11-06T12:00:00Z')]);
+      const analizando = expediente('EnRevision', [enAnalisis('EnAnalisis', '2026-11-06T12:00:00Z')]);
+      expect(hayProcesamientoEnCurso(recibida, ahora)).toBe(true);
+      expect(debeRefrescar(recibida, { streamConectado: true, ahora })).toBe(SONDEO_RAPIDO_MS);
+      expect(debeRefrescar(analizando, { streamConectado: false, ahora })).toBe(SONDEO_RAPIDO_MS);
+
+      const pendiente = expediente('Abierto', [requisito('rut', 'Pendiente')]);
+      expect(debeRefrescar(pendiente, { streamConectado: true, esperandoSubidaHasta: ahora + 10_000, ahora })).toBe(SONDEO_RAPIDO_MS);
+      // Pasada la espera de la subida se vuelve al stream (o al respaldo).
+      expect(debeRefrescar(pendiente, { streamConectado: true, esperandoSubidaHasta: ahora - 1, ahora })).toBe(false);
+      expect(debeRefrescar(pendiente, { streamConectado: false, esperandoSubidaHasta: ahora - 1, ahora })).toBe(SONDEO_DE_RESPALDO_MS);
+    });
+
+    it('una versión atascada o ya actual no mantiene el sondeo rápido', () => {
+      const atascada = expediente('Abierto', [enAnalisis('EnAnalisis', '2026-11-06T11:00:00Z')]);
+      expect(hayProcesamientoEnCurso(atascada, ahora)).toBe(false);
+      expect(debeRefrescar(atascada, { streamConectado: true, ahora })).toBe(false);
+      expect(debeRefrescar(atascada, { streamConectado: false, ahora })).toBe(SONDEO_DE_RESPALDO_MS);
+      const actual = expediente('Abierto', [enAnalisis('Actual', '2026-11-06T12:00:00Z')]);
+      expect(hayProcesamientoEnCurso(actual, ahora)).toBe(false);
+      expect(hayProcesamientoEnCurso(expediente('Abierto', [enAnalisis('EnAnalisis', 'no-es-fecha')]), ahora)).toBe(false);
+    });
+
+    it('no sondea un expediente cerrado ni sin datos, aunque haya algo en espera', () => {
+      const entorno = { streamConectado: false, esperandoSubidaHasta: ahora + 10_000, ahora };
+      for (const estado of ['Aprobado', 'Rechazado', 'Anulado', 'Caducado'] as const) expect(debeRefrescar(expediente(estado, []), entorno)).toBe(false);
+      expect(debeRefrescar(undefined, entorno)).toBe(false);
+    });
   });
 });
 

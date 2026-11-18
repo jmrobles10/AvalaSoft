@@ -95,12 +95,47 @@ export function enlaceDeSeccion(requisito: Pick<RequisitoPublicoDto, 'seccion' |
   return enlaceSeccion(requisito.seccion?.seccion ?? requisito.tipoDocumento.codigo, requisito.seccion?.periodo);
 }
 
+/** Cada cuánto se vuelve a pedir el expediente mientras el servidor procesa algo que el tercero espera. */
+export const SONDEO_RAPIDO_MS = 4000;
+/** Cada cuánto, sin stream en vivo, para que una observación o un cambio aparezca sin recargar. */
+export const SONDEO_DE_RESPALDO_MS = 30_000;
 /**
- * Se refresca solo: cada 4 s mientras falten documentos o esté devuelto (la versión subida llega al expediente por una
- * cola) y cada 30 s mientras la empresa revisa, para que una observación aparezca sin recargar.
+ * Cuánto se da por «procesándose» una versión recibida o en análisis: pasado esto (p. ej. el antivirus no responde y la versión
+ * espera, T-11) deja de sondearse rápido y se vuelve al stream o al respaldo.
  */
-export function debeRefrescar(expediente: Pick<ExpedientePublicoDto, 'estado'> | undefined): number | false {
-  if (!expediente) return false;
-  if (expediente.estado === 'Abierto' || expediente.estado === 'Observado') return 4000;
-  return expediente.estado === 'EnRevision' ? 30_000 : false;
+export const VENTANA_DE_PROCESAMIENTO_MS = 2 * 60 * 1000;
+
+/** Lo que `debeRefrescar` necesita saber del entorno: si el stream en vivo está conectado y hasta cuándo se espera lo recién subido. */
+export interface EntornoDeRefresco {
+  streamConectado: boolean;
+  /** Instante (ms) hasta el que se espera que la cola ponga en el expediente lo que el tercero acaba de subir; 0 = nada en espera. */
+  esperandoSubidaHasta?: number;
+  ahora?: number;
+}
+
+/**
+ * ¿Hay algo procesándose en el servidor que el tercero espera? El DTO no trae un indicador explícito, así que se mira lo más
+ * cercano: un requisito cuya versión está `Recibida` o `EnAnalisis` en la bóveda (recién cargada, hasta `VENTANA_DE_PROCESAMIENTO_MS`).
+ * Lo recién subido que todavía no llega al expediente (la versión pasa por una cola, RQ-2) no se ve aquí: lo cubre `esperandoSubidaHasta`.
+ */
+export function hayProcesamientoEnCurso(expediente: Pick<ExpedientePublicoDto, 'requisitos'>, ahora: number): boolean {
+  return (expediente.requisitos ?? []).some((r) => {
+    const version = r.versionActual;
+    if (version?.estado !== 'Recibida' && version?.estado !== 'EnAnalisis') return false;
+    const cargada = Date.parse(version.cargadaEn);
+    return Number.isFinite(cargada) && ahora - cargada < VENTANA_DE_PROCESAMIENTO_MS;
+  });
+}
+
+/**
+ * Cada cuánto se vuelve a pedir el expediente (`false` = no se sondea). Se sondea rápido (4 s) solo mientras el servidor procesa algo que el
+ * tercero espera: una versión en análisis o lo que acaba de subir. Fuera de eso, con el stream en vivo conectado no se sondea (el aviso
+ * `expediente`/`documento` lo refresca) y sin stream se pide cada 30 s mientras el expediente esté vivo (Abierto, Observado o EnRevision).
+ * El sondeo se pausa con la pestaña oculta (`refetchIntervalInBackground` apagado).
+ */
+export function debeRefrescar(expediente: Pick<ExpedientePublicoDto, 'estado' | 'requisitos'> | undefined, entorno: EntornoDeRefresco): number | false {
+  if (!expediente || !['Abierto', 'Observado', 'EnRevision'].includes(expediente.estado)) return false;
+  const ahora = entorno.ahora ?? Date.now();
+  if (ahora < (entorno.esperandoSubidaHasta ?? 0) || hayProcesamientoEnCurso(expediente, ahora)) return SONDEO_RAPIDO_MS;
+  return entorno.streamConectado ? false : SONDEO_DE_RESPALDO_MS;
 }

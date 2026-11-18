@@ -7,7 +7,9 @@ import {
   type EstadoConexion,
   type MapaDeInvalidacion,
 } from '@validasoft/api-client';
+import { useEffect } from 'react';
 import { useSesionTercero } from '../sesion/sesionTercero';
+import { useEstadoDeRefresco } from '../shared/useEstadoDeRefresco';
 import { claveBandeja } from './api';
 import { interpretarEvento } from './bandeja';
 
@@ -46,7 +48,7 @@ export function useStreamDelTercero(esperas?: Partial<EsperasConexion>): EstadoC
   const terceroId = useSesionTercero((s) => s.sesion?.terceroId ?? null);
   const activa = useSesionTercero((s) => s.estado === 'activa');
 
-  return useTiempoReal({
+  const estado = useTiempoReal({
     ruta: RUTA_STREAM,
     activo: activa && Boolean(terceroId),
     clave: terceroId ?? '',
@@ -65,4 +67,12 @@ export function useStreamDelTercero(esperas?: Partial<EsperasConexion>): EstadoC
       if (evento) aplicarEventoDeBandeja<BandejaNotificacionesTerceroDto>(cliente, claveBandeja, evento);
     },
   });
+
+  // El expediente se sondea solo si este stream no está conectado (`useExpedientePublico`): se publica su estado.
+  useEffect(() => {
+    useEstadoDeRefresco.getState().fijarStream(estado);
+  }, [estado]);
+  useEffect(() => () => useEstadoDeRefresco.getState().fijarStream(null), []);
+
+  return estado;
 }

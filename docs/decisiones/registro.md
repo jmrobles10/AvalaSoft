@@ -1508,6 +1508,10 @@ Revisión externa de la operación con varias réplicas y varios tenants. Se ver
 
 Los atributos permitidos del tipo de vínculo ya no son solo de la API: «Se pide a» y «Se escoge cuando» ofrecen «Según un atributo del vínculo» (`vinculo.atributos.{clave}`, con los operadores que el motor admite para cada tipo), «Invitar tercero» manda `atributos` en `POST /invitaciones`, la plantilla y el importador del lote usan columnas `Atributo: clave` (varias opciones separadas por `;` o `,`) validadas contra el tipo de cada fila, y el detalle del vínculo los edita con el `PATCH` de siempre; al reinvitar solo se aplican los que vienen.
 
+## 5-septemseptuagies. El expediente del portal se sondea solo si el servidor procesa algo, y el límite público cuenta por tercero (2026-11-17, IM)
+
+Un tercero llenando su ficha recibía 429 `demasiadas-peticiones`: el expediente se pedía cada 4 s mientras estuviera `Abierto` u `Observado`, aunque ya hay stream en vivo, y `/public/v1` limitaba a 60/min **por IP** (una oficina con una sola IP de salida compartía el cupo). Ahora `debeRefrescar` sondea rápido (4 s) solo con algo procesándose que el tercero espera —una versión `Recibida`/`EnAnalisis` recién cargada (el DTO no trae un indicador explícito) o lo que acaba de subir y la cola aún no pone en el expediente (30 s)—; en lo demás, con el stream conectado no sondea (los avisos `expediente`/`documento` lo refrescan) y sin stream pide cada 30 s; con la pestaña oculta no sondea. El límite corre después de `UseAuthentication`: con la sesión de un tercero la partición es su `terceroId` (300/min, `Validasoft:LimitePublico:PeticionesPorSesion`); lo anónimo y el token inválido siguen por IP (60/min), `/evaluacion` conserva su ×4 sobre el cupo que le toque y el ingreso no cambia.
+
 ## 6. Consecuencias estructurales a propagar
 
 | Decisión | Documentos afectados | Acción |

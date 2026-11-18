@@ -24,8 +24,9 @@ app.UsarProxiesConfiables();
 app.UseExceptionHandler();
 // apps/web en /app/ y apps/public en / con frame-ancestors (SE-3), y CORS opcional con lista explícita (SE-5).
 app.UsarAppsYCors();
-app.UseRateLimiter();
 app.UseAuthentication();
+// El límite va después de la autenticación: con la sesión de un tercero cuenta por tercero (no por IP); lo anónimo o con token inválido sigue por IP.
+app.UseRateLimiter();
 app.UseMiddleware<MiddlewareDeContexto>();
 app.UseAuthorization();
 app.UseMiddleware<MiddlewareDeIdempotencia>();

@@ -12,6 +12,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { crearFetchSse } from '@validasoft/api-client/pruebas/sse';
 import { useSesionTercero } from '../sesion/sesionTercero';
+import { useEstadoDeRefresco } from '../shared/useEstadoDeRefresco';
 import { claveBandeja } from './api';
 import { ALCANCES_PUBLICO, MAPA_PUBLICO, useStreamDelTercero } from './tiempoReal';
 
@@ -73,6 +74,8 @@ describe('tiempo real del portal del tercero', () => {
     expect(peticiones[0]?.cabeceras.get('X-Empresa')).toBeNull();
     await waitFor(() => expect(llamadas.n).toBe(1));
     await screen.findByText(/estado conectado/);
+    // El estado queda publicado para que el expediente no se sondee de más (`useExpedientePublico`).
+    expect(useEstadoDeRefresco.getState().stream).toBe('conectado');
 
     // Un cambio de cuenta no toca el expediente; uno del expediente sí, y varios seguidos se juntan en una sola recarga.
     act(() => peticiones[0]?.cuerpo.enviar(evento('cambio', { recurso: 'cuenta', id: 'c1', vinculoId: 'v1' })));

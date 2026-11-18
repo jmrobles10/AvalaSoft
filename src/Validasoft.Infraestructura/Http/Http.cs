@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using Validasoft.Aplicacion.Comun;
+using Validasoft.Aplicacion.Interesado;
 using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Plataforma;
 using Validasoft.Infraestructura.Seguridad;
@@ -175,38 +176,73 @@ public sealed class ManejadorDeErrores(IProblemDetailsService problemas, ILogger
 }
 
 /// <summary>
-/// Límite de peticiones por IP en <c>/public/v1</c> (ventana fija; <c>Validasoft:LimitePublico:{Peticiones, VentanaSegundos}</c>,
-/// por defecto 60 por minuto). La evaluación de la ficha (<c>…/evaluacion</c>, FM-46) va en otro cupo, cuatro veces mayor: el
-/// wizard la pide mientras el tercero escribe y no debe agotar el de las demás. <c>/api/v1</c> aún no tiene límite (llegará por credencial). Excedido ⇒ 429 ProblemDetails
-/// <c>demasiadas-peticiones</c> con <c>Retry-After</c>.
+/// Cupos del límite de peticiones (<c>Validasoft:LimitePublico</c> y <c>Validasoft:LimiteIngreso</c>): por IP y por sesión del tercero en
+/// <c>/public/v1</c>, y el del ingreso directo.
+/// </summary>
+public sealed record CuposDeLimitePublico(int PorIp, int PorSesion, TimeSpan Ventana, int Ingreso, TimeSpan VentanaIngreso)
+{
+    /// <summary>Por omisión, por minuto: 60 por IP, 300 por sesión del tercero y 30 por IP en el ingreso.</summary>
+    public static CuposDeLimitePublico De(IConfiguration configuracion) => new(
+        Math.Max(1, configuracion.GetValue("Validasoft:LimitePublico:Peticiones", 60)),
+        Math.Max(1, configuracion.GetValue("Validasoft:LimitePublico:PeticionesPorSesion", 300)),
+        TimeSpan.FromSeconds(Math.Max(1, configuracion.GetValue("Validasoft:LimitePublico:VentanaSegundos", 60))),
+        // El ingreso directo (/api/v1/ingreso, ING-1) tiene su propio cupo por IP: 30 peticiones por minuto por omisión.
+        Math.Max(1, configuracion.GetValue("Validasoft:LimiteIngreso:Peticiones", 30)),
+        TimeSpan.FromSeconds(Math.Max(1, configuracion.GetValue("Validasoft:LimiteIngreso:VentanaSegundos", 60))));
+}
+
+/// <summary>
+/// Límite de peticiones de <c>/public/v1</c> (ventana fija; <c>Validasoft:LimitePublico:{Peticiones, PeticionesPorSesion, VentanaSegundos}</c>).
+/// Con la sesión de un tercero —ya autenticada: el límite corre después de <c>UseAuthentication</c>, así que el reclamo <c>terceroId</c> es el de un
+/// token válido y nadie inventa particiones— el cupo es por tercero (300 por minuto por omisión): su portal pide varias consultas seguidas y la IP de
+/// salida de una oficina no debe agotar el cupo de todos. Lo anónimo (abrir el enlace, el verificador de certificados) y un token vencido o inválido
+/// siguen por IP (60 por minuto). La evaluación de la ficha (<c>…/evaluacion</c>, FM-46) va en otro cupo, cuatro veces mayor al que le toque: el
+/// wizard la pide mientras el tercero escribe y no debe agotar el de las demás. <c>/api/v1</c> aún no tiene límite (llegará por credencial), salvo el
+/// ingreso directo, por IP. Excedido ⇒ 429 ProblemDetails <c>demasiadas-peticiones</c> con <c>Retry-After</c>.
 /// </summary>
 public static class LimiteDePeticionesPublicas
 {
     /// <summary>Rutas del ingreso directo: anónimas, con su propio límite por IP.</summary>
     public const string RutaIngreso = "/api/v1/ingreso";
 
+    /// <summary>
+    /// Partición y cupo de una petición de <c>/public/v1</c>: por tercero si trae una sesión de tercero ya autenticada, si no por IP; la evaluación de la
+    /// ficha va en su propia partición y con cuatro veces el cupo. No consulta nada: lee el reclamo del token que la autenticación ya validó.
+    /// </summary>
+    public static (string Clave, int Cupo) ParticionPublica(HttpContext http, CuposDeLimitePublico cupos)
+    {
+        var usuario = http.User;
+        Guid? tercero = usuario.Identity?.IsAuthenticated == true && usuario.FindFirstValue(ReclamosTercero.Tipo) == ReclamosTercero.ValorTipo &&
+                        Guid.TryParse(usuario.FindFirstValue(ReclamosTercero.TerceroId), out var terceroId)
+            ? terceroId
+            : null;
+        var sujeto = tercero is { } id ? "tercero:" + id.ToString("N") : "ip:" + (http.Connection.RemoteIpAddress?.ToString() ?? "desconocida");
+        var cupo = tercero is null ? cupos.PorIp : cupos.PorSesion;
+        var evaluacion = http.Request.Path.Value?.EndsWith("/evaluacion", StringComparison.OrdinalIgnoreCase) == true;
+        return evaluacion ? ("evaluacion:" + sujeto, cupo * 4) : (sujeto, cupo);
+    }
+
+    /// <summary>El limitador global: el ingreso por su cupo, <c>/public/v1</c> según <see cref="ParticionPublica"/> y todo lo demás sin límite.</summary>
+    public static PartitionedRateLimiter<HttpContext> CrearLimitador(CuposDeLimitePublico cupos) =>
+        PartitionedRateLimiter.Create<HttpContext, string>(http =>
+        {
+            if (http.Request.Path.StartsWithSegments(RutaIngreso, StringComparison.OrdinalIgnoreCase))
+                return RateLimitPartition.GetFixedWindowLimiter("ingreso:" + (http.Connection.RemoteIpAddress?.ToString() ?? "desconocida"),
+                    _ => new FixedWindowRateLimiterOptions { PermitLimit = cupos.Ingreso, Window = cupos.VentanaIngreso, QueueLimit = 0 });
+            if (!http.Request.Path.StartsWithSegments(ServiciosInfraestructura.RutaPublica, StringComparison.OrdinalIgnoreCase))
+                return RateLimitPartition.GetNoLimiter("sin-limite");
+            var (clave, cupo) = ParticionPublica(http, cupos);
+            return RateLimitPartition.GetFixedWindowLimiter(clave, _ => new FixedWindowRateLimiterOptions { PermitLimit = cupo, Window = cupos.Ventana, QueueLimit = 0 });
+        });
+
     public static IServiceCollection AgregarLimiteDePeticionesPublicas(this IServiceCollection servicios, IConfiguration configuracion)
     {
-        var peticiones = Math.Max(1, configuracion.GetValue("Validasoft:LimitePublico:Peticiones", 60));
-        var ventana = TimeSpan.FromSeconds(Math.Max(1, configuracion.GetValue("Validasoft:LimitePublico:VentanaSegundos", 60)));
-        // El ingreso directo (/api/v1/ingreso, ING-1) tiene su propio cupo por IP: 30 peticiones por minuto por omisión.
-        var peticionesIngreso = Math.Max(1, configuracion.GetValue("Validasoft:LimiteIngreso:Peticiones", 30));
-        var ventanaIngreso = TimeSpan.FromSeconds(Math.Max(1, configuracion.GetValue("Validasoft:LimiteIngreso:VentanaSegundos", 60)));
+        var cupos = CuposDeLimitePublico.De(configuracion);
+        var ventana = cupos.Ventana;
 
         return servicios.AddRateLimiter(opciones =>
         {
-            opciones.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(http =>
-            {
-                if (http.Request.Path.StartsWithSegments(RutaIngreso, StringComparison.OrdinalIgnoreCase))
-                    return RateLimitPartition.GetFixedWindowLimiter("ingreso:" + (http.Connection.RemoteIpAddress?.ToString() ?? "desconocida"),
-                        _ => new FixedWindowRateLimiterOptions { PermitLimit = peticionesIngreso, Window = ventanaIngreso, QueueLimit = 0 });
-                if (!http.Request.Path.StartsWithSegments(ServiciosInfraestructura.RutaPublica, StringComparison.OrdinalIgnoreCase))
-                    return RateLimitPartition.GetNoLimiter("sin-limite");
-                var ip = http.Connection.RemoteIpAddress?.ToString() ?? "desconocida";
-                var evaluacion = http.Request.Path.Value?.EndsWith("/evaluacion", StringComparison.OrdinalIgnoreCase) == true;
-                return RateLimitPartition.GetFixedWindowLimiter((evaluacion ? "evaluacion:" : "ip:") + ip,
-                    _ => new FixedWindowRateLimiterOptions { PermitLimit = evaluacion ? peticiones * 4 : peticiones, Window = ventana, QueueLimit = 0 });
-            });
+            opciones.GlobalLimiter = CrearLimitador(cupos);
 
             opciones.OnRejected = async (contexto, ct) =>
             {
