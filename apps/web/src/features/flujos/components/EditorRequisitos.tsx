@@ -1,5 +1,5 @@
 import { Box, Button, FormControlLabel, IconButton, MenuItem, Stack, Switch, TextField, Tooltip, Typography } from '@mui/material';
-import type { AreaDto, TipoDocumentoTenantDto } from '@validasoft/api-client';
+import type { AreaDto, AtributoPermitidoDto, TipoDocumentoTenantDto } from '@validasoft/api-client';
 import { AlineadoConCampo, CampoNumero } from '@validasoft/ui';
 import { ClipboardList, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import { admitePersona, requisitoDeSeccionNuevo, requisitoNuevo, ROLES_DE_PERSON
 import { seccionesQueRespalda } from '../requisitosDeSeccion';
 import { OpcionesSeccion, SelectorSeccion } from './CamposRequisitoSeccion';
 import { SelectorAreasRequisito } from './SelectorAreasRequisito';
+import { CondicionDeAtributo } from './CondicionDeAtributo';
 import { CondicionDeFicha } from './CondicionDeFicha';
 import { SelectorDeCondicion } from './SelectorDeCondicion';
 
@@ -22,6 +23,8 @@ export interface EditorRequisitosProps {
   onCambiar: (requisitos: RequisitoEnEditor[]) => void;
   errores: readonly ErrorFlujo[];
   soloLectura: boolean;
+  /** Los atributos permitidos del tipo de vínculo del flujo: con ellos «Se pide a» ofrece «según un atributo del vínculo». */
+  atributos?: readonly AtributoPermitidoDto[];
 }
 
 type CodigoErrorSeccion = keyof typeof fichaEmpresa.editor.errores;
@@ -34,7 +37,7 @@ const esErrorDeSeccion = (codigo: string): codigo is CodigoErrorSeccion => codig
  * API se describe y se conserva). Una sección suma periodos (la financiera) y «Exige soporte». Sin requisitos, el flujo
  * decide por área (FL-1).
  */
-export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, onCambiar, errores, soloLectura }: EditorRequisitosProps) {
+export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, onCambiar, errores, soloLectura, atributos = [] }: EditorRequisitosProps) {
   const { t } = useTranslation();
   const areasDelFlujo = etapas.flatMap((e) => e.areas.map((a) => a.areaId)).filter(Boolean);
   const nombreArea = (id: string) => areas.find((a) => a.id === id)?.nombre ?? id;
@@ -116,6 +119,7 @@ export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, on
                 onCambiar={(condicion) => cambiar(k, { condicion })}
                 deshabilitado={soloLectura}
                 textoDe={(a) => t(`flujos.editor.requisitos.atajos.${a}`)}
+                atributos={atributos}
               />
               <CampoNumero
                 etiqueta={t('flujos.editor.requisitos.aprobadores')}
@@ -141,6 +145,15 @@ export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, on
             </Box>
             {r.condicion && atajoDe(r.condicion) === 'ficha' && (
               <CondicionDeFicha condicion={r.condicion} onCambiar={(condicion) => cambiar(k, { condicion })} deshabilitado={soloLectura} />
+            )}
+            {r.condicion && atajoDe(r.condicion) === 'atributo' && (
+              <CondicionDeAtributo
+                condicion={r.condicion}
+                atributos={atributos}
+                onCambiar={(condicion) => cambiar(k, { condicion })}
+                deshabilitado={soloLectura}
+                resumen={(condicion) => t('flujos.editor.requisitos.personalizada', { condicion })}
+              />
             )}
             {esSeccion && (
               <OpcionesSeccion

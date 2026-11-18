@@ -1,18 +1,25 @@
-import type { CondicionDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto, CondicionDto } from '@validasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import i18n from '../../i18n';
 import {
   atajoDe,
   CAMPO_DE_FICHA_POR_DEFECTO,
   condicionDe,
+  condicionDeAtributoCompleta,
+  condicionDeAtributoSimple,
   condicionDeFichaCompleta,
   condicionDeFichaSimple,
+  condicionDesdeAtributo,
   condicionDesdeFicha,
   describirCondicion,
+  modosDeAtributo,
   modosDeCampo,
+  type CondicionDeAtributo,
+  type ModoDeAtributo,
   type ModoDeFicha,
 } from './condiciones';
 import { borradorDesdeVersion, requisitoNuevo, requisitosADto, validarRequisitos } from './editor';
+import { validarSeleccion } from './seleccion';
 
 const predicado = (atributo: string, operador: string, ...valores: string[]): CondicionDto => ({ tipo: 'Predicado', nodos: null, atributo, operador, valores });
 
@@ -145,5 +152,108 @@ describe('«Según la ficha del tercero» (EF-1)', () => {
     expect(validarRequisitos({ etapas: [], requisitos: [siempre, conVacia] }, []).map((e) => [e.codigo, e.campo])).toContainEqual(['condicion-invalida', 'requisito.1']);
     expect(validarRequisitos({ etapas: [], requisitos: [siempre, conCompleta] }, []).map((e) => e.codigo)).not.toContain('condicion-invalida');
     expect(requisitosADto([conCompleta])[0]?.condicion).toEqual(completa);
+  });
+});
+
+describe('«Según un atributo del vínculo»', () => {
+  const ATRIBUTOS: AtributoPermitidoDto[] = [
+    { clave: 'nivelRiesgo', tipo: 'Opcion', obligatorio: false, opciones: ['Bajo', 'Medio', 'Alto'] },
+    { clave: 'categorias', tipo: 'ListaOpciones', obligatorio: false, opciones: ['Materiales', 'Servicios'] },
+    { clave: 'montoEstimado', tipo: 'Numero', obligatorio: false, opciones: null },
+    { clave: 'critico', tipo: 'Booleano', obligatorio: false, opciones: null },
+  ];
+  const riesgo = (modo: ModoDeAtributo, ...valores: string[]) => condicionDesdeAtributo({ clave: 'nivelRiesgo', modo, valores });
+
+  it('el atajo arranca con el primer atributo del tipo de vínculo del flujo y su primer modo, sin valores', () => {
+    expect(condicionDe('atributo', null, ATRIBUTOS)).toEqual(predicado('vinculo.atributos.nivelRiesgo', 'Igual'));
+    expect(atajoDe(condicionDe('atributo', null, ATRIBUTOS))).toBe('atributo');
+    // Con la condición ya armada la conserva; sin atributos que ofrecer no inventa nada.
+    const armada = riesgo('esUnoDe', 'Alto', 'Medio');
+    expect(condicionDe('atributo', armada, ATRIBUTOS)).toBe(armada);
+    expect(condicionDe('atributo', null, [])).toBeNull();
+  });
+
+  it('genera exactamente el predicado `vinculo.atributos.{clave}` que evalúa la API y lo reconoce al cargar (no es «personalizada»)', () => {
+    const casos: [CondicionDeAtributo, CondicionDto][] = [
+      [{ clave: 'nivelRiesgo', modo: 'es', valores: ['Alto'] }, predicado('vinculo.atributos.nivelRiesgo', 'Igual', 'Alto')],
+      [{ clave: 'nivelRiesgo', modo: 'noEs', valores: ['Bajo'] }, predicado('vinculo.atributos.nivelRiesgo', 'Distinto', 'Bajo')],
+      [{ clave: 'nivelRiesgo', modo: 'esUnoDe', valores: ['Alto', 'Medio'] }, predicado('vinculo.atributos.nivelRiesgo', 'En', 'Alto', 'Medio')],
+      [{ clave: 'nivelRiesgo', modo: 'noEsNingunoDe', valores: ['Bajo'] }, predicado('vinculo.atributos.nivelRiesgo', 'NoEn', 'Bajo')],
+      [{ clave: 'categorias', modo: 'alguno', valores: ['Servicios'] }, predicado('vinculo.atributos.categorias', 'ContieneAlguno', 'Servicios')],
+      [{ clave: 'categorias', modo: 'todos', valores: ['Materiales', 'Servicios'] }, predicado('vinculo.atributos.categorias', 'ContieneTodos', 'Materiales', 'Servicios')],
+      [{ clave: 'montoEstimado', modo: 'mayor', valores: ['1500000'] }, predicado('vinculo.atributos.montoEstimado', 'Mayor', '1500000')],
+      [{ clave: 'montoEstimado', modo: 'menor', valores: ['10.5'] }, predicado('vinculo.atributos.montoEstimado', 'Menor', '10.5')],
+      [{ clave: 'montoEstimado', modo: 'entre', valores: ['100', '200'] }, predicado('vinculo.atributos.montoEstimado', 'Entre', '100', '200')],
+      [{ clave: 'critico', modo: 'es', valores: ['true'] }, predicado('vinculo.atributos.critico', 'Igual', 'true')],
+      [{ clave: 'nivelRiesgo', modo: 'declarado', valores: [] }, predicado('vinculo.atributos.nivelRiesgo', 'Existe')],
+    ];
+    for (const [comparacion, esperada] of casos) {
+      const generada = condicionDesdeAtributo(comparacion);
+      expect(generada).toEqual(esperada);
+      expect(condicionDeAtributoSimple(generada)).toEqual(comparacion);
+      expect(atajoDe(generada)).toBe('atributo');
+    }
+  });
+
+  it('«no incluye ninguno de» y «no tiene valor» son la negación del predicado y se reconocen igual', () => {
+    const ninguno = condicionDesdeAtributo({ clave: 'categorias', modo: 'ninguno', valores: ['Servicios'] });
+    expect(ninguno).toEqual({ tipo: 'No', nodos: [predicado('vinculo.atributos.categorias', 'ContieneAlguno', 'Servicios')], atributo: null, operador: null, valores: null });
+    expect(condicionDeAtributoSimple(ninguno)).toEqual({ clave: 'categorias', modo: 'ninguno', valores: ['Servicios'] });
+    const sinValor = condicionDesdeAtributo({ clave: 'nivelRiesgo', modo: 'noDeclarado', valores: ['x'] });
+    expect(sinValor).toEqual({ tipo: 'No', nodos: [predicado('vinculo.atributos.nivelRiesgo', 'Existe')], atributo: null, operador: null, valores: null });
+    expect(atajoDe(sinValor)).toBe('atributo');
+  });
+
+  it('lo que no es una comparación simple sobre un atributo del vínculo sigue siendo ficha, personalizada o de otro atajo', () => {
+    expect(atajoDe({ tipo: 'Y', nodos: [riesgo('es', 'Alto'), riesgo('es', 'Medio')] })).toBe('personalizada');
+    expect(atajoDe(predicado('tercero.pais', 'Igual', 'CO'))).toBe('personalizada');
+    expect(atajoDe(predicado('vinculo.tipo', 'Igual', 'PROVEEDOR'))).toBe('personalizada');
+    expect(atajoDe(predicado('vinculo.atributos.', 'Igual', 'x'))).toBe('personalizada');
+    expect(atajoDe(predicado('ficha.general.ciiu', 'ContieneAlguno', '41'))).toBe('ficha');
+    expect(condicionDeAtributoSimple({ tipo: 'No', nodos: [riesgo('es', 'Alto'), riesgo('es', 'Bajo')] })).toBeNull();
+  });
+
+  it('ofrece los modos que la API admite para cada tipo de atributo', () => {
+    expect(modosDeAtributo('Opcion')).toEqual(['es', 'noEs', 'esUnoDe', 'noEsNingunoDe', 'declarado', 'noDeclarado']);
+    expect(modosDeAtributo('Texto')).toEqual(modosDeAtributo('Opcion'));
+    expect(modosDeAtributo('ListaOpciones')).toEqual(['alguno', 'todos', 'ninguno', 'declarado', 'noDeclarado']);
+    expect(modosDeAtributo('Booleano')).toEqual(['es', 'noEs', 'declarado', 'noDeclarado']);
+    expect(modosDeAtributo('Numero')).toEqual(['es', 'noEs', 'mayor', 'menor', 'entre', 'declarado', 'noDeclarado']);
+    expect(modosDeAtributo('Fecha')).toEqual(modosDeAtributo('Numero'));
+  });
+
+  it('está completa con su valor (dos con «entre», el primero no mayor que el segundo) y sin él solo si el modo no lo lleva', () => {
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'es', valores: [] }, 'Opcion')).toBe(false);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'es', valores: ['Alto'] }, 'Opcion')).toBe(true);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'esUnoDe', valores: [] }, 'Opcion')).toBe(false);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'declarado', valores: [] }, 'Opcion')).toBe(true);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'mayor', valores: ['abc'] }, 'Numero')).toBe(false);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'mayor', valores: ['12.5'] }, 'Numero')).toBe(true);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'entre', valores: ['9', '10'] }, 'Numero')).toBe(true);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'entre', valores: ['10', '9'] }, 'Numero')).toBe(false);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'entre', valores: ['10', '9'] })).toBe(false); // sin tipo: compara como números
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'entre', valores: ['2026-01-01', '2026-12-31'] }, 'Fecha')).toBe(true);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'entre', valores: ['2026-12-31', '2026-01-01'] }, 'Fecha')).toBe(false);
+    expect(condicionDeAtributoCompleta({ clave: 'a', modo: 'entre', valores: ['5'] }, 'Numero')).toBe(false);
+  });
+
+  it('se describe con la clave del atributo y los sí/no de un booleano', () => {
+    expect(describirCondicion(riesgo('es', 'Alto'), t)).toBe('nivelRiesgo es Alto');
+    expect(describirCondicion(condicionDesdeAtributo({ clave: 'critico', modo: 'es', valores: ['true'] }), t)).toBe('critico es sí');
+    expect(describirCondicion(condicionDesdeAtributo({ clave: 'montoEstimado', modo: 'mayor', valores: ['1500000'] }), t)).toBe('montoEstimado mayor que 1500000');
+    expect(describirCondicion(condicionDesdeAtributo({ clave: 'categorias', modo: 'ninguno', valores: ['Servicios'] }), t)).toBe('no se cumple (categorias incluye alguno de Servicios)');
+  });
+
+  it('una condición de atributo sin valores no se puede guardar (requisito y selección) y una completa sí, tal cual', () => {
+    const vacia = condicionDe('atributo', null, ATRIBUTOS);
+    const completa = riesgo('es', 'Alto');
+    const conVacia = { ...requisitoNuevo('camara'), condicion: vacia };
+    const conCompleta = { ...requisitoNuevo('camara'), condicion: completa };
+
+    expect(validarRequisitos({ etapas: [], requisitos: [conVacia] }, []).map((e) => [e.codigo, e.campo])).toContainEqual(['condicion-invalida', 'requisito.0']);
+    expect(validarRequisitos({ etapas: [], requisitos: [conCompleta] }, []).map((e) => e.codigo)).not.toContain('condicion-invalida');
+    expect(requisitosADto([conCompleta])[0]?.condicion).toEqual(completa);
+    expect(validarSeleccion({ seleccionCondicion: vacia, seleccionPrioridad: '1' })).toEqual([{ codigo: 'condicion-invalida', campo: 'seleccion.condicion' }]);
+    expect(validarSeleccion({ seleccionCondicion: completa, seleccionPrioridad: '1' })).toEqual([]);
   });
 });

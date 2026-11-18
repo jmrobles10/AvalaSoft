@@ -9,6 +9,7 @@ export const flujoSeleccion = {
     juridica: 'El tercero es persona jurídica',
     natural: 'El tercero es persona natural',
     ficha: 'Según la ficha del tercero',
+    atributo: 'Según un atributo del vínculo',
     personalizada: 'Condición personalizada',
   },
   prioridad: 'Prioridad',
@@ -47,6 +48,38 @@ export const condicionDeFicha = {
     noEsNingunoDe: 'no es ninguno de',
     declarado: 'está declarado',
     noDeclarado: 'no está declarado',
+  },
+} as const;
+
+/**
+ * Condición según un atributo del vínculo: se arma en «Se pide a» de un documento y en «Se escoge cuando» de la selección del flujo con los atributos permitidos del tipo de
+ * vínculo del flujo (nivel de riesgo, monto estimado…), los operadores que la API admite para su tipo y el valor con el control de su tipo.
+ */
+export const condicionDeAtributo = {
+  atributo: 'Atributo del vínculo',
+  seCumpleCuando: 'Se cumple cuando',
+  valor: 'Valor',
+  valores: 'Valores',
+  desde: 'Desde',
+  hasta: 'Hasta',
+  escribe: 'Escribe y pulsa Intro',
+  si: 'Sí',
+  no: 'No',
+  yaNoExiste: '{{clave}} (el tipo de vínculo ya no lo tiene)',
+  incompleta: 'Completa el valor (con «entre», el primero no puede ser mayor que el segundo).',
+  modos: {
+    es: 'es',
+    noEs: 'no es',
+    esUnoDe: 'es uno de',
+    noEsNingunoDe: 'no es ninguno de',
+    alguno: 'incluye alguno de',
+    todos: 'incluye todos',
+    ninguno: 'no incluye ninguno de',
+    mayor: 'es mayor que',
+    menor: 'es menor que',
+    entre: 'está entre',
+    declarado: 'tiene valor',
+    noDeclarado: 'no tiene valor',
   },
 } as const;
 

@@ -54,7 +54,8 @@ export function EditorFlujo() {
   const flujo = useFlujo(empresa.id, nuevo ? '' : flujoId);
   const versiones = useVersionesFlujo(empresa.id, nuevo ? '' : flujoId);
   const areas = useAreas(empresa.id, permisos.puede(SCOPES.configuracionLeer));
-  const tipos = useTiposVinculo(empresa.id, nuevo && permisos.puede(SCOPES.configuracionLeer));
+  // Los tipos de vínculo se leen también con un flujo existente: sus atributos permitidos alimentan las condiciones «según un atributo del vínculo».
+  const tipos = useTiposVinculo(empresa.id, permisos.puede(SCOPES.configuracionLeer));
   const tiposDocumento = useTiposDocumento(permisos.puede(SCOPES.configuracionLeer));
   const cuestionarios = useCuestionarios(empresa.id, permisos.puede(SCOPES.cuestionariosLeer));
   const crear = useCrearFlujo(empresa.id);
@@ -236,6 +237,7 @@ export function EditorFlujo() {
             tipos={nuevo ? (tipos.data ?? []) : null}
             tiposDocumento={tiposDocumento.data ?? []}
             cuestionarios={cuestionarios.data ?? []}
+            atributos={tipos.data?.find((x) => x.codigo === mostrado.tipoVinculo)?.atributosPermitidos}
             errores={visibles}
             soloLectura={!editando}
           />

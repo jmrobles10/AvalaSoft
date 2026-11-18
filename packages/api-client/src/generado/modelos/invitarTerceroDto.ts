@@ -4,6 +4,7 @@
  * Validasoft.Api | v1
  * OpenAPI spec version: 1.0.0
  */
+import type { InvitarTerceroDtoAtributos } from './invitarTerceroDtoAtributos';
 
 export interface InvitarTerceroDto {
   /** @nullable */
@@ -31,4 +32,6 @@ export interface InvitarTerceroDto {
   /** @nullable */
   telefono?: string | null;
   vigenciaHoras?: number;
+  /** @nullable */
+  atributos?: InvitarTerceroDtoAtributos;
 }

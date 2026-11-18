@@ -1,6 +1,6 @@
-import type { TipoIdentificacionDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto, TipoIdentificacionDto } from '@validasoft/api-client';
 import { describe, expect, it } from 'vitest';
-import { borradorInvitacionNuevo, correoValido, cuerpoInvitacion, erroresDeLaApi, validarInvitacion, type BorradorInvitacion } from './modeloInvitar';
+import { borradorInvitacionNuevo, correoValido, cuerpoInvitacion, erroresDeAtributosDeLaApi, erroresDeLaApi, validarInvitacion, type BorradorInvitacion } from './modeloInvitar';
 
 const NIT: TipoIdentificacionDto = { pais: 'CO', codigo: 'NIT', nombre: 'Número de Identificación Tributaria', aplicaA: 'Ambas', patron: '^[0-9]{6,15}$', tieneDv: true };
 const CC: TipoIdentificacionDto = { pais: 'CO', codigo: 'CC', nombre: 'Cédula de ciudadanía', aplicaA: 'Natural', patron: '^[0-9]{3,10}$', tieneDv: false };
@@ -80,5 +80,31 @@ describe('modelo de «Invitar tercero»', () => {
         desconocido: ['ignorado'],
       }),
     ).toEqual({ numero: 'El número no tiene el formato.', digito: 'El dígito no corresponde.', tipoVinculo: 'El tipo no existe.' });
+  });
+
+  it('los atributos del tipo elegido viajan con el tipo de cada uno y solo si alguno tiene valor', () => {
+    const permitidos: AtributoPermitidoDto[] = [
+      { clave: 'nivelRiesgo', tipo: 'Opcion', obligatorio: true, opciones: ['Bajo', 'Alto'] },
+      { clave: 'montoEstimado', tipo: 'Numero', obligatorio: false, opciones: null },
+      { clave: 'critico', tipo: 'Booleano', obligatorio: false, opciones: null },
+    ];
+    const conValores = { ...COMPLETO, atributos: { nivelRiesgo: 'Alto', montoEstimado: '1500000', critico: 'true' } };
+
+    expect(cuerpoInvitacion(conValores, NIT, permitidos)).toMatchObject({ atributos: { nivelRiesgo: 'Alto', montoEstimado: 1500000, critico: true } });
+    // Sin valores, o sin atributos del tipo, el cuerpo es el de siempre (la API lo lee como «no vinieron»).
+    expect(cuerpoInvitacion(COMPLETO, NIT, permitidos)).not.toHaveProperty('atributos');
+    expect(cuerpoInvitacion(conValores, NIT)).not.toHaveProperty('atributos');
+    expect(borradorInvitacionNuevo().atributos).toEqual({});
+  });
+
+  it('lleva los errores por atributo de la API (atributos.{clave}) a su atributo', () => {
+    expect(
+      erroresDeAtributosDeLaApi({
+        'atributos.nivelRiesgo': ['El valor no es válido.', 'otro'],
+        'atributos.obra': ['El tipo no admite ese atributo.'],
+        correo: ['ignorado'],
+        'atributos.': ['sin clave'],
+      }),
+    ).toEqual({ nivelRiesgo: 'El valor no es válido.', obra: 'El tipo no admite ese atributo.' });
   });
 });

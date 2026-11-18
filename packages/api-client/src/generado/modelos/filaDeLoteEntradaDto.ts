@@ -4,6 +4,7 @@
  * Validasoft.Api | v1
  * OpenAPI spec version: 1.0.0
  */
+import type { FilaDeLoteEntradaDtoAtributos } from './filaDeLoteEntradaDtoAtributos';
 
 export interface FilaDeLoteEntradaDto {
   /** @nullable */
@@ -30,4 +31,6 @@ export interface FilaDeLoteEntradaDto {
   contacto?: string | null;
   /** @nullable */
   telefono?: string | null;
+  /** @nullable */
+  atributos?: FilaDeLoteEntradaDtoAtributos;
 }

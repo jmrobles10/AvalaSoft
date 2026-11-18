@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Button, Chip, ListItemIcon, ListItemText, Menu, MenuItem, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, ListItemIcon, ListItemText, Menu, MenuItem, Skeleton, Stack, Typography } from '@mui/material';
 import { accionesDisponibles, esErrorApi, SCOPES, type DefinicionAccion, type VinculoDto } from '@validasoft/api-client';
 import { AvatarActor, ChipEstado, Dato, EsqueletoTarjeta, EstadoVacio, formatearFecha, LineaDeTiempo, MarcoTabla, PaginaEstado, RejillaDatos, ValorLargo } from '@validasoft/ui';
 import { ChevronDown, Lock, SearchX } from 'lucide-react';
@@ -21,6 +21,7 @@ import { AvisoInvitacionPorAprobar } from '../../invitaciones/AvisoInvitacionPor
 import { actoresDeHistorial, useNombresUsuarios } from '../../configuracion/usuarios/api';
 import { ICONO_ACCION } from '../acciones';
 import { useHistorialVinculo, useTercero, useVinculo } from '../api';
+import { AtributosDelVinculo } from '../atributos/AtributosDelVinculo';
 import { AvisoAccesoDelCorreo } from '../components/AvisoAccesoDelCorreo';
 import { AvisoActualizacionNoAprobada } from '../components/AvisoActualizacionNoAprobada';
 import { AvisoDeVigencia } from '../components/AvisoDeVigencia';
@@ -105,7 +106,7 @@ export function DetalleVinculo() {
       <AvisoActualizacionNoAprobada vinculo={vinculo} empresaId={empresa.id} />
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0,1fr)', lg: 'minmax(0,1.7fr) minmax(0,1fr)' }, gap: 2, alignItems: 'start' }}>
         <Stack spacing={2} sx={{ minWidth: 0 }}>
-          <DatosVinculo vinculo={vinculo} empresaNombre={empresa.nombre} conFicha={permisos.puede(SCOPES.tercerosLeer)} />
+          <DatosVinculo vinculo={vinculo} empresaId={empresa.id} empresaNombre={empresa.nombre} conFicha={permisos.puede(SCOPES.tercerosLeer)} />
           <TarjetaExpedienteVinculo vinculo={vinculo} />
           <TarjetaMonitoreoListas vinculoId={vinculo.id} empresaId={empresa.id} />
           <TarjetaMonitoreoFuentes vinculoId={vinculo.id} empresaId={empresa.id} />
@@ -214,10 +215,9 @@ function Encabezado({ vinculo, acciones, onAccion, antes }: { vinculo: VinculoDt
 }
 
 /** `conFicha`: el nombre del tercero lleva a su ficha (Tercero 360) si la persona puede verla. */
-function DatosVinculo({ vinculo, empresaNombre, conFicha }: { vinculo: VinculoDto; empresaNombre: string; conFicha: boolean }) {
+function DatosVinculo({ vinculo, empresaId, empresaNombre, conFicha }: { vinculo: VinculoDto; empresaId: string; empresaNombre: string; conFicha: boolean }) {
   const { t } = useTranslation();
   const tercero = useTercero(vinculo.terceroId);
-  const atributos = Object.entries(vinculo.atributos);
   const invitacion = vinculo.invitacionAceptadaEn
     ? t('vinculos.detalle.invitacionAceptada', { fecha: formatearFecha(vinculo.invitacionAceptadaEn) })
     : vinculo.invitacion
@@ -257,15 +257,7 @@ function DatosVinculo({ vinculo, empresaNombre, conFicha }: { vinculo: VinculoDt
         <Dato etiqueta={t('vinculos.detalle.actualizado')}>
           <Mono>{formatearFecha(vinculo.actualizadoEn)}</Mono>
         </Dato>
-        {atributos.length > 0 && (
-          <Dato etiqueta={t('vinculos.detalle.atributos')} ancho>
-            <Box component="span" sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-              {atributos.map(([clave, valor]) => (
-                <Chip key={clave} size="small" variant="outlined" label={`${clave}: ${typeof valor === 'string' ? valor : JSON.stringify(valor)}`} />
-              ))}
-            </Box>
-          </Dato>
-        )}
+        <AtributosDelVinculo vinculo={vinculo} empresaId={empresaId} />
       </RejillaDatos>
     </Tarjeta>
   );

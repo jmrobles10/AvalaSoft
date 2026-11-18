@@ -65,7 +65,7 @@ interface Peticion {
   clave: string | null;
 }
 
-function montar(invitar: (cuerpo: unknown) => Response, empresas: EmpresaDto[] = [NORTE]) {
+function montar(invitar: (cuerpo: unknown) => Response, empresas: EmpresaDto[] = [NORTE], tipos: TipoVinculoDto[] = TIPOS) {
   const peticiones: Peticion[] = [];
   configurarCliente({
     fetch: vi.fn((entrada: RequestInfo | URL, init?: RequestInit) => {
@@ -75,7 +75,7 @@ function montar(invitar: (cuerpo: unknown) => Response, empresas: EmpresaDto[] =
       const cuerpo: unknown = typeof init?.body === 'string' ? JSON.parse(init.body) : null;
       peticiones.push({ url, metodo, cuerpo, empresa: cabeceras.get('X-Empresa'), clave: cabeceras.get('Idempotency-Key') });
       if (url.startsWith('/api/v1/catalogos/paises')) return Promise.resolve(json(PAISES));
-      if (url.startsWith('/api/v1/tipos-vinculo')) return Promise.resolve(json(TIPOS));
+      if (url.startsWith('/api/v1/tipos-vinculo')) return Promise.resolve(json(tipos));
       if (url.startsWith('/api/v1/flujos')) return Promise.resolve(json(FLUJOS));
       if (metodo === 'POST' && url === '/api/v1/invitaciones') return Promise.resolve(invitar(cuerpo));
       return Promise.resolve(json({ status: 404, codigo: 'no-encontrado', detail: 'Sin simular.' }, 404));
@@ -96,7 +96,7 @@ function montar(invitar: (cuerpo: unknown) => Response, empresas: EmpresaDto[] =
   return peticiones;
 }
 
-async function elegir(usuario: ReturnType<typeof userEvent.setup>, campo: RegExp, opcion: string | RegExp) {
+async function elegir(usuario: ReturnType<typeof userEvent.setup>, campo: string | RegExp, opcion: string | RegExp) {
   await usuario.click(screen.getByRole('combobox', { name: campo }));
   await usuario.click(await screen.findByRole('option', { name: opcion }));
 }
@@ -309,5 +309,119 @@ describe('«Invitar tercero»: formulario de una invitación a mano', () => {
     expect(await screen.findByText('Detalle del vínculo')).toBeInTheDocument();
     expect(peticiones.find((p) => p.metodo === 'POST')?.cuerpo).toMatchObject({ tipoVinculo: 'PROVEEDOR' });
     expect(peticiones.some((p) => p.url.startsWith('/api/v1/tipos-vinculo'))).toBe(false);
+  });
+});
+
+describe('«Invitar tercero»: atributos del vínculo del tipo elegido', () => {
+  const CON_ATRIBUTOS: TipoVinculoDto[] = [
+    {
+      ...tipo('PROVEEDOR', 'Proveedor'),
+      atributosPermitidos: [
+        { clave: 'nivelRiesgo', tipo: 'Opcion', obligatorio: true, opciones: ['Bajo', 'Medio', 'Alto'] },
+        { clave: 'categorias', tipo: 'ListaOpciones', obligatorio: false, opciones: ['Materiales', 'Servicios'] },
+        { clave: 'montoEstimado', tipo: 'Numero', obligatorio: false, opciones: null },
+        { clave: 'critico', tipo: 'Booleano', obligatorio: false, opciones: null },
+      ],
+    },
+    tipo('CLIENTE', 'Cliente'),
+  ];
+
+  async function llenarSinTipo(usuario: ReturnType<typeof userEvent.setup>) {
+    await screen.findByRole('dialog');
+    await usuario.type(screen.getByRole('textbox', { name: /Número de identificación/ }), '900123456');
+    await usuario.type(screen.getByRole('textbox', { name: /Razón social o nombres/ }), 'Aceros del Norte S.A.S.');
+    await usuario.type(screen.getByRole('textbox', { name: /Correo/ }), 'compras@aceros.co');
+  }
+
+  it('al elegir el tipo muestra los campos de sus atributos (los obligatorios marcados) y no los muestra si el tipo no tiene', async () => {
+    permisos.scopes = new Set([SCOPES.vinculosEscribir, SCOPES.configuracionLeer]);
+    const usuario = userEvent.setup();
+    montar(() => json(RESPUESTA, 201), [NORTE], CON_ATRIBUTOS);
+    await llenarSinTipo(usuario);
+    expect(screen.queryByText('Atributos del vínculo')).not.toBeInTheDocument();
+
+    await elegir(usuario, /Tipo de vínculo/, 'Proveedor');
+    expect(screen.getByText('Atributos del vínculo')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /nivelRiesgo/ })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /nivelRiesgo/ }).closest('.MuiFormControl-root')?.querySelector('.MuiFormLabel-asterisk')).not.toBeNull(); // obligatorio
+    expect(screen.getByRole('combobox', { name: 'critico' }).closest('.MuiFormControl-root')?.querySelector('.MuiFormLabel-asterisk')).toBeNull();
+    expect(screen.getByRole('combobox', { name: 'categorias' })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'montoEstimado' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'critico' })).toBeInTheDocument();
+
+    // Con otro tipo sin atributos desaparecen.
+    await elegir(usuario, /Tipo de vínculo/, 'Cliente');
+    expect(screen.queryByText('Atributos del vínculo')).not.toBeInTheDocument();
+  });
+
+  it('con un atributo obligatorio sin valor no deja enviar y dice cuál falta; con él, los envía con el tipo de cada uno', async () => {
+    permisos.scopes = new Set([SCOPES.vinculosEscribir, SCOPES.configuracionLeer]);
+    const usuario = userEvent.setup();
+    const peticiones = montar(() => json(RESPUESTA, 201), [NORTE], CON_ATRIBUTOS);
+    await llenarSinTipo(usuario);
+    await elegir(usuario, /Tipo de vínculo/, 'Proveedor');
+
+    const invitar = screen.getByRole('button', { name: 'Invitar' });
+    expect(invitar).toBeDisabled();
+    expect(screen.getByRole('status')).toHaveTextContent('Falta el atributo «nivelRiesgo».');
+
+    await elegir(usuario, /nivelRiesgo/, 'Alto');
+    await usuario.type(screen.getByRole('textbox', { name: 'montoEstimado' }), '1500000');
+    await usuario.click(screen.getByRole('combobox', { name: 'categorias' }));
+    await usuario.click(await screen.findByRole('option', { name: 'Servicios' }));
+    await usuario.keyboard('{Escape}');
+    await elegir(usuario, 'critico', 'Sí');
+    await waitFor(() => expect(invitar).toBeEnabled());
+    await usuario.click(invitar);
+
+    expect(await screen.findByText('Detalle del vínculo')).toBeInTheDocument();
+    expect(peticiones.find((p) => p.metodo === 'POST')?.cuerpo).toMatchObject({
+      tipoVinculo: 'PROVEEDOR',
+      atributos: { nivelRiesgo: 'Alto', montoEstimado: 1500000, categorias: ['Servicios'], critico: true },
+    });
+  });
+
+  it('un tipo sin atributos no manda ninguno y un valor inválido de un número avisa en su campo', async () => {
+    permisos.scopes = new Set([SCOPES.vinculosEscribir, SCOPES.configuracionLeer]);
+    const usuario = userEvent.setup();
+    const peticiones = montar(() => json(RESPUESTA, 201), [NORTE], CON_ATRIBUTOS);
+    await llenarSinTipo(usuario);
+    await elegir(usuario, /Tipo de vínculo/, 'Proveedor');
+    await elegir(usuario, /nivelRiesgo/, 'Bajo');
+    await usuario.type(screen.getByRole('textbox', { name: 'montoEstimado' }), '12,5');
+    expect(await screen.findAllByText('Escribe un número, con punto decimal.')).not.toHaveLength(0);
+    expect(screen.getByRole('button', { name: 'Invitar' })).toBeDisabled();
+
+    // Quitar el atributo y cambiar a un tipo sin atributos: el cuerpo es el de siempre.
+    await elegir(usuario, /Tipo de vínculo/, 'Cliente');
+    await usuario.click(screen.getByRole('button', { name: 'Invitar' }));
+    expect(await screen.findByText('Detalle del vínculo')).toBeInTheDocument();
+    expect(peticiones.find((p) => p.metodo === 'POST')?.cuerpo).not.toHaveProperty('atributos');
+  });
+
+  it('lo que la API dice de un atributo (atributos.{clave}) se ve en su campo', async () => {
+    permisos.scopes = new Set([SCOPES.vinculosEscribir, SCOPES.configuracionLeer]);
+    const usuario = userEvent.setup();
+    montar(
+      () =>
+        json(
+          {
+            status: 422,
+            codigo: 'atributo-no-permitido',
+            detail: 'x',
+            errores: [{ campo: 'atributos.nivelRiesgo', codigo: 'atributo-invalido', mensaje: 'El valor del atributo «nivelRiesgo» no es válido: escribe una de estas opciones: Bajo, Medio, Alto.' }],
+          },
+          422,
+        ),
+      [NORTE],
+      CON_ATRIBUTOS,
+    );
+    await llenarSinTipo(usuario);
+    await elegir(usuario, /Tipo de vínculo/, 'Proveedor');
+    await elegir(usuario, /nivelRiesgo/, 'Medio');
+    await usuario.click(screen.getByRole('button', { name: 'Invitar' }));
+
+    expect(await screen.findByText('El valor del atributo «nivelRiesgo» no es válido: escribe una de estas opciones: Bajo, Medio, Alto.')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 });
