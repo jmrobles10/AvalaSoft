@@ -78,7 +78,7 @@ Con la segunda aprobación de otra persona de la empresa, la cuenta queda design
 
 ## Paso 5. El expediente se aprueba solo
 
-En el mismo momento en que la segunda persona aprueba la cuenta, el expediente que esperaba se cierra: queda «Expediente aprobado», el vínculo pasa a activo, se emite el certificado y el proveedor recibe el correo de aprobación. Nadie tiene que volver a pulsar «aprobar». El botón «Historial» del encabezado deja la constancia que sigue.
+En el mismo momento en que la segunda persona aprueba la cuenta, el expediente que esperaba se cierra: queda «Expediente aprobado», el vínculo pasa a activo, se emite el certificado y el proveedor recibe el correo de aprobación. Nadie tiene que volver a pulsar «aprobar». El botón «Ver historial» del encabezado deja la constancia que sigue.
 
 > **Pantalla:** `/e/{empresa}/expedientes/{id}`
 

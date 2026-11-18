@@ -159,7 +159,7 @@ recorrido(
       titulo: 'El expediente se aprueba solo',
       explicacion:
         'En el mismo momento en que la segunda persona aprueba la cuenta, el expediente que esperaba se cierra: queda «Expediente aprobado», el vínculo pasa a activo, se emite el certificado y el proveedor recibe el correo de aprobación. Nadie tiene que volver a pulsar «aprobar». ' +
-        'El botón «Historial» del encabezado deja la constancia que sigue.',
+        'El botón «Ver historial» del encabezado deja la constancia que sigue.',
       resaltar: cierre.getByRole('alert').getByText('Expediente aprobado'),
       avisos: true,
     });

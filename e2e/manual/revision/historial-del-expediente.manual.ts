@@ -51,7 +51,7 @@ recorrido(
     // 1) Ana abre el historial del expediente.
     const app = await abrirEmbebido(page, e, e.ana, e.norte, `expedientes/${expediente}`);
     await expect(app.getByRole('heading', { level: 1, name: proveedor.nombre })).toBeVisible();
-    // El historial no es una tarjeta de la página: se abre con el botón «Historial» del encabezado (panel lateral, pestaña del expediente).
+    // El historial no es una tarjeta de la página: se abre con el botón «Ver historial» del encabezado (panel lateral, pestaña del expediente).
     const historial = await abrirHistorial(app);
     await expect(app.getByText('Adjunto el RUT completo.').first()).toBeVisible();
     await paso(page, {

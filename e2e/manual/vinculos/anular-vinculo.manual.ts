@@ -62,7 +62,7 @@ recorrido(
       avisos: true,
     });
 
-    // El historial no es una tarjeta: se abre desde el botón «Historial» del encabezado y conserva la anulación.
+    // El historial no es una tarjeta: se abre desde el botón «Ver historial» del encabezado y conserva la anulación.
     const panel = await abrirHistorial(app);
     const entrada = app.getByText('Vínculo anulado', { exact: true });
     await expect(entrada).toBeVisible();
@@ -70,7 +70,7 @@ recorrido(
     await paso(page, {
       titulo: 'Revisa la anulación en el historial',
       explicacion:
-        'El panel «Historial» (botón del encabezado) guarda la anulación con el estado anterior, el motivo y quién la hizo. Nada se borra: el vínculo anulado sigue en el historial para auditoría.',
+        'El panel del historial (botón «Ver historial» del encabezado) guarda la anulación con el estado anterior, el motivo y quién la hizo. Nada se borra: el vínculo anulado sigue en el historial para auditoría.',
       resaltar: [panel, entrada],
     });
   },

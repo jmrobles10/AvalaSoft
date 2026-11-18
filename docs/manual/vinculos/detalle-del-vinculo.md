@@ -52,7 +52,7 @@ En «Datos del vínculo», la línea «Invitación» muestra cuántos correos se
 
 ## Paso 3. Revisa las referencias de cada sistema
 
-Al final del sector «Información general» están las «Referencias externas»: cuando un sistema integrado crea o enlaza el vínculo, su identificador queda ahí con el nombre del sistema y su referencia (aquí «E2E» y «PRO-904542371-N2DAB2»). Un mismo vínculo puede tener una referencia por cada sistema; con esa referencia se encuentra también desde la lista.
+Al final del sector «Información general» están las «Referencias externas»: cuando un sistema integrado crea o enlaza el vínculo, su identificador queda ahí con el nombre del sistema y su referencia (aquí «E2E» y «PRO-914708031-NB3831»). Un mismo vínculo puede tener una referencia por cada sistema; con esa referencia se encuentra también desde la lista.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 
@@ -64,7 +64,7 @@ Al final del sector «Información general» están las «Referencias externas»
 
 ## Paso 4. Revisa el historial del vínculo
 
-El botón «Historial» del encabezado abre un panel a la derecha con la línea de tiempo del vínculo: cuándo se creó, cuándo se envió la invitación y cada cambio de estado o de datos, con quién lo hizo. Es lo primero que revisas cuando alguien pregunta qué pasó con un tercero. El mismo historial está en el sector «Historial» de la barra lateral, para leerlo a página completa.
+El botón «Ver historial» del encabezado abre un panel a la derecha con la línea de tiempo del vínculo: cuándo se creó, cuándo se envió la invitación y cada cambio de estado o de datos, con quién lo hizo. Es lo primero que revisas cuando alguien pregunta qué pasó con un tercero. El mismo historial está en el sector «Historial» de la barra lateral, para leerlo a página completa.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 

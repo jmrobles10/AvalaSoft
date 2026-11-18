@@ -124,7 +124,7 @@ El flujo define **etapas en secuencia**; las **áreas** de una misma etapa revis
 | Información | Información general, Seguridad industrial y SST, Cuenta bancaria, Tributaria, Financiera, Datos de contacto, Autorización y declaración, Legal, Oficial de cumplimiento | En cada sector, **lo que pide el expediente** (sus requisitos, con su versión, vigencia y veredictos) y **lo que declaró el tercero** en esas secciones de la ficha. Autorización y declaración muestra los textos que aceptó, con el botón «Ver» para leer la versión exacta; Oficial de cumplimiento, las verificaciones de listas y del estudio y el monitoreo. El vínculo abre en Información general. |
 | Registro | Documentos adjuntos, Evaluación, Certificado, Historial | Los documentos que no van en otro sector, las evaluaciones, el certificado y la línea de tiempo. |
 
-Cada sector indica cuántos requisitos tiene **pendientes**, y en ámbar si alguno está observado o rechazado. El **historial** (del expediente y del vínculo) se abre en cualquier momento con el botón «Historial» del encabezado, sin salir del sector, y también tiene su propio sector.
+Cada sector indica cuántos requisitos tiene **pendientes**, y en ámbar si alguno está observado o rechazado. El **historial** (del expediente y del vínculo) se abre en cualquier momento con el botón «Ver historial» del encabezado, sin salir del sector, y también tiene su propio sector.
 
 Para cada documento o sección de su área, el revisor ve la versión (con su visor y los datos del análisis), los veredictos de las otras áreas y el historial. Puede:
 

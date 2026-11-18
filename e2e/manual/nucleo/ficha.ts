@@ -28,10 +28,9 @@ export function chipDeEstado(app: FrameLocator, estado: string): Locator {
   return app.locator(`[data-estado="${estado}"]`).first();
 }
 
-/** Abre el panel «Historial» desde el encabezado (desde cualquier sector que no sea el de historial) y devuelve su título. */
+/** Abre el panel del historial con «Ver historial» del encabezado (desde cualquier sector que no sea el de historial) y devuelve su título. */
 export async function abrirHistorial(app: FrameLocator): Promise<Locator> {
-  // El botón del encabezado va antes que la barra de sectores en el documento: el primero es el del encabezado.
-  await app.getByRole('button', { name: 'Historial', exact: true }).first().click();
+  await app.getByRole('button', { name: 'Ver historial', exact: true }).click();
   const titulo = app.getByRole('heading', { name: 'Historial', exact: true, level: 2 });
   await expect(titulo).toBeVisible();
   return titulo;

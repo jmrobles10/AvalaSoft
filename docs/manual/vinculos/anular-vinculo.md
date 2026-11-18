@@ -55,7 +55,7 @@ Validasoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle,
 
 ## Paso 4. Revisa la anulación en el historial
 
-El panel «Historial» (botón del encabezado) guarda la anulación con el estado anterior, el motivo y quién la hizo. Nada se borra: el vínculo anulado sigue en el historial para auditoría.
+El panel del historial (botón «Ver historial» del encabezado) guarda la anulación con el estado anterior, el motivo y quién la hizo. Nada se borra: el vínculo anulado sigue en el historial para auditoría.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 
