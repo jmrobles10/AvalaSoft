@@ -1,5 +1,6 @@
-import type { InvitarTerceroDto, TipoIdentificacionDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto, InvitarTerceroDto, TipoIdentificacionDto } from '@validasoft/api-client';
 import { numeroValido, PAIS_POR_DEFECTO, TIPO_POR_DEFECTO } from '../configuracion/empresas/modelo';
+import { cuerpoDeAtributos, type ValoresDeAtributos } from '../vinculos/atributos/modelo';
 
 /**
  * Invitar a un tercero a mano (decisión IM): los mismos datos que una fila del lote, con la misma validación que `ValidacionDeLote` para avisar antes de enviar; la API decide
@@ -28,9 +29,12 @@ export interface BorradorInvitacion {
   tipoVinculo: string;
   /** Código del flujo; vacío = el que corresponda según las reglas de la empresa. */
   flujo: string;
+  /** Los valores de los atributos permitidos del tipo de vínculo elegido (clave → valor del control); vacío mientras el tipo no tenga atributos. */
+  atributos: ValoresDeAtributos;
 }
 
-export type CampoInvitacion = keyof BorradorInvitacion;
+/** Los campos de texto del formulario (los atributos del vínculo se validan aparte, uno por uno). */
+export type CampoInvitacion = Exclude<keyof BorradorInvitacion, 'atributos'>;
 
 /** Los códigos de error de un campo (`invitaciones.invitarTercero.errores.*`). */
 export type ErrorInvitacion =
@@ -62,6 +66,7 @@ export function borradorInvitacionNuevo(): BorradorInvitacion {
     telefono: '',
     tipoVinculo: '',
     flujo: '',
+    atributos: {},
   };
 }
 
@@ -94,8 +99,12 @@ export function validarInvitacion(b: BorradorInvitacion, tipo: TipoIdentificacio
 
 const aNulo = (texto: string): string | null => texto.trim() || null;
 
-/** El cuerpo de `POST /invitaciones`: lo vacío viaja como `null` (la API lo trata como ausente). */
-export function cuerpoInvitacion(b: BorradorInvitacion, tipo: TipoIdentificacionDto | undefined): InvitarTerceroDto {
+/**
+ * El cuerpo de `POST /invitaciones`: lo vacío viaja como `null` (la API lo trata como ausente). Los atributos del vínculo (`permitidos` son los del tipo elegido) viajan solo
+ * si alguno tiene valor: sin ninguno el cuerpo es el de siempre.
+ */
+export function cuerpoInvitacion(b: BorradorInvitacion, tipo: TipoIdentificacionDto | undefined, permitidos: readonly AtributoPermitidoDto[] = []): InvitarTerceroDto {
+  const atributos = cuerpoDeAtributos(permitidos, b.atributos);
   return {
     pais: b.pais,
     tipoIdentificacion: b.tipoIdentificacion,
@@ -110,6 +119,7 @@ export function cuerpoInvitacion(b: BorradorInvitacion, tipo: TipoIdentificacion
     flujo: aNulo(b.flujo),
     contacto: aNulo(b.contacto),
     telefono: aNulo(b.telefono),
+    ...(Object.keys(atributos).length > 0 ? { atributos } : {}),
   };
 }
 
@@ -128,6 +138,20 @@ export const CAMPO_DE_LA_API: Readonly<Record<string, CampoInvitacion>> = {
   tipoVinculo: 'tipoVinculo',
   flujo: 'flujo',
 };
+
+/** El prefijo con el que la API nombra el campo de un error de atributo: `atributos.nivelRiesgo` (`AtributosDeLote.PrefijoDeCampo`). */
+const PREFIJO_DE_ATRIBUTO = 'atributos.';
+
+/** Los errores por atributo de una respuesta 422 de la API (`clave` → mensaje): los de los campos `atributos.{clave}`. */
+export function erroresDeAtributosDeLaApi(errores: Readonly<Record<string, readonly string[]>>): Record<string, string> {
+  const resultado: Record<string, string> = {};
+  for (const [campo, mensajes] of Object.entries(errores)) {
+    const primero = mensajes[0];
+    const clave = campo.startsWith(PREFIJO_DE_ATRIBUTO) ? campo.slice(PREFIJO_DE_ATRIBUTO.length) : '';
+    if (clave && primero) resultado[clave] = primero;
+  }
+  return resultado;
+}
 
 /** Los errores por campo de una respuesta 422 de la API, ya en los campos del formulario. */
 export function erroresDeLaApi(errores: Readonly<Record<string, readonly string[]>>): Partial<Record<CampoInvitacion, string>> {

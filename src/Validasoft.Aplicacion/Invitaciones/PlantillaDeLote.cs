@@ -9,11 +9,35 @@ using Validasoft.Dominio.Plataforma;
 
 namespace Validasoft.Aplicacion.Invitaciones;
 
-/// <summary>Un tipo de vínculo activo del tenant tal como lo ofrece la plantilla («Nombre (CÓDIGO)»).</summary>
-public sealed record TipoVinculoDePlantilla(string Codigo, string Nombre)
+/// <summary>Un atributo permitido de un tipo de vínculo, tal como la plantilla lo explica y, si es de opciones o sí/no, lo ofrece en una lista desplegable.</summary>
+public sealed record AtributoDePlantilla(string Clave, TipoAtributo Tipo, bool Obligatorio, IReadOnlyList<string>? Opciones);
+
+/// <summary>
+/// Un tipo de vínculo activo del tenant tal como lo ofrece la plantilla («Nombre (CÓDIGO)») y, si tiene, sus atributos permitidos: la plantilla trae una columna
+/// <c>Atributo: clave</c> por cada uno.
+/// </summary>
+public sealed record TipoVinculoDePlantilla(string Codigo, string Nombre, IReadOnlyList<AtributoDePlantilla>? Atributos = null)
 {
     /// <summary>Lo que ve y elige quien llena la plantilla; el importador toma el código entre paréntesis (<see cref="ArchivoDeLote.CodigoDe"/>).</summary>
     public string Etiqueta => $"{Nombre} ({Codigo})";
+}
+
+/// <summary>
+/// La columna <c>Atributo: clave</c> de la plantilla: un atributo (por su clave) y lo que es en cada tipo de vínculo que lo tiene. Una misma clave en varios tipos comparte columna
+/// (<c>nivelRiesgo</c> de Proveedor y de Cliente); la fila dice a cuál se refiere por su tipo de vínculo.
+/// </summary>
+public sealed record ColumnaDeAtributo(string Clave, IReadOnlyList<(TipoVinculoDePlantilla Tipo, AtributoDePlantilla Atributo)> Definiciones)
+{
+    public string Encabezado => ArchivoDeLote.EncabezadoDeAtributo(Clave);
+
+    /// <summary>El tipo del atributo si es el mismo en todos los tipos de vínculo que lo tienen; <c>null</c> si difiere.</summary>
+    public TipoAtributo? TipoComun => Definiciones.Select(d => d.Atributo.Tipo).Distinct().Count() == 1 ? Definiciones[0].Atributo.Tipo : null;
+
+    /// <summary>Las opciones de todos los tipos (sin repetir): lo que ofrece la lista desplegable.</summary>
+    public IReadOnlyList<string> Opciones => [.. Definiciones.SelectMany(d => d.Atributo.Opciones ?? []).Distinct(StringComparer.Ordinal)];
+
+    /// <summary>Si es obligatorio en alguno de los tipos que lo tienen (en las filas de ese tipo hay que llenarlo).</summary>
+    public bool ObligatorioEnAlguno => Definiciones.Any(d => d.Atributo.Obligatorio);
 }
 
 /// <summary>Un flujo publicado de la empresa para un tipo de vínculo, tal como lo ofrece la plantilla.</summary>
@@ -30,12 +54,21 @@ public sealed record CatalogoDePlantilla(string? Empresa, IReadOnlyList<TipoVinc
 {
     public static CatalogoDePlantilla Vacio { get; } = new(null, [], []);
 
-    /// <summary>Los tipos de vínculo activos del tenant y los flujos con versión publicada de la empresa activa, por nombre.</summary>
+    /// <summary>Las columnas de atributos de la plantilla: una por clave de los atributos de los tipos de vínculo activos (en el orden de los tipos y de sus atributos).</summary>
+    public IReadOnlyList<ColumnaDeAtributo> Atributos =>
+    [
+        .. TiposVinculo.SelectMany(t => (t.Atributos ?? []).Select(a => (Tipo: t, Atributo: a)))
+            .GroupBy(x => x.Atributo.Clave, StringComparer.Ordinal)
+            .Select(g => new ColumnaDeAtributo(g.Key, [.. g.Select(x => (x.Tipo, x.Atributo))]))
+    ];
+
+    /// <summary>Los tipos de vínculo activos del tenant (con sus atributos) y los flujos con versión publicada de la empresa activa, por nombre.</summary>
     public static async Task<CatalogoDePlantilla> CargarAsync(SesionDeEmpresa empresa, CancellationToken ct)
     {
         var orden = StringComparer.Create(CultureInfo.InvariantCulture, ignoreCase: true);
         var tipos = (await empresa.Sesion.Query<TipoVinculo>().ToListAsync(ct)).Where(t => t.Activo).OrderBy(t => t.Nombre, orden).ThenBy(t => t.Codigo, orden).ToList();
-        var porId = tipos.ToDictionary(t => t.Id, t => new TipoVinculoDePlantilla(t.Codigo, t.Nombre));
+        var porId = tipos.ToDictionary(t => t.Id, t => new TipoVinculoDePlantilla(t.Codigo, t.Nombre,
+            [.. t.AtributosPermitidos.Select(a => new AtributoDePlantilla(a.Clave, a.Tipo, a.Obligatorio, a.Opciones))]));
         var flujos = (await empresa.Flujos().ToListAsync(ct))
             .Where(f => f.VersionPublicada is not null && porId.ContainsKey(f.TipoVinculoId))
             .Select(f => new FlujoDePlantilla(f.Codigo, f.Nombre, porId[f.TipoVinculoId]))
@@ -79,8 +112,8 @@ public static class PlantillaDeLoteXlsx
     public static byte[] Crear(CatalogoDePlantilla catalogo)
     {
         var listas = new Listas(catalogo);
-        var columnas = ArchivoDeLote.Columnas;
-        var notas = columnas.Select(c => (Referencia: $"{HojaDeCalculo.Columna(Indice(c.Campo))}1", Texto: NotaDe(c.Campo, c.Encabezado, c.Obligatoria, catalogo))).ToList();
+        var columnas = ColumnasDe(catalogo);
+        var notas = columnas.Select((c, i) => (Referencia: $"{HojaDeCalculo.Columna(i)}1", Texto: NotaDe(c, catalogo))).ToList();
 
         using var memoria = new MemoryStream();
         using (var zip = new ZipArchive(memoria, ZipArchiveMode.Create, leaveOpen: true))
@@ -137,8 +170,8 @@ public static class PlantillaDeLoteXlsx
                 """);
             HojaDeCalculo.Escribir(zip, "xl/comments1.xml", ComentariosXml(notas));
             HojaDeCalculo.Escribir(zip, "xl/drawings/vmlDrawing1.vml", VmlXml(notas.Count));
-            HojaDeCalculo.Escribir(zip, "xl/worksheets/sheet1.xml", HojaDeDatosXml(listas, catalogo));
-            HojaDeCalculo.Escribir(zip, "xl/worksheets/sheet2.xml", HojaDeInstruccionesXml(catalogo));
+            HojaDeCalculo.Escribir(zip, "xl/worksheets/sheet1.xml", HojaDeDatosXml(listas, catalogo, columnas));
+            HojaDeCalculo.Escribir(zip, "xl/worksheets/sheet2.xml", HojaDeInstruccionesXml(catalogo, columnas));
             HojaDeCalculo.Escribir(zip, "xl/worksheets/sheet3.xml", HojaDeListasXml(listas));
         }
 
@@ -147,12 +180,24 @@ public static class PlantillaDeLoteXlsx
 
     // ---------- Listas: lo que ofrecen las celdas ----------
 
+    /// <summary>Una columna de la hoja de datos: las de siempre (<see cref="ArchivoDeLote.Columnas"/>) y, después, una <c>Atributo: clave</c> por cada atributo de los tipos de vínculo.</summary>
+    private sealed record Columna(string Campo, string Encabezado, bool Obligatoria, ColumnaDeAtributo? Atributo);
+
+    private static IReadOnlyList<Columna> ColumnasDe(CatalogoDePlantilla catalogo) =>
+    [
+        .. ArchivoDeLote.Columnas.Select(c => new Columna(c.Campo, c.Encabezado, c.Obligatoria, null)),
+        .. catalogo.Atributos.Select(a => new Columna($"atributo:{a.Clave}", a.Encabezado, false, a))
+    ];
+
     /// <summary>
     /// Los valores de la hoja oculta <c>Listas</c> y dónde quedan: A tipos de vínculo, B tipo de persona, C países, D–E tipos de identificación por país (la clave repetida en D, sus
-    /// tipos en E, agrupados) y F–G flujos por tipo de vínculo (clave en F, flujos en G).
+    /// tipos en E, agrupados), F–G flujos por tipo de vínculo (clave en F, flujos en G) y, desde la H, las opciones de cada atributo de un solo tipo «una opción» (una columna por atributo).
     /// </summary>
     private sealed class Listas
     {
+        /// <summary>Primera columna (desde 0) de las listas de opciones de los atributos: la H.</summary>
+        public const int PrimeraDeAtributos = 7;
+
         public IReadOnlyList<string> TiposVinculo { get; }
 
         public IReadOnlyList<string> TiposPersona { get; } = ["Natural", "Jurídica", "Consorcio"];
@@ -163,6 +208,9 @@ public static class PlantillaDeLoteXlsx
 
         public IReadOnlyList<(string Clave, string Valor)> Flujos { get; }
 
+        /// <summary>Las opciones de los atributos que ofrecen una lista desplegable (los de un solo tipo «una opción»), en el orden de sus columnas de la hoja de listas.</summary>
+        public IReadOnlyList<(string Clave, IReadOnlyList<string> Opciones)> Atributos { get; }
+
         public Listas(CatalogoDePlantilla catalogo)
         {
             TiposVinculo = [.. catalogo.TiposVinculo.Select(t => t.Etiqueta)];
@@ -172,9 +220,13 @@ public static class PlantillaDeLoteXlsx
                 .. CatalogoIdentificacion.Paises.SelectMany(p => CatalogoIdentificacion.TiposDe(p.Codigo).Select(t => (EtiquetaDe(p), $"{t.Nombre} ({t.Codigo})")))
             ];
             Flujos = [.. catalogo.Flujos.Select(f => (f.TipoVinculo.Etiqueta, f.Etiqueta))];
+            Atributos = [.. catalogo.Atributos.Where(a => a.TipoComun == TipoAtributo.Opcion && a.Opciones.Count > 0).Select(a => (a.Clave, a.Opciones))];
         }
 
-        public int Maximo => new[] { TiposVinculo.Count, TiposPersona.Count, Paises.Count, TiposIdentificacion.Count, Flujos.Count }.Max();
+        /// <summary>La columna (letra) de la hoja de listas con las opciones de un atributo.</summary>
+        public string ColumnaDe(string clave) => HojaDeCalculo.Columna(PrimeraDeAtributos + Atributos.Select((a, i) => (a.Clave, i)).First(x => x.Clave == clave).i);
+
+        public int Maximo => new[] { TiposVinculo.Count, TiposPersona.Count, Paises.Count, TiposIdentificacion.Count, Flujos.Count, Atributos.Select(a => a.Opciones.Count).DefaultIfEmpty(0).Max() }.Max();
     }
 
     private static string EtiquetaDe(Pais pais) => $"{pais.Nombre} ({pais.Codigo})";
@@ -185,9 +237,8 @@ public static class PlantillaDeLoteXlsx
 
     // ---------- Hoja «Invitaciones» ----------
 
-    private static string HojaDeDatosXml(Listas listas, CatalogoDePlantilla catalogo)
+    private static string HojaDeDatosXml(Listas listas, CatalogoDePlantilla catalogo, IReadOnlyList<Columna> columnas)
     {
-        var columnas = ArchivoDeLote.Columnas;
         var ultima = HojaDeCalculo.Columna(columnas.Count - 1);
         var hoja = new StringBuilder();
         hoja.Append("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""")
@@ -200,15 +251,16 @@ public static class PlantillaDeLoteXlsx
             .Append("<cols>");
         for (var i = 0; i < columnas.Count; i++)
         {
-            // Número, DV y teléfono son de texto desde la primera fila vacía: Excel no se come los ceros de la izquierda.
-            var texto = columnas[i].Campo is "numeroIdentificacion" or "digitoVerificacion" or "telefono";
+            // Número, DV y teléfono son de texto desde la primera fila vacía: Excel no se come los ceros de la izquierda. Los atributos también (las fechas se quedan como
+            // se escriben, AAAA-MM-DD), salvo los números, que Excel guarda como números.
+            var texto = columnas[i].Campo is "numeroIdentificacion" or "digitoVerificacion" or "telefono" || columnas[i].Atributo is { } a && a.TipoComun != TipoAtributo.Numero;
             hoja.Append($"<col min=\"{i + 1}\" max=\"{i + 1}\" width=\"{Ancho(columnas[i].Campo)}\" customWidth=\"1\"{(texto ? $" style=\"{EstiloTexto}\"" : string.Empty)}/>");
         }
 
         hoja.Append("</cols><sheetData><row r=\"1\" ht=\"36\" customHeight=\"1\">");
         for (var i = 0; i < columnas.Count; i++)
         {
-            var (_, encabezado, obligatoria) = columnas[i];
+            var (_, encabezado, obligatoria, _) = columnas[i];
             hoja.Append($"<c r=\"{HojaDeCalculo.Columna(i)}1\" s=\"{(obligatoria ? EstiloEncabezadoObligatoria : EstiloEncabezadoOpcional)}\" t=\"inlineStr\"><is><t xml:space=\"preserve\">")
                 .Append(HojaDeCalculo.Xml(obligatoria ? $"{encabezado} *" : encabezado)).Append("</t></is></c>");
         }
@@ -216,7 +268,7 @@ public static class PlantillaDeLoteXlsx
         hoja.Append("</row></sheetData>")
             .Append($"<autoFilter ref=\"A1:{ultima}1\"/>");
 
-        var validaciones = ValidacionesXml(listas, catalogo).ToList();
+        var validaciones = ValidacionesXml(listas, catalogo, columnas).ToList();
         hoja.Append($"<dataValidations count=\"{validaciones.Count}\">").AppendJoin(string.Empty, validaciones).Append("</dataValidations>")
             .Append("""<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>""")
             .Append("""<legacyDrawing r:id="rId1"/></worksheet>""");
@@ -236,12 +288,14 @@ public static class PlantillaDeLoteXlsx
         "nombreComercial" => 28,
         "flujo" => 30,
         "contacto" => 24,
+        _ when campo.StartsWith("atributo:", StringComparison.Ordinal) => 24,
         _ => 18
     };
 
-    private static IEnumerable<string> ValidacionesXml(Listas listas, CatalogoDePlantilla catalogo)
+    private static IEnumerable<string> ValidacionesXml(Listas listas, CatalogoDePlantilla catalogo, IReadOnlyList<Columna> columnas)
     {
-        string Rango(string campo) => $"{Letra(campo)}2:{Letra(campo)}{FilasConListas + 1}";
+        string RangoDe(string letra) => $"{letra}2:{letra}{FilasConListas + 1}";
+        string Rango(string campo) => RangoDe(Letra(campo));
 
         // País: lista fija (el catálogo del sistema); otro código ISO se admite (los demás países usan pasaporte o identificación fiscal), con aviso.
         yield return Lista("pais", $"{HojaListas}!$C$2:$C${listas.Paises.Count + 1}", "warning", "País",
@@ -279,18 +333,75 @@ public static class PlantillaDeLoteXlsx
             yield return $"<dataValidation type=\"textLength\" operator=\"lessThanOrEqual\" allowBlank=\"1\" showErrorMessage=\"1\" errorStyle=\"stop\" errorTitle=\"Texto demasiado largo\" " +
                          $"error=\"Admite hasta {ValidacionDeLote.LongitudMaximaTexto} caracteres.\" sqref=\"{Rango(campo)}\"><formula1>{ValidacionDeLote.LongitudMaximaTexto}</formula1></dataValidation>";
 
-        string Lista(string campo, string origen, string estilo, string titulo, string aviso) =>
+        // Atributos del vínculo: «una opción» (un solo tipo en todos los tipos de vínculo que lo tienen) ofrece sus opciones y «sí/no» ofrece Sí y No; siempre con aviso (no bloquea:
+        // la fila puede ser de un tipo con otras opciones, y la vista previa dice qué corregir). Los demás tipos (texto, número, fecha, varias opciones) se escriben.
+        for (var i = 0; i < columnas.Count; i++)
+        {
+            if (columnas[i].Atributo is not { } atributo)
+                continue;
+            var rango = RangoDe(HojaDeCalculo.Columna(i));
+            if (atributo.TipoComun == TipoAtributo.Opcion && listas.Atributos.Any(a => a.Clave == atributo.Clave))
+                yield return ListaEn(rango, $"{HojaListas}!${listas.ColumnaDe(atributo.Clave)}$2:${listas.ColumnaDe(atributo.Clave)}${atributo.Opciones.Count + 1}", "warning", atributo.Encabezado,
+                    "Elige una de las opciones de la lista.");
+            else if (atributo.TipoComun == TipoAtributo.Booleano)
+                yield return ListaEn(rango, "\"Sí,No\"", "warning", atributo.Encabezado, "Elige Sí o No.");
+        }
+
+        string Lista(string campo, string origen, string estilo, string titulo, string aviso) => ListaEn(Rango(campo), origen, estilo, titulo, aviso);
+
+        string ListaEn(string rango, string origen, string estilo, string titulo, string aviso) =>
             $"<dataValidation type=\"list\" errorStyle=\"{estilo}\" allowBlank=\"1\" showErrorMessage=\"1\" errorTitle=\"{HojaDeCalculo.Xml(titulo)}\" " +
-            $"error=\"{HojaDeCalculo.Xml(estilo == "stop" ? aviso : $"{aviso} ¿Quieres usar ese valor de todos modos?")}\" sqref=\"{Rango(campo)}\"><formula1>{HojaDeCalculo.Xml(origen)}</formula1></dataValidation>";
+            $"error=\"{HojaDeCalculo.Xml(estilo == "stop" ? aviso : $"{aviso} ¿Quieres usar ese valor de todos modos?")}\" sqref=\"{rango}\"><formula1>{HojaDeCalculo.Xml(origen)}</formula1></dataValidation>";
     }
 
     // ---------- Notas de los encabezados (comentarios) ----------
 
-    private static string NotaDe(string campo, string encabezado, bool obligatoria, CatalogoDePlantilla catalogo)
+    private static string NotaDe(Columna columna, CatalogoDePlantilla catalogo)
     {
-        var (descripcion, _) = Ayuda(campo, catalogo);
-        return $"{encabezado} ({(obligatoria ? "obligatoria" : "opcional")})\n{descripcion}";
+        var (descripcion, _) = AyudaDe(columna, catalogo);
+        return $"{columna.Encabezado} ({Obligatoriedad(columna).ToLowerInvariant()})\n{descripcion}";
     }
+
+    /// <summary>«Obligatoria», «Opcional» o, en un atributo que alguno de los tipos exige, «Según el tipo de vínculo».</summary>
+    private static string Obligatoriedad(Columna columna) =>
+        columna.Obligatoria ? "Obligatoria" : columna.Atributo is { ObligatorioEnAlguno: true } ? "Según el tipo de vínculo" : "Opcional";
+
+    private static (string Descripcion, string Ejemplo) AyudaDe(Columna columna, CatalogoDePlantilla catalogo) =>
+        columna.Atributo is { } atributo ? AyudaDeAtributo(atributo) : Ayuda(columna.Campo, catalogo);
+
+    /// <summary>
+    /// Qué escribir en la columna de un atributo del vínculo: qué valor admite, a qué tipos de vínculo aplica y cuáles lo exigen. Si la misma clave es de otro tipo de dato en otro
+    /// tipo de vínculo, lo dice por tipo.
+    /// </summary>
+    private static (string Descripcion, string Ejemplo) AyudaDeAtributo(ColumnaDeAtributo columna)
+    {
+        var tipos = string.Join(", ", columna.Definiciones.Select(d => d.Atributo.Obligatorio ? $"{d.Tipo.Nombre} (obligatorio)" : d.Tipo.Nombre));
+        var que = columna.TipoComun is { } comun
+            ? Que(comun, columna.Opciones)
+            : string.Join(" ", columna.Definiciones.Select(d => $"En {d.Tipo.Nombre}: {Que(d.Atributo.Tipo, d.Atributo.Opciones ?? [])}."));
+        var descripcion = $"Atributo del vínculo: {que}. Aplica a: {tipos}. Llénala solo en las filas de esos tipos de vínculo; en los demás déjala vacía.";
+        var ejemplo = columna.TipoComun switch
+        {
+            TipoAtributo.Numero => "1500000",
+            TipoAtributo.Fecha => "2026-12-31",
+            TipoAtributo.Booleano => "Sí",
+            TipoAtributo.Opcion => columna.Opciones.FirstOrDefault() ?? string.Empty,
+            TipoAtributo.ListaOpciones => string.Join("; ", columna.Opciones.Take(2)),
+            TipoAtributo.Texto => "Texto libre",
+            _ => string.Empty
+        };
+        return (descripcion, ejemplo);
+    }
+
+    private static string Que(TipoAtributo tipo, IReadOnlyList<string> opciones) => tipo switch
+    {
+        TipoAtributo.Numero => "un número con punto decimal (por ejemplo 1500000 o 12.5)",
+        TipoAtributo.Fecha => "una fecha AAAA-MM-DD (por ejemplo 2026-12-31)",
+        TipoAtributo.Booleano => "Sí o No",
+        TipoAtributo.Opcion => $"una de estas opciones: {string.Join(", ", opciones)}",
+        TipoAtributo.ListaOpciones => $"una o varias de estas opciones, separadas por punto y coma (;) o coma (,): {string.Join(", ", opciones)}",
+        _ => "un texto"
+    };
 
     private static string ComentariosXml(IReadOnlyList<(string Referencia, string Texto)> notas)
     {
@@ -345,7 +456,7 @@ public static class PlantillaDeLoteXlsx
         };
     }
 
-    private static string HojaDeInstruccionesXml(CatalogoDePlantilla catalogo)
+    private static string HojaDeInstruccionesXml(CatalogoDePlantilla catalogo, IReadOnlyList<Columna> columnas)
     {
         var empresa = catalogo.Empresa is null ? "la empresa" : catalogo.Empresa;
         var hoja = new StringBuilder();
@@ -398,6 +509,10 @@ public static class PlantillaDeLoteXlsx
             "Si el tercero no es colombiano, elige primero el país: la lista de tipos de identificación depende de él.",
             "Guarda el archivo como Excel (.xlsx) y súbelo en «Nuevo lote»: antes de invitar, Validasoft revisa cada fila y te dice qué corregir."
         };
+        if (catalogo.Atributos.Count > 0)
+            pasos.Add("Las columnas «Atributo: …» son los atributos de los tipos de vínculo: llena las de cada fila según su tipo de vínculo y deja vacías las que ese tipo no tiene (un valor en un atributo que el " +
+                      "tipo de la fila no admite es un error de esa fila). Los atributos obligatorios del tipo hay que llenarlos al crear el vínculo; si el tercero ya tenía el vínculo, solo se aplican los que vienen. " +
+                      "Número: con punto decimal. Fecha: AAAA-MM-DD. Sí/No: elige de la lista. Varias opciones en un atributo de lista: sepáralas con punto y coma (;) o coma (,).");
         if (catalogo.TiposVinculo.Count == 0)
             pasos.Add("Esta empresa aún no tiene tipos de vínculo activos: créalos en Configuración › Tipos de vínculo antes de invitar.");
         for (var i = 0; i < pasos.Count; i++)
@@ -415,12 +530,12 @@ public static class PlantillaDeLoteXlsx
         Texto("D", "Ejemplo de una fila", EstiloTablaEncabezado);
         hoja.Append("</row>");
         fila++;
-        foreach (var (campo, encabezado, obligatoria) in ArchivoDeLote.Columnas)
+        foreach (var columna in columnas)
         {
-            var (descripcion, ejemplo) = Ayuda(campo, catalogo);
+            var (descripcion, ejemplo) = AyudaDe(columna, catalogo);
             hoja.Append($"<row r=\"{fila}\">");
-            Texto("A", encabezado, EstiloTablaNegrita);
-            Texto("B", obligatoria ? "Sí" : "No", EstiloTablaCelda);
+            Texto("A", columna.Encabezado, EstiloTablaNegrita);
+            Texto("B", columna.Obligatoria ? "Sí" : columna.Atributo is { ObligatorioEnAlguno: true } ? "Según el tipo" : "No", EstiloTablaCelda);
             Texto("C", descripcion, EstiloTablaCelda);
             Texto("D", ejemplo, EstiloTablaTexto);
             hoja.Append("</row>");
@@ -444,9 +559,10 @@ public static class PlantillaDeLoteXlsx
         hoja.Append("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""")
             .Append("""<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">""")
             .Append("""<sheetViews><sheetView workbookViewId="0"/></sheetViews><sheetFormatPr defaultRowHeight="15"/>""")
-            .Append("""<cols><col min="1" max="7" width="40" customWidth="1"/></cols><sheetData>""");
+            .Append($"<cols><col min=\"1\" max=\"{Listas.PrimeraDeAtributos + listas.Atributos.Count}\" width=\"40\" customWidth=\"1\"/></cols><sheetData>");
 
-        string[] encabezado = ["Tipos de vínculo", "Tipo de persona", "Países", "País", "Tipos de identificación", "Tipo de vínculo", "Flujos"];
+        // Las siete primeras columnas son fijas; las siguientes, una por cada atributo «una opción» (sus opciones).
+        string[] encabezado = ["Tipos de vínculo", "Tipo de persona", "Países", "País", "Tipos de identificación", "Tipo de vínculo", "Flujos", .. listas.Atributos.Select(a => ArchivoDeLote.EncabezadoDeAtributo(a.Clave))];
         hoja.Append("<row r=\"1\">");
         for (var i = 0; i < encabezado.Length; i++)
             hoja.Append($"<c r=\"{HojaDeCalculo.Columna(i)}1\" s=\"{EstiloTablaEncabezado}\" t=\"inlineStr\"><is><t>{HojaDeCalculo.Xml(encabezado[i])}</t></is></c>");
@@ -463,6 +579,8 @@ public static class PlantillaDeLoteXlsx
             Celda(hoja, "E", fila, i < listas.TiposIdentificacion.Count ? listas.TiposIdentificacion[i].Valor : null);
             Celda(hoja, "F", fila, i < listas.Flujos.Count ? listas.Flujos[i].Clave : null);
             Celda(hoja, "G", fila, i < listas.Flujos.Count ? listas.Flujos[i].Valor : null);
+            for (var k = 0; k < listas.Atributos.Count; k++)
+                Celda(hoja, HojaDeCalculo.Columna(Listas.PrimeraDeAtributos + k), fila, i < listas.Atributos[k].Opciones.Count ? listas.Atributos[k].Opciones[i] : null);
             hoja.Append("</row>");
         }
 

@@ -39,7 +39,8 @@ import { erroresRecordatorios, flujoRecordatorio, recordatorios } from './es-CO-
 import { erroresRevalidaciones, revalidaciones } from './es-CO-revalidaciones';
 import { erroresRevisionAutomatica, revisionAutomatica } from './es-CO-revision-automatica';
 import { bandeja, erroresRevision, expedientes, flujos, motivos } from './es-CO-revision';
-import { condicionDeFicha, flujoSeleccion, origenDelFlujo } from './es-CO-seleccion';
+import { atributosVinculo } from './es-CO-atributos';
+import { condicionDeAtributo, condicionDeFicha, flujoSeleccion, origenDelFlujo } from './es-CO-seleccion';
 import { terceros } from './es-CO-terceros';
 import { vencimientos } from './es-CO-vencimientos';
 
@@ -393,6 +394,8 @@ export const esCO = {
   flujoReintento,
   flujoRecordatorio,
   flujoSeleccion,
+  atributosVinculo,
+  condicionDeAtributo,
   condicionDeFicha,
   origenDelFlujo,
   flujoVigencia,

@@ -83,10 +83,57 @@ describe('EditorSeleccionFlujo', () => {
   });
 
   it('una condición armada por la API se describe, se conserva y no se ofrece como atajo nuevo', () => {
-    const { onCambiar } = montar({ seleccionCondicion: riesgoAlto, seleccionPrioridad: '1' });
+    const { onCambiar } = montar({ seleccionCondicion: { tipo: 'Y', nodos: [riesgoAlto, juridica] }, seleccionPrioridad: '1' });
     expect(screen.getByRole('combobox', { name: 'Se escoge cuando' })).toHaveTextContent('Condición personalizada');
-    expect(screen.getByText('Se escoge cuando nivelRiesgo es uno de Alto.')).toBeInTheDocument();
+    expect(screen.getByText('Se escoge cuando nivelRiesgo es uno de Alto y tipo de persona es Jurídica.')).toBeInTheDocument();
     expect(onCambiar).not.toHaveBeenCalled();
+  });
+
+  it('con los atributos del tipo de vínculo ofrece «Según un atributo del vínculo» y arranca con el primero, sin valores', async () => {
+    const usuario = userEvent.setup();
+    const onCambiar = vi.fn();
+    const borrador = { ...borradorVacio(), seleccionCondicion: juridica, seleccionPrioridad: '3' };
+    montarPantalla(
+      <EditorSeleccionFlujo
+        borrador={borrador}
+        onCambiar={onCambiar}
+        errores={[]}
+        soloLectura={false}
+        atributos={[{ clave: 'nivelRiesgo', tipo: 'Opcion', obligatorio: false, opciones: ['Bajo', 'Alto'] }]}
+      />,
+    );
+
+    await usuario.click(screen.getByRole('combobox', { name: 'Se escoge cuando' }));
+    expect(within(screen.getByRole('listbox')).getAllByRole('option').map((o) => o.textContent)).toEqual([
+      'Sin condición',
+      'El tercero es persona jurídica',
+      'El tercero es persona natural',
+      'Según la ficha del tercero',
+      'Según un atributo del vínculo',
+    ]);
+    await usuario.click(screen.getByRole('option', { name: 'Según un atributo del vínculo' }));
+    expect(onCambiar).toHaveBeenLastCalledWith({
+      ...borrador,
+      seleccionCondicion: { tipo: 'Predicado', nodos: null, atributo: 'vinculo.atributos.nivelRiesgo', operador: 'Igual', valores: [] },
+      seleccionPrioridad: '3',
+    });
+  });
+
+  it('una condición simple sobre un atributo del vínculo se reconoce como ese atajo: muestra su constructor y la frase, no «personalizada»', () => {
+    montarPantalla(
+      <EditorSeleccionFlujo
+        borrador={{ ...borradorVacio(), seleccionCondicion: riesgoAlto, seleccionPrioridad: '1' }}
+        onCambiar={vi.fn()}
+        errores={[]}
+        soloLectura={false}
+        atributos={[{ clave: 'nivelRiesgo', tipo: 'Opcion', obligatorio: false, opciones: ['Bajo', 'Alto'] }]}
+      />,
+    );
+
+    expect(screen.getByRole('combobox', { name: 'Se escoge cuando' })).toHaveTextContent('Según un atributo del vínculo');
+    expect(screen.getByRole('combobox', { name: 'Atributo del vínculo' })).toHaveTextContent('nivelRiesgo');
+    expect(screen.getByRole('combobox', { name: 'Se cumple cuando' })).toHaveTextContent('es uno de');
+    expect(screen.getByText('Se escoge cuando nivelRiesgo es uno de Alto.')).toBeInTheDocument();
   });
 
   it('muestra los errores de la prioridad y de la condición en su campo', () => {

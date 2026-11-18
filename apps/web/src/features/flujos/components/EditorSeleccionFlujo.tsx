@@ -1,9 +1,11 @@
 import { Box, Typography } from '@mui/material';
+import type { AtributoPermitidoDto } from '@validasoft/api-client';
 import { CampoNumero } from '@validasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { atajoDe, describirCondicion } from '../condiciones';
 import type { BorradorFlujo, ErrorFlujo } from '../editor';
 import { PRIORIDAD_MAXIMA } from '../seleccion';
+import { CondicionDeAtributo } from './CondicionDeAtributo';
 import { CondicionDeFicha } from './CondicionDeFicha';
 import { SelectorDeCondicion } from './SelectorDeCondicion';
 
@@ -12,6 +14,8 @@ interface Props {
   onCambiar: (borrador: BorradorFlujo) => void;
   errores: readonly ErrorFlujo[];
   soloLectura: boolean;
+  /** Los atributos permitidos del tipo de vínculo del flujo: con ellos «Se escoge cuando» ofrece «según un atributo del vínculo». */
+  atributos?: readonly AtributoPermitidoDto[];
 }
 
 /**
@@ -20,7 +24,7 @@ interface Props {
  * flujo por defecto. Es el mismo editor de condiciones de los requisitos y la condición se congela con la versión publicada. Sin
  * condición el flujo solo se usa si lo eligen a mano o si es el flujo por defecto.
  */
-export function EditorSeleccionFlujo({ borrador, onCambiar, errores, soloLectura }: Props) {
+export function EditorSeleccionFlujo({ borrador, onCambiar, errores, soloLectura, atributos = [] }: Props) {
   const { t } = useTranslation();
   const errorCondicion = errores.find((e) => e.campo === 'seleccion.condicion');
   const errorPrioridad = errores.find((e) => e.campo === 'seleccion.prioridad');
@@ -37,7 +41,8 @@ export function EditorSeleccionFlujo({ borrador, onCambiar, errores, soloLectura
           onCambiar={(nueva) => onCambiar({ ...borrador, seleccionCondicion: nueva, seleccionPrioridad: nueva === null ? '' : borrador.seleccionPrioridad })}
           deshabilitado={soloLectura}
           textoDe={(a) => t(`flujoSeleccion.atajos.${a}`)}
-          ayuda={errorCondicion && atajo !== 'ficha' ? t(`flujos.editor.errores.${errorCondicion.codigo}`) : undefined}
+          ayuda={errorCondicion && atajo !== 'ficha' && atajo !== 'atributo' ? t(`flujos.editor.errores.${errorCondicion.codigo}`) : undefined}
+          atributos={atributos}
         />
         {condicion !== null && (
           <CampoNumero
@@ -57,6 +62,16 @@ export function EditorSeleccionFlujo({ borrador, onCambiar, errores, soloLectura
           onCambiar={(nueva) => onCambiar({ ...borrador, seleccionCondicion: nueva })}
           deshabilitado={soloLectura}
           error={errorCondicion ? t(`flujos.editor.errores.${errorCondicion.codigo}`) : undefined}
+        />
+      )}
+      {condicion !== null && atajo === 'atributo' && (
+        <CondicionDeAtributo
+          condicion={condicion}
+          atributos={atributos}
+          onCambiar={(nueva) => onCambiar({ ...borrador, seleccionCondicion: nueva })}
+          deshabilitado={soloLectura}
+          error={errorCondicion ? t(`flujos.editor.errores.${errorCondicion.codigo}`) : undefined}
+          resumen={(texto) => t('flujoSeleccion.personalizada', { condicion: texto })}
         />
       )}
       {condicion !== null && atajo === 'personalizada' && (

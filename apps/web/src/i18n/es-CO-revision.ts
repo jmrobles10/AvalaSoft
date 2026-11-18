@@ -643,6 +643,7 @@ export const flujos = {
         juridica: 'Solo personas jurídicas',
         natural: 'Solo personas naturales',
         ficha: 'Según la ficha del tercero',
+        atributo: 'Según un atributo del vínculo',
         personalizada: 'Condición personalizada',
       },
       personalizada: 'Se pide cuando {{condicion}}.',

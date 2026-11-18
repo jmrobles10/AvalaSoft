@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Validasoft.Aplicacion.Comun;
 using Validasoft.Contratos;
@@ -66,8 +67,11 @@ public static partial class ArchivoDeLote
     public static (byte[] Contenido, string Tipo, string Nombre) Plantilla(string? formato, CatalogoDePlantilla? catalogo = null)
     {
         if (string.Equals(formato, "csv", StringComparison.OrdinalIgnoreCase))
-            return (Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(string.Join(';', Columnas.Select(c => c.Encabezado)) + "\r\n")).ToArray(), TipoCsv,
-                "plantilla-invitacion-masiva.csv");
+        {
+            // Solo los encabezados: los de siempre y, si la empresa tiene atributos en sus tipos de vínculo, una columna «Atributo: clave» por cada uno.
+            var encabezados = Columnas.Select(c => c.Encabezado).Concat((catalogo?.Atributos ?? []).Select(a => EncabezadoDeAtributo(a.Clave)));
+            return (Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(string.Join(';', encabezados) + "\r\n")).ToArray(), TipoCsv, "plantilla-invitacion-masiva.csv");
+        }
         if (formato is not null && !string.Equals(formato, "xlsx", StringComparison.OrdinalIgnoreCase))
             throw ReglaDeNegocioException.Validacion("formato-invalido", "El formato de la plantilla es xlsx o csv.");
         return (PlantillaDeLoteXlsx.Crear(catalogo ?? CatalogoDePlantilla.Vacio), HojaDeCalculo.TipoContenido, "plantilla-invitacion-masiva.xlsx");
@@ -167,8 +171,24 @@ public static partial class ArchivoDeLote
             throw ReglaDeNegocioException.Validacion("plantilla-invalida",
                 $"Al archivo le faltan columnas de la plantilla: {string.Join(", ", faltantes)}. Descarga la plantilla y úsala como base.");
 
+        // Las columnas «Atributo: clave» (una por atributo de los tipos de vínculo); si una clave se repite, vale la primera.
+        var columnasDeAtributos = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (var i = 0; i < filas[inicio].Count; i++)
+            if (ClaveDeAtributo(filas[inicio][i]) is { } claveDeAtributo)
+                columnasDeAtributos.TryAdd(claveDeAtributo, i);
+
         string? Valor(IReadOnlyList<string> fila, string campo) =>
             indices.TryGetValue(campo, out var i) && i < fila.Count && !string.IsNullOrWhiteSpace(fila[i]) ? fila[i].Trim() : null;
+
+        // Solo los atributos con valor: la celda vacía es «no vino». Se guardan como texto; la validación de la fila los convierte al tipo que declara su tipo de vínculo.
+        IReadOnlyDictionary<string, JsonElement>? Atributos(IReadOnlyList<string> fila)
+        {
+            var valores = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
+            foreach (var (clave, i) in columnasDeAtributos)
+                if (i < fila.Count && !string.IsNullOrWhiteSpace(fila[i]))
+                    valores[clave] = JsonSerializer.SerializeToElement(fila[i].Trim());
+            return valores.Count == 0 ? null : valores;
+        }
 
         var resultado = new List<FilaDeLoteEntrada>();
         // Las listas de la plantilla ofrecen «Nombre (CÓDIGO)»: el importador toma el código (país, tipo de identificación, tipo de vínculo y flujo).
@@ -177,12 +197,33 @@ public static partial class ArchivoDeLote
             var pais = PaisDe(Valor(fila, "pais"));
             resultado.Add(new FilaDeLoteEntrada(pais, TipoIdentificacionDe(Valor(fila, "tipoIdentificacion"), pais), Valor(fila, "numeroIdentificacion"),
                 Valor(fila, "digitoVerificacion"), Valor(fila, "tipoPersona"), Valor(fila, "nombre"), Valor(fila, "nombreComercial"), Valor(fila, "correo"),
-                CodigoDe(Valor(fila, "tipoVinculo")), CodigoDe(Valor(fila, "flujo")), Valor(fila, "contacto"), Valor(fila, "telefono")));
+                CodigoDe(Valor(fila, "tipoVinculo")), CodigoDe(Valor(fila, "flujo")), Valor(fila, "contacto"), Valor(fila, "telefono"), Atributos(fila)));
         }
 
         if (resultado.Count == 0)
             throw ReglaDeNegocioException.Validacion("lote-sin-filas", "El archivo no tiene filas debajo del encabezado.");
         return resultado;
+    }
+
+    /// <summary>Prefijo del encabezado de una columna de atributo del vínculo: <c>Atributo: nivelRiesgo</c>.</summary>
+    public const string PrefijoDeAtributo = "Atributo:";
+
+    /// <summary>El encabezado de la columna de un atributo del vínculo (<c>Atributo: clave</c>).</summary>
+    public static string EncabezadoDeAtributo(string clave) => $"{PrefijoDeAtributo} {clave}";
+
+    [GeneratedRegex(@"^\s*atributo\s*:\s*(?<clave>.*?)[\s*]*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex RegexAtributo();
+
+    /// <summary>
+    /// La clave de un encabezado <c>Atributo: clave</c> (sin importar mayúsculas del prefijo ni espacios; un asterisco al final, que algunas plantillas ponen a las obligatorias, no
+    /// cuenta); <c>null</c> si el encabezado no es de un atributo. La clave conserva sus mayúsculas: la validación la compara con las del tipo de vínculo de cada fila.
+    /// </summary>
+    public static string? ClaveDeAtributo(string? encabezado)
+    {
+        if (string.IsNullOrWhiteSpace(encabezado))
+            return null;
+        var clave = RegexAtributo().Match(encabezado) is { Success: true } m ? m.Groups["clave"].Value.Trim() : string.Empty;
+        return clave.Length == 0 ? null : clave;
     }
 
     /// <summary>Minúsculas, sin tildes y solo letras y dígitos («Número de identificación» → <c>numerodeidentificacion</c>).</summary>
@@ -269,12 +310,12 @@ public static partial class ArchivoDeLote
         var pais = PaisDe(Recortar(f.Pais));
         return new FilaDeLoteEntrada(pais, TipoIdentificacionDe(Recortar(f.TipoIdentificacion), pais), Recortar(f.NumeroIdentificacion), Recortar(f.DigitoVerificacion),
             Recortar(f.TipoPersona), Recortar(f.Nombre), Recortar(f.NombreComercial), Recortar(f.Correo), CodigoDe(Recortar(f.TipoVinculo)), CodigoDe(Recortar(f.Flujo)),
-            Recortar(f.Contacto), Recortar(f.Telefono));
+            Recortar(f.Contacto), Recortar(f.Telefono), f.Atributos is { Count: > 0 } ? new Dictionary<string, JsonElement>(f.Atributos) : null);
     }
 
     public static FilaDeLoteEntradaDto ADto(this FilaDeLoteEntrada f) =>
         new(f.Pais, f.TipoIdentificacion, f.NumeroIdentificacion, f.DigitoVerificacion, f.TipoPersona, f.Nombre, f.NombreComercial, f.Correo,
-            f.TipoVinculo, f.Flujo, f.Contacto, f.Telefono);
+            f.TipoVinculo, f.Flujo, f.Contacto, f.Telefono, f.Atributos is { Count: > 0 } ? new Dictionary<string, JsonElement>(f.Atributos) : null);
 
     private static string? Recortar(string? valor) => string.IsNullOrWhiteSpace(valor) ? null : valor.Trim();
 }

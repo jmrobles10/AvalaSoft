@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Text.Json;
 using Marten;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -210,6 +211,10 @@ public static class ProcesarTandaDeLoteHandler
     {
         var tipo = catalogo.Tipo(datos.TipoVinculo)
                    ?? throw ReglaDeNegocioException.Validacion("tipo-vinculo-invalido", $"El tipo de vínculo «{datos.TipoVinculo}» no existe o está inactivo.");
+        // Los atributos del vínculo que trae la fila, convertidos al tipo de cada uno (la validación de la fila ya los revisó: esto es la última palabra).
+        var (atributos, erroresDeAtributos) = AtributosDeLote.Resolver(tipo, datos.Atributos);
+        if (erroresDeAtributos.Count > 0)
+            throw ReglaDeNegocioException.Validacion(erroresDeAtributos[0].Codigo, erroresDeAtributos[0].Mensaje);
         var identificacion = Identificacion.Crear(datos.Pais ?? "CO", datos.TipoIdentificacion ?? string.Empty, datos.NumeroIdentificacion ?? string.Empty,
             datos.DigitoVerificacion);
         var clave = AislamientoDeSandbox.ClaveDeTercero(identificacion.Clave, sandbox);
@@ -239,7 +244,7 @@ public static class ProcesarTandaDeLoteHandler
             // El vínculo nuevo cuenta para el límite del plan: con el bloqueo suave y el límite alcanzado, la fila falla (se reintenta al ampliar el plan, OD-17).
             if (plan is not null)
                 await plan.ExigirAsync(tenantId, Validasoft.Dominio.Plataforma.MetricaDePlan.VinculosActivos, 1, ct);
-            var creado = Vinculo.Crear(empresaId, terceroId, tipoId, catalogo.Flujo(datos.Flujo, tipoId), ValidadorDeAtributos.Validar(tipo, null),
+            var creado = Vinculo.Crear(empresaId, terceroId, tipoId, catalogo.Flujo(datos.Flujo, tipoId), ValidadorDeAtributos.Validar(tipo, atributos),
                 OrigenVinculo.Invitacion, null,
                 datos.Correo ?? string.Empty, ahora);
             var vinculo = Vinculo.Create(creado);
@@ -271,6 +276,16 @@ public static class ProcesarTandaDeLoteHandler
             throw ReglaDeNegocioException.Conflicto(error.Codigo, error.Mensaje);
         if (accion == nameof(AccionFilaLote.Reinvitado))
         {
+            // Los atributos que vienen se aplican sobre los del vínculo (los que ya tenía y no vienen se conservan); sin ninguno no se toca nada. Cada valor ya es válido para su
+            // atributo; los obligatorios no se exigen aquí porque el vínculo ya existe (el PATCH de atributos exige el conjunto completo).
+            if (atributos.Count > 0)
+            {
+                var combinados = new Dictionary<string, JsonElement>(actual.Atributos);
+                foreach (var (claveAtributo, valor) in atributos)
+                    combinados[claveAtributo] = valor;
+                stream.AppendOne(actual.ActualizarAtributos(combinados, ahora));
+            }
+
             if (retencion is not null && actual.NecesitaAprobacionParaInvitar(tipo.RequiereAprobacionParaInvitar, datos.Correo))
             {
                 // Invitar a un correo que aún no se aprobó vuelve a pedir la aprobación (el mismo correo ya aprobado se reenvía como siempre).

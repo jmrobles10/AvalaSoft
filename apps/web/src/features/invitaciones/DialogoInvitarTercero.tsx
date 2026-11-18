@@ -13,11 +13,14 @@ import { usePermisos } from '../../shared/usePermisos';
 import { usePaises } from '../configuracion/empresas/api';
 import { useFlujos } from '../flujos/api';
 import { useTiposVinculo } from '../vinculos/api';
+import { CamposDeAtributos } from '../vinculos/atributos/CamposDeAtributos';
+import { validarAtributos, type ValorDeAtributo } from '../vinculos/atributos/modelo';
 import { useInvitarTercero } from './api';
 import { CamposInvitarTercero } from './CamposInvitarTercero';
 import {
   borradorInvitacionNuevo,
   cuerpoInvitacion,
+  erroresDeAtributosDeLaApi,
   erroresDeLaApi,
   LONGITUD_MAXIMA_TEXTO,
   validarInvitacion,
@@ -53,6 +56,9 @@ export function DialogoInvitarTercero({ empresas, empresaInicial, onCerrar }: Pr
   const [b, setB] = useState<BorradorInvitacion>(borradorInvitacionNuevo);
   const [tocados, setTocados] = useState<ReadonlySet<CampoInvitacion>>(new Set());
   const [deLaApi, setDeLaApi] = useState<Partial<Record<CampoInvitacion, string>>>({});
+  // Los atributos del vínculo (los del tipo elegido): los que la persona ya tocó y lo que la API dijo de cada uno.
+  const [atributosTocados, setAtributosTocados] = useState<ReadonlySet<string>>(new Set());
+  const [atributosDeLaApi, setAtributosDeLaApi] = useState<Record<string, string>>({});
   const [aviso, setAviso] = useState<AvisoDelDialogo | null>(null);
   // Una clave por contenido del formulario: lo que se reintenta tal cual no duplica; si algo cambia, es otra invitación.
   const [clave, setClave] = useState(() => crypto.randomUUID());
@@ -67,6 +73,11 @@ export function DialogoInvitarTercero({ empresas, empresaInicial, onCerrar }: Pr
   const tipoIdentificacion = paises.data?.find((p) => p.codigo === b.pais)?.tiposIdentificacion.find((x) => x.codigo === b.tipoIdentificacion);
   const errores = validarInvitacion(b, tipoIdentificacion);
   const primero = errores[0];
+  // Al elegir el tipo de vínculo se piden los valores de sus atributos (los obligatorios bloquean el envío; la API los vuelve a validar).
+  const permitidos = tipos.data?.find((x) => x.codigo === b.tipoVinculo)?.atributosPermitidos ?? [];
+  const erroresAtributos = validarAtributos(permitidos, b.atributos);
+  const primerAtributo = permitidos.find((a) => erroresAtributos[a.clave] !== undefined);
+  const erroresAtributosVisibles = Object.fromEntries(Object.entries(erroresAtributos).filter(([clave]) => atributosTocados.has(clave)));
   const textoDe = (codigo: ErrorInvitacion) => t(`invitaciones.invitarTercero.errores.${codigo}`, { tipo: tipoIdentificacion?.nombre ?? b.tipoIdentificacion, maximo: String(LONGITUD_MAXIMA_TEXTO) });
   const mensaje = (campo: CampoInvitacion) => {
     const error = errores.find((x) => x.campo === campo);
@@ -75,10 +86,18 @@ export function DialogoInvitarTercero({ empresas, empresaInicial, onCerrar }: Pr
 
   /** Cualquier cambio es otra invitación: otra clave y fuera lo que dijo la API del contenido anterior. */
   const cambiar = (parcial: Partial<BorradorInvitacion>) => {
-    setB((previo) => ({ ...previo, ...parcial }));
+    // Los valores de los atributos son del tipo de vínculo elegido: con otro tipo empiezan de nuevo.
+    const otroTipo = parcial.tipoVinculo !== undefined && parcial.tipoVinculo !== b.tipoVinculo;
+    setB((previo) => ({ ...previo, ...parcial, ...(otroTipo ? { atributos: {} } : {}) }));
+    if (otroTipo) setAtributosTocados(new Set());
     setDeLaApi({});
+    setAtributosDeLaApi({});
     setAviso(null);
     setClave(crypto.randomUUID());
+  };
+  const cambiarAtributo = (claveDelAtributo: string, valor: ValorDeAtributo) => {
+    cambiar({ atributos: { ...b.atributos, [claveDelAtributo]: valor } });
+    setAtributosTocados((previos) => new Set([...previos, claveDelAtributo]));
   };
   const tocar = (campo: CampoInvitacion) => setTocados((previos) => new Set([...previos, campo]));
   const cambiarEmpresa = (id: string) => {
@@ -114,8 +133,10 @@ export function DialogoInvitarTercero({ empresas, empresaInicial, onCerrar }: Pr
       }
       // Los errores por campo que ve la vista previa de un lote, bajo cada campo.
       const porCampo = erroresDeLaApi(error.errores);
-      if (Object.keys(porCampo).length > 0) {
+      const porAtributo = erroresDeAtributosDeLaApi(error.errores);
+      if (Object.keys(porCampo).length > 0 || Object.keys(porAtributo).length > 0) {
         setDeLaApi(porCampo);
+        setAtributosDeLaApi(porAtributo);
         return;
       }
     }
@@ -124,8 +145,8 @@ export function DialogoInvitarTercero({ empresas, empresaInicial, onCerrar }: Pr
 
   const enviar = (evento: SubmitEvent) => {
     evento.preventDefault();
-    if (primero) return;
-    invitar.mutate(cuerpoInvitacion(b, tipoIdentificacion), { onSuccess: exito, onError: falla });
+    if (primero || primerAtributo) return;
+    invitar.mutate(cuerpoInvitacion(b, tipoIdentificacion, permitidos), { onSuccess: exito, onError: falla });
   };
 
   return (
@@ -170,14 +191,23 @@ export function DialogoInvitarTercero({ empresas, empresaInicial, onCerrar }: Pr
               tocar={tocar}
               mensaje={mensaje}
             />
+            {permitidos.length > 0 && (
+              <>
+                <Typography variant="overline" component="h3" sx={{ color: 'text.secondary' }}>
+                  {t('atributosVinculo.titulo')}
+                </Typography>
+                <CamposDeAtributos atributos={permitidos} valores={b.atributos} onCambiar={cambiarAtributo} errores={erroresAtributosVisibles} deLaApi={atributosDeLaApi} />
+              </>
+            )}
           </Stack>
         </DialogContent>
         <DialogActions>
           {primero && <FaltaParaEnviar>{textoDe(primero.codigo)}</FaltaParaEnviar>}
+          {!primero && primerAtributo && <FaltaParaEnviar>{t('atributosVinculo.falta', { atributo: primerAtributo.clave })}</FaltaParaEnviar>}
           <Button variant="text" onClick={onCerrar} disabled={invitar.isPending} sx={{ color: 'text.primary' }}>
             {t('invitaciones.invitarTercero.cancelar')}
           </Button>
-          <Button type="submit" variant="contained" disabled={invitar.isPending || primero !== undefined} startIcon={invitar.isPending ? <IconoCarga /> : undefined}>
+          <Button type="submit" variant="contained" disabled={invitar.isPending || primero !== undefined || primerAtributo !== undefined} startIcon={invitar.isPending ? <IconoCarga /> : undefined}>
             {t('invitaciones.invitarTercero.enviar')}
           </Button>
         </DialogActions>

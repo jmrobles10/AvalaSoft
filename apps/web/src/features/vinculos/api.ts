@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  actualizarAtributosVinculo,
   anularVinculo,
   bloquearVinculo,
   desbloquearVinculo,
@@ -98,6 +99,21 @@ export function ejecutarAccion(empresaId: string, entrada: EntradaAccion): Promi
     case 'anular':
       return comoVinculo(anularVinculo(vinculo.id, { motivo: texto }, opciones));
   }
+}
+
+/**
+ * Reemplaza los atributos del vínculo (`PATCH /vinculos/{id}/atributos`, `vinculos:escribir`) con el conjunto completo: lo que no viaja se quita. Con `If-Match` = versión
+ * leída (412 si alguien cambió el vínculo). Recarga los vínculos al terminar.
+ */
+export function useActualizarAtributos(empresaId: string) {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: ({ vinculo, atributos }: { vinculo: VinculoDto; atributos: Record<string, unknown> }) =>
+      actualizarAtributosVinculo(vinculo.id, { atributos }, { empresa: empresaId, ifMatch: vinculo.version }),
+    onSettled: () => {
+      void invalidarRuta(cliente, '/api/v1/vinculos');
+    },
+  });
 }
 
 export function useAccionVinculo(empresaId: string) {

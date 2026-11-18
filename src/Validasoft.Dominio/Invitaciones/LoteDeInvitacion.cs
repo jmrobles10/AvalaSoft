@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Validasoft.Dominio.Comun;
 
@@ -349,7 +350,10 @@ public sealed class LoteDeInvitacion
     }
 }
 
-/// <summary>Datos de una fila tal como llegaron (Excel, CSV o JSON), ya recortados.</summary>
+/// <summary>
+/// Datos de una fila tal como llegaron (Excel, CSV o JSON), ya recortados. <see cref="Atributos"/>: los valores de los atributos del tipo de vínculo (<c>clave</c> → valor tal como
+/// llegó: texto de una celda o un valor JSON); se convierten al tipo de cada atributo al validar y al procesar la fila.
+/// </summary>
 public sealed record FilaDeLoteEntrada(
     string? Pais,
     string? TipoIdentificacion,
@@ -362,7 +366,8 @@ public sealed record FilaDeLoteEntrada(
     string? TipoVinculo,
     string? Flujo,
     string? Contacto,
-    string? Telefono);
+    string? Telefono,
+    IReadOnlyDictionary<string, JsonElement>? Atributos = null);
 
 /// <summary>Un error de validación o de proceso de una fila (<see cref="Campo"/> nulo si no es de un campo).</summary>
 public sealed record ErrorDeFila(string? Campo, string Codigo, string Mensaje);

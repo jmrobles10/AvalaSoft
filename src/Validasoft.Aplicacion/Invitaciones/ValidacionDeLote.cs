@@ -25,8 +25,8 @@ public sealed record FilaValidada(int N, FilaDeLoteEntrada Datos, IReadOnlyList<
 /// <summary>
 /// Validación por fila del lote (LT-7), la misma en la vista previa y al crearlo: identificación (multipaís, con su dígito de
 /// verificación), tipo de persona coherente con el tipo de identificación, nombre, correo, tipo de vínculo activo del tenant,
-/// flujo de la empresa para ese tipo (si se indica) y vínculo existente que no se pueda invitar (bloqueado o terminado). Dos
-/// filas con la misma identificación y tipo de vínculo: la segunda es duplicada.
+/// flujo de la empresa para ese tipo (si se indica), atributos del vínculo (los admite el tipo, con el valor de su tipo y, al crear el vínculo, los obligatorios) y vínculo existente
+/// que no se pueda invitar (bloqueado o terminado). Dos filas con la misma identificación y tipo de vínculo: la segunda es duplicada.
 /// </summary>
 public static partial class ValidacionDeLote
 {
@@ -78,8 +78,15 @@ public static partial class ValidacionDeLote
                 continue;
             }
 
-            vistas[llave] = n;
             var existente = terceros.TryGetValue(clave!, out var terceroId) && vinculos.TryGetValue((terceroId, tipo.Id), out var v) ? v : null;
+            // Los atributos obligatorios del tipo solo se exigen al crear el vínculo: en uno que ya existe y se reinvita, solo se aplican los que vienen.
+            if (existente is null && AtributosDeLote.Faltantes(tipo, AtributosDeLote.Resolver(tipo, datos.Atributos).Valores) is { Count: > 0 } faltantes)
+            {
+                resultado.Add(new FilaValidada(n, datos, faltantes, null, clave, null));
+                continue;
+            }
+
+            vistas[llave] = n;
             var (accion, error) = AccionPrevista(existente);
             resultado.Add(error is null
                 ? new FilaValidada(n, datos, [], null, clave, accion, existente?.Id)
@@ -119,6 +126,10 @@ public static partial class ValidacionDeLote
         if (f.Flujo is not null && tipo is not null &&
             (!flujos.TryGetValue(f.Flujo, out var flujo) || flujo.TipoVinculoId != tipo.Id || flujo.VersionPublicada is null))
             errores.Add(new ErrorDeFila("flujo", "flujo-invalido", $"El flujo «{f.Flujo}» no existe en la empresa para {tipo.Codigo} o no está publicado."));
+
+        // Los atributos del vínculo (columnas «Atributo: clave» o el JSON de la invitación individual) contra los que admite el tipo de la fila.
+        if (tipo is not null)
+            errores.AddRange(AtributosDeLote.Resolver(tipo, f.Atributos).Errores);
 
         if (f.Correo is null)
             errores.Add(new ErrorDeFila("correo", "correo-requerido", "Falta el correo del tercero."));

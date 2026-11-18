@@ -1,5 +1,5 @@
 import { esErrorApi, type CondicionDto, type SeleccionDeFlujoDto } from '@validasoft/api-client';
-import { condicionDeFichaCompleta, condicionDeFichaSimple } from './condiciones';
+import { condicionDeAtributoCompleta, condicionDeAtributoSimple, condicionDeFichaCompleta, condicionDeFichaSimple } from './condiciones';
 import type { BorradorFlujo, ErrorFlujo } from './editor';
 
 // Selección automática del flujo en el editor (FR-1): condición y prioridad con las que el sistema escoge este flujo solo.
@@ -40,7 +40,8 @@ export function validarSeleccion(borrador: CamposSeleccion): ErrorFlujo[] {
   if (borrador.seleccionCondicion === null) return [];
   const errores: ErrorFlujo[] = [];
   const ficha = condicionDeFichaSimple(borrador.seleccionCondicion);
-  if (ficha && !condicionDeFichaCompleta(ficha)) errores.push({ codigo: 'condicion-invalida', campo: 'seleccion.condicion' });
+  const atributo = condicionDeAtributoSimple(borrador.seleccionCondicion);
+  if ((ficha && !condicionDeFichaCompleta(ficha)) || (atributo && !condicionDeAtributoCompleta(atributo))) errores.push({ codigo: 'condicion-invalida', campo: 'seleccion.condicion' });
   const campo = 'seleccion.prioridad';
   if (borrador.seleccionPrioridad.trim() === '') return [...errores, { codigo: 'prioridad-requerida', campo }];
   const prioridad = prioridadDe(borrador.seleccionPrioridad);

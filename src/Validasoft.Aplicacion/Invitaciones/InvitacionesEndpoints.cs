@@ -25,7 +25,9 @@ public static class InvitacionesEndpoints
     /// Invita a un tercero (<c>vinculos:escribir</c>, con <c>Idempotency-Key</c>): 201 con <c>Accion = Invitado</c> si el vínculo es nuevo; 200 con <c>Reinvitado</c> (el vínculo ya existía y
     /// aún no aceptaba: se reenvió al correo indicado) o <c>SinCambios</c> (el tercero ya aceptó: no se reenvía). Con un tipo de vínculo que exige aprobación antes de invitar (decisión
     /// AI) la invitación queda retenida (<c>PorAprobar = true</c>) hasta que otra persona la apruebe: no sale ningún correo. Si el tercero no existía en la plataforma se registra con
-    /// estos datos; si ya existe no se tocan sus datos maestros (P-1-7). 422 con el primer error en <c>codigo</c> y todos por campo en <c>errores</c> (<c>campo</c>, <c>codigo</c>,
+    /// estos datos; si ya existe no se tocan sus datos maestros (P-1-7). <c>Atributos</c> (opcional) son los valores de los atributos del tipo de vínculo: los valida el tipo (campo
+    /// <c>atributos.{clave}</c>: <c>atributo-no-permitido</c>, <c>atributo-invalido</c>, <c>atributo-requerido</c> al crear el vínculo) y, si el vínculo ya existía y se reinvita, solo se
+    /// aplican los que vienen. 422 con el primer error en <c>codigo</c> y todos por campo en <c>errores</c> (<c>campo</c>, <c>codigo</c>,
     /// <c>mensaje</c>: los mismos de la vista previa de un lote), 422 <c>sin-aprobadores-de-invitacion</c> y <c>vigencia-invalida</c>; 409 <c>vinculo-no-invitable</c> (bloqueado o
     /// terminado) e <c>invitacion-por-aprobar</c> (ya espera a quien apruebe) con el <c>vinculoId</c> existente.
     /// </summary>
@@ -37,7 +39,7 @@ public static class InvitacionesEndpoints
         var ahora = reloj.GetUtcNow();
         empresa.UsarMensajeria(mensajes);
         var fila = new FilaDeLoteEntradaDto(dto.Pais, dto.TipoIdentificacion, dto.NumeroIdentificacion, dto.DigitoVerificacion, dto.TipoPersona, dto.Nombre,
-            dto.NombreComercial, dto.Correo, dto.TipoVinculo, dto.Flujo, dto.Contacto, dto.Telefono).ADominio();
+            dto.NombreComercial, dto.Correo, dto.TipoVinculo, dto.Flujo, dto.Contacto, dto.Telefono, dto.Atributos).ADominio();
 
         var validada = (await ValidacionDeLote.ValidarAsync(empresa, [fila], ahora, ct))[0];
         if (validada.Errores.Count > 0)
