@@ -67,13 +67,13 @@ recorrido(
       },
     });
 
-    // 4. Historial: no es una tarjeta de la página; se abre desde el botón «Historial» del encabezado (panel lateral).
+    // 4. Historial: no es una tarjeta de la página; se abre desde el botón «Ver historial» del encabezado (panel lateral).
     const panel = await abrirHistorial(app);
     await expect(app.getByText(/Invitación enviada|Vínculo creado|invit/i).first()).toBeVisible();
     await paso(page, {
       titulo: 'Revisa el historial del vínculo',
       explicacion:
-        'El botón «Historial» del encabezado abre un panel a la derecha con la línea de tiempo del vínculo: cuándo se creó, cuándo se envió la invitación y cada cambio de estado o de datos, con quién lo hizo. ' +
+        'El botón «Ver historial» del encabezado abre un panel a la derecha con la línea de tiempo del vínculo: cuándo se creó, cuándo se envió la invitación y cada cambio de estado o de datos, con quién lo hizo. ' +
         'Es lo primero que revisas cuando alguien pregunta qué pasó con un tercero. El mismo historial está en el sector «Historial» de la barra lateral, para leerlo a página completa.',
       resaltar: panel,
     });

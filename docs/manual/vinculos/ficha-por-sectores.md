@@ -91,7 +91,7 @@ El sector «Oficial de cumplimiento» reúne las verificaciones de listas restri
 
 ## Paso 7. Abre el historial desde el encabezado
 
-El botón «Historial» del encabezado abre un panel a la derecha, desde cualquier sector. Tiene dos pestañas: la del expediente que se revisa, con su folio, y la del vínculo. Así no tienes que cambiar de sector para ver qué pasó mientras estabas en otra parte de la ficha.
+El botón «Ver historial» del encabezado abre un panel a la derecha, desde cualquier sector. Tiene dos pestañas: la del expediente que se revisa, con su folio, y la del vínculo. Así no tienes que cambiar de sector para ver qué pasó mientras estabas en otra parte de la ficha.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 

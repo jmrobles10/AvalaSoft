@@ -266,6 +266,7 @@ export const esCO = {
     ficha: {
       sectores: 'Sectores de la ficha',
       historial: 'Historial',
+      verHistorial: 'Ver historial',
       historialExpediente: 'Expediente {{folio}}',
       historialVinculo: 'Vínculo',
       conPendientes_one: '{{sector}}: {{count}} pendiente',

@@ -75,7 +75,7 @@ export function FichaVinculo({ vinculo, expedienteId, sectorPorDefecto, volver }
   const botonHistorial =
     actual !== 'historial' ? (
       <Button variant="outlined" startIcon={<History size={16} aria-hidden />} onClick={() => setVerHistorial(true)} aria-haspopup="dialog">
-        {t('vinculos.ficha.historial')}
+        {t('vinculos.ficha.verHistorial')}
       </Button>
     ) : undefined;
 
