@@ -4,6 +4,7 @@ import { abrirDesdeBandeja } from '../../soporte/empresa';
 import { completarInvitacion } from '../../soporte/proveedor';
 import { activarIa, crearEscenario, invitar, nuevoTercero, publicarFlujoConFicha } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -33,6 +34,7 @@ recorrido(
     const panel = sofia.getByRole('region', { name: 'Revisión automática', exact: true }).first();
     await expect(async () => {
       await abrirDesdeBandeja(sofia, cliente.nombre, 'Revisión', 'Cliente');
+      await irASector(sofia, 'Información tributaria');
       await expect(panel).toBeVisible({ timeout: 1500 });
     }).toPass({ timeout: 60_000 });
     await expect(panel).toContainText('Legible');

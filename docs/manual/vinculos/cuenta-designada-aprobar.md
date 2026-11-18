@@ -4,7 +4,7 @@ titulo: "Aprueba la cuenta bancaria designada de un proveedor"
 actor: "Oficial de cumplimiento"
 dominio: "vinculos"
 resumen: "Las dos áreas aprueban el expediente de un proveedor, pero no se cierra: el tipo de vínculo exige una cuenta bancaria designada y aprobada. La oficial de cumplimiento coteja la cuenta con el número completo y la aprueba; con la segunda aprobación de otra persona, la cuenta queda designada y el expediente se aprueba solo."
-pasos: 5
+pasos: 6
 ---
 
 # Aprueba la cuenta bancaria designada de un proveedor
@@ -25,6 +25,7 @@ Las dos áreas aprueban el expediente de un proveedor, pero no se cierra: el tip
 3. Aprueba la cuenta
 4. La segunda aprobación designa la cuenta
 5. El expediente se aprueba solo
+6. Revisa en el historial que la exigencia se cumplió
 
 ## Paso 1. Aprueba tu área: el expediente espera la cuenta
 
@@ -77,14 +78,21 @@ Con la segunda aprobación de otra persona de la empresa, la cuenta queda design
 
 ## Paso 5. El expediente se aprueba solo
 
-En el mismo momento en que la segunda persona aprueba la cuenta, el expediente que esperaba se cierra: queda «Expediente aprobado», el vínculo pasa a activo, se emite el certificado y el proveedor recibe el correo de aprobación. Nadie tiene que volver a pulsar «aprobar». El historial deja constancia: «Exige cuenta bancaria designada» cuando el expediente se abrió y «Cuenta bancaria designada aprobada» cuando se cumplió la exigencia.
+En el mismo momento en que la segunda persona aprueba la cuenta, el expediente que esperaba se cierra: queda «Expediente aprobado», el vínculo pasa a activo, se emite el certificado y el proveedor recibe el correo de aprobación. Nadie tiene que volver a pulsar «aprobar». El botón «Historial» del encabezado deja la constancia que sigue.
 
 > **Pantalla:** `/e/{empresa}/expedientes/{id}`
 
 ![Paso 5: El expediente se aprueba solo (escritorio)](../../../salida/manual/img/vinculos/cuenta-designada-aprobar/05-el-expediente-se-aprueba-solo-claro.webp)
 
+## Paso 6. Revisa en el historial que la exigencia se cumplió
+
+El historial del expediente registra «Exige cuenta bancaria designada» cuando se abrió, porque el tipo de vínculo la pide, y «Cuenta bancaria designada aprobada» cuando las dos personas aprobaron la cuenta. Así queda claro por qué el expediente se cerró justo después de esa aprobación.
+
+> **Pantalla:** `/e/{empresa}/expedientes/{id}`
+
+![Paso 6: Revisa en el historial que la exigencia se cumplió (escritorio)](../../../salida/manual/img/vinculos/cuenta-designada-aprobar/06-revisa-en-el-historial-que-la-exigencia-se-cumpl-claro.webp)
+
 ## Recorridos relacionados
 
 - [Revisa el detalle de un vínculo](detalle-del-vinculo.md)
 - [Crea un tipo de vínculo y lo desactiva](../configuracion/tipos-de-vinculo.md)
-- [Designa la cuenta en la que te paga una empresa](../tercero/cuentas-bancarias.md)

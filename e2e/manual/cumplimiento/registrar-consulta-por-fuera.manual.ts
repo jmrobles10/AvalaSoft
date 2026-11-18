@@ -1,10 +1,11 @@
 import { pdf } from '../../soporte/archivos';
-import { enRevision, esperarListas, pedirVerificaciones, personaEmbebida } from '../../soporte/cumplimiento';
+import { enRevision, pedirVerificaciones, personaEmbebida } from '../../soporte/cumplimiento';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { abrirDesdeBandeja, aprobarArea } from '../../soporte/empresa';
 import { esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha, irASector } from '../nucleo/ficha';
 
 const NOMBRE = 'Ferretería Manual S.A.S.';
 
@@ -32,7 +33,7 @@ recorrido(
     await aprobarArea(ruben, 'Compras');
 
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, 'cumplimiento');
-    await esperarListas(olga, NOMBRE, 'Cumplimiento', 'Satisfecha');
+    await esperarListasEnLaFicha(olga, NOMBRE, 'Cumplimiento', 'Satisfecha');
     const listas = olga.getByRole('region', { name: 'Listas restrictivas' });
 
     await olga.getByRole('button', { name: 'Registrar consulta hecha por fuera' }).click();
@@ -92,6 +93,7 @@ recorrido(
     await decision.getByRole('button', { name: 'Guardar decisión' }).click();
     await expect(decision).toBeHidden();
     await expect(listas).toContainText('Satisfecha');
+    await irASector(olga, 'Aprobaciones');
     await aprobarArea(olga, 'Cumplimiento');
     await expect(olga.getByText(/Todas las áreas aprobaron el .* y el vínculo quedó activo\./)).toBeVisible();
     await paso(page, {

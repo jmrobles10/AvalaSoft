@@ -54,4 +54,3 @@ El plan muestra «1 de 1» y el aviso «Agotaste las incluidas de este mes». Lo
 ## Recorridos relacionados
 
 - [Revisa el plan y el uso de IA de la empresa](plan-y-uso-de-ia.md)
-- [Revisa un documento que el sistema aprobó solo](revision-automatica-aprueba-sola.md)

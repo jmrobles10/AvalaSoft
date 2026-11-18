@@ -7,6 +7,7 @@ import { llenarGeneralJuridica } from '../../soporte/ficha';
 import { abrirEmpresa, aceptarInvitacion, entrarPorInvitacion, esperarEstadoDelTercero, subirDocumento } from '../../soporte/proveedor';
 import { crearEscenario, invitar, nuevoTercero, publicarFlujoConFicha, revisarVigencias, type Escenario, type Invitacion } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { chipDeEstado } from '../nucleo/ficha';
 
 const RUT = 'Registro Único Tributario';
 const RAZON_SOCIAL = 'Transportes de la Vigencia S.A.S.';
@@ -122,12 +123,12 @@ recorrido(
     await irASeccion(app, 'Vínculos');
     await app.getByRole('row', { name: `Abrir vínculo de ${invitacion.correo}` }).click();
     await expect(app.getByRole('heading', { level: 1, name: invitacion.nombre })).toBeVisible();
-    await expect(app.getByText('Vínculo vencido', { exact: true }).first()).toBeVisible();
+    await expect(chipDeEstado(app, 'Vencido')).toBeVisible();
     await paso(page, {
       titulo: 'Mira el vínculo vencido',
       explicacion:
         'Si el tercero no ratifica a tiempo y terminó la gracia de 3 días, el vínculo pasa a «Vencido» y su certificado también. La renovación que estaba abierta sigue siendo la misma: el tercero la cierra ratificando su información, y el vínculo vuelve a estar activo con una vigencia nueva de 90 días.',
-      resaltar: app.getByText('Vínculo vencido', { exact: true }).first(),
+      resaltar: chipDeEstado(app, 'Vencido'),
     });
   },
 );

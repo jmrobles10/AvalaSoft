@@ -2,6 +2,7 @@ import { abrirEmbebido } from '../../soporte/embebido';
 import { aprobarPorApi, crearTipoDeVinculo, invitarVinculo, abrirExpedienteManual, leerCertificado, leerVinculo, publicarFlujoSinDocumentos } from '../../soporte/flujos';
 import { crearEscenario, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { chipDeEstado } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 recorrido(
@@ -28,7 +29,7 @@ recorrido(
 
     const app = await abrirEmbebido(page, e, e.ana, e.norte, `vinculos/${invitacion.vinculoId}`);
     await expect(app.getByRole('heading', { level: 1, name: invitacion.nombre })).toBeVisible();
-    await expect(app.getByText('Activo', { exact: true }).first()).toBeVisible();
+    await expect(chipDeEstado(app, 'Activo')).toBeVisible();
 
     await app.getByRole('button', { name: 'Más acciones' }).click();
     await paso(page, {
@@ -58,14 +59,14 @@ recorrido(
     await desvincular.getByRole('button', { name: /^Desvincular/ }).click();
     await expect(desvincular).toBeHidden();
     await expect(app.getByText('Tercero desvinculado.')).toBeVisible();
-    await expect(app.getByText('Desvinculado', { exact: true }).first()).toBeVisible();
+    await expect(chipDeEstado(app, 'Desvinculado')).toBeVisible();
     expect((await leerCertificado(e, invitacion)).actual?.estado).toBe('Revocado');
     await paso(page, {
       titulo: 'Comprueba que el vínculo quedó desvinculado',
       explicacion:
         'El estado pasa a «Desvinculado» y el certificado del tercero queda revocado: sus sistemas integrados lo ven como no vigente. ' +
         'El historial del vínculo registra la desvinculación con su fecha.',
-      resaltar: app.getByText('Desvinculado', { exact: true }).first(),
+      resaltar: chipDeEstado(app, 'Desvinculado'),
       avisos: true,
     });
 
@@ -89,14 +90,14 @@ recorrido(
 
     await reintegrar.getByRole('button', { name: 'Reintegrar vínculo' }).click();
     await expect(app.getByText('Vínculo reintegrado.')).toBeVisible();
-    await expect(app.getByText('Activo', { exact: true }).first()).toBeVisible();
+    await expect(chipDeEstado(app, 'Activo')).toBeVisible();
     const certificados = await leerCertificado(e, invitacion);
     expect(certificados.actual).toMatchObject({ emision: 2, estado: 'Vigente', expedienteId });
     await paso(page, {
       titulo: 'Comprueba que el vínculo volvió a estar activo',
       explicacion:
         'El vínculo vuelve a «Activo» sin abrir un expediente nuevo y se emite un certificado nuevo con lo aprobado. El tercero recibe un aviso por correo que dice que quedó como estaba, sin documentos nuevos.',
-      resaltar: app.getByText('Activo', { exact: true }).first(),
+      resaltar: chipDeEstado(app, 'Activo'),
       avisos: true,
     });
   },

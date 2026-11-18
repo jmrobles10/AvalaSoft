@@ -4,6 +4,7 @@ import { abrirDesdeBandeja, aprobarArea } from '../../soporte/empresa';
 import { completarInvitacion, esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario, invitar, nuevoTercero, SST } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 
 const RUT = 'Registro Único Tributario';
 
@@ -39,6 +40,7 @@ recorrido(
 
     const app = await abrirEmbebido(page, e, e.ana, e.sur, `vinculos/${invitacion.vinculoId}`);
     await expect(app.getByRole('heading', { level: 1, name: invitacion.nombre })).toBeVisible();
+    await irASector(app, 'Certificado');
     const enlace = app.getByRole('link', { name: 'Página de verificación' });
     await expect(enlace).toBeVisible();
     const url = new URL((await enlace.getAttribute('href')) ?? '');

@@ -8,7 +8,7 @@ Invitar a un tercero a mano desde la app (decisión IM): el formulario de «Invi
 
 ### `POST /api/v1/invitaciones`
 
-**Invitar tercero.** Invita a un tercero (`vinculos:escribir`, con `Idempotency-Key`): 201 con `Accion = Invitado` si el vínculo es nuevo; 200 con `Reinvitado` (el vínculo ya existía y aún no aceptaba: se reenvió al correo indicado) o `SinCambios` (el tercero ya aceptó: no se reenvía). Con un tipo de vínculo que exige aprobación antes de invitar (decisión AI) la invitación queda retenida (`PorAprobar = true`) hasta que otra persona la apruebe: no sale ningún correo. Si el tercero no existía en la plataforma se registra con estos datos; si ya existe no se tocan sus datos maestros (P-1-7). 422 con el primer error en `codigo` y todos por campo en `errores` (`campo`, `codigo`, `mensaje`: los mismos de la vista previa de un lote), 422 `sin-aprobadores-de-invitacion` y `vigencia-invalida`; 409 `vinculo-no-invitable` (bloqueado o terminado) e `invitacion-por-aprobar` (ya espera a quien apruebe) con el `vinculoId` existente.
+**Invitar tercero.** Invita a un tercero (`vinculos:escribir`, con `Idempotency-Key`): 201 con `Accion = Invitado` si el vínculo es nuevo; 200 con `Reinvitado` (el vínculo ya existía y aún no aceptaba: se reenvió al correo indicado) o `SinCambios` (el tercero ya aceptó: no se reenvía). Con un tipo de vínculo que exige aprobación antes de invitar (decisión AI) la invitación queda retenida (`PorAprobar = true`) hasta que otra persona la apruebe: no sale ningún correo. Si el tercero no existía en la plataforma se registra con estos datos; si ya existe no se tocan sus datos maestros (P-1-7). `Atributos` (opcional) son los valores de los atributos del tipo de vínculo: los valida el tipo (campo `atributos.{clave}`: `atributo-no-permitido`, `atributo-invalido`, `atributo-requerido` al crear el vínculo) y, si el vínculo ya existía y se reinvita, solo se aplican los que vienen. 422 con el primer error en `codigo` y todos por campo en `errores` (`campo`, `codigo`, `mensaje`: los mismos de la vista previa de un lote), 422 `sin-aprobadores-de-invitacion` y `vigencia-invalida`; 409 `vinculo-no-invitable` (bloqueado o terminado) e `invitacion-por-aprobar` (ya espera a quien apruebe) con el `vinculoId` existente.
 
 **Permiso vinculos:escribir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `invitarTercero`**
 
@@ -29,6 +29,7 @@ Invitar a un tercero a mano desde la app (decisión IM): el formulario de «Invi
 | `contacto` | texto o null | no |  |
 | `telefono` | texto o null | no |  |
 | `vigenciaHoras` | entero | no | por omisión 168 |
+| `atributos` | objeto libre o null | no |  |
 
 **Respuestas**
 
@@ -65,7 +66,7 @@ curl -X POST "https://{host}/api/v1/invitaciones" \
   -H "X-Empresa: $EMPRESA_ID" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
-  -d '{"pais":"CO","tipoIdentificacion":"900123456","numeroIdentificacion":"900123456","digitoVerificacion":"texto","tipoPersona":"texto","nombre":"Constructora Norte S.A.S.","nombreComercial":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","tipoVinculo":"texto","flujo":"texto","contacto":"texto","telefono":"+57 601 555 1234","vigenciaHoras":168}'
+  -d '{"pais":"CO","tipoIdentificacion":"900123456","numeroIdentificacion":"900123456","digitoVerificacion":"texto","tipoPersona":"texto","nombre":"Constructora Norte S.A.S.","nombreComercial":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","tipoVinculo":"texto","flujo":"texto","contacto":"texto","telefono":"+57 601 555 1234","vigenciaHoras":168,"atributos":{}}'
 ```
 
 Respuesta `200`:
@@ -217,6 +218,7 @@ Respuesta `200`:
 | `filas[].flujo` | texto o null | no |  |
 | `filas[].contacto` | texto o null | no |  |
 | `filas[].telefono` | texto o null | no |  |
+| `filas[].atributos` | objeto libre o null | no |  |
 | `vigenciaHoras` | entero | no | por omisión 168 |
 
 **Respuestas**
@@ -260,7 +262,7 @@ curl -X POST "https://{host}/api/v1/invitaciones/lotes" \
   -H "X-Empresa: $EMPRESA_ID" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
-  -d '{"nombre":"Constructora Norte S.A.S.","archivo":{"nombre":"Constructora Norte S.A.S.","contenidoBase64":"Texto de ejemplo."},"filas":[{"pais":"CO","tipoIdentificacion":"900123456","numeroIdentificacion":"900123456","digitoVerificacion":"texto","tipoPersona":"texto","nombre":"Constructora Norte S.A.S.","nombreComercial":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","tipoVinculo":"texto","flujo":"texto","contacto":"texto","telefono":"+57 601 555 1234"}],"vigenciaHoras":168}'
+  -d '{"nombre":"Constructora Norte S.A.S.","archivo":{"nombre":"Constructora Norte S.A.S.","contenidoBase64":"Texto de ejemplo."},"filas":[{"pais":"CO","tipoIdentificacion":"900123456","numeroIdentificacion":"900123456","digitoVerificacion":"texto","tipoPersona":"texto","nombre":"Constructora Norte S.A.S.","nombreComercial":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","tipoVinculo":"texto","flujo":"texto","contacto":"texto","telefono":"+57 601 555 1234","atributos":{}}],"vigenciaHoras":168}'
 ```
 
 Respuesta `202`:
@@ -954,6 +956,7 @@ Campos de la respuesta `200`:
 | `filas[].datos.flujo` | texto o null | no |  |
 | `filas[].datos.contacto` | texto o null | no |  |
 | `filas[].datos.telefono` | texto o null | no |  |
+| `filas[].datos.atributos` | objeto libre o null | no |  |
 | `filas[].estado` | texto | sí |  |
 | `filas[].errores` | lista de ErrorDeFilaDto | sí |  |
 | `filas[].errores[].campo` | texto o null | no |  |
@@ -970,7 +973,7 @@ curl -X POST "https://{host}/api/v1/invitaciones/lotes/vista-previa" \
   -H "X-Empresa: $EMPRESA_ID" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \
-  -d '{"nombre":"Constructora Norte S.A.S.","archivo":{"nombre":"Constructora Norte S.A.S.","contenidoBase64":"Texto de ejemplo."},"filas":[{"pais":"CO","tipoIdentificacion":"900123456","numeroIdentificacion":"900123456","digitoVerificacion":"texto","tipoPersona":"texto","nombre":"Constructora Norte S.A.S.","nombreComercial":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","tipoVinculo":"texto","flujo":"texto","contacto":"texto","telefono":"+57 601 555 1234"}],"vigenciaHoras":168}'
+  -d '{"nombre":"Constructora Norte S.A.S.","archivo":{"nombre":"Constructora Norte S.A.S.","contenidoBase64":"Texto de ejemplo."},"filas":[{"pais":"CO","tipoIdentificacion":"900123456","numeroIdentificacion":"900123456","digitoVerificacion":"texto","tipoPersona":"texto","nombre":"Constructora Norte S.A.S.","nombreComercial":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","tipoVinculo":"texto","flujo":"texto","contacto":"texto","telefono":"+57 601 555 1234","atributos":{}}],"vigenciaHoras":168}'
 ```
 
 Respuesta `200`:
@@ -997,7 +1000,8 @@ Respuesta `200`:
         "tipoVinculo": "texto",
         "flujo": "texto",
         "contacto": "texto",
-        "telefono": "+57 601 555 1234"
+        "telefono": "+57 601 555 1234",
+        "atributos": {}
       },
       "estado": "texto",
       "errores": [

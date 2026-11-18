@@ -42,8 +42,3 @@ La sección «Datos extraídos» lista los campos que la IA leyó del documento,
 > **Pantalla:** `/e/{empresa}/expedientes/{id}`
 
 ![Paso 2: Revisa los datos que extrajo la IA (escritorio)](../../../salida/manual/img/ia/analisis-de-un-documento/02-revisa-los-datos-que-extrajo-la-ia-claro.webp)
-
-## Recorridos relacionados
-
-- [Compara la información del tercero con su RUT](cruce-de-la-ficha-con-los-soportes.md)
-- [Atiende una excepción de la revisión asistida](revision-asistida-y-excepciones.md)

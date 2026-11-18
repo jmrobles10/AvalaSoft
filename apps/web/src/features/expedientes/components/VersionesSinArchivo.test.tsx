@@ -55,15 +55,16 @@ describe('«Documentos que pide el flujo»: datos declarados y vigencia', () => 
     expect(tarjeta.getByText('Común')).toBeInTheDocument();
   });
 
-  it('una versión con archivo sí ofrece «Ver» y avisa que está por vencer, con la base de la fecha', () => {
+  it('una versión con archivo sí ofrece «Ver» y muestra que está por vencer en un chip, con la base de la fecha', () => {
     montar(<PanelRequisitos expediente={DATOS} contexto={contexto} nombres={new Map()} onAccion={() => undefined} />);
     const archivo = screen.getByRole('heading', { name: 'Registro Único Tributario' }).closest('li');
     if (!archivo) throw new Error('falta la tarjeta del RUT');
     const tarjeta = within(archivo);
     expect(tarjeta.getByRole('button', { name: 'Ver Registro Único Tributario, versión 1' })).toBeInTheDocument();
-    expect(tarjeta.getByRole('alert')).toHaveTextContent('Vence pronto: el 30/11/2026.');
-    expect(tarjeta.getByText('Vence el 30/11/2026')).toBeInTheDocument();
-    expect(tarjeta.getByText('Calculada desde la fecha en que el tercero cargó el documento.')).toBeInTheDocument();
+    // «Por vencer» es un chip en la línea de la versión (el aviso destacado queda para lo vencido o en gracia).
+    expect(tarjeta.queryByRole('alert')).not.toBeInTheDocument();
+    expect(archivo).toHaveTextContent('Por vencer');
+    expect(archivo).toHaveTextContent('Vence el 30/11/2026. Calculada desde la fecha en que el tercero cargó el documento.');
   });
 });
 

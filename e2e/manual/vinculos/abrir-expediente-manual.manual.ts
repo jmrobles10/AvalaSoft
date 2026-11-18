@@ -1,6 +1,7 @@
 import { abrirEmbebido } from '../../soporte/embebido';
 import { invitar, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector, tarjeta as tarjetaDe } from '../nucleo/ficha';
 import { escenarioConFichaCompleta } from '../nucleo/semillas';
 
 recorrido(
@@ -24,13 +25,15 @@ recorrido(
     const app = await abrirEmbebido(page, e, e.ana, e.sur, 'vinculos');
     await app.getByRole('row', { name: `Abrir vínculo de ${tercero.correo}` }).click();
     await expect(app.getByRole('heading', { level: 1 })).toBeVisible();
-    const tarjeta = app.locator('section').filter({ has: app.getByRole('heading', { name: 'Expediente', exact: true }) });
+    // El expediente vive en el sector «Aprobaciones» de la barra lateral (la ficha abre en «Información general»).
+    await irASector(app, 'Aprobaciones');
+    const tarjeta = tarjetaDe(app, 'Expediente');
     await expect(tarjeta.getByText('Sin expediente abierto.')).toBeVisible();
 
     await paso(page, {
       titulo: 'Encuentra la tarjeta Expediente del vínculo',
       explicacion:
-        'Mientras el tercero no ha aceptado, la tarjeta «Expediente» dice «Sin expediente abierto» y ofrece el botón «Abrir expediente». ' +
+        'En el sector «Aprobaciones» de la barra lateral, la tarjeta «Expediente» dice «Sin expediente abierto» y ofrece el botón «Abrir expediente». ' +
         'Usa esa opción cuando necesitas empezar la validación ya, por ejemplo porque el tercero entregó sus documentos por otro canal.',
       resaltar: tarjeta,
       variantes: [

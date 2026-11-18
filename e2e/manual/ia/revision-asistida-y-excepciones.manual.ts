@@ -5,6 +5,7 @@ import { abrirDesdeBandeja, regionDeArea } from '../../soporte/empresa';
 import { completarInvitacionYEsperarRevisionOAprobacion } from '../../soporte/proveedor';
 import { activarIa, crearEscenario, invitar, nuevoTercero, publicarFlujoConFicha } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -50,10 +51,12 @@ recorrido(
     const paginaSofia = await (await browser.newContext()).newPage();
     const sofia = await abrirEmbebido(paginaSofia, e, e.sofia, e.sur, 'bandeja');
     await abrirDesdeBandeja(sofia, cliente.nombre, 'Revisión', 'Cliente');
+    await irASector(sofia, 'Información tributaria');
     await expect(sofia.getByRole('heading', { level: 1, name: cliente.nombre })).toBeVisible();
     const decision = sofia.getByRole('region', { name: 'Decisión automática' });
     await expect(decision).toContainText('La IA sugiere revisar');
     await expect(decision).toContainText('Confianza baja');
+    await irASector(sofia, 'Aprobaciones');
     const aprobar = regionDeArea(sofia, 'Revisión').getByRole('button', { name: /^Aprobar área/ });
     await paso(paginaSofia, {
       titulo: 'Abre el expediente con la sugerencia de la IA',

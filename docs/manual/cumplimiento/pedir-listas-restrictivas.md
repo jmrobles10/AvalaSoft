@@ -66,7 +66,3 @@ El botón «Evidencia (PDF)» descarga el soporte de la consulta, para guardarlo
 **Variantes**
 
 - **Eres revisor y no oficial de cumplimiento:** Ves las listas y la evidencia, pero no puedes reconsultar ni decidir coincidencias.
-
-## Recorridos relacionados
-
-- [Analiza una coincidencia en las listas y la descarta por homónimo](analizar-una-coincidencia.md)

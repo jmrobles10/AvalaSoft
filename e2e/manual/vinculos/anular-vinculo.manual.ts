@@ -1,6 +1,7 @@
 import { abrirEmbebido } from '../../soporte/embebido';
 import { crearEscenario, invitar, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { abrirHistorial } from '../nucleo/ficha';
 
 recorrido(
   {
@@ -51,17 +52,26 @@ recorrido(
     await dialogo.getByRole('button', { name: 'Anular vínculo' }).click();
     await expect(app.getByText('Vínculo anulado.')).toBeVisible();
     const chip = app.getByTitle(/^Anulado el \d{2}\/\d{2}\/\d{4}$/);
-    const entrada = app.getByText('Vínculo anulado', { exact: true });
     await expect(chip).toBeVisible();
-    await expect(entrada).toBeVisible();
-    await expect(app.getByText('Invitación enviada a un tercero equivocado')).toBeVisible();
     await paso(page, {
       titulo: 'Comprueba que el vínculo quedó anulado',
       explicacion:
-        'Validasoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle, que ahora muestra el estado «Anulado» con su fecha (1). El historial (2) conserva la anulación con el estado anterior, el motivo y quién la hizo. ' +
+        'Validasoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle, que ahora muestra el estado «Anulado» con su fecha (1). ' +
         'El vínculo deja de aparecer entre los vigentes de la empresa y ya no recibe invitaciones ni expedientes.',
-      resaltar: [chip, entrada],
+      resaltar: chip,
       avisos: true,
+    });
+
+    // El historial no es una tarjeta: se abre desde el botón «Historial» del encabezado y conserva la anulación.
+    const panel = await abrirHistorial(app);
+    const entrada = app.getByText('Vínculo anulado', { exact: true });
+    await expect(entrada).toBeVisible();
+    await expect(app.getByText('Invitación enviada a un tercero equivocado')).toBeVisible();
+    await paso(page, {
+      titulo: 'Revisa la anulación en el historial',
+      explicacion:
+        'El panel «Historial» (botón del encabezado) guarda la anulación con el estado anterior, el motivo y quién la hizo. Nada se borra: el vínculo anulado sigue en el historial para auditoría.',
+      resaltar: [panel, entrada],
     });
   },
 );

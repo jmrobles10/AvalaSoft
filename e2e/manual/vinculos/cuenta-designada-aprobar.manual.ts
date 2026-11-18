@@ -4,6 +4,7 @@ import { abrirDesdeBandeja, aprobarArea, aprobarUltimaAreaYEsperarCuenta, region
 import { completarInvitacion } from '../../soporte/proveedor';
 import { crearEscenario, expedienteAbierto, invitar, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { abrirHistorial, irASector, tarjeta as tarjetaDe } from '../nucleo/ficha';
 import { exigirCuentaDesignada } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -97,10 +98,11 @@ recorrido(
       },
     });
 
-    // 2. «Ver la cuenta» lleva al vínculo, donde está la tarjeta para aprobarla.
+    // 2. «Ver la cuenta» lleva al vínculo; la cuenta está en el sector «Cuenta bancaria» de la barra lateral.
     await aviso.getByRole('link', { name: 'Ver la cuenta' }).click();
     await expect(aviso).toBeHidden();
-    const tarjeta = app.locator('section', { hasText: 'Cuenta bancaria designada' });
+    await irASector(app, 'Cuenta bancaria');
+    const tarjeta = tarjetaDe(app, 'Cuenta bancaria designada');
     await expect(tarjeta).toContainText('Por aprobar');
     await expect(tarjeta).toContainText('0 de 2 aprobaciones');
     await paso(page, {
@@ -134,7 +136,8 @@ recorrido(
 
     const paginaAna = await (await browser.newContext()).newPage();
     const ana = await abrirEmbebido(paginaAna, e, e.ana, e.norte, `vinculos/${invitacion.vinculoId}`);
-    const tarjetaAna = ana.locator('section', { hasText: 'Cuenta bancaria designada' });
+    await irASector(ana, 'Cuenta bancaria');
+    const tarjetaAna = tarjetaDe(ana, 'Cuenta bancaria designada');
     await tarjetaAna.getByRole('button', { name: 'Aprobar' }).click();
     await ana.getByRole('dialog').getByRole('button', { name: 'Aprobar' }).click();
     await expect(tarjetaAna).toContainText('Designada');
@@ -152,16 +155,26 @@ recorrido(
     await expect(cierre.getByRole('heading', { level: 1, name: tercero.nombre })).toBeVisible();
     await expect(cierre.getByRole('alert').getByText('Expediente aprobado')).toBeVisible();
     await expect(cierre.getByRole('alert').filter({ hasText: 'Falta la cuenta bancaria designada' })).toHaveCount(0);
-    const historial = cierre.getByText('Cuenta bancaria designada aprobada', { exact: true });
-    await expect(historial.first()).toBeVisible();
-    await expect(cierre.getByText('Exige cuenta bancaria designada', { exact: true }).first()).toBeVisible();
     await paso(paginaFinal, {
       titulo: 'El expediente se aprueba solo',
       explicacion:
         'En el mismo momento en que la segunda persona aprueba la cuenta, el expediente que esperaba se cierra: queda «Expediente aprobado», el vínculo pasa a activo, se emite el certificado y el proveedor recibe el correo de aprobación. Nadie tiene que volver a pulsar «aprobar». ' +
-        'El historial deja constancia: «Exige cuenta bancaria designada» cuando el expediente se abrió y «Cuenta bancaria designada aprobada» cuando se cumplió la exigencia.',
-      resaltar: [cierre.getByRole('alert').getByText('Expediente aprobado'), historial.first()],
+        'El botón «Historial» del encabezado deja la constancia que sigue.',
+      resaltar: cierre.getByRole('alert').getByText('Expediente aprobado'),
       avisos: true,
+    });
+
+    // El historial está en el panel lateral: «Exige cuenta bancaria designada» al abrir el expediente y «Cuenta bancaria designada aprobada» al cumplirse.
+    const panel = await abrirHistorial(cierre);
+    const cumplida = cierre.getByText('Cuenta bancaria designada aprobada', { exact: true }).first();
+    await expect(cumplida).toBeVisible();
+    await expect(cierre.getByText('Exige cuenta bancaria designada', { exact: true }).first()).toBeVisible();
+    await paso(paginaFinal, {
+      titulo: 'Revisa en el historial que la exigencia se cumplió',
+      explicacion:
+        'El historial del expediente registra «Exige cuenta bancaria designada» cuando se abrió, porque el tipo de vínculo la pide, y «Cuenta bancaria designada aprobada» cuando las dos personas aprobaron la cuenta. ' +
+        'Así queda claro por qué el expediente se cerró justo después de esa aprobación.',
+      resaltar: [panel, cumplida],
     });
   },
 );

@@ -4,6 +4,7 @@ import { irASeccion } from '../../soporte/empresa';
 import { completarInvitacion } from '../../soporte/proveedor';
 import { crearEscenario, invitar, nuevoTercero, SST } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 
 const RUT = 'Registro Único Tributario';
 
@@ -32,6 +33,7 @@ recorrido(
     // 1) El documento en el vínculo.
     const app = await abrirEmbebido(page, e, e.ana, e.sur, `vinculos/${invitacion.vinculoId}`);
     await expect(app.getByRole('heading', { level: 1, name: proveedor.nombre })).toBeVisible();
+    await irASector(app, 'Documentos adjuntos');
     const ver = app.getByRole('button', { name: new RegExp(`^Ver o descargar ${RUT}, versión 1`) });
     await expect(ver).toBeVisible();
     await paso(page, {

@@ -1,9 +1,10 @@
-import { aprobarUltimaArea, enRevision, esperarListas, pedirVerificaciones, personaEmbebida, revisarVerificaciones } from '../../soporte/cumplimiento';
+import { aprobarUltimaArea, enRevision, pedirVerificaciones, personaEmbebida, revisarVerificaciones } from '../../soporte/cumplimiento';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { abrirDesdeBandeja, aprobarArea } from '../../soporte/empresa';
 import { esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha, irASector } from '../nucleo/ficha';
 
 const NOMBRE = 'Cementos Estudio Vencido S.A.S.';
 
@@ -31,7 +32,7 @@ recorrido(
 
     // Cumplimiento registra un estudio de riesgo bajo, favorable (precondición): Compras aún no decide.
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, 'cumplimiento');
-    await esperarListas(olga, NOMBRE, 'Cumplimiento', 'Satisfecha');
+    await esperarListasEnLaFicha(olga, NOMBRE, 'Cumplimiento', 'Satisfecha');
     await olga.getByRole('button', { name: 'Registrar estudio' }).click();
     const alta = olga.getByRole('dialog', { name: /Estudio de cumplimiento/ });
     await alta.getByRole('button', { name: '1 · Bajo' }).click();
@@ -45,6 +46,7 @@ recorrido(
     expect(resultado.expiraciones).toBeGreaterThanOrEqual(1);
 
     await abrirDesdeBandeja(olga, NOMBRE, 'Cumplimiento');
+    await irASector(olga, 'Oficial de cumplimiento');
     const estudio = olga.getByRole('region', { name: 'Estudio de cumplimiento' });
     await expect(estudio).toContainText('Vencida');
     await expect(olga.getByRole('button', { name: 'Registrar un estudio nuevo' })).toBeVisible();
@@ -76,6 +78,8 @@ recorrido(
     await abrirDesdeBandeja(ruben, NOMBRE, 'Compras');
     await aprobarArea(ruben, 'Compras');
     await abrirDesdeBandeja(olga, NOMBRE, 'Cumplimiento');
+    await irASector(olga, 'Oficial de cumplimiento');
+    await irASector(olga, 'Aprobaciones');
     await aprobarUltimaArea(olga, 'Cumplimiento', /Estudio de cumplimiento \(vencid[ao]\)/);
     await paso(page, {
       titulo: 'El vencimiento bloquea la aprobación',
@@ -86,6 +90,7 @@ recorrido(
     });
     await esperarEstadoDelTercero(pTercero, 'EnRevision');
 
+    await irASector(olga, 'Oficial de cumplimiento');
     await olga.getByRole('button', { name: 'Registrar un estudio nuevo' }).click();
     const nuevo = olga.getByRole('dialog', { name: /Estudio de cumplimiento/ });
     await nuevo.getByRole('button', { name: '1 · Bajo' }).click();
@@ -93,6 +98,7 @@ recorrido(
     await olga.getByRole('option', { name: 'Favorable', exact: true }).click();
     await nuevo.getByRole('button', { name: 'Registrar estudio' }).click();
     await expect(nuevo).toBeHidden();
+    await irASector(olga, 'Aprobaciones');
     await expect(olga.getByText(/Todas las áreas aprobaron el .* y el vínculo quedó activo\./)).toBeVisible();
     await paso(page, {
       titulo: 'Registra un estudio nuevo y aprueba',

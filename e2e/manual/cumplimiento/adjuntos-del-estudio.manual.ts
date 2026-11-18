@@ -1,10 +1,11 @@
 import { pdf } from '../../soporte/archivos';
-import { aprobarUltimaArea, enRevision, esperarListas, pedirVerificaciones, personaEmbebida } from '../../soporte/cumplimiento';
+import { aprobarUltimaArea, enRevision, pedirVerificaciones, personaEmbebida } from '../../soporte/cumplimiento';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { abrirDesdeBandeja, aprobarArea } from '../../soporte/empresa';
 import { esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha, irASector } from '../nucleo/ficha';
 
 const NOMBRE = 'Constructora Soporte S.A.S.';
 
@@ -35,8 +36,10 @@ recorrido(
     await aprobarArea(ruben, 'Compras');
 
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, 'cumplimiento');
-    await esperarListas(olga, NOMBRE, 'Cumplimiento', 'Satisfecha');
+    await esperarListasEnLaFicha(olga, NOMBRE, 'Cumplimiento', 'Satisfecha');
+    await irASector(olga, 'Aprobaciones');
     await aprobarUltimaArea(olga, 'Cumplimiento', /Estudio de cumplimiento \(pendiente\)/);
+    await irASector(olga, 'Oficial de cumplimiento');
     await olga.getByRole('button', { name: 'Registrar estudio' }).click();
     const dialogo = olga.getByRole('dialog', { name: /Estudio de cumplimiento/ });
     await paso(page, {
@@ -65,6 +68,7 @@ recorrido(
     await dialogo.getByRole('button', { name: '1 · Bajo' }).click();
     await dialogo.getByRole('button', { name: 'Registrar estudio' }).click();
     await expect(dialogo).toBeHidden();
+    await irASector(olga, 'Aprobaciones');
     await expect(olga.getByText(/Todas las áreas aprobaron el .* y el vínculo quedó activo\./)).toBeVisible();
     await paso(page, {
       titulo: 'Revisa el archivo guardado en el estudio',

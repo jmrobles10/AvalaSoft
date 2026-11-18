@@ -4,6 +4,7 @@ import { abrirEmbebido } from '../../soporte/embebido';
 import { completarInvitacionYEsperarRevisionOAprobacion, esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { activarIa, crearEscenario, invitar, nuevoTercero, publicarFlujoConFicha } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -51,6 +52,7 @@ recorrido(
 
     const paginaSofia = await (await browser.newContext()).newPage();
     const sofia = await abrirEmbebido(paginaSofia, e, e.sofia, e.sur, `expedientes/${expedienteId}`);
+    await irASector(sofia, 'Información tributaria');
     await expect(sofia.getByRole('heading', { level: 1, name: cliente.nombre })).toBeVisible();
     const decision = sofia.getByRole('region', { name: 'Decisión automática' });
     await expect(decision).toContainText('Aprobado por el sistema');

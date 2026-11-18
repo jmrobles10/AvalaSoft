@@ -4,6 +4,7 @@ import { abrirDesdeBandeja, aprobarArea } from '../../soporte/empresa';
 import { esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 
 const NOMBRE = 'Aceros del Norte S.A.S.';
 
@@ -34,9 +35,12 @@ recorrido(
 
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, 'cumplimiento');
     await abrirDesdeBandeja(olga, NOMBRE, 'Cumplimiento');
+    await irASector(olga, 'Oficial de cumplimiento');
+    await irASector(olga, 'Aprobaciones');
     await aprobarUltimaArea(olga, 'Cumplimiento', /Estudio de cumplimiento \(pendiente\)/);
     await esperarEstadoDelTercero(pTercero, 'EnRevision');
 
+    await irASector(olga, 'Oficial de cumplimiento');
     await olga.getByRole('button', { name: 'Registrar estudio' }).click();
     const dialogo = olga.getByRole('dialog', { name: /Estudio de cumplimiento/ });
     await expect(dialogo).toBeVisible();
@@ -92,6 +96,7 @@ recorrido(
 
     await dialogo.getByRole('button', { name: 'Registrar estudio' }).click();
     await expect(dialogo).toBeHidden();
+    await irASector(olga, 'Aprobaciones');
     await expect(olga.getByText(/Todas las áreas aprobaron el .* y el vínculo quedó activo\./)).toBeVisible();
     await paso(page, {
       titulo: 'Revisa el estudio registrado y el vínculo aprobado',

@@ -3,6 +3,7 @@ import { accionDeVinculo } from '../../soporte/devolucion';
 import { abrirExpedienteManual, crearTipoDeVinculo, invitarVinculo, leerVinculo, publicarFlujoSinDocumentos } from '../../soporte/flujos';
 import { crearEscenario, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { chipDeEstado } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 recorrido(
@@ -78,13 +79,13 @@ recorrido(
 
     await dialogo.getByRole('button', { name: 'Reintegrar vínculo' }).click();
     await expect(dialogo).toBeHidden();
-    await expect(app.getByText('Invitado', { exact: true }).first()).toBeVisible();
+    await expect(chipDeEstado(app, 'Invitado')).toBeVisible();
     expect((await leerVinculo(e, invitacion)).estado).toBe('Invitado');
     await paso(page, {
       titulo: 'Comprueba que el vínculo volvió a Invitado',
       explicacion:
         'El vínculo vuelve al estado «Invitado» y el historial registra el reintegro con tu justificación. El tercero recibe el aviso de que se reintegró su vínculo y debe volver a aceptar la invitación para revalidar.',
-      resaltar: app.getByText('Invitado', { exact: true }).first(),
+      resaltar: chipDeEstado(app, 'Invitado'),
       avisos: true,
     });
   },

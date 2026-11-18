@@ -50,6 +50,5 @@ La revalidación de tu área sigue abierta hasta que la decidas: el botón «Apr
 
 ## Recorridos relacionados
 
-- [Entiende un documento que comparten dos empresas](../tercero/boveda-documento-compartido.md)
 - [Aprueba el área de Compras](../revision/aprobar-un-area.md)
 - [Revisa los documentos que vencen en la lista de vencimientos](vencimientos.md)

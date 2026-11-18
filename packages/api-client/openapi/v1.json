@@ -16719,6 +16719,42 @@
         }
       }
     },
+    "/api/v1/textos-legales/{id}": {
+      "get": {
+        "tags": [
+          "Validasoft.Aplicacion.Consentimientos.TextosLegalesEndpoints"
+        ],
+        "summary": "GET_api_v1_textos_legales_id",
+        "description": "GET_api_v1_textos_legales_id",
+        "operationId": "GET_api_v1_textos_legales_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TextoLegalDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/v1/empresas/{id}/textos-legales": {
       "get": {
         "tags": [

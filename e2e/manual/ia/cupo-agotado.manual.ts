@@ -5,6 +5,7 @@ import { abrirDesdeBandeja } from '../../soporte/empresa';
 import { completarInvitacion, completarInvitacionYEsperarRevisionOAprobacion, esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { activarIa, crearEscenario, invitar, nuevoTercero, publicarFlujoConFicha } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -64,6 +65,7 @@ recorrido(
     const paginaSofia = await (await browser.newContext()).newPage();
     const sofia = await abrirEmbebido(paginaSofia, e, e.sofia, e.sur, 'bandeja');
     await abrirDesdeBandeja(sofia, segundo.nombre, 'Revisión', 'Cliente');
+    await irASector(sofia, 'Información tributaria');
     await expect(sofia.getByRole('region', { name: 'Decisión automática' })).toContainText('Sin análisis de IA');
     await paso(paginaSofia, {
       titulo: 'Revisa el documento que quedó sin análisis',

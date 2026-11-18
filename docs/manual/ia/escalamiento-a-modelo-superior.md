@@ -45,5 +45,4 @@ El escalamiento no aprueba nada: el documento sigue con la sugerencia de la IA y
 
 ## Recorridos relacionados
 
-- [Atiende una excepción de la revisión asistida](revision-asistida-y-excepciones.md)
 - [Revisa el plan y el uso de IA de la empresa](plan-y-uso-de-ia.md)

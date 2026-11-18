@@ -53,4 +53,3 @@ El expediente se cierra y el aviso queda con la fecha y «El vínculo volvió a 
 ## Recorridos relacionados
 
 - [Confirma una coincidencia y rechaza el vínculo](coincidencia-confirmada.md)
-- [Registra el estudio de cumplimiento de un proveedor](estudio-de-cumplimiento.md)

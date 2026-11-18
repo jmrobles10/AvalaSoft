@@ -14,6 +14,7 @@ const ATRIBUTOS: AtributoPermitidoDto[] = [
   { clave: 'categorias', tipo: 'ListaOpciones', obligatorio: false, opciones: ['Materiales', 'Servicios'] },
   { clave: 'montoEstimado', tipo: 'Numero', obligatorio: false, opciones: null },
   { clave: 'critico', tipo: 'Booleano', obligatorio: false, opciones: null },
+  { clave: 'vigencia', tipo: 'Fecha', obligatorio: false, opciones: null },
 ];
 
 const predicado = (atributo: string, operador: string, ...valores: string[]): CondicionDto => ({ tipo: 'Predicado', nodos: null, atributo, operador, valores });
@@ -125,6 +126,26 @@ describe('«Se pide a» según un atributo del vínculo', () => {
     expect(screen.getByText(/Completa el valor/)).toBeInTheDocument();
     await usuario.type(screen.getByRole('textbox', { name: 'Hasta' }), '20');
     expect(condicion()).toEqual(predicado('vinculo.atributos.montoEstimado', 'Entre', '15.5', '20'));
+    expect(screen.queryByText(/Completa el valor/)).not.toBeInTheDocument();
+  });
+
+  it('una fecha se escribe con el selector por secciones (no un input de fecha del navegador) y viaja como aaaa-mm-dd; «entre» pide dos', async () => {
+    const usuario = userEvent.setup();
+    const { container } = montarPantalla(<Caso inicial={condicionDesdeAtributo({ clave: 'vigencia', modo: 'mayor', valores: [] })} />);
+
+    const dia = (grupo: string) => within(screen.getByRole('group', { name: grupo })).getByRole('spinbutton', { name: 'Día' });
+    await usuario.click(dia('Valor'));
+    await usuario.keyboard('31122026');
+    expect(condicion()).toEqual(predicado('vinculo.atributos.vigencia', 'Mayor', '2026-12-31'));
+    expect(container.querySelector('input[type="date"]')).toBeNull();
+
+    await elegir(usuario, 'Se cumple cuando', 'está entre');
+    // Al pasar a «entre» se conserva el primer valor y falta el segundo.
+    expect(within(screen.getByRole('group', { name: 'Desde' })).getByRole('spinbutton', { name: 'Año' })).toHaveTextContent('2026');
+    expect(screen.getByText(/Completa el valor/)).toBeInTheDocument();
+    await usuario.click(dia('Hasta'));
+    await usuario.keyboard('15012027');
+    expect(condicion()).toEqual(predicado('vinculo.atributos.vigencia', 'Entre', '2026-12-31', '2027-01-15'));
     expect(screen.queryByText(/Completa el valor/)).not.toBeInTheDocument();
   });
 

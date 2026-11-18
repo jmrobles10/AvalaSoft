@@ -1,5 +1,6 @@
 import { Autocomplete, MenuItem, Stack, TextField, type Theme } from '@mui/material';
 import type { AtributoPermitidoDto } from '@validasoft/api-client';
+import { CampoFecha } from '@validasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { valorActual, type ErrorDeAtributo, type ValorDeAtributo, type ValoresDeAtributos } from './modelo';
 
@@ -68,15 +69,31 @@ export function CamposDeAtributos({ atributos, valores, onCambiar, errores, deLa
           );
         }
 
+        if (a.tipo === 'Fecha') {
+          return (
+            <CampoFecha
+              key={a.clave}
+              etiqueta={a.clave}
+              valor={typeof valor === 'string' ? valor : ''}
+              onCambiar={(iso) => onCambiar(a.clave, iso)}
+              requerido={a.obligatorio}
+              deshabilitado={deshabilitado}
+              error={mensaje !== undefined}
+              ayuda={mensaje}
+              fullWidth
+              sx={mono}
+            />
+          );
+        }
+
         return (
           <TextField
             key={a.clave}
             {...comunes}
-            type={a.tipo === 'Fecha' ? 'date' : 'text'}
             value={typeof valor === 'string' ? valor : ''}
             onChange={(ev) => onCambiar(a.clave, ev.target.value)}
             helperText={mensaje ?? (a.tipo === 'Numero' ? t('atributosVinculo.numeroAyuda') : undefined)}
-            slotProps={{ inputLabel: a.tipo === 'Fecha' ? { shrink: true } : undefined, htmlInput: { inputMode: a.tipo === 'Numero' ? 'decimal' : undefined, autoComplete: 'off' } }}
+            slotProps={{ htmlInput: { inputMode: a.tipo === 'Numero' ? 'decimal' : undefined, autoComplete: 'off' } }}
           />
         );
       })}

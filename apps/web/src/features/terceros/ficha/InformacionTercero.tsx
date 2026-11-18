@@ -49,7 +49,8 @@ export function InformacionTercero({ empresaId, terceroId, secciones, vinculos }
   );
 }
 
-function TarjetaSeccion({ empresaId, terceroId, seccion, vinculos }: { empresaId: string; terceroId?: string; seccion: SeccionFichaDto; vinculos: readonly VinculoEnFichaDto[] }) {
+/** Una sección de la ficha maestra: estado, lo que la empresa aceptó, datos y soportes (también en los sectores de la ficha del vínculo). */
+export function TarjetaSeccion({ empresaId, terceroId, seccion, vinculos }: { empresaId: string; terceroId?: string; seccion: SeccionFichaDto; vinculos: readonly VinculoEnFichaDto[] }) {
   const { t } = useTranslation();
   const nombre = seccion.periodo ? t('fichaMaestra.nombreConPeriodo', { nombre: seccion.nombre, periodo: String(seccion.periodo) }) : seccion.nombre;
   const completitud = seccion.completitud;

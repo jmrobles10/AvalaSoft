@@ -265,7 +265,92 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getPublicarTextoLegalEmpresaMutationOptions(options), queryClient);
     }
-    export const obtenerTextosLegalesEmpresa = (
+    export const obtenerVersionTextoLegal = (
+    id: string,
+ options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
+) => {
+
+
+      return clienteValidasoft<TextoLegalDto>(
+      {url: `/api/v1/textos-legales/${id}`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getObtenerVersionTextoLegalQueryKey = (id: string,) => {
+    return [
+    `/api/v1/textos-legales/${id}`
+    ] as const;
+    }
+
+
+export const getObtenerVersionTextoLegalQueryOptions = <TData = Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getObtenerVersionTextoLegalQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof obtenerVersionTextoLegal>>> = ({ signal }) => obtenerVersionTextoLegal(id, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ObtenerVersionTextoLegalQueryResult = NonNullable<Awaited<ReturnType<typeof obtenerVersionTextoLegal>>>
+export type ObtenerVersionTextoLegalQueryError = ErrorType<void>
+
+
+export function useObtenerVersionTextoLegal<TData = Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError = ErrorType<void>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerVersionTextoLegal>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerVersionTextoLegal>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerVersionTextoLegal<TData = Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof obtenerVersionTextoLegal>>,
+          TError,
+          Awaited<ReturnType<typeof obtenerVersionTextoLegal>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerVersionTextoLegal<TData = Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useObtenerVersionTextoLegal<TData = Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof obtenerVersionTextoLegal>>, TError, TData>>, request?: SecondParameter<typeof clienteValidasoft>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getObtenerVersionTextoLegalQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const obtenerTextosLegalesEmpresa = (
     id: string,
  options?: SecondParameter<typeof clienteValidasoft>,signal?: AbortSignal
 ) => {

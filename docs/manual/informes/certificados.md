@@ -55,5 +55,4 @@ Al hacer clic en el folio se abre la ficha del tercero (su vista de 360 grados).
 ## Recorridos relacionados
 
 - [Bloquea, desbloquea o revoca un certificado](certificado-bloquear-y-revocar.md)
-- [Verifica que un certificado es auténtico](../publico/verificar-certificado-autentico.md)
 - [Exporta un expediente completo](exportar-un-expediente.md)

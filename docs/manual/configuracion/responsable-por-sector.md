@@ -60,4 +60,3 @@ Con «Crear borrador» el responsable queda en la versión v1. Como toda configu
 ## Recorridos relacionados
 
 - [Pide secciones de «Mi información» como requisito del flujo](flujo-secciones-de-la-ficha.md)
-- [Cambia un dato de tu ficha después de la aprobación](../tercero/ficha-cambio-tras-aprobar.md)

@@ -50,5 +50,4 @@ La sección del área ya muestra la versión 2 del RUT. Aprueba el área sobre e
 
 ## Recorridos relacionados
 
-- [Aprueba el expediente documento por documento](aprobar-documento-por-documento.md)
 - [Revisa lo que corrigió el proveedor tras una observación](responder-con-lo-corregido.md)

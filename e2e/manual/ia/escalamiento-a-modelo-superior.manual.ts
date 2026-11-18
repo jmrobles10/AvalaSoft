@@ -5,6 +5,7 @@ import { abrirDesdeBandeja, regionDeArea } from '../../soporte/empresa';
 import { completarInvitacion, esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { activarIa, crearEscenario, invitar, nuevoTercero, publicarFlujoConFicha } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -42,6 +43,7 @@ recorrido(
     const sofia = await abrirEmbebido(paginaSofia, e, e.sofia, e.sur, 'bandeja');
     await expect(async () => {
       await abrirDesdeBandeja(sofia, tercero.nombre, 'Revisión', 'Cliente');
+      await irASector(sofia, 'Información tributaria');
       await expect(sofia.getByRole('region', { name: 'Decisión automática' }).first()).toContainText('La IA sugiere revisar', { timeout: 1500 });
     }).toPass({ timeout: 60_000 });
 
@@ -60,6 +62,7 @@ recorrido(
     });
 
     await expect(sofia.getByRole('region', { name: 'Decisión automática' }).first()).toContainText('Confianza baja');
+    await irASector(sofia, 'Aprobaciones');
     await expect(regionDeArea(sofia, 'Revisión').getByRole('button', { name: /^Aprobar área/ })).toBeVisible();
     await paso(paginaSofia, {
       titulo: 'Decide el documento escalado',

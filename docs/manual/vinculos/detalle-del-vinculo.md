@@ -27,7 +27,7 @@ La administradora abre un vínculo desde la lista y revisa sus datos, el estado 
 
 ## Paso 1. Lee los datos del vínculo
 
-El detalle abre con el tercero, su identificación, el tipo de vínculo y la empresa. «Contacto» es el correo al que se envían las invitaciones y los avisos de esta relación. «Creado» y «Última actualización» muestran cuándo se registró y cuándo cambió por última vez; el estado aparece junto al nombre del tercero.
+El detalle abre en el sector «Información general» de la barra lateral, con el tercero, su identificación, el tipo de vínculo y la empresa. «Contacto» es el correo al que se envían las invitaciones y los avisos de esta relación. «Creado» y «Última actualización» muestran cuándo se registró y cuándo cambió por última vez; el estado aparece junto al nombre del tercero.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 
@@ -40,7 +40,7 @@ El detalle abre con el tercero, su identificación, el tipo de vínculo y la emp
 
 ## Paso 2. Revisa el estado de la invitación
 
-En «Invitación» ves cuántos correos se enviaron y hasta cuándo vale el enlace. Mientras el tercero no lo acepte, el vínculo sigue en «Invitado»; cuando lo acepta, aparece «Aceptada» con la fecha. Si el vínculo se creó sin enviar correo, dice «Sin invitación enviada».
+En «Datos del vínculo», la línea «Invitación» muestra cuántos correos se enviaron y hasta cuándo vale el enlace. Mientras el tercero no lo acepte, el vínculo sigue en «Invitado»; cuando lo acepta, aparece «Aceptada» con la fecha. Si el vínculo se creó sin enviar correo, dice «Sin invitación enviada».
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 
@@ -52,7 +52,7 @@ En «Invitación» ves cuántos correos se enviaron y hasta cuándo vale el enla
 
 ## Paso 3. Revisa las referencias de cada sistema
 
-Cuando un sistema integrado crea o enlaza el vínculo, su identificador queda en «Referencias externas» con el nombre del sistema y su referencia (aquí «E2E» y «PRO-941221731-NK0A78»). Un mismo vínculo puede tener una referencia por cada sistema; con esa referencia se encuentra también desde la lista.
+Al final del sector «Información general» están las «Referencias externas»: cuando un sistema integrado crea o enlaza el vínculo, su identificador queda ahí con el nombre del sistema y su referencia (aquí «E2E» y «PRO-904542371-N2DAB2»). Un mismo vínculo puede tener una referencia por cada sistema; con esa referencia se encuentra también desde la lista.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 
@@ -64,7 +64,7 @@ Cuando un sistema integrado crea o enlaza el vínculo, su identificador queda en
 
 ## Paso 4. Revisa el historial del vínculo
 
-El historial es la línea de tiempo de lo que pasó con el vínculo: cuándo se creó, cuándo se envió la invitación y cada cambio de estado o de datos, con quién lo hizo. Es lo primero que revisas cuando alguien pregunta qué pasó con un tercero.
+El botón «Historial» del encabezado abre un panel a la derecha con la línea de tiempo del vínculo: cuándo se creó, cuándo se envió la invitación y cada cambio de estado o de datos, con quién lo hizo. Es lo primero que revisas cuando alguien pregunta qué pasó con un tercero. El mismo historial está en el sector «Historial» de la barra lateral, para leerlo a página completa.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 
@@ -74,3 +74,5 @@ El historial es la línea de tiempo de lo que pasó con el vínculo: cuándo se 
 
 - [Revisa la lista de vínculos y filtra por estado y tipo](lista-y-filtros.md)
 - [Reenvía la invitación a un tercero](reenviar-invitacion.md)
+- [Recorre la ficha del vínculo por sectores](ficha-por-sectores.md)
+- [Lee el historial de un expediente](../revision/historial-del-expediente.md)

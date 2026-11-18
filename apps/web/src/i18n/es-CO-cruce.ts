@@ -23,8 +23,10 @@ export const cruce = {
   evidencia: 'Es evidencia para la revisión: el cruce no aprueba ni observa nada por sí mismo.',
   soporte: {
     titulo: 'Soporte de la información',
+    respalda: 'Respalda: {{secciones}}',
     sinAnalisis: 'Tu empresa no recibió la lectura automática de esta versión: compara a mano con las secciones.',
     seccionSinDiligenciar: '{{seccion}}: sin diligenciar.',
+    seccionSinDiligenciarCorta: '{{seccion}} (sin diligenciar)',
     seccionSinCruce: '{{seccion}} (versión {{n}}): sin cruce.',
     seccion: '{{seccion}} (versión {{n}})',
     sinCruce: 'Sin cruce con esta versión.',

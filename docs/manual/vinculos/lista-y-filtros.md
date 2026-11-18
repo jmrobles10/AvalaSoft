@@ -108,4 +108,3 @@ Al hacer clic en la fila se abre el detalle del vínculo, con los datos del terc
 ## Recorridos relacionados
 
 - [Revisa el detalle de un vínculo](detalle-del-vinculo.md)
-- [Acepta la invitación y completa tu información como persona jurídica](../tercero/aceptar-invitacion-persona-juridica.md)

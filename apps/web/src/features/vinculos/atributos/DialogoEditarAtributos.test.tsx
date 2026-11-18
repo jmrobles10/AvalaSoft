@@ -96,7 +96,9 @@ describe('«Editar atributos» del vínculo', () => {
     expect(within(dialogo).getByRole('combobox', { name: /nivelRiesgo/ }).closest('.MuiFormControl-root')?.querySelector('.MuiFormLabel-asterisk')).not.toBeNull();
     expect(within(dialogo).getByText('Servicios')).toBeInTheDocument(); // el chip de la lista de opciones
     expect(within(dialogo).getByRole('textbox', { name: 'montoEstimado' })).toHaveValue('1500000');
-    expect(within(dialogo).getByLabelText('vigencia')).toHaveAttribute('type', 'date');
+    // La fecha es el selector por secciones (dd/mm/aaaa), no un input de fecha del navegador.
+    expect(within(within(dialogo).getByRole('group', { name: 'vigencia' })).getByRole('spinbutton', { name: 'Día' })).toBeInTheDocument();
+    expect(dialogo.querySelector('input[type="date"]')).toBeNull();
     expect(within(dialogo).getByRole('combobox', { name: 'critico' })).toHaveTextContent('No');
     expect(within(dialogo).getByRole('textbox', { name: 'nota' })).toHaveValue('Revisar');
     // Nada cambiado, nada que guardar.
@@ -115,7 +117,8 @@ describe('«Editar atributos» del vínculo', () => {
     await usuario.click(screen.getByRole('combobox', { name: 'categorias' }));
     await usuario.click(await screen.findByRole('option', { name: 'Equipos' }));
     await usuario.keyboard('{Escape}');
-    await usuario.type(screen.getByLabelText('vigencia'), '2026-12-31');
+    await usuario.click(within(screen.getByRole('group', { name: 'vigencia' })).getByRole('spinbutton', { name: 'Día' }));
+    await usuario.keyboard('31122026');
     await usuario.click(screen.getByRole('button', { name: 'Guardar' }));
 
     expect(await screen.findByText('Diálogo cerrado')).toBeInTheDocument();

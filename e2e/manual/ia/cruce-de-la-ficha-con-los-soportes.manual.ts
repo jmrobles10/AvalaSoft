@@ -5,6 +5,7 @@ import { llenarGeneralJuridica } from '../../soporte/ficha';
 import { abrirEmpresa, aceptarInvitacion, entrarPorInvitacion, esperarEstadoDelTercero, subirDocumento } from '../../soporte/proveedor';
 import { activarIa, crearEscenario, invitar, nuevoTercero, publicarFlujoConFicha } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { irASector } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -48,6 +49,7 @@ recorrido(
     const cruce = sofia.getByRole('region', { name: 'Cruce con el documento' });
     await expect(async () => {
       await abrirDesdeBandeja(sofia, cliente.nombre, 'Revisión', 'Cliente');
+      await irASector(sofia, 'Información tributaria');
       await expect(cruce).toContainText('Confianza de la lectura', { timeout: 1500 });
     }).toPass({ timeout: 60_000 });
     await expect(cruce.getByRole('table', { name: /^Cruce con Registro Único Tributario · versión 1/ })).toBeVisible();

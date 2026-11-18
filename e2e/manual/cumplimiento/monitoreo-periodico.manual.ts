@@ -1,9 +1,10 @@
-import { enRevision, esperarListas, pedirVerificaciones, personaEmbebida, revisarVerificaciones } from '../../soporte/cumplimiento';
+import { enRevision, pedirVerificaciones, personaEmbebida, revisarVerificaciones } from '../../soporte/cumplimiento';
 import { abrirEmbebido } from '../../soporte/embebido';
 import { abrirDesdeBandeja, aprobarArea, irASeccion } from '../../soporte/empresa';
 import { esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { crearEscenario } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
+import { esperarListasEnLaFicha, irASector } from '../nucleo/ficha';
 
 const NOMBRE = 'Cementos Vigilados S.A.S.';
 const dentroDe = (dias: number) => new Date(Date.now() + dias * 86_400_000);
@@ -31,12 +32,14 @@ recorrido(
     await abrirDesdeBandeja(ruben, NOMBRE, 'Compras');
     await aprobarArea(ruben, 'Compras');
     const olgaAprueba = await personaEmbebida(browser, e, e.olga);
-    await esperarListas(olgaAprueba, NOMBRE, 'Cumplimiento', 'Satisfecha');
+    await esperarListasEnLaFicha(olgaAprueba, NOMBRE, 'Cumplimiento', 'Satisfecha');
+    await irASector(olgaAprueba, 'Aprobaciones');
     await aprobarArea(olgaAprueba, 'Cumplimiento');
     await esperarEstadoDelTercero(pTercero, 'Aprobado');
 
     const olga = await abrirEmbebido(page, e, e.olga, e.norte, `vinculos/${invitacion.vinculoId}`);
     const monitoreo = olga.getByRole('region', { name: 'Monitoreo de listas' });
+    await irASector(olga, 'Oficial de cumplimiento');
     await expect(monitoreo).toContainText('Satisfecha');
     await paso(page, {
       titulo: 'Revisa el monitoreo del vínculo activo',
@@ -55,6 +58,7 @@ recorrido(
     const resultado = await revisarVerificaciones(e, dentroDe(31));
     expect(resultado.monitoreos).toBe(1);
     await page.reload();
+    await irASector(olga, 'Oficial de cumplimiento');
     await expect(monitoreo).toContainText('Sistema');
     await paso(page, {
       titulo: 'La reconsulta automática corre sin novedades',

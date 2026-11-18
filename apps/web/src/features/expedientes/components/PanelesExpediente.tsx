@@ -73,7 +73,8 @@ export function UltimaRespuesta({ expediente }: { expediente: ExpedienteDto }) {
   );
 }
 
-export function HistorialExpediente({ empresaId, expediente }: { empresaId: string; expediente: ExpedienteDto }) {
+/** `sinTarjeta`: solo la línea de tiempo (dentro de las pestañas del historial de la ficha). */
+export function HistorialExpediente({ empresaId, expediente, sinTarjeta = false }: { empresaId: string; expediente: ExpedienteDto; sinTarjeta?: boolean }) {
   const { t } = useTranslation();
   const usuarioActual = useSesion((s) => s.sesion?.usuarioId ?? null);
   const consulta = useHistorialExpediente(empresaId, expediente.id);
@@ -86,13 +87,12 @@ export function HistorialExpediente({ empresaId, expediente }: { empresaId: stri
     [consulta.data, usuarioActual, nombres, areas, requisitos, t],
   );
 
-  return (
-    <Tarjeta titulo={t('expedientes.historial.titulo')}>
-      {consulta.isPending && (
-        <EsqueletoHistorial />
-      )}
+  const contenido = (
+    <>
+      {consulta.isPending && <EsqueletoHistorial />}
       {consulta.isError && <ErrorRecuperable mensaje={t('expedientes.historial.error')} onReintentar={() => void refetch()} />}
       {consulta.data && <LineaDeTiempo eventos={eventos} vacio={t('expedientes.historial.vacio')} />}
-    </Tarjeta>
+    </>
   );
+  return sinTarjeta ? contenido : <Tarjeta titulo={t('expedientes.historial.titulo')}>{contenido}</Tarjeta>;
 }

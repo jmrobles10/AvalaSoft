@@ -178,14 +178,15 @@ describe('Cruce con el documento en el requisito (F5)', () => {
       }),
     );
 
+    // La tarjeta da un solo aviso (el más importante); lo que respalda va en una línea y solo las secciones con cruce se detallan.
+    expect(tarjeta.getByRole('alert')).toHaveTextContent('Hay diferencias en campos críticos');
     const soporte = tarjeta.getByRole('region', { name: 'Soporte de la información' });
-    expect(within(soporte).getByRole('alert')).toHaveTextContent('Hay diferencias en campos críticos');
+    expect(soporte).toHaveTextContent('Respalda: Información general (versión 3) · Información tributaria (versión 1) · Información legal (sin diligenciar)');
     const filas = within(soporte).getAllByRole('listitem');
+    expect(filas).toHaveLength(1);
     expect(filas[0]).toHaveTextContent('Información general (versión 3)');
     expect(filas[0]).toHaveTextContent('Difiere en campos críticos');
     expect(within(filas[0]!).getByRole('table', { name: 'Cruce con Registro Único Tributario · versión 2' })).toBeInTheDocument();
-    expect(filas[1]).toHaveTextContent('Información tributaria (versión 1)Sin cruce con esta versión.');
-    expect(filas[2]).toHaveTextContent('Información legal: sin diligenciar.');
   });
 
   it('un documento sin la lectura automática para la empresa lo avisa y compara a mano', () => {
@@ -198,9 +199,8 @@ describe('Cruce con el documento en el requisito (F5)', () => {
         },
       }),
     );
-    const soporte = tarjeta.getByRole('region', { name: 'Soporte de la información' });
-    expect(soporte).toHaveTextContent('Tu empresa no recibió la lectura automática de esta versión: compara a mano con las secciones.');
-    expect(within(soporte).queryByText(/Hay diferencias en campos críticos/)).not.toBeInTheDocument();
+    expect(tarjeta.getByRole('alert')).toHaveTextContent('Sin lectura automática: revísalo y compáralo a mano con lo que declaró el tercero.');
+    expect(tarjeta.queryByText(/Hay diferencias en campos críticos/)).not.toBeInTheDocument();
   });
 });
 
@@ -262,13 +262,13 @@ describe('Documento que respalda las cuentas: la certificación bancaria (FD-5)'
       }),
     );
     const soporte = tarjeta.getByRole('region', { name: 'Soporte de la información' });
+    // Las cuentas van por su nombre enmascarado, nunca «sin diligenciar»; solo la que tiene cruce se detalla.
+    expect(soporte).toHaveTextContent('Respalda: Cuenta de Bancolombia ****5678 · Cuenta de Davivienda ****1111');
+    expect(soporte).not.toHaveTextContent('sin diligenciar');
     const filas = within(soporte).getAllByRole('listitem');
+    expect(filas).toHaveLength(1);
     expect(filas[0]).toHaveTextContent('Cuenta de Bancolombia ****5678');
-    expect(filas[0]).not.toHaveTextContent('sin diligenciar');
     expect(filas[0]).toHaveTextContent('Difiere en campos críticos');
     expect(filas[0]).toHaveTextContent('****9999');
-    // Una cuenta sin análisis para la empresa dice que no hay cruce con esta versión, no que esté «sin diligenciar».
-    expect(filas[1]).toHaveTextContent('Cuenta de Davivienda ****1111Sin cruce con esta versión.');
-    expect(filas[1]).not.toHaveTextContent('sin diligenciar');
   });
 });

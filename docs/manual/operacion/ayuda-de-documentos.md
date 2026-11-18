@@ -67,7 +67,3 @@ Cuando el tercero abre el expediente, la ayuda aparece junto al documento que ti
 > **Pantalla:** `/expediente/{id}`
 
 ![Paso 4: Lee la ayuda al entregar el documento (escritorio)](../../../salida/manual/img/operacion/ayuda-de-documentos/04-lee-la-ayuda-al-entregar-el-documento-claro.webp)
-
-## Recorridos relacionados
-
-- [Acepta la invitación y completa tu información como persona jurídica](../tercero/aceptar-invitacion-persona-juridica.md)

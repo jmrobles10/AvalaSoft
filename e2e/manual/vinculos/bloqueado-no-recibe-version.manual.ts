@@ -6,6 +6,7 @@ import { publicarFlujoDeFicha } from '../../soporte/ficha';
 import { crearTipoDeVinculo, invitarVinculo } from '../../soporte/flujos';
 import { aceptarInvitacion, entrarPorInvitacion, esperarEstadoDelTercero, subirDocumento } from '../../soporte/proveedor';
 import { crearEscenario, nuevoTercero, type Empresa, type Escenario, type Persona } from '../../soporte/semilla';
+import { chipDeEstado, irASector } from '../nucleo/ficha';
 import { expect, paso, recorrido } from '../nucleo';
 import { areaDe } from '../nucleo/semillas';
 
@@ -52,7 +53,7 @@ recorrido(
 
     const app = await abrirEmbebido(page, e, e.ana, e.norte, `vinculos/${invitacion.vinculoId}`);
     await expect(app.getByRole('heading', { level: 1, name: tercero.nombre })).toBeVisible();
-    await expect(app.getByText('Activo', { exact: true }).first()).toBeVisible();
+    await expect(chipDeEstado(app, 'Activo')).toBeVisible();
 
     await app.getByRole('button', { name: 'Más acciones' }).click();
     await app.getByRole('menuitem', { name: /^Bloquear/ }).click();
@@ -80,6 +81,7 @@ recorrido(
 
     await page.reload();
     await expect(app.getByRole('heading', { level: 1, name: tercero.nombre })).toBeVisible();
+    await irASector(app, 'Certificado');
     await expect(app.getByRole('main')).not.toContainText('En verificación');
     await paso(page, {
       titulo: 'Comprueba que el RUT nuevo no abrió revisión',
@@ -106,11 +108,13 @@ recorrido(
       await page.reload();
       await expect(app.getByText(/^En revisión\. En revisión desde el /).first()).toBeVisible({ timeout: 4000 });
     }).toPass({ timeout: 60_000 });
+    // El certificado vive en su propio sector de la ficha.
+    await irASector(app, 'Certificado');
     await expect(app.getByRole('main')).toContainText(new RegExp(`En verificación\\s*${e.norte.prefijo}-C-\\d{4}-\\d{6}-1`));
     await paso(page, {
       titulo: 'Comprueba que el vínculo quedó en revisión',
       explicacion:
-        'El vínculo queda «En revisión» y su certificado se ve «En verificación» mientras las áreas revisan el RUT nuevo. El proveedor ve lo mismo en «Mis empresas», donde su revisión con Constructora Norte vuelve a estar en curso.',
+        'El vínculo queda «En revisión» (en el encabezado) y, en el sector «Certificado», su certificado se ve «En verificación» mientras las áreas revisan el RUT nuevo. El proveedor ve lo mismo en «Mis empresas», donde su revisión con Constructora Norte vuelve a estar en curso.',
       resaltar: app.getByText(/^En revisión\. En revisión desde el /).first(),
       avisos: true,
     });

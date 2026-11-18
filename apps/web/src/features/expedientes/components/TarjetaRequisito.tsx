@@ -3,7 +3,10 @@ import { SCOPES, type AreaDeRequisitoDto, type AreaExpedienteDto, type Documento
 import { ChipEstado, formatearFecha, textoDelPorQue } from '@validasoft/ui';
 import { ClipboardList, Clock, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { hashCorto } from '../../documentos/api';
+import type { TFunction } from 'i18next';
+import { estadoRevision } from '../../documentos/revisionIa';
+import { estadoVigencia, severidadAviso, textoAvisoVigencia } from '../../documentos/vigencia';
+import { ChipVigencia } from '../../documentos/VigenciaDocumento';
 import { textoDelRequisito } from '../../personas/modelo';
 import { RevisionesAutomaticasDelRequisito } from '../../revisionAutomatica/components/RevisionesAutomaticasDelRequisito';
 import { etiquetaDeRuta } from '../../terceros/ficha/secciones';
@@ -29,6 +32,29 @@ type BloqueoExplicado = (typeof BLOQUEOS_EXPLICADOS)[number];
 
 function seExplica(bloqueo: BloqueoRequisito | null): bloqueo is BloqueoExplicado {
   return (BLOQUEOS_EXPLICADOS as readonly string[]).includes(bloqueo ?? '');
+}
+
+interface Aviso {
+  severidad: 'error' | 'warning' | 'info';
+  texto: string;
+}
+
+/** El aviso más importante del requisito (la tarjeta muestra uno solo): retiro, discrepancia crítica, vencimiento o sin lectura automática. */
+function avisoDelRequisito(requisito: RequisitoExpedienteDto, visor: DocumentoEnVisor | null, t: TFunction): Aviso | null {
+  const version = requisito.versionActual;
+  if (requisito.retiro && version) {
+    return { severidad: 'warning', texto: t('expedientes.requisitos.retiro', { retirada: String(requisito.retiro.numero), motivo: requisito.retiro.motivo, n: String(version.n) }) };
+  }
+  if (requisito.soporteDeSecciones?.discrepanciaCritica) return { severidad: 'error', texto: t('cruce.discrepanciaCritica') };
+  const vigencia = visor?.vigencia;
+  const estado = vigencia ? estadoVigencia(vigencia) : null;
+  if (vigencia && (estado === 'EnGracia' || estado === 'Vencida')) {
+    const texto = textoAvisoVigencia(vigencia, t);
+    if (texto) return { severidad: severidadAviso(vigencia), texto };
+  }
+  const sinLecturaDelArchivo = visor !== null && !visor.sinArchivo && estadoRevision(visor.hechos) === 'sinAnalisis';
+  const sinLectura = sinLecturaDelArchivo || requisito.soporteDeSecciones?.sinAnalisis === true;
+  return sinLectura ? { severidad: 'info', texto: t('vinculos.ficha.sinLectura') } : null;
 }
 
 export interface TarjetaRequisitoProps {
@@ -63,8 +89,20 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
   const documento = requisito.tipoDocumento.nombre;
   const eximir = puedeEximir(expediente, requisito, contexto(null).scopes);
 
+  const aviso = avisoDelRequisito(requisito, visor, t);
+  const vigencia = visor?.vigencia ?? null;
+
   return (
-    <Box component="li" sx={{ listStyle: 'none', border: 1, borderColor: requisito.estado === 'Observado' ? 'estado.advertencia.borde' : 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5 }}>
+    <Box
+      component="li"
+      sx={{
+        listStyle: 'none',
+        py: 1.5,
+        '&:first-of-type': { pt: 0.5 },
+        '&:not(:first-of-type)': { borderTop: 1, borderColor: 'divider' },
+        ...(requisito.estado === 'Observado' && { pl: 1.25, boxShadow: (th) => `inset 3px 0 0 ${th.palette.warning.main}` }),
+      }}
+    >
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <Icono size={18} strokeWidth={1.75} aria-hidden style={{ flex: 'none', marginTop: 2, opacity: 0.7 }} />
         <Box sx={{ minWidth: 0, flex: 1 }}>
@@ -77,20 +115,14 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
               {textoDelRequisito(requisito.persona, t)}
             </Typography>
           )}
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
-            {requisito.obligatorio ? t('expedientes.requisitos.obligatorio') : t('expedientes.requisitos.opcional')}
-            {version && (
-              <>
-                {' · '}
-                {t('expedientes.requisitos.version', { n: String(version.n), fecha: formatearFecha(version.cargadaEn) })}
-                {visor?.sinArchivo && ` · ${t('expedientes.datosDeclarados.formulario')}`}
-                {' · '}
-                <Typography component="span" variant="mono" title={version.sha256} sx={{ fontSize: 12 }}>
-                  {t('expedientes.requisitos.hash', { hash: hashCorto(version.sha256) })}
-                </Typography>
-              </>
-            )}
-          </Typography>
+          <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 0.25 }}>
+            <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }} title={version ? t('expedientes.requisitos.hash', { hash: version.sha256 }) : undefined}>
+              {requisito.obligatorio ? t('expedientes.requisitos.obligatorio') : t('expedientes.requisitos.opcional')}
+              {version && ` · ${t('expedientes.requisitos.version', { n: String(version.n), fecha: formatearFecha(version.cargadaEn) })}`}
+              {visor?.sinArchivo && ` · ${t('expedientes.datosDeclarados.formulario')}`}
+            </Typography>
+            {vigencia && <ChipVigencia vigencia={vigencia} />}
+          </Stack>
         </Box>
         <ChipEstado estado={requisito.estado} />
         {/* Una versión de solo formulario no tiene archivo que ver: sus datos van abajo, en la misma tarjeta. */}
@@ -102,15 +134,15 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
         )}
       </Stack>
 
-      {/* El tercero retiró la versión que este documento reemplaza: por qué cambió la versión y qué hacer (RT-3). */}
-      {requisito.retiro && version && (
-        <Alert severity="warning" sx={{ mt: 1 }}>
-          {t('expedientes.requisitos.retiro', { retirada: String(requisito.retiro.numero), motivo: requisito.retiro.motivo, n: String(version.n) })}
+      {/* Un solo aviso, el más importante: retiro de la versión, discrepancia crítica, vencimiento o falta de lectura automática. */}
+      {aviso && (
+        <Alert severity={aviso.severidad} sx={{ mt: 1, py: 0, fontSize: 13 }}>
+          {aviso.texto}
         </Alert>
       )}
       {visor && (
-        <Box sx={{ mt: 1 }}>
-          <ResumenVersion datos={visor.datosDeclarados ?? []} vigencia={visor.vigencia} limite={6} hechos={visor.sinArchivo ? null : visor.hechos} tipoEsperado={visor.tipoEsperado} />
+        <Box sx={{ mt: 1, '&:empty': { display: 'none' } }}>
+          <ResumenVersion datos={visor.datosDeclarados ?? []} vigencia={visor.vigencia} limite={6} hechos={visor.sinArchivo ? null : visor.hechos} tipoEsperado={visor.tipoEsperado} compacto />
         </Box>
       )}
       {/* Lo que decidió la revisión automática en cada área (ADR-0012): sugerencia, aprobación del sistema o pase a una persona. */}
@@ -119,7 +151,7 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
       {/* Un documento que respalda secciones de la ficha («Usar como soporte», F5): qué respalda y el resultado de su cruce. */}
       {!seccion && requisito.soporteDeSecciones && (
         <Box sx={{ mt: 1 }}>
-          <SoporteDeSecciones soporte={requisito.soporteDeSecciones} />
+          <SoporteDeSecciones soporte={requisito.soporteDeSecciones} compacto />
         </Box>
       )}
       {!seccion && !version && requisito.estado === 'Pendiente' && (
@@ -153,7 +185,7 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
         </Typography>
       )}
 
-      <Stack component="ul" spacing={1} sx={{ p: 0, m: 0, mt: 1.25 }}>
+      <Stack component="ul" spacing={0.75} sx={{ p: 0, m: 0, mt: 1 }}>
         {requisito.areas.map((areaRequisito) => (
           <AreaDelRequisito
             key={areaRequisito.areaId}
@@ -202,7 +234,7 @@ function AreaDelRequisito({
         : nombre(v.usuario);
 
   return (
-    <Box component="li" sx={{ listStyle: 'none', pl: 1.5, borderLeft: 2, borderColor: 'divider' }}>
+    <Box component="li" sx={{ listStyle: 'none' }}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         <Typography sx={{ fontWeight: 500, fontSize: 13, flex: '1 1 auto' }}>{nombreArea}</Typography>
         {areaRequisito.estado === 'Esperando' ? (
