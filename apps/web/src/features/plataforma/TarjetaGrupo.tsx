@@ -1,7 +1,7 @@
 import { Box, Button, Chip, IconButton, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import type { EmpresaDeGrupoDto, GrupoDto } from '@avalasoft/api-client';
 import { formatearFecha, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
-import { ChevronDown, ChevronUp, CircleDashed, ClipboardList, Gauge, KeyRound, Pencil, Plug, Plus, Sparkles } from 'lucide-react';
+import { Building2, ChevronDown, ChevronUp, CircleDashed, ClipboardList, Gauge, KeyRound, Pencil, Plug, Plus, Sparkles } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
@@ -98,6 +98,7 @@ export function TarjetaGrupo({ grupo, expandido, onAlternar }: { grupo: GrupoDto
   return (
     <Tarjeta
       etiqueta={grupo.tenant.nombre}
+      icono={Building2}
       titulo={
         <Stack direction="row" spacing={1} component="span" sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
           <Link component={RouterLink} to={`/plataforma/grupos/${grupo.tenant.id}`} color="inherit" underline="hover">

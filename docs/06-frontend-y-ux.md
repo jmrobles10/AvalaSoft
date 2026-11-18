@@ -102,9 +102,9 @@ Convención por feature: `api/` (hooks TanStack sobre el cliente generado + quer
 
 | Token | Dark (por defecto) | Light |
 |---|---|---|
-| `bg.default` | #060A14 | #FAFBFD |
-| `bg.surface1 / surface2` | #0B1120 / #111A2E | #FFFFFF / #F1F4FA |
-| `primary` (en curso) | #3D6BFF | #2F55D9 (AA sobre blanco) |
+| `bg.default` (el lienzo) | #0A0F14 | #EEF1F4 |
+| `bg.panel` (paneles flotantes) · `bg.surface1 / surface2` (tarjetas; campos de solo lectura y hover) | #0F151C · #141C25 / #1A232E | #FAFBFC · #FFFFFF / #F3F5F7 |
+| `primary` (acento único verde azulado: botones, íconos, enlaces) | #0E7C86 (botón) · #3FC1CE (texto) | #0E7C86 (botón, blanco 4,9:1) · #0B7480 (texto, AA sobre blanco y sobre su tinte) |
 | `primary.deep` | #0E2A6B | #0E2A6B |
 | `success` (aprobado/validado) | #22D38A | #159C64 |
 | `warning` (observado / desactualizado / por vencer) | #F5B544 | #B77A0C |
@@ -114,11 +114,13 @@ Convención por feature: `api/` (hooks TanStack sobre el cliente generado + quer
 | `gradient.brand` | `linear-gradient(135deg,#3D6BFF,#22D38A)` | igual |
 | `marcaAzul / marcaVerde` (aro y check del logo) | #6E8FFF / #2BE29A | #3D6BFF / #22D38A |
 | `marcaTexto / marcaSoft` («alida» y «Soft» del logotipo) | #F2F5FB / #7C9BFF | #0A0F1C / #2F55D9 |
-| Radios | `lg` 18 (tarjetas, modales) · `md` 12 (inputs, botones) · `sm` 9 (chips, celdas) |
+| Radios | `lg` 16 (paneles flotantes, diálogos) · `md` 14 (tarjetas, avisos) · `sm` 8 (campos, botones, menús) · `xs` 6 (celdas) · `pill` (chips, píldoras) |
 | Espaciado | base 8; densidad `comfortable` (público) / `compact` (bandejas) |
-| Tipografía | Geist: h1 32/600 tracking −0.02em, h2 24/600, h3 18/600, body 14/400, caption 12/500; Geist Mono 13 para folio, hash, fechas en tablas |
+| Tipografía | Geist: h1 28/600 tracking −0.02em, h2 22/500, h3 16/500 (título de tarjeta), body 14/400, caption 12/500, sobretítulo 11/600 en versalitas; Geist Mono 13 para folio, hash, fechas en tablas |
 
-`createAvalasoftTheme(mode)` extiende `createTheme` con `palette.estado.*` (module augmentation) y overrides (botones sin mayúsculas, chips radio 9, DataGrid sin bordes verticales).
+`createAvalasoftTheme(mode)` extiende `createTheme` con `palette.estado.*` (module augmentation) y overrides (botones sin mayúsculas, chips en píldora, DataGrid sin bordes verticales). La fuente de los tokens es `packages/ui/src/tokens.ts` (el `tokens.json` del artifact de diseño ya no existe).
+
+**Lenguaje visual (rework 2026-11).** Un **lienzo** gris claro sobre el que **flotan** paneles de radio grande y borde muy sutil (la barra lateral y el contenido); dentro del panel, **tarjetas por bloque** (`TarjetaBloque`: ícono en el acento, título y ayuda corta en la misma línea, divisor fino y cuerpo con relleno generoso). **Campos «small» de MUI** (36 px; 40 en el celular del tercero) con la etiqueta encogida sobre el borde y chevron de trazo fino en los desplegables; los de solo lectura, con relleno gris claro. **Acento único** verde azulado: primarios rellenos, secundarios con borde y texto del acento, encabezados de tabla en cian muy claro con rótulos en versalitas. **Chips de estado** en píldora con punto y tinte suave. **Barra superior** sin fondo propio (logotipo, píldoras de contexto, chip del usuario) y **navegación** con el ítem activo como píldora blanca con sombra suave. Piezas en `packages/ui`: `TarjetaBloque`, `TarjetaKpi`, `FilaAtencion`, `PanelFlotante`, `BarraSuperior`, `PildoraContexto`, `ChipUsuario`, `NavegacionLateral`. Los tokens de marca (el logotipo) no cambian.
 
 **Marca.** El logo «Anillo» (logotipo sin aro, ícono, favicon) y sus animaciones de éxito y de carga son componentes del paquete (`Logo`, `AnimacionExito`, `Cargando`); su geometría y sus colores salen de `packages/ui/src/marca/geometria.ts` y de los tokens `marca*`. Construcción, usos correctos e incorrectos, tamaños mínimos y cómo se regeneran los recursos (favicon, íconos de la app, GIF): [marca.md](marca.md) y decisiones MA-1…MA-8.
 
@@ -165,9 +167,9 @@ Convención por feature: `api/` (hooks TanStack sobre el cliente generado + quer
 Normas del proyecto para `apps/web`, `apps/public` y el tema (`packages/ui/src/tema.ts`); detalle y motivos en el [registro](decisiones/registro.md#5-novotricies-reglas-visuales-de-toda-la-aplicación-2026-11-10). Las comprueban `packages/ui/src/pulido.test.tsx` y `e2e/pruebas/pulido-visual.spec.ts`.
 
 1. **Cargando = esqueleto** (`esqueletos.tsx`: tarjetas, formulario, tabla, detalle, historial, opciones de autocompletar). Nunca «Cargando…» ni spinners de página, sección o lista; el único spinner es el de `IconoCarga`, dentro de un botón que guarda.
-2. **Botones compactos**: `medium` por omisión (web 32 px, tercero 36 en escritorio y 40 en el celular, con el área táctil de 44 px en un pseudoelemento). `large` solo para la acción principal; `small` en avisos, filas y tarjetas. Sin `minHeight` de 44/48 en un botón.
-3. **Selects y autocompletar** con el ícono dentro del campo y los textos de MUI en español (`esES` + «Abrir», «Cerrar», «Limpiar», «Sin resultados»).
-4. **Nada cuadrado suelto**: acordeones y papeles con el radio de las tarjetas (12 px) y sin la línea superior de MUI.
+2. **Botones compactos**: `medium` por omisión, del alto del campo (web 36 px, tercero 36 en escritorio y 40 en el celular, con el área táctil de 44 px en un pseudoelemento); `small` 30/32 y `large` 40/44. `large` solo para la acción principal; `small` en avisos, filas y tarjetas. Sin `minHeight` de 44/48 en un botón. Los campos son `size="small"` por omisión en las dos apps.
+3. **Selects y autocompletar** con el chevron de trazo fino (lucide `ChevronDown`, 16 px, color secundario) dentro del campo —gira al abrir— y los textos de MUI en español (`esES` + «Abrir», «Cerrar», «Limpiar», «Sin resultados»).
+4. **Nada cuadrado suelto**: acordeones y papeles con el radio de las tarjetas (14 px) y sin la línea superior de MUI.
 5. **Sin layouts volcados a la izquierda**: `DosColumnas` desde `lg` (Plan de IA, Nuevo grupo); a 1920×1080 una pantalla de configuración cabe sin desplazarse.
 6. **Avisos de documento más nuevo**: uno por documento, con las secciones que afecta; en el wizard, un bloque por documento dentro de un solo aviso (ver 9).
 7. **Ningún control nativo del navegador** (fecha, hora, mes, número con flechas, `select`): fecha con `CampoFecha` (`@mui/x-date-pickers` + `dayjs`, `dd/mm/aaaa`, calendario en español, valor ISO `aaaa-mm-dd`), entero con `CampoNumero` (solo dígitos) y listas con el `Select`/`Autocomplete` de MUI. Lo vigila `pulido.test.tsx`.
@@ -255,7 +257,7 @@ Una sola fila de 48 px (también dentro del iframe del anfitrión): el logotipo 
 | Accesibilidad | `nav` con su nombre («Secciones»); «Más» es un botón con `aria-haspopup="menu"`, `aria-expanded` y `aria-controls`; los ítems del menú son **enlaces** (`role="menuitem"`, `aria-current="page"` en el activo) con la navegación por teclado de `MenuList` (Enter abre y enfoca el primero, flechas, Esc cierra y devuelve el foco). El menú no bloquea el scroll de la ventana, para que no cambie el ancho (y con él cuántas pestañas caben) mientras está abierto. |
 | Misma apariencia | Mismo alto, tipografía y subrayado de las pestañas anteriores, en modo claro y oscuro y en el modo embebido (altura fija, puente `postMessage`): el cambio es solo de distribución. |
 
-La consola de Plataforma (`ShellPlataforma`, nueve secciones: Grupos y empresas, Habeas data, Accesos a terceros, Uso de IA, Operadores, Ingresos, Secretos, Listas restrictivas y Fuentes oficiales) usa el mismo componente `NavegacionPrincipal` (NAV-8, con la ruta base `/plataforma`): las secciones que caben y el resto en «Más», nunca con desplazamiento horizontal. A la derecha conserva «{persona} · operador de Plataforma desde {sistema}», que se acorta con puntos suspensivos si no cabe (tooltip con el texto completo).
+La consola de Plataforma (`ShellPlataforma`, nueve secciones) ya no usa la barra de pestañas sino el marco del rework: la **barra superior** sin fondo (logotipo, píldoras «Plataforma» y la fecha, el tema y el chip del operador con su nombre y, debajo, el sistema desde el que opera) y, debajo, dos **paneles flotantes**: la **barra lateral** agrupada (Inicio: Grupos y empresas · Cumplimiento: Habeas data, Accesos a terceros, Listas restrictivas, Fuentes oficiales · Operación: Uso de IA, Operadores, Ingresos, Secretos; el activo es una píldora blanca) y el contenido, que desplaza dentro de su panel. La barra se **colapsa** a solo íconos animando únicamente su ancho (cada ícono vive en una caja fija de 40 px y los textos solo se desvanecen: nada cambia de lugar) y se recuerda; con menos de 900 px pasa a un cajón. La portada (Grupos y empresas) abre con un saludo, cuatro cifras y «Necesita atención», calculados con lo que la API ya entrega. La web de empresa (`AppShell`) conserva la barra de pestañas con «Más».
 
 **Menú de cuenta (ING-3).** Solo con sesión directa, a la derecha de la barra: el avatar de la persona abre un menú con su nombre y correo, «Mi cuenta» y «Cerrar sesión». Con la identidad delegada no aparece: ahí la persona se autentica y sale en su sistema. Tras entrar solo con el código (una cuenta sin passkey) una franja descartable bajo la barra sugiere «Protege tu cuenta con una passkey» con la acción «Registrar».
 

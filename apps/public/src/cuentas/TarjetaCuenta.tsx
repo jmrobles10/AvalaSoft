@@ -1,4 +1,4 @@
-import { Box, Button, Card, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import type { CuentaBancariaPublicaDto } from '@avalasoft/api-client';
 import { ChipEstado } from '@avalasoft/ui';
 import { Archive, Landmark } from 'lucide-react';
@@ -20,13 +20,13 @@ export function TarjetaCuenta({ cuenta }: { cuenta: CuentaBancariaPublicaDto }) 
   const tipo = esTipoCuenta(cuenta.tipoCuenta) ? t(`cuentas.tipos.${cuenta.tipoCuenta}`) : cuenta.tipoCuenta;
 
   return (
-    <Card component="article" aria-labelledby={`cuenta-${cuenta.id}`} sx={{ p: 0, overflow: 'hidden' }}>
-      <Stack direction="row" useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', columnGap: 1.25, rowGap: 0.5, py: 1, pl: { xs: 1.5, sm: 2 }, pr: 1 }}>
-        <Box aria-hidden sx={(th) => ({ display: 'grid', placeItems: 'center', flex: 'none', width: 28, height: 28, borderRadius: `${String(th.radio.sm)}px`, bgcolor: 'superficie.nivel2', color: 'text.secondary' })}>
-          <Landmark size={18} />
+    <Box component="article" aria-labelledby={`cuenta-${cuenta.id}`} sx={{ py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
+      <Stack direction="row" useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', columnGap: 1.5, rowGap: 0.5 }}>
+        <Box aria-hidden sx={(th) => ({ display: 'grid', placeItems: 'center', flex: 'none', width: 32, height: 32, borderRadius: '9px', bgcolor: th.palette.acento.tinte, color: th.palette.acento.main })}>
+          <Landmark size={17} strokeWidth={1.75} />
         </Box>
         <Box sx={{ minWidth: 0, flex: '1 1 180px' }}>
-          <Typography id={`cuenta-${cuenta.id}`} component="h2" sx={{ fontWeight: 600, fontSize: 15, lineHeight: '20px' }}>
+          <Typography id={`cuenta-${cuenta.id}`} component="h2" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>
             {cuenta.banco}
           </Typography>
           <Typography variant="mono" component="p" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
@@ -37,18 +37,18 @@ export function TarjetaCuenta({ cuenta }: { cuenta: CuentaBancariaPublicaDto }) 
           </Typography>
         </Box>
         <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', ml: 'auto', flex: 'none' }}>
-          {activa ? <ChipEstado estado="Activo" etiqueta={t('cuentas.estados.Activa')} size="medium" /> : <ChipEstado estado="Retirada" etiqueta={t('cuentas.estados.Retirada')} size="medium" />}
+          {activa ? <ChipEstado estado="Activo" etiqueta={t('cuentas.estados.Activa')} /> : <ChipEstado estado="Retirada" etiqueta={t('cuentas.estados.Retirada')} />}
           {activa && (
-            <Button variant="text" onClick={() => setRetirando(true)} startIcon={<Archive size={16} aria-hidden />} aria-label={`${t('cuentas.retirar')}: ${nombreCuenta(cuenta)}`} sx={{ color: 'text.secondary' }}>
+            <Button variant="text" size="small" onClick={() => setRetirando(true)} startIcon={<Archive size={16} aria-hidden />} aria-label={`${t('cuentas.retirar')}: ${nombreCuenta(cuenta)}`} sx={{ color: 'text.secondary' }}>
               {t('cuentas.retirar')}
             </Button>
           )}
         </Stack>
       </Stack>
 
-      <Box component="ul" aria-label={t('cuentas.empresas')} sx={{ p: 0, m: 0 }}>
+      <Box component="ul" aria-label={t('cuentas.empresas')} sx={{ p: 0, m: 0, mt: 0.75, pl: { sm: 6 } }}>
         {designaciones.length === 0 ? (
-          <Typography component="li" sx={{ color: 'text.secondary', fontSize: 13, py: 1, px: { xs: 1.5, sm: 2 }, borderTop: 1, borderColor: 'divider', listStyle: 'none' }}>
+          <Typography component="li" sx={{ color: 'text.secondary', fontSize: 13, listStyle: 'none' }}>
             {t('cuentas.sinEmpresas')}
           </Typography>
         ) : (
@@ -67,6 +67,6 @@ export function TarjetaCuenta({ cuenta }: { cuenta: CuentaBancariaPublicaDto }) 
         )}
       </Box>
       {retirando && <DialogoRetirarCuenta cuenta={cuenta} onCerrar={() => setRetirando(false)} />}
-    </Card>
+    </Box>
   );
 }

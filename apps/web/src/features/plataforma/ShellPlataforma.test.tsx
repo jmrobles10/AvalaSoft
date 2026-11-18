@@ -1,24 +1,35 @@
 import { ThemeProvider } from '@mui/material';
-import { act, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { SesionAvalasoft } from '@avalasoft/api-client';
 import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { useSesion } from '../../sesion/sesionStore';
 import { ShellPlataforma } from './ShellPlataforma';
 
-const SECCIONES = [
-  { nombre: 'Grupos y empresas', ruta: '/plataforma/grupos' },
-  { nombre: 'Habeas data', ruta: '/plataforma/habeas' },
-  { nombre: 'Accesos a terceros', ruta: '/plataforma/accesos-a-terceros' },
-  { nombre: 'Uso de IA', ruta: '/plataforma/uso-ia' },
-  { nombre: 'Operadores', ruta: '/plataforma/operadores' },
-  { nombre: 'Ingresos', ruta: '/plataforma/ingresos' },
-  { nombre: 'Secretos', ruta: '/plataforma/secretos' },
-  { nombre: 'Listas restrictivas', ruta: '/plataforma/listas' },
-  { nombre: 'Fuentes oficiales', ruta: '/plataforma/fuentes' },
+const GRUPOS = [
+  { titulo: 'Inicio', secciones: [{ nombre: 'Grupos y empresas', ruta: '/plataforma/grupos' }] },
+  {
+    titulo: 'Cumplimiento',
+    secciones: [
+      { nombre: 'Habeas data', ruta: '/plataforma/habeas' },
+      { nombre: 'Accesos a terceros', ruta: '/plataforma/accesos-a-terceros' },
+      { nombre: 'Listas restrictivas', ruta: '/plataforma/listas' },
+      { nombre: 'Fuentes oficiales', ruta: '/plataforma/fuentes' },
+    ],
+  },
+  {
+    titulo: 'Operación',
+    secciones: [
+      { nombre: 'Uso de IA', ruta: '/plataforma/uso-ia' },
+      { nombre: 'Operadores', ruta: '/plataforma/operadores' },
+      { nombre: 'Ingresos', ruta: '/plataforma/ingresos' },
+      { nombre: 'Secretos', ruta: '/plataforma/secretos' },
+    ],
+  },
 ];
+const SECCIONES = GRUPOS.flatMap((g) => g.secciones);
 const NOMBRES = SECCIONES.map((s) => s.nombre);
 
 function sesionDeOperador(cambios: Partial<SesionAvalasoft> = {}): SesionAvalasoft {
@@ -54,23 +65,26 @@ function montar(ruta: string) {
   );
 }
 
-const barra = () => screen.getByRole('navigation', { name: 'Secciones' });
-const enlaces = () => within(barra()).queryAllByRole('link');
+const navegacion = () => screen.getByRole('navigation', { name: 'Secciones' });
+const enlaces = () => within(navegacion()).queryAllByRole('link');
 
 beforeEach(() => {
+  window.localStorage.clear();
   useSesion.setState({ sesion: sesionDeOperador(), estado: 'activa' });
 });
 
 afterEach(() => {
   useSesion.setState({ sesion: null, estado: 'sin-sesion' });
+  window.localStorage.clear();
 });
 
 describe('ShellPlataforma', () => {
-  it('sin layout muestra las nueve secciones como enlaces de la barra «Secciones», sin «Más»', () => {
+  it('la barra lateral lista las nueve secciones agrupadas (Inicio, Cumplimiento, Operación), cada una con su ruta', () => {
     montar('/plataforma/operadores');
     expect(enlaces().map((e) => e.textContent)).toEqual(NOMBRES);
     for (const { nombre, ruta } of SECCIONES) expect(screen.getByRole('link', { name: nombre })).toHaveAttribute('href', ruta);
-    expect(screen.queryByRole('button', { name: 'Más' })).not.toBeInTheDocument();
+    for (const { titulo } of GRUPOS) expect(within(navegacion()).getByText(titulo)).toBeInTheDocument();
+    expect(within(navegacion()).getByText('Navegación')).toBeInTheDocument();
   });
 
   it('marca como activa la sección de la ruta, también en una pantalla que cuelga de ella', () => {
@@ -79,35 +93,39 @@ describe('ShellPlataforma', () => {
     for (const enlace of enlaces().filter((e) => e.textContent !== 'Grupos y empresas')) expect(enlace).not.toHaveAttribute('aria-current');
   });
 
-  it('la barra no se desplaza en horizontal: lo que no cabe pasa a «Más»', () => {
-    montar('/plataforma/grupos');
-    expect(barra()).toHaveStyle({ overflow: 'hidden' });
-  });
-
-  it('con una ruta fuera de las secciones (Mi cuenta) ninguna pestaña queda activa', () => {
+  it('con una ruta fuera de las secciones (Mi cuenta) ninguna queda activa', () => {
     montar('/plataforma/mi-cuenta');
     for (const enlace of enlaces()) expect(enlace).not.toHaveAttribute('aria-current');
   });
 
-  it('muestra quién opera desde qué sistema, acortado con puntos suspensivos si no cabe y con el texto completo en el tooltip', () => {
+  it('el contenido va en el panel principal (`main`), no en la barra', () => {
     montar('/plataforma/grupos');
-    const texto = screen.getByText('Paula Plataforma · operador de Plataforma desde Backoffice');
-    expect(texto).toHaveStyle({ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: '0' });
-    expect(texto).toHaveAttribute('aria-label', 'Paula Plataforma · operador de Plataforma desde Backoffice');
-    // Es un hijo directo del encabezado: comparte la fila con la barra (que toma lo que sobra) y no la desborda.
-    expect(texto.parentElement).toBe(screen.getByRole('banner'));
+    expect(within(screen.getByRole('main')).getByText('Contenido de la sección')).toBeInTheDocument();
+    expect(within(navegacion()).queryByText('Contenido de la sección')).not.toBeInTheDocument();
   });
 
-  it('sin el sistema desde el que se abrió la sesión no hay texto del operador', () => {
+  it('la barra superior lleva el logotipo, la píldora «Plataforma» y el chip del operador con su nombre y el sistema desde el que opera', () => {
+    montar('/plataforma/grupos');
+    const barra = screen.getByRole('banner');
+    expect(within(barra).getByRole('img', { name: 'AvalaSoft' })).toBeInTheDocument();
+    expect(within(barra).getByText('Plataforma')).toBeInTheDocument();
+    expect(within(barra).getByText('Paula Plataforma')).toBeInTheDocument();
+    expect(within(barra).getByText('Backoffice')).toBeInTheDocument();
+    // El texto completo («persona · operador de Plataforma desde sistema») es el nombre accesible del chip.
+    expect(screen.getByLabelText('Paula Plataforma · operador de Plataforma desde Backoffice')).toBeInTheDocument();
+  });
+
+  it('sin el sistema desde el que se abrió la sesión, el rol del chip dice «Operador de Plataforma»', () => {
     useSesion.setState({ sesion: sesionDeOperador({ sistema: null }) });
     montar('/plataforma/grupos');
     expect(screen.queryByText(/operador de Plataforma desde/)).not.toBeInTheDocument();
+    expect(within(screen.getByRole('banner')).getByText('Operador de Plataforma')).toBeInTheDocument();
   });
 
   it('usa el identificador cuando la sesión no trae el nombre de la persona', () => {
     useSesion.setState({ sesion: sesionDeOperador({ nombre: null }) });
     montar('/plataforma/grupos');
-    expect(screen.getByText('op-1 · operador de Plataforma desde Backoffice')).toBeInTheDocument();
+    expect(within(screen.getByRole('banner')).getByText('op-1')).toBeInTheDocument();
   });
 
   it('sin la sesión de un operador de Plataforma va a la raíz', () => {
@@ -118,79 +136,43 @@ describe('ShellPlataforma', () => {
   });
 });
 
-describe('ShellPlataforma midiendo el diseño real', () => {
-  /** Un ResizeObserver y unas medidas de elemento simulados: en jsdom no hay layout. */
-  const observadores = new Set<() => void>();
-  let anchoBarra = 0;
-
-  beforeEach(() => {
-    class ResizeObserverSimulado {
-      constructor(private readonly alCambiar: () => void) {}
-      observe() {
-        observadores.add(this.alCambiar);
-      }
-      disconnect() {
-        observadores.delete(this.alCambiar);
-      }
-      unobserve() {
-        observadores.delete(this.alCambiar);
-      }
-    }
-    vi.stubGlobal('ResizeObserver', ResizeObserverSimulado);
-    // Cada sección mide 100 px y el botón «Más» 60 (con 2 px de separación entre pestañas).
-    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
-      const ancho = this.tagName === 'NAV' ? anchoBarra : this.hasAttribute('data-texto') ? (this.getAttribute('data-texto') === 'Más' ? 60 : 100) : 0;
-      return { width: ancho, height: 0, top: 0, left: 0, right: ancho, bottom: 0, x: 0, y: 0, toJSON: () => ({}) };
-    });
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    vi.restoreAllMocks();
-    observadores.clear();
-  });
-
-  const cambiarAncho = (ancho: number) => {
-    anchoBarra = ancho;
-    act(() => observadores.forEach((alCambiar) => alCambiar()));
-  };
-
-  it('las secciones que no caben pasan a «Más», que las lista como enlaces en su orden y las recupera al ensanchar', async () => {
+describe('ShellPlataforma: colapsar la barra lateral', () => {
+  it('colapsar no cambia la estructura: los mismos enlaces y títulos siguen montados (solo cambia el ancho y la opacidad del texto)', async () => {
     const usuario = userEvent.setup();
-    anchoBarra = 1200;
     montar('/plataforma/grupos');
-    expect(enlaces()).toHaveLength(9);
-    expect(screen.queryByRole('button', { name: 'Más' })).not.toBeInTheDocument();
-
-    // 3 secciones y «Más» (3·100 + 2·2 + 2 + 60 = 366); la cuarta no cabe.
-    cambiarAncho(370);
-    expect(enlaces().map((e) => e.textContent)).toEqual(['Grupos y empresas', 'Habeas data', 'Accesos a terceros']);
-    const mas = screen.getByRole('button', { name: 'Más' });
-    expect(mas).toHaveAttribute('aria-haspopup', 'menu');
-    expect(mas).not.toHaveAttribute('aria-current');
-
-    await usuario.click(mas);
-    const items = within(screen.getByRole('menu', { name: 'Más secciones' })).getAllByRole('menuitem');
-    expect(items.map((i) => i.textContent)).toEqual(NOMBRES.slice(3));
-    expect(items.map((i) => i.getAttribute('href'))).toEqual(SECCIONES.slice(3).map((s) => s.ruta));
-    await usuario.keyboard('{Escape}');
-
-    cambiarAncho(1200);
-    expect(enlaces()).toHaveLength(9);
-    expect(screen.queryByRole('button', { name: 'Más' })).not.toBeInTheDocument();
-  });
-
-  it('con la sección activa dentro de «Más», el botón lleva su nombre y queda activo', async () => {
-    const usuario = userEvent.setup();
-    anchoBarra = 370;
-    montar('/plataforma/fuentes');
-    expect(screen.queryByRole('button', { name: 'Más' })).not.toBeInTheDocument();
-    const boton = screen.getByRole('button', { name: 'Fuentes oficiales' });
-    expect(boton).toHaveAttribute('aria-current', 'page');
-    for (const enlace of enlaces()) expect(enlace).not.toHaveAttribute('aria-current');
+    const antes = enlaces();
+    const boton = screen.getByRole('button', { name: 'Colapsar la navegación' });
+    expect(boton).toHaveAttribute('aria-expanded', 'true');
 
     await usuario.click(boton);
-    expect(screen.getByRole('menuitem', { name: 'Fuentes oficiales' })).toHaveAttribute('aria-current', 'page');
-    expect(screen.getByRole('menuitem', { name: 'Secretos' })).not.toHaveAttribute('aria-current');
+    const colapsar = screen.getByRole('button', { name: 'Expandir la navegación' });
+    expect(colapsar).toHaveAttribute('aria-expanded', 'false');
+    expect(enlaces()).toHaveLength(antes.length);
+    expect(enlaces().map((e) => e.textContent)).toEqual(NOMBRES);
+    expect(navegacion()).toHaveStyle({ width: '58px' });
+    // El texto de cada ítem sigue en el DOM y solo se desvanece.
+    expect(within(navegacion()).getByText('Grupos y empresas')).toHaveStyle({ opacity: '0', whiteSpace: 'nowrap' });
+    expect(within(navegacion()).getByText('Cumplimiento')).toHaveStyle({ opacity: '0' });
+    expect(window.localStorage.getItem('avalasoft:plataforma:navegacion-colapsada')).toBe('1');
+
+    await usuario.click(colapsar);
+    expect(navegacion()).toHaveStyle({ width: '244px' });
+    expect(within(navegacion()).getByText('Grupos y empresas')).toHaveStyle({ opacity: '1' });
+  });
+
+  it('recuerda que la barra estaba colapsada', () => {
+    window.localStorage.setItem('avalasoft:plataforma:navegacion-colapsada', '1');
+    montar('/plataforma/grupos');
+    expect(screen.getByRole('button', { name: 'Expandir la navegación' })).toBeInTheDocument();
+    expect(navegacion()).toHaveStyle({ width: '58px' });
+  });
+
+  it('el ancho se anima y los íconos van en una caja fija de 40 px que no cambia entre estados', () => {
+    montar('/plataforma/grupos');
+    expect(getComputedStyle(navegacion()).transition).toContain('width 0.18s');
+    expect(navegacion()).toHaveStyle({ overflow: 'hidden' });
+    const enlace = screen.getByRole('link', { name: 'Grupos y empresas' });
+    const caja = enlace.querySelector('span[aria-hidden], div[aria-hidden]');
+    expect(caja).toHaveStyle({ width: '40px', height: '40px' });
   });
 });

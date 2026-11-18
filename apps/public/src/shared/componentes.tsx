@@ -1,13 +1,36 @@
-import { Box, Stack, Typography } from '@mui/material';
-import { ErrorEnLinea } from '@avalasoft/ui';
+import { Box, Stack, Typography, type SxProps, type Theme } from '@mui/material';
+import { ErrorEnLinea, PanelFlotante, sxComoLista, VARIABLE_FONDO } from '@avalasoft/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from './errores';
 
-/** Título de página del tercero (20/26 en móvil, 20/28 en escritorio) con su explicación y, a la derecha en escritorio, la acción principal. */
+/**
+ * Panel blanco flotante del contenido del tercero, con su relleno de siempre. Lo usa el Shell para casi todas las páginas y, en una sección de
+ * Mi información, la propia página (el panel del formulario va aparte del de las secciones). Las capas fijas del contenido (el título, la barra
+ * de acciones) toman el color del panel para tapar lo que pasa por debajo.
+ */
+export function PanelDelTercero({ children, sx }: { children: ReactNode; sx?: SxProps<Theme> }) {
+  return (
+    <PanelFlotante
+      sx={[
+        {
+          px: { xs: 1.5, sm: 3 },
+          pt: { xs: 1.5, sm: 2.5 },
+          pb: { xs: 2, sm: 3 },
+          [VARIABLE_FONDO]: (th: Theme) => th.palette.superficie.panel,
+        },
+        ...sxComoLista(sx),
+      ]}
+    >
+      {children}
+    </PanelFlotante>
+  );
+}
+
+/** Título de página del tercero (20/26 en móvil, 22/30 en escritorio) con su explicación y, a la derecha en escritorio, la acción principal. */
 export function CabeceraPagina({ titulo, sub, accion }: { titulo: string; sub?: ReactNode; accion?: ReactNode }) {
   return (
-    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { sm: 'flex-end' }, justifyContent: 'space-between', mb: 2 }}>
+    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { sm: 'flex-end' }, justifyContent: 'space-between', mb: 2.5 }}>
       <Box sx={{ minWidth: 0 }}>
         <Typography variant="h2" component="h1">
           {titulo}
@@ -32,8 +55,9 @@ export function ErrorRecuperable({ error, onReintentar }: { error: unknown; onRe
 }
 
 /**
- * Fila «Empresa · estado · detalle · acción» de una lista con divisores (TarjetaDocumentoBoveda y Mis empresas). En móvil
- * el detalle y la acción van debajo; en escritorio, en la misma línea (empresa 220 px, estado, detalle, acción).
+ * Fila ligera «Empresa · estado · detalle · acción» de una lista (TarjetaDocumentoBoveda, Mis empresas y las cuentas): sin caja ni divisor
+ * propios —la lista que la contiene decide el marco—, en texto secundario y con el estado como chips pequeños. En móvil el detalle y la
+ * acción van debajo; en escritorio, en la misma línea (empresa 200 px, estado, detalle, acción).
  */
 export function FilaEmpresa({ nombre, estado, detalle, accion }: { nombre: string; estado?: ReactNode; detalle?: ReactNode; accion?: ReactNode }) {
   return (
@@ -41,19 +65,15 @@ export function FilaEmpresa({ nombre, estado, detalle, accion }: { nombre: strin
       component="li"
       sx={{
         display: 'grid',
-        gridTemplateColumns: { xs: 'minmax(0, 1fr) auto', sm: '220px max-content minmax(0, 1fr) auto' },
+        gridTemplateColumns: { xs: 'minmax(0, 1fr) auto', sm: '200px max-content minmax(0, 1fr) auto' },
         alignItems: 'center',
         columnGap: { xs: 1, sm: 2 },
         rowGap: 0.25,
-        py: { xs: 1, sm: 0.75 },
-        px: { xs: 1.5, sm: 2 },
-        minHeight: { xs: 44, sm: 40 },
-        borderTop: 1,
-        borderColor: 'divider',
+        py: 0.5,
         listStyle: 'none',
       }}
     >
-      <Typography component="span" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px', minWidth: 0 }}>
+      <Typography component="span" sx={{ fontWeight: 500, fontSize: 13, lineHeight: '18px', minWidth: 0 }}>
         {nombre}
       </Typography>
       <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, justifySelf: { xs: 'end', sm: 'start' } }}>{estado}</Box>

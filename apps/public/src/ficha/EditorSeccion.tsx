@@ -9,7 +9,7 @@ import {
   type SeccionFichaDto,
   type SeccionGuardadaDto,
 } from '@avalasoft/api-client';
-import { AvisoCambiosNuevos } from '@avalasoft/ui';
+import { AvisoCambiosNuevos, fondoDelContenedor } from '@avalasoft/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -130,7 +130,7 @@ export function EditorSeccion({ definicion, periodo, estado, inicial, onReinicia
             position: { md: 'sticky' },
             top: { md: ALTO_CABECERA },
             zIndex: 3,
-            bgcolor: 'background.default',
+            bgcolor: fondoDelContenedor,
             pt: { md: `${String(MARGEN_SUPERIOR.sm)}px` },
             // Un poco más ancho que la columna: tapa la orilla de los radios, que MUI corre hacia afuera.
             mx: { md: -2 },
@@ -152,7 +152,7 @@ export function EditorSeccion({ definicion, periodo, estado, inicial, onReinicia
           <ObservacionesDeEmpresas observaciones={observaciones} />
           {editor.conPrellenado && (
             <Alert severity="info">
-              <AlertTitle>{t('ficha.prellenado.titulo')}</AlertTitle>
+              <AlertTitle sx={{ display: 'inline', mr: 0.75 }}>{t('ficha.prellenado.titulo')}</AlertTitle>
               {t('ficha.prellenado.texto')}
             </Alert>
           )}
@@ -173,6 +173,7 @@ export function EditorSeccion({ definicion, periodo, estado, inicial, onReinicia
             deshabilitado={editor.guardando}
           />
           <Faltantes faltantes={editor.faltantes} senal={senalFaltantes} />
+          <Box>
           <DescargaDeDeclaracionDisponible.Provider value={!editor.sinGuardar && !editor.conPrellenado && inicial.version !== null}>
             <FormularioDeSeccion codigo={definicion.codigo} estado={estado} editor={editor} selectorPeriodo={selectorPeriodo} />
           </DescargaDeDeclaracionDisponible.Provider>
@@ -186,6 +187,7 @@ export function EditorSeccion({ definicion, periodo, estado, inicial, onReinicia
             volver={rutaActual}
             deshabilitado={editor.guardando}
           />
+          </Box>
         </Stack>
       </Box>
       <BarraDeAcciones

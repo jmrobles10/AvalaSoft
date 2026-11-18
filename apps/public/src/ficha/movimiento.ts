@@ -20,11 +20,11 @@ export const aparicion = keyframes`
   to { opacity: 1; }
 `;
 
-/** Alto de la cabecera de la app (56 px más su borde): bajo ella se fijan el panel y el título de la sección. */
-export const ALTO_CABECERA = 57;
+/** Alto de la cabecera de la app (64 px, sin borde, sobre el lienzo): bajo ella se fijan el panel y el título de la sección. */
+export const ALTO_CABECERA = 64;
 
 /**
- * Margen superior del contenido en el Shell (`pt` 1.5 en el celular y 2.5 desde sm). Un elemento fijo se pega exactamente
+ * Margen superior del contenido en el panel del Shell (`pt` 1.5 en el celular y 2.5 desde sm). Un elemento fijo se pega exactamente
  * donde empieza (cabecera + margen) para no correrse unos píxeles antes de quedarse quieto.
  */
 export const MARGEN_SUPERIOR = { xs: 12, sm: 20 } as const;

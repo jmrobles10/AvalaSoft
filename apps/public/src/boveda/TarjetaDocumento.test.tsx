@@ -123,6 +123,22 @@ describe('tarjeta de un documento de la bóveda', () => {
     expect(tarjeta).not.toHaveTextContent(/recibirá la nueva|cuando la exija|v8/);
   });
 
+  it('es una fila: un solo chip de estado y una empresa por chip («Empresa · aprobada v1»), sin aviso amarillo dentro', () => {
+    montar();
+
+    const tarjeta = screen.getByRole('article', { name: 'Registro Único Tributario' });
+    // Los chips de empresa resumen lo que tiene cada una; la frase completa queda para lectores de pantalla y tooltip.
+    expect(tarjeta).toHaveTextContent('Constructora Norte S.A.S. · revalida v7');
+    expect(tarjeta).toHaveTextContent('Constructora Sur · revisa v7');
+    expect(tarjeta).toHaveTextContent('Constructora Oriente · tiene v7');
+    expect(tarjeta).toHaveTextContent('Constructora Poniente · no la exige');
+    // El aviso «Vence pronto…» vive en el bloque «Por renovar» de la página, no en la fila.
+    expect(within(tarjeta).queryByRole('alert')).not.toBeInTheDocument();
+    // Solo quien pide algo del tercero lleva su línea explicativa visible (aquí, Norte: revalidar).
+    const lineas = within(tarjeta).getAllByText('Aprobó la versión 8, que retiraste. Debe revisar la versión 7: revalidación abierta. Vence el 10/11/2027: su regla de vigencia cuenta desde la fecha de expedición.');
+    expect(lineas.length).toBeGreaterThan(0);
+  });
+
   it('el vencimiento de una empresa solo aparece si difiere de la cabecera y dice por qué', () => {
     montar();
 

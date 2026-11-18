@@ -1,6 +1,7 @@
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import type { UsoDelGrupoDto } from '@avalasoft/api-client';
 import { CabeceraEsqueleto, CampoNumero, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar } from '@avalasoft/ui';
+import { Activity, Gauge, SlidersHorizontal } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -68,7 +69,7 @@ function Formulario({ tenantId, uso, grupo }: { tenantId: string; uso: UsoDelGru
       <DosColumnas
         izquierda={
           <>
-            <Tarjeta titulo={t('plataforma.plan.plan')}>
+            <Tarjeta titulo={t('plataforma.plan.plan')} icono={Gauge}>
               <Stack spacing={2}>
                 <TextField
                   label={t('plataforma.plan.codigo')}
@@ -87,10 +88,7 @@ function Formulario({ tenantId, uso, grupo }: { tenantId: string; uso: UsoDelGru
                 </Box>
               </Stack>
             </Tarjeta>
-            <Tarjeta titulo={t('plataforma.plan.limites')}>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-                {t('plataforma.plan.limitesAyuda')}
-              </Typography>
+            <Tarjeta titulo={t('plataforma.plan.limites')} ayuda={t('plataforma.plan.limitesAyuda')} icono={SlidersHorizontal}>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 2 }}>
                 {limite('usuarios', t('plan.metricas.Usuarios.nombre'), t('plataforma.plan.ayudas.usuarios'))}
                 {limite('empresas', t('plan.metricas.Empresas.nombre'), t('plataforma.plan.ayudas.empresas'))}
@@ -102,7 +100,7 @@ function Formulario({ tenantId, uso, grupo }: { tenantId: string; uso: UsoDelGru
           </>
         }
         derecha={
-          <Tarjeta titulo={t('plataforma.plan.usoActual', { mes: etiquetaMes(uso.mes).toLowerCase() })}>
+          <Tarjeta titulo={t('plataforma.plan.usoActual', { mes: etiquetaMes(uso.mes).toLowerCase() })} icono={Activity}>
             <MedidoresDeUso mediciones={uso.mediciones} />
             <Typography sx={{ mt: 2, fontSize: 12, color: 'text.secondary', lineHeight: '16px' }}>{t('plataforma.plan.usoNota')}</Typography>
           </Tarjeta>

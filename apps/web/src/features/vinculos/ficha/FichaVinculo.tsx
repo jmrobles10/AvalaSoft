@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Button, Drawer, IconButton, Stack, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, Drawer, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { accionesDisponibles, SCOPES, type DefinicionAccion, type VinculoDto } from '@avalasoft/api-client';
 import { formatearFecha } from '@avalasoft/ui';
 import { History, Lock, X } from 'lucide-react';
@@ -15,11 +15,12 @@ import { AvisoAccesoDelCorreo } from '../components/AvisoAccesoDelCorreo';
 import { AvisoActualizacionNoAprobada } from '../components/AvisoActualizacionNoAprobada';
 import { AvisoDeVigencia } from '../components/AvisoDeVigencia';
 import { DialogoAccion } from '../components/DialogoAccion';
-import { BarraSectores } from './BarraSectores';
+import { ANCHO_BARRA_SECTORES, BarraSectores } from './BarraSectores';
 import { ContenidoSector } from './ContenidoSector';
 import { HistorialFicha } from './HistorialFicha';
 import { Encabezado } from './PartesVinculo';
 import { esSector, indicadoresPorSector, type Sector } from './sectores';
+import { SelectorSector } from './SelectorSector';
 
 interface Props {
   vinculo: VinculoDto;
@@ -32,8 +33,9 @@ interface Props {
 
 /**
  * Ficha del vínculo: una sola pantalla para el vínculo y su expediente, con la información repartida en sectores (barra lateral, como la
- * ficha del tercero del SRM) en lugar de una columna de tarjetas. El sector va en la URL (`?sector=`) para compartirlo y volver a él. El
- * historial es un sector y, desde cualquier otro, un panel lateral que se abre con «Historial».
+ * ficha del tercero del SRM) en lugar de una columna de tarjetas. Desde `lg` los sectores van en la barra lateral de la Plataforma; por
+ * debajo, en un selector desplegable compacto (sin scroll horizontal). El sector va en la URL (`?sector=`) para compartirlo y volver a él.
+ * El historial es un sector y, desde cualquier otro, un panel lateral que se abre con «Historial».
  */
 export function FichaVinculo({ vinculo, expedienteId, sectorPorDefecto, volver }: Props) {
   const { t } = useTranslation();
@@ -50,6 +52,10 @@ export function FichaVinculo({ vinculo, expedienteId, sectorPorDefecto, volver }
 
   const pedido = parametros.get('sector');
   const actual: Sector = esSector(pedido) ? pedido : sectorPorDefecto;
+  // El punto de corte de siempre (`lg`, 1200 px): con espacio, barra lateral; sin él, el selector desplegable.
+  const tema = useTheme();
+  const conBarraLateral = useMediaQuery(tema.breakpoints.up('lg'));
+  const indicadores = indicadoresPorSector(expediente);
   const rejilla = useRef<HTMLDivElement>(null);
   const contenido = useRef<HTMLElement>(null);
   useAltoDelEncabezado(rejilla);
@@ -99,8 +105,11 @@ export function FichaVinculo({ vinculo, expedienteId, sectorPorDefecto, volver }
         <AvisoActualizacionNoAprobada vinculo={vinculo} empresaId={vinculo.empresaId} />
       </Stack>
 
-      <Box ref={rejilla} sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0,1fr)', lg: '248px minmax(0,1fr)' }, gap: { xs: 1.5, lg: 3 }, alignItems: 'start' }}>
-        <BarraSectores actual={actual} indicadores={indicadoresPorSector(expediente)} onElegir={elegir} />
+      <Box
+        ref={rejilla}
+        sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0,1fr)', lg: `${String(ANCHO_BARRA_SECTORES)}px minmax(0,1fr)` }, gap: { xs: 1.5, lg: 3 }, alignItems: 'start' }}
+      >
+        {conBarraLateral ? <BarraSectores actual={actual} indicadores={indicadores} onElegir={elegir} /> : <SelectorSector actual={actual} indicadores={indicadores} onElegir={elegir} />}
         <Box ref={contenido} component="section" aria-label={t(`vinculos.ficha.sector.${actual}`)} sx={{ minWidth: 0, scrollMarginTop: 'calc(var(--vs-tope, 0px) + var(--vs-alto-encabezado, 96px) + 12px)' }}>
           <ContenidoSector sector={actual} vinculo={vinculo} control={control} cargandoExpediente={Boolean(expedienteId) && puedeExpediente && consultaExpediente.isPending} ficha={ficha.data} />
         </Box>

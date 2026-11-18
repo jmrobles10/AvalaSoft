@@ -84,7 +84,7 @@ describe('EditorRequisitos', () => {
     const quitar = screen.getByRole('button', { name: 'Quitar documento' });
     const celda = obligatorio.closest('label')?.parentElement;
     expect(celda).toBe(quitar.parentElement);
-    expect(celda).toHaveStyle({ alignItems: 'center', minHeight: '32px' });
+    expect(celda).toHaveStyle({ alignItems: 'center', minHeight: '36px' });
   });
 
   it('«Se pide a» elige entre todos, solo jurídicas, solo naturales o según la ficha del tercero', () => {

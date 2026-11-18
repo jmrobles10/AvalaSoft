@@ -26,7 +26,7 @@ configurarCliente({
 // Al recargar, la cookie de la sesión (si sigue vigente) devuelve a la persona adentro sin pedirle el enlace otra vez.
 void useSesionTercero.getState().restaurar();
 
-// Tema del tercero: densidad cómoda, controles de 44 px y radios de 18 en tarjetas y diálogos. Claro por defecto.
+// Tema del tercero: el mismo lenguaje que la consola (lienzo gris, paneles flotantes, campos «small» de 36 px y 40 en el celular). Claro por defecto.
 const tema = createAvalasoftTheme('light', { app: 'public' });
 
 export function App() {

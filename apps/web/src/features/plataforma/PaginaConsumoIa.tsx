@@ -1,6 +1,6 @@
 import { Box, Button, MenuItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import { BarraFiltros, CampoBusqueda, Dato, EstadoVacio, RejillaDatos, TablaEsqueleto } from '@avalasoft/ui';
-import { Download, SearchX, Sparkles } from 'lucide-react';
+import { Activity, Download, SearchX, Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
@@ -96,7 +96,7 @@ export function PaginaConsumoIa() {
       {consulta.isPending && <Esqueleto />}
       {resumen && (
         <Stack spacing={2}>
-          <Tarjeta titulo={t('consola.consumo.totales.titulo', { periodo: etiquetaDePeriodo(periodo) })}>
+          <Tarjeta titulo={t('consola.consumo.totales.titulo', { periodo: etiquetaDePeriodo(periodo) })} icono={Activity}>
             <RejillaDatos columnas={3}>
               <Dato etiqueta={t('consola.consumo.totales.clientes')}>{t('consola.consumo.totales.clientesValor', { grupos: formatearEntero(resumen.totales.grupos), empresas: formatearEntero(resumen.totales.empresas) })}</Dato>
               <Dato etiqueta={t('consola.consumo.totales.incluidas')}>{formatearEntero(resumen.totales.incluidasConsumidas)}</Dato>

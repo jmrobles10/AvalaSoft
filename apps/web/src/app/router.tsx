@@ -21,7 +21,7 @@ export function crearRouter() {
         { index: true, element: <Navigate to="grupos" replace /> },
         {
           path: 'grupos',
-          lazy: () => import('../features/plataforma/PaginaGrupos').then((m) => ({ Component: m.PaginaGrupos })),
+          lazy: () => import('../features/plataforma/PortadaPlataforma').then((m) => ({ Component: m.PortadaPlataforma })),
         },
         {
           path: 'grupos/nuevo',

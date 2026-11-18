@@ -40,7 +40,7 @@ export function FilasIca({ filas, onCambiar, mensaje, deshabilitado }: Props) {
         const ruta = `ica[${String(i)}]`;
         const n = String(i + 1);
         return (
-          <Paper key={llavesActuales[i]} variant="outlined" component="section" aria-label={t('ficha.tributaria.filaIca', { n })} sx={{ p: 1.5 }}>
+          <Paper key={llavesActuales[i]} variant="outlined" component="section" aria-label={t('ficha.tributaria.filaIca', { n })} sx={{ p: 1.5, border: 0, bgcolor: 'superficie.nivel2' }}>
             <Stack spacing={1.5}>
               <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <Typography sx={{ fontWeight: 500 }}>{t('ficha.tributaria.filaIca', { n })}</Typography>

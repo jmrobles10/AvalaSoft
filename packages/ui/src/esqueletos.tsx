@@ -50,12 +50,15 @@ export function CabeceraEsqueleto() {
   );
 }
 
-/** Una tarjeta: borde y radio de las tarjetas reales, un título y varias líneas (`alto` fija el alto mínimo). */
+/** Una tarjeta: borde y radio de las tarjetas reales, un encabezado (ícono y título) separado por un divisor y varias líneas (`alto` fija el alto mínimo). */
 export function EsqueletoTarjeta({ lineas = 3, alto }: { lineas?: number; alto?: number }) {
   return (
-    <Box sx={{ py: 1.5, px: 2, border: 1, borderColor: 'divider', borderRadius: radioMarco, bgcolor: 'background.paper', minHeight: alto }}>
-      <Skeleton variant="rounded" width={180} height={16} sx={{ mb: 1.5, maxWidth: '60%' }} />
-      <Stack spacing={1.25}>
+    <Box sx={{ border: 1, borderColor: 'divider', borderRadius: radioMarco, bgcolor: 'background.paper', minHeight: alto, overflow: 'hidden' }}>
+      <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', px: 2.5, py: 1.75, borderBottom: 1, borderColor: 'divider' }}>
+        <Skeleton variant="rounded" width={20} height={20} />
+        <Skeleton variant="rounded" width={180} height={16} sx={{ maxWidth: '60%' }} />
+      </Stack>
+      <Stack spacing={1.25} sx={{ px: 2.5, py: 2 }}>
         {Array.from({ length: lineas }, (_, i) => (
           <Skeleton key={i} variant="rounded" height={12} width={anchoDeLinea(i, 50, 12)} />
         ))}
@@ -78,7 +81,7 @@ export function EsqueletoTarjetas({ cantidad = 2, lineas = 2, alto, etiqueta, sx
 }
 
 /**
- * Los campos de un formulario: etiqueta corta encima y control de 32 px (web) o 40 px (tercero), en una o dos columnas.
+ * Los campos de un formulario: controles de 36 px (web) o 40 px (tercero), en una o dos columnas (la etiqueta va sobre el borde y no ocupa línea).
  * Con `conTarjeta` va dentro de un marco como el de una tarjeta de configuración.
  */
 export function EsqueletoFormulario({
@@ -90,21 +93,21 @@ export function EsqueletoFormulario({
 }: Comun & { campos?: number; columnas?: 1 | 2; conTarjeta?: boolean }) {
   const { app } = useTheme();
   const cuerpo = (
-    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: `repeat(${String(columnas)}, minmax(0, 1fr))` }, gap: 2 }}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: `repeat(${String(columnas)}, minmax(0, 1fr))` }, gap: 2.5 }}>
       {Array.from({ length: campos }, (_, i) => (
-        <Stack key={i} spacing={0.75}>
-          <Skeleton variant="rounded" width={`${String(26 + ((i * 5) % 4) * 8)}%`} height={12} />
-          <Skeleton variant="rounded" height={app === 'web' ? 32 : 40} sx={{ borderRadius: (t) => `${String(t.radio.sm)}px` }} />
-        </Stack>
+        <Skeleton key={i} variant="rounded" height={app === 'web' ? 36 : 40} sx={{ borderRadius: (t) => `${String(t.radio.sm)}px` }} />
       ))}
     </Box>
   );
   return (
     <Region etiqueta={etiqueta} sx={sx}>
       {conTarjeta ? (
-        <Box sx={{ py: 2, px: 2, border: 1, borderColor: 'divider', borderRadius: radioMarco, bgcolor: 'background.paper' }}>
-          <Skeleton variant="rounded" width={160} height={16} sx={{ mb: 2 }} />
-          {cuerpo}
+        <Box sx={{ border: 1, borderColor: 'divider', borderRadius: radioMarco, bgcolor: 'background.paper', overflow: 'hidden' }}>
+          <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', px: 2.5, py: 1.75, borderBottom: 1, borderColor: 'divider' }}>
+            <Skeleton variant="rounded" width={20} height={20} />
+            <Skeleton variant="rounded" width={160} height={16} />
+          </Stack>
+          <Box sx={{ px: 2.5, py: 2.5 }}>{cuerpo}</Box>
         </Box>
       ) : (
         cuerpo

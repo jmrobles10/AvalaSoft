@@ -57,7 +57,7 @@ export function FormularioFinanciera({ datos, onCambiar, mensaje, deshabilitado,
           />
         ))}
       </Rejilla>
-      <Paper variant="outlined" role="status" aria-label={t('ficha.financiera.cuadreTitulo')} sx={{ p: 1.5, bgcolor: 'background.default' }}>
+      <Paper variant="outlined" role="status" aria-label={t('ficha.financiera.cuadreTitulo')} sx={{ p: 1.5, border: 0, bgcolor: 'superficie.nivel2' }}>
         <Typography sx={{ fontWeight: 500, fontSize: 14 }}>{t('ficha.financiera.cuadreTitulo')}</Typography>
         {balance ? (
           <Typography sx={{ fontSize: 14, color: balance.cuadra ? 'success.main' : 'warning.main' }}>
