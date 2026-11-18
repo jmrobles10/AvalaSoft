@@ -139,7 +139,7 @@ Lo que sigue se leyó del código del SRM y del Portal (sin conectarse a ninguna
 | **Plantillas de correo** | 37 plantillas `.txt` por NIT de la empresa (`ADP_CS.PlantillasNotificacion`): invitación, rechazo, documentación pendiente, vencimientos… | Configuración › **Plantillas de correo**: asunto, cabecera y pie por correo; el cuerpo lo arma Validasoft. |
 | **Textos legales** | Declaración y autorización por NIT (`Plantillas\DeclaracionAutorizacion\{NIT}_…txt`), aceptada en el Portal (`TercerosConstructora.Autorizo` y el adjunto 1011). | Configuración › **Empresas del grupo** › textos legales: autorización de datos y términos, versionados, con constancia de aceptación. |
 | **Perfil de la constructora** | Datos, documentos y publicaciones de la constructora (`DatosConstructora`, `DocumentosConstructora`). | **Datos y marca** de la empresa (contacto de soporte, logo y color de marca). |
-| **Invitación** | Desde el SRM (`Solicitudes` + correo con usuario y contraseña) o por lote (`InvitacionLote`); autorregistro en el Portal. | **Invitar por lote** en la app, `POST /vinculos` desde el sistema integrado o autorregistro. Sin contraseñas: enlace de un solo uso más código. |
+| **Invitación** | Desde el SRM (`Solicitudes` + correo con usuario y contraseña) o por lote (`InvitacionLote`); autorregistro en el Portal. | **Invitar tercero** (uno) o **Invitar por lote** (varios) en la app, `POST /vinculos` desde el sistema integrado o autorregistro. Sin contraseñas: enlace de un solo uso más código. |
 
 ### Lo que no tiene equivalente (o es distinto)
 
@@ -342,9 +342,11 @@ Nada de esto es necesario para el recorrido básico; agrégalo para parecerte m�
 
 ### Paso 12. Invita al proveedor (Obligatorio)
 
-**Dónde:** **Vínculos** → **Invitar por lote** → **Nuevo lote**. En la app la invitación se hace por lote; una sola fila basta.
+**Dónde:** **Vínculos** → **Invitar tercero** (uno solo) o **Invitar por lote** → **Nuevo lote** (varios; una sola fila basta).
 
-Descarga la plantilla en CSV (separador `;`) y llénala así:
+**Con el formulario.** Elige el país «Colombia» y el tipo «NIT», escribe el número `900777888` (el dígito de verificación se calcula), la razón social «Ferretería El Tornillo S.A.S.», el correo `compras@tornillo.test` y el tipo de vínculo «Proveedor»: los tipos de vínculo y los flujos que ofrece son los que configuraste en la empresa. Pulsa **Invitar**: aparece el aviso «Invitación enviada a compras@tornillo.test.» y se abre el vínculo, en estado «Invitado».
+
+**Con un lote.** Descarga la plantilla (la de Excel trae listas desplegables con lo configurado en la empresa y una hoja de instrucciones; la de CSV, separador `;`, solo los encabezados) y llénala así:
 
 ```text
 Tipo de identificación;Número de identificación;Razón social o nombres;Correo;Tipo de vínculo;Tipo de persona
@@ -353,7 +355,7 @@ NIT;900777888;Ferretería El Tornillo S.A.S.;compras@tornillo.test;PROVEEDOR;Jur
 
 Súbela, revisa la vista previa (una fila válida), deja la vigencia de la invitación en 7 días y pulsa **Invitar a 1 tercero**.
 
-**Comprueba:** el lote termina «1 de 1» con la fila «Exitosa · Invitado»; el vínculo aparece en **Vínculos** como «Invitado»; en Mailpit hay un correo para `compras@tornillo.test` con el enlace.
+**Comprueba:** con el lote, termina «1 de 1» con la fila «Exitosa · Invitado»; con cualquiera de los dos, el vínculo aparece en **Vínculos** como «Invitado» y en Mailpit hay un correo para `compras@tornillo.test` con el enlace.
 
 > **Recorridos:** [[operacion/invitacion-por-lotes]] · [[vinculos/lista-y-filtros]] · [[vinculos/detalle-del-vinculo]] · [[vinculos/reenviar-invitacion]] · [[integracion/invitar-por-api]]
 

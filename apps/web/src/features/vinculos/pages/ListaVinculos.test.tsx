@@ -43,13 +43,13 @@ const VINCULOS = [
   vinculo('c', { estado: 'PorVencer', enRevision: true, expedienteAbiertoId: 'exp-c' }),
 ];
 
-function montar(ruta = '/e/emp/vinculos') {
+function montar(ruta = '/e/emp/vinculos', datos: VinculoDto[] = VINCULOS) {
   const urls: string[] = [];
   configurarCliente({
     fetch: vi.fn((entrada: RequestInfo | URL) => {
       const url = typeof entrada === 'string' ? entrada : entrada instanceof URL ? entrada.href : entrada.url;
       urls.push(url);
-      if (url.startsWith('/api/v1/vinculos')) return Promise.resolve(json({ datos: VINCULOS, siguienteCursor: null }));
+      if (url.startsWith('/api/v1/vinculos')) return Promise.resolve(json({ datos, siguienteCursor: null }));
       if (url.startsWith('/api/v1/terceros/')) {
         const id = url.split('/').pop() ?? '';
         return Promise.resolve(json({ id, identificacion: { pais: 'CO', tipo: 'NIT', numero: '900123456' }, nombre: `Tercero ${id}`, tipoPersona: 'Juridica', contactos: [], esExtranjero: false, creadoEn: '2026-11-01T15:00:00Z' }));
@@ -113,3 +113,36 @@ describe('Lista de vínculos: «En revisión» por una actualización (VR-1)', (
     expect(screen.getByRole('button', { name: /^Estado\s*En revisión/ })).toBeInTheDocument();
   });
 });
+
+describe('Lista de vínculos: crear un vínculo desde la app', () => {
+  it('con vinculos:escribir ofrece «Invitar tercero» junto a «Invitar por lote» y abre el formulario', async () => {
+    permisos.scopes = new Set([SCOPES.vinculosLeer, SCOPES.vinculosEscribir]);
+    const usuario = userEvent.setup();
+    montar();
+    await screen.findByRole('table');
+
+    expect(screen.getByRole('button', { name: 'Invitar por lote' })).toBeInTheDocument();
+    await usuario.click(screen.getByRole('button', { name: 'Invitar tercero' }));
+    const dialogo = await screen.findByRole('dialog', { name: /Invitar a un tercero/ });
+    expect(within(dialogo).getByText(/se crea su vínculo con Constructora Norte/)).toBeInTheDocument();
+    await usuario.click(within(dialogo).getByRole('button', { name: 'Cancelar' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
+  it('sin vinculos:escribir no se ofrece invitar', async () => {
+    permisos.scopes = new Set([SCOPES.vinculosLeer]);
+    montar();
+    await screen.findByRole('table');
+    expect(screen.queryByRole('button', { name: 'Invitar tercero' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Invitar por lote' })).not.toBeInTheDocument();
+  });
+
+  it('la lista vacía dice que se puede invitar a mano o por lote, no que solo llegan del ERP o por plantilla', async () => {
+    permisos.scopes = new Set([SCOPES.vinculosLeer, SCOPES.vinculosEscribir]);
+    montar('/e/emp/vinculos', []);
+
+    expect(await screen.findByText('Constructora Norte aún no tiene vínculos.')).toBeInTheDocument();
+    expect(screen.getByText(/uno a uno con «Invitar tercero» o varios con un archivo en «Invitar por lote»/)).toBeInTheDocument();
+  });
+});
+

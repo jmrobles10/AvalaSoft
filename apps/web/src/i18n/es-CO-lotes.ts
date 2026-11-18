@@ -26,7 +26,8 @@ export const lotes = {
     subtitulo: 'Revisa cada fila antes de invitar: las que tengan errores o estén repetidas no se procesan.',
     pasoPlantilla: '1. Descarga la plantilla',
     pasoPlantillaAyuda:
-      'Columnas obligatorias: tipo y número de identificación, razón social o nombres, correo y tipo de vínculo. Opcionales: país, DV, tipo de persona, nombre comercial, flujo, contacto y teléfono.',
+      'Columnas obligatorias (con asterisco en el Excel): tipo y número de identificación, razón social o nombres, correo y tipo de vínculo. Opcionales: país, DV, tipo de persona, nombre comercial, flujo, contacto y teléfono. ' +
+      'El Excel trae listas desplegables con lo configurado en la empresa (tipos de vínculo, flujos, países y tipos de identificación) y una hoja de instrucciones; el CSV son solo los encabezados.',
     plantillaExcel: 'Plantilla Excel',
     plantillaCsv: 'Plantilla CSV',
     pasoArchivo: '2. Sube el archivo',

@@ -4,8 +4,10 @@ import {
   aprobarLote,
   esErrorApi,
   getListarInvitacionesPorAprobarQueryOptions,
+  invitarTercero,
   rechazarInvitacionVinculo,
   rechazarLote,
+  type InvitarTerceroDto,
   type ListarInvitacionesPorAprobarParams,
 } from '@validasoft/api-client';
 import type { TFunction } from 'i18next';
@@ -73,4 +75,16 @@ export function mensajeDeErrorDeDecision(error: unknown, t: TFunction): string {
     if (error.codigo === 'conflicto-de-intereses') return t('invitaciones.errores.conflicto');
   }
   return mensajeDeError(error, t);
+}
+
+/**
+ * Invita a un tercero a mano (decisión IM): lo que hace una fila del lote. Con `Idempotency-Key` propia (la del formulario abierto); al terminar cambian los vínculos, la bandeja
+ * de invitaciones por aprobar y la campana de quienes aprueban.
+ */
+export function useInvitarTercero(empresaId: string, claveIdempotencia: string) {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: InvitarTerceroDto) => invitarTercero(dto, { empresa: empresaId, idempotencyKey: claveIdempotencia }),
+    onSuccess: () => invalidarTodo(cliente),
+  });
 }

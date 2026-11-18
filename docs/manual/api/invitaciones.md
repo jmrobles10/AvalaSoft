@@ -1,6 +1,87 @@
 # API · Invitaciones
 
-13 operaciones en 1 recurso.
+14 operaciones en 2 recursos.
+
+## Invitaciones
+
+Invitar a un tercero a mano desde la app (decisión IM): el formulario de «Invitar tercero» hace **exactamente lo que hace una fila del lote**, sin esperar a un archivo. Comparte las dos mitades del lote: la validación por fila (`ValidacionDeLote`: la misma identificación multipaís, el mismo tipo de vínculo activo, el mismo flujo, el mismo correo) y el procesamiento (`ProcesarTandaDeLoteHandler.InvitarAsync`: crea o reutiliza el tercero, crea el vínculo e invita, o reenvía la invitación del vínculo que aún no acepta), sin duplicar ni una regla.
+
+### `POST /api/v1/invitaciones`
+
+**Invitar tercero.** Invita a un tercero (`vinculos:escribir`, con `Idempotency-Key`): 201 con `Accion = Invitado` si el vínculo es nuevo; 200 con `Reinvitado` (el vínculo ya existía y aún no aceptaba: se reenvió al correo indicado) o `SinCambios` (el tercero ya aceptó: no se reenvía). Con un tipo de vínculo que exige aprobación antes de invitar (decisión AI) la invitación queda retenida (`PorAprobar = true`) hasta que otra persona la apruebe: no sale ningún correo. Si el tercero no existía en la plataforma se registra con estos datos; si ya existe no se tocan sus datos maestros (P-1-7). 422 con el primer error en `codigo` y todos por campo en `errores` (`campo`, `codigo`, `mensaje`: los mismos de la vista previa de un lote), 422 `sin-aprobadores-de-invitacion` y `vigencia-invalida`; 409 `vinculo-no-invitable` (bloqueado o terminado) e `invitacion-por-aprobar` (ya espera a quien apruebe) con el `vinculoId` existente.
+
+**Permiso vinculos:escribir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `invitarTercero`**
+
+**Cuerpo de la petición** (`application/json`, InvitarTerceroDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `pais` | texto o null | no |  |
+| `tipoIdentificacion` | texto o null | no |  |
+| `numeroIdentificacion` | texto o null | no |  |
+| `digitoVerificacion` | texto o null | no |  |
+| `tipoPersona` | texto o null | no |  |
+| `nombre` | texto o null | no |  |
+| `nombreComercial` | texto o null | no |  |
+| `correo` | texto o null | no |  |
+| `tipoVinculo` | texto o null | no |  |
+| `flujo` | texto o null | no |  |
+| `contacto` | texto o null | no |  |
+| `telefono` | texto o null | no |  |
+| `vigenciaHoras` | entero | no | por omisión 168 |
+
+**Respuestas**
+
+- `200` OK — InvitacionDeTerceroDto
+- `201` Creado — InvitacionDeTerceroDto
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `accion` | texto | sí |  |
+| `terceroId` | uuid | sí |  |
+| `vinculoId` | uuid | sí |  |
+| `terceroCreado` | booleano | sí |  |
+| `porAprobar` | booleano | sí |  |
+| `detalle` | texto o null | no |  |
+
+Campos de la respuesta `201`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `accion` | texto | sí |  |
+| `terceroId` | uuid | sí |  |
+| `vinculoId` | uuid | sí |  |
+| `terceroCreado` | booleano | sí |  |
+| `porAprobar` | booleano | sí |  |
+| `detalle` | texto o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/invitaciones" \
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{"pais":"CO","tipoIdentificacion":"900123456","numeroIdentificacion":"900123456","digitoVerificacion":"texto","tipoPersona":"texto","nombre":"Constructora Norte S.A.S.","nombreComercial":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","tipoVinculo":"texto","flujo":"texto","contacto":"texto","telefono":"+57 601 555 1234","vigenciaHoras":168}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "accion": "texto",
+  "terceroId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "vinculoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "terceroCreado": true,
+  "porAprobar": true,
+  "detalle": "Texto de ejemplo."
+}
+```
+
+</details>
 
 ## Lotes
 
@@ -809,9 +890,9 @@ Respuesta `200`:
 
 ### `GET /api/v1/invitaciones/lotes/plantilla`
 
-**Descargar plantilla lote.** Plantilla vacía con los encabezados (`formato=xlsx` por omisión, o `csv` separado por punto y coma).
+**Descargar plantilla lote.** Plantilla vacía (`formato=xlsx` por omisión, o `csv` separado por punto y coma). El Excel es la **plantilla de la empresa activa**: hoja «Invitaciones» con el encabezado de marca (obligatorias con asterisco y nota de ayuda), listas desplegables con los países, los tipos de identificación del país elegido, el tipo de persona, los tipos de vínculo activos de la empresa y sus flujos publicados (como «Nombre (CÓDIGO)»; el importador entiende los dos), una hoja «Instrucciones» y la hoja oculta «Listas». El importador y la vista previa leen la primera hoja, igual que siempre.
 
-**Permiso vinculos:escribir · API (`/api/v1`) · SDK: `descargarPlantillaLote`**
+**Permiso vinculos:escribir · Empresa activa (`X-Empresa`) · API (`/api/v1`) · SDK: `descargarPlantillaLote`**
 
 **Parámetros**
 
@@ -828,7 +909,8 @@ Respuesta `200`:
 
 ```bash
 curl -X GET "https://{host}/api/v1/invitaciones/lotes/plantilla" \
-  -H "X-Api-Key: $API_KEY"
+  -H "X-Api-Key: $API_KEY" \
+  -H "X-Empresa: $EMPRESA_ID"
 ```
 
 </details>

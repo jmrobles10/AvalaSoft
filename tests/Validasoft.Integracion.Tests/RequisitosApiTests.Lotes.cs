@@ -209,7 +209,7 @@ public sealed partial class RequisitosApiTests
     {
         var e = await PrepararAsync();
         var xlsx = await ApiAsync("GET", "/api/v1/invitaciones/lotes/plantilla", Admin(e.Norte), null, 200);
-        LectorDeHojaDeCalculo.Leer(await BytesAsync(xlsx)).ShouldHaveSingleItem().ShouldContain("Número de identificación");
+        LectorDeHojaDeCalculo.Leer(await BytesAsync(xlsx)).ShouldHaveSingleItem().ShouldContain("Número de identificación *");
         var csv = await ApiAsync("GET", "/api/v1/invitaciones/lotes/plantilla?formato=csv", Admin(e.Norte), null, 200);
         (await csv.ReadAsTextAsync()).ShouldContain("Tipo de vínculo");
 

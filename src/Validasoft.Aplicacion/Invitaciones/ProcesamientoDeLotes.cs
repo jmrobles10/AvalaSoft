@@ -7,6 +7,7 @@ using Validasoft.Aplicacion.Comun;
 using Validasoft.Aplicacion.Interesado;
 using Validasoft.Aplicacion.Vinculos;
 using Validasoft.Contratos;
+using Validasoft.Dominio.Auditoria;
 using Validasoft.Dominio.Comun;
 using Validasoft.Dominio.Configuracion;
 using Validasoft.Dominio.Flujos;
@@ -49,7 +50,7 @@ public static class MetricasDeLotes
 }
 
 /// <summary>Lo que dejó una fila exitosa.</summary>
-public sealed record ResultadoDeFila(AccionFilaLote Accion, Guid TerceroId, Guid VinculoId, bool TerceroCreado, string? Detalle);
+public sealed record ResultadoDeFila(AccionFilaLote Accion, Guid TerceroId, Guid VinculoId, bool TerceroCreado, string? Detalle, bool PorAprobar = false);
 
 /// <summary>
 /// Saga <c>InvitacionMasiva</c> (docs/11 §H8) por tandas: lee <c>Validasoft:Lotes:TamanoTanda</c> filas pendientes (100 por
@@ -192,8 +193,19 @@ public static class ProcesarTandaDeLoteHandler
     /// vínculo de la empresa, e invita: vínculo nuevo ⇒ <c>VinculoCreado</c> + <c>InvitacionEnviada(LoteId)</c>; vínculo que aún
     /// no acepta ⇒ reenvío al correo de la fila; tercero que ya aceptó ⇒ nada (<c>SinCambios</c>). Bloqueado o terminado ⇒ 409.
     /// </summary>
-    public static async Task<ResultadoDeFila> InvitarAsync(IDocumentSession sesion, IMessageBus mensajes, IProtectorDeSecretos protector, Guid tenantId,
+    public static Task<ResultadoDeFila> InvitarAsync(IDocumentSession sesion, IMessageBus mensajes, IProtectorDeSecretos protector, Guid tenantId,
         Guid? sandbox, LoteDeInvitacion lote, FilaDeLoteEntrada datos, CatalogoDeLote catalogo, DateTimeOffset ahora, CancellationToken ct,
+        Validasoft.Aplicacion.Plataforma.ControlDePlan? plan = null) =>
+        InvitarAsync(sesion, mensajes, protector, tenantId, sandbox, new ParametrosDeInvitacion(lote.EmpresaId, lote.Id, TimeSpan.FromHours(lote.VigenciaHoras)), datos,
+            catalogo, ahora, ct, plan);
+
+    /// <summary>
+    /// Lo que hace una fila del lote y también la invitación individual del formulario (<see cref="InvitacionesEndpoints"/>): un solo procesamiento para las dos. El lote la
+    /// llama con su empresa, su vigencia y su <c>LoteId</c>; la invitación individual, sin lote y, si el tipo de vínculo exige aprobación antes de invitar (decisión AI), con una
+    /// <see cref="RetencionDeInvitacion"/>: la invitación queda retenida en lugar de enviarse (en el lote la aprobación es del lote completo y sus filas ya salen aprobadas).
+    /// </summary>
+    public static async Task<ResultadoDeFila> InvitarAsync(IDocumentSession sesion, IMessageBus mensajes, IProtectorDeSecretos protector, Guid tenantId,
+        Guid? sandbox, ParametrosDeInvitacion parametros, FilaDeLoteEntrada datos, CatalogoDeLote catalogo, DateTimeOffset ahora, CancellationToken ct,
         Validasoft.Aplicacion.Plataforma.ControlDePlan? plan = null)
     {
         var tipo = catalogo.Tipo(datos.TipoVinculo)
@@ -201,7 +213,8 @@ public static class ProcesarTandaDeLoteHandler
         var identificacion = Identificacion.Crear(datos.Pais ?? "CO", datos.TipoIdentificacion ?? string.Empty, datos.NumeroIdentificacion ?? string.Empty,
             datos.DigitoVerificacion);
         var clave = AislamientoDeSandbox.ClaveDeTercero(identificacion.Clave, sandbox);
-        var vigencia = TimeSpan.FromHours(lote.VigenciaHoras);
+        var vigencia = parametros.Vigencia;
+        var retencion = tipo.RequiereAprobacionParaInvitar ? parametros.Retencion : null;
 
         var tercero = await sesion.Query<Tercero>().FirstOrDefaultAsync(t => t.ClaveIdentificacion == clave, ct);
         var terceroCreado = tercero is null;
@@ -218,7 +231,7 @@ public static class ProcesarTandaDeLoteHandler
         }
 
         var terceroId = tercero.Id;
-        var empresaId = lote.EmpresaId;
+        var empresaId = parametros.EmpresaId;
         var tipoId = tipo.Id;
         var existente = await sesion.Query<Vinculo>().FirstOrDefaultAsync(v => v.EmpresaId == empresaId && v.TerceroId == terceroId && v.TipoVinculoId == tipoId, ct);
         if (existente is null)
@@ -230,7 +243,18 @@ public static class ProcesarTandaDeLoteHandler
                 OrigenVinculo.Invitacion, null,
                 datos.Correo ?? string.Empty, ahora);
             var vinculo = Vinculo.Create(creado);
-            var invitacion = vinculo.EnviarInvitacion(null, vigencia, lote.Id, ahora);
+            if (retencion is not null)
+            {
+                // Aprobación antes de invitar (decisión AI): sin correo ni enlace hasta que otra persona la apruebe; el acceso del correo se decide entonces.
+                await retencion.ExigirAprobadores([tipo]);
+                var retenida = vinculo.SolicitarAprobacionDeInvitacion(null, vigencia, retencion.Solicitante, ahora);
+                sesion.Events.StartStream<Vinculo>(creado.VinculoId, [creado, retenida]);
+                retencion.Auditar(creado.VinculoId, AccionConfiguracion.Creado, retenida, ahora);
+                return new ResultadoDeFila(AccionFilaLote.Invitado, terceroId, creado.VinculoId, terceroCreado, "La invitación espera la aprobación de otra persona.",
+                    PorAprobar: true);
+            }
+
+            var invitacion = vinculo.EnviarInvitacion(null, vigencia, parametros.LoteId, ahora);
             await EnlacesDeAcceso.InvitarAsync(sesion, mensajes, protector, tenantId, vinculo, tipo, invitacion, ct);
             // El correo de la fila: contacto conocido, primer contacto del tercero o desconocido (acceso aislado hasta que lo apruebe un contacto).
             List<object> eventos = [creado, invitacion];
@@ -247,7 +271,18 @@ public static class ProcesarTandaDeLoteHandler
             throw ReglaDeNegocioException.Conflicto(error.Codigo, error.Mensaje);
         if (accion == nameof(AccionFilaLote.Reinvitado))
         {
-            var invitacion = actual.EnviarInvitacion(datos.Correo, vigencia, lote.Id, ahora);
+            if (retencion is not null && actual.NecesitaAprobacionParaInvitar(tipo.RequiereAprobacionParaInvitar, datos.Correo))
+            {
+                // Invitar a un correo que aún no se aprobó vuelve a pedir la aprobación (el mismo correo ya aprobado se reenvía como siempre).
+                await retencion.ExigirAprobadores([tipo]);
+                var retenida = actual.SolicitarAprobacionDeInvitacion(datos.Correo, vigencia, retencion.Solicitante, ahora);
+                stream.AppendOne(retenida);
+                retencion.Auditar(actual.Id, AccionConfiguracion.Creado, retenida, ahora);
+                return new ResultadoDeFila(AccionFilaLote.Reinvitado, terceroId, actual.Id, terceroCreado, "La invitación espera la aprobación de otra persona.",
+                    PorAprobar: true);
+            }
+
+            var invitacion = actual.EnviarInvitacion(datos.Correo, vigencia, parametros.LoteId, ahora);
             await EnlacesDeAcceso.InvitarAsync(sesion, mensajes, protector, tenantId, actual, tipo, invitacion, ct);
             stream.AppendOne(invitacion);
             // Reinvitar a otro correo vuelve a decidir su acceso (aislado si no es contacto conocido del tercero).
@@ -261,15 +296,41 @@ public static class ProcesarTandaDeLoteHandler
     }
 }
 
+/// <summary>
+/// Con qué se procesa una invitación: la empresa, el lote del que viene (nulo en la invitación individual), la vigencia de su enlace y, solo en la invitación individual, cómo
+/// retenerla si el tipo de vínculo exige aprobación antes de invitar (<see cref="RetencionDeInvitacion"/>; un lote se aprueba completo y no la usa).
+/// </summary>
+public sealed record ParametrosDeInvitacion(Guid EmpresaId, Guid? LoteId, TimeSpan Vigencia, RetencionDeInvitacion? Retencion = null);
+
+/// <summary>
+/// Aprobación antes de invitar (decisión AI) de una invitación individual: quién la pide, la comprobación de que otra persona puede aprobarla y su anotación en la
+/// auditoría (entidad <c>InvitacionDeVinculo</c>, con la misma forma que <c>POST /vinculos</c>).
+/// </summary>
+public sealed class RetencionDeInvitacion(ActorDeInvitacion solicitante, Func<IReadOnlyList<TipoVinculo>, Task> exigirAprobadores,
+    Action<Guid, AccionConfiguracion, InvitacionPorAprobarSolicitada, DateTimeOffset> auditar)
+{
+    public ActorDeInvitacion Solicitante => solicitante;
+
+    public Task ExigirAprobadores(IReadOnlyList<TipoVinculo> tipos) => exigirAprobadores(tipos);
+
+    public void Auditar(Guid vinculoId, AccionConfiguracion accion, InvitacionPorAprobarSolicitada retenida, DateTimeOffset ahora) => auditar(vinculoId, accion, retenida, ahora);
+}
+
 /// <summary>Tipos de vínculo del tenant y flujos de la empresa, cargados una vez por tanda.</summary>
 public sealed class CatalogoDeLote(IReadOnlyDictionary<string, TipoVinculo> tipos, IReadOnlyDictionary<string, Flujo> flujos)
 {
+    /// <summary>Lo mismo con la sesión de la petición (la invitación individual): los tipos activos del tenant y los flujos de la empresa.</summary>
+    public static async Task<CatalogoDeLote> CargarAsync(IQuerySession sesion, Guid empresaId, CancellationToken ct)
+    {
+        var tipos = (await sesion.Query<TipoVinculo>().ToListAsync(ct)).Where(t => t.Activo).ToDictionary(t => t.Codigo, StringComparer.OrdinalIgnoreCase);
+        var flujos = (await sesion.Query<Flujo>().Where(f => f.EmpresaId == empresaId).ToListAsync(ct)).ToDictionary(f => f.Codigo, StringComparer.OrdinalIgnoreCase);
+        return new CatalogoDeLote(tipos, flujos);
+    }
+
     public static async Task<CatalogoDeLote> CargarAsync(IDocumentStore store, Guid tenantId, Guid empresaId, CancellationToken ct)
     {
         await using var consulta = store.QuerySession(tenantId.ToString("N"));
-        var tipos = (await consulta.Query<TipoVinculo>().ToListAsync(ct)).Where(t => t.Activo).ToDictionary(t => t.Codigo, StringComparer.OrdinalIgnoreCase);
-        var flujos = (await consulta.Query<Flujo>().Where(f => f.EmpresaId == empresaId).ToListAsync(ct)).ToDictionary(f => f.Codigo, StringComparer.OrdinalIgnoreCase);
-        return new CatalogoDeLote(tipos, flujos);
+        return await CargarAsync(consulta, empresaId, ct);
     }
 
     public TipoVinculo? Tipo(string? codigo) => codigo is not null && tipos.TryGetValue(codigo, out var tipo) ? tipo : null;

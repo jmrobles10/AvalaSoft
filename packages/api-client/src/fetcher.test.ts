@@ -4,6 +4,7 @@ import { ErrorApi, ErrorDeRed } from './errores';
 import { clienteValidasoft, construirUrl, descargarArchivo, nombreDeArchivo } from './fetcher';
 import { bloquearVinculo, crearVinculo, listarVinculos } from './generado/endpoints/vinculos/vinculos';
 import { revocarApiKey } from './generado/endpoints/api-keys/api-keys';
+import { invitarTercero } from './generado/endpoints/invitaciones/invitaciones';
 
 interface Llamada {
   url: string;
@@ -89,6 +90,16 @@ describe('clienteValidasoft', () => {
     expect(llamadas[0]?.cabeceras.get('Idempotency-Key')).toBe('id-2');
     expect(llamadas[0]?.cabeceras.get('Content-Type')).toBe('application/json');
     expect(JSON.parse(llamadas[0]?.cuerpo ?? '{}')).toMatchObject({ tipoVinculo: 'PROVEEDOR' });
+  });
+
+  it('invitar a un tercero a mano también crea: lleva su Idempotency-Key y el cuerpo de una fila del lote', async () => {
+    const llamadas = prepararFetch(() => json(201, { accion: 'Invitado', vinculoId: 'v1' }));
+
+    await invitarTercero({ tipoIdentificacion: 'NIT', numeroIdentificacion: '900123456', nombre: 'Aceros', correo: 'a@b.co', tipoVinculo: 'PROVEEDOR' }, { empresa: 'e1' });
+
+    expect(llamadas[0]?.cabeceras.get('Idempotency-Key')).toBe('id-2');
+    expect(llamadas[0]?.cabeceras.get('X-Empresa')).toBe('e1');
+    expect(JSON.parse(llamadas[0]?.cuerpo ?? '{}')).toMatchObject({ tipoIdentificacion: 'NIT', tipoVinculo: 'PROVEEDOR' });
   });
 
   it('respeta la Idempotency-Key de la llamada para que los reintentos no dupliquen', async () => {

@@ -5982,6 +5982,41 @@
         }
       }
     },
+    "/api/v1/invitaciones": {
+      "post": {
+        "tags": [
+          "Validasoft.Aplicacion.Invitaciones.InvitacionesEndpoints"
+        ],
+        "summary": "POST_api_v1_invitaciones",
+        "description": "POST_api_v1_invitaciones",
+        "operationId": "POST_api_v1_invitaciones",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvitarTerceroDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/v1/invitaciones/lotes/plantilla": {
       "get": {
         "tags": [
@@ -33646,6 +33681,92 @@
           }
         }
       },
+      "InvitarTerceroDto": {
+        "type": "object",
+        "properties": {
+          "pais": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tipoIdentificacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "numeroIdentificacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "digitoVerificacion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tipoPersona": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nombre": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nombreComercial": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "correo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tipoVinculo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "flujo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contacto": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "telefono": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "vigenciaHoras": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32",
+            "default": 168
+          }
+        }
+      },
       "IResult": {
         "type": "object"
       },
@@ -46030,6 +46151,9 @@
     },
     {
       "name": "Validasoft.Aplicacion.Notificaciones.WebhooksEndpoints"
+    },
+    {
+      "name": "Validasoft.Aplicacion.Invitaciones.InvitacionesEndpoints"
     },
     {
       "name": "Validasoft.Aplicacion.Invitaciones.LotesEndpoints"

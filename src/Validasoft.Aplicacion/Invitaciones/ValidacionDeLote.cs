@@ -14,9 +14,10 @@ namespace Validasoft.Aplicacion.Invitaciones;
 
 /// <summary>
 /// Una fila ya validada: sus errores (inválida), la fila anterior que repite (duplicada) y, si es válida, la clave de su
-/// identificación y lo que se prevé hacer con ella (<c>Invitar</c>, <c>Reinvitar</c> o <c>SinCambios</c>).
+/// identificación y lo que se prevé hacer con ella (<c>Invitar</c>, <c>Reinvitar</c> o <c>SinCambios</c>). <see cref="VinculoId"/>: el vínculo que la empresa ya tiene con
+/// ese tercero y ese tipo, si existe (también cuando no se puede invitar), para que la invitación individual lo enlace.
 /// </summary>
-public sealed record FilaValidada(int N, FilaDeLoteEntrada Datos, IReadOnlyList<ErrorDeFila> Errores, int? DuplicadaDe, string? Clave, string? Accion)
+public sealed record FilaValidada(int N, FilaDeLoteEntrada Datos, IReadOnlyList<ErrorDeFila> Errores, int? DuplicadaDe, string? Clave, string? Accion, Guid? VinculoId = null)
 {
     public EstadoFilaLote Estado => Errores.Count > 0 ? EstadoFilaLote.Invalida : DuplicadaDe is not null ? EstadoFilaLote.Duplicada : EstadoFilaLote.Pendiente;
 }
@@ -81,8 +82,8 @@ public static partial class ValidacionDeLote
             var existente = terceros.TryGetValue(clave!, out var terceroId) && vinculos.TryGetValue((terceroId, tipo.Id), out var v) ? v : null;
             var (accion, error) = AccionPrevista(existente);
             resultado.Add(error is null
-                ? new FilaValidada(n, datos, [], null, clave, accion)
-                : new FilaValidada(n, datos, [error], null, clave, null));
+                ? new FilaValidada(n, datos, [], null, clave, accion, existente?.Id)
+                : new FilaValidada(n, datos, [error], null, clave, null, existente?.Id));
         }
 
         return resultado;
