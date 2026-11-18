@@ -1,7 +1,7 @@
 import { Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getObtenerMiCuentaQueryOptions } from '@avalasoft/api-client';
-import { AvatarActor } from '@avalasoft/ui';
+import { AvatarActor, ChipUsuario } from '@avalasoft/ui';
 import { LogOut, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,14 +13,14 @@ import { useSesion } from '../../sesion/sesionStore';
  * Menú de la persona que entró directo (ING-3): su nombre y correo, «Mi cuenta» y «Cerrar sesión». No aparece con la identidad delegada: ahí la
  * persona se autentica y sale en el sistema integrado.
  */
-export function MenuDeCuenta({ rutaMiCuenta }: { rutaMiCuenta: string }) {
+export function MenuDeCuenta({ rutaMiCuenta, chip = null }: { rutaMiCuenta: string; chip?: { rol: string } | null }) {
   const sesion = useSesion((s) => s.sesion);
   if (sesion?.sesionId == null) return null;
-  return <MenuDeLaPersona rutaMiCuenta={rutaMiCuenta} nombreEnSesion={sesion.nombre ?? ''} />;
+  return <MenuDeLaPersona rutaMiCuenta={rutaMiCuenta} nombreEnSesion={sesion.nombre ?? ''} chip={chip} />;
 }
 
 // Aparte para que la consulta de la cuenta solo exista cuando la persona entró directo (con la identidad delegada no hay nada que pedir).
-function MenuDeLaPersona({ rutaMiCuenta, nombreEnSesion }: { rutaMiCuenta: string; nombreEnSesion: string }) {
+function MenuDeLaPersona({ rutaMiCuenta, nombreEnSesion, chip }: { rutaMiCuenta: string; nombreEnSesion: string; chip: { rol: string } | null }) {
   const { t } = useTranslation();
   const navegar = useNavigate();
   const [ancla, setAncla] = useState<HTMLElement | null>(null);
@@ -29,17 +29,29 @@ function MenuDeLaPersona({ rutaMiCuenta, nombreEnSesion }: { rutaMiCuenta: strin
 
   return (
     <>
-      <Tooltip title={t('cuenta.menu')}>
-        <IconButton
+      {chip ? (
+        // Con el rediseño de la consola el disparador es el chip del usuario: su nombre, el rol debajo y el avatar de iniciales.
+        <ChipUsuario
+          nombre={nombre}
+          rol={chip.rol}
           aria-label={t('cuenta.menu')}
           aria-haspopup="menu"
           aria-expanded={ancla !== null}
           onClick={(evento) => setAncla(evento.currentTarget)}
-          sx={{ p: 0.5 }}
-        >
-          <AvatarActor tipo="persona" nombre={nombre} tamano={28} />
-        </IconButton>
-      </Tooltip>
+        />
+      ) : (
+        <Tooltip title={t('cuenta.menu')}>
+          <IconButton
+            aria-label={t('cuenta.menu')}
+            aria-haspopup="menu"
+            aria-expanded={ancla !== null}
+            onClick={(evento) => setAncla(evento.currentTarget)}
+            sx={{ p: 0.5 }}
+          >
+            <AvatarActor tipo="persona" nombre={nombre} tamano={28} />
+          </IconButton>
+        </Tooltip>
+      )}
       <Menu anchorEl={ancla} open={ancla !== null} onClose={() => setAncla(null)} slotProps={{ paper: { sx: { minWidth: 240 } } }}>
         <Box sx={{ px: 2, py: 1 }}>
           <Typography noWrap sx={{ fontWeight: 600 }}>

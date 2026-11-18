@@ -1,5 +1,6 @@
 import { Box, Button, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import type { CompletitudSeccionDto } from '@avalasoft/api-client';
+import { fondoDelContenedor } from '@avalasoft/ui';
 import { CheckCircle2, CircleAlert } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -70,10 +71,11 @@ export function BarraDeAcciones({ prevista, errorPrevista, sinRevision, pendient
           // En escritorio, un poco más ancha que la columna para tapar la orilla de los radios.
           mx: { md: -2 },
           px: { xs: 1.5, sm: 3, md: 2 },
-          py: 1.5,
-          bgcolor: 'background.default',
+          py: 1,
+          bgcolor: fondoDelContenedor,
           borderTop: 1,
           borderColor: 'divider',
+          boxShadow: (th) => `0 -6px 12px -8px ${th.palette.scrim}`,
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
           alignItems: { xs: 'stretch', sm: 'center' },
@@ -98,7 +100,7 @@ export function BarraDeAcciones({ prevista, errorPrevista, sinRevision, pendient
           )}
         </Stack>
         <Stack direction="row" spacing={1.5} sx={{ flex: 'none', justifyContent: 'flex-end' }}>
-          <Button variant="outlined" disabled={guardando || !sinGuardar} onClick={onGuardar} sx={{ flex: { xs: 1, sm: 'none' } }}>
+          <Button variant="outlined" size="small" disabled={guardando || !sinGuardar} onClick={onGuardar} sx={{ flex: { xs: 1, sm: 'none' } }}>
             {guardando ? t('ficha.guardando') : t('ficha.guardar')}
           </Button>
           <Tooltip
@@ -107,7 +109,7 @@ export function BarraDeAcciones({ prevista, errorPrevista, sinRevision, pendient
             describeChild
           >
             <Box component="span" sx={{ display: 'inline-flex', flex: { xs: 1, sm: 'none' } }}>
-              <Button variant="contained" disabled={guardando || !lista} onClick={onContinuar} sx={{ flex: 1 }}>
+              <Button variant="contained" size="small" disabled={guardando || !lista} onClick={onContinuar} sx={{ flex: 1 }}>
                 {t('ficha.guardarContinuar')}
               </Button>
             </Box>

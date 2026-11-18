@@ -16,6 +16,8 @@ interface Props {
   acciones: ReactNode;
   /** Lo que se despliega debajo (la tabla de cambios). */
   children?: ReactNode;
+  /** Sin caja (ni borde ni relleno): una línea dentro de un aviso. */
+  plana?: boolean;
 }
 
 /**
@@ -23,7 +25,7 @@ interface Props {
  * chips discretos («1 dato distinto», «No pudimos leerlo»), las secciones que afecta como chips y la acción a la derecha. Cada
  * documento tiene su borde, así no se confunde con el de al lado.
  */
-export function TarjetaDeDocumento({ documento, version, datosDistintos, noLeido, secciones, acciones, children }: Props) {
+export function TarjetaDeDocumento({ documento, version, datosDistintos, noLeido, secciones, acciones, children, plana = false }: Props) {
   const { t } = useTranslation();
   return (
     <Box
@@ -34,12 +36,12 @@ export function TarjetaDeDocumento({ documento, version, datosDistintos, noLeido
         columnGap: 2,
         rowGap: 1,
         alignItems: 'center',
-        px: 1.5,
-        py: 1.25,
-        border: 1,
+        px: plana ? 0 : 1.5,
+        py: plana ? 0.25 : 1.25,
+        border: plana ? 0 : 1,
         borderColor: 'divider',
         borderRadius: (th) => `${String(th.radio.sm)}px`,
-        bgcolor: 'background.paper',
+        bgcolor: plana ? 'transparent' : 'background.paper',
       }}
     >
       <Box sx={{ minWidth: 0 }}>

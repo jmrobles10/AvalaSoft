@@ -1,7 +1,8 @@
-/* AvalaSoft: tema MUI v6 (dirección Registro). createAvalasoftTheme(modo, { app, colorEmpresa }). */
+/* AvalaSoft: tema MUI v6 (dirección Registro, rework visual 2026-11). createAvalasoftTheme(modo, { app, colorEmpresa }). */
 import { createTheme, type Theme } from '@mui/material';
 import { esES } from '@mui/material/locale';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
+import { ChevronDown, X } from 'lucide-react';
 import { createElement, type CSSProperties } from 'react';
 import { BORDE, COLOR, DENSIDAD, FUENTE, MOVIMIENTO, RADIO, SOMBRA, TIPOGRAFIA, type Modo, type TokenColor } from './tokens';
 import type { TonoEstado } from './estados';
@@ -22,9 +23,14 @@ export interface TonoPaleta {
 declare module '@mui/material/styles' {
   interface Palette {
     estado: Record<TonoEstado, TonoPaleta>;
-    superficie: { nivel1: string; nivel2: string; elevada: string };
-    borde: { sutil: string; control: string };
-    acento: { main: string; tinte: string };
+    /** `panel`: los paneles flotantes sobre el lienzo (barra lateral y contenido); `nivel1`: las tarjetas dentro del panel. */
+    superficie: { panel: string; nivel1: string; nivel2: string; elevada: string };
+    borde: { sutil: string; control: string; controlFuerte: string };
+    acento: { main: string; tinte: string; borde: string };
+    /** Encabezado de las tablas: fondo cian muy claro. */
+    tabla: { encabezado: string };
+    /** Cuarto acento del tablero (KPI); no es un estado de dominio. */
+    violeta: TonoPaleta;
     marca: { azul: string; verde: string; profundo: string; degradado: string; soft: string; texto: string };
     tooltip: { fondo: string; texto: string };
     esqueleto: string;
@@ -34,9 +40,11 @@ declare module '@mui/material/styles' {
   }
   interface PaletteOptions {
     estado?: Record<TonoEstado, TonoPaleta>;
-    superficie?: { nivel1: string; nivel2: string; elevada: string };
-    borde?: { sutil: string; control: string };
-    acento?: { main: string; tinte: string };
+    superficie?: { panel: string; nivel1: string; nivel2: string; elevada: string };
+    borde?: { sutil: string; control: string; controlFuerte: string };
+    acento?: { main: string; tinte: string; borde: string };
+    tabla?: { encabezado: string };
+    violeta?: TonoPaleta;
     marca?: { azul: string; verde: string; profundo: string; degradado: string; soft: string; texto: string };
     tooltip?: { fondo: string; texto: string };
     esqueleto?: string;
@@ -47,13 +55,13 @@ declare module '@mui/material/styles' {
     app: App;
     radio: typeof RADIO;
     densidad: typeof DENSIDAD;
-    sombra: { menu: string; dialogo: string };
+    sombra: { menu: string; dialogo: string; suave: string; pildora: string };
   }
   interface ThemeOptions {
     app?: App;
     radio?: typeof RADIO;
     densidad?: typeof DENSIDAD;
-    sombra?: { menu: string; dialogo: string };
+    sombra?: { menu: string; dialogo: string; suave: string; pildora: string };
   }
   interface TypographyVariants {
     mono: CSSProperties;
@@ -88,6 +96,12 @@ const ESCRITORIO = '@media (min-width:600px)';
 const MOVIL = '@media (max-width:599.95px)';
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
+/** Alto de un campo y relleno de su texto: todos son «small» de MUI (`size="small"` por omisión): 36 px y texto de 14 px en las dos apps y en todos los anchos. */
+const RELLENO_CAMPO = '8px 12px';
+
+/** Chevron de trazo fino de los desplegables (Select, Autocomplete): 16 px, en el color secundario; MUI lo gira al abrir. */
+const chevron = (className?: string) => createElement(ChevronDown, { size: 16, strokeWidth: 1.75, className, 'aria-hidden': true });
+
 /**
  * Textos por omisión de MUI en español (UI-3): `esES` traduce los de todos los componentes (paginador, migas, aviso…); aquí se
  * ajusta lo del autocompletar a la voz de AvalaSoft («Abrir», no «Abierto») y, mientras busca, muestra un esqueleto de opciones
@@ -97,6 +111,9 @@ const textosPropios = {
   components: {
     MuiAutocomplete: {
       defaultProps: {
+        size: 'small',
+        popupIcon: chevron(),
+        clearIcon: createElement(X, { size: 14, strokeWidth: 1.75, 'aria-hidden': true }),
         openText: 'Abrir',
         closeText: 'Cerrar',
         clearText: 'Limpiar',
@@ -121,11 +138,33 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
 
   const primario = empresa ?? null;
   const acento = primario ? primario.enlace : c.acento;
-  const control = web ? DENSIDAD.controlCompacto : DENSIDAD.controlComodo;
-  const radioControl = web ? RADIO.sm : RADIO.md;
+  const acentoTinte = primario ? primario.tinte : c.acentoTinte;
+  const acentoBorde = primario ? primario.accion : c.acentoBorde;
+  const accion = primario ? primario.accion : c.accionPrimaria;
+  const foco = primario ? primario.enlace : c.foco;
+  const control = DENSIDAD.controlMedio;
+  const radioControl = RADIO.sm;
   const radioMarco = RADIO.md;
-  const radioDialogo = web ? RADIO.md : RADIO.lg;
+  const radioDialogo = RADIO.lg;
   const severidad = { success: 'exito', info: 'info', warning: 'advertencia', error: 'error' } as const;
+  /** Colores semánticos de MUI → tono de estado (chips tinteados, como los de estado). */
+  const tonoDeColor = { primary: 'encurso', success: 'exito', warning: 'advertencia', error: 'error', info: 'info' } as const;
+  const relleno = RELLENO_CAMPO;
+  const verticalCampo = '8px';
+  const textoCampo = { fontSize: 14, lineHeight: '20px' };
+  /** El campo se pinta con el borde y el relleno de la referencia: etiqueta encogida sobre el borde (el «notch» del outlined). */
+  const marcoDeCampo = (clase: string) => ({
+    borderRadius: radioControl,
+    backgroundColor: c.superficieNivel1,
+    [`& .${clase}-notchedOutline`]: { borderColor: c.bordeControl, '& legend': { fontSize: '0.857em' } },
+    [`&:hover .${clase}-notchedOutline`]: { borderColor: c.bordeControlFuerte },
+    [`&.Mui-focused .${clase}-notchedOutline`]: { borderColor: foco, borderWidth: BORDE.anilloFoco },
+    [`&.Mui-error .${clase}-notchedOutline`]: { borderColor: c.accionDestructiva },
+    // Solo lectura o deshabilitado: relleno gris claro y texto atenuado (la referencia los distingue por el fondo).
+    '&.Mui-disabled, &.MuiInputBase-readOnly': { backgroundColor: c.superficieNivel2 },
+    [`&.Mui-disabled .${clase}-notchedOutline`]: { borderColor: c.bordeSutil },
+    [`&.MuiInputBase-readOnly .${clase}-notchedOutline`]: { borderColor: c.bordeSutil },
+  });
 
   return createTheme({
     app,
@@ -148,9 +187,11 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
       text: { primary: c.textoPrimario, secondary: c.textoSecundario, disabled: c.textoDeshabilitado },
       divider: c.bordeSutil,
       estado,
-      superficie: { nivel1: c.superficieNivel1, nivel2: c.superficieNivel2, elevada: c.superficieElevada },
-      borde: { sutil: c.bordeSutil, control: c.bordeControl },
-      acento: { main: acento, tinte: primario ? primario.tinte : c.acentoTinte },
+      superficie: { panel: c.superficiePanel, nivel1: c.superficieNivel1, nivel2: c.superficieNivel2, elevada: c.superficieElevada },
+      borde: { sutil: c.bordeSutil, control: c.bordeControl, controlFuerte: c.bordeControlFuerte },
+      acento: { main: acento, tinte: acentoTinte, borde: acentoBorde },
+      tabla: { encabezado: c.encabezadoTabla },
+      violeta: { solido: c.violeta, texto: c.violetaTexto, fondo: c.violetaFondo, borde: c.violetaBorde },
       marca: { azul: c.marcaAzul, verde: c.marcaVerde, profundo: c.marcaProfundo, degradado: `linear-gradient(135deg, ${c.marcaAzul}, ${c.marcaVerde})`, soft: c.marcaSoft, texto: c.marcaTexto },
       tooltip: { fondo: c.tooltipFondo, texto: c.tooltipTexto },
       esqueleto: c.esqueleto,
@@ -200,32 +241,38 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
         },
       },
       MuiButtonBase: { defaultProps: { disableRipple: true } },
-      // Botones sobrios (UI-2): `medium` por omisión y el mismo alto que el campo de al lado (32 px en web, 36 en el tercero
-      // en escritorio). `small` es para avisos, filas y tarjetas; `large` solo para la acción principal de una pantalla. En el
-      // celular el botón del tercero sube un poco su relleno (40 / 32 / 44 px) y el área táctil de 44 px se completa con un
-      // pseudoelemento invisible: el botón no se infla.
+      // Botones sobrios (UI-2): `medium` por omisión y el mismo alto que el campo de al lado (36 px en web; en el tercero 40 px, y 40 en el
+      // celular con el área táctil de 44 completada por un pseudoelemento invisible: el botón no se infla). `small` es para avisos, filas y
+      // tarjetas; `large` solo para la acción principal de una pantalla. Primarios rellenos del acento; secundarios (`outlined`) con borde y
+      // texto del acento; los de texto, del acento.
       MuiButton: {
         defaultProps: { disableElevation: true, size: 'medium' },
         styleOverrides: {
           root: {
             borderRadius: radioControl,
             gap: 6,
-            fontWeight: 600,
+            fontWeight: 500,
             whiteSpace: 'nowrap',
             '& .MuiButton-startIcon, & .MuiButton-endIcon': { margin: 0 },
             ...(web ? {} : { [MOVIL]: { '&::after': { content: '""', position: 'absolute', left: 0, right: 0, top: '50%', height: DENSIDAD.objetivoTactil, transform: 'translateY(-50%)' } } }),
           },
           sizeSmall: web
-            ? { minHeight: 28, padding: '3px 10px', fontSize: 13, lineHeight: '18px' }
+            ? { minHeight: 30, padding: '4px 10px', fontSize: 13, lineHeight: '18px' }
             : { minHeight: 32, padding: '5px 12px', fontSize: 14, lineHeight: '20px', [ESCRITORIO]: { minHeight: 30, padding: '4px 12px', fontSize: 13, lineHeight: '18px' } },
           sizeMedium: web
-            ? { minHeight: control, padding: '5px 12px', fontSize: 14, lineHeight: '20px' }
-            : { minHeight: 40, padding: '9px 16px', [ESCRITORIO]: { minHeight: DENSIDAD.controlMedio, padding: '7px 14px', fontSize: 14, lineHeight: '20px' } },
+            ? { minHeight: control, padding: '7px 14px', fontSize: 14, lineHeight: '20px' }
+            : { minHeight: 40, padding: '9px 16px', [ESCRITORIO]: { minHeight: control, padding: '9px 16px', fontSize: 14, lineHeight: '20px' } },
           sizeLarge: web
-            ? { minHeight: DENSIDAD.controlMedio, padding: '7px 16px', fontSize: 14, lineHeight: '20px' }
-            : { minHeight: DENSIDAD.objetivoTactil, padding: '11px 18px', fontSize: 15, lineHeight: '22px', [ESCRITORIO]: { minHeight: 40, padding: '9px 16px', fontSize: 14, lineHeight: '22px' } },
-          outlined: { borderColor: c.bordeControl, color: c.textoPrimario, backgroundColor: c.superficieNivel1, '&:hover': { borderColor: c.bordeControl, backgroundColor: c.superficieNivel2 } },
-          text: { color: acento, '&:hover': { backgroundColor: primario ? primario.tinte : c.acentoTinte } },
+            ? { minHeight: DENSIDAD.controlAmplio, padding: '9px 18px', fontSize: 14, lineHeight: '20px' }
+            : { minHeight: DENSIDAD.objetivoTactil, padding: '11px 20px', fontSize: 15, lineHeight: '22px', [ESCRITORIO]: { minHeight: DENSIDAD.controlAmplio, padding: '9px 16px', fontSize: 14, lineHeight: '22px' } },
+          outlined: {
+            backgroundColor: c.superficieNivel1,
+            '&.MuiButton-colorPrimary': { borderColor: acentoBorde, color: acento, '&:hover': { borderColor: acento, backgroundColor: acentoTinte } },
+            '&.MuiButton-colorInherit': { borderColor: c.bordeControl, color: c.textoPrimario, '&:hover': { borderColor: c.bordeControlFuerte, backgroundColor: c.superficieNivel2 } },
+            '&.MuiButton-colorError': { borderColor: c.estadoErrorBorde, color: c.estadoErrorTexto, '&:hover': { borderColor: c.accionDestructiva, backgroundColor: c.estadoErrorFondo } },
+            '&.Mui-disabled': { borderColor: c.bordeSutil, backgroundColor: 'transparent' },
+          },
+          text: { '&.MuiButton-colorPrimary': { color: acento, '&:hover': { backgroundColor: acentoTinte } } },
           contained: { '&.MuiButton-colorPrimary:hover': { backgroundColor: primario ? primario.accion : c.accionPrimariaHover } },
         },
       },
@@ -234,16 +281,29 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
         styleOverrides: {
           root: { borderRadius: RADIO.sm, color: c.textoSecundario, '&:hover': { backgroundColor: c.superficieNivel2, color: c.textoPrimario } },
           sizeSmall: { width: DENSIDAD.controlCompacto, height: DENSIDAD.controlCompacto },
-          sizeLarge: { width: DENSIDAD.objetivoTactil, height: DENSIDAD.objetivoTactil, [ESCRITORIO]: { width: DENSIDAD.controlMedio, height: DENSIDAD.controlMedio } },
+          sizeLarge: { width: DENSIDAD.objetivoTactil, height: DENSIDAD.objetivoTactil, [ESCRITORIO]: { width: control, height: control } },
         },
       },
-      MuiTextField: { defaultProps: { size: web ? 'small' : 'medium', slotProps: { inputLabel: { shrink: true } } } },
-      MuiFormControl: { styleOverrides: { root: { gap: 0 } } },
+      MuiTextField: { defaultProps: { size: 'small', slotProps: { inputLabel: { shrink: true } } } },
+      MuiFormControl: { defaultProps: { size: 'small' }, styleOverrides: { root: { gap: 0 } } },
+      // Rótulo de un grupo de opciones (sí/no, radios): pequeño y gris encima de las opciones.
+      MuiFormLabel: {
+        styleOverrides: {
+          root: { fontSize: 13, lineHeight: '18px', fontWeight: 500, color: c.textoSecundario, '&.Mui-focused': { color: c.textoSecundario }, '&.Mui-error': { color: c.estadoErrorTexto }, '&.Mui-disabled': { color: c.textoDeshabilitado } },
+          asterisk: { color: c.estadoErrorTexto },
+        },
+      },
+      // Etiqueta pequeña encogida sobre el borde del campo (outlined con label encogido): 11 px, gris; con foco toma el acento.
       MuiInputLabel: {
         styleOverrides: {
           root: {
-            position: 'static', transform: 'none', marginBottom: 4, fontSize: web ? 13 : 14, lineHeight: web ? '18px' : '20px', fontWeight: 500, color: c.textoPrimario,
-            '&.Mui-focused, &.Mui-error': { color: c.textoPrimario },
+            fontSize: 14,
+            lineHeight: '20px',
+            fontWeight: 400,
+            color: c.textoSecundario,
+            '&.MuiInputLabel-shrink': { transform: 'translate(14px, -9px) scale(0.857)', maxWidth: 'calc(116% - 28px)' },
+            '&.Mui-focused': { color: acento },
+            '&.Mui-error': { color: c.estadoErrorTexto },
             '&.Mui-disabled': { color: c.textoDeshabilitado },
           },
           asterisk: { color: c.estadoErrorTexto },
@@ -252,17 +312,15 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: radioControl, backgroundColor: c.superficieNivel1,
-            '& .MuiOutlinedInput-notchedOutline': { top: 0, borderColor: c.bordeControl, '& legend': { display: 'none' } },
-            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: c.textoSecundario },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: c.foco, borderWidth: BORDE.anilloFoco },
-            '&.Mui-error .MuiOutlinedInput-notchedOutline': { borderColor: c.accionDestructiva },
-            '&.Mui-disabled': { backgroundColor: c.superficieNivel2 },
-            '&.MuiInputBase-sizeSmall .MuiInputBase-input': { padding: '6px 10px' },
+            ...marcoDeCampo('MuiOutlinedInput'),
+            '&.MuiInputBase-sizeSmall .MuiInputBase-input': { padding: relleno },
           },
           input: {
-            padding: web ? '6px 10px' : '10px 14px', lineHeight: web ? '20px' : '24px', height: 'auto', '&::placeholder': { color: c.textoSecundario, opacity: 1 },
-            ...(web ? {} : { [ESCRITORIO]: { padding: '8px 12px', fontSize: 14, lineHeight: '20px' } }),
+            padding: relleno,
+            ...textoCampo,
+            height: 'auto',
+            '&::placeholder': { color: c.textoDeshabilitado, opacity: 1 },
+            '&.Mui-disabled': { WebkitTextFillColor: c.textoDeshabilitado, color: c.textoDeshabilitado },
           },
         },
       },
@@ -275,24 +333,19 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
           },
         },
       },
-      // Selector de fecha (UI-7, `CampoFecha`): mismo alto (32 en web, 44 en el celular del tercero y 36 en escritorio), borde,
-      // radio y etiqueta fija encima que los `TextField`. El calendario va en una tarjeta con el estilo de los menús.
+      // Selector de fecha (UI-7, `CampoFecha`): mismo alto, borde, radio y etiqueta sobre el borde que los `TextField`. El calendario va en una
+      // tarjeta con el estilo de los menús.
       MuiPickersOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: radioControl, backgroundColor: c.superficieNivel1, padding: web ? '0 4px 0 10px' : '0 6px 0 14px',
-            '& .MuiPickersOutlinedInput-notchedOutline': { top: 0, borderColor: c.bordeControl, '& legend': { display: 'none' } },
-            '&:hover .MuiPickersOutlinedInput-notchedOutline': { borderColor: c.textoSecundario },
-            '&.Mui-focused .MuiPickersOutlinedInput-notchedOutline': { borderColor: c.foco, borderWidth: BORDE.anilloFoco },
-            '&.Mui-error .MuiPickersOutlinedInput-notchedOutline': { borderColor: c.accionDestructiva },
-            '&.Mui-disabled': { backgroundColor: c.superficieNivel2 },
-            '&.Mui-disabled .MuiPickersOutlinedInput-notchedOutline': { borderColor: c.bordeControl },
+            ...marcoDeCampo('MuiPickersOutlinedInput'),
+            padding: web ? '0 4px 0 12px' : '0 6px 0 14px',
+            '&.Mui-disabled .MuiPickersOutlinedInput-notchedOutline': { borderColor: c.bordeSutil },
           },
           sectionsContainer: {
             '&&': {
-              padding: web ? '6px 0' : '10px 0',
-              lineHeight: web ? '20px' : '24px',
-              ...(web ? {} : { [ESCRITORIO]: { padding: '8px 0', fontSize: 14, lineHeight: '20px' } }),
+              padding: `${verticalCampo} 0`,
+              ...textoCampo,
             },
           },
         },
@@ -305,23 +358,24 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
       MuiPickersCalendarHeader: { styleOverrides: { label: { ...TIPOGRAFIA.titulo4, textTransform: 'capitalize' } } },
       MuiFormHelperText: {
         styleOverrides: {
-          root: { margin: '4px 0 0', fontSize: web ? 12 : 14, lineHeight: web ? '16px' : '20px', color: c.textoSecundario, '&.Mui-error': { color: c.estadoErrorTexto } },
+          root: { margin: '4px 2px 0', fontSize: 12, lineHeight: '16px', color: c.textoSecundario, '&.Mui-error': { color: c.estadoErrorTexto } },
         },
       },
       // El ícono de abrir queda centrado en el alto del campo (la posición por omisión de MUI: `calc(50% - .5em)`).
       MuiSelect: {
-        styleOverrides: { icon: { right: 8, color: c.textoSecundario }, select: { minHeight: 0 } },
+        defaultProps: { size: 'small', IconComponent: (propiedades: { className?: string }) => chevron(propiedades.className) },
+        styleOverrides: { icon: { right: 10, fontSize: 16, width: '1em', height: '1em', color: c.textoSecundario }, select: { minHeight: 0 } },
       },
       MuiAutocomplete: {
         styleOverrides: {
           paper: { backgroundColor: c.superficieElevada, border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.sm },
           listbox: { padding: 4, '& .MuiAutocomplete-option': { minHeight: control, borderRadius: RADIO.xs, fontSize: 14 } },
-          tag: { height: 24, borderRadius: RADIO.xs, margin: 2 },
+          tag: { height: 24, borderRadius: RADIO.pill, margin: 2 },
           // MUI 9 ya centra el adorno (`top: 50%` + `translateY(-50%)`): sin tocar `top`, queda dentro del campo y a su altura media.
           endAdornment: { right: 6 },
-          popupIndicator: { '&&': { width: 28, height: 28, padding: 0, marginRight: 0 } },
-          clearIndicator: { '&&': { width: 28, height: 28, padding: 0, marginRight: 0 } },
-          // Mismo alto que los demás campos (32 web, 44 public móvil, 36 public escritorio): el relleno lo pone el input,
+          popupIndicator: { '&&': { width: 28, height: 28, padding: 0, marginRight: 0, color: c.textoSecundario } },
+          clearIndicator: { '&&': { width: 28, height: 28, padding: 0, marginRight: 0, color: c.textoSecundario } },
+          // Mismo alto que los demás campos (36 web, 44 public móvil, 40 public escritorio): el relleno lo pone el input,
           // no el contenedor (MUI le suma 9 px arriba y abajo al contenedor, más en size="small").
           inputRoot: {
             paddingTop: 0,
@@ -329,19 +383,18 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
             paddingLeft: 0,
             '&.MuiInputBase-sizeSmall': { paddingTop: 0, paddingBottom: 0, paddingLeft: 0 },
             '& .MuiAutocomplete-input, &.MuiInputBase-sizeSmall .MuiAutocomplete-input': {
-              padding: web ? '6px 10px' : '10px 14px',
-              ...(web ? {} : { [ESCRITORIO]: { padding: '8px 12px' } }),
+              padding: relleno,
             },
           },
         },
       },
       MuiCheckbox: {
         defaultProps: { size: 'small' },
-        styleOverrides: { root: { color: c.bordeControl, padding: web ? 6 : 12, ...(web ? {} : { [ESCRITORIO]: { padding: 8 } }), '&.Mui-checked, &.MuiCheckbox-indeterminate': { color: primario ? primario.accion : c.accionPrimaria } } },
+        styleOverrides: { root: { color: c.bordeControlFuerte, padding: 6, '&.Mui-checked, &.MuiCheckbox-indeterminate': { color: accion } } },
       },
       MuiRadio: {
         defaultProps: { size: 'small' },
-        styleOverrides: { root: { color: c.bordeControl, padding: web ? 6 : 12, ...(web ? {} : { [ESCRITORIO]: { padding: 8 } }), '&.Mui-checked': { color: primario ? primario.accion : c.accionPrimaria } } },
+        styleOverrides: { root: { color: c.bordeControlFuerte, padding: 6, '&.Mui-checked': { color: accion } } },
       },
       // Apagado = «no», no «deshabilitado»: pista clara con borde de control y perilla en texto secundario (≥ 3:1 sobre la
       // superficie). Encendido: pista de acción y perilla blanca. Deshabilitado: pista nivel 2 con borde sutil y perilla en
@@ -354,7 +407,7 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
             // La geometría va en la raíz y para todos los tamaños: con size="small" MUI aplica su propio relleno con más
             // especificidad y descentra la perilla. Pista 36 × 20 con borde de 1,5 px; perilla 14 con 3 px por lado.
             '&, &.MuiSwitch-sizeSmall, &.MuiSwitch-sizeMedium': {
-              width: 36, height: 20, padding: 0, margin: web ? 6 : 12, overflow: 'visible',
+              width: 36, height: 20, padding: 0, margin: 6, overflow: 'visible',
               '& .MuiSwitch-switchBase': { top: 0, left: 0, padding: 3, '&.Mui-checked': { transform: 'translateX(16px)' } },
               '& .MuiSwitch-thumb': { width: 14, height: 14 },
             },
@@ -363,37 +416,38 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
             color: c.textoSecundario,
             '&.Mui-checked': {
               color: '#FFFFFF',
-              '& + .MuiSwitch-track': { backgroundColor: primario ? primario.accion : c.accionPrimaria, borderColor: primario ? primario.accion : c.accionPrimaria, opacity: 1 },
+              '& + .MuiSwitch-track': { backgroundColor: accion, borderColor: accion, opacity: 1 },
             },
             '&.Mui-focusVisible + .MuiSwitch-track': { outline: `${BORDE.anilloFoco}px solid ${c.foco}`, outlineOffset: 2 },
             '&.Mui-disabled': { color: c.textoDeshabilitado, '& + .MuiSwitch-track': { backgroundColor: c.superficieNivel2, borderColor: c.bordeSutil, opacity: 1 } },
-            '&.Mui-checked.Mui-disabled': { color: '#FFFFFF', '& + .MuiSwitch-track': { backgroundColor: primario ? primario.accion : c.accionPrimaria, borderColor: 'transparent', opacity: 0.4 } },
+            '&.Mui-checked.Mui-disabled': { color: '#FFFFFF', '& + .MuiSwitch-track': { backgroundColor: accion, borderColor: 'transparent', opacity: 0.4 } },
           },
           thumb: { boxShadow: 'none' },
-          track: { boxSizing: 'border-box', borderRadius: 10, backgroundColor: c.superficieNivel1, border: `1.5px solid ${c.bordeControl}`, opacity: 1 },
+          track: { boxSizing: 'border-box', borderRadius: 10, backgroundColor: c.superficieNivel1, border: `1.5px solid ${c.bordeControlFuerte}`, opacity: 1 },
         },
       },
-      MuiFormControlLabel: { styleOverrides: { root: { marginLeft: web ? -6 : -12, gap: 4 }, label: { fontSize: web ? 14 : 16, lineHeight: '20px', ...(web ? {} : { [ESCRITORIO]: { fontSize: 14 } }) } } },
+      MuiFormControlLabel: { styleOverrides: { root: { marginLeft: -6, gap: 4 }, label: { fontSize: 14, lineHeight: '20px' } } },
       MuiTabs: { styleOverrides: { root: { minHeight: web ? 40 : 44 }, indicator: { height: BORDE.grosorIndicador, backgroundColor: acento } } },
       MuiTab: {
         styleOverrides: {
           root: {
             textTransform: 'none', minWidth: 0, minHeight: web ? 40 : 44, padding: '0 10px', fontSize: 14, fontWeight: 500, color: c.textoSecundario,
-            '&.Mui-selected': { color: c.textoPrimario, fontWeight: 600 },
+            '&.Mui-selected': { color: acento, fontWeight: 500 },
           },
         },
       },
       MuiBreadcrumbs: { styleOverrides: { root: { fontSize: 13, lineHeight: '18px' }, separator: { marginLeft: 4, marginRight: 4, color: c.textoSecundario } } },
       MuiLink: { defaultProps: { underline: 'hover' }, styleOverrides: { root: { color: acento, fontWeight: 500, textUnderlineOffset: 3 } } },
-      MuiPopover: { styleOverrides: { paper: { backgroundColor: c.superficieElevada, backgroundImage: 'none', border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.sm } } },
-      MuiMenu: { styleOverrides: { list: { padding: 4 } } },
+      MuiDivider: { styleOverrides: { root: { borderColor: c.bordeSutil } } },
+      MuiPopover: { styleOverrides: { paper: { backgroundColor: c.superficieElevada, backgroundImage: 'none', border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.md } } },
+      MuiMenu: { styleOverrides: { list: { padding: 6 } } },
       MuiMenuItem: {
         styleOverrides: {
           root: {
-            minHeight: control, borderRadius: RADIO.xs, fontSize: web ? 14 : 16, gap: 8,
-            ...(web ? {} : { [ESCRITORIO]: { minHeight: DENSIDAD.controlMedio, fontSize: 14 } }),
+            minHeight: control, borderRadius: RADIO.sm, fontSize: 14, gap: 8,
+            ...(web ? {} : { [ESCRITORIO]: { minHeight: control, fontSize: 14 } }),
             '&:hover': { backgroundColor: c.superficieNivel2 },
-            '&.Mui-selected, &.Mui-selected:hover': { backgroundColor: c.acentoTinte },
+            '&.Mui-selected, &.Mui-selected:hover': { backgroundColor: acentoTinte },
           },
         },
       },
@@ -402,15 +456,15 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
       MuiDialog: {
         styleOverrides: { paper: { borderRadius: radioDialogo, backgroundColor: c.superficieNivel1, backgroundImage: 'none', boxShadow: s.dialogo } },
       },
-      MuiDialogTitle: { styleOverrides: { root: { ...TIPOGRAFIA.titulo3, padding: '16px 20px 4px' } } },
-      MuiDialogContent: { styleOverrides: { root: { padding: '8px 20px' } } },
-      MuiDialogActions: { styleOverrides: { root: { padding: '12px 20px 16px', gap: 8, flexWrap: 'wrap', '& > :not(style) ~ :not(style)': { marginLeft: 0 } } } },
+      MuiDialogTitle: { styleOverrides: { root: { ...TIPOGRAFIA.titulo3, padding: '18px 24px 4px' } } },
+      MuiDialogContent: { styleOverrides: { root: { padding: '12px 24px' } } },
+      MuiDialogActions: { styleOverrides: { root: { padding: '12px 24px 20px', gap: 8, flexWrap: 'wrap', '& > :not(style) ~ :not(style)': { marginLeft: 0 } } } },
       MuiDrawer: {
         styleOverrides: { paper: { width: web ? 480 : '100%', backgroundColor: c.superficieNivel1, backgroundImage: 'none', borderLeft: `1px solid ${c.bordeSutil}`, boxShadow: s.dialogo } },
       },
       MuiSnackbarContent: {
         styleOverrides: {
-          root: { backgroundColor: c.superficieElevada, color: c.textoPrimario, border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.sm, padding: '6px 12px', fontSize: 14 },
+          root: { backgroundColor: c.superficieElevada, color: c.textoPrimario, border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.md, padding: '6px 12px', fontSize: 14 },
           action: { marginRight: -4 },
         },
       },
@@ -424,11 +478,12 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
             // sigue alineado con la primera.
             const conAccion = Boolean(ownerState.onClose ?? ownerState.action);
             return {
-              borderRadius: RADIO.md,
+              // Avisos ligeros: tinte suave del tono, sin borde (la referencia no enmarca cada aviso) y esquinas de 10 px.
+              borderRadius: RADIO.sm + 2,
+              border: 'none',
               backgroundColor: t.fondo,
-              borderColor: t.borde,
               color: c.textoPrimario,
-              padding: '6px 12px',
+              padding: '6px 14px',
               '& .MuiAlert-icon': { color: t.texto, opacity: 1, padding: conAccion ? '7px 0' : '2px 0', marginRight: 10, fontSize: 18 },
               ...(conAccion && { '& .MuiAlert-message': { padding: '6px 0' } }),
             };
@@ -437,17 +492,31 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
           action: { padding: '0 0 0 12px', marginRight: 0, alignItems: 'flex-start' },
         },
       },
-      MuiAlertTitle: { styleOverrides: { root: { fontWeight: 600, fontSize: 14, marginBottom: 2 } } },
+      MuiAlertTitle: { styleOverrides: { root: { fontWeight: 500, fontSize: 14, lineHeight: '20px', marginBottom: 0 } } },
       MuiTooltip: {
         defaultProps: { arrow: false, enterDelay: 400 },
         styleOverrides: { tooltip: { backgroundColor: c.tooltipFondo, color: c.tooltipTexto, fontSize: 12, lineHeight: '16px', fontWeight: 500, borderRadius: RADIO.sm, padding: '4px 8px' } },
       },
       MuiBadge: { styleOverrides: { badge: { height: 18, minWidth: 18, padding: '0 5px', fontSize: 12, fontWeight: 600 } } },
-      MuiAvatar: { styleOverrides: { root: { width: 28, height: 28, fontSize: 12, fontWeight: 600, backgroundColor: c.acentoTinte, color: c.acento } } },
+      MuiAvatar: { styleOverrides: { root: { width: 28, height: 28, fontSize: 12, fontWeight: 500, backgroundColor: acentoTinte, color: acento } } },
+      // Chips: píldora pequeña. Los de color semántico (`color="success"`…) van tinteados (fondo suave, borde y texto del tono), como los de estado.
       MuiChip: {
         styleOverrides: {
-          root: { borderRadius: RADIO.xs, height: web ? 24 : 28, fontSize: web ? 12 : 13, fontWeight: 500, ...(web ? {} : { [ESCRITORIO]: { height: 24, fontSize: 12 } }) },
-          outlined: { borderColor: c.bordeSutil, backgroundColor: 'transparent' },
+          root: ({ ownerState }) => {
+            const clave = ownerState.color && ownerState.color !== 'default' && ownerState.color !== 'secondary' ? tonoDeColor[ownerState.color] : null;
+            const t = clave ? estado[clave] : null;
+            return {
+              borderRadius: RADIO.pill,
+              height: web ? 24 : 28,
+              fontSize: web ? 12 : 13,
+              fontWeight: 500,
+              ...(web ? {} : { [ESCRITORIO]: { height: 24, fontSize: 12 } }),
+              ...(t
+                ? { backgroundColor: t.fondo, color: t.texto, border: `1px solid ${t.borde}`, '& .MuiChip-icon': { color: t.texto } }
+                : { backgroundColor: c.superficieNivel2, color: c.textoSecundario }),
+            };
+          },
+          outlined: ({ ownerState }) => (ownerState.color && ownerState.color !== 'default' && ownerState.color !== 'secondary' ? {} : { borderColor: c.bordeSutil, backgroundColor: 'transparent', color: c.textoPrimario }),
           icon: { marginLeft: 6, marginRight: -2 },
         },
       },
@@ -468,25 +537,34 @@ export function createAvalasoftTheme(modo: Modo = 'light', { app = 'web', colorE
       },
       MuiAccordionSummary: {
         styleOverrides: {
-          root: { minHeight: web ? 44 : 52, padding: '0 16px', borderRadius: radioMarco, '&.Mui-expanded': { minHeight: web ? 44 : 52, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 } },
+          root: { minHeight: web ? 48 : 52, padding: '0 16px', borderRadius: radioMarco, '&.Mui-expanded': { minHeight: web ? 48 : 52, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 } },
           content: { margin: '10px 0', '&.Mui-expanded': { margin: '10px 0' } },
         },
       },
       MuiAccordionDetails: { styleOverrides: { root: { padding: '8px 16px 16px' } } },
       MuiCard: { defaultProps: { variant: 'outlined' }, styleOverrides: { root: { borderRadius: radioMarco } } },
-      MuiCardHeader: { styleOverrides: { root: { padding: '12px 16px 4px' }, title: TIPOGRAFIA.titulo4, subheader: { fontSize: 13, lineHeight: '18px', color: c.textoSecundario }, action: { margin: 0, alignSelf: 'center' } } },
-      MuiCardContent: { styleOverrides: { root: { padding: '12px 16px', '&:last-child': { paddingBottom: 12 } } } },
-      MuiCardActions: { styleOverrides: { root: { padding: '4px 16px 12px', gap: 8 } } },
+      MuiCardHeader: { styleOverrides: { root: { padding: '14px 20px 6px' }, title: TIPOGRAFIA.titulo3, subheader: { fontSize: 13, lineHeight: '18px', color: c.textoSecundario }, action: { margin: 0, alignSelf: 'center' } } },
+      MuiCardContent: { styleOverrides: { root: { padding: '14px 20px', '&:last-child': { paddingBottom: 16 } } } },
+      MuiCardActions: { styleOverrides: { root: { padding: '4px 20px 16px', gap: 8 } } },
+      // Tablas: encabezado con fondo cian muy claro y rótulos en versalitas pequeñas; filas con divisores finos.
       MuiTableCell: {
         styleOverrides: {
           root: { borderColor: c.bordeSutil },
-          head: { ...TIPOGRAFIA.etiqueta, color: c.textoSecundario },
+          head: {
+            backgroundColor: c.encabezadoTabla,
+            color: c.textoSecundario,
+            fontSize: 11,
+            lineHeight: '16px',
+            fontWeight: 600,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+          },
           sizeSmall: { height: DENSIDAD.filaCompacta, padding: '0 12px' },
         },
       },
-      MuiTableRow: { styleOverrides: { root: { '&:hover': { backgroundColor: c.superficieNivel2 }, '&.Mui-selected, &.Mui-selected:hover': { backgroundColor: c.acentoTinte } } } },
+      MuiTableRow: { styleOverrides: { root: { '&:hover': { backgroundColor: c.superficieNivel2 }, '&.Mui-selected, &.Mui-selected:hover': { backgroundColor: acentoTinte } } } },
       MuiSkeleton: { styleOverrides: { root: { backgroundColor: c.esqueleto, borderRadius: RADIO.xs } } },
-      MuiLinearProgress: { styleOverrides: { root: { height: 4, borderRadius: RADIO.xs, backgroundColor: c.superficieNivel2 } } },
+      MuiLinearProgress: { styleOverrides: { root: { height: 4, borderRadius: RADIO.pill, backgroundColor: c.superficieNivel2 }, bar: { borderRadius: RADIO.pill } } },
       MuiTypography: { defaultProps: { variantMapping: { mono: 'span', monoTabla: 'span', kpi: 'span' } } },
     },
   }, esES, textosPropios);

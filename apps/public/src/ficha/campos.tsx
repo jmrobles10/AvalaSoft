@@ -103,8 +103,8 @@ interface PropsCampoSiNo {
   enLinea?: boolean;
 }
 
-/** Pregunta sí/no con dos opciones grandes; sin responder es `null` (un «No» sí es respuesta). */
-export function CampoSiNo({ etiqueta, valor, onCambiar, mensaje, deshabilitado = false, enLinea = false }: PropsCampoSiNo) {
+/** Pregunta sí/no compacta, con la pregunta y las opciones en la misma fila (desde tableta); sin responder es `null` (un «No» sí es respuesta). */
+export function CampoSiNo({ etiqueta, valor, onCambiar, mensaje, deshabilitado = false, enLinea = true }: PropsCampoSiNo) {
   const { t } = useTranslation();
   const id = useId();
   return (
@@ -113,7 +113,7 @@ export function CampoSiNo({ etiqueta, valor, onCambiar, mensaje, deshabilitado =
       disabled={deshabilitado}
       sx={enLinea ? { display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'minmax(0, 1fr) auto' }, columnGap: 3, alignItems: 'center' } : undefined}
     >
-      <FormLabel id={`${id}-etiqueta`} sx={enLinea ? { fontSize: 15, lineHeight: '22px', color: 'text.primary' } : undefined}>
+      <FormLabel id={`${id}-etiqueta`} sx={enLinea ? { fontSize: 14, lineHeight: '20px', color: 'text.primary', fontWeight: 400 } : undefined}>
         {etiqueta}
       </FormLabel>
       <RadioGroup
@@ -122,8 +122,8 @@ export function CampoSiNo({ etiqueta, valor, onCambiar, mensaje, deshabilitado =
         value={valor === null || valor === undefined ? '' : String(valor)}
         onChange={(e) => onCambiar(e.target.value === 'true')}
       >
-        <FormControlLabel value="true" control={<Radio />} label={t('ficha.si')} sx={{ minHeight: 44, mr: 3 }} />
-        <FormControlLabel value="false" control={<Radio />} label={t('ficha.no')} sx={{ minHeight: 44 }} />
+        <FormControlLabel value="true" control={<Radio />} label={t('ficha.si')} sx={{ minHeight: 32, mr: 2 }} />
+        <FormControlLabel value="false" control={<Radio />} label={t('ficha.no')} sx={{ minHeight: 32 }} />
       </RadioGroup>
       {mensaje && <FormHelperText sx={enLinea ? { gridColumn: '1 / -1', mx: 0 } : undefined}>{mensaje}</FormHelperText>}
     </FormControl>

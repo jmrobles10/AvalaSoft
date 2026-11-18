@@ -1,6 +1,6 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Link, Stack, Typography } from '@mui/material';
-import { EncabezadoFijo, ErrorEnLinea, PaginaEstado, type EncabezadoFijoProps } from '@avalasoft/ui';
-import { ChevronLeft, Lock } from 'lucide-react';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Link, Typography } from '@mui/material';
+import { EncabezadoFijo, ErrorEnLinea, PaginaEstado, TarjetaBloque, type EncabezadoFijoProps } from '@avalasoft/ui';
+import { ChevronLeft, Lock, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
@@ -34,7 +34,7 @@ export function EnlaceVolver({ a, children }: { a: string; children: ReactNode }
 }
 
 /**
- * Encabezado de página (título 24/32, subtítulo y acciones) que queda visible al desplazar el contenido
+ * Encabezado de página (título, subtítulo y acciones) que queda visible al desplazar el contenido
  * (`EncabezadoFijo` de `@avalasoft/ui`). `antes`: el enlace «‹ Sección» de los detalles, dentro de la franja.
  */
 export function EncabezadoPagina(props: EncabezadoFijoProps) {
@@ -43,34 +43,35 @@ export function EncabezadoPagina(props: EncabezadoFijoProps) {
   return <EncabezadoFijo etiquetaAcciones={t('comun.accionesPagina')} sangria={RELLENO_CONTENIDO.x} relleno={RELLENO_CONTENIDO.y} {...props} />;
 }
 
-/** Tarjeta de sección: borde sutil, radio 12, sin sombra. `nivel`: el encabezado del título (h3 si va dentro de otra sección). */
+/**
+ * Tarjeta de sección (`TarjetaBloque` de `@avalasoft/ui`): encabezado con ícono en el acento, título y ayuda corta en la misma línea, divisor
+ * fino y cuerpo con relleno generoso. `nivel`: el encabezado del título (h3 si va dentro de otra sección).
+ */
 export function Tarjeta({
   titulo,
   acciones,
   children,
   etiqueta,
   nivel = 'h2',
+  icono,
+  ayuda,
+  filete,
+  sinRelleno,
 }: {
   titulo?: ReactNode;
   acciones?: ReactNode;
   children: ReactNode;
   etiqueta?: string;
   nivel?: 'h2' | 'h3';
+  icono?: LucideIcon;
+  ayuda?: ReactNode;
+  filete?: boolean;
+  sinRelleno?: boolean;
 }) {
   return (
-    <Box component="section" aria-label={etiqueta} sx={{ py: 1.5, px: 2, border: 1, borderColor: 'divider', borderRadius: (t) => `${String(t.radio.md)}px`, bgcolor: 'background.paper', minWidth: 0 }}>
-      {(titulo ?? acciones) && (
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1, minHeight: 28 }}>
-          {titulo && (
-            <Typography variant="h4" component={nivel}>
-              {titulo}
-            </Typography>
-          )}
-          {acciones}
-        </Stack>
-      )}
+    <TarjetaBloque titulo={titulo} acciones={acciones} etiqueta={etiqueta} nivel={nivel} icono={icono} ayuda={ayuda} filete={filete} sinRelleno={sinRelleno}>
       {children}
-    </Box>
+    </TarjetaBloque>
   );
 }
 

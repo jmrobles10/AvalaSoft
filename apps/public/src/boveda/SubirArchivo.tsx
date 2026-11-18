@@ -62,7 +62,8 @@ export function SubirArchivo({ parametros, delRequisito }: { parametros: URLSear
         titulo={fijo ? t('subir.tituloDocumento', { tipo: fijo.nombre }) : tituloFijo ? t('subir.tituloNueva', { tipo: tituloFijo }) : t('subir.titulo')}
         sub={tipoRequisito?.textoAyuda ?? undefined}
       />
-      <Stack spacing={2}>
+      {/* El marco usa todo el ancho, pero un formulario de un campo y una zona de carga no se estiran a 1400 px: se leen en una columna. */}
+      <Stack spacing={2} sx={{ maxWidth: 760 }}>
         {aislada && empresa !== '' && <Alert severity="info">{t('accesoAislado.aviso.enSubida', { empresa })}</Alert>}
         {!existente && !fijo && (
           <TextField

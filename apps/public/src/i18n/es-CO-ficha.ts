@@ -1,5 +1,13 @@
 /** Textos de «Mi información» (ficha maestra del tercero, docs/14); se integran en `es-CO.ts` como `ficha`. */
 export const ficha = {
+  secciones: 'Secciones',
+  bloques: {
+    tributaria: { titulo: 'Obligaciones tributarias', ayuda: 'Lo que dice tu RUT' },
+    legal: { titulo: 'Representación legal', ayuda: 'Quién firma y quién tiene el control' },
+    financiera: { titulo: 'Estados financieros', ayuda: 'Cifras al cierre del periodo' },
+    especialidades: { titulo: 'Lo que ofreces', ayuda: 'Elige las especialidades de tu empresa' },
+    sst: { titulo: 'Cumplimiento SST', ayuda: 'Un «No» también cuenta como respuesta' },
+  },
   titulo: 'Mi información',
   sub: 'Tus datos una sola vez para todas tus empresas. Puedes guardar a medias y volver cuando quieras.',
   continuar: 'Continuar',
@@ -116,6 +124,12 @@ export const ficha = {
     seccionesDeDocumento: 'Secciones que cambian según tu {{documento}}',
   },
   general: {
+    bloques: {
+      identificacion: { titulo: 'Identificación', ayuda: 'Quién eres para tus empresas' },
+      contacto: { titulo: 'Contacto y ubicación', ayuda: 'Cómo y dónde te encuentran' },
+      actividad: { titulo: 'Actividad económica', ayuda: 'A qué se dedica tu empresa' },
+      pep: { titulo: 'Personas expuestas políticamente', ayuda: 'Tu declaración PEP' },
+    },
     identificacion: 'Identificación',
     identificacionAyuda: 'La toma AvalaSoft de tu registro; no se cambia aquí.',
     identificacionPendiente: 'Se completa con tu registro al guardar',

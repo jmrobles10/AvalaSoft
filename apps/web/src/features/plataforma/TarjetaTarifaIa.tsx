@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import type { TarifaDeIaDto } from '@avalasoft/api-client';
 import { enfocarNodo, formatearFechaHora } from '@avalasoft/ui';
-import { Pencil } from 'lucide-react';
+import { Pencil, Tag } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ErrorRecuperable, IconoCarga, Tarjeta } from '../../shared/componentes';
@@ -87,6 +87,7 @@ export function TarjetaTarifaIa() {
   return (
     <Tarjeta
       titulo={t('consola.tarifa.titulo')}
+      icono={Tag}
       acciones={
         tarifa && (
           <Button size="small" variant="outlined" startIcon={<Pencil size={14} aria-hidden />} onClick={() => setEditando(true)}>

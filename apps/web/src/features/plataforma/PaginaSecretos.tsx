@@ -1,7 +1,7 @@
 import { Alert, Button, Chip, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import type { SecretosPorTipoDto } from '@avalasoft/api-client';
 import { Dato, MarcoTabla, RejillaDatos } from '@avalasoft/ui';
-import { RefreshCw, ShieldCheck } from 'lucide-react';
+import { Lock, RefreshCw, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogoConfirmacion, EncabezadoPagina, ErrorRecuperable, Tarjeta } from '../../shared/componentes';
@@ -51,7 +51,7 @@ export function PaginaSecretos() {
       {estado.isError && <ErrorRecuperable mensaje={mensajeDeError(estado.error, t)} onReintentar={() => void estado.refetch()} />}
       {datos && (
         <Stack spacing={2}>
-          <Tarjeta>
+          <Tarjeta titulo={t('plataforma.secretos.cifrado')} icono={Lock}>
             <RejillaDatos columnas={2}>
               <Dato etiqueta={t('plataforma.secretos.claveVigente')}>
                 <Chip size="small" label={datos.claveVigente} sx={{ fontFamily: (th) => th.typography.mono.fontFamily }} />

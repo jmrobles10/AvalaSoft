@@ -102,6 +102,59 @@ describe('Shell del tercero: el enlace del correo es una entrada', () => {
   });
 });
 
+describe('Shell del tercero: lienzo, píldoras y panel', () => {
+  it('las secciones son píldoras: la activa es blanca (con sombra) y las demás no tienen caja; «Salir» no es una caja suelta', () => {
+    useSesionTercero.setState({ estado: 'activa' });
+    montar('/ficha');
+    const barra = screen.getByRole('banner');
+    const activa = within(barra).getByRole('link', { name: 'Mi información' });
+    expect(activa).toHaveAttribute('aria-current', 'page');
+    expect(getComputedStyle(activa).boxShadow).not.toBe('none');
+    const otra = within(barra).getByRole('link', { name: 'Mi bóveda' });
+    expect(getComputedStyle(otra).boxShadow).toMatch(/none$/);
+    // «Salir» tiene el estilo de una sección inactiva: sin borde ni sombra propios.
+    const salir = within(barra).getByRole('button', { name: 'Salir' });
+    expect(getComputedStyle(salir).boxShadow).toMatch(/none$/);
+    expect(getComputedStyle(salir).borderTopWidth).not.toBe('1px');
+  });
+
+  it('el contenido va en un único panel flotante (main) y la barra y el panel comparten ancho máximo', () => {
+    useSesionTercero.setState({ estado: 'activa' });
+    montar('/boveda');
+    const panel = screen.getByRole('main').firstElementChild as HTMLElement;
+    expect(getComputedStyle(panel).borderRadius).toBe('16px');
+    expect(within(panel).getByText('contenido')).toBeInTheDocument();
+    const barra = screen.getByRole('banner').firstElementChild as HTMLElement;
+    expect(getComputedStyle(barra).maxWidth).toBe(getComputedStyle(panel).maxWidth);
+  });
+});
+
+describe('Shell del tercero: un solo ancho', () => {
+  /** El primer hijo de `main` y la caja de la barra superior comparten ancho máximo (el logotipo se alinea con el borde del panel). */
+  const anchos = () => {
+    const panel = screen.getByRole('main').firstElementChild as HTMLElement;
+    const barra = screen.getByRole('banner').firstElementChild as HTMLElement;
+    return { panel: getComputedStyle(panel).maxWidth, barra: getComputedStyle(barra).maxWidth };
+  };
+
+  it.each(['/boveda', '/empresas', '/cuentas', '/ficha', '/boveda/subir', '/privacidad'])('%s: el panel y la barra llegan al mismo ancho (1440 px) en todas las páginas', (ruta) => {
+    useSesionTercero.setState({ estado: 'activa' });
+    montar(ruta);
+    expect(anchos()).toEqual({ panel: '1440px', barra: '1440px' });
+  });
+
+  it('una sección de Mi información no lleva el panel del Shell: la página pone el suyo (el de las secciones y el del formulario) con el mismo ancho', () => {
+    useSesionTercero.setState({ estado: 'activa' });
+    montar('/ficha/general');
+    const principal = screen.getByRole('main');
+    const contenedor = principal.firstElementChild as HTMLElement;
+    // Sin panel flotante envolviendo todo: el contenido (aquí un marcador) cuelga directo del contenedor sobre el lienzo.
+    expect(getComputedStyle(contenedor).borderRadius).not.toBe('16px');
+    expect(within(contenedor).getByText('contenido')).toBeInTheDocument();
+    expect(anchos()).toEqual({ panel: '1440px', barra: '1440px' });
+  });
+});
+
 describe('Shell del tercero con acceso aislado', () => {
   const aislada = { accessToken: 't', expira: '2099-01-01T00:00:00Z', terceroId: 'ter', otpVerificado: false, vinculos: [], aislada: true, terceroEnmascarado: 'P••••• N•••' };
 

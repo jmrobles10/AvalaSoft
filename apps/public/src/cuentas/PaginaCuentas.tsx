@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { EstadoVacio } from '@avalasoft/ui';
 import { Landmark, Plus } from 'lucide-react';
 import { useState } from 'react';
@@ -36,11 +36,21 @@ export function PaginaCuentas() {
           {cuentas.data.length === 0 ? (
             <EstadoVacio icono={Landmark} titulo={t('cuentas.vacio')} texto={t('cuentas.vacioTexto')} />
           ) : (
-            <Stack spacing={1.5}>
+            // En pantalla ancha las cuentas van en dos columnas (una sola ocupa todo el ancho): el panel llega a 1440 y una lista de una columna quedaba vacía a la derecha.
+            <Box
+              sx={{
+                borderTop: 1,
+                borderColor: 'divider',
+                display: 'grid',
+                gridTemplateColumns: { xs: 'minmax(0, 1fr)', lg: 'repeat(2, minmax(0, 1fr))' },
+                columnGap: { lg: 5 },
+                '& > article:only-child': { gridColumn: '1 / -1' },
+              }}
+            >
               {cuentas.data.map((c) => (
                 <TarjetaCuenta key={c.id} cuenta={c} />
               ))}
-            </Stack>
+            </Box>
           )}
           {vinculos.isPending ? (
             <Box sx={{ mt: 3 }}>

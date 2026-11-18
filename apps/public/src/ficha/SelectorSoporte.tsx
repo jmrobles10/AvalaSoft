@@ -1,7 +1,7 @@
-import { Alert, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Paper, Skeleton, Typography } from '@mui/material';
+import { Alert, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Skeleton, Typography } from '@mui/material';
 import type { DocumentoBovedaDto, SoporteSeccionDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
-import { Upload } from 'lucide-react';
+import { formatearFecha, SeccionPlana, visualmenteOculto } from '@avalasoft/ui';
+import { FileCheck, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { useBoveda } from '../shared/api';
@@ -61,9 +61,9 @@ export function SelectorSoporte({ definicion, soportes, retirados = [], onCambia
   const mensaje = error ?? faltaSoporte;
 
   return (
-    <Paper variant="outlined" sx={{ p: { xs: 1.5, sm: 2 } }}>
+    <SeccionPlana titulo={t('ficha.soporte.titulo')} ayuda={definicion.soportes === null ? t('ficha.soporte.ayudaOpcional') : t('ficha.soporte.ayuda')} icono={FileCheck}>
       <FormControl component="fieldset" error={Boolean(mensaje)} disabled={deshabilitado} fullWidth>
-        <FormLabel component="legend" sx={{ fontWeight: 600, color: 'text.primary' }}>
+        <FormLabel component="legend" sx={visualmenteOculto}>
           {t('ficha.soporte.titulo')}
         </FormLabel>
         {retirados.length > 0 && (
@@ -76,7 +76,6 @@ export function SelectorSoporte({ definicion, soportes, retirados = [], onCambia
             <Typography sx={{ fontSize: 14 }}>{t('ficha.soporte.retiradoAyuda')}</Typography>
           </Alert>
         )}
-        <FormHelperText sx={{ mx: 0, mb: 1 }}>{definicion.soportes === null ? t('ficha.soporte.ayudaOpcional') : t('ficha.soporte.ayuda')}</FormHelperText>
         {boveda.isPending ? (
           <Skeleton variant="rounded" height={44} />
         ) : opciones.length === 0 ? (
@@ -88,7 +87,7 @@ export function SelectorSoporte({ definicion, soportes, retirados = [], onCambia
                 key={`${o.soporte.documentoId}-${String(o.soporte.version)}`}
                 control={<Checkbox checked={soportes.some((s) => mismo(s, o.soporte))} onChange={(e) => alternar(o, e.target.checked)} />}
                 label={o.etiqueta}
-                sx={{ minHeight: 44, alignItems: 'center' }}
+                sx={{ minHeight: 32, alignItems: 'center' }}
               />
             ))}
           </FormGroup>
@@ -103,6 +102,6 @@ export function SelectorSoporte({ definicion, soportes, retirados = [], onCambia
         {t('ficha.soporte.subir')}
       </Button>
       <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('ficha.soporte.subirAyuda')}</Typography>
-    </Paper>
+    </SeccionPlana>
   );
 }

@@ -93,6 +93,19 @@ async function elegirBanco(usuario: ReturnType<typeof userEvent.setup>, dialogo:
 afterEach(() => reiniciarCliente());
 
 describe('mis cuentas bancarias', () => {
+  it('las cuentas van en una rejilla (una columna en pantallas angostas y dos desde lg, con el panel ancho de las listas)', async () => {
+    montar([cuenta('c1'), cuenta('c2', { banco: 'Davivienda' })]);
+
+    const primera = await screen.findByRole('article', { name: 'Bancolombia' });
+    const rejilla = primera.parentElement!;
+    expect(screen.getByRole('article', { name: 'Davivienda' }).parentElement).toBe(rejilla);
+    expect(getComputedStyle(rejilla).display).toBe('grid');
+    expect(getComputedStyle(rejilla).gridTemplateColumns).toMatch(/^minmax\(0(px)?, 1fr\)$/);
+    // Desde `lg` pasa a dos columnas (jsdom no evalúa las consultas de medios: se lee la regla que emitió el estilo).
+    const reglas = [...document.querySelectorAll('style')].map((s) => s.textContent).join('');
+    expect(reglas).toMatch(/min-width:1200px\)\{[^}]*grid-template-columns:repeat\(2, ?minmax\(0, ?1fr\)\)/);
+  });
+
   it('muestra cada cuenta enmascarada con el estado de su designación en cada empresa', async () => {
     montar([
       cuenta('c1', {

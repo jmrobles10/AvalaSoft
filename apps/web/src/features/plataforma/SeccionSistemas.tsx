@@ -18,6 +18,7 @@ export function SeccionSistemas({ tenant }: { tenant: TenantDto }) {
   return (
     <Tarjeta
       titulo={titulo}
+      icono={Plug}
       etiqueta={titulo}
       acciones={
         <Button size="small" variant="outlined" startIcon={<Plug size={14} aria-hidden />} onClick={() => setGestionando(true)} aria-label={t('plataforma.ficha.sistemas.gestionarDe', { grupo: tenant.nombre })}>

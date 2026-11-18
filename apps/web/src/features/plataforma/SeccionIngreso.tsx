@@ -1,6 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import type { TenantDto } from '@avalasoft/api-client';
 import { Dato, RejillaDatos } from '@avalasoft/ui';
+import { LogIn } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';
@@ -17,6 +18,7 @@ export function SeccionIngreso({ tenant }: { tenant: TenantDto }) {
   return (
     <Tarjeta
       titulo={titulo}
+      icono={LogIn}
       etiqueta={titulo}
       acciones={ingreso && <BotonEditar etiqueta={t('plataforma.ficha.ingreso.editar')} onClick={() => setEditando(true)} />}
     >

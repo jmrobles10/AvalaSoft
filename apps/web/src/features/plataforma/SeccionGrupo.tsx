@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 import type { TenantDto } from '@avalasoft/api-client';
 import { Dato, formatearFecha, RejillaDatos, ValorLargo } from '@avalasoft/ui';
+import { Building2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';
@@ -18,6 +19,7 @@ export function SeccionGrupo({ tenant }: { tenant: TenantDto }) {
   return (
     <Tarjeta
       titulo={t('plataforma.ficha.grupo.titulo')}
+      icono={Building2}
       etiqueta={t('plataforma.ficha.grupo.titulo')}
       acciones={<BotonEditar etiqueta={t('plataforma.ficha.editarSeccion', { seccion: t('plataforma.ficha.grupo.titulo').toLowerCase() })} onClick={() => setEditando(true)} />}
     >

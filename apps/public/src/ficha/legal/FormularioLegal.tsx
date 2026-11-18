@@ -91,7 +91,7 @@ function TarjetaPersona({ persona, indice, mensaje, hayEnRuta, onEditar, onQuita
   const errorFila = mensaje(ruta);
 
   return (
-    <Paper component="li" variant="outlined" aria-label={nombre} sx={{ p: 1.5 }}>
+    <Paper component="li" variant="outlined" aria-label={nombre} sx={{ p: 1.5, border: 0, bgcolor: 'superficie.nivel2' }}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { sm: 'center' } }}>
         <Stack sx={{ minWidth: 0, flex: 1 }} spacing={0.5}>
           <Typography sx={{ fontWeight: 500 }}>{nombre}</Typography>

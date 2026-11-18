@@ -38,8 +38,8 @@ export function textoTooltip(estado: Estado, fecha?: string | Date | null, autom
 }
 
 /**
- * Estado de cualquier entidad (dirección Registro): contorno sutil, texto primario y solo el ícono en el tono del
- * estado. Se lee sin color: cada estado tiene su ícono y su texto.
+ * Estado de cualquier entidad: píldora pequeña con **punto** de color y tinte suave del tono (verde aprobada, ámbar pendiente, cian
+ * enviada, rojo rechazada…). Se lee sin color: el texto dice el estado, y el bloqueante cambia el punto por el octágono.
  */
 export function ChipEstado({ estado, fecha = null, automatico = false, bloqueante = false, size = 'small', etiqueta: texto }: ChipEstadoProps) {
   const tema = useTheme();
@@ -47,13 +47,20 @@ export function ChipEstado({ estado, fecha = null, automatico = false, bloqueant
   const etiqueta = texto ?? canonica;
   const tamIcono = size === 'small' ? 14 : 16;
   const detalle = textoTooltip(estado, fecha, automatico, bloqueante);
+  const paleta = tema.palette.estado[tono];
 
   const chip = (
     <Chip
       variant="outlined"
       size={size}
       data-estado={estado}
-      icon={<Icono size={tamIcono} strokeWidth={1.75} aria-hidden />}
+      icon={
+        bloqueante ? (
+          <Icono size={tamIcono} strokeWidth={1.75} aria-hidden />
+        ) : (
+          <Box component="span" aria-hidden sx={{ width: 7, height: 7, borderRadius: '50%', bgcolor: paleta.solido, flex: 'none' }} />
+        )
+      }
       label={
         <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
           {etiqueta}
@@ -62,10 +69,12 @@ export function ChipEstado({ estado, fecha = null, automatico = false, bloqueant
         </Box>
       }
       sx={{
-        color: 'text.primary',
-        borderColor: 'borde.sutil',
-        borderRadius: `${String(tema.radio.xs)}px`,
-        '& .MuiChip-icon': { color: tema.palette.estado[tono].texto },
+        color: paleta.texto,
+        bgcolor: paleta.fondo,
+        borderColor: paleta.borde,
+        borderRadius: `${String(tema.radio.pill)}px`,
+        '& .MuiChip-icon': { color: paleta.texto, ml: 1, mr: -0.25 },
+        '& .MuiChip-label': { pl: 0.75, pr: 1.25 },
       }}
     />
   );

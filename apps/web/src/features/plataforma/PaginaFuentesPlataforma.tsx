@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Chip, MenuItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import type { FuentePlataformaDto, ProveedorDePlataformaFuenteDto } from '@avalasoft/api-client';
 import { formatearFechaHora } from '@avalasoft/ui';
-import { Trash2 } from 'lucide-react';
+import { Database, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogoConfirmacion, EncabezadoPagina, ErrorRecuperable, IconoCarga, Tarjeta } from '../../shared/componentes';
@@ -43,7 +43,7 @@ function Fuente({ fuente, actualizada, actualizadaPor }: { fuente: FuentePlatafo
     actualizar.mutate({ predeterminados: [{ fuente: fuente.fuente, proveedor }] }, { onSuccess: () => mostrar(t('fuentesOficiales.plataforma.guardada')), onError: (e) => mostrar(mensajeDeError(e, t), 'error') });
 
   return (
-    <Tarjeta titulo={fuente.nombre} etiqueta={fuente.nombre}>
+    <Tarjeta titulo={fuente.nombre} etiqueta={fuente.nombre} icono={Database}>
       <Stack spacing={2}>
         <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{fuente.descripcion}</Typography>
         <TextField

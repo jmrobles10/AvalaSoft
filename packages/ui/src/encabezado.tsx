@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, type Theme } from '@mui/material';
 import type { ReactNode } from 'react';
 
 /**
@@ -7,6 +7,15 @@ import type { ReactNode } from 'react';
  * contenedor de scroll propio (embebida con altura fija).
  */
 export const VARIABLE_TOPE = '--vs-tope';
+
+/**
+ * Variable CSS con el color de fondo del contenedor donde se pega el encabezado (el panel blanco de la consola, por ejemplo): el encabezado
+ * lo toma para tapar lo que pasa por debajo. Sin ella, el fondo de la ventana (`background.default`).
+ */
+export const VARIABLE_FONDO = '--vs-fondo';
+
+/** `bgcolor` de una capa fija (encabezado, barra de acciones) que debe tapar lo que pasa por debajo con el color del contenedor donde se pega. */
+export const fondoDelContenedor = (t: Theme) => `var(${VARIABLE_FONDO}, ${t.palette.background.default})`;
 
 export interface EncabezadoFijoProps {
   titulo: ReactNode;
@@ -31,8 +40,8 @@ export interface EncabezadoFijoProps {
 
 /**
  * Encabezado de página «título + subtítulo + acciones» que queda visible mientras se desplaza el contenido: se pega
- * arriba del contenedor de scroll (`position: sticky`, distancia {@link VARIABLE_TOPE}) con fondo opaco y un borde
- * inferior, y el contenido pasa por debajo. En pantallas angostas las acciones bajan a una segunda línea en vez de
+ * arriba del contenedor de scroll (`position: sticky`, distancia {@link VARIABLE_TOPE}) con fondo opaco
+ * y el contenido pasa por debajo. En pantallas angostas las acciones bajan a una segunda línea en vez de
  * tapar el título, que se corta con puntos suspensivos; en el celular el subtítulo ocupa una sola línea.
  */
 export function EncabezadoFijo({ titulo, subtitulo, acciones, antes, etiquetaAcciones, tituloCompleto, sangria = 3, relleno = 2 }: EncabezadoFijoProps) {
@@ -43,21 +52,19 @@ export function EncabezadoFijo({ titulo, subtitulo, acciones, antes, etiquetaAcc
         position: 'sticky',
         top: `var(${VARIABLE_TOPE}, 0px)`,
         zIndex: (t) => t.zIndex.appBar - 1,
-        bgcolor: 'background.default',
+        bgcolor: fondoDelContenedor,
         mx: -sangria,
         px: sangria,
         mt: -relleno,
         pt: relleno,
-        pb: 1.5,
-        mb: 2,
-        borderBottom: 1,
-        borderColor: 'divider',
+        pb: 2,
+        mb: 0.5,
       }}
     >
       {antes}
       <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', columnGap: 2, rowGap: 1 }}>
-        {/* En el celular el título cede antes (150 px) para que una acción quepa a su lado; si no, bajan a otra línea. */}
-        <Box sx={{ flex: { xs: '1 1 150px', sm: '1 1 320px' }, minWidth: 0 }}>
+        {/* En el celular las acciones bajan a su propia línea si el título (200 px como mínimo) no cabe con ellas, en vez de cortarlo. */}
+        <Box sx={{ flex: { xs: '1 1 200px', sm: '1 1 320px' }, minWidth: 0 }}>
           <Typography variant="h2" component="h1" noWrap title={tituloCompleto}>
             {titulo}
           </Typography>

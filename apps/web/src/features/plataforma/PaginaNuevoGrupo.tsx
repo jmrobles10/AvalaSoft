@@ -1,6 +1,7 @@
 import { Alert, Box, Button, Checkbox, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { TenantCreadoDto } from '@avalasoft/api-client';
 import { DosColumnas, FaltaParaEnviar } from '@avalasoft/ui';
+import { Building2, Factory, LogIn, Plug, UserRoundCog, type LucideIcon } from 'lucide-react';
 import { useState, type ReactNode, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EncabezadoPagina, EnlaceVolver, IconoCarga, Tarjeta } from '../../shared/componentes';
@@ -13,13 +14,10 @@ import { ResultadoAlta } from './ResultadoAlta';
 
 const MONO = { '& input, & textarea': { fontFamily: (th: { typography: { mono: { fontFamily?: string } } }) => th.typography.mono.fontFamily } };
 
-function Seccion({ titulo, ayuda, children }: { titulo: string; ayuda: string; children: ReactNode }) {
+function Seccion({ titulo, ayuda, icono, children }: { titulo: string; ayuda: string; icono: LucideIcon; children: ReactNode }) {
   return (
-    <Tarjeta titulo={titulo} etiqueta={titulo}>
-      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-        {ayuda}
-      </Typography>
-      <Stack spacing={2}>{children}</Stack>
+    <Tarjeta titulo={titulo} ayuda={ayuda} icono={icono} etiqueta={titulo}>
+      <Stack spacing={2.5}>{children}</Stack>
     </Tarjeta>
   );
 }
@@ -102,14 +100,14 @@ export function PaginaNuevoGrupo() {
       <DosColumnas
         izquierda={
           <>
-            <Seccion titulo={t('plataforma.alta.grupo')} ayuda={t('plataforma.alta.grupoAyuda')}>
+            <Seccion titulo={t('plataforma.alta.grupo')} ayuda={t('plataforma.alta.grupoAyuda')} icono={Building2}>
               {campo(t('plataforma.alta.nombre'), b.nombre, (v) => cambiar({ nombre: v, ...(!b.slugManual && { slug: slugDesdeNombre(v) }) }), ['grupo-nombre-requerido'])}
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
                 {campo(t('plataforma.alta.slug'), b.slug, (v) => cambiar({ slug: v.toLowerCase(), slugManual: true }), ['slug-invalido'], { ayuda: t('plataforma.alta.slugAyuda'), mono: true })}
                 {campo(t('plataforma.alta.zona'), b.zonaHoraria, (v) => cambiar({ zonaHoraria: v }), [], { mono: true })}
               </Stack>
             </Seccion>
-            <Seccion titulo={t('plataforma.alta.empresa')} ayuda={t('plataforma.alta.empresaAyuda')}>
+            <Seccion titulo={t('plataforma.alta.empresa')} ayuda={t('plataforma.alta.empresaAyuda')} icono={Factory}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
                 <TextField select required label={t('empresasGrupo.campos.pais')} value={paises.data ? b.empresa.pais : ''} onChange={(e) => cambiarEmpresa({ pais: e.target.value, tipo: '' })} sx={{ flex: 1, minWidth: 0 }}>
                   {(paises.data ?? []).map((p) => (
@@ -142,7 +140,7 @@ export function PaginaNuevoGrupo() {
         }
         derecha={
           <>
-            <Seccion titulo={t('plataforma.alta.administrador')} ayuda={t('plataforma.alta.administradorAyuda')}>
+            <Seccion titulo={t('plataforma.alta.administrador')} ayuda={t('plataforma.alta.administradorAyuda')} icono={UserRoundCog}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
                 {campo(t('plataforma.alta.adminNombre'), b.adminNombre, (v) => cambiar({ adminNombre: v }), ['admin-nombre-requerido'])}
                 {campo(t('plataforma.alta.adminCorreo'), b.adminCorreo, (v) => cambiar({ adminCorreo: v }), ['admin-correo-invalido'])}
@@ -153,7 +151,7 @@ export function PaginaNuevoGrupo() {
                 requerido: false,
               })}
             </Seccion>
-            <Seccion titulo={t('ingresoPlataforma.etiqueta')} ayuda={t('ingresoPlataforma.ayuda')}>
+            <Seccion titulo={t('ingresoPlataforma.etiqueta')} ayuda={t('ingresoPlataforma.ayuda')} icono={LogIn}>
               <Box component="fieldset" sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
                 <Typography component="legend" sx={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
                   {t('ingresoPlataforma.etiqueta')}
@@ -176,7 +174,7 @@ export function PaginaNuevoGrupo() {
               </Box>
             </Seccion>
             {b.ingresoDelegado && (
-            <Seccion titulo={t('plataforma.alta.sistema')} ayuda={t('plataforma.alta.sistemaAyuda')}>
+            <Seccion titulo={t('plataforma.alta.sistema')} ayuda={t('plataforma.alta.sistemaAyuda')} icono={Plug}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
                 {campo(t('plataforma.alta.sistemaCodigo'), b.sistemaCodigo, (v) => cambiar({ sistemaCodigo: v.toUpperCase() }), ['sistema-codigo-invalido'], {
                   ayuda: t('plataforma.alta.sistemaCodigoAyuda'),
