@@ -28,6 +28,7 @@ import {
   type RequisitoPublicoDto,
 } from '@validasoft/api-client';
 import { abrirDescarga } from '@validasoft/ui';
+import { useEstadoDeRefresco } from './useEstadoDeRefresco';
 
 /** No se reintenta lo que el servidor ya rechazó (4xx): solo fallas de red o 5xx, hasta dos veces. */
 export function debeReintentar(intentos: number, error: unknown): boolean {
@@ -119,16 +120,26 @@ export function useRequisitoPublico(expedienteId: string | null, requisitoId: st
 
 /** Envía un tipo `Formulario` (TD-4): nace una versión sin archivo que se comparte con el vínculo. */
 export function useEnviarFormulario() {
-  const refrescar = useRefrescarTodo();
-  return useMutation({ mutationFn: (cuerpo: EnviarFormularioDto) => enviarFormularioBoveda(cuerpo), onSuccess: refrescar });
+  const alTerminar = useAlTerminarSubida();
+  return useMutation({ mutationFn: (cuerpo: EnviarFormularioDto) => enviarFormularioBoveda(cuerpo), onSuccess: alTerminar });
 }
 
 /**
- * Se refresca solo mientras falten documentos o esté devuelto: la versión subida llega por una cola (RQ-2).
+ * Se mantiene al día sin agotar el límite de peticiones: con el stream en vivo conectado se refresca por sus avisos; se sondea rápido solo
+ * mientras el servidor procesa lo que el tercero acaba de subir (la versión llega por una cola, RQ-2) y, sin stream, cada 30 s
+ * (ver `debeRefrescar`). Con la pestaña oculta no sondea.
  * `habilitado = false` no consulta (p. ej. «Mis empresas» con la invitación sin aceptar).
  */
-export const useExpedientePublico = (id: string, habilitado = true) =>
-  useQuery({ ...getObtenerExpedientePublicoQueryOptions(id), enabled: habilitado, refetchInterval: (consulta) => debeRefrescar(consulta.state.data) });
+export function useExpedientePublico(id: string, habilitado = true) {
+  const streamConectado = useEstadoDeRefresco((s) => s.stream === 'conectado');
+  return useQuery({
+    ...getObtenerExpedientePublicoQueryOptions(id),
+    enabled: habilitado,
+    refetchInterval: (consulta) =>
+      debeRefrescar(consulta.state.data, { streamConectado, esperandoSubidaHasta: useEstadoDeRefresco.getState().esperandoSubidaHasta }),
+    refetchIntervalInBackground: false,
+  });
+}
 
 export function useReenviarExpediente(id: string) {
   const refrescar = useRefrescarTodo();
@@ -147,9 +158,16 @@ export function useRatificarRequisito(expedienteId: string) {
   return useMutation({ mutationFn: (requisitoId: string) => ratificarRequisito(expedienteId, requisitoId), onSettled: refrescar });
 }
 
-/** Tras subir una versión: bóveda, documento y vínculos cambian. */
+/**
+ * Tras subir una versión: bóveda, documento y vínculos cambian. La versión llega al expediente por una cola, así que además se sondea
+ * rápido unos segundos hasta que aparezca (con el stream conectado lo avisa él).
+ */
 export function useAlTerminarSubida() {
-  return useRefrescarTodo();
+  const refrescar = useRefrescarTodo();
+  return () => {
+    useEstadoDeRefresco.getState().esperarSubida();
+    refrescar();
+  };
 }
 
 /** Las cuentas solo cambian por lo que hace el tercero en «Mis cuentas»: basta refrescar su lista (trae las designaciones). */

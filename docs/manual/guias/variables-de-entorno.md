@@ -78,7 +78,7 @@ Sin estas la API no arranca o parte de ella no funciona.
 | `Validasoft__Cors__OrigenesPermitidos` y `__PermitirCredenciales` | Lista explícita de orígenes con CORS. | Vacío y `false` |
 | `Validasoft__Embebido__PermitirHttpLocal` | Permite orígenes `http` de localhost en los sistemas embebidos (solo desarrollo). | `false` |
 | `Validasoft__LimiteIngreso__Peticiones` y `__VentanaSegundos` | Límite por IP de las rutas de ingreso. | `30` por `60` s |
-| `Validasoft__LimitePublico__Peticiones` y `__VentanaSegundos` | Límite por IP de `/public/v1` (el tercero y la verificación pública). | `60` por `60` s |
+| `Validasoft__LimitePublico__Peticiones`, `__PeticionesPorSesion` y `__VentanaSegundos` | Límite de `/public/v1`: por IP lo anónimo (la verificación pública, abrir el enlace) y por tercero lo que trae su sesión. | `60` por IP, `300` por sesión, por `60` s |
 
 ## Documentos y almacén
 
