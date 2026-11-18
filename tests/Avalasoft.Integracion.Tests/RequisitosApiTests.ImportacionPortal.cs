@@ -14,7 +14,11 @@ public sealed partial class RequisitosApiTests
 
     private const string RutaImportacion = "/api/v1/plataforma/importacion/portal";
 
-    /// <summary><c>CorreoJ</c> es el correo que el Portal tiene del jurídico: propio de cada fixture, para que los avisos que le lleguen no se crucen con los de otra prueba.</summary>
+    /// <summary>
+    /// <c>CorreoJ</c> es el correo que el Portal tiene del jurídico: propio de cada fixture, para que los avisos que le lleguen no se crucen con los de otra prueba.
+    /// Los catálogos del JSON se importan a los catálogos de plataforma, que son globales (los comparte toda la clase y el orden de las pruebas no está fijado): cada fila
+    /// del JSON repite la de la semilla de desarrollo (importarla no cambia nada) o tiene un código propio, como las especialidades «(Portal)».
+    /// </summary>
     private sealed record FixturePortal(int TeridJ, int TeridN, int TeridE, string NitJ, string CcN, string NitE, string CorreoJ = "compras@aceros.co")
     {
         public string Json(string telefono = "6015551234", string direccion = "Calle 45 # 12-08") =>
@@ -78,6 +82,31 @@ public sealed partial class RequisitosApiTests
             string s => await consulta.LoadAsync<T>(s),
             _ => throw new ArgumentException("id")
         };
+    }
+
+    /// <summary>
+    /// Importar el fixture cambia el catálogo global para todas las pruebas que corren después (el orden no está fijado): si una fila trae el código de una de la semilla con otro
+    /// contenido la pisa (el «Bogotá, D.C.» de la integración con el SRM, el SWIFT de Bancolombia en los datos de pago). Cada fila del fixture debe repetir la de la semilla o ser propia.
+    /// </summary>
+    [Fact]
+    public void Los_catalogos_del_fixture_del_portal_no_cambian_las_filas_de_la_semilla_que_comparten_las_demas_pruebas()
+    {
+        var catalogos = JsonSerializer.Deserialize<Avalasoft.Adaptadores.Portal.ArchivoDelPortal>(NuevoFixturePortal().Json(), Avalasoft.Adaptadores.Portal.OrigenPortalArchivo.Opciones)!.Catalogos
+            .ShouldNotBeNull();
+        var semilla = Avalasoft.Aplicacion.Ficha.SemillaDeCatalogos.Todas.ToDictionary(s => s.Catalogo, s => s.Filas);
+        var cambiadas = new List<string>();
+
+        foreach (var (catalogo, filas, _) in Avalasoft.Adaptadores.Portal.CodigosDelPortal.Filas(catalogos))
+        {
+            // Solo se normaliza (el padre de una especialidad se da por bueno): lo que importa es el contenido que quedaría guardado.
+            EntradaDeCatalogo? Normalizar(FilaDeCatalogo fila) => ReglasDeCatalogo.Validar(catalogo, fila, _ => fila.Nivel - 1, DateTimeOffset.UnixEpoch).Entrada;
+            var deLaSemilla = semilla[catalogo].Select(Normalizar).OfType<EntradaDeCatalogo>().ToDictionary(e => e.Codigo, StringComparer.Ordinal);
+            foreach (var entrada in filas.Select(Normalizar).OfType<EntradaDeCatalogo>())
+                if (deLaSemilla.TryGetValue(entrada.Codigo, out var original) && !original.MismoContenido(entrada))
+                    cambiadas.Add($"{ReglasDeCatalogo.Ruta(catalogo)} {entrada.Codigo}: «{original.Nombre}» pasaría a «{entrada.Nombre}» (SWIFT {original.Swift ?? "—"} → {entrada.Swift ?? "—"})");
+        }
+
+        cambiadas.ShouldBeEmpty("El JSON del Portal cambia filas de la semilla: repítelas igual o usa un código propio.");
     }
 
     [Fact]

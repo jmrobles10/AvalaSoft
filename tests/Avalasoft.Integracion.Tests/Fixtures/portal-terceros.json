@@ -1,17 +1,17 @@
 {
   "catalogos": {
     "ciudades": [
-      { "ciudID": 1, "ciuNombre": "Bogotá", "ciuCodDepartamento": "11", "ciuCodMunicipio": "001" },
+      { "ciudID": 1, "ciuNombre": "Bogotá, D.C.", "ciuCodDepartamento": "11", "ciuCodMunicipio": "001" },
       { "ciudID": 2, "ciuNombre": "Medellín", "ciuCodDepartamento": "5", "ciuCodMunicipio": "1" },
       { "ciudID": 3, "ciuNombre": "Ciudad sin código", "ciuCodDepartamento": null, "ciuCodMunicipio": null }
     ],
     "actividadesEconomicas": [
-      { "actEcId": 10, "actEcCodigo": "4663", "actECtexto": "Comercio al por mayor de materiales de construcción" },
+      { "actEcId": 10, "actEcCodigo": "4663", "actECtexto": "Comercio al por mayor de materiales de construcción, artículos de ferretería, pinturas, productos de vidrio, equipo y materiales de fontanería y calefacción" },
       { "actEcId": 11, "actEcCodigo": "4290", "actECtexto": "Construcción de otras obras de ingeniería civil" }
     ],
     "bancos": [
-      { "id": "1", "codigo": "1007", "texto": "Bancolombia", "estado": true },
-      { "id": "2", "codigo": "1051", "texto": "Davivienda", "estado": true }
+      { "id": "1", "codigo": "1507", "texto": "Nequi (Portal)", "estado": true },
+      { "id": "2", "codigo": "1551", "texto": "Daviplata (Portal)", "estado": true }
     ],
     "grupos": [ { "gruId": 9101, "gruTexto": "Obra gris (Portal)" } ],
     "categorias": [ { "catId": 9201, "catIdGrupo": 9101, "catTexto": "Concretos (Portal)" } ],
