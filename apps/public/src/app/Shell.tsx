@@ -60,7 +60,12 @@ function ShellEmbebido() {
 function ShellNormal() {
   const { t } = useTranslation();
   const { pathname } = useLocation();
-  const activa = useSesionTercero((s) => s.estado === 'activa');
+  // El enlace del correo (`/e/:token`) es una entrada: mientras se canjea y se pide el código la persona todavía no entró, aunque el navegador conserve la
+  // sesión anterior (la cookie renueva sola la de otra visita, y el enlace puede ser de otro tercero). Sin esto el encabezado mostraba las secciones, la
+  // campana y «Salir» de esa sesión vieja junto a «Escribe el código», y la campana y los avisos consultaban la API antes de verificar nada.
+  const enEnlace = /^\/e\/[^/]+/.test(pathname);
+  const sesionActiva = useSesionTercero((s) => s.estado === 'activa');
+  const activa = sesionActiva && !enEnlace;
   // Con acceso aislado solo existe lo de la relación con la empresa: la bóveda, la información, las cuentas y la privacidad son del tercero entero.
   const aislada = useSesionTercero((s) => s.sesion?.aislada === true);
   const salir = useSesionTercero((s) => s.salir);

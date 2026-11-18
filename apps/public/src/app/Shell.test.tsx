@@ -6,7 +6,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useSesionTercero } from '../sesion/sesionTercero';
 import { Shell } from './Shell';
 
-vi.mock('../notificaciones/Campana', () => ({ Campana: () => null }));
+// Un marcador en lugar de la campana (consulta la API): basta para saber si el shell la muestra.
+vi.mock('../notificaciones/Campana', () => ({ Campana: () => <span data-testid="campana" /> }));
 // El aviso de «accesos por aprobar» pregunta a la API (se prueba aparte, con su propio cliente).
 vi.mock('../accesos/AvisosDeAcceso', async (original) => ({ ...(await original<typeof import('../accesos/AvisosDeAcceso')>()), AvisoDeAccesosPorAprobar: () => null }));
 // Lo mismo el aviso de «personas por confirmar»: pregunta a la API y se prueba en `personas/`.
@@ -62,6 +63,42 @@ describe('Shell del tercero: la marca', () => {
     expect(pie.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
     // El nombre «Validasoft» del logotipo es solo el de la barra: el ícono del pie no lo repite a los lectores de pantalla.
     expect(within(pie).queryByRole('img', { name: 'Validasoft' })).not.toBeInTheDocument();
+  });
+});
+
+describe('Shell del tercero: el enlace del correo es una entrada', () => {
+  const SECCIONES = ['Mi bóveda', 'Mis empresas', 'Mi información', 'Mis cuentas', 'Privacidad'];
+
+  it('mientras se pide el código no hay secciones, campana ni «Salir», aunque el navegador conserve una sesión anterior', () => {
+    useSesionTercero.setState({ estado: 'activa' });
+    montar('/e/abc123');
+
+    const barra = screen.getByRole('banner');
+    for (const seccion of SECCIONES) expect(within(barra).queryByRole('link', { name: seccion })).not.toBeInTheDocument();
+    expect(screen.queryByTestId('campana')).not.toBeInTheDocument();
+    expect(within(barra).queryByRole('button', { name: 'Salir' })).not.toBeInTheDocument();
+    // Ni la barra inferior del celular, y el pie y el rótulo de las pantallas de entrada sí.
+    expect(document.querySelector('.MuiBottomNavigation-root')).toBeNull();
+    expect(within(barra).getByText('Mis documentos')).toBeInTheDocument();
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+  });
+
+  it('sin sesión tampoco hay secciones ni campana', () => {
+    useSesionTercero.setState({ estado: 'sin-sesion' });
+    montar('/e/abc123');
+
+    expect(within(screen.getByRole('banner')).queryAllByRole('link')).toHaveLength(0);
+    expect(screen.queryByTestId('campana')).not.toBeInTheDocument();
+  });
+
+  it('con la sesión abierta, en cualquier otra ruta, las secciones, la campana y «Salir» siguen ahí', () => {
+    useSesionTercero.setState({ estado: 'activa' });
+    montar('/empresas');
+
+    const barra = screen.getByRole('banner');
+    expect(within(barra).getAllByRole('link').map((l) => l.textContent)).toEqual(SECCIONES);
+    expect(screen.getByTestId('campana')).toBeInTheDocument();
+    expect(within(barra).getByRole('button', { name: 'Salir' })).toBeInTheDocument();
   });
 });
 

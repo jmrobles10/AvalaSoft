@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Net;
 using Validasoft.Aplicacion.Identidad;
 using Validasoft.Dominio.Identidad;
@@ -27,14 +26,13 @@ public sealed record CorreoDeSeguridadPendiente(
 
 public static class CorreoDeSeguridadPendienteHandler
 {
-    public static async Task Handle(CorreoDeSeguridadPendiente correo, IEnviadorDeCorreo enviador, RedactorDeCorreos redactor, CancellationToken ct) =>
-        await enviador.EnviarAsync(Redactar(correo, redactor.UrlApp).DeTenant(correo.TenantId), ct);
+    public static async Task Handle(CorreoDeSeguridadPendiente correo, IEnviadorDeCorreo enviador, RedactorDeCorreos redactor, ZonasDeCorreo zonas, CancellationToken ct) =>
+        await enviador.EnviarAsync(Redactar(correo, redactor.UrlApp, await zonas.DelTenantAsync(correo.TenantId, ct)).DeTenant(correo.TenantId), ct);
 
-    /// <summary>El correo: qué pasó, cuándo y desde dónde, y qué hacer si no fue la persona.</summary>
-    public static MensajeDeCorreo Redactar(CorreoDeSeguridadPendiente correo, string urlApp)
+    /// <summary>El correo: qué pasó, cuándo (en la hora local de <paramref name="zonaHoraria"/>, no en UTC) y desde dónde, y qué hacer si no fue la persona.</summary>
+    public static MensajeDeCorreo Redactar(CorreoDeSeguridadPendiente correo, string urlApp, string? zonaHoraria = null)
     {
-        var cultura = CultureInfo.GetCultureInfo("es-CO");
-        var cuando = correo.Fecha.UtcDateTime.ToString("d 'de' MMMM 'de' yyyy, HH:mm 'UTC'", cultura);
+        var cuando = FechasDeCorreo.Larga(correo.Fecha, zonaHoraria);
         var detalle = string.IsNullOrWhiteSpace(correo.Detalle) ? "tu passkey" : $"la passkey «{correo.Detalle}»";
         var desde = string.IsNullOrWhiteSpace(correo.Ip) ? string.Empty : $" desde la dirección {correo.Ip}";
         var quien = correo.PorAdministrador ? "Lo hizo un administrador" : "Lo hiciste tú";

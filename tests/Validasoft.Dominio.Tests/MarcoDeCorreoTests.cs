@@ -71,6 +71,34 @@ public class MarcoDeCorreoTests
     }
 
     [Fact]
+    public void El_boton_es_el_enlace_con_el_color_de_la_accion_principal_de_la_marca_y_texto_blanco_sin_subrayado()
+    {
+        var boton = MarcoDeCorreo.Boton("https://valida.test/e/tok", "Abrir Validasoft");
+
+        boton.ShouldContain("href=\"https://valida.test/e/tok\"");
+        boton.ShouldContain(">Abrir Validasoft</a>");
+        // El azul de acción de packages/ui/src/tokens.ts, en la celda (Outlook) y en el enlace, y el texto en blanco: ningún color depende del cliente de correo.
+        boton.ShouldContain($"bgcolor=\"{MarcoDeCorreo.ColorDeAccion}\"");
+        boton.ShouldContain($"background-color:{MarcoDeCorreo.ColorDeAccion}");
+        MarcoDeCorreo.ColorDeAccion.ShouldBe("#2F55D9");
+        boton.ShouldContain("color:#FFFFFF");
+        boton.ShouldContain("text-decoration:none");
+        boton.ShouldContain("border-radius:8px");
+        // Sin imágenes ni recursos: solo el enlace.
+        MarcoDeCorreo.RecursosUsados(boton).ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void El_boton_escapa_la_direccion_y_el_texto()
+    {
+        var boton = MarcoDeCorreo.Boton("https://valida.test/e/a\"b?x=1&y=2", "<Abrir>");
+
+        boton.ShouldContain("href=\"https://valida.test/e/a&quot;b?x=1&amp;y=2\"");
+        boton.ShouldContain("&lt;Abrir&gt;");
+        boton.ShouldNotContain("<Abrir>");
+    }
+
+    [Fact]
     public void La_aprobacion_abre_con_el_gif_de_exito_y_el_rechazo_no()
     {
         var aprobado = Redactor().RedactarResultado(new CorreoDeResultadoPendiente("ana@aceros.co", "Constructora Norte S.A.S.", "NORTE-E-2026-000001", true, []));

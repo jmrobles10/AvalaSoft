@@ -36,11 +36,12 @@ public sealed record CorreoDeRecordatorioDeObservacionesPendiente(
 public static class CorreoDeRecordatorioDeObservacionesPendienteHandler
 {
     public static async Task Handle(CorreoDeRecordatorioDeObservacionesPendiente correo, IEnviadorDeCorreo enviador, IProtectorDeSecretos protector,
-        RedactorDeCorreos redactor, PlantillasDeCorreo plantillas, PreferenciasDeCorreoDelTercero preferencias, CancellationToken ct)
+        RedactorDeCorreos redactor, PlantillasDeCorreo plantillas, PreferenciasDeCorreoDelTercero preferencias, ZonasDeCorreo zonas, CancellationToken ct)
     {
         if (!await preferencias.QuiereAsync(correo.TerceroId, TiposNotificacionTercero.Recordatorio, ct))
             return;
-        var mensaje = redactor.RedactarRecordatorioDeObservaciones(correo, correo.EnlaceProtegido is null ? null : protector.Desproteger(correo.EnlaceProtegido));
+        var mensaje = redactor.RedactarRecordatorioDeObservaciones(correo, correo.EnlaceProtegido is null ? null : protector.Desproteger(correo.EnlaceProtegido),
+            await zonas.DelTenantAsync(correo.TenantId, ct));
         await enviador.EnviarAsync((await plantillas.AplicarAsync(mensaje, CatalogoDePlantillas.RecordatorioObservaciones, correo.TenantId, correo.EmpresaId,
             EjemplosDeCorreo.VariablesDe(correo.Empresa, correo.Folio), ct)).DeTenant(correo.TenantId, correo.EmpresaId), ct);
     }

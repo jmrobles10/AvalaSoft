@@ -840,7 +840,12 @@ export function transformarOpenApi(entrada: unknown): DocumentoOpenApi {
   esquemas.OtpRequeridoDto = {
     type: 'object',
     required: ['requiereOtp', 'expira'],
-    properties: { requiereOtp: { type: 'boolean' }, expira: { type: 'string', format: 'date-time' } },
+    properties: {
+      requiereOtp: { type: 'boolean' },
+      expira: { type: 'string', format: 'date-time' },
+      // El correo al que llegó el código, con la parte local tapada: la pantalla del código le dice a la persona a cuál buzón mirar.
+      correoEnmascarado: { type: ['null', 'string'] },
+    },
   };
   esquemas.SolicitudRecibidaDto = { type: 'object', required: ['mensaje'], properties: { mensaje: { type: 'string' } } };
   // Invitar a un tercero a mano (IM): `accion` = Invitado, Reinvitado o SinCambios; `porAprobar` cuando el tipo exige aprobación (AI) y la invitación quedó retenida.

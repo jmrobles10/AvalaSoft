@@ -116,7 +116,9 @@ export function PaginaEnlace() {
         {t('enlace.otpTitulo')}
       </Typography>
       <Typography sx={{ color: 'text.secondary', mb: 3, fontSize: 15, lineHeight: '22px' }}>
-        {t('enlace.otpTexto', { hora: formatearHora(canje.expira) })}
+        {canje.correo
+          ? t('enlace.otpTexto', { correo: canje.correo, hora: formatearHora(canje.expira) })
+          : t('enlace.otpTextoSinCorreo', { hora: formatearHora(canje.expira) })}
       </Typography>
       <Stack spacing={2.5}>
         <CodigoOtp valor={codigo} onCambiar={setCodigo} deshabilitado={verificacion.isPending} error={restantes !== null} />

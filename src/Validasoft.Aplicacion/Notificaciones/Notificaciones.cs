@@ -946,7 +946,8 @@ public static class CorreoDeVencidoPendienteHandler
 public static class CorreoDeConstanciaPendienteHandler
 {
     public static async Task Handle(CorreoDeConstanciaPendiente correo, Comun.IEnviadorDeCorreo enviador, Comun.RedactorDeCorreos redactor,
-        Comun.PlantillasDeCorreo plantillas, CancellationToken ct) =>
-        await enviador.EnviarAsync((await plantillas.AplicarAsync(redactor.RedactarConstancia(correo), CatalogoDePlantillas.ConsentimientoEmpresa,
-            correo.TenantId, correo.EmpresaId, Comun.EjemplosDeCorreo.VariablesDe(correo.Empresa), ct)).DeTenant(correo.TenantId, correo.EmpresaId), ct);
+        Comun.PlantillasDeCorreo plantillas, Comun.ZonasDeCorreo zonas, CancellationToken ct) =>
+        await enviador.EnviarAsync((await plantillas.AplicarAsync(redactor.RedactarConstancia(correo, await zonas.DelTenantAsync(correo.TenantId, ct)),
+            CatalogoDePlantillas.ConsentimientoEmpresa, correo.TenantId, correo.EmpresaId, Comun.EjemplosDeCorreo.VariablesDe(correo.Empresa), ct))
+            .DeTenant(correo.TenantId, correo.EmpresaId), ct);
 }

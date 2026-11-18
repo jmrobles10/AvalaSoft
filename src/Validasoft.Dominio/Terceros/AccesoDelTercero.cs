@@ -83,6 +83,20 @@ public static class AccesoDelTercero
             .Select(palabra => palabra.Length <= 1 ? palabra : palabra[0] + new string('•', Math.Min(palabra.Length - 1, 9))));
 
     /// <summary>
+    /// El correo con la parte local tapada salvo su primera letra y con el dominio a la vista (<c>juana.perez@aceros.co</c> se vuelve <c>j•••••••••@aceros.co</c>): lo
+    /// que se le dice a quien abre un enlace para que sepa a cuál de sus buzones llegó el código, sin entregarle la dirección completa. Sin forma de correo, nada.
+    /// </summary>
+    public static string? EnmascararCorreo(string? correo)
+    {
+        var texto = (correo ?? string.Empty).Trim();
+        var arroba = texto.LastIndexOf('@');
+        if (arroba < 1 || arroba == texto.Length - 1)
+            return null;
+        var local = texto[..arroba];
+        return (local.Length == 1 ? local : local[0] + new string('•', Math.Min(local.Length - 1, 9))) + texto[arroba..];
+    }
+
+    /// <summary>
     /// Nivel de acceso con lo ya leído: completo si es contacto del tercero y no lo desplazó uno verificado; si no, aislado. Un contacto sin verificar entra completo mientras
     /// el tercero no tenga ningún contacto verificado (el flujo normal del primer contacto).
     /// </summary>

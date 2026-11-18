@@ -51,6 +51,22 @@ public static class MarcoDeCorreo
     public static string ImagenDeExito(string descripcion = "Listo") =>
         $"<p style=\"margin:0 0 16px 0;\"><img src=\"cid:{IdExito}\" alt=\"{WebUtility.HtmlEncode(descripcion)}\" width=\"96\" height=\"96\" style=\"display:block;border:0;\"></p>";
 
+    /// <summary>Color de la acción principal de la marca (<c>accionPrimaria</c> del modo claro, <c>packages/ui/src/tokens.ts</c>).</summary>
+    public const string ColorDeAccion = "#2F55D9";
+
+    /// <summary>
+    /// El botón de la acción principal de un correo: el enlace con el color de marca, texto blanco y esquinas redondeadas, sin subrayado ni el morado de
+    /// «enlace visitado» del cliente de correo. Va en una tabla con el color de fondo en la celda (el patrón que respetan también Outlook y los clientes que
+    /// ignoran el <c>padding</c> del enlace). Con colores explícitos: un cliente en modo oscuro no los invierte. Lo usan todos los redactores para su enlace
+    /// principal; los enlaces dentro de una frase siguen siendo enlaces de texto.
+    /// </summary>
+    public static string Boton(string url, string texto) =>
+        "<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:20px 0;\"><tr>" +
+        $"<td bgcolor=\"{ColorDeAccion}\" style=\"background-color:{ColorDeAccion};border-radius:8px;\">" +
+        $"<a href=\"{WebUtility.HtmlEncode(url)}\" style=\"display:inline-block;padding:11px 24px;border-radius:8px;background-color:{ColorDeAccion};" +
+        "font-family:'Segoe UI',Arial,sans-serif;font-size:15px;line-height:20px;font-weight:600;color:#FFFFFF;text-decoration:none;\">" +
+        $"{WebUtility.HtmlEncode(texto)}</a></td></tr></table>";
+
     /// <summary>Las imágenes de marca que el HTML pide con <c>cid:</c> (cada una una sola vez), listas para adjuntar al mensaje.</summary>
     public static IReadOnlyList<RecursoDeCorreo> RecursosUsados(string html) =>
         [.. Recursos.Value.Where(r => html.Contains($"cid:{r.Key}", StringComparison.Ordinal)).Select(r => r.Value)];

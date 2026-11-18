@@ -68,15 +68,17 @@ export const esCO = {
     },
   },
   enlace: {
-    abriendo: 'Abriendo tu invitación…',
+    abriendo: 'Abriendo tu enlace…',
     otpTitulo: 'Escribe el código',
-    otpTexto: 'Lo enviamos al mismo correo de tu invitación y vence a las {{hora}}',
+    // El enlace no siempre viene de una invitación (también del acceso pedido con el correo): se dice a cuál buzón llegó el código, con el correo tapado.
+    otpTexto: 'Lo enviamos a {{correo}} y vence a las {{hora}}',
+    otpTextoSinCorreo: 'Lo enviamos al correo al que llegó el enlace y vence a las {{hora}}',
     otpCampo: 'Código de 6 dígitos',
     otpDigito: 'Dígito {{n}} de 6',
     otpVerificar: 'Continuar',
     otpIntentos_one: 'El código no coincide. Te queda {{count}} intento.',
     otpIntentos_other: 'El código no coincide. Te quedan {{count}} intentos.',
-    otpSpam: '¿No llegó? Revisa la carpeta de spam. Si se venció, abre de nuevo el enlace de tu correo para recibir otro.',
+    otpSpam: '¿No llegó? Revisa la carpeta de spam. Si el código se venció, abre de nuevo el enlace de tu correo y te enviamos otro.',
     fallos: {
       vencido: { titulo: 'Este enlace venció', texto: 'Los enlaces de invitación tienen fecha de vencimiento. Pide a la empresa que te envíe uno nuevo.' },
       usado: {

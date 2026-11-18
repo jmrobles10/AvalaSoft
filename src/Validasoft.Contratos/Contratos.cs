@@ -364,8 +364,12 @@ public sealed record SesionTerceroDto(
     string AccessToken, DateTimeOffset Expira, Guid TerceroId, bool OtpVerificado, IReadOnlyList<VinculoDeSesionDto> Vinculos,
     Guid? ExpedienteOrigen = null, Guid? VinculoOrigen = null, bool Aislada = false, string? TerceroEnmascarado = null);
 
-/// <summary>Respuesta 202 del canje cuando el enlace exige OTP: el código llegó al correo y vence en <see cref="Expira"/>.</summary>
-public sealed record OtpRequeridoDto(bool RequiereOtp, DateTimeOffset Expira);
+/// <summary>
+/// Respuesta 202 del canje cuando el enlace exige OTP: el código llegó al correo y vence en <see cref="Expira"/>. <see cref="CorreoEnmascarado"/> es ese
+/// correo con la parte local tapada (<c>j•••••@aceros.co</c>): la pantalla del código le dice a la persona a cuál de sus buzones mirar (el enlace no siempre
+/// viene de una invitación).
+/// </summary>
+public sealed record OtpRequeridoDto(bool RequiereOtp, DateTimeOffset Expira, string? CorreoEnmascarado = null);
 
 public sealed record VerificarOtpDto(string Codigo);
 
