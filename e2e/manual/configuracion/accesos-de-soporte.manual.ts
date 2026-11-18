@@ -8,10 +8,10 @@ recorrido(
     actor: 'Administrador de empresa',
     titulo: 'Concede un acceso de soporte por unas horas y luego lo revoca',
     resumen:
-      'El soporte de Validasoft no ve nada del grupo salvo que se lo concedan. La administradora concede acceso a Constructora Sur por cuatro horas, con una razón, revisa cuánto le queda y, cuando ya no hace falta, lo revoca.',
+      'El soporte de AvalaSoft no ve nada del grupo salvo que se lo concedan. La administradora concede acceso a Constructora Sur por cuatro horas, con una razón, revisa cuánto le queda y, cuando ya no hace falta, lo revoca.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y sin accesos de soporte vigentes.',
-      'Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
     ],
     relacionados: ['configuracion/permisos-por-rol'],
   },
@@ -24,7 +24,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre Configuración › Accesos de soporte',
       explicacion:
-        'El soporte de Validasoft no entra a tu grupo por su cuenta. Esta pantalla lista los accesos que has concedido: la empresa, para qué, cuándo expira y su estado. ' +
+        'El soporte de AvalaSoft no entra a tu grupo por su cuenta. Esta pantalla lista los accesos que has concedido: la empresa, para qué, cuándo expira y su estado. ' +
         'Si no hay ninguno, la tabla lo dice; cuando el soporte necesite revisar algo, concedes un acceso temporal desde «Conceder acceso».',
       resaltar: app.getByRole('button', { name: 'Conceder acceso' }),
       configuracion: {

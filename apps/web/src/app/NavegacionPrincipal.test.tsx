@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../i18n';
@@ -22,7 +22,7 @@ const medidas = (disponible: number): MedidasPestanas => ({ anchos: PESTANAS.map
 
 function montar(activa: Pestana['clave'] | null, medidasDeLaBarra?: MedidasPestanas, pestanas: readonly Pestana[] = PESTANAS) {
   return render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <MemoryRouter>
         <NavegacionPrincipal pestanas={pestanas} rutaBase="/e/emp" activa={activa} nombreDe={(clave) => i18n.t(`nav.${clave}`)} medidas={medidasDeLaBarra} />
       </MemoryRouter>
@@ -126,7 +126,7 @@ describe('NavegacionPrincipal', () => {
 
   it('sirve a otra barra: la ruta base y el nombre de cada pestaña los pone quien la usa', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <MemoryRouter>
           <NavegacionPrincipal<'a' | 'b'>
             pestanas={[

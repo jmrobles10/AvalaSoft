@@ -14,7 +14,7 @@ recorrido(
       'La administradora crea un tipo de documento propio (archivo con fecha de expedición, límites y vigencia con avisos) y luego un flujo aprobatorio para proveedores que lo pide, lo publica y lo deja como el flujo por defecto.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con una persona como miembro y un flujo de Proveedor ya publicado.',
-      'Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
     ],
     relacionados: ['tercero/aceptar-invitacion-persona-juridica'],
   },
@@ -93,7 +93,7 @@ recorrido(
       titulo: 'Define la vigencia y los avisos',
       explicacion:
         'Indica cuánto tiempo sirve el documento: siempre, un número de días desde su expedición (la fecha que declara el proveedor), un número de días desde que lo entrega o un periodo mínimo. ' +
-        'Los días de aviso son los momentos antes del vencimiento en que Validasoft le escribe al proveedor para que lo renueve; los días de gracia son los que sigue valiendo después de vencer mientras lo renueva.',
+        'Los días de aviso son los momentos antes del vencimiento en que AvalaSoft le escribe al proveedor para que lo renueve; los días de gracia son los que sigue valiendo después de vencer mientras lo renueva.',
       resaltar: panel.locator('section').filter({ has: app.getByRole('heading', { name: 'Vigencia y avisos', exact: true }) }),
       variantes: [
         { cuando: 'La regla es «Siempre (no vence)»', entonces: 'No hay días ni avisos: el documento no pierde vigencia.' },
@@ -203,7 +203,7 @@ recorrido(
     await paso(page, {
       titulo: 'Publica la versión',
       explicacion:
-        'Antes de publicar, Validasoft te avisa qué va a pasar: los expedientes nuevos usarán esta versión, los que ya están abiertos siguen con la suya y la versión publicada anterior queda retirada. ' +
+        'Antes de publicar, AvalaSoft te avisa qué va a pasar: los expedientes nuevos usarán esta versión, los que ya están abiertos siguen con la suya y la versión publicada anterior queda retirada. ' +
         'Al confirmar, la versión queda congelada y se registra en la auditoría de configuración.',
       resaltar: confirmacion,
     });

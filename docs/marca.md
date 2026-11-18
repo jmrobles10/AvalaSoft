@@ -1,4 +1,4 @@
-# Marca de Validasoft: el logo «Anillo»
+# Marca de AvalaSoft: el logo «Anillo»
 
 | Estado | Fecha | Responsable |
 |---|---|---|
@@ -10,13 +10,13 @@
 
 ## 1. La idea
 
-Una **«V» que también es un check**: un trazo caligráfico con el brazo derecho más largo, que se lee como la primera letra de Validasoft y como «validado». Esa forma es la marca. Un **aro** la acompaña solo donde hace falta un símbolo compacto (la app instalada, la pestaña del navegador, las animaciones): el check rompe el aro por arriba a la derecha, como algo que se confirma y sale.
+Un **círculo verde con un check**, el mismo del favicon, y la palabra **«avalasoft»** en minúsculas, en una tipografía redondeada y gruesa, inclinada hacia la derecha y en dos tonos («avala» en verde azulado, «soft» en azul muy oscuro). El check es un trazo caligráfico con el brazo derecho más largo: se lee como «validado». Un **aro** lo acompaña en el ícono, donde hace falta un símbolo compacto (la app instalada, las animaciones): el check rompe el aro por arriba a la derecha, como algo que se confirma y sale.
 
 ## 2. Las piezas
 
 | Pieza | Qué es | Dónde va |
 |---|---|---|
-| **Logotipo** | La «V» (check verde) pegada a «alida» + «Soft»: se lee **ValidaSoft**. **Sin aro.** | Barras de las dos apps, ingreso, consola de Plataforma, verificador público, correos, PDF, documentación |
+| **Logotipo** | El círculo verde con el check blanco y, a su derecha, **avalasoft** (todo en minúsculas, inclinada 10°; «avala» en verde azulado y «soft» en azul muy oscuro). **Sin aro.** | Barras de las dos apps, ingreso, consola de Plataforma, verificador público, correos, PDF, documentación |
 | **Ícono** | El aro abierto con el check un poco más grande, cuya punta sale por el hueco | App instalada (PWA), `apple-touch-icon`, avatar de la marca, notificaciones del tercero, pie del portal |
 | **Favicon** | Círculo verde lleno con el check blanco (más grande y con contorno propio: a 16 px se sigue leyendo) | Pestaña del navegador (`favicon.svg` con modo claro/oscuro y PNG de 16, 32 y 48) |
 | **Éxito** | El aro verde se dibuja, el círculo se llena y el check blanco se revela; «pop» final | Aprobación de un expediente, ficha completa, revisión aprobada del tercero, certificado vigente, GIF del correo de aprobación |
@@ -26,8 +26,8 @@ Una **«V» que también es un check**: un trazo caligráfico con el brazo derec
 
 Todo está en un lienzo de coordenadas fijas; los números son los de `geometria.ts` y no se «aproximan» a mano.
 
-- **Check («V»)**: `M24 38 C26 34 30 34 32 37 L47 61 C56 45 66 32 80 19 C82 17 85 19 83 22 C70 37 60 52 51 71 C49 75 44 75 42 71 Z`, relleno. Su caja es `22 16 64 60`.
-- **Logotipo**: el check recortado a su caja, **del alto de la letra** y apoyado en la línea base; margen derecho de **−0,23 × el tamaño de la letra** (la cola del check se mete bajo la «a»); luego «alida» en **peso 500** con el color de texto y «Soft» en **peso 400** con el color de marca. Letra: Geist (`FUENTE.sans`), espaciado −0,015 em.
+- **Check**: `M24 38 C26 34 30 34 32 37 L47 61 C56 45 66 32 80 19 C82 17 85 19 83 22 C70 37 60 52 51 71 C49 75 44 75 42 71 Z`, relleno. Su caja es `22 16 64 60`.
+- **Logotipo**: el **círculo** del favicon sin inclinar (diámetro **1,05 × la altura de las ascendentes**, la «l» y la «f»; centrado entre la línea base y lo alto de esas letras, así que su borde inferior cae un poco bajo la línea base y el superior un poco sobre las ascendentes) y, a **0,2 × su diámetro** de aire, la palabra **«avalasoft»** en minúsculas: **«avala»** en verde azulado y **«soft»** en azul muy oscuro, con **Quicksand Bold** (SIL OFL) convertida a **contornos** (`packages/ui/src/marca/palabra.ts`, generado), seguimiento **−0,04 em**, espaciado parejo par por par e **inclinación de 10°** a la derecha (solo la palabra; el círculo no se inclina). La letra mide 100 unidades; la caja, el origen de la palabra y las transformaciones son `CAJA_LOGOTIPO`, `TRANSFORMACION_SIMBOLO` y `TRANSFORMACION_PALABRA`. No hay texto ni fuentes: el logotipo es geometría.
 - **Ícono**: caja `-3 -6 110 110`; aro abierto `M71.1 10.3 A45 45 0 1 0 89 27.5` (trazo 5, extremos redondeados); el check escalado ×1,15 desde su vértice (`translate(47 70) scale(1.15) translate(-47 -70)`).
 - **Favicon**: círculo de radio 48 y el check blanco centrado, ×1,12, con contorno de 2,4 (único lugar donde se engrosa el check).
 - **Aro completo** (éxito y carga): círculo de radio 45, trazo 5.
@@ -35,14 +35,14 @@ Todo está en un lienzo de coordenadas fijas; los números son los de `geometria
 
 ### Colores
 
-Salen de `tokens.ts` y no cambian con la paleta de una empresa: el logo de Validasoft nunca toma el color de la empresa que se muestra en pantalla.
+El aro y el verde del check salen de `tokens.ts`; los dos tonos de la palabra son propios de `geometria.ts` («avala» a 4,0:1 sobre blanco, que cumple el 3:1 de texto grande y de logotipos al ser un dibujo grueso de 14 px o más; «soft» a 16,5:1). Nada cambia con la paleta de una empresa: el logo de AvalaSoft nunca toma el color de la empresa que se muestra en pantalla.
 
 | Parte | Claro | Oscuro | Token |
 |---|---|---|---|
 | Aro | `#3D6BFF` | `#6E8FFF` | `marcaAzul` |
-| Check («V»), verde | `#22D38A` | `#2BE29A` | `marcaVerde` |
-| «alida» | `#0A0F1C` | `#F2F5FB` | `marcaTexto` |
-| «Soft» | `#2F55D9` | `#7C9BFF` | `marcaSoft` |
+| Check (círculo del logotipo, ícono y favicon), verde | `#22D38A` | `#2BE29A` | `marcaVerde` |
+| «avala» (palabra) | `#0E8C9A` | `#3FC1CE` | — (propio de la palabra) |
+| «soft» (palabra) | `#0B1F3A` | `#EEF3FA` | — (propio de la palabra) |
 | Check sobre el círculo verde | `#FFFFFF` | `#FFFFFF` | — |
 | Fondo de los íconos de la app y de los GIF oscuros | — | `#0B1120` | `superficieNivel1` oscuro |
 
@@ -60,7 +60,7 @@ Salen de `tokens.ts` y no cambian con la paleta de una empresa: el logo de Valid
 ### Áreas de respeto y tamaños mínimos
 
 - **Área de respeto**: alrededor del logotipo, **media letra** (0,5 × el tamaño de la letra) por cada lado; del ícono, **un octavo de su lado**. Nada entra ahí: ni texto, ni bordes, ni otro logo.
-- **Tamaño mínimo del logotipo**: letra de **14 px** en pantalla (el conjunto mide ≈ 70 px de ancho) y **8 mm de alto de la «V»** en impreso.
+- **Tamaño mínimo del logotipo**: letra de **14 px** en pantalla (el conjunto mide ≈ 73 × 11 px) y **8 mm de alto del círculo** en impreso.
 - **Tamaño mínimo del ícono**: **24 px**. Por debajo, el favicon (el círculo verde), que está hecho para 16 px.
 - En las barras de las apps el logotipo usa letra de 20 px.
 
@@ -74,11 +74,11 @@ Salen de `tokens.ts` y no cambian con la paleta de una empresa: el logo de Valid
 ### Usos incorrectos
 
 - Poner un aro al logotipo, o quitarle el aro al ícono.
-- Cambiar los colores, usar la «V» en otro verde o pasar «Soft» a otro azul; usar el color de la empresa en el logo de Validasoft.
-- Deformar, inclinar, rotar, agregar sombras, degradados o contornos (el único contorno es el del favicon).
-- Separar la «V» de «alida» o escribir «Validasoft» con otra tipografía junto a la «V».
+- Cambiar los colores, usar el círculo en otro verde o la palabra en otros tonos; usar el color de la empresa en el logo de AvalaSoft.
+- Deformar, rotar, inclinar el círculo (solo la palabra va inclinada, 10°), agregar sombras, degradados o contornos (el único contorno es el del favicon).
+- Separar el círculo de la palabra, escribir «avalasoft» con mayúsculas o con otra tipografía, o cambiar su inclinación o su espaciado.
 - Poner el logo claro sobre fondo oscuro (o al revés) o sobre una foto o un color que le quite contraste.
-- Usar el logo de Validasoft como logo de la empresa: el de la empresa (si lo configuró) va primero; el de Validasoft es el respaldo.
+- Usar el logo de AvalaSoft como logo de la empresa: el de la empresa (si lo configuró) va primero; el de AvalaSoft es el respaldo.
 - Animar el logo en cada confirmación: la animación de éxito es para momentos que cierran algo; los avisos comunes llevan su ícono de siempre.
 
 ## 5. Dónde está cada cosa
@@ -86,12 +86,13 @@ Salen de `tokens.ts` y no cambian con la paleta de una empresa: el logo de Valid
 | Qué | Dónde |
 |---|---|
 | Geometría, colores y tiempos | `packages/ui/src/marca/geometria.ts`, `packages/ui/src/tokens.ts` |
-| Componentes | `Logo` (`logotipo`, `icono`, `favicon`), `AnimacionExito`, `AnimacionExitoUnaVez`, `Cargando` en `@validasoft/ui` |
+| Contornos de la palabra «avalasoft» | `packages/ui/src/marca/palabra.ts` (generado por `marca/contornos.mjs`) |
+| Componentes | `Logo` (`logotipo`, `icono`, `favicon`), `AnimacionExito`, `AnimacionExitoUnaVez`, `Cargando` en `@avalasoft/ui` |
 | Recursos generados | `marca/svg/`, `marca/png/` (incluye `hoja-de-marca.png`), `marca/gif/` |
 | Favicon, íconos y manifest de las apps | `apps/web/public/` y `apps/public/public/`; enlazados en cada `index.html` |
 | Carga previa al JavaScript | Entre las marcas `marca:splash:inicio` y `marca:splash:fin` de cada `index.html` |
-| Marco y recursos de los correos | `src/Validasoft.Aplicacion/Comun/MarcoDeCorreo.cs` y `Comun/RecursosDeMarca/` |
-| Logotipo en los PDF | `src/Validasoft.Infraestructura/Ficha/LogosDePdf.cs` (`LogoDeValidasoft`) |
+| Marco y recursos de los correos | `src/Avalasoft.Aplicacion/Comun/MarcoDeCorreo.cs` y `Comun/RecursosDeMarca/` |
+| Logotipo en los PDF | `src/Avalasoft.Infraestructura/Ficha/LogosDePdf.cs` (`LogotipoDeAvalasoft`, un SVG de trazados que repite los de la web) |
 
 ### Correos
 
@@ -99,22 +100,23 @@ Todos los correos salen dentro de un marco (`MarcoDeCorreo`): el logotipo arriba
 
 ### PDF
 
-El logo de la **empresa** (PNG o SVG que configuró) sigue siendo el primero en el encabezado de la declaración PEP. Si no tiene, el respaldo es el **logotipo de Validasoft dibujado como vectores** en el lienzo propio del PDF (la «V» verde y «alida» «Soft» con las fuentes estándar del PDF; la tipografía de marca no se incrusta). El PDF del certificado lleva el logotipo bajo su título: lo valida la plataforma.
+El logo de la **empresa** (PNG o SVG que configuró) sigue siendo el primero en el encabezado de la declaración PEP. Si no tiene, el respaldo es el **logotipo de AvalaSoft dibujado como vectores** en el lienzo propio del PDF (el círculo verde y «avalasoft» en contornos, los mismos trazados del logotipo: no hay fuentes que incrustar). El PDF del certificado lleva el logotipo bajo su título: lo valida la plataforma.
 
 ## 6. Cómo se regenera
 
 ```bash
-pnpm --filter @validasoft/e2e navegadores      # la primera vez: Chromium de Playwright
-pnpm --filter @validasoft/marca generar        # SVG, PNG, GIF, carga previa al JavaScript y los recursos de los correos
-pnpm --filter @validasoft/marca generar -- --solo svg,png   # solo una parte (svg, png, gif, splash)
+pnpm --filter @avalasoft/e2e navegadores      # la primera vez: Chromium de Playwright
+pnpm --filter @avalasoft/marca generar        # SVG, PNG, GIF, carga previa al JavaScript y los recursos de los correos
+pnpm --filter @avalasoft/marca generar -- --solo svg,png   # solo una parte (svg, png, gif, splash)
+pnpm --filter @avalasoft/marca contornos      # solo si cambia la fuente, el peso, el seguimiento o la inclinación de la palabra
 ```
 
-Requiere **Node 23.6 o superior** (el generador lee `gif.ts` y `png.ts` sin compilar). El generador abre un arnés (`marca/harness`) con los **componentes reales** de `@validasoft/ui`, congela cada animación en cada instante (Web Animations) y captura los cuadros con Playwright: lo que se ve en la app es lo que sale en el GIF. Los GIF van a 2× (96 px en pantalla = 192 px) con el fondo de cada modo; un codificador propio (`marca/gif.ts`: paleta por mediana, LZW, solo el rectángulo que cambia) los deja en ≈ 80 KB. El GIF de carga usa un ciclo de 2 s (dos vueltas del arco y un ciclo del check algo más lento que el de 1,4 s de la app) para repetirse sin saltos.
+Requiere **Node 23.6 o superior** (el generador lee `gif.ts` y `png.ts` sin compilar). El generador abre un arnés (`marca/harness`) con los **componentes reales** de `@avalasoft/ui`, congela cada animación en cada instante (Web Animations) y captura los cuadros con Playwright: lo que se ve en la app es lo que sale en el GIF. Los GIF van a 2× (96 px en pantalla = 192 px) con el fondo de cada modo; un codificador propio (`marca/gif.ts`: paleta por mediana, LZW, solo el rectángulo que cambia) los deja en ≈ 80 KB. El GIF de carga usa un ciclo de 2 s (dos vueltas del arco y un ciclo del check algo más lento que el de 1,4 s de la app) para repetirse sin saltos.
 
 El resultado **se versiona**. Para que no se separe de la geometría hay pruebas que solo leen archivos (`marca/sincronia.test.ts`, en `pnpm test`): las copias de las apps y de los correos son idénticas a lo generado, los SVG llevan los números de `geometria.ts`, la carga de `index.html` y el PDF repiten la misma geometría y los mismos colores.
 
-**Para cambiar la marca**: se cambia `geometria.ts` o `tokens.ts` (y, si cambia la «V» o sus colores, `LogosDePdf.cs`, que repite esos números), se corre el generador y se versiona lo que salga. Un cambio de la «V» que no llegue al PDF o a `index.html` hace fallar `sincronia.test.ts`.
+**Para cambiar la marca**: se cambia `geometria.ts` o `tokens.ts` (y, si cambian la palabra, el círculo o sus colores, se corre `contornos` y se repite el SVG de `LogosDePdf.cs`), se corre el generador y se versiona lo que salga. Un cambio que no llegue al PDF o a `index.html` hace fallar `sincronia.test.ts`, que además **mide el PNG del logotipo píxel a píxel**: el círculo centrado entre la línea base y las ascendentes (a menos de un píxel), de ≈ 1,05 × su altura y a ≈ 0,2 × su diámetro de la palabra.
 
-## 7. Tipografía del logotipo en archivos sueltos
+## 7. Tipografía del logotipo
 
-Los SVG del logotipo (`marca/svg/logotipo-*.svg`) llevan «alidaSoft» como **texto** con Geist (y respaldo `Segoe UI`, `system-ui`) y un `textLength` que fija el ancho; sin Geist instalada se ve con la fuente del sistema. Los **PNG** (`logotipo-claro@2x.png`, `logotipo-oscuro@2x.png`) y los GIF se renderizan con Geist y son la versión de referencia para quien no tenga la fuente.
+La palabra del logotipo **no es texto**: es la fuente **Quicksand Bold** (peso 700, licencia SIL Open Font License 1.1, que permite incrustarla y derivar contornos) convertida a trazados por `marca/contornos.mjs` (con `opentype.js` y el paquete `@fontsource/quicksand`, ambos solo dependencias de desarrollo de `marca/`) y escrita en `palabra.ts`. De ahí que `Logo`, los SVG (`marca/svg/logotipo-*.svg`), los PNG, los GIF, los correos y el PDF dibujen lo mismo sin depender de ninguna fuente instalada o cargada. El generador aplica un seguimiento de −0,04 em y mide el espacio real entre cada par de letras (a-v, v-a, a-l, l-a, a-s, s-o, o-f, f-t) para dejarlo parejo, y después inclina los contornos 10° a la derecha desde la línea base.

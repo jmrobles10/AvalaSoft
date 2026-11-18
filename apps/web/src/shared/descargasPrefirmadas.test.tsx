@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { configurarCliente, reiniciarCliente } from '@validasoft/api-client';
+import { configurarCliente, reiniciarCliente } from '@avalasoft/api-client';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDescargarCertificado } from '../features/certificados/api';

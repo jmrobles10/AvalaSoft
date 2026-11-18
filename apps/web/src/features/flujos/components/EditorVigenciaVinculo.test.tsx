@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { describe, expect, it, vi } from 'vitest';
 import { borradorVacio, type ErrorFlujo } from '../editor';
 import { EditorVigenciaVinculo } from './EditorVigenciaVinculo';
@@ -9,7 +9,7 @@ function montar(cambios: Partial<ReturnType<typeof borradorVacio>> = {}, errores
   const onCambiar = vi.fn();
   const borrador = { ...borradorVacio(), ...cambios };
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <EditorVigenciaVinculo borrador={borrador} onCambiar={onCambiar} errores={errores} soloLectura={soloLectura} />
     </ThemeProvider>,
   );

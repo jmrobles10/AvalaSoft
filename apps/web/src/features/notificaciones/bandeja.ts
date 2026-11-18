@@ -1,8 +1,8 @@
-import { esTextoONulo, interpretarEventoDeNotificaciones, type EventoDeNotificaciones, type EventoSse, type NotificacionDto } from '@validasoft/api-client';
+import { esTextoONulo, interpretarEventoDeNotificaciones, type EventoDeNotificaciones, type EventoSse, type NotificacionDto } from '@avalasoft/api-client';
 
 /**
  * Lo propio de la bandeja de la web de empresa (`GET /api/v1/notificaciones`). Los cambios sobre la bandeja en caché (agregar, marcar
- * leídas) y el contador son los mismos del portal del tercero y viven en `@validasoft/api-client` y `@validasoft/ui`.
+ * leídas) y el contador son los mismos del portal del tercero y viven en `@avalasoft/api-client` y `@avalasoft/ui`.
  */
 
 /**

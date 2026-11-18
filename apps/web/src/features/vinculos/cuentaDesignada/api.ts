@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { aprobarCuentaDesignada, getObtenerCuentaDesignadaQueryOptions, rechazarCuentaDesignada, type CuentaDesignadaDelVinculoDto } from '@validasoft/api-client';
+import { aprobarCuentaDesignada, getObtenerCuentaDesignadaQueryOptions, rechazarCuentaDesignada, type CuentaDesignadaDelVinculoDto } from '@avalasoft/api-client';
 import { conEmpresa, invalidarRuta } from '../../../shared/consultas';
 
 function opcionesCuenta(empresaId: string, vinculoId: string) {

@@ -22,7 +22,7 @@ recorrido(
     await paso(paginaAna, {
       titulo: 'Abre la configuración de listas restrictivas',
       explicacion:
-        'Aquí se ve con qué proveedor consulta la empresa las listas restrictivas (por ejemplo, Infolaft) y cuánto ha consumido este mes. La mayoría de las empresas no necesita usuario ni clave: Validasoft contrata el proveedor para todas las empresas.',
+        'Aquí se ve con qué proveedor consulta la empresa las listas restrictivas (por ejemplo, Infolaft) y cuánto ha consumido este mes. La mayoría de las empresas no necesita usuario ni clave: AvalaSoft contrata el proveedor para todas las empresas.',
       resaltar: ana.getByText('Proveedor de la empresa', { exact: true }).first(),
       configuracion: {
         ajuste: 'Proveedor de listas restrictivas',

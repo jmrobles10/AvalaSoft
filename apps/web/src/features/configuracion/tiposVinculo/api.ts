@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { actualizarTipoVinculo, crearTipoVinculo, getListarTiposVinculoQueryOptions, type TipoVinculoDto } from '@validasoft/api-client';
+import { actualizarTipoVinculo, crearTipoVinculo, getListarTiposVinculoQueryOptions, type TipoVinculoDto } from '@avalasoft/api-client';
 import { invalidarRuta } from '../../../shared/consultas';
 import { cuerpoDeTipo, cuerpoTipoVinculo, type BorradorTipoVinculo } from './modelo';
 

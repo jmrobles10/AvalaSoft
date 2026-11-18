@@ -1,6 +1,6 @@
 /**
  * Aserción `X-Usuario-Delegado` (ADR-0011, SE-4): JWT RS256 (clave RSA ≥ 2048) o ES256 (EC P-256) con `iss` = código del
- * sistema, `aud` = `validasoft`, `sub`, `name`, `email`, un `jti` nuevo y vencimiento de como mucho 5 minutos. Validasoft
+ * sistema, `aud` = `avalasoft`, `sub`, `name`, `email`, un `jti` nuevo y vencimiento de como mucho 5 minutos. AvalaSoft
  * rechaza un `jti` repetido: se firma **una por petición** (el cliente lo hace solo). La clave privada va en PEM PKCS#8
  * (`-----BEGIN PRIVATE KEY-----`); la pública correspondiente se registra en `POST /api/v1/sistemas`.
  */
@@ -12,7 +12,7 @@ export interface UsuarioDelegado {
   correo: string;
 }
 
-export const AUDIENCIA = 'validasoft';
+export const AUDIENCIA = 'avalasoft';
 export const VIGENCIA_MAXIMA_SEGUNDOS = 300;
 
 export interface FirmanteDeAserciones {
@@ -60,7 +60,7 @@ async function importar(pem: string): Promise<ClaveImportada> {
 }
 
 /**
- * Firmante con la clave privada del sistema (`codigoSistema` = el registrado en Validasoft, p. ej. `SRM`).
+ * Firmante con la clave privada del sistema (`codigoSistema` = el registrado en AvalaSoft, p. ej. `SRM`).
  * `reloj` permite fijar la hora en pruebas.
  */
 export function crearFirmanteDeAserciones(codigoSistema: string, clavePrivadaPem: string, reloj: () => Date = () => new Date()): FirmanteDeAserciones {

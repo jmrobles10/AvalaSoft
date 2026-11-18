@@ -6,7 +6,7 @@ import type {
   MatrizDeRiesgoDto,
   ResultadoDeMatrizDto,
   VerificacionDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 
 /** Datos de prueba de las verificaciones (H7). */
 export function coincidencia(parcial: Partial<CoincidenciaDto> = {}): CoincidenciaDto {

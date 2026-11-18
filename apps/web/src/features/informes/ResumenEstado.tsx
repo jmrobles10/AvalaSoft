@@ -1,5 +1,5 @@
 import { Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import type { ResumenEstadoExpedientesDto } from '@validasoft/api-client';
+import type { ResumenEstadoExpedientesDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';
 import { Cifra, GrupoCifras } from '../inicio/Cifras';

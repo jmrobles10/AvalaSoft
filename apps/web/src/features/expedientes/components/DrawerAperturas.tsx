@@ -1,6 +1,6 @@
 import { Box, Button, Drawer, IconButton, Stack, Typography } from '@mui/material';
-import type { VinculoDto } from '@validasoft/api-client';
-import { EstadoVacio, formatearFecha } from '@validasoft/ui';
+import type { VinculoDto } from '@avalasoft/api-client';
+import { EstadoVacio, formatearFecha } from '@avalasoft/ui';
 import { FolderOpen, X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

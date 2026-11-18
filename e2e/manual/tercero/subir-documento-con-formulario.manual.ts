@@ -13,7 +13,7 @@ recorrido(
     actor: 'Tercero',
     titulo: 'Sube un documento que pide una fecha de expedición',
     resumen:
-      'La empresa pide el certificado de seguridad y salud en el trabajo. Como tiene fecha de expedición y vigencia, el tercero sube el archivo y escribe la fecha; Validasoft calcula cuándo vence y avisa antes de que pase.',
+      'La empresa pide el certificado de seguridad y salud en el trabajo. Como tiene fecha de expedición y vigencia, el tercero sube el archivo y escribe la fecha; AvalaSoft calcula cuándo vence y avisa antes de que pase.',
     precondiciones: [
       'Un grupo empresarial con «Constructora Sur S.A.S.» y su flujo de Proveedor, que pide el RUT y el certificado de seguridad y salud en el trabajo (vence a los 30 días de su expedición, avisa 10 días antes y da 5 días de gracia).',
       'Un tercero persona jurídica invitado a ese flujo, que ya aceptó la invitación.',
@@ -55,7 +55,7 @@ recorrido(
       titulo: 'Escribe la fecha de expedición y elige el archivo',
       explicacion:
         'Escribe la fecha de expedición del certificado en el selector de fecha (día, mes y año) y luego pulsa «Elegir archivo». ' +
-        'Validasoft usa esa fecha para calcular cuándo vence: el certificado vale 30 días desde su expedición. Si el archivo no cumple el formato o el tamaño, la pantalla te lo dice y no guarda nada.',
+        'AvalaSoft usa esa fecha para calcular cuándo vence: el certificado vale 30 días desde su expedición. Si el archivo no cumple el formato o el tamaño, la pantalla te lo dice y no guarda nada.',
       resaltar: [page.getByRole('button', { name: 'Elegir archivo' })],
     });
     await escribirFecha(page, 'Fecha de expedición', hace3Dias);
@@ -68,7 +68,7 @@ recorrido(
     await paso(page, {
       titulo: 'Confirma la versión y su vigencia',
       explicacion:
-        'Validasoft confirma «Es tu versión 1» del certificado y dice qué empresa ya lo tiene. El documento guarda su fecha de expedición y la fecha en que vence; cuando falten 10 días te avisamos por correo. ' +
+        'AvalaSoft confirma «Es tu versión 1» del certificado y dice qué empresa ya lo tiene. El documento guarda su fecha de expedición y la fecha en que vence; cuando falten 10 días te avisamos por correo. ' +
         'Si el documento vence, tienes 5 días de gracia para subir uno nuevo antes de que la empresa lo marque como vencido.',
       resaltar: page.getByText(`Es tu versión 1 de ${SST.nombre}`),
       configuracion: {

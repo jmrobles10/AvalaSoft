@@ -13,7 +13,7 @@ import {
   type BandejaNotificacionesTerceroDto,
   type ListarNotificacionesTerceroParams,
   type PreferenciasNotificacionDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 
 /** Página de la campana: las 30 más recientes (el total de no leídas, de todas las empresas, viene aparte en `noLeidas`). */
 export const PARAMETROS_BANDEJA: ListarNotificacionesTerceroParams = { limite: 30 };

@@ -44,7 +44,7 @@ async function aprobarTodo(c: Caso): Promise<void> {
   expect((await leerExpediente(c.e, c.e.norte, c.expedienteId)).estado).toBe('Aprobado');
 }
 
-/** Ventana aparte con Validasoft embebido como `persona`, directo en el expediente del caso. */
+/** Ventana aparte con AvalaSoft embebido como `persona`, directo en el expediente del caso. */
 async function enElExpediente(browser: Browser, c: Caso, persona: Persona): Promise<FrameLocator> {
   const ventana = await (await browser.newContext()).newPage();
   const app = await abrirEmbebido(ventana, c.e, persona, c.e.norte, `expedientes/${c.expedienteId}`);

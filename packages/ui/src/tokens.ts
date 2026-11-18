@@ -1,4 +1,4 @@
-/* Validasoft: tokens del design system. GENERADO desde tokens.json; no editar a mano.
+/* AvalaSoft: tokens del design system. GENERADO desde tokens.json; no editar a mano.
  * Excepción (MA-1): los tokens de marca `marcaAzul`, `marcaVerde`, `marcaSoft` y `marcaTexto` del modo oscuro y los dos últimos del claro
  * se agregaron aquí con el logo «Anillo»; al regenerar desde tokens.json deben conservarse (docs/marca.md). */
 

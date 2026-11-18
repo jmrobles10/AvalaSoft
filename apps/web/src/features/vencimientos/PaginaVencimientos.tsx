@@ -1,6 +1,6 @@
 import { Alert, Box, Button } from '@mui/material';
-import { esErrorApi, SCOPES, type VencimientoDto } from '@validasoft/api-client';
-import { BarraFiltros, EstadoVacio, FiltroMenu, TablaConCursor, usePaginacionCursor } from '@validasoft/ui';
+import { esErrorApi, SCOPES, type VencimientoDto } from '@avalasoft/api-client';
+import { BarraFiltros, EstadoVacio, FiltroMenu, TablaConCursor, usePaginacionCursor } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 import { BellRing, Download, Megaphone } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';

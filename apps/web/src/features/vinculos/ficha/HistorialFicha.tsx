@@ -1,5 +1,5 @@
 import { Box, Tab, Tabs } from '@mui/material';
-import type { ExpedienteDto } from '@validasoft/api-client';
+import type { ExpedienteDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HistorialExpediente } from '../../expedientes/components/PanelesExpediente';

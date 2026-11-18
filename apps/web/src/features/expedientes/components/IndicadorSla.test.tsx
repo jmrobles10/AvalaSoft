@@ -1,12 +1,12 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import { EstadoDeSla } from '@validasoft/api-client';
-import { APARIENCIA_ESTADO, createValidasoftTheme, formatearFechaHora } from '@validasoft/ui';
+import { EstadoDeSla } from '@avalasoft/api-client';
+import { APARIENCIA_ESTADO, createAvalasoftTheme, formatearFechaHora } from '@avalasoft/ui';
 import { describe, expect, it } from 'vitest';
 import { ESTADO_CANONICO_SLA } from '../sla';
 import { IndicadorSla } from './IndicadorSla';
 
-const montar = (nodo: React.ReactNode) => render(<ThemeProvider theme={createValidasoftTheme('light')}>{nodo}</ThemeProvider>);
+const montar = (nodo: React.ReactNode) => render(<ThemeProvider theme={createAvalasoftTheme('light')}>{nodo}</ThemeProvider>);
 
 describe('Indicador del plazo de revisión en la bandeja', () => {
   it('a tiempo: chip verde «A tiempo» y cuándo vence', () => {

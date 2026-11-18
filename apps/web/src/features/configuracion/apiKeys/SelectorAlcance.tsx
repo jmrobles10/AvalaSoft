@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel, Radio, RadioGroup, Stack, Typography } from '@mui/material';
-import type { EmpresaDto } from '@validasoft/api-client';
+import type { EmpresaDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { TODO_EL_GRUPO } from './modelo';
 

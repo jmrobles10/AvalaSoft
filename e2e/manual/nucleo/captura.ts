@@ -7,7 +7,7 @@ import { normalizarRuta } from './validacion';
  * mientras se captura, y manejan las dos formas en que se ve la app:
  *
  * - la del tercero (`apps/public`), que ocupa toda la ventana;
- * - la de la empresa (`apps/web`), que corre en el iframe `#validasoft` de la página del sistema integrado (`soporte/embebido.ts`):
+ * - la de la empresa (`apps/web`), que corre en el iframe `#avalasoft` de la página del sistema integrado (`soporte/embebido.ts`):
  *   se captura solo el iframe, sin la barra de la página anfitriona, con el tamaño que pide el paso.
  *
  * El celular (390 × 844) cambia el tamaño de la ventana de la MISMA página y la deja como estaba: no se abre otro contexto, así la
@@ -384,7 +384,7 @@ async function estirarMarco(page: Page, marco: Locator): Promise<void> {
 
 /** Ruta de la app visible ahora (la del iframe, si es la app de la empresa). */
 export async function rutaDeLaApp(page: Page): Promise<string | null> {
-  const marco = page.locator('iframe#validasoft');
+  const marco = page.locator('iframe#avalasoft');
   if ((await marco.count()) > 0) {
     const contenido = await (await marco.elementHandle()).contentFrame();
     if (contenido) return normalizarRuta(contenido.url());
@@ -398,7 +398,7 @@ export async function rutaDeLaApp(page: Page): Promise<string | null> {
  */
 export async function capturar(page: Page, destino: string, opciones: OpcionesDeCaptura): Promise<ResultadoDeCaptura> {
   const original = page.viewportSize();
-  const marco = page.locator('iframe#validasoft');
+  const marco = page.locator('iframe#avalasoft');
   const embebido = (await marco.count()) > 0;
   // La barra de la página anfitriona resta alto al iframe: se compensa para que el iframe mida exactamente lo pedido.
   const desfase = embebido ? Math.round((await marco.boundingBox())?.y ?? 0) : 0;

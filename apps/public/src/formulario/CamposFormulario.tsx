@@ -1,6 +1,6 @@
 import { Box, FormControl, FormControlLabel, FormHelperText, FormLabel, MenuItem, Radio, RadioGroup, TextField } from '@mui/material';
-import type { CampoFormularioDto } from '@validasoft/api-client';
-import { CampoFecha } from '@validasoft/ui';
+import type { CampoFormularioDto } from '@avalasoft/api-client';
+import { CampoFecha } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { MAXIMO_TEXTO, tipoDeCampo } from './formulario';
 import type { EstadoFormulario } from './useFormulario';

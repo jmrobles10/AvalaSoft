@@ -1,4 +1,4 @@
-import type { RelacionEntreTercerosDto, RequisitoPublicoDto } from '@validasoft/api-client';
+import type { RelacionEntreTercerosDto, RequisitoPublicoDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { destinoFijo } from '../boveda/parametrosSubida';
 import { enlaceDeSubida } from '../expediente/requisitos';

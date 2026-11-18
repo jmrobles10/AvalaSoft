@@ -21,14 +21,14 @@
 import { createSign, generateKeyPairSync, randomUUID } from 'node:crypto';
 import { writeFile } from 'node:fs/promises';
 
-const API = process.env.VALIDASOFT_API_URL ?? 'http://localhost:5080';
-const CLAVE_PLATAFORMA = process.env.VALIDASOFT_CLAVE_PLATAFORMA ?? 'dev-plataforma-solo-local-cambiar-0001';
+const API = process.env.AVALASOFT_API_URL ?? 'http://localhost:5080';
+const CLAVE_PLATAFORMA = process.env.AVALASOFT_CLAVE_PLATAFORMA ?? 'dev-plataforma-solo-local-cambiar-0001';
 const SISTEMA = 'DEMO';
 const SISTEMA_PLATAFORMA = 'CONSOLA_DEV';
 const SOLO_PLATAFORMA = process.argv.includes('--solo-plataforma');
 // Orígenes desde los que los sistemas alojan las pantallas embebidas (SE-1): en desarrollo, la app web de Vite. Entran en
 // frame-ancestors y en GET /public/v1/embed/origenes-permitidos, que el puente embebido lee al arrancar.
-const ORIGENES_DEMO = (process.env.VALIDASOFT_ORIGENES_DEMO ?? 'http://localhost:5173')
+const ORIGENES_DEMO = (process.env.AVALASOFT_ORIGENES_DEMO ?? 'http://localhost:5173')
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);
@@ -77,7 +77,7 @@ function asercion(clavePrivadaPem, usuario, emisor = SISTEMA) {
   const carga = base64Url(
     JSON.stringify({
       iss: emisor,
-      aud: 'validasoft',
+      aud: 'avalasoft',
       sub: usuario.sub,
       name: usuario.nombre,
       email: usuario.correo,
@@ -105,7 +105,7 @@ async function registrarPlataforma() {
     llave: CLAVE_PLATAFORMA,
     cuerpo: { nombre: 'Backoffice de Plataforma (desarrollo)', clavePublicaPem: claves.publicKey, origenesPermitidos: ORIGENES_DEMO },
   });
-  const persona = { sub: 'op-paula', nombre: 'Paula Plataforma', correo: 'paula@validasoft.local' };
+  const persona = { sub: 'op-paula', nombre: 'Paula Plataforma', correo: 'paula@avalasoft.local' };
   await llamar('POST', '/api/v1/plataforma/sesiones', { llave: CLAVE_PLATAFORMA, delegado: asercion(claves.privateKey, persona, SISTEMA_PLATAFORMA) });
   return { clavePlataforma: CLAVE_PLATAFORMA, sistema: SISTEMA_PLATAFORMA, clavePrivadaPem: claves.privateKey, persona };
 }
@@ -346,7 +346,7 @@ await llamar('POST', '/api/v1/vinculos', {
 // realidad: el tercero canjea el enlace de la invitación con el código que le llega a Mailpit, sube RUT y Cámara, acepta,
 // y Rubén (Compras) y Olga (Cumplimiento) aprueban sus áreas. Así se ven la lista de certificados, el Inicio con
 // indicadores, Vencimientos y la página pública de verificación.
-const MAILPIT = process.env.VALIDASOFT_MAILPIT_URL ?? 'http://localhost:8025';
+const MAILPIT = process.env.AVALASOFT_MAILPIT_URL ?? 'http://localhost:8025';
 
 async function esperarCorreo(para, asunto) {
   for (let intento = 0; intento < 60; intento++) {

@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { registrarPasskeyIngreso, verificarPasskeyIngreso, type PasoDeIngresoDto } from '@validasoft/api-client';
+import { registrarPasskeyIngreso, verificarPasskeyIngreso, type PasoDeIngresoDto } from '@avalasoft/api-client';
 import { Fingerprint, KeyRound } from 'lucide-react';
 import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

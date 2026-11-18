@@ -1,4 +1,4 @@
-import type { ExpedientePublicoDto, ObservacionPublicaDto, RequisitoPublicoDto, VigenciaDto } from '@validasoft/api-client';
+import type { ExpedientePublicoDto, ObservacionPublicaDto, RequisitoPublicoDto, VigenciaDto } from '@avalasoft/api-client';
 import { enlaceSeccion } from '../ficha/secciones';
 import { requiereAtencion } from '../vigencia/vigencia';
 

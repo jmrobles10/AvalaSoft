@@ -15,7 +15,7 @@ recorrido(
       'Ana, administradora de Constructora Sur, agrega a un flujo de proveedores una regla de selección automática: si el tercero es persona jurídica, su expediente usa el flujo de jurídicas en vez del flujo por defecto. Cuando se abre un expediente nuevo, el sistema aplica la regla y lo deja registrado.',
     precondiciones: [
       'Un grupo con Constructora Sur, su área «Revisión» con miembros y un flujo por defecto de proveedores que pide el RUT.',
-      'Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
     ],
     relacionados: ['configuracion/flujo-por-defecto', 'configuracion/flujo-condiciones-por-tipo-de-persona'],
   },
@@ -38,7 +38,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre la selección automática del flujo',
       explicacion:
-        'La tarjeta «Selección automática» decide cuándo el sistema usa este flujo sin que nadie lo elija a mano. Al abrir un expediente sin flujo indicado, Validasoft revisa los flujos publicados del tipo de vínculo por prioridad (la menor primero) y usa el primero cuya condición cumpla el tercero. ' +
+        'La tarjeta «Selección automática» decide cuándo el sistema usa este flujo sin que nadie lo elija a mano. Al abrir un expediente sin flujo indicado, AvalaSoft revisa los flujos publicados del tipo de vínculo por prioridad (la menor primero) y usa el primero cuya condición cumpla el tercero. ' +
         'Si ninguno cumple, usa el flujo por defecto del tipo de vínculo.',
       resaltar: app.getByText('Selección automática', { exact: true }),
       configuracion: {

@@ -1,5 +1,5 @@
-import type { EstadoExpediente, EstadoVinculo, ObtenerInformeEstadoExpedientesParams, ObtenerInformeVinculosParams, TipoExpediente } from '@validasoft/api-client';
-import { LOCALE } from '@validasoft/ui';
+import type { EstadoExpediente, EstadoVinculo, ObtenerInformeEstadoExpedientesParams, ObtenerInformeVinculosParams, TipoExpediente } from '@avalasoft/api-client';
+import { LOCALE } from '@avalasoft/ui';
 
 export const ESTADOS_EXPEDIENTE: readonly EstadoExpediente[] = ['Abierto', 'EnRevision', 'Observado', 'Aprobado', 'Rechazado', 'Anulado', 'Caducado'];
 export const TIPOS_EXPEDIENTE: readonly TipoExpediente[] = ['Inicial', 'Renovacion', 'Actualizacion'];

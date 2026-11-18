@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Link, Stack, Typography } from '@mui/material';
-import { EncabezadoFijo, ErrorEnLinea, PaginaEstado, type EncabezadoFijoProps } from '@validasoft/ui';
+import { EncabezadoFijo, ErrorEnLinea, PaginaEstado, type EncabezadoFijoProps } from '@avalasoft/ui';
 import { ChevronLeft, Lock } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +35,7 @@ export function EnlaceVolver({ a, children }: { a: string; children: ReactNode }
 
 /**
  * Encabezado de página (título 24/32, subtítulo y acciones) que queda visible al desplazar el contenido
- * (`EncabezadoFijo` de `@validasoft/ui`). `antes`: el enlace «‹ Sección» de los detalles, dentro de la franja.
+ * (`EncabezadoFijo` de `@avalasoft/ui`). `antes`: el enlace «‹ Sección» de los detalles, dentro de la franja.
  */
 export function EncabezadoPagina(props: EncabezadoFijoProps) {
   const { t } = useTranslation();
@@ -74,8 +74,8 @@ export function Tarjeta({
   );
 }
 
-/** Esqueleto de una línea de tiempo mientras carga el historial (ver `esqueletos.tsx` de `@validasoft/ui`). */
-export { EsqueletoHistorial } from '@validasoft/ui';
+/** Esqueleto de una línea de tiempo mientras carga el historial (ver `esqueletos.tsx` de `@avalasoft/ui`). */
+export { EsqueletoHistorial } from '@avalasoft/ui';
 
 /** Spinner solo dentro del botón que ejecuta la acción. */
 export function IconoCarga() {

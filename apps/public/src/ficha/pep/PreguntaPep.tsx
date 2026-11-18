@@ -1,5 +1,5 @@
 import { Alert, Button, Chip, Stack, Typography } from '@mui/material';
-import { formatearDiaCivil } from '@validasoft/ui';
+import { formatearDiaCivil } from '@avalasoft/ui';
 import { FilePen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

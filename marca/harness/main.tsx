@@ -1,35 +1,35 @@
-import '@fontsource-variable/geist';
 import { ThemeProvider } from '@mui/material';
 import {
   AnimacionExito,
-  ALTO_V,
   ARCO_DE_CARGA,
   ARO,
   ARO_ABIERTO,
   CAJA_ICONO,
-  CAJA_V,
+  CAJA_LOGOTIPO,
   Cargando,
   CHECK_RELLENO,
   coloresDeLogo,
-  createValidasoftTheme,
+  createAvalasoftTheme,
   FAVICON,
   GROSOR_GUIA,
   GUIA_CHECK,
   LONGITUD_GUIA,
   Logo,
-  MARGEN_V,
+  PALABRA,
   RADIO_RELLENO,
-  TEXTO_LOGOTIPO,
+  SIMBOLO_LOGOTIPO,
   TIEMPOS_CARGA,
   TIEMPOS_EXITO,
   TRANSFORMACION_CHECK_DENTRO,
   TRANSFORMACION_CHECK_ICONO,
+  TRANSFORMACION_PALABRA,
+  TRANSFORMACION_SIMBOLO,
   type Modo,
-} from '@validasoft/ui';
+} from '@avalasoft/ui';
 import { createRoot } from 'react-dom/client';
 
 /**
- * Arnés del generador de recursos de marca (`marca/generar.mjs`): pinta una escena con los componentes reales de `@validasoft/ui` y
+ * Arnés del generador de recursos de marca (`marca/generar.mjs`): pinta una escena con los componentes reales de `@avalasoft/ui` y
  * deja su geometría y colores en `window.marca` para que el generador escriba los SVG con los mismos números. Se controla por la URL:
  * `?escena=logotipo|icono|favicon|exito|carga|app&modo=light|dark&tamano=<px>&fondo=<css>`.
  */
@@ -54,10 +54,11 @@ window.marca = {
   aro: ARO,
   aroAbierto: ARO_ABIERTO,
   cajaIcono: CAJA_ICONO,
-  cajaV: CAJA_V,
-  altoV: ALTO_V,
-  margenV: MARGEN_V,
-  textoLogotipo: TEXTO_LOGOTIPO,
+  cajaLogotipo: CAJA_LOGOTIPO,
+  simboloLogotipo: SIMBOLO_LOGOTIPO,
+  transformacionSimbolo: TRANSFORMACION_SIMBOLO,
+  transformacionPalabra: TRANSFORMACION_PALABRA,
+  palabra: PALABRA,
   checkRelleno: CHECK_RELLENO,
   transformacionCheckIcono: TRANSFORMACION_CHECK_ICONO,
   transformacionCheckDentro: TRANSFORMACION_CHECK_DENTRO,
@@ -86,10 +87,10 @@ window.fijarInstante = (ms, cicloDeCarga) => {
 function Hoja() {
   const fondos: Record<Modo, string> = { light: '#FFFFFF', dark: '#0B1120' };
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', width: 1760 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', width: 2040 }}>
       {(['light', 'dark'] as const).map((m) => (
         <div key={m} style={{ background: fondos[m], padding: 32, display: 'grid', gap: 28 }}>
-          <div style={{ display: 'flex', gap: 28, alignItems: 'flex-end' }}>
+          <div style={{ display: 'flex', gap: 22, alignItems: 'flex-end' }}>
             <Logo variante="logotipo" tamano={64} modo={m} />
             <Logo variante="logotipo" tamano={40} modo={m} />
             <Logo variante="logotipo" tamano={26} modo={m} />
@@ -144,7 +145,7 @@ function Escena() {
 const raiz = document.getElementById('raiz');
 if (!raiz) throw new Error('Falta #raiz.');
 createRoot(raiz).render(
-  <ThemeProvider theme={createValidasoftTheme(modo)}>
+  <ThemeProvider theme={createAvalasoftTheme(modo)}>
     <div id="escena" style={{ display: 'inline-flex', background: escena === 'app' ? 'transparent' : fondo, padding: Number(parametros.get('margen') ?? '0') }}>
       <Escena />
     </div>

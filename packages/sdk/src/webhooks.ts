@@ -1,17 +1,17 @@
 import type { EventoPublicoDto } from './tipos.js';
 
 /**
- * Verificación de webhooks de Validasoft (docs/05 §6, NW-5), igual que `FirmaDeWebhook.Verificar` del servidor:
- * `Validasoft-Signature: t={unix},v1={hex(HMAC-SHA256(secreto, "{t}.{cuerpo}"))}[,v1=…]` (durante una rotación del secreto
+ * Verificación de webhooks de AvalaSoft (docs/05 §6, NW-5), igual que `FirmaDeWebhook.Verificar` del servidor:
+ * `Avalasoft-Signature: t={unix},v1={hex(HMAC-SHA256(secreto, "{t}.{cuerpo}"))}[,v1=…]` (durante una rotación del secreto
  * llega un `v1` por cada secreto vigente), comparación en tiempo constante y `t` a menos de 5 minutos. El cuerpo debe ser
  * el texto **exacto** recibido (sin `JSON.parse` + `JSON.stringify`). Se deduplica por `evento.id` (= cabecera
- * `Validasoft-Event-Id`, T-6), nunca por `Validasoft-Delivery`. Usa Web Crypto: Node 20+ o navegador.
+ * `Avalasoft-Event-Id`, T-6), nunca por `Avalasoft-Delivery`. Usa Web Crypto: Node 20+ o navegador.
  */
 
-export const CABECERA_FIRMA = 'validasoft-signature';
-export const CABECERA_EVENTO_ID = 'validasoft-event-id';
-export const CABECERA_TIPO = 'validasoft-event-type';
-export const CABECERA_ENTREGA = 'validasoft-delivery';
+export const CABECERA_FIRMA = 'avalasoft-signature';
+export const CABECERA_EVENTO_ID = 'avalasoft-event-id';
+export const CABECERA_TIPO = 'avalasoft-event-type';
+export const CABECERA_ENTREGA = 'avalasoft-delivery';
 
 export const TOLERANCIA_SEGUNDOS = 300;
 
@@ -30,7 +30,7 @@ export class WebhookInvalidoError extends Error {
 export interface OpcionesVerificacion {
   /** El secreto actual y, mientras dura una rotación, el anterior (`whsec_…`): basta que coincida uno. */
   secretos: string | readonly string[];
-  /** Valor de `Validasoft-Signature`. */
+  /** Valor de `Avalasoft-Signature`. */
   firma: string | null | undefined;
   /** Cuerpo exacto recibido (texto o bytes). */
   cuerpo: string | Uint8Array;
@@ -93,7 +93,7 @@ export async function validarWebhook<TDatos = Record<string, unknown>>(opciones:
   const motivo = await comprobarFirma(opciones);
   if (motivo !== null) {
     const mensajes: Record<MotivoRechazoWebhook, string> = {
-      'cabecera-invalida': 'Falta la cabecera Validasoft-Signature o no tiene t= y v1=.',
+      'cabecera-invalida': 'Falta la cabecera Avalasoft-Signature o no tiene t= y v1=.',
       'fuera-de-tolerancia': 'La firma es demasiado vieja o del futuro (revisa el reloj del servidor).',
       'firma-no-coincide': 'La firma no corresponde a ningún secreto configurado.',
       'cuerpo-invalido': 'El cuerpo no es un evento público.',
@@ -110,7 +110,7 @@ export async function validarWebhook<TDatos = Record<string, unknown>>(opciones:
   }
 }
 
-/** Firma como lo hace Validasoft: para probar el receptor sin el servidor. */
+/** Firma como lo hace AvalaSoft: para probar el receptor sin el servidor. */
 export async function firmarWebhook(secretos: string | readonly string[], timestamp: number, cuerpo: string): Promise<string> {
   const mensaje = codificador.encode(`${String(timestamp)}.${cuerpo}`);
   const lista = typeof secretos === 'string' ? [secretos] : secretos;

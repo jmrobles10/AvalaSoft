@@ -129,7 +129,7 @@ export const fuentesOficiales = {
     configurada: 'Configurada · …{{ultimos}}',
     sinConfigurar: 'Sin configurar',
     noHabilitado: 'No habilitado en la instalación',
-    ayudaNoHabilitado: 'La instalación no lo habilitó (Validasoft:Verificadores:FuentesOficiales): ninguna empresa lo puede usar todavía.',
+    ayudaNoHabilitado: 'La instalación no lo habilitó (Avalasoft:Verificadores:FuentesOficiales): ninguna empresa lo puede usar todavía.',
     usuario: 'Usuario',
     clave: 'Clave o token',
     claveAyuda: 'Se cifra con la clave maestra y nunca vuelve. Vacía conserva la actual.',

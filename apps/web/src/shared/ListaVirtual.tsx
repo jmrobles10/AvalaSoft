@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useVirtualizer, useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
-import { EsqueletoTarjeta } from '@validasoft/ui';
+import { EsqueletoTarjeta } from '@avalasoft/ui';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { contenedorConScroll, useAlturaFija } from '../sesion/alturaFija';
 

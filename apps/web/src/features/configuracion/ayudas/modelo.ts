@@ -1,4 +1,4 @@
-import type { AyudaDeDocumentoDto } from '@validasoft/api-client';
+import type { AyudaDeDocumentoDto } from '@avalasoft/api-client';
 
 /** Igual que `AyudasDeDocumentoPorEmpresa.LongitudMaxima` del backend. */
 export const MAXIMO_AYUDA = 2000;

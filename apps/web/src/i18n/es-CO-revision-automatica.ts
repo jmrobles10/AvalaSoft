@@ -50,7 +50,7 @@ export const revisionAutomatica = {
     sinIa: {
       titulo: 'Esta empresa no tiene el plan de IA activo con su llave',
       texto:
-        'Sin plan de IA activo y con la llave de OpenAI no hay análisis de los documentos: no puedes elegir Automático y en Asistido todo se sugiere revisar. El plan lo configura Validasoft desde Plataforma.',
+        'Sin plan de IA activo y con la llave de OpenAI no hay análisis de los documentos: no puedes elegir Automático y en Asistido todo se sugiere revisar. El plan lo configura AvalaSoft desde Plataforma.',
       textoAutomatico:
         'El nivel Automático está elegido, pero sin plan de IA activo con su llave no hay análisis: todos los documentos pasan a una persona hasta que vuelva.',
       enlace: 'Ver Plan y uso de IA',
@@ -201,7 +201,7 @@ export const revisionAutomatica = {
 } as const;
 
 export const erroresRevisionAutomatica = {
-  'ia-no-disponible': 'Para aprobar automáticamente la empresa necesita su plan de IA activo y con la llave de OpenAI. Lo configura Validasoft desde Plataforma.',
+  'ia-no-disponible': 'Para aprobar automáticamente la empresa necesita su plan de IA activo y con la llave de OpenAI. Lo configura AvalaSoft desde Plataforma.',
   'automatico-sin-alcance': 'Para aprobar automáticamente elige al menos un tipo de documento y un área.',
   'nivel-invalido': 'El nivel es Manual, Asistido o Automático.',
   'umbral-invalido': 'La confianza mínima va de 85 a 100 %.',

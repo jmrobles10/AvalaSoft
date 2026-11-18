@@ -1,6 +1,6 @@
 import { Alert, Box, Chip, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import type { EvaluacionDto } from '@validasoft/api-client';
-import { MarcoTabla, formatearFecha } from '@validasoft/ui';
+import type { EvaluacionDto } from '@avalasoft/api-client';
+import { MarcoTabla, formatearFecha } from '@avalasoft/ui';
 import { Ban, Check, Paperclip } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';

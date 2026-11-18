@@ -44,7 +44,7 @@ export type CodigoErrorConocido =
 /** Un código conocido o cualquier otro texto que envíe el backend. */
 export type CodigoError = CodigoErrorConocido | (string & Record<never, never>);
 
-/** Cuerpo ProblemDetails tal como lo serializa ASP.NET Core con las extensiones de Validasoft. */
+/** Cuerpo ProblemDetails tal como lo serializa ASP.NET Core con las extensiones de AvalaSoft. */
 export interface ProblemDetails {
   type?: string;
   title?: string;

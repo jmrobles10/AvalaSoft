@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="JasperFx.Events" />
+    <PackageReference Include="Marten" />
+    <PackageReference Include="WolverineFx.Http" />
+    <PackageReference Include="WolverineFx.Marten" />
+    <PackageReference Include="Konscious.Security.Cryptography.Argon2" />
+    <PackageReference Include="MailKit" />
+    <!-- Passkeys (WebAuthn) del ingreso sin contraseñas (ING-2). -->
+    <PackageReference Include="Fido2" />
+    <PackageReference Include="AWSSDK.S3" />
+    <!-- QR de la URL de verificación en el PDF del certificado (CE-6). -->
+    <PackageReference Include="QRCoder" />
+    <!-- Recorte de páginas de los PDF que se envían al análisis con IA (IA-5). -->
+    <PackageReference Include="PdfPig" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Avalasoft.Aplicacion\Avalasoft.Aplicacion.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Las pruebas fijan el dibujo de los logos del PDF (PNG y SVG) sin levantar la API. -->
+    <InternalsVisibleTo Include="Avalasoft.Integracion.Tests" />
+  </ItemGroup>
+</Project>

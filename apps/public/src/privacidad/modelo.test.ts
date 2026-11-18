@@ -1,4 +1,4 @@
-import type { ExportacionBovedaDto, SolicitudHabeasDto } from '@validasoft/api-client';
+import type { ExportacionBovedaDto, SolicitudHabeasDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import {
   BORRADOR_VACIO, cuerpoDeSolicitud, DESTINO_PLATAFORMA, diasHabilesDe, enCurso, estadoDePlazo, hayIgualEnTramite, intervaloDeRefresco, ordenarSolicitudes, tamanoLegible,
@@ -13,7 +13,7 @@ function solicitud(parcial: Partial<SolicitudHabeasDto>): SolicitudHabeasDto {
     alcance: null,
     estado: 'Recibida',
     resultado: null,
-    destino: { empresaId: null, nombre: 'Validasoft' },
+    destino: { empresaId: null, nombre: 'AvalaSoft' },
     recibidaEn: '2026-11-11T15:00:00Z',
     venceEl: '2026-11-26',
     diasHabiles: 10,

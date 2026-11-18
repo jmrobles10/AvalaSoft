@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { ClienteValidasoft } from '@validasoft/sdk';
+import { ClienteAvalasoft } from '@avalasoft/sdk';
 import { API } from '../soporte/api';
 import { capturar } from '../soporte/capturas';
 import { abrirEmbebido } from '../soporte/embebido';
@@ -98,7 +98,7 @@ test('el tercero y cada empresa manejan contactos distintos con cada empresa, y 
   await expect(tarjetaSur).not.toContainText('Marta Ríos');
 
   // Por la API: el vínculo y la ficha traen los contactos de esa empresa; el pull trae el evento con la lista completa.
-  const srm = new ClienteValidasoft({ urlBase: API, apiKey: e.llave, empresaId: e.norte.id, reintentos: 0 });
+  const srm = new ClienteAvalasoft({ urlBase: API, apiKey: e.llave, empresaId: e.norte.id, reintentos: 0 });
   expect((await srm.vinculos.obtener(norte.vinculoId)).contactos?.map((c) => c.rol)).toEqual(['Pagos', 'Cumplimiento', 'Notificaciones']);
   await expect
     .poll(async () => {

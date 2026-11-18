@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Box, Button, Chip, Stack, Typography } from '@mui/material';
-import type { DocumentoVistaEmpresaDto, RequisitoExpedienteDto, SeccionDeRequisitoDto } from '@validasoft/api-client';
+import type { DocumentoVistaEmpresaDto, RequisitoExpedienteDto, SeccionDeRequisitoDto } from '@avalasoft/api-client';
 import { Eye, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { DocumentoEnVisor } from '../../documentos/VisorDocumento';

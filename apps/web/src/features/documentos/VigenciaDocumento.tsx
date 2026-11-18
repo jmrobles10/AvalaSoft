@@ -1,6 +1,6 @@
 import { Alert, Box, Stack, Tooltip, Typography } from '@mui/material';
-import type { VigenciaDto } from '@validasoft/api-client';
-import { ChipEstado, visualmenteOculto } from '@validasoft/ui';
+import type { VigenciaDto } from '@avalasoft/api-client';
+import { ChipEstado, visualmenteOculto } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { CHIP_VIGENCIA, estadoVigencia, etiquetaVigencia, explicacionVigencia, severidadAviso, textoAvisoVigencia, textoVencimiento } from './vigencia';
 

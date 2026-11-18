@@ -59,7 +59,7 @@ recorrido(
     await paso(publica, {
       titulo: 'Compara la huella con la impresa en el PDF',
       explicacion:
-        'Abre el PDF del certificado y busca la huella impresa; debe ser igual a la que muestra la página, carácter por carácter. Si coincide, el documento que tienes es el que Validasoft emitió. ' +
+        'Abre el PDF del certificado y busca la huella impresa; debe ser igual a la que muestra la página, carácter por carácter. Si coincide, el documento que tienes es el que AvalaSoft emitió. ' +
         'Si no coincide, o si el PDF no trae huella, no confíes en el documento: pide a la empresa que te envíe el certificado actual.',
       resaltar: publica.getByText('Huella', { exact: true }),
       variantes: [

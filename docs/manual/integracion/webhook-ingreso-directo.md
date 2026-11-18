@@ -1,17 +1,17 @@
 ---
 id: "integracion/webhook-ingreso-directo"
-titulo: "Crea un webhook entrando directo a Validasoft y elige su sistema"
+titulo: "Crea un webhook entrando directo a AvalaSoft y elige su sistema"
 actor: "Administrador de empresa"
 dominio: "integracion"
-resumen: "La administradora entra directo a Validasoft, con su correo y un código, y crea un webhook. Como no viene de un sistema integrado, el panel le pide elegir cuál de los sistemas del grupo es el dueño del webhook: a ese sistema se le avisan sus eventos."
+resumen: "La administradora entra directo a AvalaSoft, con su correo y un código, y crea un webhook. Como no viene de un sistema integrado, el panel le pide elegir cuál de los sistemas del grupo es el dueño del webhook: a ese sistema se le avisan sus eventos."
 pasos: 2
 ---
 
-# Crea un webhook entrando directo a Validasoft y elige su sistema
+# Crea un webhook entrando directo a AvalaSoft y elige su sistema
 
 **Actor:** Administrador de empresa · **Dominio:** Integración
 
-La administradora entra directo a Validasoft, con su correo y un código, y crea un webhook. Como no viene de un sistema integrado, el panel le pide elegir cuál de los sistemas del grupo es el dueño del webhook: a ese sistema se le avisan sus eventos.
+La administradora entra directo a AvalaSoft, con su correo y un código, y crea un webhook. Como no viene de un sistema integrado, el panel le pide elegir cuál de los sistemas del grupo es el dueño del webhook: a ese sistema se le avisan sus eventos.
 
 **Antes de empezar**
 
@@ -25,7 +25,7 @@ La administradora entra directo a Validasoft, con su correo y un código, y crea
 
 ## Paso 1. Elige el sistema integrado dueño del webhook
 
-Entraste directo a Validasoft, no desde un sistema integrado, así que el panel pregunta de qué sistema es el webhook: sus eventos se le avisan a ese sistema. La lista trae los sistemas integrados activos del grupo, con su nombre y su código. Sin elegir uno no puedes guardar. Si entras desde un sistema integrado, el panel no pregunta: el webhook queda a nombre del sistema desde el que entraste.
+Entraste directo a AvalaSoft, no desde un sistema integrado, así que el panel pregunta de qué sistema es el webhook: sus eventos se le avisan a ese sistema. La lista trae los sistemas integrados activos del grupo, con su nombre y su código. Sin elegir uno no puedes guardar. Si entras desde un sistema integrado, el panel no pregunta: el webhook queda a nombre del sistema desde el que entraste.
 
 > **Pantalla:** `/e/{empresa}/webhooks`
 
@@ -43,7 +43,7 @@ Entraste directo a Validasoft, no desde un sistema integrado, así que el panel 
 
 ## Paso 2. Revisa el webhook creado
 
-Al guardar, Validasoft muestra el secreto de firma una sola vez (como en [Crea un webhook, guarda su secreto y revisa las entregas firmadas](webhooks.md)) y el webhook aparece en la tabla, activo y con su dirección. El detalle del webhook muestra el «Sistema integrado» dueño; desde ahora los eventos que elegiste se envían a esa dirección y se le avisan a ese sistema.
+Al guardar, AvalaSoft muestra el secreto de firma una sola vez (como en [Crea un webhook, guarda su secreto y revisa las entregas firmadas](webhooks.md)) y el webhook aparece en la tabla, activo y con su dirección. El detalle del webhook muestra el «Sistema integrado» dueño; desde ahora los eventos que elegiste se envían a esa dirección y se le avisan a ese sistema.
 
 > **Pantalla:** `/e/{empresa}/webhooks`
 
@@ -53,4 +53,4 @@ Al guardar, Validasoft muestra el secreto de firma una sola vez (como en [Crea u
 
 - [Crea un webhook, guarda su secreto y revisa las entregas firmadas](webhooks.md)
 - [Registra un sistema integrado con su clave pública](sistema-integrador.md)
-- [Entra a Validasoft con tu correo y un código](../acceso/ingreso-directo-por-correo.md)
+- [Entra a AvalaSoft con tu correo y un código](../acceso/ingreso-directo-por-correo.md)

@@ -1,6 +1,6 @@
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
-import type { UsoDelGrupoDto } from '@validasoft/api-client';
-import { CabeceraEsqueleto, CampoNumero, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar } from '@validasoft/ui';
+import type { UsoDelGrupoDto } from '@avalasoft/api-client';
+import { CabeceraEsqueleto, CampoNumero, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar } from '@avalasoft/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';

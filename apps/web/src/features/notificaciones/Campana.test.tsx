@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type BandejaNotificacionesDto } from '@validasoft/api-client';
+import { reiniciarCliente, type BandejaNotificacionesDto } from '@avalasoft/api-client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { useSesion } from '../../sesion/sesionStore';
 import { useAvisos } from '../../shared/useAvisos';

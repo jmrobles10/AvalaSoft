@@ -5,7 +5,7 @@ export const privacidad = {
   sub: 'Tus derechos sobre tus datos personales (Ley 1581 de 2012): llévate una copia de todo lo que guardamos de ti o pide conocer, corregir o suprimir tus datos.',
   exportacion: {
     titulo: 'Exportar mi bóveda',
-    texto: 'Un ZIP con tus archivos, tus datos y un manifiesto firmado por Validasoft para comprobar que nada cambió. Se prepara solo y te avisamos por correo cuando esté lista.',
+    texto: 'Un ZIP con tus archivos, tus datos y un manifiesto firmado por AvalaSoft para comprobar que nada cambió. Se prepara solo y te avisamos por correo cuando esté lista.',
     pedir: 'Pedir exportación',
     preparando: 'Preparando…',
     pedida: 'Estamos preparando tu exportación. Te avisamos por correo cuando esté lista.',
@@ -20,7 +20,7 @@ export const privacidad = {
     descargando: 'Empezó la descarga de tu exportación.',
     comoVerificar: 'Cómo verificarla',
     comoVerificarTexto:
-      'Dentro del ZIP, manifiesto.json lista el SHA-256 de cada archivo y manifiesto.firma.json trae la firma de Validasoft (clave {{kid}}), que se verifica con la clave pública de /.well-known/validasoft-certificados.json. El LEEME.txt explica los pasos.',
+      'Dentro del ZIP, manifiesto.json lista el SHA-256 de cada archivo y manifiesto.firma.json trae la firma de AvalaSoft (clave {{kid}}), que se verifica con la clave pública de /.well-known/avalasoft-certificados.json. El LEEME.txt explica los pasos.',
   },
   solicitudes: {
     titulo: 'Mis solicitudes sobre mis datos',
@@ -39,8 +39,8 @@ export const privacidad = {
       Supresion: { titulo: 'Suprimir mis datos', texto: 'Pides que eliminen tus datos. Te responden en {{dias}} días hábiles.' },
     },
     destino: 'Se la pides a',
-    destinoPlataforma: 'Validasoft (mi bóveda)',
-    destinoPlataformaAyuda: 'Validasoft responde por lo que guarda en tu bóveda: documentos, información y cuentas.',
+    destinoPlataforma: 'AvalaSoft (mi bóveda)',
+    destinoPlataformaAyuda: 'AvalaSoft responde por lo que guarda en tu bóveda: documentos, información y cuentas.',
     destinoEmpresaAyuda: 'La empresa responde por los datos que tiene de tu relación con ella.',
     alcance: '¿Qué quieres que supriman?',
     alcances: { Todo: 'Todo', Documentos: 'Solo mis documentos', Datos: 'Solo mi información y mis cuentas' },
@@ -91,7 +91,7 @@ export const erroresPrivacidad = {
   'exportacion-no-disponible': 'La exportación todavía no está lista. Te avisamos por correo cuando termine.',
   'detalle-requerido': 'Cuéntanos qué dato quieres corregir y cuál es el correcto (mínimo 10 caracteres).',
   'detalle-demasiado-largo': 'El detalle admite hasta 2.000 caracteres.',
-  'empresa-no-encontrada': 'No tienes un vínculo con esa empresa. Elige otra o dirige la solicitud a Validasoft.',
+  'empresa-no-encontrada': 'No tienes un vínculo con esa empresa. Elige otra o dirige la solicitud a AvalaSoft.',
   'solicitud-no-encontrada': 'No encontramos esa solicitud.',
   'exportacion-no-encontrada': 'No encontramos esa exportación.',
 } as const;

@@ -287,7 +287,7 @@ curl -X GET "https://{host}/api/v1/plataforma/importacion/texto/3fa85f64-5717-45
 
 ### `POST /api/v1/plataforma/importacion/{origen}/terceros/{clave}/sincronizar`
 
-**Sincronizar tercero de origen.** Sincronizador de coexistencia (FM-11, FM-43), sistema de origen ⇒ Validasoft, un solo sentido: reimporta un tercero desde el origen configurado del adaptador con su mismo traductor. Si una sección cambió nace una versión con origen `SistemaExterno` y, en la misma transacción, se piden las sincronizaciones de requisitos de F2: la empresa que ya la aceptó abre su revalidación. Sin cambios no hace nada (idempotente). No importa catálogos ni acepta: usa los catálogos de plataforma ya cargados. 404 `origen-no-registrado`, `tercero-origen-no-encontrado`; 409 `origen-no-configurado`.
+**Sincronizar tercero de origen.** Sincronizador de coexistencia (FM-11, FM-43), sistema de origen ⇒ AvalaSoft, un solo sentido: reimporta un tercero desde el origen configurado del adaptador con su mismo traductor. Si una sección cambió nace una versión con origen `SistemaExterno` y, en la misma transacción, se piden las sincronizaciones de requisitos de F2: la empresa que ya la aceptó abre su revalidación. Sin cambios no hace nada (idempotente). No importa catálogos ni acepta: usa los catálogos de plataforma ya cargados. 404 `origen-no-registrado`, `tercero-origen-no-encontrado`; 409 `origen-no-configurado`.
 
 **Operador de Plataforma · API (`/api/v1`) · SDK: `sincronizarTerceroDeOrigen`**
 

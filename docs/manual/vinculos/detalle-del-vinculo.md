@@ -35,7 +35,7 @@ El detalle abre en el sector «Información general» de la barra lateral, con e
 
 **Variantes**
 
-- **El tercero ya tiene ficha en Validasoft:** El nombre es un enlace a su ficha, y la identificación se ve completa.
+- **El tercero ya tiene ficha en AvalaSoft:** El nombre es un enlace a su ficha, y la identificación se ve completa.
 - **El vínculo tiene atributos definidos por el tipo:** Aparece una tarjeta «Atributos» con sus valores.
 
 ## Paso 2. Revisa el estado de la invitación

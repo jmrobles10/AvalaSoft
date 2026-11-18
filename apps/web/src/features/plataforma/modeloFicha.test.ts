@@ -1,4 +1,4 @@
-import type { SistemaIntegradoDto, TenantDto, UsuarioDto } from '@validasoft/api-client';
+import type { SistemaIntegradoDto, TenantDto, UsuarioDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import {
   borradorDeAdministrador,

@@ -1,5 +1,5 @@
-import type { IndicadoresDto, MisPendientesDto, PendientesDeAreaDto } from '@validasoft/api-client';
-import { LOCALE } from '@validasoft/ui';
+import type { IndicadoresDto, MisPendientesDto, PendientesDeAreaDto } from '@avalasoft/api-client';
+import { LOCALE } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 
 /** Ventanas del selector de indicadores, en días. */

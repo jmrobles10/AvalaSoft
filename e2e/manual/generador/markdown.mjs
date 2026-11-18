@@ -107,7 +107,7 @@ export function indiceDeDominio(dominio, escritos) {
 /** README general del manual: sin cifras ni fechas, para que varias personas puedan regenerarlo a la vez sin chocar. */
 export function indiceGeneral(catalogo, seccionesDeGuias = []) {
   const lineas = [
-    '# Manual de Validasoft',
+    '# Manual de AvalaSoft',
     '',
     'Documentación de cada flujo del producto, **generada a partir de recorridos reales** de la aplicación (pruebas Playwright en `e2e/manual/`) y del contrato OpenAPI. No se edita a mano: si el producto cambia, se vuelve a recorrer y a generar (`pnpm manual:todo`).',
     '',
@@ -133,7 +133,7 @@ export function indiceGeneral(catalogo, seccionesDeGuias = []) {
       : []),
     '## Referencia de la API',
     '',
-    '- [API de Validasoft](api/README.md): cada recurso con sus operaciones, permisos, parámetros, cuerpos, respuestas y ejemplos, generada de `packages/api-client/openapi/v1.json`.',
+    '- [API de AvalaSoft](api/README.md): cada recurso con sus operaciones, permisos, parámetros, cuerpos, respuestas y ejemplos, generada de `packages/api-client/openapi/v1.json`.',
     '',
     '## Cómo se genera',
     '',

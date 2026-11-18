@@ -16,7 +16,7 @@ La administradora agrega a los motivos del grupo uno propio, «Foto del document
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y los motivos de la plataforma ya cargados.
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 

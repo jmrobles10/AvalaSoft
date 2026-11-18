@@ -35,11 +35,11 @@ Desde el menú de tu cuenta, abre «Mi cuenta». La sección «Passkeys» lista 
 
 **Variantes**
 
-- **Tu grupo exige passkey para todos:** Validasoft te pide registrar una la próxima vez que ingreses.
+- **Tu grupo exige passkey para todos:** AvalaSoft te pide registrar una la próxima vez que ingreses.
 
 ## Paso 2. Agrega una passkey y ponle un nombre
 
-Al agregar una passkey, escribe un nombre para reconocerla (por ejemplo, «Mi teléfono») y pulsa «Registrar passkey». El navegador te pedirá confirmar con tu huella, tu rostro o el PIN del dispositivo. Validasoft te avisa por correo cada vez que se registra una passkey en tu cuenta.
+Al agregar una passkey, escribe un nombre para reconocerla (por ejemplo, «Mi teléfono») y pulsa «Registrar passkey». El navegador te pedirá confirmar con tu huella, tu rostro o el PIN del dispositivo. AvalaSoft te avisa por correo cada vez que se registra una passkey en tu cuenta.
 
 > **Pantalla:** `/e/{empresa}/mi-cuenta`
 
@@ -63,6 +63,6 @@ En la pantalla de ingreso pulsa «Entrar con una passkey». El navegador te pide
 
 ## Recorridos relacionados
 
-- [Entra a Validasoft con tu correo y un código](ingreso-directo-por-correo.md)
+- [Entra a AvalaSoft con tu correo y un código](ingreso-directo-por-correo.md)
 - [Revisa tus sesiones abiertas y cierra la que no reconoces](mi-cuenta-sesiones-y-codigos.md)
 - [Genera códigos de recuperación por si pierdes tu passkey](codigos-de-recuperacion.md)

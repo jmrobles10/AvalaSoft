@@ -26,7 +26,7 @@ import {
   type RecalificarEvaluacionDto,
   type ResponderEvaluacionDto,
   type SimularCuestionarioDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 
 /** Cuestionarios de la empresa (`cuestionarios:leer`). */

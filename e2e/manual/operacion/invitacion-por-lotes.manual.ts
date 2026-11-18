@@ -44,7 +44,7 @@ recorrido(
         'Puedes bajarla en Excel o en CSV; las dos tienen las mismas columnas. La de Excel es la de la empresa: marca con asterisco las obligatorias, explica cada columna con una nota y una hoja de instrucciones, y ofrece listas desplegables con los países, los tipos de identificación del país elegido, los tipos de vínculo activos y los flujos publicados de la empresa; ' +
         'lo que eliges de una lista («Proveedor (PROVEEDOR)») el importador lo entiende igual que el código solo.',
       resaltar: [app.getByRole('button', { name: 'Plantilla Excel' }), app.getByRole('button', { name: 'Plantilla CSV' })],
-      variantes: [{ cuando: 'El archivo no tiene una de las columnas obligatorias', entonces: 'Validasoft lo rechaza: «Al archivo le faltan columnas de la plantilla».' }],
+      variantes: [{ cuando: 'El archivo no tiene una de las columnas obligatorias', entonces: 'AvalaSoft lo rechaza: «Al archivo le faltan columnas de la plantilla».' }],
     });
 
     await app.locator('input[type="file"]').setInputFiles({ name: 'proveedores.csv', mimeType: 'text/csv', buffer: Buffer.from(csv, 'utf8') });

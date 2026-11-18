@@ -1,6 +1,6 @@
 import { Chip, Link, Stack, Typography } from '@mui/material';
-import type { AceptacionDeSeccionDto, VinculoEnFichaDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { AceptacionDeSeccionDto, VinculoEnFichaDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { SeccionFicha } from '../SeccionesVinculo';

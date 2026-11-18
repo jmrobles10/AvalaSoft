@@ -48,7 +48,7 @@ Columnas: **Tarea** · **Qué se entrega** · **Modelo** · **Esfuerzo** · **D�
 | Tarea | Entrega | Modelo | Esfuerzo | d-p | Doc |
 |---|---|---|---|---|---|
 | 1.1 Abrir el hito: issues con criterios de aceptación | Épica H1 + issues en GitHub Projects, plantillas de issue/PR, CODEOWNERS, protección de `main` | Fable 5.1 | high | 1 | 09, 11 |
-| 1.2 Estructura de la solución y monorepo | `Validasoft.sln`, proyectos Api/Worker/Dominio/Aplicacion/Infraestructura/Contratos, `apps/`, `packages/`, `Directory.Build.props`, analizadores | Haiku 5.5 | low | 2 | 04 §3 |
+| 1.2 Estructura de la solución y monorepo | `Avalasoft.sln`, proyectos Api/Worker/Dominio/Aplicacion/Infraestructura/Contratos, `apps/`, `packages/`, `Directory.Build.props`, analizadores | Haiku 5.5 | low | 2 | 04 §3 |
 | 1.3 Docker Compose y Makefile | postgres, minio, mailpit, otel-lgtm (perfil), api, worker, web, public; `make up/test/seed/migrar`; `.env.example` | Opus 5.5 | medium | 2 | 04 §11 |
 | 1.4 **Spike Marten: un solo store conjoined con tenants técnicos** (T-2) | Prueba que demuestra evento + proyección inline + outbox en una transacción para `boveda`, `plataforma` y `validacion` | Fable 5.1 | xhigh | 3 | 03 §2.2, ADR-0004 |
 | 1.5 Tenancy y empresa interna | Entidades `Tenant`, `Empresa`, `uso_tenant`; middleware `X-Empresa`; `ISesionDeEmpresa` (T-3); NetArchTest que prohíbe consultas sin tenant/empresa | Fable 5.1 | high | 4 | 03 §2–3, 07 §5 |
@@ -60,7 +60,7 @@ Columnas: **Tarea** · **Qué se entrega** · **Modelo** · **Esfuerzo** · **D�
 | 1.11 Medición de uso y región/KMS por tenant | `UsoTenant`, clave KMS por tenant, región como atributo | Opus 5.5 | medium | 2 | 07 §6, P-11-1 |
 | 1.12 Observabilidad y health | OTel (ASP.NET, Npgsql, Marten, Wolverine), `/health/live|ready`, dashboard base | Sonnet 5.5 | medium | 2 | 04 §9 |
 | 1.13 GitHub Actions | `ci.yml` (build, test, lint, contract snapshot), `imagenes.yml` (SBOM, Trivy, GHCR), Dependabot | Sonnet 5.5 | medium | 2 | 04 §11 |
-| 1.14 Design system base y app shell | `createValidasoftTheme`, `ChipEstado`, `Folio`, `KpiCard`, `BarraProgresoEtapas`, `SelectorEmpresa`, `SelectorIdentificacion`, Storybook; `apps/web` login + `/plataforma` (tenants, empresas) | Opus 5.5 | medium | 6 | 06 §1–2 |
+| 1.14 Design system base y app shell | `createAvalasoftTheme`, `ChipEstado`, `Folio`, `KpiCard`, `BarraProgresoEtapas`, `SelectorEmpresa`, `SelectorIdentificacion`, Storybook; `apps/web` login + `/plataforma` (tenants, empresas) | Opus 5.5 | medium | 6 | 06 §1–2 |
 | 1.15 Cliente API generado | `packages/api-client` con orval desde `/openapi/v1.json`, fetcher ProblemDetails | Haiku 5.5 | low | 1 | 06 §1.2 |
 | 1.16 Seed mínimo y demo | Tenant `demo` con dos empresas y usuarios por rol | Haiku 5.5 | low | 1 | 09 H1 |
 | 1.17 Revisión de cierre | `/code-review` del hito, verificación de criterios, demo grabada, docs/ADR al día | Fable 5.1 | high | 2 | 09 |
@@ -125,7 +125,7 @@ Columnas: **Tarea** · **Qué se entrega** · **Modelo** · **Esfuerzo** · **D�
 | 5.2 Agregado `Certificado` y canonicalización | Contenido canónico (RFC 8785), hash, sello Ed25519, folio `-C-`, emisiones, suspensión/restablecimiento, PDF/A | Fable 5.1 | xhigh | 4 | 03 §7 |
 | 5.3 Verificador público | `GET /public/v1/verificar/{folio}`, página `/verificar/:folio`, QR, `.well-known` de claves | Sonnet 5.5 | medium | 2 | 05 §2.9, 06 |
 | 5.4 Motor de notificaciones | Fluid + MailKit, campana, SSE, catálogo completo de plantillas (05 §8), consolidación 1 correo/tercero/hecho/día, evidencia de entrega, preferencias | Opus 5.5 | high | 5 | 04 §8, 05 §8 |
-| 5.5 Webhooks firmados y pull | Suscripciones, HMAC, `Validasoft-Event-Id`, reintentos con backoff, entregas, reenvío, deshabilitación, `GET /eventos`, precedencia API key ∩ webhook | Opus 5.5 | high | 4 | 05 §6–7 |
+| 5.5 Webhooks firmados y pull | Suscripciones, HMAC, `Avalasoft-Event-Id`, reintentos con backoff, entregas, reenvío, deshabilitación, `GET /eventos`, precedencia API key ∩ webhook | Opus 5.5 | high | 4 | 05 §6–7 |
 | 5.6 Catálogo de eventos públicos v1 | Sobre, payloads, `legacy.estadoTercero`, snapshot de contrato en CI | Opus 5.5 | medium | 2 | 05 §7 |
 | 5.7 Saga `EmisionCertificado` | Completitud → folio → PDF → hash → Object Lock → webhook | Fable 5.1 | high | 2 | 04 §5 |
 | 5.8 Pantallas de certificados | `/certificados`, detalle, revocar/reemitir, configuración de webhooks con log de entregas | Sonnet 5.5 | medium | 3 | 06 |
@@ -186,13 +186,13 @@ Columnas: **Tarea** · **Qué se entrega** · **Modelo** · **Esfuerzo** · **D�
 | Tarea | Entrega | Modelo | Esfuerzo | d-p | Doc |
 |---|---|---|---|---|---|
 | 9.1 Abrir el hito | Issues H9 (en los tres repos) | Fable 5.1 | high | 1 | 09, 11 |
-| 9.2 `Validasoft.Contratos` y `Validasoft.Sdk` | NuGet multi-target net7/8/10, cliente generado, `WebhookVerifier`, sandbox por API key | Opus 5.5 | medium | 3 | 05 §9, 08 §2 |
-| 9.3 `@validasoft/sdk` | TS generado + HMAC | Haiku 5.5 | low | 1 | 08 §2 |
-| 9.4 **SRM: flag y cliente** | `ValidacionDocumental = Legacy|Validasoft` por empresa, invitación crea expediente, apagado de jobs legado | Fable 5.1 | high | 4 | 08 §3 |
-| 9.5 **SRM: receptor de webhooks** | Endpoint firmado, dedupe por `Validasoft-Event-Id`, cola propia, mapa evento→acción, aplicación en AyF al certificar, `legacy.estadoTercero` | Fable 5.1 | xhigh | 5 | 08 §3.2 |
+| 9.2 `Avalasoft.Contratos` y `Avalasoft.Sdk` | NuGet multi-target net7/8/10, cliente generado, `WebhookVerifier`, sandbox por API key | Opus 5.5 | medium | 3 | 05 §9, 08 §2 |
+| 9.3 `@avalasoft/sdk` | TS generado + HMAC | Haiku 5.5 | low | 1 | 08 §2 |
+| 9.4 **SRM: flag y cliente** | `ValidacionDocumental = Legacy|AvalaSoft` por empresa, invitación crea expediente, apagado de jobs legado | Fable 5.1 | high | 4 | 08 §3 |
+| 9.5 **SRM: receptor de webhooks** | Endpoint firmado, dedupe por `Avalasoft-Event-Id`, cola propia, mapa evento→acción, aplicación en AyF al certificar, `legacy.estadoTercero` | Fable 5.1 | xhigh | 5 | 08 §3.2 |
 | 9.6 Portal: embed y retiro de escritura | Sesión de tercero, iframe de bóveda, retiro de `provportal` y de `Adjuntos*` | Opus 5.5 | high | 4 | 08 §4 |
-| 9.7 Marco: consulta y respaldo | `GET /consultas/certificacion` con ETag, tabla local `adp_cs.validasoft_certificacion_local`, degradación `fuenteRespaldo` | Opus 5.5 | high | 3 | 08 §5 |
-| 9.8 Pruebas de integración cruzada | Flag `Validasoft` vs `Legacy`; Portal no escribe adjuntos; Marco responde desde respaldo | Opus 5.5 | high | 3 | 11 H9 |
+| 9.7 Marco: consulta y respaldo | `GET /consultas/certificacion` con ETag, tabla local `adp_cs.avalasoft_certificacion_local`, degradación `fuenteRespaldo` | Opus 5.5 | high | 3 | 08 §5 |
+| 9.8 Pruebas de integración cruzada | Flag `Avalasoft` vs `Legacy`; Portal no escribe adjuntos; Marco responde desde respaldo | Opus 5.5 | high | 3 | 11 H9 |
 | 9.9 Revisión de cierre | Como 1.17 | Fable 5.1 | high | 1 | 09 |
 
 ### H10 — Importador y piloto de migración

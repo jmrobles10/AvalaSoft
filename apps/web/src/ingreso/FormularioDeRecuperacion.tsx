@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { usarCodigoRecuperacion, type PasoDeIngresoDto } from '@validasoft/api-client';
-import { enfocarNodo } from '@validasoft/ui';
+import { usarCodigoRecuperacion, type PasoDeIngresoDto } from '@avalasoft/api-client';
+import { enfocarNodo } from '@avalasoft/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../shared/componentes';

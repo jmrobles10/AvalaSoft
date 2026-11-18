@@ -1,7 +1,7 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { actualizarContactosDelTercero, getListarVinculosPublicosQueryKey, type VinculoPublicoDto } from '@validasoft/api-client';
-import { aEditables, desdeEditables, EditorDeContactos, ROLES_DE_CONTACTO, validarContactos, type ContactoEditable } from '@validasoft/ui';
+import { actualizarContactosDelTercero, getListarVinculosPublicosQueryKey, type VinculoPublicoDto } from '@avalasoft/api-client';
+import { aEditables, desdeEditables, EditorDeContactos, ROLES_DE_CONTACTO, validarContactos, type ContactoEditable } from '@avalasoft/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../shared/errores';

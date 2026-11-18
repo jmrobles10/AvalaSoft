@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ErrorApi, type AreaDto, type CondicionDto, type TipoDocumentoTenantDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { ErrorApi, type AreaDto, type CondicionDto, type TipoDocumentoTenantDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../../pruebas/montar';
 import { simularApi } from '../../../pruebas/simularApi';
@@ -16,7 +16,7 @@ const tipoRut = { ...tipo, tipoCanonico: 'RUT' } as TipoDocumentoTenantDto;
 
 function editor(requisitos: RequisitoEnEditor[], onCambiar = vi.fn(), tipos = [tipo]) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <EditorRequisitos
         requisitos={requisitos}
         etapas={[{ clave: 'e1', areas: [areaNueva('compras'), areaNueva('cumplimiento'), areaNueva('juridica'), areaNueva('tesoreria')] }]}
@@ -147,7 +147,7 @@ describe('EditorRequisitos: secciones de la información del tercero (F2)', () =
     if (!duplicado || !periodos) throw new Error('los 422 debían ir a un requisito');
 
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <EditorRequisitos requisitos={requisitos} etapas={[{ clave: 'e1', areas: [areaNueva('compras')] }]} areas={[area('compras', 'Compras')]} tiposDocumento={[]} onCambiar={vi.fn()} errores={[duplicado, periodos]} soloLectura={false} />
       </ThemeProvider>,
     );
@@ -179,7 +179,7 @@ describe('EditorRequisitos: secciones de la información del tercero (F2)', () =
 
   it('muestra los errores de vigencia y de revalidación de la sección en su campo', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <EditorRequisitos
           requisitos={[{ ...financiera, vigenciaDias: 0, diasRevalidacion: 400 }]}
           etapas={[{ clave: 'e1', areas: [areaNueva('compras')] }]}

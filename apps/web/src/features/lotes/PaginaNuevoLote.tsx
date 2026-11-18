@@ -1,6 +1,6 @@
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
-import { CampoNumero } from '@validasoft/ui';
-import { SCOPES, type ArchivoDeLoteDto, type VistaPreviaLoteDto } from '@validasoft/api-client';
+import { CampoNumero } from '@avalasoft/ui';
+import { SCOPES, type ArchivoDeLoteDto, type VistaPreviaLoteDto } from '@avalasoft/api-client';
 import { Download, FileUp, Send } from 'lucide-react';
 import { useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -48,7 +48,7 @@ export const recordatorios = {
   automatico: {
     titulo: 'Recordatorio automático de observaciones',
     ayuda:
-      'Mientras un expediente siga devuelto al tercero, Validasoft le recuerda sus observaciones por correo y en su portal cada cierto número de días, a lo sumo una vez al día. Se detiene cuando el tercero responde.',
+      'Mientras un expediente siga devuelto al tercero, AvalaSoft le recuerda sus observaciones por correo y en su portal cada cierto número de días, a lo sumo una vez al día. Se detiene cuando el tercero responde.',
     porFlujo: 'Cada flujo puede sobrescribirlo: en sus datos generales se elige seguir lo de la empresa, apagarlo o fijar sus propios días.',
     activar: 'Enviar recordatorios automáticos',
     cada: 'Cada (días)',

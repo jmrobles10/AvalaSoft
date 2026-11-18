@@ -12,7 +12,7 @@ export function useMovimientoReducido(): boolean {
  */
 export function usePrimeraVez(clave: string): boolean {
   const [primera] = useState(() => {
-    const llave = `validasoft:celebrado:${clave}`;
+    const llave = `avalasoft:celebrado:${clave}`;
     try {
       if (window.sessionStorage.getItem(llave)) return false;
       window.sessionStorage.setItem(llave, '1');

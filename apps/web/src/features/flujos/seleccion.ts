@@ -1,4 +1,4 @@
-import { esErrorApi, type CondicionDto, type SeleccionDeFlujoDto } from '@validasoft/api-client';
+import { esErrorApi, type CondicionDto, type SeleccionDeFlujoDto } from '@avalasoft/api-client';
 import { condicionDeAtributoCompleta, condicionDeAtributoSimple, condicionDeFichaCompleta, condicionDeFichaSimple } from './condiciones';
 import type { BorradorFlujo, ErrorFlujo } from './editor';
 

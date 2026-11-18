@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { expedienteConSecciones, FINANCIERA_PENDIENTE, GENERAL_OBSERVADA, GENERAL_POR_RATIFICAR, renovacionConSecciones } from './pruebasSeccion';
@@ -9,7 +9,7 @@ import { RequisitosDelExpediente } from './RequisitosDelExpediente';
 
 function montar(soloLectura = false) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <MemoryRouter>
         <RequisitosDelExpediente expediente={expedienteConSecciones([FINANCIERA_PENDIENTE, GENERAL_OBSERVADA])} vinculoId="v1" soloLectura={soloLectura} />
       </MemoryRouter>
@@ -52,7 +52,7 @@ describe('Sección de «Mi información» en el expediente del tercero (F2)', ()
 
   it('renovación periódica: la sección ya aceptada se ratifica o se actualiza, sin pedirle que la complete', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+      <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
         <QueryClientProvider client={new QueryClient()}>
           <MemoryRouter>
             <RequisitosDelExpediente expediente={renovacionConSecciones([GENERAL_POR_RATIFICAR])} vinculoId="v1" soloLectura={false} />
@@ -71,7 +71,7 @@ describe('Sección de «Mi información» en el expediente del tercero (F2)', ()
 
   it('ratificada, la tarjeta lo dice con la fecha y ya no ofrece ratificar', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+      <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
         <QueryClientProvider client={new QueryClient()}>
           <MemoryRouter>
             <RequisitosDelExpediente

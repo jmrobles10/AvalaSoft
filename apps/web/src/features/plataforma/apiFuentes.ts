@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { actualizarFuentesDePlataforma, getObtenerFuentesDePlataformaQueryOptions, type ActualizarFuentesDePlataformaDto } from '@validasoft/api-client';
+import { actualizarFuentesDePlataforma, getObtenerFuentesDePlataformaQueryOptions, type ActualizarFuentesDePlataformaDto } from '@avalasoft/api-client';
 import { invalidarRuta } from '../../shared/consultas';
 
 /** La consola de Plataforma no tiene empresa activa ni tenant (PT-4). */

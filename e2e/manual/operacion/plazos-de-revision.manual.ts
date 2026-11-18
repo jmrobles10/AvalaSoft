@@ -39,7 +39,7 @@ recorrido(
     await paso(paginaAna, {
       titulo: 'Guarda el plazo del área',
       explicacion:
-        'Con 10 horas en Compras, cada expediente que llegue a esa área tiene 10 horas para decidirse. Al guardar, Validasoft confirma el cambio y aplica el plazo a los expedientes que entren de ahí en adelante.',
+        'Con 10 horas en Compras, cada expediente que llegue a esa área tiene 10 horas para decidirse. Al guardar, AvalaSoft confirma el cambio y aplica el plazo a los expedientes que entren de ahí en adelante.',
       resaltar: [ana.getByRole('textbox', { name: 'Plazo en horas de Compras' }), ana.getByRole('button', { name: 'Guardar cambios' })],
       variantes: [{ cuando: 'Dejas vacío el plazo de un área', entonces: 'Esa área no tiene plazo y sus expedientes no generan avisos de vencimiento.' }],
     });

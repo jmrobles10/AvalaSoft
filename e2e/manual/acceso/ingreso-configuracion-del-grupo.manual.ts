@@ -7,7 +7,7 @@ recorrido(
     actor: 'Administrador de empresa',
     titulo: 'Elige cómo entran las personas de tu grupo y exige passkey',
     resumen:
-      'Ana, como administradora del grupo, define en Configuración › Ingreso cómo entran las personas: desde el sistema integrado, directo a Validasoft con correo y código, o ambos. ' +
+      'Ana, como administradora del grupo, define en Configuración › Ingreso cómo entran las personas: desde el sistema integrado, directo a AvalaSoft con correo y código, o ambos. ' +
       'También elige si todas las personas deben registrar una passkey.',
     precondiciones: [
       'Un grupo con ingreso directo activo y Ana como administradora de todo el grupo, con su passkey registrada.',
@@ -25,13 +25,13 @@ recorrido(
     await paso(page, {
       titulo: 'Abre la política de ingreso del grupo',
       explicacion:
-        'En Configuración › Ingreso eliges cómo entran las personas del grupo. «Desde el sistema integrado» es para quienes entran por tu sistema; «Directo a Validasoft» es para quienes entran con su correo y un código. ' +
+        'En Configuración › Ingreso eliges cómo entran las personas del grupo. «Desde el sistema integrado» es para quienes entran por tu sistema; «Directo a AvalaSoft» es para quienes entran con su correo y un código. ' +
         'Puedes admitir uno o ambos. Quien entra desde el sistema integrado no cambia aunque apagues el modo directo.',
       resaltar: page.getByRole('heading', { name: 'Cómo entran', exact: true }),
       configuracion: {
         ajuste: 'Cómo entran (modos de ingreso)',
         ruta: 'Configuración › Ingreso (/ingreso)',
-        efecto: 'Define si las personas pueden entrar directo a Validasoft, desde el sistema integrado, o desde los dos.',
+        efecto: 'Define si las personas pueden entrar directo a AvalaSoft, desde el sistema integrado, o desde los dos.',
       },
       variantes: [
         { cuando: 'Apagas el ingreso directo', entonces: 'Las sesiones directas abiertas se cierran y la pantalla avisa de ese efecto antes de guardar.' },

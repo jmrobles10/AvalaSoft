@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField, useMediaQuery, useTheme } from '@mui/material';
-import type { PerfilDeFichaDto } from '@validasoft/api-client';
+import type { PerfilDeFichaDto } from '@avalasoft/api-client';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CampoCifra, CampoFechaFicha, CampoSiNo, CampoTexto, Rejilla } from '../campos';
@@ -24,7 +24,7 @@ interface Props {
 
 /**
  * Agregar o editar una persona relacionada. Solo cambia la lista del formulario: se guarda con la sección. En el celular
- * ocupa toda la pantalla. El DV de un NIT lo calcula Validasoft.
+ * ocupa toda la pantalla. El DV de un NIT lo calcula AvalaSoft.
  */
 export function DialogoPersona({ inicial, nueva, mensaje, hayEnRuta, onGuardar, onCerrar, perfil }: Props) {
   const { t } = useTranslation();

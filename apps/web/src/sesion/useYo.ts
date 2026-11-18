@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getObtenerYoQueryOptions } from '@validasoft/api-client';
+import { getObtenerYoQueryOptions } from '@avalasoft/api-client';
 import { useSesion } from './sesionStore';
 
 /**

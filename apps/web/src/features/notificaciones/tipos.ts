@@ -1,4 +1,4 @@
-import { claveDeTipoEn } from '@validasoft/api-client';
+import { claveDeTipoEn } from '@avalasoft/api-client';
 
 /**
  * Tipos de notificación a personas (docs/05 §6.5, `TiposNotificacion` en el backend) y su clave de textos: los códigos

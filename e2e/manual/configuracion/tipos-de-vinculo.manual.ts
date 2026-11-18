@@ -14,7 +14,7 @@ recorrido(
       'La administradora crea el tipo de vínculo «Contratista» con dos exigencias: cuenta bancaria designada y un código por correo en el enlace de invitación. Después lo desactiva para que no se usen más flujos con él.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y los tipos de vínculo base (Proveedor, Cliente).',
-      'Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
     ],
     relacionados: ['configuracion/tipo-de-documento-y-flujo'],
   },

@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
-import { esErrorApi, SCOPES, type EmpresaDto, type InvitacionDeTerceroDto } from '@validasoft/api-client';
-import { FaltaParaEnviar, FormularioDeDialogo } from '@validasoft/ui';
+import { esErrorApi, SCOPES, type EmpresaDto, type InvitacionDeTerceroDto } from '@avalasoft/api-client';
+import { FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
 import { ExternalLink } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

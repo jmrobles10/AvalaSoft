@@ -38,7 +38,7 @@ export async function enRevision(page: Page, e: Escenario, nombre: string): Prom
   return invitacion;
 }
 
-/** Una persona de la empresa abre Validasoft embebido en su propio navegador. */
+/** Una persona de la empresa abre AvalaSoft embebido en su propio navegador. */
 export async function personaEmbebida(browser: Browser, e: Escenario, quien: Persona, ruta = 'bandeja'): Promise<FrameLocator> {
   return abrirEmbebido(await (await browser.newContext()).newPage(), e, quien, e.norte, ruta);
 }

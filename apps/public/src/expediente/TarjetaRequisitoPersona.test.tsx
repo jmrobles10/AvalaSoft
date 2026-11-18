@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
-import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { TarjetaRequisito } from './TarjetaRequisito';
@@ -34,7 +34,7 @@ const EXPEDIENTE = {
 
 function montar(r: RequisitoPublicoDto) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient()}>
         <MemoryRouter>
           <ul>

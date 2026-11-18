@@ -61,7 +61,7 @@ export const fichaGrupo = {
     reenviarA: 'Reenviar la invitación a {{nombre}}',
     reenviarTitulo: 'Reenviar la invitación',
     reenviarTexto:
-      'Enviamos a {{correo}} el correo con la dirección de Validasoft: ahí pide un código y entra, con una passkey si su rol la exige. No lleva ningún secreto.',
+      'Enviamos a {{correo}} el correo con la dirección de AvalaSoft: ahí pide un código y entra, con una passkey si su rol la exige. No lleva ningún secreto.',
     reenviarConfirmar: 'Enviar invitación',
     reenviada: 'Enviamos la invitación a {{correo}}.',
     dialogo: {

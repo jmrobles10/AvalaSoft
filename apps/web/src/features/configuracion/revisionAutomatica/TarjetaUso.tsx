@@ -1,5 +1,5 @@
 import { Alert, Box, LinearProgress, Typography } from '@mui/material';
-import type { UsoRevisionAutomaticaDto } from '@validasoft/api-client';
+import type { UsoRevisionAutomaticaDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { Cifra } from '../../inicio/Cifras';

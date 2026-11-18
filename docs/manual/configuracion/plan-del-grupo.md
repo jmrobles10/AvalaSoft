@@ -17,7 +17,7 @@ La administradora abre Plan del grupo para ver qué permite el plan que fijó Pl
 
 - Un grupo empresarial con las empresas «Constructora Norte S.A.S.» y «Constructora Sur S.A.S.».
 - Plataforma fijó al grupo el plan «empresarial» con límite de 2 empresas, 20 usuarios y bloqueo al llegar al límite.
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 
@@ -26,7 +26,7 @@ La administradora abre Plan del grupo para ver qué permite el plan que fijó Pl
 
 ## Paso 1. Abre Configuración › Plan del grupo
 
-La tarjeta «Tu plan» muestra el código del plan que te asignó Plataforma y qué pasa al llegar a un límite. Con el bloqueo activo no se pueden crear más usuarios, empresas ni vínculos de lo que ya se agotó; lo que ya existe sigue funcionando. Sin bloqueo, Validasoft solo avisa a los administradores del grupo y se puede seguir trabajando.
+La tarjeta «Tu plan» muestra el código del plan que te asignó Plataforma y qué pasa al llegar a un límite. Con el bloqueo activo no se pueden crear más usuarios, empresas ni vínculos de lo que ya se agotó; lo que ya existe sigue funcionando. Sin bloqueo, AvalaSoft solo avisa a los administradores del grupo y se puede seguir trabajando.
 
 > **Pantalla:** `/e/{empresa}/plan-grupo`
 

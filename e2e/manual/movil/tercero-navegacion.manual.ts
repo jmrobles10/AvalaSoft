@@ -56,7 +56,7 @@ recorrido(
     await paso(page, {
       titulo: 'Sal del portal desde la parte de arriba',
       explicacion:
-        '«Salir» cierra tu sesión en este dispositivo. Para volver a entrar, pide el enlace con tu correo: Validasoft no te pide contraseña.',
+        '«Salir» cierra tu sesión en este dispositivo. Para volver a entrar, pide el enlace con tu correo: AvalaSoft no te pide contraseña.',
       resaltar: page.getByRole('button', { name: 'Salir' }),
     });
     await page.getByRole('button', { name: 'Salir' }).click();

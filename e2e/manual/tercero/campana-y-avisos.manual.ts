@@ -84,7 +84,7 @@ recorrido(
     await paso(page, {
       titulo: 'Confirma que tus preferencias quedaron guardadas',
       explicacion:
-        'Al guardar, Validasoft confirma con un aviso breve que tus preferencias quedaron guardadas.',
+        'Al guardar, AvalaSoft confirma con un aviso breve que tus preferencias quedaron guardadas.',
       resaltar: page.getByText('Guardamos tus preferencias de correo.'),
     });
 

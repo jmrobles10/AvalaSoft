@@ -10,7 +10,7 @@ recorrido(
     actor: 'Plataforma',
     titulo: 'Desactiva y reactiva un sistema integrado de un grupo',
     resumen:
-      'El operador de Plataforma abre los sistemas integrados de un grupo y desactiva uno que ya no debe entrar a Validasoft. Desactivarlo corta de inmediato sus llaves y sus sesiones; reactivarlo no revive lo que ya se revocó.',
+      'El operador de Plataforma abre los sistemas integrados de un grupo y desactiva uno que ya no debe entrar a AvalaSoft. Desactivarlo corta de inmediato sus llaves y sus sesiones; reactivarlo no revive lo que ya se revocó.',
     precondiciones: ['Un grupo con un sistema integrado activo y su API key.', 'Un operador de Plataforma con la consola abierta.'],
     relacionados: ['plataforma/crear-grupo-y-empresa', 'integracion/api-keys', 'integracion/sistema-integrador'],
   },
@@ -25,7 +25,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre los sistemas integrados del grupo',
       explicacion:
-        'Cada grupo tiene el botón «Sistemas» en su tarjeta. Desde allí ves los sistemas que el grupo integró con Validasoft: el sistema es el ERP o portal del cliente que autentica a sus personas y firma sus aserciones. ' +
+        'Cada grupo tiene el botón «Sistemas» en su tarjeta. Desde allí ves los sistemas que el grupo integró con AvalaSoft: el sistema es el ERP o portal del cliente que autentica a sus personas y firma sus aserciones. ' +
         'El botón abre la lista para ese grupo; no afecta a los otros grupos.',
       resaltar: consola.getByRole('button', { name: `Ver los sistemas de ${grupo}` }),
       configuracion: {
@@ -41,7 +41,7 @@ recorrido(
     await paso(page, {
       titulo: 'Revisa los sistemas del grupo',
       explicacion:
-        'La lista muestra cada sistema con su nombre, su fecha de creación y cuántos sitios pueden incrustar Validasoft. Desactivar un sistema cierra de inmediato el acceso de sus llaves y de las sesiones que emitió. ' +
+        'La lista muestra cada sistema con su nombre, su fecha de creación y cuántos sitios pueden incrustar AvalaSoft. Desactivar un sistema cierra de inmediato el acceso de sus llaves y de las sesiones que emitió. ' +
         'Su historial se conserva, así que siempre se puede reactivar después.',
       resaltar: lista.getByRole('button', { name: `Desactivar ${SISTEMA}` }),
       variantes: [
@@ -60,7 +60,7 @@ recorrido(
     await paso(page, {
       titulo: 'Confirma la desactivación',
       explicacion:
-        'Antes de desactivar, Validasoft pide confirmación: el sistema deja de poder pedir sesiones y sus llaves dejan de servir en ese momento. Su historial no se borra. ' +
+        'Antes de desactivar, AvalaSoft pide confirmación: el sistema deja de poder pedir sesiones y sus llaves dejan de servir en ese momento. Su historial no se borra. ' +
         'Si la desactivación es un error, puedes reactivarlo en la misma lista, aunque las sesiones anteriores no se recuperan.',
       resaltar: confirmar,
       configuracion: {
@@ -74,7 +74,7 @@ recorrido(
     await paso(page, {
       titulo: 'Verifica que el sistema quedó desactivado',
       explicacion:
-        'Validasoft confirma con un aviso que el sistema quedó desactivado. En la lista, su botón ahora dice «Reactivar» y el sistema ya no puede abrir sesiones para las personas del grupo. ' +
+        'AvalaSoft confirma con un aviso que el sistema quedó desactivado. En la lista, su botón ahora dice «Reactivar» y el sistema ya no puede abrir sesiones para las personas del grupo. ' +
         'Las llaves revocadas siguen revocadas, aunque el sistema se reactive.',
       resaltar: lista.getByRole('button', { name: `Reactivar ${SISTEMA}` }),
       avisos: true,
@@ -86,7 +86,7 @@ recorrido(
     await paso(page, {
       titulo: 'Reactiva el sistema',
       explicacion:
-        'Al reactivarlo, el sistema vuelve a ser válido: sus aserciones se aceptan otra vez y sus orígenes pueden volver a embeber Validasoft. Las sesiones y los tokens de antes no se recuperan, y las API keys no vuelven: se revocaron todas al desactivarlo, así que hay que emitir otras desde el grupo para que su backend vuelva a pedir sesiones.',
+        'Al reactivarlo, el sistema vuelve a ser válido: sus aserciones se aceptan otra vez y sus orígenes pueden volver a embeber AvalaSoft. Las sesiones y los tokens de antes no se recuperan, y las API keys no vuelven: se revocaron todas al desactivarlo, así que hay que emitir otras desde el grupo para que su backend vuelva a pedir sesiones.',
       resaltar: lista.getByRole('button', { name: `Desactivar ${SISTEMA}` }),
       avisos: true,
     });

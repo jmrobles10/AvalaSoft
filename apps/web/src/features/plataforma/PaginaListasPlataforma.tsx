@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, MenuItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
-import type { ProveedorDePlataformaDto } from '@validasoft/api-client';
-import { CampoNumero, formatearFechaHora } from '@validasoft/ui';
+import type { ProveedorDePlataformaDto } from '@avalasoft/api-client';
+import { CampoNumero, formatearFechaHora } from '@avalasoft/ui';
 import { DatabaseZap, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

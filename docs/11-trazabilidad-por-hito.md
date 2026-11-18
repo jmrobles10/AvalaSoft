@@ -10,7 +10,7 @@
 
 **Cómo se mantiene.**
 1. Todo PR que toque un contrato (endpoint, DTO, evento, proyección, plantilla, pantalla, permiso, clave de configuración) actualiza este documento **en el mismo PR**; `CODEOWNERS` exige revisión de Arquitectura.
-2. Regla de CI (`ci.yml`, job `trazabilidad`): un script lee `/openapi/v1.json` generado por el build y extrae `MÉTODO ruta` y nombres de esquemas; lee las tablas §3(a) y §2.x.3 de este archivo; **falla** si un endpoint u esquema del OpenAPI no aparece aquí, o si aparece aquí con un hito ya cerrado y no existe en el OpenAPI. Lo mismo para el catálogo de eventos públicos (`Validasoft.Contratos.Eventos`) contra §3(b) y para las plantillas de notificación (`Plantillas/*.liquid`) contra §3(c).
+2. Regla de CI (`ci.yml`, job `trazabilidad`): un script lee `/openapi/v1.json` generado por el build y extrae `MÉTODO ruta` y nombres de esquemas; lee las tablas §3(a) y §2.x.3 de este archivo; **falla** si un endpoint u esquema del OpenAPI no aparece aquí, o si aparece aquí con un hito ya cerrado y no existe en el OpenAPI. Lo mismo para el catálogo de eventos públicos (`Avalasoft.Contratos.Eventos`) contra §3(b) y para las plantillas de notificación (`Plantillas/*.liquid`) contra §3(c).
 3. Al cerrar un hito, la columna "Estado" de §3 pasa de `Planificado` a `Entregado` con el tag de versión.
 
 ---
@@ -65,7 +65,7 @@ Todo endpoint de `/api/v1` que opera sobre recursos de empresa recibe la cabecer
 | `GET /usuarios` · `POST /usuarios` · `PATCH /usuarios/{id}` · `POST /usuarios/{id}/roles` · `DELETE /usuarios/{id}/roles/{rolId}` · `POST /usuarios/{id}/2fa/reiniciar` | `usuarios:administrar` | `UsuarioDto`, `RolAsignadoDto` | 200/201/204 | — | Sí (POST) |
 | `GET /roles` · `GET /permisos` | `usuarios:administrar` | → `RolDto[]`, `PermisoDto[]` | 200 | — | — |
 | `GET /health/live` · `GET /health/ready` · `GET /health` | — / `operacion:leer` | — | 200/503 | — | — |
-| OIDC: `/connect/authorize`, `/connect/token` (grants `authorization_code+PKCE`, `refresh_token`, `urn:validasoft:erp-token`, `urn:validasoft:magic-link`), `/connect/userinfo`, `/.well-known/openid-configuration` | — | OpenIddict estándar | 200/400 | — | — |
+| OIDC: `/connect/authorize`, `/connect/token` (grants `authorization_code+PKCE`, `refresh_token`, `urn:avalasoft:erp-token`, `urn:avalasoft:magic-link`), `/connect/userinfo`, `/.well-known/openid-configuration` | — | OpenIddict estándar | 200/400 | — | — |
 
 #### 2.1.3 DTOs nuevos
 | DTO | Campos |
@@ -481,7 +481,7 @@ Hacia atrás: `BovedaTercero` (H2) incorpora `porEmpresa[]`; `FlujosResumen` (H3
 | Nombre | Eventos | Invariantes |
 |---|---|---|
 | `Certificado` | `CertificadoEmitido`, `CertificadoReemplazado`, `CertificadoRevocado` (+ en H6: `CertificadoMarcadoConPendientes`, `CertificadoSuspendido` (bloqueo, B-5), `CertificadoRestablecido`, `CertificadoVencido`) | Uno por vínculo; folio `{PrefijoEmpresa}-C-{Año}-{Secuencia}-{n}` (expediente: `{PrefijoEmpresa}-E-{Año}-{Secuencia}`, T-9); `HashContenido` reproducible; sello Ed25519 (T-12); sin certificado parcial; `EstadoCertificado { Vigente, ConPendientes, Suspendido, Vencido, Revocado, Reemplazado }` |
-| `Webhook`, `EntregaWebhook` (documentos) | `WebhookCreado`, `SecretoRotado`, `EntregaIntentada`, `WebhookDeshabilitado` | Firma `HMAC-SHA256(secreto, "{ts}.{cuerpo}")`; cabecera `Validasoft-Event-Id` para dedupe en el receptor (T-6); destinos `https` sin IP privada |
+| `Webhook`, `EntregaWebhook` (documentos) | `WebhookCreado`, `SecretoRotado`, `EntregaIntentada`, `WebhookDeshabilitado` | Firma `HMAC-SHA256(secreto, "{ts}.{cuerpo}")`; cabecera `Avalasoft-Event-Id` para dedupe en el receptor (T-6); destinos `https` sin IP privada |
 | `Notificacion`, `EntregaNotificacion` | `NotificacionEncolada`, `NotificacionEnviada`, `NotificacionEntregada/Abierta/Rebotada/Fallida` | Un correo por tercero, hecho y día (salvo invitación y certificado) |
 | `PreferenciasNotificacion` (por usuario) | — | — |
 
@@ -540,16 +540,16 @@ Hacia atrás: `BovedaTercero` (H2) incorpora `porEmpresa[]`; `FlujosResumen` (H3
 | Nombre | Dispara | Pasos |
 |---|---|---|
 | Saga `EmisionCertificado` | `ExpedienteAprobado` | completitud → folio `-C-` (secuencia por empresa, T-9) → PDF/A-2b → hash RFC 8785 → sello Ed25519 de plataforma (T-12) → Object Lock modo *compliance* (prod, T-14) → `CertificadoEmitido` → `certificado.emitido` (T-15) |
-| Despachador de webhooks | outbox | firma, `Validasoft-Event-Id` (T-6), reintentos 1 m…24 h ×2, `WebhookDeshabilitado` tras 7 días |
+| Despachador de webhooks | outbox | firma, `Avalasoft-Event-Id` (T-6), reintentos 1 m…24 h ×2, `WebhookDeshabilitado` tras 7 días |
 | Despachador de notificaciones | eventos | Fluid + MailKit + campana; dedupe `(destinatario, evento, agregado, ventana)` |
 | Seed `demo` | comando `-- seed demo` | tenant `demo` con 2 empresas, flujo "Habilitación de proveedores", usuarios por rol, 3 terceros |
 
 #### 2.5.9 Configuración
-`Certificados:ClaveEd25519` (referencia KMS; pública en `/.well-known/validasoft-certificados.json`, T-12), `Certificados:UrlVerificacionBase`, `Almacenamiento:ObjectLockModo` (`Compliance`, T-14), `Webhooks:Reintentos` (`[1m,5m,30m,2h,12h,24h,24h]`), `Webhooks:ToleranciaRelojSegundos` (300), `Notificaciones:RemitenteDominio`, `EmpresaDto.replyTo`, `Notificaciones:DigestHora` (07:00 tenant).
+`Certificados:ClaveEd25519` (referencia KMS; pública en `/.well-known/avalasoft-certificados.json`, T-12), `Certificados:UrlVerificacionBase`, `Almacenamiento:ObjectLockModo` (`Compliance`, T-14), `Webhooks:Reintentos` (`[1m,5m,30m,2h,12h,24h,24h]`), `Webhooks:ToleranciaRelojSegundos` (300), `Notificaciones:RemitenteDominio`, `EmpresaDto.replyTo`, `Notificaciones:DigestHora` (07:00 tenant).
 
 #### 2.5.10 Pruebas
 - Unit: hash de contenido reproducible; folio `-C-` secuencial por empresa; firma HMAC válida/inválida; sello Ed25519 verificable con la clave pública publicada.
-- Integración: receptor de prueba acepta firma válida y rechaza inválida; la misma entrega reintentada llega con el mismo `Validasoft-Event-Id` y el receptor de ejemplo la ignora (T-6); `GET /eventos?desde=` devuelve exactamente los mismos eventos que las entregas; un tercero con tres empresas recibe **un** correo por hecho y día; `GET /public/v1/verificar/{folio}` compara hash.
+- Integración: receptor de prueba acepta firma válida y rechaza inválida; la misma entrega reintentada llega con el mismo `Avalasoft-Event-Id` y el receptor de ejemplo la ignora (T-6); `GET /eventos?desde=` devuelve exactamente los mismos eventos que las entregas; un tercero con tres empresas recibe **un** correo por hecho y día; `GET /public/v1/verificar/{folio}` compara hash.
 - E2E (escenario **(d)**): última área aprueba → SSE "Certificado emitido" → `public:/certificado/:folio` → entrega del webhook visible en Configuración.
 - Contract: snapshot v1 congelado (cambio incompatible ⇒ build rojo).
 - **Criterio de salida del MVP**: demo de punta a punta en Docker con el tenant `demo`.
@@ -562,7 +562,7 @@ Hacia atrás: la plantilla `aprobado` (H4) se conserva y se suma `certificado`; 
 #### H5 — Cierre de huecos (2026-10-28)
 | Tipo | Elemento | Definido en |
 |---|---|---|
-| Contrato | Contenido canónico del certificado (`validasoft.certificado.v1`, RFC 8785, `sha256`, sello Ed25519, clave pública en `/.well-known/validasoft-certificados.json`), qué entra y qué no, plantilla PDF/A-2b, verificación pública con `contenidoCanonico` | 03 §7.1 |
+| Contrato | Contenido canónico del certificado (`avalasoft.certificado.v1`, RFC 8785, `sha256`, sello Ed25519, clave pública en `/.well-known/avalasoft-certificados.json`), qué entra y qué no, plantilla PDF/A-2b, verificación pública con `contenidoCanonico` | 03 §7.1 |
 | DTO | `CertificadoContenidoDto`, `PlantillaNotificacionDto`, `PreferenciasNotificacionDto` | 05 §4 |
 | Endpoint | `GET/PUT /usuarios/me/preferencias-notificacion` | 05 §2.7 |
 | Regla | Alcance de webhooks = `apiKey.empresas[] ∩ webhook.empresas[]`; vacío ⇒ `422 empresas-fuera-de-alcance`; cambio posterior ⇒ `webhook.deshabilitado {causa}` | 05 §2.8, 07 §4 |
@@ -689,7 +689,7 @@ Tres huecos de la auditoría contra el SRM, implementados sobre H6 (decisiones e
 |---|---|---|
 | Configuración | `VigenciaVinculoDto { dias, diasAviso[], diasGracia }` en `CrearFlujoDto` / `EditarFlujoDto` / `FlujoVersionDto` (por versión de flujo; `dias = 0` = sin vencimiento periódico); `RequisitoDelFlujoDto.vigenciaDias` y `diasRevalidacion` (solo secciones). 422 `vigencia-vinculo-invalida`, `aviso-vigencia-invalido`, `gracia-vigencia-invalida`, `vigencia-sin-secciones`, `vigencia-seccion-invalida`, `dias-revalidacion-invalidos`, `vigencia-no-aplica` | 05 §2.2, 03 §5.4 |
 | Evento | `VigenciaDelVinculoFijada`, `VinculoPorVencer(VigenteHasta, DiasRestantes, AvisosCumplidos)`, `VinculoVencido(…, Causa: Documento \| Vigencia)` (en el stream `Vinculo`); públicos `vinculo.por_vencer`, `vinculo.vencido` | 03 §5.4, 05 §7 |
-| Job | `RevisarVigenciasDeVinculos` / `RevisarVigenciaDeVinculo` / `DesbloquearAlLlegarLaFecha` (cola durable `vigencias`), `ProgramadorDeVigenciasDeVinculos` (`Validasoft:VigenciasDeVinculos:Intervalo`), índice `Vinculo.ProximaRevisionDeVigencia`; `POST /plataforma/vigencias-de-vinculos/revisar` (`fecha` simulada solo en Development; `incluirDocumentos`) | 05 §2.7, 03 §5.4 |
+| Job | `RevisarVigenciasDeVinculos` / `RevisarVigenciaDeVinculo` / `DesbloquearAlLlegarLaFecha` (cola durable `vigencias`), `ProgramadorDeVigenciasDeVinculos` (`Avalasoft:VigenciasDeVinculos:Intervalo`), índice `Vinculo.ProximaRevisionDeVigencia`; `POST /plataforma/vigencias-de-vinculos/revisar` (`fecha` simulada solo en Development; `incluirDocumentos`) | 05 §2.7, 03 §5.4 |
 | Endpoint | `POST /public/v1/expedientes/{id}/requisitos/{rid}/ratificar` también para secciones de la ficha (renovación periódica); `POST /vinculos/{id}/bloquear` con `hasta` programa el desbloqueo | 05 §2.4 |
 | DTO | `VinculoDto.vigenteHasta`, `VinculoPublicoDto.vigenteHasta`, `RequisitoPublicoDto.puedeRatificar` (también secciones), `IndicadoresDto.vinculosPorVencer` | 05 §4 |
 | Pantalla | web: editor de flujos (vigencia del vínculo y de cada sección), detalle del vínculo (vigente hasta, aviso, historial), inicio («Por vencer»); portal: «Ratificar» en el expediente, en Mi información y en el wizard de la sección, «En pre-vencimiento» y «Ratifica tu información» en Mis empresas | 06 |
@@ -792,7 +792,7 @@ Implementado lo que da la paridad con el SRM (listas restrictivas con evidencia 
 | Eventos públicos | `expediente.verificacion_registrada`, `expediente.coincidencia_resuelta`, `expediente.verificacion_expirada` (nuevo) | VE-13 |
 | Avisos | `verificacion.coincidencia`, `verificacion.estudio_pendiente` (campana y correo), `verificacion.expirada` (campana), a los oficiales de cumplimiento | VE-13 |
 | Pantallas | Panel «Verificaciones» en `web:/expedientes/:id`; tarjeta «Monitoreo de listas» en `web:/vinculos/:id` (HI-2); `web:/cumplimiento` (bandeja e informe SAGRILAFT) en vez de `/informes/cumplimiento`; `web:/listas-restrictivas` en Configuración (Infolaft figura como cuenta de la plataforma) y `web:/plataforma/listas` en la consola (PP-5); verificaciones en el editor de flujos | VE-18 |
-| Configuración | `Validasoft:Verificadores:{SegundosProceso, ListasRestrictivas:{PermitirSimulado, ProveedorPorDefecto, DiasMonitoreo, MinutosReintento, Proveedores:{Nombre}:{Habilitado, UrlBase, TimeoutSegundos, MaximoConcurrencia, FallosParaAbrir, SegundosAbierto}}, EstudioCumplimiento:VigenciaDias}` | VE-7, VE-8, VE-16 |
+| Configuración | `Avalasoft:Verificadores:{SegundosProceso, ListasRestrictivas:{PermitirSimulado, ProveedorPorDefecto, DiasMonitoreo, MinutosReintento, Proveedores:{Nombre}:{Habilitado, UrlBase, TimeoutSegundos, MaximoConcurrencia, FallosParaAbrir, SegundosAbierto}}, EstudioCumplimiento:VigenciaDias}` | VE-7, VE-8, VE-16 |
 | Pruebas | Dominio: `VerificacionesTests` (bloqueo, coincidencias, herencia, estudio, vigencias, monitoreo, credenciales, consumo, lector de Infolaft). Integración: `ExpedientesApiTests.Verificaciones` (bloqueo del cierre con estudio pendiente, coincidencia de un representante de la ficha descartada, estudio vencido que vuelve a pedirse, configuración de Infolaft con clave de solo escritura, consumo e informe). E2E: `pruebas/verificaciones.spec.ts` (con coincidencia y sin ella) | — |
 | Pendiente | Todo lo que aquí quedaba pendiente (expirar por cambio de representante, evidencia manual, archivos del estudio, matriz de riesgo, clave por grupo, correo de resultado tras un cierre en segundo plano, rechazo directo del oficial) quedó resuelto en CU-1…CU-22 (abajo) | — |
 
@@ -882,7 +882,7 @@ Cierra H7 frente al SRM y agrega lo que el SRM no tiene. Detalle de cada decisi�
 | `web:/auditoria` (filtros, exportación ZIP firmada) | tablas | `GET /auditoria` |
 | `web:/informes/estado-expedientes` | tablas, Excel | `GET /informes/estado-expedientes` |
 | `web:/configuracion/tenant/matriz-riesgo` | — | `PUT /tenant/matriz-riesgo` |
-| `public:/boveda` exportar; `public:/configuracion/privacidad` (solicitud de supresión); PWA offline (cola de subidas); `public:/embed/expediente/:token` + Web Component `<validasoft-expediente>`; trazo opcional en `AceptacionConEvidencia` | — | `POST /public/v1/boveda/exportar`, `POST /public/v1/solicitudes-supresion` |
+| `public:/boveda` exportar; `public:/configuracion/privacidad` (solicitud de supresión); PWA offline (cola de subidas); `public:/embed/expediente/:token` + Web Component `<avalasoft-expediente>`; trazo opcional en `AceptacionConEvidencia` | — | `POST /public/v1/boveda/exportar`, `POST /public/v1/solicitudes-supresion` |
 
 #### 2.8.8 Jobs/sagas
 | Nombre | Dispara | Pasos |
@@ -917,7 +917,7 @@ Paridad con `Features/InvitacionLote` y el job de solicitudes vencidas del SRM. 
 | Eventos públicos | `invitaciones.lote_terminado`, `expediente.caducado`, `expediente.reabierto` (con `plazoHasta`) |
 | Notificaciones | Campana a las áreas: `expediente.caducado`; campana y correo a quien creó el lote: `invitaciones.lote_terminado`; correos al tercero con la plantilla nueva `caducidad` (recordatorio, caducado, reabierto con enlace) |
 | Jobs y colas | Cola durable secuencial `lotes` (`ProcesarTandaDeLote`); cola durable `plazos` (`RevisarPlazosDeCargue`, `RevisarPlazoDeCargue`) disparada por `ProgramadorDePlazosDeCargue` |
-| Configuración | `Validasoft:Lotes:MaxFilas` (10 000), `Validasoft:Lotes:TamanoTanda` (100), `Validasoft:PlazosDeCargue:Intervalo` (01:00:00; 00:00:00 lo apaga) |
+| Configuración | `Avalasoft:Lotes:MaxFilas` (10 000), `Avalasoft:Lotes:TamanoTanda` (100), `Avalasoft:PlazosDeCargue:Intervalo` (01:00:00; 00:00:00 lo apaga) |
 | Pantallas | `web:/e/{empresa}/invitaciones/lotes`, `…/nuevo`, `…/{id}` (desde «Invitar por lote» en Vínculos); aviso de plazo y «Reabrir expediente» en el detalle del expediente; plazo de cargue en el editor de flujos; `public:` «Tienes hasta el …» en la revisión |
 | Pruebas | Dominio (`PlazoDeCargueTests`, `LoteDeInvitacionTests`), integración (`RequisitosApiTests.Lotes`, `RequisitosApiTests.Caducidad`), web (`features/lotes`), e2e (`e2e/pruebas/lotes.spec.ts`) |
 | Pendiente | Atributos del vínculo por columna en el archivo; lote programado (`programarPara`); `Lotes:ConcurrenciaCorreos`; caducidad de renovaciones; proyección `VencimientoProgramado` (el barrido usa el índice del expediente) |
@@ -929,7 +929,7 @@ Paridad con `Features/InvitacionLote` y el job de solicitudes vencidas del SRM. 
 |---|---|---|
 | Endpoint | `GET /informes/estado-expedientes` (+ `/excel`, `/pdf`), `GET /informes/vinculos` (+ `/excel`), `GET /auditoria/excel`, `GET /expedientes/{id}/exportar` (ZIP). Exportes síncronos (IF-3): el `POST …/exportar` 202 de la tabla 2.8.2 queda para volúmenes mayores | 05 §2.7; registro IF-1…IF-6 |
 | Dominio | `Expediente.MedirTiempos`: días en carga, con el tercero, en revisión y por área (rondas, SLA) sobre los eventos; sin evento `ExpedienteExportado` (la exportación se registra en `ExportacionRegistrada`, IF-5/IF-6) | registro IF-2, IF-5 |
-| DTO | `InformeEstadoExpedientesDto`, `ResumenEstadoExpedientesDto`, `FilaEstadoExpedienteDto`, `TiempoDeAreaDto`, `ResumenDeAreaDto`, `InformeVinculosDto`, `FilaInformeVinculoDto`, `CertificadoDelInformeDto`, `ExpedienteDelInformeDto`, `DocumentosDelInformeDto`, `ConteoDto` | `Validasoft.Contratos/Informes.cs` |
+| DTO | `InformeEstadoExpedientesDto`, `ResumenEstadoExpedientesDto`, `FilaEstadoExpedienteDto`, `TiempoDeAreaDto`, `ResumenDeAreaDto`, `InformeVinculosDto`, `FilaInformeVinculoDto`, `CertificadoDelInformeDto`, `ExpedienteDelInformeDto`, `DocumentosDelInformeDto`, `ConteoDto` | `Avalasoft.Contratos/Informes.cs` |
 | Permiso | `auditoria:exportar` (Administrador, Auditor), `expedientes:exportar` (Administrador, Oficial de cumplimiento, Auditor) | 07 §3.2 |
 | Pantalla | `web:/informes/estado-expedientes` y `/informes/vinculos` (pestaña Informes); «Exportar a Excel» en `/auditoria`; «Exportar expediente» en `/expedientes/:id`; Inicio enlaza al informe con la misma ventana (IF-7) | 06 §3.1 |
 | Pendiente | Exportación asíncrona con `exportacion.lista`, ZIP firmado de auditoría, índice firmado del expediente, proyección `InformeEstadoExpedientes` | registro IF-8 |
@@ -963,18 +963,18 @@ Cierra del H8 el habeas data, la exportación firmada de la bóveda, el plan por
 | Endpoint (tercero) | `POST /public/v1/solicitudes-habeas` (201), `GET /public/v1/solicitudes-habeas[/{id}]`, `GET …/{id}/constancia`; `POST /public/v1/boveda/exportar` (202), `GET /public/v1/exportaciones[/{id}]`, `POST …/{id}/descarga` (URL prefirmada de 5 min) | 05 §2.9; registro OD-1, OD-9, OD-10 |
 | Endpoint (empresa) | `GET /solicitudes-habeas?estado=abiertas\|vencidas\|resueltas\|todas&cursor=`, `GET …/resumen`, `GET …/{id}`, `POST …/{id}/resolver` (`supresiones:resolver`); `GET/PUT/DELETE /empresas/{id}/dominio-correo`, `POST …/verificar` (`empresas:administrar`); `GET /tenant/plan`, `GET /tenant/uso` (`configuracion:leer`) | registro OD-3, OD-14, OD-18 |
 | Endpoint (Plataforma) | `GET /plataforma/solicitudes-habeas[/resumen\|/{id}\|/{id}/plan]`, `POST …/{id}/resolver`, `POST /plataforma/habeas/revisar-plazos`; `GET/PUT /plataforma/tenants/{id}/plan`, `POST /plataforma/planes/revisar` | registro OD-3, OD-6, OD-14, OD-16 |
-| DTO | `CrearSolicitudHabeasDto`, `SolicitudHabeasDto` (`Plazo`, `DiasHabilesRestantes`, `ContenidoSuprimido`, `Titular` solo para quien responde), `ResumenDeSolicitudesHabeasDto`, `ResolverSolicitudHabeasDto`, `PlanDeSupresionDto`/`ElementoDePlanDeSupresionDto`, `ConstanciaHabeasDto`, `ExportacionBovedaDto`, `LimitesDePlanDto`, `PlanDelGrupoDto`, `ActualizarPlanDelGrupoDto`, `MedicionDePlanDto`, `UsoDelGrupoDto`, `DominioDeCorreoDto`/`RegistroDnsDto`/`ComprobacionDeRegistroDnsDto`, `ActualizarDominioDeCorreoDto` | `Validasoft.Contratos` (`Habeas.cs`, `PlanYCorreo.cs`) |
+| DTO | `CrearSolicitudHabeasDto`, `SolicitudHabeasDto` (`Plazo`, `DiasHabilesRestantes`, `ContenidoSuprimido`, `Titular` solo para quien responde), `ResumenDeSolicitudesHabeasDto`, `ResolverSolicitudHabeasDto`, `PlanDeSupresionDto`/`ElementoDePlanDeSupresionDto`, `ConstanciaHabeasDto`, `ExportacionBovedaDto`, `LimitesDePlanDto`, `PlanDelGrupoDto`, `ActualizarPlanDelGrupoDto`, `MedicionDePlanDto`, `UsoDelGrupoDto`, `DominioDeCorreoDto`/`RegistroDnsDto`/`ComprobacionDeRegistroDnsDto`, `ActualizarDominioDeCorreoDto` | `Avalasoft.Contratos` (`Habeas.cs`, `PlanYCorreo.cs`) |
 | Dominio | `SolicitudHabeas` (agregado de eventos: `SolicitudHabeasRecibida`, `AvisoDePlazoDeSolicitudEnviado`, `SolicitudHabeasResuelta`), `CalendarioHabil`, `LlaveDeDatosDelTercero` + `CifradoDePersonales` (AES-256-GCM), `ExportacionDeBoveda`, `Documento` (`VersionSuprimida`, `RetencionLegalMarcada`), `PlanDelGrupo`/`UsoMensualDelGrupo`/`MedicionDeMetrica`, `DominioDeCorreoEmpresa` | registro OD-2…OD-8, OD-14…OD-20 |
 | Notificaciones | `habeas.solicitud` y `habeas.plazo` (campana y correo a quienes tienen `supresiones:resolver`), `plan.limite` (campana y correo a los administradores); correos al titular: acuse, respuesta con su constancia y exportación lista | `TiposNotificacion` |
 | Jobs y colas | Colas durables `habeas` (`ProgramadorDeHabeas`), `exportaciones` (**secuencial**) y `plan` (`ProgramadorDePlanes`); `LimpiarExportacionesDeBoveda` | registro OD-3, OD-9, OD-16 |
-| Configuración | `Validasoft:Habeas:Intervalo`, `BaseLegalRetencion`, `AniosRetencion` (10), `ExportacionesPorDia` (5), `DiasDeVigenciaDeExportaciones` (7, de 1 a 30), `CorreosPlataforma` (correos, separados por coma, a los que avisan los plazos de las solicitudes dirigidas a la plataforma, que no tiene usuarios); `Validasoft:Plan:Intervalo` (00:15:00), `SegundosDeVolcado`, `MinutosMedicionAlmacenamiento` | registro OD-5, OD-10, OD-15 |
+| Configuración | `Avalasoft:Habeas:Intervalo`, `BaseLegalRetencion`, `AniosRetencion` (10), `ExportacionesPorDia` (5), `DiasDeVigenciaDeExportaciones` (7, de 1 a 30), `CorreosPlataforma` (correos, separados por coma, a los que avisan los plazos de las solicitudes dirigidas a la plataforma, que no tiene usuarios); `Avalasoft:Plan:Intervalo` (00:15:00), `SegundosDeVolcado`, `MinutosMedicionAlmacenamiento` | registro OD-5, OD-10, OD-15 |
 | Permiso | `supresiones:resolver` ahora en `Permisos.DelTenant`, Administrador y OficialCumplimiento | registro OD-13; 07 §3.2 |
 | Pantallas | `public:/privacidad` (Privacidad y mis datos); `web:/e/{empresa}/habeas-data`, `…/plan-grupo`, `…/dominio-correo`; `web:/plataforma/habeas`, `/plataforma/grupos/{tenant}/plan` | registro OD-11, OD-21 |
 | Pruebas | Dominio (`HabeasDataTests`, `PlanYCorreoTests`), integración (`RequisitosApiTests.Habeas`, `.Exportacion`, `.Plan`, `.DominioCorreo`, `.RendimientoDeLotes`), web (`features/habeas`, `features/plan`, `features/configuracion/dominioCorreo`), public (`privacidad`), e2e (`e2e/pruebas/derechos-plan-correo.spec.ts`) | — |
 | Pendiente | Prórroga de plazos; portabilidad más allá del ZIP; proveedor de dominios real y revalidación periódica del dominio; facturación por plan; el almacenamiento solo bloquea documentos propios de un vínculo; SLAs con alertas, campañas de renovación y delegación de revisión (H8 restante) | registro OD-12, OD-22 |
 
 #### H8 — Rendimiento de la invitación masiva (OD-23, OD-24, 2026-11-11)
-`RequisitosApiTests.RendimientoDeLotes` (`[Trait("Categoria", "Rendimiento")]`, PostgreSQL y MinIO reales) corre **1.000 filas** (940 válidas, 20 repetidas y 40 con el correo mal escrito), con tandas de 100, y mide cada fase, los reintentos por carrera (`lotes.filas_reintentadas`) y la memoria del proceso. Escribe lo medido en `%TEMP%/validasoft-rendimiento-lote.txt`. Correrla sola: `dotnet test tests/Validasoft.Integracion.Tests --filter "Categoria=Rendimiento"`.
+`RequisitosApiTests.RendimientoDeLotes` (`[Trait("Categoria", "Rendimiento")]`, PostgreSQL y MinIO reales) corre **1.000 filas** (940 válidas, 20 repetidas y 40 con el correo mal escrito), con tandas de 100, y mide cada fase, los reintentos por carrera (`lotes.filas_reintentadas`) y la memoria del proceso. Escribe lo medido en `%TEMP%/avalasoft-rendimiento-lote.txt`. Correrla sola: `dotnet test tests/Avalasoft.Integracion.Tests --filter "Categoria=Rendimiento"`.
 
 | Fase | Presupuesto | Medido (máquina de desarrollo, sin otras cargas) |
 |---|---|---|
@@ -987,19 +987,19 @@ Cierra del H8 el habeas data, la exportación firmada de la bóveda, el plan por
 | Memoria: crecimiento del conjunto de trabajo | ≤ 800 MB | **+57 MB** (387 → 444 MB); montón gestionado +42 MB; 2 colecciones de generación 2 |
 | Duración de una fila | — | media 12,6 ms, máxima 140 ms |
 
-Conclusión: **no hubo nada que arreglar** para llegar a 1.000 filas (el límite de un lote es 10.000): el procesamiento es lineal, sin reintentos y con memoria acotada porque cada tanda se confirma por separado. Se instrumentó con `MetricasDeLotes` (`Meter` `Validasoft.Lotes`: `lotes.filas` por resultado, `lotes.filas_reintentadas`, `lotes.tandas`, `lotes.duracion_fila`) para vigilarlo en producción. Dos hallazgos de la propia prueba: (1) con la máquina cargada por otras suites el procesamiento sube a 30-60 s, por eso el presupuesto es de 240 s y no el de la máquina libre; (2) al barajar las filas, una repetida podía quedar **antes** de su original y ser la que se invita: la prueba deja las repetidas al final porque la primera aparición de un NIT es la que cuenta.
+Conclusión: **no hubo nada que arreglar** para llegar a 1.000 filas (el límite de un lote es 10.000): el procesamiento es lineal, sin reintentos y con memoria acotada porque cada tanda se confirma por separado. Se instrumentó con `MetricasDeLotes` (`Meter` `Avalasoft.Lotes`: `lotes.filas` por resultado, `lotes.filas_reintentadas`, `lotes.tandas`, `lotes.duracion_fila`) para vigilarlo en producción. Dos hallazgos de la propia prueba: (1) con la máquina cargada por otras suites el procesamiento sube a 30-60 s, por eso el presupuesto es de 240 s y no el de la máquina libre; (2) al barajar las filas, una repetida podía quedar **antes** de su original y ser la que se invita: la prueba deja las repetidas al final porque la primera aparición de un NIT es la que cuenta.
 
 ### H9 — SDKs e integración con SRM, Portal y Marco
 
 #### 2.9.1 Entidades y eventos
 | Nombre | Detalle |
 |---|---|
-| `Validasoft.Contratos` (NuGet) | DTOs de 05 §4 + `EventoPublicoDto` + enums |
-| `Validasoft.Sdk` (NuGet multi-target `net7.0;net8.0;net10.0`, T-16: el SRM sigue en .NET 7) | `IValidasoftClient` tipado (Kiota/Refit desde OpenAPI), `Idempotency-Key` automático, Polly solo en idempotentes, `WebhookVerifier.Validar(headers, body, secreto)` + dedupe por `Validasoft-Event-Id` (T-6), `X-Empresa` por cliente |
-| `@validasoft/sdk` | `openapi-typescript` + `openapi-fetch` + `verificarFirma()` |
+| `Avalasoft.Contratos` (NuGet) | DTOs de 05 §4 + `EventoPublicoDto` + enums |
+| `Avalasoft.Sdk` (NuGet multi-target `net7.0;net8.0;net10.0`, T-16: el SRM sigue en .NET 7) | `IAvalasoftClient` tipado (Kiota/Refit desde OpenAPI), `Idempotency-Key` automático, Polly solo en idempotentes, `WebhookVerifier.Validar(headers, body, secreto)` + dedupe por `Avalasoft-Event-Id` (T-6), `X-Empresa` por cliente |
+| `@avalasoft/sdk` | `openapi-typescript` + `openapi-fetch` + `verificarFirma()` |
 | `ApiKey` modo sandbox | **Implementado (SB-1…SB-7)**: `vsk_test_*` opera en un **tenant hermano** del grupo (copias de las empresas con otro id, configuración heredada, ningún dato), con correos retenidos en un buzón, IA y listas simuladas y nada que se mezcle con producción. Los eventos del sandbox son los de su propio tenant (no hay marca `sandbox` en el sobre). 05 §2.6.3 y 07 §5.4 |
-| Receptor SRM (`/api/integracion/validasoft/webhook` en el SRM) | firma HMAC, dedupe por `Validasoft-Event-Id`, cola propia, `empresaId` = instancia SRM |
-| Tabla de respaldo en Marco | `adp_cs.validasoft_certificacion_local(identificacion, tipoVinculo, empresaId, folio, estadoVinculo, estadoCertificado, bloqueado, motivoBloqueo, vigenteHasta, actualizadoEn)` alimentada con los nombres de 05 §7 (`certificado.*`, `vinculo.*`); respuesta degradada con `fuenteRespaldo: true` y `antiguedadSegundos` |
+| Receptor SRM (`/api/integracion/avalasoft/webhook` en el SRM) | firma HMAC, dedupe por `Avalasoft-Event-Id`, cola propia, `empresaId` = instancia SRM |
+| Tabla de respaldo en Marco | `adp_cs.avalasoft_certificacion_local(identificacion, tipoVinculo, empresaId, folio, estadoVinculo, estadoCertificado, bloqueado, motivoBloqueo, vigenteHasta, actualizadoEn)` alimentada con los nombres de 05 §7 (`certificado.*`, `vinculo.*`); respuesta degradada con `fuenteRespaldo: true` y `antiguedadSegundos` |
 
 #### 2.9.2 Endpoints
 | Endpoint | Permiso | Entrada → Salida | Respuestas | Emite | Idem. |
@@ -1009,7 +1009,7 @@ Conclusión: **no hubo nada que arreglar** para llegar a 1.000 filas (el límite
 | `GET /eventos?desde=&tipos=&empresaId=` (pull para SRM tras firewall) | `eventos:leer` | → `PaginaDto<EventoPublicoDto>` | 200 | — | — |
 | `POST /sesiones-tercero` (Portal embebe la bóveda) | `sesiones-tercero:crear` | `SesionEmbedDto` | 201 | — | Sí |
 | `GET /openapi/v1.json` | público | OpenAPI 3.1 | 200 | — | — |
-| **En el SRM**: `POST /api/integracion/validasoft/webhook`; flag `ValidacionDocumental = Legacy\|Validasoft` en `ADPConfig` por empresa; cliente SDK en `InvitarProveedorPortal` | — | mapa evento→acción (08 §SRM) | 200 rápido | — | dedupe |
+| **En el SRM**: `POST /api/integracion/avalasoft/webhook`; flag `ValidacionDocumental = Legacy\|AvalaSoft` en `ADPConfig` por empresa; cliente SDK en `InvitarProveedorPortal` | — | mapa evento→acción (08 §SRM) | 200 rápido | — | dedupe |
 | **En el Portal**: iframe `/embed/expediente/{token}`; se retiran escrituras en `Adjuntos*` y el usuario `provportal` | — | — | — | — | — |
 
 #### 2.9.3 DTOs nuevos
@@ -1041,14 +1041,14 @@ Todos con `legacy.estadoTercero` durante la coexistencia.
 Despachador de webhooks con partición por integración; `desplegar.yml` por entorno de cliente; publicación de paquetes (`imagenes.yml` + GitHub Packages).
 
 #### 2.9.9 Configuración
-SRM: `ADPConfig.ValidacionDocumental`, `Validasoft.TenantId`, `Validasoft.EmpresaId`, `Validasoft.ApiKey` (cifrada), `Validasoft.WebhookSecret`, `Validasoft.ModoPull` (bool). Marco: `Validasoft.CacheSegundos` (300), `Validasoft.RespaldoActivo` (true). Validasoft: `Webhooks:ParticionesPorIntegracion`.
+SRM: `ADPConfig.ValidacionDocumental`, `Avalasoft.TenantId`, `Avalasoft.EmpresaId`, `Avalasoft.ApiKey` (cifrada), `Avalasoft.WebhookSecret`, `Avalasoft.ModoPull` (bool). Marco: `Avalasoft.CacheSegundos` (300), `Avalasoft.RespaldoActivo` (true). AvalaSoft: `Webhooks:ParticionesPorIntegracion`.
 
 #### 2.9.10 Pruebas
 - Contract: SDKs generados del snapshot v1 compilan y sus tests de serialización pasan.
-- Integración SRM (entorno de pruebas): flag `Validasoft` **por empresa** (T-18) ⇒ invitar crea expediente; `certificado.emitido` habilita al proveedor y aplica AyF; flag `Legacy` ⇒ nada cambia; receptor rechaza firma inválida y deduplica reenvíos por `Validasoft-Event-Id`; el SDK compila y corre en el SRM (.NET 7, T-16).
-- Prerrequisito (B-8): H7 cerrado, de modo que listas restrictivas/SAGRILAFT existen en Validasoft antes de encender el flag en ninguna empresa.
+- Integración SRM (entorno de pruebas): flag `Avalasoft` **por empresa** (T-18) ⇒ invitar crea expediente; `certificado.emitido` habilita al proveedor y aplica AyF; flag `Legacy` ⇒ nada cambia; receptor rechaza firma inválida y deduplica reenvíos por `Avalasoft-Event-Id`; el SDK compila y corre en el SRM (.NET 7, T-16).
+- Prerrequisito (B-8): H7 cerrado, de modo que listas restrictivas/SAGRILAFT existen en AvalaSoft antes de encender el flag en ninguna empresa.
 - Portal: embed carga la bóveda y ya no escribe en `Adjuntos*`.
-- Marco: con Validasoft caído responde desde la tabla local con `fuenteRespaldo: true`.
+- Marco: con AvalaSoft caído responde desde la tabla local con `fuenteRespaldo: true`.
 - k6: `GET /consultas/certificacion` 500 rps p99 < 100 ms (objetivo < 50 ms en H11).
 
 #### 2.9.11 Efectos
@@ -1059,9 +1059,9 @@ Hacia atrás: política de deprecación de 12 meses sobre v1 (H5). Hacia adelant
 #### H9 — Cierre de huecos (2026-10-28)
 | Tipo | Elemento | Definido en |
 |---|---|---|
-| Tabla | `adp_cs.validasoft_certificacion_local` en Marco (columnas, eventos que la alimentan, dedupe por `ocurridoEn`, reconciliador nocturno del 5 %, degradación con `fuenteRespaldo: true` y `antiguedadSegundos`; > 24 h exige confirmación humana para pagos) | 08 §5 |
+| Tabla | `adp_cs.avalasoft_certificacion_local` en Marco (columnas, eventos que la alimentan, dedupe por `ocurridoEn`, reconciliador nocturno del 5 %, degradación con `fuenteRespaldo: true` y `antiguedadSegundos`; > 24 h exige confirmación humana para pagos) | 08 §5 |
 | Endpoint | `POST /documentos` habilitado para integraciones con `documentos:escribir` (decisión abierta 3 de este documento, cerrada) | 05 §2.5 |
-| Dependencia / paquete | H9 depende de H6 **y de H7** (B-8); `Validasoft.Sdk` multi-target `net7.0;net8.0;net10.0` (T-16); flag y corte por empresa (T-18); nombres de eventos de 08 alineados con 05 §7 (#3) | 09, 08 §3–§5 |
+| Dependencia / paquete | H9 depende de H6 **y de H7** (B-8); `Avalasoft.Sdk` multi-target `net7.0;net8.0;net10.0` (T-16); flag y corte por empresa (T-18); nombres de eventos de 08 alineados con 05 §7 (#3) | 09, 08 §3–§5 |
 
 #### H9 — Estado de implementación (2026-11-10, CN-1…CN-7)
 | Elemento | Estado | Dónde |
@@ -1069,8 +1069,8 @@ Hacia atrás: política de deprecación de 12 meses sobre v1 (H5). Hacia adelant
 | `GET /consultas/certificacion` (`consultas:leer`, ETag/304, `private, max-age=300`) | Hecho, sin proyección: consulta indexada (CN-1); `motivoBloqueo` con `Revocado` (CN-2) | `Aplicacion/Integracion/ConsultaCertificacionEndpoints.cs`; 05 §2.6.2 |
 | `GET /eventos` (pull) | Ya existía (NW-1); se agrega `empresaId` (CN-4) | `Notificaciones/EventosEndpoints.cs` |
 | Rotación de API keys con solapamiento | Hecho: `POST /api-keys/{id}/rotar` y botón «Rotar» en Configuración › API keys (CN-3) | `ConfiguracionEndpoints.cs`, `apps/web/.../apiKeys/DialogoRotarApiKey.tsx` |
-| `Validasoft.Sdk` + `Validasoft.Contratos` multi-target `net7.0;net8.0;net10.0` | Hecho, sin dependencias (CN-5) | `src/Validasoft.Sdk`, `tests/Validasoft.Sdk.Tests` |
-| `@validasoft/sdk` | Hecho, fetch + Web Crypto (CN-6) | `packages/sdk` |
+| `Avalasoft.Sdk` + `Avalasoft.Contratos` multi-target `net7.0;net8.0;net10.0` | Hecho, sin dependencias (CN-5) | `src/Avalasoft.Sdk`, `tests/Avalasoft.Sdk.Tests` |
+| `@avalasoft/sdk` | Hecho, fetch + Web Crypto (CN-6) | `packages/sdk` |
 | Guía de integración y ejemplo ejecutable | Hecho (CN-7) | 08 §2.1, `docs/ejemplos/IntegradorSrm` (`net7.0`) |
 | Pruebas | Unitarias del SDK (.NET y TS), integración con el SDK contra la API en memoria y e2e de consulta, pull + webhook y rotación | `IntegracionSdkApiTests.cs`, `e2e/pruebas/integracion.spec.ts` |
 | Pendiente | `legacy.estadoTercero`, `POST /documentos` para integraciones, proyección persistida `EstadoCertificacionTercero` y medida de k6 en un entorno dedicado (H11), receptor en el SRM y tabla local en Marco (en sus repositorios), primera publicación de los paquetes (la hace una persona con los secretos). `POST /sesiones-tercero` (embebido del tercero para cualquier sistema) quedó hecho en IO-6 ([integracion.md §8.1](integracion.md#81-el-tercero-embebido-bóveda-expediente-y-ficha)) | — |
@@ -1079,7 +1079,7 @@ Hacia atrás: política de deprecación de 12 meses sobre v1 (H5). Hacia adelant
 | Elemento | Estado | Dónde |
 |---|---|---|
 | **Sandbox con datos aislados**: tenant hermano creado al pedirlo (`POST /sandbox` o la primera llave `sandbox: true`), sembrado con la configuración del grupo, **reiniciable** sin perder empresas ni llaves; terceros de pruebas aislados en la bóveda global, correos al buzón (`GET /sandbox/correos`), IA y listas simuladas, certificados no verificables, fuera de la consola de Plataforma y del acceso con el correo | Hecho (SB-1…SB-6); scope `sandbox:administrar` | `Aplicacion/Sandbox`, `Infraestructura/Sandbox`, `Dominio/Plataforma/AislamientoDeSandbox.cs`; 05 §2.6.3, 07 §5.4 |
-| SDK: grupo `Sandbox` (.NET y TS: `ObtenerAsync`/`obtener`, `AsegurarAsync`, `ReiniciarAsync`, `CorreosAsync`, `EsperarCorreoAsync`…) | Hecho | `src/Validasoft.Sdk`, `packages/sdk` |
+| SDK: grupo `Sandbox` (.NET y TS: `ObtenerAsync`/`obtener`, `AsegurarAsync`, `ReiniciarAsync`, `CorreosAsync`, `EsperarCorreoAsync`…) | Hecho | `src/Avalasoft.Sdk`, `packages/sdk` |
 | **Paquetes publicables**: versión única (`infra/sdk/version.mjs`), metadatos y README/CHANGELOG por paquete, ESM + CJS en npm, empaquetado en CI sin publicar y workflow `sdk-publicar.yml` (tag `sdk-v*`, secretos `NUGET_API_KEY` y `NPM_TOKEN`) | Hecho; **no se publicó nada**; licencia provisional pendiente de Legal (SB-7) | `src/Empaquetado.props`, `.github/workflows/sdk-publicar.yml`; 08 §2.4 |
 | **Carga de la consulta de certificación**: k6 (`grafana/k6:1.0.0`) con mezcla 200/304 a 500 rps; consulta reducida de cuatro viajes a uno (índice de ids + caché de la empresa) | Medida local hecha; **p99 < 100 ms a 500 rps no se pudo certificar en el entorno de desarrollo** (ver abajo, SB-8) | `tests/carga/`; 04 §12 |
 | **Guía de integración de punta a punta** | Hecha | [integracion.md](integracion.md) |
@@ -1101,7 +1101,7 @@ Hacia atrás: política de deprecación de 12 meses sobre v1 (H5). Hacia adelant
 #### 2.10.1 Entidades y eventos
 | Nombre | Detalle |
 |---|---|
-| `Validasoft.Herramientas.Importacion` (CLI) | `--tenant --empresa --fuente portal\|srm --desde --dry-run --reanudar --solo <entidad>`; lee BD Portal + disco + BD Sinco; escribe por `/importacion/*`; UUID v5 de `ClaveLegado = {origen}:{tabla}:{id}` |
+| `Avalasoft.Herramientas.Importacion` (CLI) | `--tenant --empresa --fuente portal\|srm --desde --dry-run --reanudar --solo <entidad>`; lee BD Portal + disco + BD Sinco; escribe por `/importacion/*`; UUID v5 de `ClaveLegado = {origen}:{tabla}:{id}` |
 | `LoteImportacion` | `LoteImportacionCreado`, `LoteImportacionTerminado(total, ok, rechazadas)`; CSV de rechazos |
 | Eventos de importación (streams con `ActorTipo.Migracion`) | `TerceroCreado`, `RelacionRegistrada` (representante legal y socios de `TerCamaraComercio` como personas relacionadas, ADR-0010), `VinculoCreado(Origen: Migracion)`, `ExpedienteAbierto` + `ExpedienteAprobado` reconstruidos, `VersionCargada(Origen: Importada)`, `VersionCompartida(Origen: Importada)` (las empresas ya vinculadas en el legado se consideran aceptadas), `VersionAceptadaRegistrada` (desde `AdjuntosConstructora.ACActivo=1`), `AceptacionDesactualizada(PlazoRevalidacion = 90)` cuando el espejo no coincide con la última versión del tercero (B-8), `RequisitoRatificado` (`OrigenActualizacion = Ratificacion`), `CertificadoEmitido` retroactivo con sufijo `-M` (folio `{PrefijoEmpresa}-C-{Año}-{Seq}-M`, T-9); **ninguna lectura IA** hasta que el tercero dé consentimiento en su primer ingreso (B-8) |
 | Sincronización inversa | suscriptor de webhooks que escribe estado/aprobaciones en tablas legado 90 días con `legacy.estadoTercero`; corte **por empresa** (T-18): un tercero compartido entre una empresa migrada y otra no migrada se resuelve según 08 §7 |
@@ -1196,7 +1196,7 @@ Decisión de Producto: sin contraseñas; ingreso directo con código y passkeys,
 | Endpoint | `/ingreso/codigo`, `/ingreso/codigo/verificar`, `/ingreso/cuenta`, `/ingreso/passkey/{opciones,verificar,registro}`, `/ingreso/sesion/{renovar,cerrar}`; `/mi-cuenta` (+ `/passkeys`, `/sesiones`); `/usuarios/{id}/{sesiones,passkeys,invitar}`; `/configuracion/ingreso`; `/plataforma/tenants/{id}/ingreso`; `/plataforma/operadores…`; `GET /auditoria?tipo=Identidad` | 05 §2.10 |
 | Correo | Plantillas `CodigoDeIngreso` e `InvitacionDeUsuario` (sin secreto) | 05 §8 |
 | Pantalla | Ingreso (correo, código, cuenta, passkey), Mi cuenta, Configuración › Ingreso, Usuarios (invitar, passkeys y sesiones), Plataforma › Operadores, Auditoría › Ingresos, menú de cuenta y aviso de passkey | 06 §3.1, §3.4 |
-| Configuración | `Validasoft:LimiteIngreso`, `Validasoft:Ingreso:{MinutosAcceso, MinutosLimpieza, CookieSegura, Plataforma, Passkeys}` | 07 §2.7 |
+| Configuración | `Avalasoft:LimiteIngreso`, `Avalasoft:Ingreso:{MinutosAcceso, MinutosLimpieza, CookieSegura, Plataforma, Passkeys}` | 07 §2.7 |
 | Pruebas | Dominio: `IngresoTests` (código, passkeys, sesión, política, correos). Integración: `IngresoApiTests` (vencimiento, un solo uso, límites, no enumeración, modos por grupo, passkey obligatoria por rol, revocación, sesiones, Mi cuenta, gestión, auditoría, operadores) con un autenticador WebAuthn por software. Web: `estado`, `passkeys`, `sesionDirecta`, `CampoCodigo`, política del grupo. E2E: `ingreso.spec.ts` con el autenticador virtual de Chromium (CDP `WebAuthn`) | 04 §12 |
 
 ### Ficha: pendientes (2026-11-11, FD-1…FD-9)
@@ -1221,7 +1221,7 @@ Encargo de Producto: SSO con el proveedor del cliente, desactivar y reactivar si
 | Endpoint | `/ingreso/sso/{descubrir,iniciar,callback,completar}`, `/ingreso/recuperacion`; `/configuracion/sso` (+ `/dominios`, `/probar`); `/mi-cuenta/{reautenticacion,codigos-de-recuperacion}`; `/sistemas/{id}/{desactivar,reactivar}`; `/plataforma/tenants/{id}/{sso/desactivar,sistemas,empresas}`; `/plataforma/sistemas/{id}/…`; `/plataforma/operadores/{id}/reactivar`; `/plataforma/clave-de-arranque`; `/plataforma/auditoria-ingresos`; `/plataforma/ia/{consumo,consumo/exportar,tarifa}` | 05 §2.11 |
 | Correo | Aviso de seguridad al registrar o revocar una passkey o generar códigos de recuperación | 05 §8 |
 | Pantalla | Configuración › Inicio de sesión único; ingreso con «Entrar con {empresa}», retorno del proveedor, código de recuperación y passkeys en el campo del correo; diálogo de reautenticación; Mi cuenta › Códigos de recuperación; Plataforma › Uso de IA, Ingresos, Secretos › Clave de arranque, Operadores › Reactivar, grupo › Agregar empresa y Sistemas, plan de IA › precio propio | 06 §3.4 |
-| Configuración | `Validasoft:Ingreso:Sso:{PermitirHttpLocal, UrlDeRetorno, WorkOs:{ApiKey, ClientId, UrlBase}}` | 07 §2.8 |
+| Configuración | `Avalasoft:Ingreso:Sso:{PermitirHttpLocal, UrlDeRetorno, WorkOs:{ApiKey, ClientId, UrlBase}}` | 07 §2.8 |
 | Pruebas | Dominio: `PlataformaIdentidadTests` (SSO, dominios, JIT y reglas, step-up, recuperación, generaciones, tarifa y uso por modelo). Integración: `IngresoApiTests.Sso` (proveedor OIDC y WorkOS simulados en proceso: PKCE, `state`, `nonce`, emisor, dominios verificados, JIT, reglas, modos), `IngresoApiTests.Seguridad` (step-up, recuperación, avisos, sistemas y operadores desactivados, clave de arranque, caché entre servidores) y `RequisitosApiTests.PlataformaIdentidad` (uso de IA, cuenta con clave del grupo). Web: `modeloSso`, `PaginaSso`, `reautenticacion`, `DialogoDeReautenticacion`, `PasoCorreo` (SSO y UI condicional), `PantallaIngreso.sso`, recuperación, consola (uso de IA, ingresos, clave de arranque, sistemas, empresas) | 04 §12 |
 
 ## 3. Matrices globales
@@ -1230,7 +1230,7 @@ Encargo de Producto: SSO con el proveedor del cliente, desactivar y reactivar si
 
 | Grupo (05 §2) | Endpoints | Hito | Estado |
 |---|---|---|---|
-| Plataforma/tenant/empresas | `/plataforma/tenants*`, `/plataforma/uso`, `/catalogos/tipos-identificacion`, `/catalogos/paises`, `/tenant`, `/tenant/accesos-soporte*` (B-6), `/empresas*`, `/api-keys*`, `/usuarios*` (sin delegaciones), `/roles`, `/permisos`, `/health*`, OIDC (incl. `urn:validasoft:magic-link`), `/openapi/v1.json`, `/openapi/public-v1.json`, `GET /auditoria` (consulta; tipos configuración e identidad) | H1 | Planificado |
+| Plataforma/tenant/empresas | `/plataforma/tenants*`, `/plataforma/uso`, `/catalogos/tipos-identificacion`, `/catalogos/paises`, `/tenant`, `/tenant/accesos-soporte*` (B-6), `/empresas*`, `/api-keys*`, `/usuarios*` (sin delegaciones), `/roles`, `/permisos`, `/health*`, OIDC (incl. `urn:avalasoft:magic-link`), `/openapi/v1.json`, `/openapi/public-v1.json`, `GET /auditoria` (consulta; tipos configuración e identidad) | H1 | Planificado |
 | Catálogo canónico y bóveda | `/plataforma/tipos-documento/canonicos*`, `/plataforma/propuestas-tipo*`, `/catalogos/esquemas-formulario`, `/terceros*` (sin `frescura`, sin `ficha`), `/terceros/{id}/documentos`, `/terceros/{id}/cuentas-bancarias`, `/terceros/{id}/relaciones*` (ADR-0010), `POST /documentos` (importador), `/documentos*`, `/public/v1/enlaces/*`, `/public/v1/boveda*` (sin `exportar`; incluye `documentos` POST, `stream`, `cuentas-bancarias` GET), `/public/v1/tercero/datos-maestros`, `/public/v1/tercero/relaciones*` | H2 | Planificado |
 | Configuración | `/tipos-documento*`, `/tipos-documento/propuestas`, `/tipos-documento/{id}/plantilla`, `/empresas/{id}/tipos-documento*` (overrides B-4), `/areas*`, `/motivos*`, `/catalogos/motivos-base`, `/tipos-vinculo*`, `/flujos*`, `/flujos/{id}/simular`, `/flujos/reglas-seleccion*`, `/flujos/por-defecto`, `/flujos/resumen` | H3 | Planificado |
 | Vínculos y expedientes | `/vinculos*` (sin cuenta designada), `/expedientes*` (sin `ratificar`, `verificaciones`, `exportar`), `/expedientes/{id}/areas/{areaId}/rechazar` (B-7), `/expedientes/{id}/cambiar-flujo`, `/flujos/{id}/versiones/{n}/aplicar-a-abiertos`, `/mis-pendientes`, `/terceros/{id}/ficha`, `/novedades*`, `/public/v1/expedientes/{id}`, `/public/v1/invitaciones/{expedienteId}/aceptar` (ADR-0009), `/public/v1/autorregistro` (T-13), `/public/v1/vinculos`, SSE | H4 | Planificado |
@@ -1238,7 +1238,7 @@ Encargo de Producto: SSO con el proveedor del cliente, desactivar y reactivar si
 | Vigencias y revalidación | `/revalidaciones`, `/expedientes/{id}/requisitos/{rid}/ratificar`, `/vencimientos*`, `/vencimientos/proximos`, `/terceros/{id}/frescura`, `/public/v1/frescura`, `/vinculos/{id}/cuenta-designada*`, `/public/v1/vinculos/{id}/cuenta-designada`, `/public/v1/boveda/cuentas-bancarias` POST, `/plataforma/vigencias-de-vinculos/revisar` (VV-6) | H6 | Planificado |
 | Verificaciones y revisión automática | `/expedientes/{id}/verificaciones*`, `/excepciones*`, `/public/v1/expedientes/{id}/requisitos/{rid}/revision-humana`, `/tenant/revision-automatica`, `/kpis` (completo), `/informes/cumplimiento*` | H7 | Implementado: verificaciones, `/cumplimiento/bandeja`, `/configuracion/listas-restrictivas`, `/informes/cumplimiento*` (VE-5…VE-18) y, con CU-1…CU-22, matriz de riesgo, archivos del oficial, consulta por fuera, rechazo directo, `/informes/sagrilaft*`, `/configuracion/revision-automatica`, `/revision-automatica/excepciones` y su resolución; KPIs planificados |
 | Operación masiva y administración | `/invitaciones/lotes*`, `/campanias*`, `/usuarios/{id}/delegaciones*`, `/expedientes/{id}/exportar`, `/exportaciones/{id}`, `/public/v1/boveda/exportar`, `/public/v1/exportaciones/{id}`, `/public/v1/solicitudes-supresion*`, `/solicitudes-supresion*`, `/auditoria/exportar`, `/auditoria/exportaciones/{id}`, `/plantillas-notificacion*` (Liquid), `/tenant/plan`, `/tenant/uso`, `/empresas/{id}/dominio-correo*`, `/informes/estado-expedientes*`, `/tenant/matriz-riesgo` | H8 | Planificado |
-| Integración | `/api-keys` (sandbox), `POST /documentos` (integraciones con `documentos:escribir`), receptor SRM, tabla `validasoft_certificacion_local` en Marco | H9 | Planificado |
+| Integración | `/api-keys` (sandbox), `POST /documentos` (integraciones con `documentos:escribir`), receptor SRM, tabla `avalasoft_certificacion_local` en Marco | H9 | Planificado |
 | Importación | `/importacion/*` (incl. `/importacion/relaciones`), `/importacion/lotes/{id}*`, `/importacion/binarios` (registro, no carga) | H10 | Planificado |
 | Operación de plataforma | `/plataforma/operacion/*` | H11 | Planificado |
 
@@ -1316,7 +1316,7 @@ Encargo de Producto: SSO con el proveedor del cliente, desactivar y reactivar si
 | `reglaFrescura`, `diasAviso`, `diasGracia`, `diasRevalidacion`, `politicaDesactualizada`, `permiteRatificacion`, `politicaVigenciaVinculo`, `Vencimientos:HoraJobDiario` | H6 |
 | `RevisionAutomaticaConfigDto.*`, `frecuenciaReconsultaMeses`, `Verificadores:*`, `Ia:ModeloPorTipo` | H7 |
 | `Lotes:*`, `Plan:*` (incl. `PlanDto.accionAlAgotar`, I-23), `Empresa.dominioCorreo`, `Tenant.matrizRiesgo`, `Habeas:DiasHabilesRespuesta`, `ConflictoInteres:Activo` | H8 |
-| SRM `ADPConfig.ValidacionDocumental` (por empresa, T-18), `Validasoft.*`; Marco `Validasoft.CacheSegundos`, `Validasoft.RespaldoActivo` | H9 |
+| SRM `ADPConfig.ValidacionDocumental` (por empresa, T-18), `Avalasoft.*`; Marco `Avalasoft.CacheSegundos`, `Avalasoft.RespaldoActivo` | H9 |
 | `Importacion:*`, `Importacion:PlazoRevalidacionDias` (90, B-8), `Inversa:Dias` (90) | H10 |
 | `Certificados:SelloDeTiempo:*`, `Backups:*`, `Alertas:Umbrales:*` | H11 |
 
@@ -1328,7 +1328,7 @@ Encargo de Producto: SSO con el proveedor del cliente, desactivar y reactivar si
 |---|---|---|
 | Comandos y consultas de usuarios, terceros e integradores | **REST JSON** `/api/v1`, `/public/v1` (OpenAPI 3.1) | `Idempotency-Key`, `ETag/If-Match`, cursor, ProblemDetails, cabecera `X-Empresa` (T-5; `X-Tenant` solo en `/plataforma/*`), 404 para recursos de otro tenant/empresa (T-4) |
 | Binarios (subida y descarga) | **URL prefirmada S3/MinIO** | El API nunca proxea bytes; `x-amz-checksum-sha256`; `DocumentoAccedido` por emisión |
-| Cambios de estado hacia sistemas externos | **Webhooks firmados** (HMAC-SHA256, reintentos, dedupe por `Validasoft-Event-Id`) | Por empresa; `legacy.estadoTercero` en coexistencia |
+| Cambios de estado hacia sistemas externos | **Webhooks firmados** (HMAC-SHA256, reintentos, dedupe por `Avalasoft-Event-Id`) | Por empresa; `legacy.estadoTercero` en coexistencia |
 | Sistemas tras firewall | **Pull** `GET /eventos?desde=cursor` | Mismo sobre `EventoPublicoDto` y misma secuencia |
 | Tiempo real en las SPAs | **SSE** `/api/v1/eventos/stream` (empresa), `/public/v1/boveda/stream` (tercero, desde H2) y `/public/v1/expedientes/{id}/stream` (un expediente) | `Last-Event-ID` = cursor; reenvío 24 h |
 | Avisos a personas | **Correo** (MailKit, Fluid), **campana** (`Novedad` + SSE) | 1 correo por tercero, hecho y día; evidencia de entrega |
@@ -1355,8 +1355,8 @@ Los 15 huecos originales, los 2 añadidos por Producto y los 4 que dejó la **se
 | 9 | Proyecciones sin definir | `MisPendientes`, `Tercero360`, `CuentasTercero`, `FlujosResumen`, `VencimientosProximos` definidas con fuente, tipo, campos y endpoint | **Cerrado en 03 §14** |
 | 10 | Supresión lado empresa | `GET /solicitudes-supresion`, `GET /{id}`, `POST /{id}/resolver`; permiso `supresiones:resolver` | **Cerrado en 05 §2.7, 07 §3.2** |
 | 11 | Evidencia de aceptación | `AceptacionDto`; `ConsentimientosRegistrados` ampliado | **Cerrado en 05 §4, 03 §5.3** |
-| 12 | Tabla de respaldo de Marco | `adp_cs.validasoft_certificacion_local` con esquema, alimentación, reconciliación y degradación | **Cerrado en 08 §5** |
-| 13 | Plantilla del certificado y `HashContenido` | Esquema `validasoft.certificado.v1`, RFC 8785, sello Ed25519, PDF/A, verificación; `CertificadoContenidoDto` | **Cerrado en 03 §7.1, 05 §4** |
+| 12 | Tabla de respaldo de Marco | `adp_cs.avalasoft_certificacion_local` con esquema, alimentación, reconciliación y degradación | **Cerrado en 08 §5** |
+| 13 | Plantilla del certificado y `HashContenido` | Esquema `avalasoft.certificado.v1`, RFC 8785, sello Ed25519, PDF/A, verificación; `CertificadoContenidoDto` | **Cerrado en 03 §7.1, 05 §4** |
 | 14 | Precedencia API key ∩ webhook | Intersección; `422 empresas-fuera-de-alcance`; deshabilitación posterior | **Cerrado en 05 §2.8, 07 §4** |
 | 15 | `AnalisisDeVersionIniciado` ausente en 04 | Añadido al paso 1 de `VerificacionDocumental` | **Cerrado en 04 §5** |
 | 16 | **Auditoría de configuración e identidad** | `RegistroDeCambioDeConfiguracion`, `RegistroDeIdentidad`, invariante "ningún cambio de configuración sin registro", `GET /auditoria?tipo=`, `POST /auditoria/exportar`, `RegistroAuditoriaDto`, `DiffCampoDto`, permisos `auditoria:leer`/`auditoria:exportar`, retención P-14-7, pantalla `/auditoria` con diff | **Cerrado en 03 §2.1, 02 §13 (inv. 14), 05 §2.7 y §4, 07 §3.2 y §6, 06 §3; trazado en H1 y H8** |
@@ -1381,7 +1381,7 @@ Los 15 huecos originales, los 2 añadidos por Producto y los 4 que dejó la **se
 | 9 | Proyecciones usadas por 06 sin entrada en 03 §14: `MisPendientes`, `Tercero360`, `CuentasTercero`, `FlujosResumen`, `VencimientosProximos` (equivale a `VencimientoProgramado` filtrada) | añadirlas a 03 §14 | 03 | H3–H6 |
 | 10 | No hay endpoint para que la **empresa** consulte las solicitudes de supresión ni para resolverlas (saga `SupresionDatos` necesita decisión humana en retenciones dudosas) | `GET /solicitudes-supresion`, `POST /solicitudes-supresion/{id}/resolver` | 05 §2.7, 07 | H8 |
 | 11 | No está definido el DTO de la **evidencia de aceptación** (T&C/autorización) que devuelve `AceptacionConEvidencia` | `AceptacionDto { documentoVersionId, textoVersion, ip, userAgent, fecha, otpVerificado, trazo? }` | 05 §4, 07 | H4 |
-| 12 | `ConsultaCertificacionDto.fuenteRespaldo` lo "rellena el integrador" (05) pero Marco necesita saber qué campos trae la tabla local | esquema de `validasoft_certificacion_local` en 08 | 08 §Marco | H9 |
+| 12 | `ConsultaCertificacionDto.fuenteRespaldo` lo "rellena el integrador" (05) pero Marco necesita saber qué campos trae la tabla local | esquema de `avalasoft_certificacion_local` en 08 | 08 §Marco | H9 |
 | 13 | Falta definir la **plantilla del certificado** (campos del PDF/A, posición del QR, bloque bilingüe) y el formato del `HashContenido` (canonicalización JSON) | `PlantillaCertificado` en `FlujoDefinicionDto` + anexo "Contenido canónico del certificado" | 03 §7, 04 | H5 |
 | 14 | No hay endpoint de **webhooks por empresa** para integraciones que solo deben ver una empresa pero la API key tiene `*` | filtro `empresas[]` ya existe en `WebhookDto`; documentar precedencia API key ∩ webhook | 05 §2.8, 07 | H5 |
 | 15 | 03 §4.3 nombra `AnalisisDeVersionIniciado` como evento, 04 no lo menciona en la saga | añadirlo al paso 1 de `VerificacionDocumental` | 04 §5 | H2 |

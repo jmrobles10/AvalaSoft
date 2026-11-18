@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-import type { VistaPreviaCampaniaDto } from '@validasoft/api-client';
+import type { VistaPreviaCampaniaDto } from '@avalasoft/api-client';
 import { Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../shared/componentes';

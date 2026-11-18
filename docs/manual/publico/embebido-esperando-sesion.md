@@ -35,11 +35,11 @@ Las direcciones `/embed/…` no son para abrirlas en el navegador: las carga el 
 
 **Variantes**
 
-- **La persona busca sus documentos:** Debe entrar por su correo en la dirección normal de Validasoft, no por una dirección /embed.
+- **La persona busca sus documentos:** Debe entrar por su correo en la dirección normal de AvalaSoft, no por una dirección /embed.
 
 ## Paso 2. Mira qué pide la pantalla al sistema anfitrión
 
-Dentro del iframe de un sistema permitido, la pantalla avisa al sistema que está lista (`validasoft:ready`) y espera. El sistema debe responder con la sesión que su backend pidió a Validasoft (`validasoft:sesion`). Mientras no llegue, el iframe sigue en «Conectando con tu sistema…» (1) y la lista de mensajes (2) solo muestra lo que la pantalla pidió.
+Dentro del iframe de un sistema permitido, la pantalla avisa al sistema que está lista (`avalasoft:ready`) y espera. El sistema debe responder con la sesión que su backend pidió a AvalaSoft (`avalasoft:sesion`). Mientras no llegue, el iframe sigue en «Conectando con tu sistema…» (1) y la lista de mensajes (2) solo muestra lo que la pantalla pidió.
 
 > **Pantalla:** `/`
 
@@ -53,7 +53,7 @@ Dentro del iframe de un sistema permitido, la pantalla avisa al sistema que est�
 
 ## Paso 3. Entrega una sesión que no corresponde
 
-La sesión que entrega el sistema solo vale para el origen para el que se emitió. Aquí la página está en otro origen permitido del mismo sistema, pero el token se pidió para el primero: la pantalla lo rechaza, pide otra sesión al sistema (`validasoft:sesion-requerida` con motivo «rechazada») y muestra «Esta pantalla solo se muestra dentro de tu sistema» (1) con un botón «Reintentar» (2), sin mostrar nada del tercero. Hay que volver a pedir la sesión para el origen correcto.
+La sesión que entrega el sistema solo vale para el origen para el que se emitió. Aquí la página está en otro origen permitido del mismo sistema, pero el token se pidió para el primero: la pantalla lo rechaza, pide otra sesión al sistema (`avalasoft:sesion-requerida` con motivo «rechazada») y muestra «Esta pantalla solo se muestra dentro de tu sistema» (1) con un botón «Reintentar» (2), sin mostrar nada del tercero. Hay que volver a pedir la sesión para el origen correcto.
 
 > **Pantalla:** `/`
 
@@ -63,11 +63,11 @@ La sesión que entrega el sistema solo vale para el origen para el que se emiti�
 
 **Variantes**
 
-- **El origen de la página no está registrado en el sistema:** El navegador ni siquiera dibuja el iframe: Validasoft solo permite que lo aloje un origen permitido, y no se ve nada del tercero.
+- **El origen de la página no está registrado en el sistema:** El navegador ni siquiera dibuja el iframe: AvalaSoft solo permite que lo aloje un origen permitido, y no se ve nada del tercero.
 - **Se abre la dirección fuera de un iframe:** Se queda en «Conectando con tu sistema…», como en el primer paso.
 
 ## Recorridos relacionados
 
 - [Muestra la bóveda y la ficha del tercero dentro de tu sistema](../embebido/tercero-embebido.md)
-- [Declara qué páginas pueden mostrar Validasoft](../embebido/origenes-permitidos.md)
+- [Declara qué páginas pueden mostrar AvalaSoft](../embebido/origenes-permitidos.md)
 - [Renueva una sesión que venció sin perder lo que estabas haciendo](../embebido/sesion-vencida.md)

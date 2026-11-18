@@ -1,4 +1,4 @@
-import { ClienteValidasoft } from '@validasoft/sdk';
+import { ClienteAvalasoft } from '@avalasoft/sdk';
 import { API, llamar, nitAleatorio } from '../../soporte/api';
 import { crearEscenario, type Empresa, type Escenario } from '../../soporte/semilla';
 import { expect, mostrarCodigo, paso, recorrido } from '../nucleo';
@@ -20,8 +20,8 @@ async function vinculoCertificado(e: Escenario, empresa: Empresa): Promise<{ vin
   await llamar('POST', `/api/v1/flujos/${flujo.id}/publicar`, { llave: e.admin, empresa: empresa.id, cuerpo: {} });
 
   const identificacion = nitAleatorio();
-  const correo = `proveedor.${identificacion.numero}@e2e.validasoft.co`;
-  const srm = new ClienteValidasoft({ urlBase: API, apiKey: e.llave, empresaId: empresa.id, reintentos: 0 });
+  const correo = `proveedor.${identificacion.numero}@e2e.avalasoft.co`;
+  const srm = new ClienteAvalasoft({ urlBase: API, apiKey: e.llave, empresaId: empresa.id, reintentos: 0 });
   const vinculo = await srm.vinculos.crear(
     {
       tercero: { identificacion, tipoPersona: 'Juridica', nombre: `Servicios ${identificacion.numero} S.A.S.`, contactos: [{ nombre: 'Ana', correo, rol: 'Comercial' }] },
@@ -96,7 +96,7 @@ recorrido(
       resaltar: page.locator('#respuesta'),
     });
 
-    await new ClienteValidasoft({ urlBase: API, apiKey: e.llave, empresaId: e.norte.id, reintentos: 0 }).vinculos.bloquear(vinculoId, {
+    await new ClienteAvalasoft({ urlBase: API, apiKey: e.llave, empresaId: e.norte.id, reintentos: 0 }).vinculos.bloquear(vinculoId, {
       motivo: 'Coincidencia en lista restrictiva',
     });
     const bloqueada = await fetch(`${API}${ruta}`, { headers: { 'X-Api-Key': llave, 'X-Empresa': e.norte.id, 'If-None-Match': etag } });

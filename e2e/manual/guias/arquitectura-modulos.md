@@ -5,28 +5,28 @@ orden: 11
 resumen: "Los proyectos .NET y sus dependencias, los módulos de la capa de aplicación, el patrón de un caso de uso, el modelo de errores y los paquetes del frontend."
 ---
 
-Validasoft es un **monolito modular**: un solo repositorio, una sola base de datos y un solo proceso, organizado en proyectos que solo se pueden referenciar en un sentido (decisión ADR-0001, `docs/adr/0001-monolito-modular.md`). Extraer un módulo en el futuro sería cambiar el transporte local de mensajes por uno de red.
+AvalaSoft es un **monolito modular**: un solo repositorio, una sola base de datos y un solo proceso, organizado en proyectos que solo se pueden referenciar en un sentido (decisión ADR-0001, `docs/adr/0001-monolito-modular.md`). Extraer un módulo en el futuro sería cambiar el transporte local de mensajes por uno de red.
 
 ## La solución .NET
 
-La solución es `Validasoft.slnx`. Todo es .NET 10 con `TreatWarningsAsErrors`, salvo `Contratos` y `Sdk`, que también compilan para .NET 7 y 8 mientras haya sistemas integrados que no han migrado.
+La solución es `Avalasoft.slnx`. Todo es .NET 10 con `TreatWarningsAsErrors`, salvo `Contratos` y `Sdk`, que también compilan para .NET 7 y 8 mientras haya sistemas integrados que no han migrado.
 
 | Proyecto | Qué contiene | Referencias |
 |---|---|---|
-| `src/Validasoft.Dominio` | Agregados, eventos, invariantes, enumeraciones textuales, cálculo de vigencias, evaluación de condiciones de exigencia, validadores de identificación por país. | Solo `JasperFx.Events` (las abstracciones de eventos de Marten). |
-| `src/Validasoft.Contratos` | Los DTO públicos, los tipos de evento de webhook y los enumerados de la API. Es la superficie que ve un integrador. | Nada. |
-| `src/Validasoft.Aplicacion` | Los casos de uso, agrupados por módulo, con sus endpoints de Wolverine.Http; consultas y escrituras con Marten; procesos periódicos. | `Dominio` y `Contratos`. |
-| `src/Validasoft.Infraestructura` | Configuración de Marten y Wolverine, almacén S3, SMTP, OpenAI, PDF, QR, criptografía, passkeys, SSO, límites y middleware. | `Aplicacion`. |
-| `src/Validasoft.Api` | El host: `Program.cs`, la composición de servicios, `appsettings` y el `Dockerfile`. | `Infraestructura` y el adaptador del Portal. |
-| `src/Validasoft.Sdk` | El cliente .NET de la API v1: llaves, idempotencia, reintentos, identidad delegada, sandbox y verificador de webhooks. Sin dependencias fuera de la BCL. | `Contratos`. |
-| `src/Validasoft.Adaptadores.Portal` | El adaptador de origen para importar los históricos del Portal de proveedores. Opcional: sin él, el importador responde 404. | `Aplicacion`. |
+| `src/Avalasoft.Dominio` | Agregados, eventos, invariantes, enumeraciones textuales, cálculo de vigencias, evaluación de condiciones de exigencia, validadores de identificación por país. | Solo `JasperFx.Events` (las abstracciones de eventos de Marten). |
+| `src/Avalasoft.Contratos` | Los DTO públicos, los tipos de evento de webhook y los enumerados de la API. Es la superficie que ve un integrador. | Nada. |
+| `src/Avalasoft.Aplicacion` | Los casos de uso, agrupados por módulo, con sus endpoints de Wolverine.Http; consultas y escrituras con Marten; procesos periódicos. | `Dominio` y `Contratos`. |
+| `src/Avalasoft.Infraestructura` | Configuración de Marten y Wolverine, almacén S3, SMTP, OpenAI, PDF, QR, criptografía, passkeys, SSO, límites y middleware. | `Aplicacion`. |
+| `src/Avalasoft.Api` | El host: `Program.cs`, la composición de servicios, `appsettings` y el `Dockerfile`. | `Infraestructura` y el adaptador del Portal. |
+| `src/Avalasoft.Sdk` | El cliente .NET de la API v1: llaves, idempotencia, reintentos, identidad delegada, sandbox y verificador de webhooks. Sin dependencias fuera de la BCL. | `Contratos`. |
+| `src/Avalasoft.Adaptadores.Portal` | El adaptador de origen para importar los históricos del Portal de proveedores. Opcional: sin él, el importador responde 404. | `Aplicacion`. |
 | `docs/ejemplos/IntegradorSrm` | Un ejemplo ejecutable de un sistema integrador. | El SDK. |
 
-Pruebas: `tests/Validasoft.Dominio.Tests` (dominio puro), `tests/Validasoft.Integracion.Tests` (la API contra PostgreSQL y MinIO reales con Testcontainers y Alba), `tests/Validasoft.Sdk.Tests`, `tests/Validasoft.Adaptadores.Portal.Tests`, `tests/carga` (k6 sobre la consulta de certificación) y `e2e/` (Playwright; no corre en el CI, se lanza bajo demanda).
+Pruebas: `tests/Avalasoft.Dominio.Tests` (dominio puro), `tests/Avalasoft.Integracion.Tests` (la API contra PostgreSQL y MinIO reales con Testcontainers y Alba), `tests/Avalasoft.Sdk.Tests`, `tests/Avalasoft.Adaptadores.Portal.Tests`, `tests/carga` (k6 sobre la consulta de certificación) y `e2e/` (Playwright; no corre en el CI, se lanza bajo demanda).
 
 ## Módulos de la capa de aplicación
 
-Cada carpeta de `src/Validasoft.Aplicacion` es un módulo; la de `Dominio` con el mismo nombre guarda sus agregados.
+Cada carpeta de `src/Avalasoft.Aplicacion` es un módulo; la de `Dominio` con el mismo nombre guarda sus agregados.
 
 | Módulo | Responsabilidad |
 |---|---|
@@ -72,7 +72,7 @@ public static async Task<VinculoDto> Bloquear(Guid id, BloquearVinculoDto dto, S
 }
 ```
 
-El método recibe la `SesionDeEmpresa` (que ya trae el grupo y la empresa activa y solo ve filas de esa empresa), carga el stream del agregado con la versión que el cliente leyó (cabecera `If-Match` con el `ETag` de la lectura: concurrencia optimista, 412 si cambió), llama al método de dominio, que devuelve el evento nuevo o lanza una `ReglaDeNegocioException`, y confirma todo en una sola transacción, con los mensajes del outbox. Las reglas viven en el agregado, no en el endpoint: así las prueba `Validasoft.Dominio.Tests` sin base de datos.
+El método recibe la `SesionDeEmpresa` (que ya trae el grupo y la empresa activa y solo ve filas de esa empresa), carga el stream del agregado con la versión que el cliente leyó (cabecera `If-Match` con el `ETag` de la lectura: concurrencia optimista, 412 si cambió), llama al método de dominio, que devuelve el evento nuevo o lanza una `ReglaDeNegocioException`, y confirma todo en una sola transacción, con los mensajes del outbox. Las reglas viven en el agregado, no en el endpoint: así las prueba `Avalasoft.Dominio.Tests` sin base de datos.
 
 ### Errores
 
@@ -108,10 +108,10 @@ El frontend es un monorepo de **pnpm** con dos apps y tres paquetes (`pnpm-works
 |---|---|
 | `apps/web` | La app de la empresa y la consola de Plataforma. React 19, TypeScript, MUI 9, TanStack Query 5 (estado del servidor), Zustand 5 (estado del cliente), i18next (todos los textos en `i18n/es-CO*.ts`) y `react-router` con rutas en el hash. Una carpeta por característica en `src/features` (vínculos, expedientes, flujos, configuración, informes, cumplimiento, plataforma…). |
 | `apps/public` | El portal del tercero, el verificador de certificados y las pantallas embebidas. Mismo stack, rutas normales y bundle propio y liviano. |
-| `packages/ui` | `@validasoft/ui`: el sistema de diseño compartido (componentes sobre MUI, selectores de fecha, esqueletos de carga, valores largos, estados de página). |
-| `packages/api-client` | `@validasoft/api-client`: el cliente de la API generado con Orval desde `openapi/v1.json` (`pnpm generar:api`), más el manejo de sesión, errores y el cliente de tiempo real (SSE). |
-| `packages/sdk` | `@validasoft/sdk`: el SDK de TypeScript para backends (Node 20+): llaves, idempotencia, sandbox, identidad delegada y verificador de webhooks. |
-| `e2e` | `@validasoft/e2e`: pruebas de punta a punta con Playwright y los recorridos del manual. |
+| `packages/ui` | `@avalasoft/ui`: el sistema de diseño compartido (componentes sobre MUI, selectores de fecha, esqueletos de carga, valores largos, estados de página). |
+| `packages/api-client` | `@avalasoft/api-client`: el cliente de la API generado con Orval desde `openapi/v1.json` (`pnpm generar:api`), más el manejo de sesión, errores y el cliente de tiempo real (SSE). |
+| `packages/sdk` | `@avalasoft/sdk`: el SDK de TypeScript para backends (Node 20+): llaves, idempotencia, sandbox, identidad delegada y verificador de webhooks. |
+| `e2e` | `@avalasoft/e2e`: pruebas de punta a punta con Playwright y los recorridos del manual. |
 | `marca` | Generador de los recursos de marca (logotipo, íconos y favicon). |
 
 Las dos apps usan la misma API; la diferencia es el esquema de autenticación: la app de la empresa usa la API key o la sesión de una persona en `/api/v1`, y el portal del tercero usa su sesión en `/public/v1` ([Seguridad](guia:arquitectura-seguridad)).

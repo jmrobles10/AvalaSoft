@@ -1,5 +1,5 @@
 import { Alert, Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import type { TenantCreadoDto } from '@validasoft/api-client';
+import type { TenantCreadoDto } from '@avalasoft/api-client';
 import { Check, Copy, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

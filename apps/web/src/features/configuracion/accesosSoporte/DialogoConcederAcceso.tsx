@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { concederAccesoSoporte, type EmpresaDto } from '@validasoft/api-client';
+import { concederAccesoSoporte, type EmpresaDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { invalidarRuta } from '../../../shared/consultas';

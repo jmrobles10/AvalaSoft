@@ -1,6 +1,6 @@
 import { Chip, Typography } from '@mui/material';
-import type { PlanIaEmpresaDto } from '@validasoft/api-client';
-import { Dato, formatearFechaHora, RejillaDatos } from '@validasoft/ui';
+import type { PlanIaEmpresaDto } from '@avalasoft/api-client';
+import { Dato, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';
 import { llaveEnmascarada, type BorradorPlanIa } from './modelo';

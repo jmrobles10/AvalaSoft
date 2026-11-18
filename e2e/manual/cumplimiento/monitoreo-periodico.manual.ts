@@ -15,7 +15,7 @@ recorrido(
     actor: 'Oficial de cumplimiento',
     titulo: 'Sigue el monitoreo de listas de un vínculo activo',
     resumen:
-      'Un proveedor ya aprobado sigue en monitoreo: Validasoft lo reconsulta en las listas cada 30 días. Cuando el proveedor agrega a un socio que aparece en una lista, la novedad llega a la bandeja de Cumplimiento y la oficial la confirma.',
+      'Un proveedor ya aprobado sigue en monitoreo: AvalaSoft lo reconsulta en las listas cada 30 días. Cuando el proveedor agrega a un socio que aparece en una lista, la novedad llega a la bandeja de Cumplimiento y la oficial la confirma.',
     precondiciones: [
       'Un grupo con Constructora Norte y el flujo de proveedores con listas restrictivas bloqueantes.',
       'Un proveedor aprobado sin coincidencias, cuyo vínculo está activo y en monitoreo.',
@@ -63,7 +63,7 @@ recorrido(
     await paso(page, {
       titulo: 'La reconsulta automática corre sin novedades',
       explicacion:
-        'Al cumplirse el plazo, Validasoft reconsulta el vínculo sin que nadie lo pida. Si las personas siguen sin aparecer en las listas, no hay novedad: el monitoreo queda registrado como hecho por «Sistema» y la siguiente reconsulta se programa otros 30 días.',
+        'Al cumplirse el plazo, AvalaSoft reconsulta el vínculo sin que nadie lo pida. Si las personas siguen sin aparecer en las listas, no hay novedad: el monitoreo queda registrado como hecho por «Sistema» y la siguiente reconsulta se programa otros 30 días.',
       resaltar: monitoreo,
     });
 

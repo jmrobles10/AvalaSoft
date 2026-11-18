@@ -1,12 +1,12 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { describe, expect, it } from 'vitest';
 import { ChipVerificacionDelCorreo } from './ChipVerificacionDelCorreo';
 
 function montar(verificacion: Parameters<typeof ChipVerificacionDelCorreo>[0]['verificacion']) {
   return render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <ChipVerificacionDelCorreo verificacion={verificacion} />
     </ThemeProvider>,
   );

@@ -2,7 +2,7 @@ import {
   Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, Stack,
   TextField, Typography, useMediaQuery, useTheme,
 } from '@mui/material';
-import { esErrorApi } from '@validasoft/api-client';
+import { esErrorApi } from '@avalasoft/api-client';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCatalogoCompleto } from '../ficha/api';

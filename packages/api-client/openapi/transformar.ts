@@ -951,7 +951,7 @@ export function transformarOpenApi(entrada: unknown): DocumentoOpenApi {
   return documento;
 }
 
-/** `Validasoft.Aplicacion.Vinculos.TercerosEndpoints` → `terceros`. */
+/** `Avalasoft.Aplicacion.Vinculos.TercerosEndpoints` → `terceros`. */
 function etiqueta(original: string | undefined): string {
   const ultimo = (original ?? 'general').split('.').pop() ?? 'general';
   return ultimo.replace(/Endpoints$/, '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();

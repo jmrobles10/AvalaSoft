@@ -1,6 +1,6 @@
-import type { DocumentoBovedaDto, VigenciaDto } from '@validasoft/api-client';
+import type { DocumentoBovedaDto, VigenciaDto } from '@avalasoft/api-client';
 import type { TFunction } from 'i18next';
-import { formatearDiaCivil } from '@validasoft/ui';
+import { formatearDiaCivil } from '@avalasoft/ui';
 import { estadoDeVigencia, requiereAtencion, type EstadoVigencia } from '../vigencia/vigencia';
 import { enlaceSubirVersion, sePuedeSubirVersion } from './versiones';
 

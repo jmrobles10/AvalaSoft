@@ -2,7 +2,7 @@
 #   backend   -> dotnet build (TreatWarningsAsErrors: una advertencia de compilación rompe el build) y dotnet test
 #                (las pruebas de integración levantan PostgreSQL y MinIO con Testcontainers: el runner ya trae Docker).
 #   frontend  -> pnpm install --frozen-lockfile, lint, typecheck, test y build.
-#   imagen    -> construye la imagen de la API con el frontend (src/Validasoft.Api/Dockerfile) sin publicarla.
+#   imagen    -> construye la imagen de la API con el frontend (src/Avalasoft.Api/Dockerfile) sin publicarla.
 # Las pruebas de punta a punta (Playwright) NO corren aquí: viven en e2e.yml, que solo se dispara a mano (decisión E2E-1 en
 # docs/decisiones/registro.md). Las reglas se prueban con las pruebas de dominio, de integración y de Vitest de los trabajos de arriba.
 name: ci
@@ -44,26 +44,26 @@ jobs:
           restore-keys: nuget-${{ runner.os }}-
 
       - name: Restaurar
-        run: dotnet restore Validasoft.slnx
+        run: dotnet restore Avalasoft.slnx
 
       - name: Compilar (0 advertencias)
-        run: dotnet build Validasoft.slnx --configuration Release --no-restore
+        run: dotnet build Avalasoft.slnx --configuration Release --no-restore
 
       - name: Probar (dominio e integración con Testcontainers)
         run: >-
-          dotnet test Validasoft.slnx --configuration Release --no-build
+          dotnet test Avalasoft.slnx --configuration Release --no-build
           --logger GitHubActions --logger "trx;LogFilePrefix=resultados" --results-directory TestResults
 
       # Que el empaquetado de los SDK no se pudra entre publicaciones (docs/08 §2.4): sin publicar nada. Sin `--no-build`: la documentación XML
-      # de Validasoft.Contratos solo se genera al empaquetar (`_IsPacking`), así que `pack` debe compilar (igual que sdk-publicar.yml).
+      # de Avalasoft.Contratos solo se genera al empaquetar (`_IsPacking`), así que `pack` debe compilar (igual que sdk-publicar.yml).
       - name: Empaquetar el SDK .NET (sin publicar)
         run: |
-          dotnet pack src/Validasoft.Contratos/Validasoft.Contratos.csproj --configuration Release --output artefactos/nuget
-          dotnet pack src/Validasoft.Sdk/Validasoft.Sdk.csproj --configuration Release --output artefactos/nuget
+          dotnet pack src/Avalasoft.Contratos/Avalasoft.Contratos.csproj --configuration Release --output artefactos/nuget
+          dotnet pack src/Avalasoft.Sdk/Avalasoft.Sdk.csproj --configuration Release --output artefactos/nuget
 
       - name: Paquetes con vulnerabilidades conocidas (informativo)
         if: always()
-        run: dotnet list Validasoft.slnx package --vulnerable --include-transitive
+        run: dotnet list Avalasoft.slnx package --vulnerable --include-transitive
 
       - name: Publicar resultados de las pruebas
         if: failure()
@@ -120,8 +120,8 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: src/Validasoft.Api/Dockerfile
+          file: src/Avalasoft.Api/Dockerfile
           push: false
-          tags: validasoft/app:ci-${{ github.sha }}
+          tags: avalasoft/app:ci-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

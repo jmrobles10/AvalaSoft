@@ -2,7 +2,7 @@ import { Button } from '@mui/material';
 import { FileDown } from 'lucide-react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { guardarArchivo } from '@validasoft/ui';
+import { guardarArchivo } from '@avalasoft/ui';
 import { mensajeDeError } from '../../shared/errores';
 import { useAvisos } from '../../shared/useAvisos';
 import { DescargaDeDeclaracionDisponible, useDescargarDeclaracionPropia } from './descargaPdf';

@@ -1,4 +1,5 @@
 export * from './geometria';
+export * from './palabra';
 export * from './Logo';
 export * from './AnimacionExito';
 export * from './Cargando';

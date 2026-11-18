@@ -1,5 +1,5 @@
 import { MenuItem, Stack, TextField, Typography, type Theme } from '@mui/material';
-import type { EmpresaDto, FlujoDto, PaisDto, TipoIdentificacionDto, TipoVinculoDto } from '@validasoft/api-client';
+import type { EmpresaDto, FlujoDto, PaisDto, TipoIdentificacionDto, TipoVinculoDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { TIPOS_DE_PERSONA, type BorradorInvitacion, type CampoInvitacion, type TipoDePersona } from './modeloInvitar';
 

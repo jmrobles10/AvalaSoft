@@ -1,5 +1,5 @@
-import type { EstadoVinculo, EventoHistorialDto } from '@validasoft/api-client';
-import { formatearFecha, type EventoTimeline, type TipoActor } from '@validasoft/ui';
+import type { EstadoVinculo, EventoHistorialDto } from '@avalasoft/api-client';
+import { formatearFecha, type EventoTimeline, type TipoActor } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 import { esCO } from '../../i18n/es-CO';
 import { formatearFechaDeclarada } from '../documentos/formatoDatos';

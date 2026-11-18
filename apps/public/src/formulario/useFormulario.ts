@@ -1,5 +1,5 @@
-import { esErrorApi, type CampoFormularioDto } from '@validasoft/api-client';
-import { claveDia } from '@validasoft/ui';
+import { esErrorApi, type CampoFormularioDto } from '@avalasoft/api-client';
+import { claveDia } from '@avalasoft/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { campoDelError, datosParaEnviar, erroresDelFormulario, faltaParaEnviar } from './formulario';

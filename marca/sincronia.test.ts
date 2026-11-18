@@ -4,20 +4,25 @@ import { describe, expect, it } from 'vitest';
 import {
   ARCO_DE_CARGA,
   ARO_ABIERTO,
-  CAJA_V,
+  CAJA_LOGOTIPO,
   CHECK_RELLENO,
   coloresDeLogo,
+  ESPACIO_SIMBOLO,
   FAVICON,
   GUIA_CHECK,
   LONGITUD_GUIA,
-  MARGEN_V,
+  SIMBOLO_LOGOTIPO,
   TIEMPOS_CARGA,
   TRANSFORMACION_CHECK_ICONO,
+  TRANSFORMACION_PALABRA,
+  TRANSFORMACION_SIMBOLO,
 } from '../packages/ui/src/marca/geometria';
+import { PALABRA } from '../packages/ui/src/marca/palabra';
+import { decodificarPng } from './png.ts';
 
 /**
  * Sincronía de la marca (MA-1): los recursos que el generador deja en `marca/` y las copias que usan las apps, los correos y el PDF no se
- * pueden separar de la geometría de `@validasoft/ui` ni entre sí. El generador necesita un navegador; estas pruebas solo leen archivos.
+ * pueden separar de la geometría de `@avalasoft/ui` ni entre sí. El generador necesita un navegador; estas pruebas solo leen archivos.
  */
 const repo = resolve(import.meta.dirname, '..');
 const leer = (...ruta: string[]) => readFileSync(join(repo, ...ruta));
@@ -59,8 +64,15 @@ describe('recursos de marca generados', () => {
       const c = coloresDeLogo(modo);
       const logotipo = texto('marca', 'svg', `logotipo-${nombre}.svg`);
       expect(logotipo).toContain(CHECK_RELLENO);
-      expect(logotipo).toContain(`translate(${String(-CAJA_V.x)} ${String(-CAJA_V.y)})`);
-      for (const color of [c.check, c.texto, c.soft]) expect(logotipo).toContain(color);
+      expect(logotipo).toContain(`viewBox="0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}"`);
+      expect(logotipo).toContain(`transform="${TRANSFORMACION_SIMBOLO}"`);
+      expect(logotipo).toContain(`transform="${TRANSFORMACION_PALABRA}"`);
+      expect(logotipo).toContain(`d="${PALABRA.avala}" fill="${c.avala}"`);
+      expect(logotipo).toContain(`d="${PALABRA.soft}" fill="${c.soft}"`);
+      expect(logotipo).toContain(`fill="${c.check}"`);
+      // Solo trazados: el logotipo no depende de ninguna fuente.
+      expect(logotipo).not.toContain('<text');
+      expect(logotipo).not.toContain('font-family');
       const icono = texto('marca', 'svg', `icono-${nombre}.svg`);
       expect(icono).toContain(ARO_ABIERTO);
       expect(icono).toContain(CHECK_RELLENO);
@@ -112,21 +124,65 @@ describe('copias que usan el producto', () => {
   });
 
   it('los correos incrustan el logotipo claro y el GIF de éxito claro que genera la marca', () => {
-    const recursos = ['src', 'Validasoft.Aplicacion', 'Comun', 'RecursosDeMarca'];
+    const recursos = ['src', 'Avalasoft.Aplicacion', 'Comun', 'RecursosDeMarca'];
     expect(leer(...recursos, 'logotipo.png').equals(leer('marca', 'png', 'logotipo-claro@2x.png'))).toBe(true);
     expect(leer(...recursos, 'exito.gif').equals(leer('marca', 'gif', 'exito-claro.gif'))).toBe(true);
   });
 
-  it('el PDF dibuja la misma «V», con el mismo verde, caja y margen que el logotipo', () => {
-    const pdf = texto('src', 'Validasoft.Infraestructura', 'Ficha', 'LogosDePdf.cs');
+  it('el PDF dibuja el mismo logotipo: los mismos trazados, transformaciones, caja y colores del modo claro', () => {
+    const pdf = texto('src', 'Avalasoft.Infraestructura', 'Ficha', 'LogosDePdf.cs');
+    const c = coloresDeLogo('light');
+    expect(pdf).toContain(`viewBox="0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}"`);
     expect(pdf).toContain(CHECK_RELLENO);
-    expect(pdf).toContain(`viewBox="${String(CAJA_V.x)} ${String(CAJA_V.y)} ${String(CAJA_V.ancho)} ${String(CAJA_V.alto)}"`);
-    expect(pdf).toContain(`fill="${coloresDeLogo('light').check}"`);
-    expect(pdf).toContain(`MargenDeLaV = ${String(MARGEN_V)};`);
-    expect(pdf).toContain(`${String(CAJA_V.ancho)}.0 / ${String(CAJA_V.alto)}`);
-    // Los colores de «alida» y «Soft» (#0A0F1C y #2F55D9) como los repite el PDF.
-    expect(pdf).toContain('(10 / 255.0, 15 / 255.0, 28 / 255.0)');
-    expect(pdf).toContain('(47 / 255.0, 85 / 255.0, 217 / 255.0)');
-    expect(coloresDeLogo('light')).toMatchObject({ texto: '#0A0F1C', soft: '#2F55D9' });
+    expect(pdf).toContain(`transform="${TRANSFORMACION_SIMBOLO}"`);
+    expect(pdf).toContain(`transform="${TRANSFORMACION_PALABRA}"`);
+    expect(pdf).toContain(`<circle cx="50" cy="50" r="${String(FAVICON.radio)}" fill="${c.check}"/>`);
+    expect(pdf).toContain(`<path d="${PALABRA.avala}" fill="${c.avala}"/>`);
+    expect(pdf).toContain(`<path d="${PALABRA.soft}" fill="${c.soft}"/>`);
+    expect(coloresDeLogo('light')).toMatchObject({ avala: '#0E8C9A', soft: '#0B1F3A' });
+    expect(coloresDeLogo('dark')).toMatchObject({ avala: '#3FC1CE', soft: '#EEF3FA' });
+  });
+});
+
+describe('alineación del logotipo (medida sobre el PNG)', () => {
+  /** Mide el PNG claro @2x píxel a píxel: el círculo verde y los trazados de la palabra, sin fiarse de las constantes. */
+  function medir() {
+    const { ancho, alto, rgba } = decodificarPng(leer('marca', 'png', 'logotipo-claro@2x.png'));
+    const cerca = (i: number, [r, g, b]: number[], tolerancia: number) =>
+      (rgba[i + 3] ?? 0) > 128 && Math.abs((rgba[i] ?? 0) - (r ?? 0)) < tolerancia && Math.abs((rgba[i + 1] ?? 0) - (g ?? 0)) < tolerancia && Math.abs((rgba[i + 2] ?? 0) - (b ?? 0)) < tolerancia;
+    const caja = (esDeLaParte: (i: number) => boolean) => {
+      const c = { x0: Infinity, x1: -1, y0: Infinity, y1: -1 };
+      for (let y = 0; y < alto; y += 1)
+        for (let x = 0; x < ancho; x += 1)
+          if (esDeLaParte((y * ancho + x) * 4)) {
+            c.x0 = Math.min(c.x0, x);
+            c.x1 = Math.max(c.x1, x);
+            c.y0 = Math.min(c.y0, y);
+            c.y1 = Math.max(c.y1, y);
+          }
+      return { ...c, ancho: c.x1 - c.x0 + 1, alto: c.y1 - c.y0 + 1, centroY: (c.y0 + c.y1 + 1) / 2 };
+    };
+    const circulo = caja((i) => cerca(i, [0x22, 0xd3, 0x8a], 40));
+    const palabra = caja((i) => cerca(i, [0x0e, 0x8c, 0x9a], 30) || cerca(i, [0x0b, 0x1f, 0x3a], 30));
+    return { circulo, palabra };
+  }
+
+  it('el círculo se centra entre la línea base y lo alto de las ascendentes (a menos de un píxel del PNG @2x)', () => {
+    const { circulo, palabra } = medir();
+    // La palabra mide de lo alto de la «l» y la «f» al sobrepaso de las curvas bajo la línea base; el círculo, su centro.
+    expect(Math.abs(circulo.centroY - palabra.centroY)).toBeLessThanOrEqual(1);
+    // El borde inferior del círculo cae un poco bajo el de la palabra y el superior un poco sobre el de las ascendentes.
+    expect(circulo.y1).toBeGreaterThanOrEqual(palabra.y1);
+    expect(circulo.y0).toBeLessThanOrEqual(palabra.y0);
+  });
+
+  it('el círculo mide ≈ 1,05 veces las ascendentes y deja ≈ 0,2 de su diámetro hasta la palabra', () => {
+    const { circulo, palabra } = medir();
+    expect(circulo.alto / palabra.alto).toBeGreaterThan(1.0);
+    expect(circulo.alto / palabra.alto).toBeLessThan(1.1);
+    expect(SIMBOLO_LOGOTIPO.diametro / PALABRA.altoAscendente).toBeCloseTo(1.05, 2);
+    const aire = palabra.x0 - (circulo.x1 + 1);
+    expect(aire / circulo.ancho).toBeGreaterThan(ESPACIO_SIMBOLO - 0.04);
+    expect(aire / circulo.ancho).toBeLessThan(ESPACIO_SIMBOLO + 0.04);
   });
 });

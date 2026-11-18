@@ -47,7 +47,7 @@ El diálogo pide el motivo, que queda en el historial con tu nombre, y que escri
 
 ## Paso 3. Comprueba que el vínculo quedó anulado
 
-Validasoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle, que ahora muestra el estado «Anulado» con su fecha (1). El vínculo deja de aparecer entre los vigentes de la empresa y ya no recibe invitaciones ni expedientes.
+AvalaSoft confirma con el aviso «Vínculo anulado.» y se queda en el detalle, que ahora muestra el estado «Anulado» con su fecha (1). El vínculo deja de aparecer entre los vigentes de la empresa y ya no recibe invitaciones ni expedientes.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 

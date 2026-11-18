@@ -16,7 +16,7 @@ import {
   type GuardarSeccionDto,
   type PropuestaDeSeccionDto,
   type SeccionGuardadaDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { useDiferido } from '../shared/useDiferido';
 
 /** Cada cuánto se vuelve a preguntar mientras la IA lee el documento nuevo, y cuántas veces como máximo (≈ 30 s). */

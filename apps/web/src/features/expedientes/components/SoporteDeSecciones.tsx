@@ -1,5 +1,5 @@
 import { Alert, Chip, Stack, Typography } from '@mui/material';
-import type { SeccionRespaldadaDto, SoporteDeSeccionesDto } from '@validasoft/api-client';
+import type { SeccionRespaldadaDto, SoporteDeSeccionesDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { SeccionFicha } from '../../terceros/SeccionesVinculo';

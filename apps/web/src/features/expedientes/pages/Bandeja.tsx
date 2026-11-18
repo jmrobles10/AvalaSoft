@@ -1,5 +1,5 @@
 import { Box, Button, Checkbox, Typography } from '@mui/material';
-import { EstadoAreaExpediente, SCOPES, type FilaBandejaDto } from '@validasoft/api-client';
+import { EstadoAreaExpediente, SCOPES, type FilaBandejaDto } from '@avalasoft/api-client';
 import {
   BarraFiltros,
   EstadoVacio,
@@ -8,7 +8,7 @@ import {
   TablaConCursor,
   usePaginacionCursor,
   type ColumnaTabla,
-} from '@validasoft/ui';
+} from '@avalasoft/ui';
 import { FolderClock } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

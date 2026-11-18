@@ -1,6 +1,6 @@
 import { Box, Button, Drawer, IconButton, Link, Stack, Typography } from '@mui/material';
-import type { RegistroAuditoriaDto } from '@validasoft/api-client';
-import { Dato, RejillaDatos } from '@validasoft/ui';
+import type { RegistroAuditoriaDto } from '@avalasoft/api-client';
+import { Dato, RejillaDatos } from '@avalasoft/ui';
 import { Check, Copy, X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type ExportacionBovedaDto, type SolicitudHabeasDto, type VinculoPublicoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type ExportacionBovedaDto, type SolicitudHabeasDto, type VinculoPublicoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAvisos } from '../shared/useAvisos';
@@ -29,7 +29,7 @@ function solicitud(cambios: Partial<SolicitudHabeasDto> = {}): SolicitudHabeasDt
     alcance: null,
     estado: 'Recibida',
     resultado: null,
-    destino: { empresaId: null, nombre: 'Validasoft' },
+    destino: { empresaId: null, nombre: 'AvalaSoft' },
     recibidaEn: '2026-11-02T15:00:00Z',
     venceEl: '2026-11-16',
     diasHabiles: 10,
@@ -88,7 +88,7 @@ function montar(solicitudes: SolicitudHabeasDto[], exportaciones: ExportacionBov
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter>
           <PaginaPrivacidad />
@@ -143,7 +143,7 @@ describe('Privacidad y mis datos', () => {
     await usuario.click(within(dialogo).getByRole('radio', { name: /Suprimir mis datos/ }));
     expect(within(dialogo).getByText(/la ley nos obliga a guardarlo/)).toBeInTheDocument();
     await usuario.click(within(dialogo).getByRole('radio', { name: 'Solo mis documentos' }));
-    expect(within(dialogo).getByText(/Validasoft \(mi bóveda\) recibe tu solicitud ahora y te responde en máximo 15 días hábiles/)).toBeInTheDocument();
+    expect(within(dialogo).getByText(/AvalaSoft \(mi bóveda\) recibe tu solicitud ahora y te responde en máximo 15 días hábiles/)).toBeInTheDocument();
     await usuario.click(within(dialogo).getByRole('button', { name: 'Enviar solicitud' }));
 
     await waitFor(() => expect(mutaciones).toHaveLength(1));

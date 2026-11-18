@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type EmpresaDto, type FlujoDto, type InvitacionDeTerceroDto, type PaisDto, type TipoVinculoDto } from '@validasoft/api-client';
+import { configurarCliente, reiniciarCliente, SCOPES, type EmpresaDto, type FlujoDto, type InvitacionDeTerceroDto, type PaisDto, type TipoVinculoDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';

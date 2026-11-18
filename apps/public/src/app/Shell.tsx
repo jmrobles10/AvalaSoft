@@ -1,5 +1,5 @@
 import { BottomNavigation, BottomNavigationAction, Box, Button, Stack, Typography } from '@mui/material';
-import { Logo } from '@validasoft/ui';
+import { Logo } from '@avalasoft/ui';
 import { Building2, FolderCheck, IdCard, Landmark, LogOut, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, Link as RouterLink, useLocation } from 'react-router';
@@ -38,7 +38,7 @@ const ACCION_INFERIOR = {
 
 /**
  * Shell del tercero, móvil primero (design system «Registro», PantallaPublicoShell): cabecera con la marca, contenido de
- * una columna (máx. 720 px), pie "con Validasoft" y, con sesión, navegación inferior en el celular y superior en escritorio.
+ * una columna (máx. 720 px), pie "con AvalaSoft" y, con sesión, navegación inferior en el celular y superior en escritorio.
  */
 export function Shell() {
   // Dentro del iframe de un sistema integrador: sin cabecera, navegación ni pie (el sistema pone su propio marco) y con el puente de mensajes.
@@ -126,7 +126,7 @@ function ShellNormal() {
           <span>{t('comun.pie')}</span>
           <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
             <Logo variante="icono" tamano={14} decorativo />
-            {t('comun.conValidasoft')}
+            {t('comun.conAvalasoft')}
           </Box>
         </Stack>
       </Box>

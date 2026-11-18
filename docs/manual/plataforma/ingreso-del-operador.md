@@ -28,7 +28,7 @@ Un operador de Plataforma entra a la consola sin contraseña: pide un código a 
 
 ## Paso 1. Escribe tu correo
 
-Validasoft no usa contraseña para los operadores. Escribe el correo con el que te dieron de alta y pulsa «Continuar». Si el correo no corresponde a un operador de ingreso directo, la pantalla responde lo mismo que para cualquier otro correo: así no se revela quién tiene acceso.
+AvalaSoft no usa contraseña para los operadores. Escribe el correo con el que te dieron de alta y pulsa «Continuar». Si el correo no corresponde a un operador de ingreso directo, la pantalla responde lo mismo que para cualquier otro correo: así no se revela quién tiene acceso.
 
 > **Pantalla:** `/`
 
@@ -40,7 +40,7 @@ Validasoft no usa contraseña para los operadores. Escribe el correo con el que 
 
 ## Paso 2. Revisa tu correo
 
-Validasoft te envía un correo con un código de seis casillas. Ábrelo y copia el código: vence pronto y, si te equivocas varias veces, hay que pedir uno nuevo. El código no es tu contraseña: sirve solo para este ingreso.
+AvalaSoft te envía un correo con un código de seis casillas. Ábrelo y copia el código: vence pronto y, si te equivocas varias veces, hay que pedir uno nuevo. El código no es tu contraseña: sirve solo para este ingreso.
 
 > **Pantalla:** `/`
 

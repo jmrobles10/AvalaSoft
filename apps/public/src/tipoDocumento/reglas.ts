@@ -1,4 +1,4 @@
-import type { ReglasArchivoDto, TipoDocumentoRequisitoDto } from '@validasoft/api-client';
+import type { ReglasArchivoDto, TipoDocumentoRequisitoDto } from '@avalasoft/api-client';
 import type { TFunction } from 'i18next';
 import { formatearTamano, REGLAS_GLOBALES, TIPOS_PERMITIDOS, type ReglasArchivo } from '../boveda/subida';
 

@@ -5,7 +5,7 @@ import {
   type HechosDto,
   type RequisitoExpedienteDto,
   type VeredictoEmitidoDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { datosDe, esVersionSinArchivo } from '../documentos/formatoDatos';
 import type { DocumentoEnVisor } from '../documentos/VisorDocumento';
 import type { ContextoRevisor } from './reglas';

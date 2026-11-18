@@ -1,5 +1,5 @@
 import { Box, Chip, Tooltip } from '@mui/material';
-import type { MotivoDeRevisionDto } from '@validasoft/api-client';
+import type { MotivoDeRevisionDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { etiquetaDeMotivo } from '../modelo';
 

@@ -1,4 +1,4 @@
-import type { SolicitudDeAccesoDePlataformaDto } from '@validasoft/api-client';
+import type { SolicitudDeAccesoDePlataformaDto } from '@avalasoft/api-client';
 
 /** «A», «A y B», «A, B y C»: sin repetir una empresa que invitó con varios vínculos. */
 export function listaDeEmpresas(solicitud: Pick<SolicitudDeAccesoDePlataformaDto, 'empresas'>): string {

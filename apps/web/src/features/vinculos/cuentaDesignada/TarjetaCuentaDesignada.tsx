@@ -1,6 +1,6 @@
 import { Divider, Stack, Typography } from '@mui/material';
-import { SCOPES, type CuentaDesignadaDelVinculoDto, type CuentaDesignadaDto, type VinculoDto } from '@validasoft/api-client';
-import { EsqueletoTarjeta, EstadoVacio, formatearFechaHora } from '@validasoft/ui';
+import { SCOPES, type CuentaDesignadaDelVinculoDto, type CuentaDesignadaDto, type VinculoDto } from '@avalasoft/api-client';
+import { EsqueletoTarjeta, EstadoVacio, formatearFechaHora } from '@avalasoft/ui';
 import { Landmark } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

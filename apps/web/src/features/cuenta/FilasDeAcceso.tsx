@@ -1,6 +1,6 @@
 import { Box, Chip, Stack, Typography } from '@mui/material';
-import type { PasskeyDto, SesionDeUsuarioDto } from '@validasoft/api-client';
-import { formatearFechaHora } from '@validasoft/ui';
+import type { PasskeyDto, SesionDeUsuarioDto } from '@avalasoft/api-client';
+import { formatearFechaHora } from '@avalasoft/ui';
 import { KeyRound, Laptop } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

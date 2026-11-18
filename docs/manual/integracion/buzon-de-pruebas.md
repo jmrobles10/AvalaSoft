@@ -3,7 +3,7 @@ id: "integracion/buzon-de-pruebas"
 titulo: "Lee y vacía el buzón de correo de pruebas"
 actor: "Sistema integrador"
 dominio: "integracion"
-resumen: "En el sandbox, los correos que Validasoft enviaría no salen a nadie: quedan en un buzón. El sistema integrador lista ese buzón, abre un correo para ver su contenido y lo vacía cuando termina sus pruebas."
+resumen: "En el sandbox, los correos que AvalaSoft enviaría no salen a nadie: quedan en un buzón. El sistema integrador lista ese buzón, abre un correo para ver su contenido y lo vacía cuando termina sus pruebas."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Sistema integrador · **Dominio:** Integración
 
-En el sandbox, los correos que Validasoft enviaría no salen a nadie: quedan en un buzón. El sistema integrador lista ese buzón, abre un correo para ver su contenido y lo vacía cuando termina sus pruebas.
+En el sandbox, los correos que AvalaSoft enviaría no salen a nadie: quedan en un buzón. El sistema integrador lista ese buzón, abre un correo para ver su contenido y lo vacía cuando termina sus pruebas.
 
 **Antes de empezar**
 

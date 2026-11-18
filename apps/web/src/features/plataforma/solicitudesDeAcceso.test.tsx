@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type SolicitudDeAccesoDePlataformaDto } from '@validasoft/api-client';
+import { reiniciarCliente, type SolicitudDeAccesoDePlataformaDto } from '@avalasoft/api-client';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';

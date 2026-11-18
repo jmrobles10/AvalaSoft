@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { AvisoEsperandoCuenta } from './AvisoEsperandoCuenta';
@@ -8,7 +8,7 @@ import { AvisoEsperandoCuenta } from './AvisoEsperandoCuenta';
 describe('AvisoEsperandoCuenta', () => {
   it('dice que el expediente espera la cuenta bancaria designada y lleva al vínculo para aprobarla', () => {
     render(
-      <ThemeProvider theme={createValidasoftTheme('light')}>
+      <ThemeProvider theme={createAvalasoftTheme('light')}>
         <MemoryRouter>
           <AvisoEsperandoCuenta empresaId="emp-1" vinculoId="vin-9" />
         </MemoryRouter>

@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import type { PerfilDeFichaDto } from '@validasoft/api-client';
+import type { PerfilDeFichaDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { useCatalogoCompleto } from '../api';
 import { CampoFechaFicha, CampoSiNo, CampoTexto, Rejilla, Subtitulo } from '../campos';

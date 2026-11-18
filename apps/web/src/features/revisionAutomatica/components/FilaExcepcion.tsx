@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import type { ExcepcionDeRevisionDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { ExcepcionDeRevisionDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

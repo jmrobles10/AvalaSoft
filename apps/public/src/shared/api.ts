@@ -26,8 +26,8 @@ import {
   type ExpedientePublicoDto,
   type RegistrarCuentaBancariaDto,
   type RequisitoPublicoDto,
-} from '@validasoft/api-client';
-import { abrirDescarga } from '@validasoft/ui';
+} from '@avalasoft/api-client';
+import { abrirDescarga } from '@avalasoft/ui';
 import { useEstadoDeRefresco } from './useEstadoDeRefresco';
 
 /** No se reintenta lo que el servidor ya rechazó (4xx): solo fallas de red o 5xx, hasta dos veces. */

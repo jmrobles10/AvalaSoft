@@ -1,4 +1,4 @@
-import { esErrorApi, type SesionTerceroDto } from '@validasoft/api-client';
+import { esErrorApi, type SesionTerceroDto } from '@avalasoft/api-client';
 import { create } from 'zustand';
 import { cerrarSesionEnServidor, renovarSesion } from './sesionApi';
 

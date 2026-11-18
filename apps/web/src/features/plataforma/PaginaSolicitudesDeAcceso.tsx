@@ -1,6 +1,6 @@
 import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import type { ContactoDelTerceroDto, SolicitudDeAccesoDePlataformaDto } from '@validasoft/api-client';
-import { EsqueletoTarjeta, EstadoVacio } from '@validasoft/ui';
+import type { ContactoDelTerceroDto, SolicitudDeAccesoDePlataformaDto } from '@avalasoft/api-client';
+import { EsqueletoTarjeta, EstadoVacio } from '@avalasoft/ui';
 import { MailCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

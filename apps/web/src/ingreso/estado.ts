@@ -1,4 +1,4 @@
-import { esErrorApi, type CuentaDeIngresoDto, type PasoDeIngresoDto, type SesionDirectaDto } from '@validasoft/api-client';
+import { esErrorApi, type CuentaDeIngresoDto, type PasoDeIngresoDto, type SesionDirectaDto } from '@avalasoft/api-client';
 
 /** Opciones de WebAuthn tal como las entrega la API (JSON con los binarios en base64url). */
 export type OpcionesJson = Record<string, unknown>;

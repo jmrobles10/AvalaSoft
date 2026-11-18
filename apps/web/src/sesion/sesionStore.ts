@@ -1,8 +1,8 @@
-import { leerSesion, type SesionValidasoft } from '@validasoft/api-client';
+import { leerSesion, type SesionAvalasoft } from '@avalasoft/api-client';
 import { create } from 'zustand';
 
 /**
- * `cerrada`: el contenedor envió `validasoft:cerrar-sesion` (o la persona cerró su sesión directa); no se pide otra hasta que él la entregue.
+ * `cerrada`: el contenedor envió `avalasoft:cerrar-sesion` (o la persona cerró su sesión directa); no se pide otra hasta que él la entregue.
  * Los demás son del ingreso directo: `inactiva` (el token venció sin actividad; «Continuar» la reanuda mientras la cookie siga vigente),
  * `terminada` (se agotó la sesión o ya no se pudo renovar) y `revocada` (la cerró la persona desde otro dispositivo o un administrador).
  */
@@ -15,7 +15,7 @@ interface OpcionesDeSesion {
 
 interface SesionState {
   /** El token vive solo en memoria (docs/06 §1.2): nunca en localStorage. */
-  sesion: SesionValidasoft | null;
+  sesion: SesionAvalasoft | null;
   estado: EstadoSesion;
   /** Empresa sugerida por el contenedor al entregar la sesión. */
   empresaSugerida: string | null;

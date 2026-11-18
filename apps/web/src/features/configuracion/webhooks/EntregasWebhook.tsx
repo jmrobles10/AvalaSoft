@@ -1,6 +1,6 @@
 import { Box, Button, Collapse, IconButton, MenuItem, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import type { EntregaWebhookDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFechaHora, MarcoTabla, type Estado } from '@validasoft/ui';
+import type { EntregaWebhookDto } from '@avalasoft/api-client';
+import { ChipEstado, formatearFechaHora, MarcoTabla, type Estado } from '@avalasoft/ui';
 import { ChevronDown, ChevronRight, RotateCw } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

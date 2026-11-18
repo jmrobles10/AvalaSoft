@@ -31,7 +31,7 @@ async function expedienteEnRevision(page: Page): Promise<Caso> {
   return { e, invitacion, tercero: page };
 }
 
-/** Ventana aparte (otra persona, otro navegador) con Validasoft embebido en el expediente del caso. */
+/** Ventana aparte (otra persona, otro navegador) con AvalaSoft embebido en el expediente del caso. */
 async function revisor(browser: Browser, c: Caso, persona: Persona, area: string) {
   const ventana = await (await browser.newContext()).newPage();
   const app = await abrirEmbebido(ventana, c.e, persona);

@@ -1,16 +1,16 @@
 # Pruebas de punta a punta
 
-Playwright con un navegador real contra Validasoft tal como se despliega: la API sirve la app embebible en `/app/` y la del tercero en `/`, con PostgreSQL, Mailpit (correo) y MinIO (archivos) de verdad. Cada prueba crea su propio grupo empresarial, así que corren en paralelo sin pisarse ni depender de datos previos.
+Playwright con un navegador real contra AvalaSoft tal como se despliega: la API sirve la app embebible en `/app/` y la del tercero en `/`, con PostgreSQL, Mailpit (correo) y MinIO (archivos) de verdad. Cada prueba crea su propio grupo empresarial, así que corren en paralelo sin pisarse ni depender de datos previos.
 
 ```bash
 docker compose -f infra/compose/compose.yaml up -d postgres mailpit minio
-pnpm --filter @validasoft/e2e navegadores   # la primera vez: descarga Chromium
+pnpm --filter @avalasoft/e2e navegadores   # la primera vez: descarga Chromium
 pnpm e2e                                     # compila las apps, publica la API en e2e/.api y la levanta en :5090
 ```
 
 Con una API ya levantada que sirva las dos apps: `E2E_BASE_URL=http://localhost:5090 pnpm e2e`. Para no recompilar: `E2E_SIN_COMPILAR=1`.
 
-En local las pruebas corren **aisladas** del entorno de desarrollo: base `validasoft_e2e` (se crea sola) y Mailpit propio (perfil `e2e` del compose, bandeja en http://localhost:8026). Así sus invitaciones y códigos no llegan al Mailpit de desarrollo, y la API de desarrollo no toma sus mensajes de la cola. Para usar la base y el Mailpit de desarrollo: `E2E_COMPARTIDO=1`. Para correr dos suites a la vez: otro `E2E_PUERTO` y otra `E2E_BASE_DATOS` (letras minúsculas y guion bajo). En CI no hace falta: el entorno ya es limpio.
+En local las pruebas corren **aisladas** del entorno de desarrollo: base `avalasoft_e2e` (se crea sola) y Mailpit propio (perfil `e2e` del compose, bandeja en http://localhost:8026). Así sus invitaciones y códigos no llegan al Mailpit de desarrollo, y la API de desarrollo no toma sus mensajes de la cola. Para usar la base y el Mailpit de desarrollo: `E2E_COMPARTIDO=1`. Para correr dos suites a la vez: otro `E2E_PUERTO` y otra `E2E_BASE_DATOS` (letras minúsculas y guion bajo). En CI no hace falta: el entorno ya es limpio.
 
 **La e2e no corre en el CI de cada push ni pull request** (decisión E2E-1, [registro](../docs/decisiones/registro.md)): se corre **bajo demanda**, cuando un cambio toca la conexión entre las piezas (arranque, autenticación, configuración del stack) o antes de una entrega. En GitHub: Actions → `e2e` → *Run workflow* (`.github/workflows/e2e.yml`, con el filtro opcional `grep` por título de prueba). Las reglas se prueban con las pruebas de dominio, de integración y de Vitest, que sí corren en `ci.yml`.
 
@@ -21,7 +21,7 @@ Para correr **exactamente lo de ese flujo**, en un contenedor Linux y con los se
 - **Empresa** (`soporte/semilla.ts`): grupo con Constructora Norte (Compras y Cumplimiento; Cumplimiento puede rechazar) y Constructora Sur (Revisión), el sistema integrado E2E con sus claves y personas con roles distintos.
 - **Proveedor** (`soporte/proveedor.ts`): entra con el enlace del correo y el código (Mailpit), acepta, sube documentos (PDF generados en `soporte/archivos.ts`) y responde observaciones.
 - **Tercero embebido por un sistema cualquiera** (`pruebas/embebido-tercero.spec.ts`, IO-6): la página anfitriona es `docs/ejemplos/anfitrion-tercero/index.html` servida por `page.route` en otro origen; su «backend» (la prueba) canjea la sesión del tercero con `POST /api/v1/sesiones-tercero`. Con `E2E_CAPTURAS=<carpeta>` las pruebas de pantallas nuevas guardan capturas en claro y en celular (`soporte/capturas.ts`).
-- **Personas de la empresa** (`soporte/embebido.ts`, `soporte/empresa.ts`): usan Validasoft embebido en un iframe de otro origen; la sesión llega por `postMessage` con identidad delegada firmada por el sistema integrado. Para cambiar de sección se usa `irASeccion(app, nombre)`: la barra superior pasa a «Más» las pestañas que no caben en el ancho del iframe, así que la sección puede ser un enlace de la barra o un ítem de ese menú.
+- **Personas de la empresa** (`soporte/embebido.ts`, `soporte/empresa.ts`): usan AvalaSoft embebido en un iframe de otro origen; la sesión llega por `postMessage` con identidad delegada firmada por el sistema integrado. Para cambiar de sección se usa `irASeccion(app, nombre)`: la barra superior pasa a «Más» las pestañas que no caben en el ancho del iframe, así que la sección puede ser un enlace de la barra o un ítem de ese menú.
 - **Sistema integrado** (`soporte/receptor.ts`): recibe los webhooks y verifica su firma.
 
 ## Qué cubre
@@ -59,4 +59,4 @@ Los vencimientos se prueban sin mover el reloj: el proveedor declara una fecha d
 
 ## Manual generado por recorridos
 
-Los recorridos de `manual/` (proyecto aparte, `playwright.manual.config.ts`; **no** corren en `pnpm e2e` ni en el CI) ejecutan los flujos reales con pantallazos y los convierten en el manual de Validasoft y en la referencia de la API (`pnpm manual:recorrer`, `pnpm manual`). Ver [`manual/README.md`](manual/README.md) y la lista de lo que falta documentar en [`manual/INVENTARIO.md`](manual/INVENTARIO.md).
+Los recorridos de `manual/` (proyecto aparte, `playwright.manual.config.ts`; **no** corren en `pnpm e2e` ni en el CI) ejecutan los flujos reales con pantallazos y los convierten en el manual de AvalaSoft y en la referencia de la API (`pnpm manual:recorrer`, `pnpm manual`). Ver [`manual/README.md`](manual/README.md) y la lista de lo que falta documentar en [`manual/INVENTARIO.md`](manual/INVENTARIO.md).

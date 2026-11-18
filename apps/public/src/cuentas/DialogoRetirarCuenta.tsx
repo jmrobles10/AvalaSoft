@@ -1,5 +1,5 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
-import type { CuentaBancariaPublicaDto } from '@validasoft/api-client';
+import type { CuentaBancariaPublicaDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { useRetirarCuenta } from '../shared/api';
 import { mensajeDeError } from '../shared/errores';

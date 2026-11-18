@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Button, Skeleton, Stack, Typography } from '@mui/material';
-import { esErrorApi, SCOPES } from '@validasoft/api-client';
-import { EsqueletoTarjeta, EstadoVacio, PaginaEstado } from '@validasoft/ui';
+import { esErrorApi, SCOPES } from '@avalasoft/api-client';
+import { EsqueletoTarjeta, EstadoVacio, PaginaEstado } from '@avalasoft/ui';
 import { SearchX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useParams } from 'react-router';

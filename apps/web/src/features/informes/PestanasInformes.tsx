@@ -1,5 +1,5 @@
 import { Box, Tab, Tabs } from '@mui/material';
-import { SCOPES } from '@validasoft/api-client';
+import { SCOPES } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { usePermisos } from '../../shared/usePermisos';

@@ -36,7 +36,7 @@ recorrido(
         '«Creado» y «Última actualización» muestran cuándo se registró y cuándo cambió por última vez; el estado aparece junto al nombre del tercero.',
       resaltar: datos,
       variantes: [
-        { cuando: 'El tercero ya tiene ficha en Validasoft', entonces: 'El nombre es un enlace a su ficha, y la identificación se ve completa.' },
+        { cuando: 'El tercero ya tiene ficha en AvalaSoft', entonces: 'El nombre es un enlace a su ficha, y la identificación se ve completa.' },
         { cuando: 'El vínculo tiene atributos definidos por el tipo', entonces: 'Aparece una tarjeta «Atributos» con sus valores.' },
       ],
     });

@@ -1,4 +1,4 @@
-import type { AtributoPermitidoDto, InvitarTerceroDto, TipoIdentificacionDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto, InvitarTerceroDto, TipoIdentificacionDto } from '@avalasoft/api-client';
 import { numeroValido, PAIS_POR_DEFECTO, TIPO_POR_DEFECTO } from '../configuracion/empresas/modelo';
 import { cuerpoDeAtributos, type ValoresDeAtributos } from '../vinculos/atributos/modelo';
 

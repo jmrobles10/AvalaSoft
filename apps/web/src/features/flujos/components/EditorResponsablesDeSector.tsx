@@ -1,5 +1,5 @@
 import { Box, MenuItem, TextField, Typography } from '@mui/material';
-import type { AreaDto } from '@validasoft/api-client';
+import type { AreaDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { nombreSeccion, SECCIONES_FICHA } from '../../terceros/ficha/secciones';
 import type { EtapaEnEditor, ResponsableDeSectorEnEditor } from '../editor';

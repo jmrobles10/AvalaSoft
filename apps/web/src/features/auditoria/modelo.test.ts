@@ -50,7 +50,7 @@ describe('auditoría', () => {
   it('el actor se muestra por nombre o por tipo con el id corto', () => {
     expect(textoActor({ tipo: 'Usuario', id: 'u-1', nombre: 'Ana Pérez', sistema: null }, t)).toBe('Ana Pérez');
     expect(textoActor({ tipo: 'Integracion', id: '0f8fad5b-d9cb-469f-a165-70867728950e', nombre: null, sistema: 'SRM' }, t)).toBe('Integración 0f8fad5b');
-    expect(textoActor({ tipo: 'Plataforma', id: null, nombre: null, sistema: null }, t)).toBe('Plataforma Validasoft');
+    expect(textoActor({ tipo: 'Plataforma', id: null, nombre: null, sistema: null }, t)).toBe('Plataforma AvalaSoft');
     expect(textoActor({ tipo: 'Robot', id: null, nombre: null, sistema: null }, t)).toBe('Robot');
   });
 

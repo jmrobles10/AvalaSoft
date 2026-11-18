@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, Link, Skeleton, Stack, Typography } from '@mui/material';
-import { esErrorApi, SCOPES, type EvaluacionDto } from '@validasoft/api-client';
-import { EsqueletoTarjeta, PaginaEstado, formatearFecha } from '@validasoft/ui';
+import { esErrorApi, SCOPES, type EvaluacionDto } from '@avalasoft/api-client';
+import { EsqueletoTarjeta, PaginaEstado, formatearFecha } from '@avalasoft/ui';
 import { Ban, RotateCcw, SearchX, SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

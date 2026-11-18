@@ -1,13 +1,13 @@
 import { ThemeProvider } from '@mui/material';
 import { act, render, screen } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Avisos } from './avisos';
 import { useAvisos } from './useAvisos';
 
 const montar = () =>
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <Avisos />
     </ThemeProvider>,
   );

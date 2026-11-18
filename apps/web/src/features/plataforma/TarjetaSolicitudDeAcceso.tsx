@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
-import type { ContactoDelTerceroDto, SolicitudDeAccesoDePlataformaDto } from '@validasoft/api-client';
-import { ChipEstado, formatearFecha } from '@validasoft/ui';
+import type { ContactoDelTerceroDto, SolicitudDeAccesoDePlataformaDto } from '@avalasoft/api-client';
+import { ChipEstado, formatearFecha } from '@avalasoft/ui';
 import { ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';

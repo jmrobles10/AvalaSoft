@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Chip, Stack, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { actualizarConfiguracionSso, type ConfiguracionDeSsoDto } from '@validasoft/api-client';
-import { DosColumnas } from '@validasoft/ui';
+import { actualizarConfiguracionSso, type ConfiguracionDeSsoDto } from '@avalasoft/api-client';
+import { DosColumnas } from '@avalasoft/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EncabezadoPagina, IconoCarga } from '../../../../shared/componentes';

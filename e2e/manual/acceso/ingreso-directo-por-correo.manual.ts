@@ -6,7 +6,7 @@ recorrido(
   {
     dominio: 'acceso',
     actor: 'Revisor/área',
-    titulo: 'Entra a Validasoft con tu correo y un código',
+    titulo: 'Entra a AvalaSoft con tu correo y un código',
     resumen:
       'Rita entra sin contraseña: escribe su correo, recibe un código de seis caracteres en su bandeja y lo escribe en la pantalla. ' +
       'Después la sesión sigue abierta al recargar la página, hasta que cierra sesión.',
@@ -17,16 +17,16 @@ recorrido(
   },
   async ({ page }) => {
     const g = await crearGrupoDirecto();
-    const correo = `rita.${Date.now().toString(36)}@e2e.validasoft.co`;
+    const correo = `rita.${Date.now().toString(36)}@e2e.avalasoft.co`;
     await crearUsuario(g, 'Rita Revisora', 'Revisor', correo);
 
     await page.goto('/app/');
-    await expect(page.getByRole('heading', { name: 'Ingresa a Validasoft' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Entrar con una passkey' })).toBeVisible();
     await paso(page, {
       titulo: 'Abre la pantalla de ingreso',
       explicacion:
-        'Validasoft no pide contraseña. Escribe tu correo en el campo «Correo» y pulsa «Continuar». Si tu cuenta ya tiene una passkey, puedes usar el botón «Entrar con una passkey» en su lugar.',
+        'AvalaSoft no pide contraseña. Escribe tu correo en el campo «Correo» y pulsa «Continuar». Si tu cuenta ya tiene una passkey, puedes usar el botón «Entrar con una passkey» en su lugar.',
       resaltar: [page.getByLabel('Correo'), page.getByRole('button', { name: 'Continuar' })],
       variantes: [
         { cuando: 'Tu navegador no admite passkeys', entonces: 'El botón de passkey no aparece y ves el aviso de usar el código del correo.' },
@@ -40,7 +40,7 @@ recorrido(
     await paso(page, {
       titulo: 'Revisa tu correo y escribe el código',
       explicacion:
-        'Validasoft envía un correo con el asunto «' + TEXTO_ASUNTO_CODIGO + '». Escribe el código que trae en las casillas de esta pantalla; no hace falta pulsar nada más. ' +
+        'AvalaSoft envía un correo con el asunto «' + TEXTO_ASUNTO_CODIGO + '». Escribe el código que trae en las casillas de esta pantalla; no hace falta pulsar nada más. ' +
         'El código entra solo al escribirlo completo.',
       resaltar: page.getByRole('heading', { name: 'Revisa tu correo' }),
     });
@@ -53,17 +53,17 @@ recorrido(
     await paso(page, {
       titulo: 'Entra a la app con el código',
       explicacion:
-        'Con el código correcto entras directo a la app, con las secciones de tu rol. Como tu cuenta aún no tiene passkey, Validasoft te sugiere registrar una para entrar más rápido, sin código.',
+        'Con el código correcto entras directo a la app, con las secciones de tu rol. Como tu cuenta aún no tiene passkey, AvalaSoft te sugiere registrar una para entrar más rápido, sin código.',
       resaltar: [barra, page.getByText('Protege tu cuenta con una passkey')],
     });
 
     await page.reload();
     await expect(barra).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Ingresa a Validasoft' })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toHaveCount(0);
     await paso(page, {
       titulo: 'Recarga sin volver a pedir el código',
       explicacion:
-        'Al recargar la página, Validasoft recupera tu sesión con la cookie de inicio y no te pide otro código. Así no tienes que volver a ingresar en cada pestaña.',
+        'Al recargar la página, AvalaSoft recupera tu sesión con la cookie de inicio y no te pide otro código. Así no tienes que volver a ingresar en cada pestaña.',
       resaltar: barra,
       variantes: [{ cuando: 'Pasan más horas que la duración de la sesión del grupo', entonces: 'La sesión vence y la pantalla de ingreso vuelve a pedir el correo.' }],
     });

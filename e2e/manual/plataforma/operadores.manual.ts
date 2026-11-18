@@ -16,7 +16,7 @@ recorrido(
   async ({ page }) => {
     const sufijo = randomUUID().replace(/-/g, '').slice(0, 6);
     const nombre = `Operador E2E ${sufijo}`;
-    const correo = `operador.${sufijo}@e2e.validasoft.co`;
+    const correo = `operador.${sufijo}@e2e.avalasoft.co`;
 
     const consola = await abrirConsolaDePlataforma(page);
     await irASeccion(consola, 'Operadores');
@@ -48,7 +48,7 @@ recorrido(
     await paso(page, {
       titulo: 'Da de alta al nuevo operador',
       explicacion:
-        'Escribe el nombre y el correo de la persona. Al crearla, Validasoft le envía un correo para entrar: no hay contraseña que compartir. ' +
+        'Escribe el nombre y el correo de la persona. Al crearla, AvalaSoft le envía un correo para entrar: no hay contraseña que compartir. ' +
         'Entra con su correo, un código y una passkey obligatoria, que registra en su primer ingreso.',
       resaltar: [dialogo.getByRole('textbox', { name: 'Nombre' }), dialogo.getByRole('textbox', { name: 'Correo' })],
       variantes: [

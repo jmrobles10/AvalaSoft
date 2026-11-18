@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Skeleton, Stack, Switch, Typography } from '@mui/material';
-import { cambiosDePreferencias } from '@validasoft/api-client';
-import { ErrorEnLinea } from '@validasoft/ui';
+import { cambiosDePreferencias } from '@avalasoft/api-client';
+import { ErrorEnLinea } from '@avalasoft/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../shared/errores';

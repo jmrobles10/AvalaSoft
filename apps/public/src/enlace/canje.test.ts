@@ -1,4 +1,4 @@
-import { configurarCliente, ErrorApi, ErrorDeRed, reiniciarCliente, type SesionTerceroDto } from '@validasoft/api-client';
+import { configurarCliente, ErrorApi, ErrorDeRed, reiniciarCliente, type SesionTerceroDto } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { canjearUnaVez, destinoTrasSesion, falloDeEnlace, interpretarCanje, intentosRestantesDe, normalizarCodigo, olvidarCanjes } from './canje';
 

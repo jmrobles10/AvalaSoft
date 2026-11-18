@@ -8,7 +8,7 @@ recorrido(
     actor: 'Administrador de empresa',
     titulo: 'Activa el recordatorio automático de observaciones',
     resumen:
-      'La administradora activa el recordatorio automático: mientras un expediente siga devuelto al tercero, Validasoft le recuerda sus observaciones cada cierto número de días. Cada flujo puede seguir lo de la empresa, apagarlo o fijar sus propios días.',
+      'La administradora activa el recordatorio automático: mientras un expediente siga devuelto al tercero, AvalaSoft le recuerda sus observaciones cada cierto número de días. Cada flujo puede seguir lo de la empresa, apagarlo o fijar sus propios días.',
     precondiciones: ['Un grupo con Constructora Sur y su administradora Ana, con el recordatorio automático apagado.'],
     relacionados: ['operacion/recordatorio-en-lote'],
   },
@@ -23,7 +23,7 @@ recorrido(
     await paso(paginaAna, {
       titulo: 'Abre el recordatorio automático en Plantillas de correo',
       explicacion:
-        'En «Plantillas de correo» aparece el bloque «Recordatorio automático de observaciones». Mientras un expediente siga devuelto al tercero, Validasoft le recuerda sus observaciones por correo y en su portal cada cierto número de días, a lo sumo una vez al día. Se detiene cuando el tercero responde.',
+        'En «Plantillas de correo» aparece el bloque «Recordatorio automático de observaciones». Mientras un expediente siga devuelto al tercero, AvalaSoft le recuerda sus observaciones por correo y en su portal cada cierto número de días, a lo sumo una vez al día. Se detiene cuando el tercero responde.',
       resaltar: interruptor,
       configuracion: {
         ajuste: 'Recordatorio automático de observaciones',
@@ -53,7 +53,7 @@ recorrido(
     await paso(paginaAna, {
       titulo: 'Guarda el recordatorio automático',
       explicacion:
-        'Al guardar, Validasoft confirma el cambio. El envío automático empieza a aplicarse a los expedientes devueltos desde ese momento, sin que nadie tenga que hacerlo.',
+        'Al guardar, AvalaSoft confirma el cambio. El envío automático empieza a aplicarse a los expedientes devueltos desde ese momento, sin que nadie tenga que hacerlo.',
       resaltar: ana.getByRole('button', { name: 'Guardar', exact: true }),
       avisos: true,
     });

@@ -1,4 +1,4 @@
-import type { CuentaBancariaPublicaDto, DesignacionDeCuentaDto, RegistrarCuentaBancariaDto, VinculoPublicoDto } from '@validasoft/api-client';
+import type { CuentaBancariaPublicaDto, DesignacionDeCuentaDto, RegistrarCuentaBancariaDto, VinculoPublicoDto } from '@avalasoft/api-client';
 import { situacionDelVinculo } from '../vinculos/situacion';
 
 export type TipoCuenta = 'Ahorros' | 'Corriente';

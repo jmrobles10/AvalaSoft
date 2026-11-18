@@ -1,4 +1,4 @@
-import type { DescargaDto } from '@validasoft/api-client';
+import type { DescargaDto } from '@avalasoft/api-client';
 import { useEffect, useState } from 'react';
 import { tipoDeVisor, usePedirDescarga } from './api';
 

@@ -1,5 +1,5 @@
-import type { ResolverSolicitudHabeasDto, SolicitudHabeasDto } from '@validasoft/api-client';
-import type { Estado } from '@validasoft/ui';
+import type { ResolverSolicitudHabeasDto, SolicitudHabeasDto } from '@avalasoft/api-client';
+import type { Estado } from '@avalasoft/ui';
 
 /** Qué solicitudes se listan (el servidor las filtra): las abiertas primero, la que vence antes arriba. */
 export const FILTROS_DE_SOLICITUDES = ['abiertas', 'vencidas', 'resueltas', 'todas'] as const;

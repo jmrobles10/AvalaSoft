@@ -54,7 +54,7 @@ export const revalidaciones = {
   fallidasTitulo_one: '{{count}} no se aprobó',
   fallidasTitulo_other: '{{count}} no se aprobaron',
   sinLote:
-    'Ninguna se puede aprobar en lote: sin la revisión automática Validasoft solo sabe que el archivo cambió, y lo que volvió porque el tercero retiró una versión tampoco se aprueba en lote. Cada una se revisa en su expediente.',
+    'Ninguna se puede aprobar en lote: sin la revisión automática AvalaSoft solo sabe que el archivo cambió, y lo que volvió porque el tercero retiró una versión tampoco se aprueba en lote. Cada una se revisa en su expediente.',
   abrir: 'Abrir {{folio}}: {{documento}} de {{tercero}}',
   vacio: 'No tienes revalidaciones pendientes.',
   vacioAyuda: 'Cuando un tercero actualice un documento que ya aprobaste, aparecerá aquí.',

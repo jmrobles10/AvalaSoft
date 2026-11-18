@@ -16,7 +16,7 @@ La administradora crea el grupo «Revisores de tributaria» con tres permisos de
 **Antes de empezar**
 
 - Un grupo empresarial con Constructora Sur S.A.S., su área «Revisión» y las personas Ana (administradora), Rubén y Sofía.
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 

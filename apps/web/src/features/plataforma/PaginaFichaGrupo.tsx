@@ -1,6 +1,6 @@
 import { Button, Chip, Stack } from '@mui/material';
-import type { GrupoDto } from '@validasoft/api-client';
-import { CabeceraEsqueleto, DosColumnas, EsqueletoTarjeta } from '@validasoft/ui';
+import type { GrupoDto } from '@avalasoft/api-client';
+import { CabeceraEsqueleto, DosColumnas, EsqueletoTarjeta } from '@avalasoft/ui';
 import { Gauge } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useParams } from 'react-router';

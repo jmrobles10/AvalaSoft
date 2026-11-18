@@ -1,5 +1,5 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, Typography } from '@mui/material';
-import { esErrorApi, type CuentaBancariaPublicaDto, type VinculoPublicoDto } from '@validasoft/api-client';
+import { esErrorApi, type CuentaBancariaPublicaDto, type VinculoPublicoDto } from '@avalasoft/api-client';
 import { Upload } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

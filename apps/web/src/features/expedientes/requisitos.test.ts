@@ -1,4 +1,4 @@
-import { SCOPES } from '@validasoft/api-client';
+import { SCOPES } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { area, areaDeRequisito, expediente, requisito, veredicto } from './datosPrueba';
 import { dialogoAplica, type ContextoRevisor } from './reglas';

@@ -1,5 +1,5 @@
-import type { UsoIaDiaDto, UsoIaDto } from '@validasoft/api-client';
-import { claveDia, LOCALE, ZONA_HORARIA_POR_DEFECTO } from '@validasoft/ui';
+import type { UsoIaDiaDto, UsoIaDto } from '@avalasoft/api-client';
+import { claveDia, LOCALE, ZONA_HORARIA_POR_DEFECTO } from '@avalasoft/ui';
 
 /** Meses que ofrece el selector: el actual y los 11 anteriores. */
 export const MESES_SELECTOR = 12;

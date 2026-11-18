@@ -39,7 +39,7 @@ En la tarjeta del grupo, el enlace «Plan y límites» abre la pantalla del plan
 
 ## Paso 2. Define el código y los límites
 
-El código del plan es un nombre corto, como «estándar» o «empresarial», que el grupo ve en su pantalla de plan. Cada límite cuenta lo que ya existe: empresas activas, personas activas, terceros vinculados, documentos recibidos, almacenamiento y llamadas a la API por mes. Deja un campo vacío para no poner límite a ese recurso. Validasoft avisa al 80 % y al 100 % de cada uno.
+El código del plan es un nombre corto, como «estándar» o «empresarial», que el grupo ve en su pantalla de plan. Cada límite cuenta lo que ya existe: empresas activas, personas activas, terceros vinculados, documentos recibidos, almacenamiento y llamadas a la API por mes. Deja un campo vacío para no poner límite a ese recurso. AvalaSoft avisa al 80 % y al 100 % de cada uno.
 
 > **Pantalla:** `/plataforma/grupos/{id}/plan`
 

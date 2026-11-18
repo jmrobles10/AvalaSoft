@@ -1,6 +1,6 @@
 import { Box, LinearProgress, Link, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import type { InformeSlaDto } from '@validasoft/api-client';
-import { EstadoVacio, formatearFechaHora, MarcoTabla } from '@validasoft/ui';
+import type { InformeSlaDto } from '@avalasoft/api-client';
+import { EstadoVacio, formatearFechaHora, MarcoTabla } from '@avalasoft/ui';
 import { CircleCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

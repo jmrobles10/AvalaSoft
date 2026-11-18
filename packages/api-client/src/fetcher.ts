@@ -126,7 +126,7 @@ async function enviar(config: ConfigPeticion, opciones: OpcionesPeticion, acepta
     });
   } catch (causa) {
     if (causa instanceof DOMException && causa.name === 'AbortError') throw causa;
-    throw new ErrorDeRed('No pudimos comunicarnos con Validasoft. Revisa tu conexión e intenta de nuevo.', causa);
+    throw new ErrorDeRed('No pudimos comunicarnos con AvalaSoft. Revisa tu conexión e intenta de nuevo.', causa);
   }
 
   if (!respuesta.ok) {
@@ -145,7 +145,7 @@ async function enviar(config: ConfigPeticion, opciones: OpcionesPeticion, acepta
  * Mutator de orval: arma la petición con `Authorization: Bearer`, `X-Empresa`, `Idempotency-Key`, `If-Match` y
  * `X-Correlation-Id`, y convierte cualquier respuesta no exitosa en `ErrorApi` (o `ErrorDeRed` si no hubo respuesta).
  */
-export async function clienteValidasoft<T>(config: ConfigPeticion, opciones: OpcionesPeticion = {}): Promise<T> {
+export async function clienteAvalasoft<T>(config: ConfigPeticion, opciones: OpcionesPeticion = {}): Promise<T> {
   const respuesta = await enviar(config, opciones, 'application/json, application/problem+json');
   return (await leerCuerpo(respuesta)) as T;
 }

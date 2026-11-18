@@ -1,5 +1,5 @@
 import { MenuItem, TextField } from '@mui/material';
-import type { AtributoPermitidoDto, CondicionDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto, CondicionDto } from '@avalasoft/api-client';
 import { atajoDe, condicionDe, type AtajoCondicion } from '../condiciones';
 
 export interface SelectorDeCondicionProps {

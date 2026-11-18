@@ -16,7 +16,7 @@ La administradora define en un flujo de proveedores cuántos días tiene el terc
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y su área «Revisión» con miembros.
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 

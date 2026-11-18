@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { SesionValidasoft } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import type { SesionAvalasoft } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSesion } from '../../sesion/sesionStore';
@@ -21,7 +21,7 @@ const SECCIONES = [
 ];
 const NOMBRES = SECCIONES.map((s) => s.nombre);
 
-function sesionDeOperador(cambios: Partial<SesionValidasoft> = {}): SesionValidasoft {
+function sesionDeOperador(cambios: Partial<SesionAvalasoft> = {}): SesionAvalasoft {
   return {
     token: 'token',
     expira: new Date(Date.now() + 3_600_000),
@@ -41,7 +41,7 @@ function sesionDeOperador(cambios: Partial<SesionValidasoft> = {}): SesionValida
 
 function montar(ruta: string) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <MemoryRouter initialEntries={[ruta]}>
         <Routes>
           <Route path="/" element={<p>Inicio de la empresa</p>} />

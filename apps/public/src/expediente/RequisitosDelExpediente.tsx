@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from '@mui/material';
-import type { ExpedientePublicoDto } from '@validasoft/api-client';
+import type { ExpedientePublicoDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { enlaceDeSubida, esRequisitoDeSeccion, requisitosPorGrupo, type GrupoRequisito } from './requisitos';
 import { TarjetaRequisito } from './TarjetaRequisito';

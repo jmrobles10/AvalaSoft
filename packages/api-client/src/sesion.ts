@@ -1,25 +1,25 @@
 /**
- * Lectura del token de sesión de Validasoft (`POST /api/v1/sesiones-usuario`, JWT HS256 de 30 minutos).
+ * Lectura del token de sesión de AvalaSoft (`POST /api/v1/sesiones-usuario`, JWT HS256 de 30 minutos).
  *
  * El navegador **no verifica** la firma: decodifica los claims solo para mostrar u ocultar acciones como
  * conveniencia (docs/06 §6, "Permisos ocultos en el front"). La autorización efectiva la decide siempre la API.
  */
 
-/** Claims que emite `EmisorDeSesiones` (Reclamos en Validasoft.Infraestructura). */
+/** Claims que emite `EmisorDeSesiones` (Reclamos en Avalasoft.Infraestructura). */
 export const RECLAMOS = {
-  tenant: 'validasoft:tenant',
+  tenant: 'avalasoft:tenant',
   scope: 'scope',
-  scopeEmpresa: 'validasoft:scope-empresa',
-  empresa: 'validasoft:empresa',
-  actorTipo: 'validasoft:actor-tipo',
-  sistema: 'validasoft:sistema',
-  sistemaId: 'validasoft:sistema-id',
+  scopeEmpresa: 'avalasoft:scope-empresa',
+  empresa: 'avalasoft:empresa',
+  actorTipo: 'avalasoft:actor-tipo',
+  sistema: 'avalasoft:sistema',
+  sistemaId: 'avalasoft:sistema-id',
   sujeto: 'sub',
   nombre: 'name',
   /** Familia de la sesión de ingreso directo (ING-1); ausente en las sesiones delegadas. */
-  sesionId: 'validasoft:sesion-id',
+  sesionId: 'avalasoft:sesion-id',
   /** Cómo se autenticó una sesión directa: `Codigo`, `Passkey` o `CodigoYPasskey`. */
-  metodo: 'validasoft:metodo',
+  metodo: 'avalasoft:metodo',
 } as const;
 
 /** Cómo entró una persona de ingreso directo (`MetodoDeIngreso` en la API). */
@@ -28,7 +28,7 @@ export type MetodoDeIngreso = 'Codigo' | 'Passkey' | 'CodigoYPasskey';
 /** Actor de las sesiones de la consola de Plataforma (PT-4): sin tenant ni empresas, solo `plataforma:tenants`. */
 export const ACTOR_PLATAFORMA = 'Plataforma';
 
-export interface SesionValidasoft {
+export interface SesionAvalasoft {
   token: string;
   /** Vencimiento según el claim `exp`. */
   expira: Date;
@@ -39,7 +39,7 @@ export interface SesionValidasoft {
   nombre: string | null;
   /** Código del sistema integrado desde el que se abrió la sesión (SRM, MARCO…). */
   sistema: string | null;
-  /** Familia de la sesión si la persona entró directo a Validasoft (código y passkey); `null` si vino por identidad delegada. */
+  /** Familia de la sesión si la persona entró directo a AvalaSoft (código y passkey); `null` si vino por identidad delegada. */
   sesionId: string | null;
   /** Cómo se autenticó (solo ingreso directo). */
   metodoIngreso: MetodoDeIngreso | null;
@@ -75,7 +75,7 @@ function textoOpcional(valor: unknown): string | null {
   return typeof valor === 'string' && valor.length > 0 ? valor : null;
 }
 
-export function leerSesion(token: string): SesionValidasoft {
+export function leerSesion(token: string): SesionAvalasoft {
   const partes = token.split('.');
   const carga = partes[1];
   if (partes.length !== 3 || !carga) throw new TokenInvalido('El token de sesión no es un JWT.');
@@ -124,32 +124,32 @@ export function leerSesion(token: string): SesionValidasoft {
   };
 }
 
-/** La persona entró directo a Validasoft (código y passkey): tiene sus propias sesiones y passkeys en «Mi cuenta». */
-export function esSesionDirecta(sesion: SesionValidasoft): boolean {
+/** La persona entró directo a AvalaSoft (código y passkey): tiene sus propias sesiones y passkeys en «Mi cuenta». */
+export function esSesionDirecta(sesion: SesionAvalasoft): boolean {
   return sesion.sesionId !== null;
 }
 
 /** Sesión de un operador de Plataforma (consola `/plataforma`, PT-4): sin tenant y con `plataforma:tenants`. */
-export function esSesionDePlataforma(sesion: SesionValidasoft): boolean {
+export function esSesionDePlataforma(sesion: SesionAvalasoft): boolean {
   return sesion.tenantId === null && sesion.actorTipo === ACTOR_PLATAFORMA && sesion.scopesDeTenant.has('plataforma:tenants');
 }
 
 /** Scopes que aplican con esa empresa activa (o sin empresa), como `PermisosEfectivos.EnEmpresa` en la API. */
-export function scopesEn(sesion: SesionValidasoft, empresaId: string | null): ReadonlySet<string> {
+export function scopesEn(sesion: SesionAvalasoft, empresaId: string | null): ReadonlySet<string> {
   const adicionales = empresaId ? sesion.scopesPorEmpresa.get(empresaId) : undefined;
   if (!adicionales) return sesion.scopesDeTenant;
   return new Set([...sesion.scopesDeTenant, ...adicionales]);
 }
 
-export function puede(sesion: SesionValidasoft, scope: string, empresaId: string | null): boolean {
+export function puede(sesion: SesionAvalasoft, scope: string, empresaId: string | null): boolean {
   return scopesEn(sesion, empresaId).has(scope);
 }
 
-export function accedeAEmpresa(sesion: SesionValidasoft, empresaId: string): boolean {
+export function accedeAEmpresa(sesion: SesionAvalasoft, empresaId: string): boolean {
   return sesion.empresas === '*' || sesion.empresas.has(empresaId);
 }
 
 /** Milisegundos que le quedan a la sesión (negativo si ya venció). */
-export function msRestantes(sesion: SesionValidasoft, ahora: Date = new Date()): number {
+export function msRestantes(sesion: SesionAvalasoft, ahora: Date = new Date()): number {
   return sesion.expira.getTime() - ahora.getTime();
 }

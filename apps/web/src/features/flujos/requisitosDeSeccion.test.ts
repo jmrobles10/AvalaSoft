@@ -1,4 +1,4 @@
-import { ErrorApi, type AreaDto, type FlujoVersionDto } from '@validasoft/api-client';
+import { ErrorApi, type AreaDto, type FlujoVersionDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { areaNueva, borradorDesdeVersion, borradorVacio, requisitoDeSeccionNuevo, requisitoNuevo, requisitosADto, validarFlujo, type BorradorFlujo } from './editor';
 import { errorDeApiEnRequisitos, seccionesQueRespalda } from './requisitosDeSeccion';

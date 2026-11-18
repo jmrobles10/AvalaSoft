@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
-import type { PruebaDeLlaveIaDto } from '@validasoft/api-client';
-import { AlineadoConCampo } from '@validasoft/ui';
+import type { PruebaDeLlaveIaDto } from '@avalasoft/api-client';
+import { AlineadoConCampo } from '@avalasoft/ui';
 import { FlaskConical, KeyRound, RotateCcw, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../shared/componentes';

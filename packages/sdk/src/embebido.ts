@@ -1,18 +1,18 @@
 /**
- * Lado del sistema integrador del embebido del tercero (IO-5, docs/06 §3.2): monta el iframe de Validasoft y le entrega la sesión por
+ * Lado del sistema integrador del embebido del tercero (IO-5, docs/06 §3.2): monta el iframe de AvalaSoft y le entrega la sesión por
  * `postMessage`. Corre en el navegador del sistema anfitrión; **la API key nunca llega aquí**: la sesión
- * (`POST /api/v1/sesiones-tercero`, ver {@link ClienteValidasoft.sesiones}) la pide el backend del sistema y la página solo recibe su
+ * (`POST /api/v1/sesiones-tercero`, ver {@link ClienteAvalasoft.sesiones}) la pide el backend del sistema y la página solo recibe su
  * resultado. Sin dependencias.
  *
  * Protocolo (versión 1), todo por `window.postMessage` entre el anfitrión y el iframe:
  *
- *   iframe → anfitrión   `{ tipo: 'validasoft:ready', version }`                       el iframe está listo para recibir la sesión
- *                        `{ tipo: 'validasoft:sesion-requerida', motivo }`             falta la sesión o está por vencer: pedir otra
- *                        `{ tipo: 'validasoft:resize', height }`                        alto del contenido, en píxeles
- *   anfitrión → iframe   `{ tipo: 'validasoft:sesion', token }`                        el token de la sesión embebida
- *                        `{ tipo: 'validasoft:tema', mode: 'light' | 'dark' }`
+ *   iframe → anfitrión   `{ tipo: 'avalasoft:ready', version }`                       el iframe está listo para recibir la sesión
+ *                        `{ tipo: 'avalasoft:sesion-requerida', motivo }`             falta la sesión o está por vencer: pedir otra
+ *                        `{ tipo: 'avalasoft:resize', height }`                        alto del contenido, en píxeles
+ *   anfitrión → iframe   `{ tipo: 'avalasoft:sesion', token }`                        el token de la sesión embebida
+ *                        `{ tipo: 'avalasoft:tema', mode: 'light' | 'dark' }`
  *
- * Reglas de seguridad: el anfitrión solo atiende mensajes que vienen **de su propio iframe y del origen de Validasoft**, y solo le
+ * Reglas de seguridad: el anfitrión solo atiende mensajes que vienen **de su propio iframe y del origen de AvalaSoft**, y solo le
  * envía el token a ese origen exacto (nunca `*`); el iframe, a su vez, solo acepta el token del origen para el que se emitió.
  */
 
@@ -37,11 +37,11 @@ export interface SesionEmbebidaDto {
 }
 
 export type MensajeDelEmbebido =
-  | { tipo: 'validasoft:ready'; version: number }
-  | { tipo: 'validasoft:sesion-requerida'; motivo: MotivoSesionRequerida }
-  | { tipo: 'validasoft:resize'; height: number };
+  | { tipo: 'avalasoft:ready'; version: number }
+  | { tipo: 'avalasoft:sesion-requerida'; motivo: MotivoSesionRequerida }
+  | { tipo: 'avalasoft:resize'; height: number };
 
-export type MensajeAlEmbebido = { tipo: 'validasoft:sesion'; token: string } | { tipo: 'validasoft:tema'; mode: 'light' | 'dark' };
+export type MensajeAlEmbebido = { tipo: 'avalasoft:sesion'; token: string } | { tipo: 'avalasoft:tema'; mode: 'light' | 'dark' };
 
 const MOTIVOS: readonly string[] = ['inicial', 'por-vencer', 'vencida', 'rechazada'];
 
@@ -53,15 +53,15 @@ function esRegistro(valor: unknown): valor is Record<string, unknown> {
 export function interpretarMensajeDelEmbebido(datos: unknown): MensajeDelEmbebido | null {
   if (!esRegistro(datos) || typeof datos.tipo !== 'string') return null;
   switch (datos.tipo) {
-    case 'validasoft:ready':
-      return typeof datos.version === 'number' ? { tipo: 'validasoft:ready', version: datos.version } : null;
-    case 'validasoft:sesion-requerida':
+    case 'avalasoft:ready':
+      return typeof datos.version === 'number' ? { tipo: 'avalasoft:ready', version: datos.version } : null;
+    case 'avalasoft:sesion-requerida':
       return typeof datos.motivo === 'string' && MOTIVOS.includes(datos.motivo)
-        ? { tipo: 'validasoft:sesion-requerida', motivo: datos.motivo as MotivoSesionRequerida }
+        ? { tipo: 'avalasoft:sesion-requerida', motivo: datos.motivo as MotivoSesionRequerida }
         : null;
-    case 'validasoft:resize':
+    case 'avalasoft:resize':
       return typeof datos.height === 'number' && Number.isFinite(datos.height) && datos.height >= 0
-        ? { tipo: 'validasoft:resize', height: Math.ceil(datos.height) }
+        ? { tipo: 'avalasoft:resize', height: Math.ceil(datos.height) }
         : null;
     default:
       return null;
@@ -79,8 +79,8 @@ export interface OpcionesDeMontaje {
   /** La sesión inicial (`POST /api/v1/sesiones-tercero` desde el backend). */
   sesion: SesionEmbebidaDto;
   /**
-   * Pide una sesión nueva a **su backend** cuando la actual está por vencer o venció (o Validasoft la rechazó). Sin esta función la
-   * sesión no se renueva y el iframe avisa por `alMensaje` con `validasoft:sesion-requerida`.
+   * Pide una sesión nueva a **su backend** cuando la actual está por vencer o venció (o AvalaSoft la rechazó). Sin esta función la
+   * sesión no se renueva y el iframe avisa por `alMensaje` con `avalasoft:sesion-requerida`.
    */
   renovarSesion?: (motivo: MotivoSesionRequerida) => Promise<SesionEmbebidaDto>;
   /** Cada mensaje válido del iframe (listo, sesión requerida, alto…), por si el anfitrión quiere reaccionar. */
@@ -109,7 +109,7 @@ export function montarEmbebido(opciones: OpcionesDeMontaje): EmbebidoMontado {
   let sesion = opciones.sesion;
   let origenDelIframe = origenDeUrl(sesion.url);
   const iframe = document.createElement('iframe');
-  iframe.title = opciones.titulo ?? 'Validasoft';
+  iframe.title = opciones.titulo ?? 'AvalaSoft';
   iframe.src = sesion.url;
   iframe.style.cssText = `display:block;width:100%;height:${String(opciones.altoInicial ?? 480)}px;border:0`;
   iframe.setAttribute('referrerpolicy', 'origin');
@@ -117,17 +117,17 @@ export function montarEmbebido(opciones: OpcionesDeMontaje): EmbebidoMontado {
 
   const enviar = (mensaje: MensajeAlEmbebido) => iframe.contentWindow?.postMessage(mensaje, origenDelIframe);
 
-  const entregarSesion = () => enviar({ tipo: 'validasoft:sesion', token: sesion.token });
+  const entregarSesion = () => enviar({ tipo: 'avalasoft:sesion', token: sesion.token });
 
   const alRecibir = (evento: MessageEvent) => {
-    // Solo del iframe que montamos y del origen de Validasoft: cualquier otra ventana se ignora.
+    // Solo del iframe que montamos y del origen de AvalaSoft: cualquier otra ventana se ignora.
     if (evento.source !== iframe.contentWindow || evento.origin !== origenDelIframe) return;
     const mensaje = interpretarMensajeDelEmbebido(evento.data);
     if (!mensaje) return;
 
-    if (mensaje.tipo === 'validasoft:ready') {
+    if (mensaje.tipo === 'avalasoft:ready') {
       entregarSesion();
-    } else if (mensaje.tipo === 'validasoft:sesion-requerida') {
+    } else if (mensaje.tipo === 'avalasoft:sesion-requerida') {
       if (mensaje.motivo === 'inicial') {
         entregarSesion();
       } else if (opciones.renovarSesion && !renovando) {
@@ -156,7 +156,7 @@ export function montarEmbebido(opciones: OpcionesDeMontaje): EmbebidoMontado {
 
   return {
     iframe,
-    enviarTema: (mode) => enviar({ tipo: 'validasoft:tema', mode }),
+    enviarTema: (mode) => enviar({ tipo: 'avalasoft:tema', mode }),
     cerrar: () => {
       window.removeEventListener('message', alRecibir);
       iframe.remove();
@@ -164,7 +164,7 @@ export function montarEmbebido(opciones: OpcionesDeMontaje): EmbebidoMontado {
   };
 }
 
-// ---------- Lado del iframe (las apps de Validasoft que se embeben) ----------
+// ---------- Lado del iframe (las apps de AvalaSoft que se embeben) ----------
 
 /** Ruta pública (sin credencial) con los orígenes que pueden alojar las pantallas embebidas. */
 export const RUTA_ORIGENES_PERMITIDOS = '/public/v1/embed/origenes-permitidos';
@@ -220,7 +220,7 @@ export function siguienteListaDeOrigenes(previa: readonly string[] | null | unde
 
 /**
  * Origen del contenedor: `ancestorOrigins` (Chromium) o el `referrer`. Solo se usa si está permitido, para no entregar mensajes a una
- * página que no debería alojar a Validasoft.
+ * página que no debería alojar a AvalaSoft.
  */
 export function origenDelContenedor(ventana: Pick<Window, 'location' | 'document'>, permitidos: readonly string[]): string | null {
   const ancestros = ventana.location.ancestorOrigins as DOMStringList | undefined;

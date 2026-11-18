@@ -17,10 +17,10 @@ Ruta `/e/{empresa}/datos-marca` · permiso `empresas:administrar`.
 |---|---|---|---|
 | Razón social, identificación y prefijo de folio | Solo lectura: se fijan al crear la empresa y el prefijo ya está en los folios emitidos. | Los de la creación | — |
 | Contacto de soporte para terceros | Enlace `mailto:` al pie del portal del tercero. No se usa como `Reply-To` de los correos. | Sin valor (opcional) | Correo válido de hasta 254 caracteres; vacío lo quita (`contacto-soporte-invalido`). |
-| Logo | Se ve en el portal del tercero y en los datos públicos del certificado, el PDF de la declaración PEP y la exportación del expediente. Los correos llevan siempre el logotipo de Validasoft. | Sin logo (se usa el de Validasoft) | Desde la pantalla: SVG o PNG de hasta 200 KB; la API acepta además una URL `https` de hasta 2048 caracteres. «Quitar logo». Errores `logo-invalido` y `logo-demasiado-grande`. |
-| Color de marca | Deriva la paleta del portal del tercero (botones y enlaces) con contraste garantizado. | Sin color: tema de Validasoft | `#RRGGBB`, se guarda en mayúsculas; vacío lo quita (`color-marca-invalido`). |
+| Logo | Se ve en el portal del tercero y en los datos públicos del certificado, el PDF de la declaración PEP y la exportación del expediente. Los correos llevan siempre el logotipo de AvalaSoft. | Sin logo (se usa el de AvalaSoft) | Desde la pantalla: SVG o PNG de hasta 200 KB; la API acepta además una URL `https` de hasta 2048 caracteres. «Quitar logo». Errores `logo-invalido` y `logo-demasiado-grande`. |
+| Color de marca | Deriva la paleta del portal del tercero (botones y enlaces) con contraste garantizado. | Sin color: tema de AvalaSoft | `#RRGGBB`, se guarda en mayúsculas; vacío lo quita (`color-marca-invalido`). |
 
-Fuente: `apps/web/src/features/configuracion/datosMarca/modelo.ts`, `src/Validasoft.Dominio/Plataforma/Plataforma.cs`, `apps/public/src/shared/MarcaDeEmpresa.tsx`.
+Fuente: `apps/web/src/features/configuracion/datosMarca/modelo.ts`, `src/Avalasoft.Dominio/Plataforma/Plataforma.cs`, `apps/public/src/shared/MarcaDeEmpresa.tsx`.
 
 ## Plantillas de correo
 
@@ -28,14 +28,14 @@ Ruta `/e/{empresa}/plantillas` · ver y vista previa con `configuracion:leer`; e
 
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
-| Correo a personalizar | Cada correo que Validasoft envía en nombre de la empresa. | «Predeterminada», versión 0 | Catálogo cerrado de 14: `invitacion`, `observacion`, `resultado`, `certificado`, `caducidad`, `recordatorio-observaciones`, `desaprobacion`, `reintegro`, `consentimiento-empresa`, `vencido`, `retiro-version` (llega al personal de la empresa), `pre-vencimiento`, `vigencia-vencida` y `renovacion`. Cada uno admite sus propias variables (por ejemplo `empresa`, `tipoVinculo`, `folio`, `documento`, `fecha`). El código OTP, los enlaces de acceso, el autorregistro y el aviso consolidado de vencimiento no se personalizan. |
+| Correo a personalizar | Cada correo que AvalaSoft envía en nombre de la empresa. | «Predeterminada», versión 0 | Catálogo cerrado de 14: `invitacion`, `observacion`, `resultado`, `certificado`, `caducidad`, `recordatorio-observaciones`, `desaprobacion`, `reintegro`, `consentimiento-empresa`, `vencido`, `retiro-version` (llega al personal de la empresa), `pre-vencimiento`, `vigencia-vencida` y `renovacion`. Cada uno admite sus propias variables (por ejemplo `empresa`, `tipoVinculo`, `folio`, `documento`, `fecha`). El código OTP, los enlaces de acceso, el autorregistro y el aviso consolidado de vencimiento no se personalizan. |
 | Asunto | Reemplaza el asunto del correo. | Vacío: el asunto de siempre | Hasta 150 caracteres y una sola línea. |
-| Cabecera y pie | Texto plano antes y después del cuerpo, que arma Validasoft. | Vacío | Hasta 2000 caracteres cada uno; variables como `{{empresa}}`, solo las permitidas del correo (`variable-no-permitida`). Hoy no hay Liquid. |
+| Cabecera y pie | Texto plano antes y después del cuerpo, que arma AvalaSoft. | Vacío | Hasta 2000 caracteres cada uno; variables como `{{empresa}}`, solo las permitidas del correo (`variable-no-permitida`). Hoy no hay Liquid. |
 | Restaurar predeterminado | Quita asunto, cabecera y pie; la versión sube igual. | — | — |
 | Enviar recordatorios automáticos | Mientras el expediente siga devuelto al tercero se le recuerda por correo y en su portal, a lo sumo una vez al día; se detiene cuando responde. Cada flujo puede sobrescribirlo. | Apagado | Encendido o apagado. |
 | Cada (días) | Frecuencia del recordatorio, contada desde la devolución o desde el último recordatorio. | 3 | Entero de 1 a 60 (`dias-invalidos`). |
 
-Fuente: `src/Validasoft.Dominio/Configuracion/PlantillaNotificacion.cs`, `src/Validasoft.Aplicacion/Configuracion/PlantillasNotificacionEndpoints.cs`, `src/Validasoft.Aplicacion/Expedientes/RecordatoriosDeObservaciones.cs`.
+Fuente: `src/Avalasoft.Dominio/Configuracion/PlantillaNotificacion.cs`, `src/Avalasoft.Aplicacion/Configuracion/PlantillasNotificacionEndpoints.cs`, `src/Avalasoft.Aplicacion/Expedientes/RecordatoriosDeObservaciones.cs`.
 
 ## Dominio de correo
 
@@ -43,14 +43,14 @@ Ruta `/e/{empresa}/dominio-correo` · permiso `empresas:administrar`.
 
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
-| Dominio | Dominio desde el que salen los correos de la empresa; registrarlo o cambiarlo lo deja «Pendiente» con sus registros DNS. | Sin dominio: sale el remitente de la plataforma (`Validasoft:Correo:Remitente`) | Hasta 253 caracteres, minúsculas, con punto, sin `http://`, sin `@`, sin IP ni `localhost` (`dominio-invalido`). |
+| Dominio | Dominio desde el que salen los correos de la empresa; registrarlo o cambiarlo lo deja «Pendiente» con sus registros DNS. | Sin dominio: sale el remitente de la plataforma (`Avalasoft:Correo:Remitente`) | Hasta 253 caracteres, minúsculas, con punto, sin `http://`, sin `@`, sin IP ni `localhost` (`dominio-invalido`). |
 | Antes de la arroba | Parte local de la dirección. | `no-responder` | De 1 a 64 caracteres: letras, números, `.`, `_`, `+`, `-` (`parte-local-invalida`). |
 | Nombre del remitente | Nombre que ve quien recibe el correo. | El nombre de la empresa | Hasta 80 caracteres, sin `<`, `>` ni caracteres de control. |
 | Verificar ahora | Comprueba SPF, DKIM y DMARC. Si los tres están bien el correo sale desde el remitente propio; si falta alguno queda «Fallido» y el correo sigue saliendo con el remitente de la plataforma. | — | Estados: sin dominio, Pendiente de verificar, Verificado, Falta algún registro. Cada comprobación: Correcto, Distinto o No encontrado. |
-| Registros DNS | Lo que la empresa debe crear: SPF (`v=spf1 include:… ~all`), DKIM (`vs1._domainkey.{dominio}`) y DMARC (`_dmarc.{dominio}`). | Los entrega el proveedor de dominios | Hoy el único proveedor es uno simulado (`Validasoft:Correo:Dominios:Proveedor`): «Verificado» no consulta un DNS real. |
+| Registros DNS | Lo que la empresa debe crear: SPF (`v=spf1 include:… ~all`), DKIM (`vs1._domainkey.{dominio}`) y DMARC (`_dmarc.{dominio}`). | Los entrega el proveedor de dominios | Hoy el único proveedor es uno simulado (`Avalasoft:Correo:Dominios:Proveedor`): «Verificado» no consulta un DNS real. |
 | Quitar el dominio | El correo vuelve al remitente de la plataforma; los registros DNS creados no se borran. | — | 404 `dominio-sin-registrar` si no había. |
 
-Fuente: `src/Validasoft.Dominio/Configuracion/DominioDeCorreoEmpresa.cs`, `src/Validasoft.Aplicacion/Configuracion/DominioDeCorreoEndpoints.cs`, `src/Validasoft.Infraestructura/Correo/ProveedorSimuladoDeDominios.cs`.
+Fuente: `src/Avalasoft.Dominio/Configuracion/DominioDeCorreoEmpresa.cs`, `src/Avalasoft.Aplicacion/Configuracion/DominioDeCorreoEndpoints.cs`, `src/Avalasoft.Infraestructura/Correo/ProveedorSimuladoDeDominios.cs`.
 
 ## Plan y uso de IA
 
@@ -79,7 +79,7 @@ Ruta `/e/{empresa}/revision-automatica` · ver con `configuracion:leer`, guardar
 
 Mandan siempre el documento a una persona: confianza baja, sin análisis de IA, ilegible, alertas de manipulación, tipo detectado distinto, campo crítico cambiado, cruce con la ficha pendiente, discrepancias con la ficha y versión reenviada.
 
-Fuente: `src/Validasoft.Dominio/Revision/RevisionAutomaticaEmpresa.cs`, `src/Validasoft.Dominio/Revision/MotorDeRevision.cs`, `src/Validasoft.Aplicacion/Revision/RevisionAutomaticaEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Revision/RevisionAutomaticaEmpresa.cs`, `src/Avalasoft.Dominio/Revision/MotorDeRevision.cs`, `src/Avalasoft.Aplicacion/Revision/RevisionAutomaticaEndpoints.cs`.
 
 ## Listas restrictivas
 
@@ -87,14 +87,14 @@ Ruta `/e/{empresa}/listas-restrictivas` · ver con `configuracion:leer`, cambiar
 
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
-| Proveedor de la empresa | Con qué proveedor se consulta al tercero, sus representantes, suplentes, socios y PEP. Sin proveedor efectivo, las consultas quedan pendientes (`verificacion-no-disponible`). | El de la instalación (`Validasoft:Verificadores:ListasRestrictivas:ProveedorPorDefecto`) | Infolaft, Stradata, Compliance y Simulado; el simulado solo si la instalación lo permite. En el sandbox siempre se usa el simulado. |
+| Proveedor de la empresa | Con qué proveedor se consulta al tercero, sus representantes, suplentes, socios y PEP. Sin proveedor efectivo, las consultas quedan pendientes (`verificacion-no-disponible`). | El de la instalación (`Avalasoft:Verificadores:ListasRestrictivas:ProveedorPorDefecto`) | Infolaft, Stradata, Compliance y Simulado; el simulado solo si la instalación lo permite. En el sandbox siempre se usa el simulado. |
 | Cuenta de Infolaft y su cuota | Un solo contrato con la cuenta de la plataforma, para todos los clientes: la empresa no ve ni carga usuario ni clave (422 `credenciales-de-plataforma`). | Según la plataforma | Solo lectura: disponible o no, y cuota mensual de la empresa. |
 | Usuario, clave, URL del contrato, plan y cuota (Stradata y Compliance) | Credenciales propias de la empresa para esos proveedores. La clave se cifra con la clave del grupo. | Sin credenciales; URL de la instalación | Usuario de 1 a 200 caracteres; clave de 4 a 512; URL `https`; cuota de 1 a 1 000 000 o vacío (`cuota-listas-agotada` al excederla). |
 | Buscar por | Modo de búsqueda en el proveedor. | Por nombre | `PorNombre` o `PorDocumento`. |
 | Quitar credenciales | Si era el proveedor elegido, la empresa vuelve al de la instalación. | — | — |
 | Monitoreo (días) y vigencia del estudio | Cada cuántos días se reconsultan los vínculos activos y a los cuántos días vence el estudio de cumplimiento (cada flujo puede fijar la suya). | 30 y 30 | Solo lectura (instalación): monitoreo de 0 a 365 (0 lo apaga); vigencia del estudio de 1 a 3650. |
 
-Fuente: `src/Validasoft.Dominio/Expedientes/ListasRestrictivasEmpresa.cs`, `src/Validasoft.Aplicacion/Verificaciones/CumplimientoEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Expedientes/ListasRestrictivasEmpresa.cs`, `src/Avalasoft.Aplicacion/Verificaciones/CumplimientoEndpoints.cs`.
 
 ## Matriz de riesgo
 
@@ -109,7 +109,7 @@ Ruta `/e/{empresa}/matriz-riesgo` · ver con `configuracion:leer`, guardar con `
 | Debida diligencia por nivel | Intensidad que exige cada nivel. | Bajo: Simplificada; Medio: Ordinaria; Alto: Intensificada | `Simple`, `Ordinaria` o `Ampliada`; no baja al subir el riesgo; Alto siempre es Intensificada. |
 | Revisar cada (meses) | Periodicidad de revisión de cada nivel. | Bajo 24, Medio 12, Alto 6 | Entero de 1 a 60. |
 
-Fuente: `src/Validasoft.Dominio/Cumplimiento/MatrizDeRiesgo.cs`, `src/Validasoft.Aplicacion/Verificaciones/CumplimientoCompletoEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Cumplimiento/MatrizDeRiesgo.cs`, `src/Avalasoft.Aplicacion/Verificaciones/CumplimientoCompletoEndpoints.cs`.
 
 ## Habeas data
 
@@ -118,10 +118,10 @@ Ruta `/e/{empresa}/habeas-data` · permiso `supresiones:resolver`. No es una pan
 | Parámetro | Qué afecta | Valor | Variantes |
 |---|---|---|---|
 | Plazo de consulta y de reclamo | Fecha límite para responder, en días hábiles. | 10 días hábiles (consulta) y 15 (corrección o supresión) | Tipos: Consulta, Corrección y Supresión; alcance de la supresión: Todo, Documentos o Datos. |
-| Aviso de plazo | «Vence pronto» con 2 días hábiles o menos y «Vencida» pasado el plazo, una vez cada uno, a los administradores y al oficial por campana y correo. | 2 días hábiles; barrido cada hora (`Validasoft:Habeas:Intervalo`) | Estados: En plazo, Vence pronto, Vencida, Atendida, Atendida con retenciones, Rechazada. |
+| Aviso de plazo | «Vence pronto» con 2 días hábiles o menos y «Vencida» pasado el plazo, una vez cada uno, a los administradores y al oficial por campana y correo. | 2 días hábiles; barrido cada hora (`Avalasoft:Habeas:Intervalo`) | Estados: En plazo, Vence pronto, Vencida, Atendida, Atendida con retenciones, Rechazada. |
 | Respuesta al titular | Llega al titular por correo y a su portal con constancia sellada; no se cambia después. | — | Atender o Rechazar, con respuesta de 10 a 4000 caracteres; la base legal solo se agrega al rechazar. |
 
-Fuente: `src/Validasoft.Dominio/Habeas/SolicitudHabeas.cs`, `src/Validasoft.Aplicacion/Habeas/PlazosDeHabeas.cs`.
+Fuente: `src/Avalasoft.Dominio/Habeas/SolicitudHabeas.cs`, `src/Avalasoft.Aplicacion/Habeas/PlazosDeHabeas.cs`.
 
 ## Áreas
 
@@ -134,7 +134,7 @@ Ruta `/e/{empresa}/areas` · ver con `configuracion:leer`, cambiar con `configur
 | Activa | Una inactiva no recibe trabajo nuevo, no cambia de miembros (`area-inactiva`) ni entra en flujos nuevos. | Sí | Sí o no. |
 | Miembros | Quiénes revisan por el área. | Ninguno | Usuarios activos con rol en la empresa o de todo el grupo (`miembros-invalidos`). La pantalla además pide `usuarios:administrar` para listar personas. |
 
-Fuente: `src/Validasoft.Dominio/Configuracion/Area.cs`, `src/Validasoft.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`.
+Fuente: `src/Avalasoft.Dominio/Configuracion/Area.cs`, `src/Avalasoft.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`.
 
 ## Flujos aprobatorios
 
@@ -197,7 +197,7 @@ Rutas `/e/{empresa}/flujos`, `/e/{empresa}/flujos/nuevo` y `/e/{empresa}/flujos/
 
 > **Nota:** «aprobar en nombre del área» no es un ajuste del flujo sino una acción del administrador sobre un expediente (permiso `expedientes:administrar`, con justificación y solo si el área está Pendiente).
 
-Fuente: `src/Validasoft.Dominio/Flujos/Flujo.cs`, `src/Validasoft.Dominio/Flujos/CondicionDeExigencia.cs`, `src/Validasoft.Aplicacion/Flujos/FlujosEndpoints.cs`, `apps/web/src/features/flujos/editor.ts`.
+Fuente: `src/Avalasoft.Dominio/Flujos/Flujo.cs`, `src/Avalasoft.Dominio/Flujos/CondicionDeExigencia.cs`, `src/Avalasoft.Aplicacion/Flujos/FlujosEndpoints.cs`, `apps/web/src/features/flujos/editor.ts`.
 
 ## Plazos de revisión
 
@@ -209,7 +209,7 @@ Ruta `/e/{empresa}/plazos-de-revision` · ver con `configuracion:leer`, guardar 
 | Avisar a los administradores cuando se incumple | Aviso por campana y correo cuando vence el plazo de un área. | Sí | Sí o no. |
 | Plazo por defecto de cada área (horas) | Plazo de revisión cuando el flujo no pone uno. Se copia al expediente al abrirse: solo rige para expedientes nuevos. El del flujo manda. | Sin plazo (sin avisos) | De 1 a 2160 horas (90 días) o vacío. |
 
-Fuente: `src/Validasoft.Aplicacion/Expedientes/SlaDeRevision.cs`, `src/Validasoft.Dominio/Expedientes/ExpedienteSla.cs`.
+Fuente: `src/Avalasoft.Aplicacion/Expedientes/SlaDeRevision.cs`, `src/Avalasoft.Dominio/Expedientes/ExpedienteSla.cs`.
 
 ## Ayuda de documentos
 
@@ -220,7 +220,7 @@ Ruta `/e/{empresa}/ayuda-de-documentos` · ver con `configuracion:leer`, guardar
 | Ayuda de la empresa (por tipo de documento) | Texto que lee el tercero al entregar ese documento, solo para los terceros de esta empresa; sobrescribe la del grupo. | Sin ayuda propia: el tercero ve la del grupo (o ninguna) | Hasta 2000 caracteres; vacío vuelve a la del grupo. Filtro de la lista: Propia, Del grupo, Sin ayuda. |
 | Ayuda del grupo | La define el grupo en Tipos de documento. | — | Solo lectura aquí. |
 
-Fuente: `src/Validasoft.Aplicacion/Documentos/AyudasDeDocumentoPorEmpresa.cs`.
+Fuente: `src/Avalasoft.Aplicacion/Documentos/AyudasDeDocumentoPorEmpresa.cs`.
 
 ## Delegación de revisión
 
@@ -235,4 +235,4 @@ Ruta `/e/{empresa}/delegaciones` · permiso `expedientes:revisar`. Administrador
 | Motivo | Queda en el historial. | Vacío | Hasta 300 caracteres. |
 | Revocar | La persona delegada deja de revisar desde ese momento. | — | Solo Programada o Vigente. Estados: Programada, Vigente, Vencida y Revocada. |
 
-Fuente: `src/Validasoft.Dominio/Delegaciones/DelegacionDeRevision.cs`, `src/Validasoft.Aplicacion/Delegaciones/DelegacionesDeRevision.cs`.
+Fuente: `src/Avalasoft.Dominio/Delegaciones/DelegacionDeRevision.cs`, `src/Avalasoft.Aplicacion/Delegaciones/DelegacionesDeRevision.cs`.

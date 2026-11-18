@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
-import { configurarCliente, reiniciarCliente, type ExpedientePublicoDto, type VinculoPublicoDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type ExpedientePublicoDto, type VinculoPublicoDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PaginaExpediente } from './PaginaExpediente';
@@ -52,7 +52,7 @@ function montar(vinculos: VinculoPublicoDto[], cuerpo: ExpedientePublicoDto) {
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter initialEntries={['/expediente/exp-1']}>
           <Routes>

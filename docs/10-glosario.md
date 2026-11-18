@@ -4,7 +4,7 @@
 |---|---|---|
 | Borrador | 2026-10-28 | Arquitectura |
 
-**Propósito.** Fijar el lenguaje ubicuo de Validasoft: un solo nombre por concepto, en español, usado igual en el código, la API, la interfaz y los documentos. Cada término trae definición, ejemplo y su equivalente en el legado (SRM/Portal) para quien viene de allí.
+**Propósito.** Fijar el lenguaje ubicuo de AvalaSoft: un solo nombre por concepto, en español, usado igual en el código, la API, la interfaz y los documentos. Cada término trae definición, ejemplo y su equivalente en el legado (SRM/Portal) para quien viene de allí.
 
 **Relacionados**
 - [01 Análisis del legado SRM ↔ Portal](01-analisis-legado-srm-portal.md)
@@ -17,7 +17,7 @@
 
 | Término | Definición | Ejemplo | Equivalente en el legado |
 |---|---|---|---|
-| **Tenant (Grupo)** | Cliente de Validasoft: una organización o grupo empresarial con una o varias razones sociales. Comparte usuarios, catálogo, flujos, plantillas, API keys y facturación. Todo dato de `validacion` lleva `TenantId`. | Grupo Acme | `Constructoras` (Portal) agrupadas a mano; una instalación del SRM por razón social |
+| **Tenant (Grupo)** | Cliente de AvalaSoft: una organización o grupo empresarial con una o varias razones sociales. Comparte usuarios, catálogo, flujos, plantillas, API keys y facturación. Todo dato de `validacion` lleva `TenantId`. | Grupo Acme | `Constructoras` (Portal) agrupadas a mano; una instalación del SRM por razón social |
 | **Empresa (interna)** | Razón social dentro del tenant que exige, revisa y certifica. Tiene sus vínculos y sus decisiones, **aisladas de las demás empresas del mismo tenant** (P-11-2, ADR-0008). Todo evento de validación lleva `EmpresaId`. | Acme Construcciones S.A.S. y Acme Inmobiliaria S.A.S., ambas del Grupo Acme | `Constructoras` (Portal); una instalación del SRM |
 | **Plataforma** | Sincosoft como operador del SaaS: alta de tenants y empresas, catálogo canónico, catálogo de tipos de identificación por país, IA, soporte. Panel `/plataforma`. | — | No existía como rol |
 | **Administrador** | Usuario del tenant con control total: empresas, flujos, áreas, usuarios y roles por empresa, API keys, webhooks, niveles de revisión. | Jefe de compras del grupo | Perfil Administrador del flujo + usuario 50 |
@@ -26,8 +26,8 @@
 | **Grupo de acceso** | Conjunto de permisos del catálogo, acotable por sector de la ficha, que se asigna a las personas de un grupo empresarial (GA-2); lo que puede una persona es la unión de sus grupos. Los cuatro roles fijos son grupos **predefinidos**. | «Tesorería» (aprueba cuentas y decide la información financiera) | Grupos de acceso del SRM (`GruposAcceso`, sus opciones y sectores): allá solo ocultan pantallas |
 | **Sector** | Una sección de la ficha del tercero (`FICHA_GENERAL`, `FICHA_TRIBUTARIA`, `FICHA_LEGAL`, `FICHA_FINANCIERA`, `FICHA_SST`, `FICHA_ESPECIALIDADES`): lo que acota a un grupo de acceso (GA-5) y lo que tiene un responsable en las actualizaciones (GA-8). | La información tributaria | `SectoresAcceso` y `SectoresActualizacion` del SRM (aquí son lo mismo) |
 | **Responsable por sector** | El área del flujo a la que va una sección cuando el tercero la cambia después de aprobada (GA-8, GA-9); sin responsable, se revisa como siempre. | Cumplimiento revisa la tributaria cuando cambia | Usuario responsable de cada sector de actualización del SRM |
-| **Ingreso directo** | Forma de entrar de las personas de un grupo y de los operadores de Plataforma a la web de Validasoft, sin contraseñas (ING-1): correo → código de 6 dígitos → passkey cuando la cuenta la tiene o la exige. Cada grupo elige si lo admite, junto o en lugar de la identidad delegada (modos `Delegado` y `Directo`, ING-8). | Ana pide un código con su correo y entra con su huella | Contraseñas del SRM y del Portal (en claro en correos, `Password` en la cola) |
-| **Passkey** | Credencial WebAuthn de una persona (huella, rostro, PIN del dispositivo o llave de seguridad) registrada en Validasoft: con verificación de usuario vale por dos factores y solo sirve en el sitio donde se registró. Obligatoria para Administrador, Oficial de Cumplimiento, Auditor y operadores de Plataforma (ING-2). | «Mi teléfono», «Llave de la oficina» | — |
+| **Ingreso directo** | Forma de entrar de las personas de un grupo y de los operadores de Plataforma a la web de AvalaSoft, sin contraseñas (ING-1): correo → código de 6 dígitos → passkey cuando la cuenta la tiene o la exige. Cada grupo elige si lo admite, junto o en lugar de la identidad delegada (modos `Delegado` y `Directo`, ING-8). | Ana pide un código con su correo y entra con su huella | Contraseñas del SRM y del Portal (en claro en correos, `Password` en la cola) |
+| **Passkey** | Credencial WebAuthn de una persona (huella, rostro, PIN del dispositivo o llave de seguridad) registrada en AvalaSoft: con verificación de usuario vale por dos factores y solo sirve en el sitio donde se registró. Obligatoria para Administrador, Oficial de Cumplimiento, Auditor y operadores de Plataforma (ING-2). | «Mi teléfono», «Llave de la oficina» | — |
 | **Desafío de ingreso** | Ceremonia de un ingreso directo (código o passkey) con vigencia, un solo uso e intentos limitados; su identificador es la capacidad de los pasos siguientes. Un correo sin cuenta recibe un desafío **señuelo** para no revelar si existe. | `DesafioDeIngreso` | — |
 | **Sesión directa** | Sesión de una persona que entró directo: token de acceso corto más un refresco en cookie que rota, con duración máxima e inactividad por grupo; se lista y se cierra en «Mi cuenta» (ING-3). | `SesionDeUsuario`, cookie `vs_usuario` | — |
 | **Tercero** | Persona natural, jurídica o consorcio identificada por `(país, tipo de identificación, número normalizado)` sin dígito de verificación; **multipaís** mediante el catálogo de tipos de identificación. Única a nivel global del SaaS. Dueña de su bóveda. Las personas relacionadas también son terceros. | Ferretería El Tornillo S.A.S., CO·NIT·900123456 (DV 7) | `Terceros` (Portal) + `Solicitudes.SolNIT` (SRM) |
@@ -114,7 +114,7 @@
 | **Folio** | Identificador único y legible: expediente `{PrefijoEmpresa}-E-{Año}-{Secuencia}`; certificado `{PrefijoEmpresa}-C-{Año}-{Secuencia}-{emisión}` (T-9). | `ACME1-C-2026-000418-1` | — |
 | **Huella** | Hash SHA-256 del contenido del certificado, mostrado abreviado y verificable en `GET /public/v1/verificar/{folio}` (UI `/verificar/:folio`). | `9f3a·e71b·c21e` | — |
 | **Novedad** | Aviso en la campana del tercero o del revisor con el siguiente paso. | "Acme observó tu RUT" | `Novedades*` (Portal) |
-| **Webhook** | Notificación HTTP firmada (HMAC) que Validasoft envía a un sistema integrador cuando ocurre un evento público, con reintentos y log de entregas; el receptor deduplica por `Validasoft-Event-Id` (T-6). | `certificado.emitido` | Callbacks sin firma (`TercerosERP/estado`, `ActualizacionesERP/estado`) |
+| **Webhook** | Notificación HTTP firmada (HMAC) que AvalaSoft envía a un sistema integrador cuando ocurre un evento público, con reintentos y log de entregas; el receptor deduplica por `Avalasoft-Event-Id` (T-6). | `certificado.emitido` | Callbacks sin firma (`TercerosERP/estado`, `ActualizacionesERP/estado`) |
 | **API key** | Credencial de un sistema integrador por tenant, con scopes y rotación; nunca en el navegador. | `vsk_live_acme_…` | `Token_Zuppla`, `ConsApiKey` |
 | **Idempotency-Key** | Cabecera obligatoria en toda escritura de integración: repetir la misma clave con el mismo cuerpo devuelve la misma respuesta. | `srm-adp-00123-inv-7` | No existía (reintentos duplicaban) |
 
@@ -201,7 +201,7 @@ Mapeo de requisitos y certificados:
 | `LogAprobacionesRechazo.LogTipoMotivo` | Categoría del motivo (Documento/Formulario/Contacto) |
 | `SolicitudesAuditoriaEstado/Detalle` | Línea de tiempo (proyección del event store) |
 | `Token_Zuppla` / `ConsApiKey` | API key por tenant con scopes |
-| `provportal` + 4 llamadas al ERP | Token exchange `urn:validasoft:erp-token` |
+| `provportal` + 4 llamadas al ERP | Token exchange `urn:avalasoft:erp-token` |
 
 ## Decisiones abiertas
 

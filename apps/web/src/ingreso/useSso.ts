@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { descubrirSsoIngreso, iniciarSsoIngreso, type SsoDescubiertoDto } from '@validasoft/api-client';
+import { descubrirSsoIngreso, iniciarSsoIngreso, type SsoDescubiertoDto } from '@avalasoft/api-client';
 import { useEffect, useState } from 'react';
 import { esCorreoPlausible } from './estado';
 

@@ -1,0 +1,111 @@
+using Microsoft.Extensions.Configuration;
+
+namespace Avalasoft.Aplicacion.Comun;
+
+/// <summary>URL prefirmada para que el cliente suba o descargue un binario directamente del almacenamiento.</summary>
+public sealed record UrlPrefirmada(string Metodo, string Url, IReadOnlyDictionary<string, string> Cabeceras, DateTimeOffset Expira);
+
+/// <summary>Metadatos de un objeto almacenado.</summary>
+public sealed record ObjetoAlmacenado(long Tamano, string? TipoContenido);
+
+/// <summary>
+/// Almacenamiento de binarios compatible con S3 (MinIO en desarrollo y on-premise, S3 en la nube; docs/04 §6). El API
+/// nunca proxea bytes del cliente: entrega URLs prefirmadas y solo lee los objetos para verificarlos al confirmar.
+/// </summary>
+public interface IAlmacenDeArchivos
+{
+    /// <summary>URL prefirmada <c>PUT</c> que fija el <c>Content-Type</c> (el cliente debe enviar las cabeceras devueltas).</summary>
+    Task<UrlPrefirmada> UrlDeSubidaAsync(string bucket, string clave, string tipoContenido, TimeSpan vigencia, CancellationToken ct);
+
+    /// <summary>URL prefirmada <c>GET</c> con <c>Content-Disposition</c> de descarga y el nombre original.</summary>
+    Task<UrlPrefirmada> UrlDeDescargaAsync(string bucket, string clave, string nombreArchivo, string tipoContenido, TimeSpan vigencia,
+        CancellationToken ct);
+
+    /// <summary>Tamaño y tipo del objeto; nulo si no existe.</summary>
+    Task<ObjetoAlmacenado?> ConsultarAsync(string bucket, string clave, CancellationToken ct);
+
+    Task<bool> ExisteAsync(string bucket, string clave, CancellationToken ct);
+
+    /// <summary>Lectura en streaming del objeto (el llamador cierra el flujo).</summary>
+    Task<Stream> AbrirLecturaAsync(string bucket, string clave, CancellationToken ct);
+
+    /// <summary>Copia en el servidor (sin pasar por el API) reemplazando tipo de contenido y metadatos.</summary>
+    Task CopiarAsync(string bucketOrigen, string claveOrigen, string bucketDestino, string claveDestino, string tipoContenido,
+        IReadOnlyDictionary<string, string> metadatos, CancellationToken ct);
+
+    /// <summary>Sube un objeto generado por el servidor (el PDF del certificado, CE-5); sobrescribe si la clave existe.</summary>
+    Task GuardarAsync(string bucket, string clave, byte[] contenido, string tipoContenido, IReadOnlyDictionary<string, string> metadatos,
+        CancellationToken ct);
+
+    /// <summary>
+    /// Sube un archivo local sin cargarlo en memoria (la exportación de la bóveda, que puede pesar cientos de megabytes, OD-9); sobrescribe
+    /// si la clave existe.
+    /// </summary>
+    Task GuardarArchivoAsync(string bucket, string clave, string rutaLocal, string tipoContenido, IReadOnlyDictionary<string, string> metadatos,
+        CancellationToken ct);
+
+    /// <summary>Elimina el objeto si existe (idempotente).</summary>
+    Task EliminarAsync(string bucket, string clave, CancellationToken ct);
+
+    /// <summary>Elimina todos los objetos del bucket cuya clave empieza por <paramref name="prefijo"/> (vacío = todo el bucket); no falla si el bucket no existe. Solo el reinicio del sandbox (SB-5) lo usa.</summary>
+    Task EliminarPrefijoAsync(string bucket, string prefijo, CancellationToken ct);
+
+    /// <summary>Crea el bucket si no existe (los de tenant nacen con su primera carga <c>PorVinculo</c>).</summary>
+    Task AsegurarBucketAsync(string bucket, CancellationToken ct);
+}
+
+/// <summary>Buckets y claves de docs/02 §10.2: content-addressed por SHA-256; el nombre original va en metadatos, nunca en la clave.</summary>
+public static class ClavesDeAlmacen
+{
+    public const string BucketBoveda = "boveda";
+
+    public static string BucketDeTenant(Guid tenantId) => $"tenant-{tenantId:N}";
+
+    public static string Global(Guid terceroId, string sha256) => $"terceros/{terceroId:N}/{sha256}";
+
+    public static string PorVinculo(Guid empresaId, Guid vinculoId, string sha256) => $"empresas/{empresaId:N}/vinculos/{vinculoId:N}/{sha256}";
+
+    /// <summary>Zona temporal de la subida (paso 1); al confirmar se copia a la clave definitiva y se borra.</summary>
+    public static string Carga(Guid cargaId) => $"cargas/{cargaId:N}";
+
+    /// <summary>Plantilla de un tipo de documento (TD-5): bucket del tenant, content-addressed por tipo.</summary>
+    public static string Plantilla(Guid tipoDocumentoTenantId, string sha256) => $"plantillas/{tipoDocumentoTenantId:N}/{sha256}";
+
+    /// <summary>PDF de una emisión del certificado (bucket del tenant), content-addressed por su SHA-256.</summary>
+    public static string Certificado(Guid empresaId, string folio, string sha256) => $"empresas/{empresaId:N}/certificados/{folio}/{sha256}";
+
+    /// <summary>Evidencia de una consulta de listas (PDF) o respuesta cruda del proveedor (json), content-addressed (VE-10).</summary>
+    public static string EvidenciaDeVerificacion(Guid empresaId, string sha256, string extension) =>
+        $"empresas/{empresaId:N}/verificaciones/{sha256}.{extension}";
+
+    /// <summary>Archivo que sube el oficial de cumplimiento al expediente (CU-16): bucket del tenant, content-addressed.</summary>
+    public static string AdjuntoDeCumplimiento(Guid empresaId, string sha256) => $"empresas/{empresaId:N}/cumplimiento/{sha256}";
+
+    /// <summary>Archivo de evidencia de una evaluación del proveedor (CE-2): bucket del tenant, por evaluación y content-addressed; privado de la empresa.</summary>
+    public static string AdjuntoDeEvaluacion(Guid empresaId, Guid evaluacionId, string sha256) => $"empresas/{empresaId:N}/evaluaciones/{evaluacionId:N}/{sha256}";
+
+    /// <summary>ZIP de una exportación de la bóveda del tercero (OD-9): bucket global, por tercero y exportación.</summary>
+    public static string ExportacionDeBoveda(Guid terceroId, Guid exportacionId) => $"exportaciones/{terceroId:N}/{exportacionId:N}.zip";
+
+    /// <summary>Versiones devueltas: nunca se comparten (docs/07 §6.1).</summary>
+    public static string Cuarentena(Guid documentoId, int numero) => $"cuarentena/{documentoId:N}/v{numero}";
+}
+
+/// <summary>
+/// Límites de la carga (<c>Avalasoft:Boveda</c>): 20 MB y 50 páginas por defecto (P-16-2), vigencia de las URLs de
+/// subida (15 min) y descarga (5 min) y si se exige antivirus para promover una versión (T-11; sin ClamAV todavía).
+/// </summary>
+public sealed class ReglasDeCarga(IConfiguration configuracion)
+{
+    public long TamanoMaximoBytes { get; } = Math.Max(1, configuracion.GetValue("Avalasoft:Boveda:TamanoMaximoBytes", 20L * 1024 * 1024));
+
+    public int MaximoPaginas { get; } = Math.Max(1, configuracion.GetValue("Avalasoft:Boveda:MaximoPaginas", 50));
+
+    public TimeSpan VigenciaSubida { get; } =
+        TimeSpan.FromMinutes(Math.Clamp(configuracion.GetValue("Avalasoft:Boveda:MinutosSubida", 15), 1, 15));
+
+    public TimeSpan VigenciaDescarga { get; } =
+        TimeSpan.FromMinutes(Math.Clamp(configuracion.GetValue("Avalasoft:Boveda:MinutosDescarga", 5), 1, 15));
+
+    public bool ExigirAntivirus { get; } = configuracion.GetValue("Avalasoft:Boveda:ExigirAntivirus", false);
+}

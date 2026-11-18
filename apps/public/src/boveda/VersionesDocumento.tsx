@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, Typography } from '@mui/material';
-import type { VersionDocumentoDto } from '@validasoft/api-client';
-import { EsqueletoTarjetas, formatearFecha } from '@validasoft/ui';
+import type { VersionDocumentoDto } from '@avalasoft/api-client';
+import { EsqueletoTarjetas, formatearFecha } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { useDocumentoBoveda } from '../shared/api';
 import { ErrorRecuperable } from '../shared/componentes';

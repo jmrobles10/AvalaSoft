@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type SolicitudHabeasDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type SolicitudHabeasDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import '../../i18n';
@@ -37,7 +37,7 @@ const SOLICITUD: SolicitudHabeasDto = {
   titular: { nombre: 'Ana Gómez', identificacion: 'CC 52.123.456', correo: 'ana@aceros.co' },
 };
 const VENCIDA: SolicitudHabeasDto = { ...SOLICITUD, id: 's2', radicado: 'HD-2026-000002', tipo: 'Correccion', diasHabiles: 15, diasHabilesRestantes: -2, plazo: 'Vencida', detalle: 'Mi razón social cambió.' };
-const SUPRESION: SolicitudHabeasDto = { ...SOLICITUD, id: 's3', radicado: 'HD-2026-000003', tipo: 'Supresion', alcance: 'Todo', destino: { empresaId: null, nombre: 'Validasoft' } };
+const SUPRESION: SolicitudHabeasDto = { ...SOLICITUD, id: 's3', radicado: 'HD-2026-000003', tipo: 'Supresion', alcance: 'Todo', destino: { empresaId: null, nombre: 'AvalaSoft' } };
 
 const json = (cuerpo: unknown, estado = 200) => new Response(JSON.stringify(cuerpo), { status: estado, headers: { 'Content-Type': 'application/json' } });
 
@@ -74,7 +74,7 @@ function montar(ui: ReactNode, lista: SolicitudHabeasDto[]) {
     }),
   });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>{ui}</QueryClientProvider>
     </ThemeProvider>,
   );

@@ -12,7 +12,7 @@ recorrido(
       'El documento se pide por lo que el tercero declara, y el tercero ve por qué se le pide.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» y el certificado de seguridad y salud en el trabajo en los tipos de documento.',
-      'Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
     ],
     relacionados: ['configuracion/flujo-condiciones-por-tipo-de-persona', 'configuracion/responsable-por-sector'],
   },

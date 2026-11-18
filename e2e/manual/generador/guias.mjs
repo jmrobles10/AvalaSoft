@@ -458,10 +458,10 @@ function paginaDeIndiceDeGuias(ctx, generado) {
           .join('')}</div>`,
     )
     .join('');
-  const contenido = `<div class="heroe"><h1>Guías</h1><p>Lo que no sale de un recorrido: cómo está construido Validasoft, el flujo completo del vínculo a la validación, la configuración con sus valores por defecto y la integración por API.</p><div class="cifras"><div class="cifra"><b>${String(ctx.guias.length)}</b><span>guías</span></div><div class="cifra"><b>${String(ctx.diagramas.size)}</b><span>diagramas</span></div></div></div>${secciones}`;
+  const contenido = `<div class="heroe"><h1>Guías</h1><p>Lo que no sale de un recorrido: cómo está construido AvalaSoft, el flujo completo del vínculo a la validación, la configuración con sus valores por defecto y la integración por API.</p><div class="cifras"><div class="cifra"><b>${String(ctx.guias.length)}</b><span>guías</span></div><div class="cifra"><b>${String(ctx.diagramas.size)}</b><span>diagramas</span></div></div></div>${secciones}`;
   return pagina({
     titulo: 'Guías',
-    descripcion: 'Guías del manual de Validasoft: arquitectura, flujo de punta a punta, configuración e integración.',
+    descripcion: 'Guías del manual de AvalaSoft: arquitectura, flujo de punta a punta, configuración e integración.',
     raiz: '../',
     seccion: 'guias',
     lateral: lateralDeGuias(ctx, 'indice'),

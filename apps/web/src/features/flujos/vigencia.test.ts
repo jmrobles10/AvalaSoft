@@ -1,4 +1,4 @@
-import type { FlujoVersionDto } from '@validasoft/api-client';
+import type { FlujoVersionDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { borradorDesdeVersion, borradorVacio, firmaBorrador, requisitoDeSeccionNuevo, requisitoNuevo, requisitosADto, validarFlujo } from './editor';
 import { validarRequisitoDeSeccion } from './requisitosDeSeccion';

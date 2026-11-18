@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Skeleton, Stack, Typography } from '@mui/material';
-import type { SistemaIntegradoDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { SistemaIntegradoDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { Ban, Play } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

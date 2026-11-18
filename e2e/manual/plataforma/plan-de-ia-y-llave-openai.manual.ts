@@ -108,7 +108,7 @@ recorrido(
     await paso(page, {
       titulo: 'Prueba la llave guardada',
       explicacion:
-        'Puedes probar la llave que ya está guardada sin volver a escribirla. Validasoft la prueba contra OpenAI y muestra el resultado con sus últimos cuatro caracteres. ' +
+        'Puedes probar la llave que ya está guardada sin volver a escribirla. AvalaSoft la prueba contra OpenAI y muestra el resultado con sus últimos cuatro caracteres. ' +
         'La prueba no consume tokens y solo se hace cuando la pides.',
       resaltar: consola.getByRole('button', { name: 'Probar llave' }),
     });

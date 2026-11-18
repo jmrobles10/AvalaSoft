@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
-import { SCOPES, type FilaInformeEvaluacionDto } from '@validasoft/api-client';
-import { BarraFiltros, EstadoVacio, FiltroMenu, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@validasoft/ui';
+import { SCOPES, type FilaInformeEvaluacionDto } from '@avalasoft/api-client';
+import { BarraFiltros, EstadoVacio, FiltroMenu, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@avalasoft/ui';
 import { Download } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ErrorApi, reiniciarCliente } from '@validasoft/api-client';
+import { ErrorApi, reiniciarCliente } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { montarPantalla } from '../pruebas/montar';
 import { OPCIONES_DE_FIRMA, simularNavegadorConPasskeys, type NavegadorSimulado } from '../pruebas/navegadorSimulado';

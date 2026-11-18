@@ -16,7 +16,7 @@ La administradora agrega una razón social nueva al grupo y publica la autorizac
 **Antes de empezar**
 
 - Un grupo empresarial con las empresas «Constructora Norte S.A.S.» y «Constructora Sur S.A.S.».
-- Una persona con el rol Administrador que entra a Validasoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
 
 **Pasos**
 
@@ -45,7 +45,7 @@ La tabla lista las razones sociales del grupo con su identificación, su prefijo
 
 ## Paso 2. Escribe los datos de la empresa
 
-Elige el tipo y el número de identificación (con o sin dígito de verificación: Validasoft lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior. El campo de ejemplo muestra cómo se verán sus folios.
+Elige el tipo y el número de identificación (con o sin dígito de verificación: AvalaSoft lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior. El campo de ejemplo muestra cómo se verán sus folios.
 
 > **Pantalla:** `/e/{empresa}/empresas`
 
@@ -70,7 +70,7 @@ La empresa nueva aparece con sus textos legales «Sin publicar»: la autorizaci�
 
 ## Paso 4. Escribe el texto de la autorización
 
-Escribe el texto completo de la autorización de tratamiento de datos. Se publica como versión 1: el botón «Publicar versión 1» solo se activa cuando hay texto y cambió algo respecto de la versión vigente. Al pulsarlo, Validasoft pide confirmación, porque el texto queda vigente de inmediato y los terceros lo aceptan al vincularse.
+Escribe el texto completo de la autorización de tratamiento de datos. Se publica como versión 1: el botón «Publicar versión 1» solo se activa cuando hay texto y cambió algo respecto de la versión vigente. Al pulsarlo, AvalaSoft pide confirmación, porque el texto queda vigente de inmediato y los terceros lo aceptan al vincularse.
 
 > **Pantalla:** `/e/{empresa}/empresas`
 

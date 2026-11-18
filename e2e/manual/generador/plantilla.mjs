@@ -24,7 +24,7 @@ export function pagina({ titulo, descripcion = '', raiz, seccion, lateral, migas
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapar(titulo)} · Manual de Validasoft</title>
+<title>${escapar(titulo)} · Manual de AvalaSoft</title>
 ${descripcion ? `<meta name="description" content="${escapar(descripcion)}">` : ''}
 <link rel="stylesheet" href="${raiz}assets/manual.css">
 <script>try{var t=localStorage.getItem('manual-tema');if(t==='claro'||t==='oscuro')document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
@@ -33,7 +33,7 @@ ${descripcion ? `<meta name="description" content="${escapar(descripcion)}">` : 
 <a class="saltar" href="#contenido">Saltar al contenido</a>
 <header class="barra">
   <button class="boton-icono boton-menu" id="abrir-menu" type="button" aria-label="Abrir el menú" aria-expanded="false">${ICONO_MENU}</button>
-  <a class="marca" href="${raiz}index.html"><span class="marca-sello" aria-hidden="true">V</span><span>Validasoft <small>Manual</small></span></a>
+  <a class="marca" href="${raiz}index.html"><span class="marca-sello" aria-hidden="true">A</span><span>AvalaSoft <small>Manual</small></span></a>
   <nav class="barra-enlaces" aria-label="Secciones del manual">
     <a href="${raiz}index.html"${seccion === 'recorridos' ? ' aria-current="page"' : ''}>Recorridos</a>
     <a href="${raiz}g/index.html"${seccion === 'guias' ? ' aria-current="page"' : ''}>Guías</a>

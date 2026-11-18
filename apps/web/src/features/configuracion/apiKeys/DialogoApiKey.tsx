@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormHelperText, MenuItem, Stack, Switch, TextField } from '@mui/material';
-import type { ApiKeyDto, EmpresaDto, SistemaIntegradoDto } from '@validasoft/api-client';
-import { CampoFecha, FaltaParaEnviar, FormularioDeDialogo } from '@validasoft/ui';
+import type { ApiKeyDto, EmpresaDto, SistemaIntegradoDto } from '@avalasoft/api-client';
+import { CampoFecha, FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../../shared/componentes';

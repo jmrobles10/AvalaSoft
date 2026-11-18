@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControl, FormControlLabel, FormHelperText, FormLabel, Typography } from '@mui/material';
-import type { MotivoTipificadoDto } from '@validasoft/api-client';
+import type { MotivoTipificadoDto } from '@avalasoft/api-client';
 import { useId } from 'react';
 
 export interface SelectorMotivosProps {

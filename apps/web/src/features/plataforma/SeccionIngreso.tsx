@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
-import type { TenantDto } from '@validasoft/api-client';
-import { Dato, RejillaDatos } from '@validasoft/ui';
+import type { TenantDto } from '@avalasoft/api-client';
+import { Dato, RejillaDatos } from '@avalasoft/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';

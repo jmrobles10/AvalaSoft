@@ -60,7 +60,7 @@ recorrido(
       titulo: 'Abre tu bóveda y elige «Subir versión» del RUT',
       explicacion:
         'En «Mi bóveda» cada documento aparece una sola vez, con su versión vigente y, en «Con tus empresas», la versión que cada una aprobó. Con «Subir versión» llevas el archivo nuevo a la pantalla de carga del documento. ' +
-        'Al guardarlo, Validasoft lo registra como la versión 2 y las empresas que usan el RUT reciben el cambio para revisarlo.',
+        'Al guardarlo, AvalaSoft lo registra como la versión 2 y las empresas que usan el RUT reciben el cambio para revisarlo.',
       resaltar: tarjetaBoveda,
       configuracion: { ajuste: 'Vigencia y reglas del tipo de documento', ruta: 'Configuración › Tipos de documento (/tipos-documento)' },
     });

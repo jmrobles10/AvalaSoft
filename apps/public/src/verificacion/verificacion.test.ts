@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { ClavePublicaDeCertificadosDto, ClavesDeCertificadosDto } from '@validasoft/api-client';
+import type { ClavePublicaDeCertificadosDto, ClavesDeCertificadosDto } from '@avalasoft/api-client';
 import { CERTIFICADO_REAL, CLAVES_REAL, certificadoSellado } from '../pruebas/certificados';
 import { leerClaves } from './claves';
 import { claveRetiradaVale, conclusion, normalizarHuella, verificarCertificado } from './verificacion';
@@ -17,7 +17,7 @@ function retirada(claves: ClavesDeCertificadosDto, fechas: Partial<ClavePublicaD
 
 describe('verificación del certificado en el navegador', () => {
   it('certificado real de la API con la clave publicada: auténtico en los cuatro pasos', async () => {
-    const r = await verificarCertificado(CERTIFICADO_REAL, CLAVES_REAL, '26b45bd2c48a');
+    const r = await verificarCertificado(CERTIFICADO_REAL, CLAVES_REAL, '7bbd48b23712');
     expect(r).toEqual({ contenido: 'ok', huella: 'ok', clave: 'ok', sello: 'ok', hashCalculado: CERTIFICADO_REAL.hashContenido });
     expect(conclusion(r)).toBe('autentico');
   });
@@ -131,12 +131,12 @@ describe('verificación del certificado en el navegador', () => {
     const r = await verificarCertificado(CERTIFICADO_REAL, CLAVES_REAL, '5a7e·0c1d·9f22');
     expect(r.huella).toBe('distinta');
     expect(conclusion(r)).toBe('no-autentico');
-    expect((await verificarCertificado(CERTIFICADO_REAL, CLAVES_REAL, '26B4·5BD2·C48A')).huella).toBe('ok');
+    expect((await verificarCertificado(CERTIFICADO_REAL, CLAVES_REAL, '7BBD·48B2·3712')).huella).toBe('ok');
   });
 
   it('navegador sin Ed25519: «no soportado», sin romper el resto', async () => {
     vi.spyOn(crypto.subtle, 'importKey').mockRejectedValue(new DOMException('Ed25519', 'NotSupportedError'));
-    const r = await verificarCertificado(CERTIFICADO_REAL, CLAVES_REAL, '26b45bd2c48a');
+    const r = await verificarCertificado(CERTIFICADO_REAL, CLAVES_REAL, '7bbd48b23712');
     expect(r).toMatchObject({ contenido: 'ok', huella: 'ok', clave: 'ok', sello: 'no-soportado' });
     expect(conclusion(r)).toBe('no-soportado');
   });

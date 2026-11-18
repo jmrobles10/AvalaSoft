@@ -7,14 +7,14 @@ recorrido(
     actor: 'Revisor/área',
     titulo: 'Revisa tus sesiones abiertas y cierra la que no reconoces',
     resumen:
-      'En Mi cuenta, Rita ve cómo entra a Validasoft (código del correo, passkey o inicio de sesión de su empresa), en qué dispositivos tiene sesiones abiertas y puede cerrar cualquiera de ellas. ' +
+      'En Mi cuenta, Rita ve cómo entra a AvalaSoft (código del correo, passkey o inicio de sesión de su empresa), en qué dispositivos tiene sesiones abiertas y puede cerrar cualquiera de ellas. ' +
       'Desde la misma pantalla están sus passkeys y sus códigos de recuperación.',
     precondiciones: ['Un grupo con ingreso directo y Rita como revisora, con dos sesiones abiertas: la de este navegador y otra en un dispositivo distinto.'],
     relacionados: ['acceso/ingreso-con-passkey', 'acceso/codigos-de-recuperacion', 'acceso/ingreso-directo-por-correo'],
   },
   async ({ page, browser }) => {
     const g = await crearGrupoDirecto();
-    const correo = `rita.${Date.now().toString(36)}@e2e.validasoft.co`;
+    const correo = `rita.${Date.now().toString(36)}@e2e.avalasoft.co`;
     await crearUsuario(g, 'Rita Revisora', 'Revisor', correo);
     await page.goto('/app/');
     await entrarConCodigo(page, correo);
@@ -34,7 +34,7 @@ recorrido(
     await paso(page, {
       titulo: 'Revisa cómo entras y tus sesiones',
       explicacion:
-        'Mi cuenta muestra cómo entras a Validasoft (con el código del correo o con tu passkey) y la lista de sesiones abiertas. La sesión de este navegador aparece marcada como «Esta sesión». ' +
+        'Mi cuenta muestra cómo entras a AvalaSoft (con el código del correo o con tu passkey) y la lista de sesiones abiertas. La sesión de este navegador aparece marcada como «Esta sesión». ' +
         'Cada sesión muestra dónde y cuándo se abrió, para que reconozcas la que no es tuya.',
       resaltar: page.getByText('Esta sesión', { exact: true }),
       variantes: [
@@ -52,12 +52,12 @@ recorrido(
     });
 
     await page.getByRole('button', { name: 'Cerrar esta sesión' }).click();
-    await expect(page.getByRole('heading', { name: 'Ingresa a Validasoft' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
     await paso(page, {
       titulo: 'Cierra esta sesión desde Mi cuenta',
       explicacion:
         'El botón «Cerrar esta sesión» cierra la sesión del navegador en el que estás y te devuelve a la pantalla de ingreso. Las demás sesiones siguen abiertas, salvo que las cierres tú.',
-      resaltar: page.getByRole('heading', { name: 'Ingresa a Validasoft' }),
+      resaltar: page.getByRole('heading', { name: 'Ingresa a AvalaSoft' }),
     });
   },
 );

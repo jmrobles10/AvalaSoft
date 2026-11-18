@@ -1,7 +1,7 @@
 import { Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { getObtenerMiCuentaQueryOptions } from '@validasoft/api-client';
-import { AvatarActor } from '@validasoft/ui';
+import { getObtenerMiCuentaQueryOptions } from '@avalasoft/api-client';
+import { AvatarActor } from '@avalasoft/ui';
 import { LogOut, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

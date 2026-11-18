@@ -1,12 +1,12 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { describe, expect, it } from 'vitest';
 import { AvisoAccesoDelCorreo } from './AvisoAccesoDelCorreo';
 
 function montar(vinculo: Parameters<typeof AvisoAccesoDelCorreo>[0]['vinculo']) {
   return render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <AvisoAccesoDelCorreo vinculo={vinculo} />
     </ThemeProvider>,
   );

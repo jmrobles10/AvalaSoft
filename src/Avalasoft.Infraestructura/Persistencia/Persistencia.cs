@@ -1,0 +1,407 @@
+using JasperFx;
+using JasperFx.Events;
+using JasperFx.Events.Projections;
+using JasperFx.MultiTenancy;
+using Marten;
+using Marten.Schema;
+using Marten.Schema.Indexing.Unique;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Avalasoft.Aplicacion.Comun;
+using Avalasoft.Aplicacion.Expedientes;
+using Avalasoft.Dominio.Auditoria;
+using Avalasoft.Dominio.Certificados;
+using Avalasoft.Dominio.Comun;
+using Avalasoft.Dominio.Configuracion;
+using Avalasoft.Dominio.Consentimientos;
+using Avalasoft.Dominio.Documentos;
+using Avalasoft.Dominio.Expedientes;
+using Avalasoft.Dominio.Flujos;
+using Avalasoft.Dominio.Identidad;
+using Avalasoft.Dominio.Plataforma;
+using Avalasoft.Dominio.Terceros;
+using Avalasoft.Dominio.Vinculos;
+using JasperFx.Events.Daemon;
+using Avalasoft.Aplicacion.Notificaciones;
+using Avalasoft.Dominio.Integraciones;
+using Avalasoft.Infraestructura.Http;
+using Avalasoft.Infraestructura.Notificaciones;
+using Avalasoft.Infraestructura.Seguridad;
+using Weasel.Core;
+using Weasel.Postgresql.Tables;
+using Wolverine;
+using Wolverine.Marten;
+using Wolverine.Marten.Publishing;
+using Wolverine.Runtime;
+
+namespace Avalasoft.Infraestructura.Persistencia;
+
+public static class ConfiguracionMarten
+{
+    /// <summary>
+    /// Un solo <c>DocumentStore</c> con eventos <i>conjoined</i> (T-2, ADR-0004). Esquemas: <c>plataforma</c>
+    /// (tenants y empresas, globales), <c>boveda</c> (terceros, globales), <c>identidad</c> (API keys, sistemas integrados
+    /// y usuarios por tenant; idempotencia), <c>validacion</c> (todo lo demás, por tenant) y <c>eventos</c> (event store).
+    /// </summary>
+    public static IServiceCollection AgregarPersistencia(this IServiceCollection servicios, IConfiguration configuracion)
+    {
+        var cadena = configuracion.GetConnectionString("Avalasoft")
+                     ?? throw new InvalidOperationException("Falta ConnectionStrings:Avalasoft.");
+        var crearEsquema = configuracion.GetValue("Avalasoft:Persistencia:CrearEsquemaAlIniciar", false);
+
+        servicios.AddMarten(opts =>
+            {
+                opts.Connection(cadena);
+                opts.DatabaseSchemaName = "validacion";
+                opts.UseSystemTextJsonForSerialization(EnumStorage.AsString, Casing.CamelCase);
+                opts.AutoCreateSchemaObjects = crearEsquema ? AutoCreate.CreateOrUpdate : AutoCreate.None;
+
+                opts.Events.DatabaseSchemaName = "eventos";
+                opts.Events.TenancyStyle = TenancyStyle.Conjoined;
+                opts.Events.StreamIdentity = StreamIdentity.AsGuid;
+                opts.Events.MetadataConfig.HeadersEnabled = true;
+                opts.Events.MetadataConfig.CorrelationIdEnabled = true;
+                opts.Events.MetadataConfig.CausationIdEnabled = true;
+
+                // plataforma (global)
+                opts.Schema.For<Tenant>().DatabaseSchemaName("plataforma")
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_tenant_slug", x => x.Slug)
+                    .Index(x => x.TenantDeProduccionId); // el sandbox de un grupo (SB-1)
+                opts.Schema.For<Empresa>().DatabaseSchemaName("plataforma")
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_empresa_identificacion", x => x.TenantId, x => x.ClaveIdentificacion)
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_empresa_prefijo", x => x.TenantId, x => x.PrefijoFolio);
+
+                // Tarifa general de las validaciones adicionales de IA (PI-12): un solo documento global.
+                opts.Schema.For<Avalasoft.Dominio.Ia.TarifaDeIa>().DatabaseSchemaName("plataforma");
+
+                // boveda (global)
+                opts.Schema.For<Tercero>().DatabaseSchemaName("boveda")
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_tercero_identificacion", x => x.ClaveIdentificacion)
+                    .Index(x => x.SandboxTenantId); // terceros de pruebas (SB-4): el reinicio del sandbox los busca por aquí
+
+                // Documentos de la bóveda: streams Documento-{id} en el tenant técnico "boveda" (ambos ámbitos; el PorVinculo
+                // guarda su tenant como dato). Clave natural única: (tercero, canónico) o (vínculo, tipo del tenant).
+                opts.Schema.For<Documento>().DatabaseSchemaName("boveda").MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_documento_clave", TenancyScope.PerTenant, x => x.ClaveNatural)
+                    .Index(x => x.TerceroId);
+                // Solicitudes de acceso de un correo que no es contacto conocido del tercero (acceso aislado): un stream por (tercero, correo) en el
+                // tenant técnico «boveda» (snapshot inline), como la ficha y el habeas data. Las lee el tercero entre tenants desde su sesión.
+                opts.Schema.For<SolicitudDeAcceso>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.TerceroId);
+                // Historial de los contactos de un tercero (decisión AV): quién entró como contacto, cómo se verificó y quién pasó a acceso aislado. Un stream por tercero
+                // en el tenant técnico «boveda» (snapshot inline); el estado vigente de cada contacto vive en el documento del tercero.
+                opts.Schema.For<HistorialDeContactos>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.TerceroId);
+                // Migraciones de datos ya corridas (una fila por migración): la de los vínculos aceptados antes del acceso aislado corre una sola vez.
+                opts.Schema.For<Avalasoft.Aplicacion.Interesado.MigracionDeDatosEjecutada>().DatabaseSchemaName("plataforma");
+                // Relaciones entre terceros (ADR-0010): una persona natural (con bóveda propia) es representante, suplente, socio, beneficiario final o miembro de
+                // otro tercero. Un stream por (destino, persona, tipo) en el tenant técnico «boveda» (snapshot inline), como la ficha y el habeas data.
+                opts.Schema.For<RelacionEntreTerceros>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.DestinoId).Index(x => x.OrigenId);
+                // Cuentas bancarias del tercero (CB-1): en la bóveda, como sus documentos globales.
+                opts.Schema.For<Avalasoft.Dominio.Terceros.CuentaBancaria>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.TerceroId);
+                opts.Schema.For<CargaDeDocumento>().DatabaseSchemaName("boveda")
+                    .Index(x => x.DocumentoId);
+                // Avisos de vencimiento programados (TD-6): uno por tercero y fecha, en el tenant técnico "boveda" para
+                // guardarse en la misma transacción que el evento de vigencia y el mensaje programado (outbox). Concurrencia optimista
+                // (OC-1): varios mensajes del mismo tercero y fecha no envían dos veces el correo ni el evento documento.por_vencer.
+                opts.Schema.For<Aplicacion.Documentos.AvisoDeVencimiento>().DatabaseSchemaName("boveda").MultiTenanted().UseOptimisticConcurrency(true)
+                    .Index(x => x.TerceroId);
+
+                // Ficha maestra (ADR-0013, FM-18): secciones como streams SeccionDeFicha-{id determinista} en el tenant técnico
+                // "boveda" (snapshot inline) y la proyección EstadoDeFicha por tercero, escrita en la misma transacción
+                // (concurrencia optimista). Los catálogos de plataforma son globales, con id {catalogo}|{codigo}.
+                opts.Schema.For<Avalasoft.Dominio.Ficha.SeccionDeFicha>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.TerceroId);
+                opts.Schema.For<Avalasoft.Dominio.Ficha.EstadoDeFicha>().DatabaseSchemaName("boveda").MultiTenanted().UseOptimisticConcurrency(true);
+                opts.Schema.For<Avalasoft.Dominio.Ficha.EntradaDeCatalogo>().DatabaseSchemaName("plataforma")
+                    .Index(x => x.Catalogo)
+                    .Index(x => x.Padre);
+                // Importador genérico (F4, FM-39): corridas con su cursor y su informe, y el JSON de las de fuente archivo.
+                opts.Schema.For<Aplicacion.Importacion.CorridaDeImportacion>().DatabaseSchemaName("plataforma");
+                opts.Schema.For<Aplicacion.Importacion.ArchivoDeCorrida>().DatabaseSchemaName("plataforma");
+                // Claves de un tercero en un sistema externo (referencias externas): por tenant, con id único {SISTEMA}|{clave} dentro de
+                // él; las del importador de la plataforma viven en el tenant técnico "boveda".
+                opts.Schema.For<ReferenciaDeTercero>().DatabaseSchemaName("boveda").MultiTenanted().Index(x => x.TerceroId);
+
+                // identidad
+                opts.Schema.For<ApiKey>().DatabaseSchemaName("identidad").MultiTenanted().Index(x => x.Prefijo);
+                opts.Schema.For<AccesoSoporte>().DatabaseSchemaName("identidad").MultiTenanted().Index(x => x.ExpiraEn);
+                opts.Schema.For<RegistroIdempotencia>().DatabaseSchemaName("identidad");
+                opts.Schema.For<SistemaIntegrado>().DatabaseSchemaName("identidad").MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_sistema_codigo", TenancyScope.PerTenant, x => x.Codigo);
+                opts.Schema.For<Usuario>().DatabaseSchemaName("identidad").MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_usuario_correo", TenancyScope.PerTenant, x => x.Correo);
+                opts.Schema.For<IndiceIdentidadExterna>().DatabaseSchemaName("identidad").MultiTenanted();
+                // Grupos de acceso del grupo empresarial (permisos acotables por sector de la ficha): por tenant, con el código único en él.
+                opts.Schema.For<GrupoDePermisos>().DatabaseSchemaName("identidad").MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_grupo_permisos_codigo", TenancyScope.PerTenant, x => x.Codigo);
+                // Consola de Plataforma (PT-4): sistemas del backoffice que firman las aserciones de sus operadores, y los
+                // operadores registrados en su primer acceso. Globales (no pertenecen a ningún tenant).
+                opts.Schema.For<SistemaDePlataforma>().DatabaseSchemaName("identidad");
+                opts.Schema.For<OperadorDePlataforma>().DatabaseSchemaName("identidad");
+                // Enlaces de acceso del tercero: globales (el tercero no pertenece a un tenant). Concurrencia optimista para
+                // que dos intentos de OTP simultáneos no pierdan la cuenta de fallos.
+                opts.Schema.For<EnlaceDeAcceso>().DatabaseSchemaName("identidad").UseOptimisticConcurrency(true)
+                    .Index(x => x.VinculoId)
+                    .Index(x => x.Expira);
+                // Sesiones de refresco del tercero (RE-3): globales; la rotación usa concurrencia optimista para que dos
+                // renovaciones simultáneas con el mismo token no dejen dos tokens válidos.
+                opts.Schema.For<SesionDeRefresco>().DatabaseSchemaName("identidad").UseOptimisticConcurrency(true)
+                    .Index(x => x.TerceroId)
+                    .Index(x => x.ExpiraEn);
+                // Aserciones delegadas ya usadas (SE-4): la llave primaria {sistema}:{jti} rechaza la segunda; se borran al vencer.
+                opts.Schema.For<AsercionUsada>().DatabaseSchemaName("identidad").Index(x => x.ExpiraEn);
+                // Límite de enlaces pedidos con el correo (RE-2): un documento por correo (hash), con concurrencia optimista.
+                opts.Schema.For<LimiteDeAccesoPorCorreo>().DatabaseSchemaName("identidad").UseOptimisticConcurrency(true);
+                // Ingreso directo sin contraseñas (ING-1…ING-6): ceremonias de ingreso (código y passkey), passkeys, sesiones de las
+                // personas y registro de identidad. Globales: el ingreso empieza sin saber de qué grupo es la persona.
+                opts.Schema.For<DesafioDeIngreso>().DatabaseSchemaName("identidad").UseOptimisticConcurrency(true).Index(x => x.Expira);
+                opts.Schema.For<Passkey>().DatabaseSchemaName("identidad").UseOptimisticConcurrency(true)
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_passkey_credencial", x => x.CredencialId)
+                    .Index(x => x.SujetoId);
+                opts.Schema.For<SesionDeUsuario>().DatabaseSchemaName("identidad").UseOptimisticConcurrency(true)
+                    .Index(x => x.SujetoId)
+                    .Index(x => x.ExpiraEn);
+                opts.Schema.For<RegistroDeIngreso>().DatabaseSchemaName("identidad").Index(x => x.Fecha).Index(x => x.SujetoId);
+                // Inicio de sesión con el proveedor de identidad del cliente (SSO, PI-1): un documento por grupo (id = grupo) y el índice global de
+                // dominios ya verificados, con el dominio como id (un dominio verificado es de un solo grupo).
+                opts.Schema.For<ConfiguracionDeSso>().DatabaseSchemaName("identidad");
+                opts.Schema.For<DominioVerificadoDeSso>().DatabaseSchemaName("identidad").Index(x => x.TenantId);
+                // Códigos de recuperación de una cuenta (PI-18): global, con concurrencia optimista (dos usos del mismo código no pasan los dos).
+                opts.Schema.For<CodigosDeRecuperacion>().DatabaseSchemaName("identidad").UseOptimisticConcurrency(true);
+                // Configuración global de la instalación que cambia la consola (PI-17).
+                opts.Schema.For<ConfiguracionDePlataforma>().DatabaseSchemaName("plataforma");
+                opts.Schema.For<ListasRestrictivasDePlataforma>().DatabaseSchemaName("plataforma");
+                // Cuenta de la plataforma con los proveedores de las fuentes oficiales, RUES y DIAN (FO-5): un solo documento global.
+                opts.Schema.For<Avalasoft.Dominio.FuentesOficiales.FuentesOficialesDePlataforma>().DatabaseSchemaName("plataforma");
+
+                // Textos legales versionados (aviso de la plataforma y textos de cada empresa): globales e inmutables.
+                opts.Schema.For<TextoLegal>().DatabaseSchemaName("plataforma")
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_texto_legal_version", x => x.Serie, x => x.Version);
+
+                // validacion (por tenant)
+                opts.Schema.For<TipoVinculo>().MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_tipo_vinculo_codigo", TenancyScope.PerTenant, x => x.Codigo);
+                opts.Schema.For<RegistroDeCambioDeConfiguracion>().MultiTenanted().Index(x => x.Fecha);
+                opts.Schema.For<Area>().MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_area_codigo", TenancyScope.PerTenant, x => x.EmpresaId, x => x.Codigo);
+                opts.Schema.For<Vinculo>().MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_vinculo_natural", TenancyScope.PerTenant,
+                        x => x.EmpresaId, x => x.TerceroId, x => x.TipoVinculoId)
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.CreadoEn)
+                    // Barrido del job de vigencias de vínculos (VV-1): solo los que tienen algo pendiente llevan valor.
+                    .Index(x => x.ProximaRevisionDeVigencia);
+
+                // Motivos propios del tenant (los de la plataforma viven en código) y flujos aprobatorios versionados.
+                opts.Schema.For<Motivo>().MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_motivo_codigo", TenancyScope.PerTenant, x => x.Codigo);
+                opts.Schema.For<Flujo>().MultiTenanted().UseOptimisticConcurrency(true)
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_flujo_codigo", TenancyScope.PerTenant, x => x.EmpresaId, x => x.Codigo)
+                    .Index(x => x.EmpresaId);
+                opts.Schema.For<FlujoPorDefecto>().MultiTenanted().Index(x => x.EmpresaId);
+                // Cuestionarios de evaluación del proveedor (CE-1): versionados como los flujos, privados de la empresa; el código es único en la empresa.
+                opts.Schema.For<Avalasoft.Dominio.Evaluaciones.Cuestionario>().MultiTenanted().UseOptimisticConcurrency(true)
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_cuestionario_codigo", TenancyScope.PerTenant, x => x.EmpresaId, x => x.Codigo)
+                    .Index(x => x.EmpresaId);
+                // Evaluaciones del proveedor (CE-3): un stream por evaluación con snapshot inline, privadas de la empresa. El barrido de reevaluación lee ProximaReevaluacion (CE-11).
+                opts.Schema.For<Avalasoft.Dominio.Evaluaciones.EvaluacionDeProveedor>().MultiTenanted()
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.VinculoId)
+                    .Index(x => x.ExpedienteId)
+                    .Index(x => x.AsignadaEn)
+                    .Index(x => x.ProximaReevaluacion);
+                // Plantillas de notificación por empresa (PL-1): id determinista {empresa:N}:{evento}:{canal}.
+                opts.Schema.For<PlantillaNotificacion>().MultiTenanted().Index(x => x.EmpresaId);
+
+                // Tipos de documento del tenant (defaults del grupo); qué se pide a cada vínculo lo dicen los requisitos del flujo (RQ-3).
+                opts.Schema.For<TipoDocumentoTenant>().MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_tipo_documento_codigo", TenancyScope.PerTenant, x => x.Codigo)
+                    .Index(x => x.TipoCanonico);
+
+                // Folios: contador por (empresa, tipo, año) con concurrencia optimista; el folio además es único por tenant.
+                opts.Schema.For<ContadorDeFolio>().MultiTenanted().UseOptimisticConcurrency(true);
+                opts.Schema.For<Expediente>().MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_expediente_folio", TenancyScope.PerTenant, x => x.Folio)
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.VinculoId)
+                    .Index(x => x.AbiertoEn)
+                    .Index(x => x.ProximaConsultaDeListas)
+                    .Index(x => x.ProximaConsultaOficial)
+                    .Index(x => x.ProximoVencimientoDeVerificacion)
+                    // Barrido del job de plazos de cargue (LT-4): solo los que tienen algo pendiente llevan valor.
+                    .Index(x => x.ProximaRevisionDePlazo)
+                    // Barrido de alertas de SLA de revisión (OP-12): solo los que tienen un plazo corriendo llevan valor.
+                    .Index(x => x.ProximaRevisionDeSla);
+                // Ayuda por documento que una empresa escribió para sí (OP-15): id determinista {empresa:N}:{tipo:N}.
+                opts.Schema.For<Avalasoft.Aplicacion.Documentos.AyudaDeDocumentoDeEmpresa>().MultiTenanted().Index(x => x.EmpresaId);
+                // Delegaciones de revisión por ausencias (OP-7): de una empresa, se leen por el delegado.
+                opts.Schema.For<Avalasoft.Dominio.Delegaciones.DelegacionDeRevision>().MultiTenanted().Index(x => x.EmpresaId).Index(x => x.AUsuarioId);
+                // Plazos de revisión por defecto y umbral de aviso del SLA por empresa (OP-10; id = empresa).
+                opts.Schema.For<Avalasoft.Aplicacion.Expedientes.ConfiguracionDeSla>().MultiTenanted();
+                // Verificaciones externas (H7): listas por empresa (id = empresa, credenciales cifradas), consumo mensual con
+                // concurrencia optimista y monitoreo de listas por vínculo activo (id = vínculo).
+                opts.Schema.For<ListasRestrictivasEmpresa>().MultiTenanted();
+                opts.Schema.For<UsoMensualListas>().MultiTenanted().UseOptimisticConcurrency(true).Index(x => x.EmpresaId);
+                // Reclamo (arrendamiento) de un trabajo que se factura, por trabajo y tenant (OC-4): solo una réplica pide cada consulta de listas.
+                opts.Schema.For<ReclamoDeTrabajo>().MultiTenanted().UseOptimisticConcurrency(true);
+                opts.Schema.For<MonitoreoDeListas>().MultiTenanted().Index(x => x.EmpresaId).Index(x => x.ProximaConsulta);
+                // Fuentes oficiales (FO-5, FO-7): proveedor y credenciales propias por empresa (id = empresa) y reconsulta periódica por vínculo activo (id = vínculo).
+                opts.Schema.For<Avalasoft.Dominio.FuentesOficiales.FuentesOficialesEmpresa>().MultiTenanted();
+                opts.Schema.For<Avalasoft.Dominio.FuentesOficiales.MonitoreoDeFuentesOficiales>().MultiTenanted().Index(x => x.EmpresaId).Index(x => x.ProximaConsulta);
+                // Lo aceptado de cada sección de la ficha por vínculo (F2, FM-29): privado de la empresa, en su tenant.
+                opts.Schema.For<Avalasoft.Dominio.Ficha.SeccionAceptada>().MultiTenanted()
+                    .Index(x => x.VinculoId)
+                    .Index(x => x.TerceroId);
+                // Buzón de pruebas del sandbox (SB-4): los correos que no salieron; un reinicio los borra con el resto del tenant.
+                opts.Schema.For<CorreoDePrueba>().MultiTenanted().Index(x => x.RecibidoEn);
+                opts.Schema.For<FilaBandeja>().MultiTenanted()
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.ExpedienteId)
+                    .Index(x => x.AreaId);
+
+                // Certificados (H5): uno por vínculo (id determinista); el folio raíz es único en el tenant y se busca entre
+                // tenants en la verificación pública (no es único entre tenants: lo desambigua la huella, CE-8).
+                // Último recordatorio de vencimiento por vínculo y documento (VE-3), aislado por empresa.
+                opts.Schema.For<Avalasoft.Aplicacion.Vinculos.RecordatorioDeVencimiento>().MultiTenanted().Index(x => x.EmpresaId);
+                // Exportaciones de informes, auditoría y expedientes (IF-6), aisladas por empresa; las lee la auditoría de accesos.
+                opts.Schema.For<Avalasoft.Aplicacion.Informes.ExportacionRegistrada>().MultiTenanted().Index(x => x.EmpresaId);
+                opts.Schema.For<Certificado>().MultiTenanted()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_certificado_folio", TenancyScope.PerTenant, x => x.FolioRaiz)
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.VinculoId);
+                // Secuencias de folio como streams que se bloquean al consumir (CE-3).
+                opts.Schema.For<SecuenciaDeFolios>().MultiTenanted();
+
+                // Proyecciones inline: Vinculo y Expediente son la lectura tras la escritura (VinculoResumen y
+                // ExpedienteDetalle, docs/03 §14).
+                // Eventos públicos (global, con su tenant), webhooks y notificaciones (NW-1…NW-11). El cursor es único por tenant.
+                opts.Schema.For<EventoPublico>()
+                    .UniqueIndex(UniqueIndexType.Computed, "ux_evento_publico_cursor", x => x.TenantId, x => x.Cursor);
+                // Concurrencia optimista: el manejador de entregas (fallos, deshabilitación) y la administración no se pisan.
+                // Avisos de «cambió X» para las pantallas abiertas (NT-12): globales y de vida corta (se leen por orden y se borran por fecha).
+                opts.Schema.For<AvisoDeCambio>().Index(x => x.Orden).Index(x => x.CreadaEn);
+                opts.Schema.For<SuscripcionWebhook>().MultiTenanted().UseOptimisticConcurrency(true);
+                opts.Schema.For<EntregaWebhook>().MultiTenanted()
+                    .Index(x => x.SuscripcionId)
+                    .Index(x => x.Cursor);
+                opts.Schema.For<Notificacion>().MultiTenanted()
+                    .Index(x => x.UsuarioId)
+                    .Index(x => x.Orden);
+                opts.Schema.For<PreferenciasNotificacion>().MultiTenanted();
+                // Campana del tercero (NT-1): sus preferencias de correo son globales (id = tercero), como el propio tercero.
+                opts.Schema.For<PreferenciasDelTercero>().DatabaseSchemaName("boveda");
+                // Recordatorio automático de observaciones pendientes por empresa (NT-3; id = empresa).
+                opts.Schema.For<Avalasoft.Aplicacion.Expedientes.ConfiguracionDeRecordatorios>().MultiTenanted();
+
+                // Invitación masiva (H8, LT-5): el lote es un stream con snapshot inline; sus filas, documentos aparte que se
+                // leen por lote, estado y número (la tanda toma las pendientes en orden).
+                opts.Schema.For<Avalasoft.Dominio.Invitaciones.LoteDeInvitacion>().MultiTenanted()
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.CreadoEn);
+                opts.Schema.For<Avalasoft.Dominio.Invitaciones.FilaDeLote>().MultiTenanted()
+                    .Index(x => x.LoteId)
+                    .Index(x => x.Estado)
+                    .Index(x => x.N);
+
+                // Campañas de renovación (OP-1): como el lote de invitación, un stream con snapshot inline y sus filas como documentos.
+                opts.Schema.For<Avalasoft.Dominio.Campanias.CampaniaDeRenovacion>().MultiTenanted().Index(x => x.EmpresaId).Index(x => x.CreadaEn);
+                opts.Schema.For<Avalasoft.Dominio.Campanias.FilaDeCampania>().MultiTenanted().Index(x => x.CampaniaId).Index(x => x.Estado).Index(x => x.N);
+                // Habeas data y exportación de la bóveda (OD-1…OD-12): las solicitudes son streams en el tenant técnico «boveda» (snapshot
+                // inline); la llave de datos de cada tercero (crypto-shredding) y las exportaciones son globales, como el propio tercero.
+                opts.Schema.For<Avalasoft.Dominio.Habeas.SolicitudHabeas>().DatabaseSchemaName("boveda").MultiTenanted()
+                    .Index(x => x.TerceroId)
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.VenceEl);
+                opts.Schema.For<Avalasoft.Dominio.Habeas.LlaveDeDatosDelTercero>().DatabaseSchemaName("boveda");
+                // Descargas del PDF de la propia declaración PEP del tercero (DP-18): globales, como el tercero; quién, cuándo, desde dónde y la huella del PDF.
+                opts.Schema.For<Avalasoft.Aplicacion.Ficha.AccesoADeclaracionPep>().DatabaseSchemaName("boveda").Index(x => x.TerceroId).Index(x => x.Fecha);
+                opts.Schema.For<Avalasoft.Dominio.Habeas.ExportacionDeBoveda>().DatabaseSchemaName("boveda")
+                    .Index(x => x.TerceroId)
+                    .Index(x => x.ExpiraEn);
+                // Plan y límites por grupo, y las llamadas a la API del mes (OD-14, OD-15): globales (id = tenant).
+                opts.Schema.For<Avalasoft.Dominio.Plataforma.PlanDelGrupo>().DatabaseSchemaName("plataforma");
+                opts.Schema.For<Avalasoft.Dominio.Plataforma.UsoMensualDelGrupo>().DatabaseSchemaName("plataforma").Index(x => x.TenantId);
+                // Dominio de correo propio de cada empresa (OD-18; id = empresa), en el tenant del grupo.
+                opts.Schema.For<Avalasoft.Dominio.Configuracion.DominioDeCorreoEmpresa>().MultiTenanted();
+
+                // IA con OpenAI y cupo por empresa (ADR-0012): plan por empresa (id = empresa), validaciones consumidas con id
+                // determinista por (empresa, documento, versión) y contador mensual con concurrencia optimista.
+                opts.Schema.For<Avalasoft.Dominio.Ia.PlanDeIaEmpresa>().MultiTenanted();
+                opts.Schema.For<Avalasoft.Dominio.Ia.ValidacionIaConsumida>().MultiTenanted()
+                    .Index(x => x.EmpresaId)
+                    .Index(x => x.DocumentoId);
+                opts.Schema.For<Avalasoft.Dominio.Ia.UsoMensualIa>().MultiTenanted().UseOptimisticConcurrency(true).Index(x => x.EmpresaId);
+                // Revisión automática con IA (ADR-0012): configuración por empresa (id = empresa) y uso mensual con concurrencia optimista.
+                opts.Schema.For<Avalasoft.Dominio.Revision.RevisionAutomaticaEmpresa>().MultiTenanted();
+                opts.Schema.For<Avalasoft.Dominio.Revision.UsoRevisionAutomatica>().MultiTenanted().UseOptimisticConcurrency(true).Index(x => x.EmpresaId);
+
+                opts.Projections.Snapshot<Vinculo>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Expediente>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Documento>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<SolicitudDeAcceso>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<HistorialDeContactos>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<RelacionEntreTerceros>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Avalasoft.Dominio.Ficha.SeccionDeFicha>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Certificado>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<SecuenciaDeFolios>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Avalasoft.Dominio.Invitaciones.LoteDeInvitacion>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Avalasoft.Dominio.Campanias.CampaniaDeRenovacion>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Avalasoft.Dominio.Evaluaciones.EvaluacionDeProveedor>(SnapshotLifecycle.Inline);
+                opts.Projections.Snapshot<Avalasoft.Dominio.Habeas.SolicitudHabeas>(SnapshotLifecycle.Inline);
+            })
+            .UseLightweightSessions()
+            // Daemon asíncrono con un solo nodo líder (bloqueo consultivo de PostgreSQL): corre la suscripción de eventos
+            // públicos (NW-3). Con varias réplicas, solo el líder procesa; si cae, otra toma el relevo.
+            .AddAsyncDaemon(DaemonMode.HotCold)
+            .IntegrateWithWolverine()
+            .SubscribeToEventsWithServices<SuscripcionDeEventosPublicos>(ServiceLifetime.Singleton);
+
+        servicios.AddScoped<ISesiones, Sesiones>();
+        servicios.AddScoped<SesionDeEmpresa>();
+        return servicios;
+    }
+}
+
+/// <summary>
+/// Abre sesiones con el tenant de la credencial y escribe actor, sistema y correlación en los metadatos de los eventos.
+/// Con un <see cref="IMessageBus"/> la sesión sale de <see cref="OutboxedSessionFactory"/>: los mensajes publicados en ese
+/// bus se guardan en la misma transacción (outbox de Marten) y se despachan después del commit.
+/// </summary>
+public sealed class Sesiones(IDocumentStore store, IContextoSolicitud contexto, OutboxedSessionFactory outbox) : ISesiones
+{
+    public IDocumentSession DelTenant() => ParaTenant(contexto.TenantRequerido());
+
+    public IDocumentSession DelTenant(IMessageBus mensajes) => ParaTenant(contexto.TenantRequerido(), mensajes);
+
+    public IDocumentSession ParaTenant(Guid tenantId) => ParaTenant(tenantId, null);
+
+    public IDocumentSession ParaTenant(Guid tenantId, IMessageBus? mensajes) =>
+        ConMetadatos(mensajes is null
+            ? store.LightweightSession(tenantId.ToString("N"))
+            : outbox.OpenSession(Contexto(mensajes), tenantId.ToString("N")));
+
+    public IDocumentSession Global(IMessageBus? mensajes = null) =>
+        ConMetadatos(mensajes is null ? store.LightweightSession() : outbox.OpenSession(Contexto(mensajes)));
+
+    public IQuerySession ConsultaGlobal() => store.QuerySession();
+
+    public IDocumentSession Boveda(IMessageBus? mensajes = null) =>
+        ConMetadatos(mensajes is null
+            ? store.LightweightSession(TenantsTecnicos.Boveda)
+            : outbox.OpenSession(Contexto(mensajes), TenantsTecnicos.Boveda));
+
+    public IQuerySession ConsultaBoveda() => store.QuerySession(TenantsTecnicos.Boveda);
+
+    private IDocumentSession ConMetadatos(IDocumentSession sesion)
+    {
+        sesion.CorrelationId = contexto.CorrelationId;
+        sesion.SetHeader("actorTipo", contexto.ActorTipo.ToString());
+        sesion.SetHeader("actorId", contexto.ActorId);
+        if (contexto.Sistema is not null)
+            sesion.SetHeader("sistema", contexto.Sistema);
+        return sesion;
+    }
+
+    /// <summary>En los endpoints de Wolverine el <see cref="IMessageBus"/> de la petición es su <see cref="MessageContext"/>.</summary>
+    private static MessageContext Contexto(IMessageBus mensajes) =>
+        mensajes as MessageContext
+        ?? throw new InvalidOperationException("El outbox necesita el MessageContext de Wolverine de la petición.");
+}

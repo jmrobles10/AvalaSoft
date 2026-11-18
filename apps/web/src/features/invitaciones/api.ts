@@ -9,7 +9,7 @@ import {
   rechazarLote,
   type InvitarTerceroDto,
   type ListarInvitacionesPorAprobarParams,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import type { TFunction } from 'i18next';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 import { mensajeDeError } from '../../shared/errores';

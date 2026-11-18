@@ -10,7 +10,7 @@ import { ORIGEN_SISTEMA } from '../soporte/semilla';
 /**
  * Consola de Plataforma (PT-4…PT-6): un operador da de alta un grupo nuevo con su primera empresa, su administradora y su
  * sistema integrado; configura el plan de IA de la empresa con su llave de OpenAI (que nunca vuelve en claro) y la prueba;
- * y la empresa nueva queda operable: su sistema invita a un proveedor y la administradora lo ve en Validasoft.
+ * y la empresa nueva queda operable: su sistema invita a un proveedor y la administradora lo ve en AvalaSoft.
  */
 test('Alta de una empresa nueva desde la consola, su plan de IA con llave y su primera invitación', async ({ page, browser }) => {
   const sufijo = randomUUID().replace(/-/g, '').slice(0, 6);
@@ -38,7 +38,7 @@ test('Alta de una empresa nueva desde la consola, su plan de IA con llave y su p
   await consola.getByRole('textbox', { name: 'Código' }).fill('ERP');
   await consola.getByRole('textbox', { name: 'Nombre del sistema' }).fill('ERP de Andina');
   await consola.getByRole('textbox', { name: 'Clave pública (PEM)' }).fill(claves.publica);
-  await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar Validasoft (opcional)' }).fill(ORIGEN_SISTEMA);
+  await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar AvalaSoft (opcional)' }).fill(ORIGEN_SISTEMA);
   await consola.getByRole('button', { name: 'Crear grupo' }).click();
 
   // 2. Las llaves se muestran una sola vez: la del sistema la usa su backend.

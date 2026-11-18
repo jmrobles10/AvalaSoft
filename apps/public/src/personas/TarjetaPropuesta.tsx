@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Box, Button, Stack, Typography } from '@mui/material';
-import type { RelacionEntreTercerosDto } from '@validasoft/api-client';
+import type { RelacionEntreTercerosDto } from '@avalasoft/api-client';
 import { Check, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../shared/errores';

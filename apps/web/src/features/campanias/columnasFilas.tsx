@@ -1,6 +1,6 @@
 import { Chip, Link, Typography } from '@mui/material';
-import type { EstadoFilaCampania, FilaCampaniaDto } from '@validasoft/api-client';
-import type { ColumnaTabla } from '@validasoft/ui';
+import type { EstadoFilaCampania, FilaCampaniaDto } from '@avalasoft/api-client';
+import type { ColumnaTabla } from '@avalasoft/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

@@ -1,9 +1,9 @@
 {
-  "name": "@validasoft/sdk",
+  "name": "@avalasoft/sdk",
   "version": "1.0.0",
-  "description": "Cliente de la API v1 de Validasoft para sistemas integradores (SRM, Marco, Portal u otro ERP), sandbox y verificador de webhooks. Sin dependencias; fetch y Web Crypto (Node 20+ o navegador).",
+  "description": "Cliente de la API v1 de AvalaSoft para sistemas integradores (SRM, Marco, Portal u otro ERP), sandbox y verificador de webhooks. Sin dependencias; fetch y Web Crypto (Node 20+ o navegador).",
   "keywords": [
-    "validasoft",
+    "avalasoft",
     "sdk",
     "api",
     "webhooks",
@@ -13,16 +13,7 @@
   ],
   "type": "module",
   "license": "SEE LICENSE IN LICENSE.md",
-  "author": "Validasoft",
-  "homepage": "https://github.com/jmrobles10/ValidaSoft/tree/main/packages/sdk#readme",
-  "bugs": {
-    "url": "https://github.com/jmrobles10/ValidaSoft/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jmrobles10/ValidaSoft.git",
-    "directory": "packages/sdk"
-  },
+  "author": "AvalaSoft",
   "sideEffects": false,
   "engines": {
     "node": ">=20"

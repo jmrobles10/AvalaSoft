@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import type { DatoDeclaradoDto, HechosDto, VigenciaDto } from '@validasoft/api-client';
+import type { DatoDeclaradoDto, HechosDto, VigenciaDto } from '@avalasoft/api-client';
 import { estadoRevision } from './revisionIa';
 import { DatosDeclarados } from './DatosDeclarados';
 import { RevisionAutomatica, type TipoEsperado } from './RevisionAutomatica';

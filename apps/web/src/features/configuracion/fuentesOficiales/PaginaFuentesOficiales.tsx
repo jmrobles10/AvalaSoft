@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, MenuItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
-import { SCOPES, type FuenteOficialConfigDto, type FuentesOficialesConfigDto, type ProveedorDeFuenteDto } from '@validasoft/api-client';
-import { CampoNumero } from '@validasoft/ui';
+import { SCOPES, type FuenteOficialConfigDto, type FuentesOficialesConfigDto, type ProveedorDeFuenteDto } from '@avalasoft/api-client';
+import { CampoNumero } from '@avalasoft/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EncabezadoPagina, ErrorRecuperable, IconoCarga, SinPermiso, Tarjeta } from '../../../shared/componentes';

@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
-import { configurarCliente, reiniciarCliente, type RelacionEntreTercerosDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente, type RelacionEntreTercerosDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useSesionTercero } from '../sesion/sesionTercero';
@@ -31,7 +31,7 @@ function montar(relaciones: RelacionEntreTercerosDto[], ruta = '/boveda') {
   const fetch = vi.fn(() => Promise.resolve(new Response(JSON.stringify(relaciones), { status: 200, headers: { 'Content-Type': 'application/json' } })));
   configurarCliente({ fetch });
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter initialEntries={[ruta]}>
           <AvisoDePropuestasDePersonas />

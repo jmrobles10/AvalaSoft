@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Skeleton, Stack, Typography } from '@mui/material';
-import type { TenantDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { TenantDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { Plug } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

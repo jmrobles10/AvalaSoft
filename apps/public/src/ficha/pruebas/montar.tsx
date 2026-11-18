@@ -14,8 +14,8 @@ import {
   type SeccionFichaDto,
   type SeccionGuardadaDto,
   type VinculoPublicoDto,
-} from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+} from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { createMemoryRouter, Outlet, RouterProvider } from 'react-router';
 import { vi } from 'vitest';
 import { PaginaFicha } from '../PaginaFicha';
@@ -172,7 +172,7 @@ export function montarFicha(ruta: string, escenario: Escenario) {
     { initialEntries: [ruta] },
   );
   render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <RouterProvider router={router} />
       </QueryClientProvider>

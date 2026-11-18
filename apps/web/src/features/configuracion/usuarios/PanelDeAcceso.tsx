@@ -1,7 +1,7 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import { useMutation, type UseQueryResult } from '@tanstack/react-query';
-import type { PasskeyDto, SesionDeUsuarioDto } from '@validasoft/api-client';
-import { enfocarNodo } from '@validasoft/ui';
+import type { PasskeyDto, SesionDeUsuarioDto } from '@avalasoft/api-client';
+import { enfocarNodo } from '@avalasoft/ui';
 import { Ban } from 'lucide-react';
 import { useState, type ReactNode, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import type { RecordatorioDeFlujoDto } from '@validasoft/api-client';
+import type { RecordatorioDeFlujoDto } from '@avalasoft/api-client';
 import { diasValidos } from '../recordatorios/automatico';
 import type { BorradorFlujo, ErrorFlujo } from './editor';
 

@@ -6,10 +6,10 @@ import {
   type CompartidoDto,
   type InstruccionCargaDto,
   type VersionDocumentoDto,
-} from '@validasoft/api-client';
-import { sha256Hex } from '@validasoft/ui';
+} from '@avalasoft/api-client';
+import { sha256Hex } from '@avalasoft/ui';
 
-/** Límites de la bóveda (docs/05 §2.9.2, `Validasoft:Boveda`). El servidor los vuelve a validar al confirmar. */
+/** Límites de la bóveda (docs/05 §2.9.2, `Avalasoft:Boveda`). El servidor los vuelve a validar al confirmar. */
 export const TAMANO_MAXIMO_BYTES = 20 * 1024 * 1024;
 export const MAXIMO_PAGINAS = 50;
 /** Tipos que acepta la bóveda por magic bytes (BO-4). HEIC no: el celular lo entrega como JPEG al tomar la foto. */

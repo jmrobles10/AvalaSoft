@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { AtributoPermitidoDto, CondicionDto } from '@validasoft/api-client';
+import type { AtributoPermitidoDto, CondicionDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import i18n from '../../../i18n';

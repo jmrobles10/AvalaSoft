@@ -1,7 +1,7 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { EmpresaDto } from '@validasoft/api-client';
-import { FaltaParaEnviar, FormularioDeDialogo } from '@validasoft/ui';
+import type { EmpresaDto } from '@avalasoft/api-client';
+import { FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../../shared/componentes';

@@ -5,17 +5,17 @@ orden: 17
 resumen: "La imagen Docker, el compose local con sus perfiles, el arranque de la base, la salud, las réplicas, qué respaldar y qué verifica el CI."
 ---
 
-Validasoft se despliega como **una imagen** más sus tres dependencias: PostgreSQL, un almacén S3 y un servidor SMTP. Debe poder correr completo en un portátil y en un servidor del cliente (decisión de `docs/04`: Docker Compose como contrato de despliegue). Todas las variables están en [Variables de entorno](guia:variables-de-entorno).
+AvalaSoft se despliega como **una imagen** más sus tres dependencias: PostgreSQL, un almacén S3 y un servidor SMTP. Debe poder correr completo en un portátil y en un servidor del cliente (decisión de `docs/04`: Docker Compose como contrato de despliegue). Todas las variables están en [Variables de entorno](guia:variables-de-entorno).
 
 ## La imagen
 
-`src/Validasoft.Api/Dockerfile` se construye con el repositorio como contexto y tiene tres etapas:
+`src/Avalasoft.Api/Dockerfile` se construye con el repositorio como contexto y tiene tres etapas:
 
 1. **Frontend:** Node 26 con `pnpm` (por `corepack`) instala con `--frozen-lockfile` y compila `apps/web` y `apps/public`.
-2. **API:** el SDK de .NET 10 publica `Validasoft.Api` en Release.
+2. **API:** el SDK de .NET 10 publica `Avalasoft.Api` en Release.
 3. **Ejecución:** `mcr.microsoft.com/dotnet/aspnet:10.0` con la API y las dos apps compiladas en `/app/frontend/web` y `/app/frontend/public`. Corre como un usuario sin privilegios y escucha en el puerto **8080**.
 
-Las apps se activan con `Validasoft__Apps__Web` y `Validasoft__Apps__Publica` (la imagen ya las fija); vacías, la API no las sirve. Con ello **todo es un solo origen**: la API, la app de la empresa en `/app/` y el portal del tercero en `/`.
+Las apps se activan con `Avalasoft__Apps__Web` y `Avalasoft__Apps__Publica` (la imagen ya las fija); vacías, la API no las sirve. Con ello **todo es un solo origen**: la API, la app de la empresa en `/app/` y el portal del tercero en `/`.
 
 ## Entorno local con Docker Compose
 
@@ -33,20 +33,20 @@ Día a día, desde la raíz del repositorio:
 
 ```bash
 pnpm install
-dotnet run --project src/Validasoft.Api      # API en http://localhost:5080 (según launchSettings)
+dotnet run --project src/Avalasoft.Api      # API en http://localhost:5080 (según launchSettings)
 pnpm dev                                     # app de la empresa (apps/web)
 pnpm dev:public                              # portal del tercero (apps/public)
 ```
 
 ## Producción
 
-- **Base de datos.** El esquema no se crea al arrancar (`CrearEsquemaAlIniciar` es `false` por omisión): se aplica antes con el comando de JasperFx, `dotnet Validasoft.Api.dll db-apply`. Así el arranque de la API no paga una migración ni compite con otras réplicas.
-- **Claves obligatorias y propias.** Con `ASPNETCORE_ENVIRONMENT` distinto de `Development` la API **no arranca** si falta `Validasoft__Secretos__ClaveMaestra`, `Validasoft__Certificados__ClavePrivada` o `Validasoft__Sesiones__ClaveFirma`, ni si alguna (o `Validasoft__Plataforma__ClaveBootstrap`, si la pones) conserva el valor de desarrollo publicado en el repositorio. Cada entorno genera las suyas ([Claves propias del entorno](guia:variables-de-entorno#claves-propias-del-entorno)) y las guarda en un gestor de secretos, nunca en la imagen ni en el repositorio.
-- **Primer grupo.** Con `Validasoft__Plataforma__ClaveBootstrap` se da de alta al primer operador de Plataforma; luego se puede desactivar la clave desde la consola. El primer grupo se crea desde `/plataforma/grupos/nuevo`.
+- **Base de datos.** El esquema no se crea al arrancar (`CrearEsquemaAlIniciar` es `false` por omisión): se aplica antes con el comando de JasperFx, `dotnet Avalasoft.Api.dll db-apply`. Así el arranque de la API no paga una migración ni compite con otras réplicas.
+- **Claves obligatorias y propias.** Con `ASPNETCORE_ENVIRONMENT` distinto de `Development` la API **no arranca** si falta `Avalasoft__Secretos__ClaveMaestra`, `Avalasoft__Certificados__ClavePrivada` o `Avalasoft__Sesiones__ClaveFirma`, ni si alguna (o `Avalasoft__Plataforma__ClaveBootstrap`, si la pones) conserva el valor de desarrollo publicado en el repositorio. Cada entorno genera las suyas ([Claves propias del entorno](guia:variables-de-entorno#claves-propias-del-entorno)) y las guarda en un gestor de secretos, nunca en la imagen ni en el repositorio.
+- **Primer grupo.** Con `Avalasoft__Plataforma__ClaveBootstrap` se da de alta al primer operador de Plataforma; luego se puede desactivar la clave desde la consola. El primer grupo se crea desde `/plataforma/grupos/nuevo`.
 - **Correo.** Un SMTP real (`Correo__Host`, puerto, seguridad, usuario y clave), con el remitente de la plataforma y la `UrlPublica` que se escribirá en los enlaces. Cada empresa puede registrar un dominio propio ([Dominio de correo](guia:configuracion-de-la-empresa#dominio-de-correo)).
 - **Almacén.** Un S3 compatible con `Endpoint` y, si el navegador lo ve con otra dirección, `EndpointPublico`. La API crea el bucket `boveda` y, con la primera carga de un documento propio, el de cada grupo.
-- **Passkeys.** `Validasoft__Ingreso__Passkeys__RpId` debe ser el dominio desde el que se sirve la app y `Origenes` la lista de sus orígenes.
-- **HTTPS y proxy.** La API habla HTTP: el TLS lo termina un proxy delante. Hay que declarar los proxies en `Validasoft__Proxies__Confiables` para que `X-Forwarded-For` dé la IP real al límite por IP y a la auditoría, y mantener `CookieSegura` en `true`.
+- **Passkeys.** `Avalasoft__Ingreso__Passkeys__RpId` debe ser el dominio desde el que se sirve la app y `Origenes` la lista de sus orígenes.
+- **HTTPS y proxy.** La API habla HTTP: el TLS lo termina un proxy delante. Hay que declarar los proxies en `Avalasoft__Proxies__Confiables` para que `X-Forwarded-For` dé la IP real al límite por IP y a la auditoría, y mantener `CookieSegura` en `true`.
 - **Proveedores externos.** Infolaft, Stradata, Compliance e IA están apagados por omisión: se encienden por configuración (`Proveedores:{nombre}:Habilitado`) y, para listas e IA, con las credenciales que carga Plataforma o cada empresa.
 
 ### Salud
@@ -62,8 +62,8 @@ pnpm dev:public                              # portal del tercero (apps/public)
 El proceso admite más de una réplica del mismo servicio:
 
 - El **daemon de eventos** corre en modo *hot/cold*: solo el nodo que gana el bloqueo consultivo de PostgreSQL procesa la suscripción de eventos públicos; si cae, otro toma el relevo.
-- Las **cachés** de llaves, sistemas, políticas de ingreso, SSO y empresas se invalidan entre servidores con `LISTEN/NOTIFY` de PostgreSQL (`Validasoft__Invalidaciones__Activo`, activo por omisión); sin ese aviso, el límite es el de la propia caché (por ejemplo, 5 minutos para una llave revocada).
-- Los **procesos periódicos** (barridos de plazos, SLA, recordatorios, vigencias, habeas data y planes; procesadores de certificados, verificaciones y revisión automática; limpiezas) corren solo en el **nodo líder**, elegido con otro bloqueo consultivo de PostgreSQL (`Validasoft__Lider__Habilitado`, activo por omisión; `__SegundosEspera`, cada cuánto reintenta una réplica que no es líder, 10). Si el líder cae, otra réplica lo releva en segundos. Las consultas de listas restrictivas que se facturan se reclaman con una clave por consulta programada, así que una verificación no se pide dos veces aunque dos pasadas se crucen.
+- Las **cachés** de llaves, sistemas, políticas de ingreso, SSO y empresas se invalidan entre servidores con `LISTEN/NOTIFY` de PostgreSQL (`Avalasoft__Invalidaciones__Activo`, activo por omisión); sin ese aviso, el límite es el de la propia caché (por ejemplo, 5 minutos para una llave revocada).
+- Los **procesos periódicos** (barridos de plazos, SLA, recordatorios, vigencias, habeas data y planes; procesadores de certificados, verificaciones y revisión automática; limpiezas) corren solo en el **nodo líder**, elegido con otro bloqueo consultivo de PostgreSQL (`Avalasoft__Lider__Habilitado`, activo por omisión; `__SegundosEspera`, cada cuánto reintenta una réplica que no es líder, 10). Si el líder cae, otra réplica lo releva en segundos. Las consultas de listas restrictivas que se facturan se reclaman con una clave por consulta programada, así que una verificación no se pide dos veces aunque dos pasadas se crucen.
 - Las **colas** son locales y durables: sus mensajes pendientes sobreviven a un reinicio y los procesa el nodo que los reclama. Las de **webhooks** y de **IA** se particionan por tenant: dentro de un tenant van de a una y en orden, y un receptor caído o una carga masiva de un tenant no frena a los demás.
 - El **límite por IP** se mantiene en la memoria de cada nodo; el conteo de llamadas a la API se acumula en memoria y se vuelca a la base cada 5 segundos.
 
@@ -79,7 +79,7 @@ El proceso admite más de una réplica del mismo servicio:
 
 | Trabajo | Qué hace |
 |---|---|
-| Backend (.NET) | Restaura, compila `Validasoft.slnx` en Release **sin advertencias**, corre las pruebas de dominio y de integración (con Testcontainers: PostgreSQL y MinIO), empaqueta el SDK .NET y lista paquetes con vulnerabilidades. |
+| Backend (.NET) | Restaura, compila `Avalasoft.slnx` en Release **sin advertencias**, corre las pruebas de dominio y de integración (con Testcontainers: PostgreSQL y MinIO), empaqueta el SDK .NET y lista paquetes con vulnerabilidades. |
 | Frontend (pnpm) | `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test` (Vitest), `build` y verifica el paquete npm del SDK. |
 | Imagen Docker | Construye la imagen sin publicarla. |
 

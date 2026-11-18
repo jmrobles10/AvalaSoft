@@ -45,7 +45,7 @@ Los operadores son las personas que manejan la consola de Plataforma. La tabla m
 
 ## Paso 2. Da de alta al nuevo operador
 
-Escribe el nombre y el correo de la persona. Al crearla, Validasoft le envía un correo para entrar: no hay contraseña que compartir. Entra con su correo, un código y una passkey obligatoria, que registra en su primer ingreso.
+Escribe el nombre y el correo de la persona. Al crearla, AvalaSoft le envía un correo para entrar: no hay contraseña que compartir. Entra con su correo, un código y una passkey obligatoria, que registra en su primer ingreso.
 
 > **Pantalla:** `/plataforma/operadores`
 

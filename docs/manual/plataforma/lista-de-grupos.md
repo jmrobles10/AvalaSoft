@@ -3,7 +3,7 @@ id: "plataforma/lista-de-grupos"
 titulo: "Busca un grupo y revisa sus empresas"
 actor: "Plataforma"
 dominio: "plataforma"
-resumen: "El operador de Plataforma abre la lista de grupos (clientes de Validasoft), la busca por nombre, NIT o empresa y revisa en su tarjeta las empresas del grupo, con su identificación, su prefijo y su plan de IA."
+resumen: "El operador de Plataforma abre la lista de grupos (clientes de AvalaSoft), la busca por nombre, NIT o empresa y revisa en su tarjeta las empresas del grupo, con su identificación, su prefijo y su plan de IA."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Plataforma · **Dominio:** Consola de Plataforma
 
-El operador de Plataforma abre la lista de grupos (clientes de Validasoft), la busca por nombre, NIT o empresa y revisa en su tarjeta las empresas del grupo, con su identificación, su prefijo y su plan de IA.
+El operador de Plataforma abre la lista de grupos (clientes de AvalaSoft), la busca por nombre, NIT o empresa y revisa en su tarjeta las empresas del grupo, con su identificación, su prefijo y su plan de IA.
 
 **Antes de empezar**
 
@@ -26,7 +26,7 @@ El operador de Plataforma abre la lista de grupos (clientes de Validasoft), la b
 
 ## Paso 1. Abre Grupos y empresas
 
-Es la pantalla de inicio de la consola de Plataforma. Cada grupo es un cliente de Validasoft y aparece como una tarjeta con su número de empresas, su fecha de creación y sus acciones: «Ver ficha» (también desde el nombre del grupo), «Plan y límites», «Sistemas» y «Agregar empresa». Con el buscador encuentras un grupo por su nombre, por el nombre o NIT de una de sus empresas.
+Es la pantalla de inicio de la consola de Plataforma. Cada grupo es un cliente de AvalaSoft y aparece como una tarjeta con su número de empresas, su fecha de creación y sus acciones: «Ver ficha» (también desde el nombre del grupo), «Plan y límites», «Sistemas» y «Agregar empresa». Con el buscador encuentras un grupo por su nombre, por el nombre o NIT de una de sus empresas.
 
 > **Pantalla:** `/plataforma/grupos`
 

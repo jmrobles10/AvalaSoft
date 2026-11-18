@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import type { AreaDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import type { AreaDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { describe, expect, it, vi } from 'vitest';
 import { areaNueva, type ResponsableDeSectorEnEditor } from '../editor';
 import { EditorResponsablesDeSector } from './EditorResponsablesDeSector';
@@ -11,7 +11,7 @@ const AREAS = [area('compras', 'Compras'), area('cumplimiento', 'Cumplimiento'),
 
 function editor(responsables: ResponsableDeSectorEnEditor[], onCambiar = vi.fn(), opciones: { soloLectura?: boolean; enElFlujo?: string[] } = {}) {
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <EditorResponsablesDeSector
         responsables={responsables}
         etapas={[{ clave: 'e1', areas: (opciones.enElFlujo ?? ['compras', 'cumplimiento']).map((id) => areaNueva(id)) }]}

@@ -1,5 +1,5 @@
-import { esErrorApi, SCOPES } from '@validasoft/api-client';
-import { PaginaEstado } from '@validasoft/ui';
+import { esErrorApi, SCOPES } from '@avalasoft/api-client';
+import { PaginaEstado } from '@avalasoft/ui';
 import { SearchX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';

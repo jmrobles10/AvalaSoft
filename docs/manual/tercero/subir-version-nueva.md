@@ -40,7 +40,7 @@ La frase de arriba dice que la empresa aprobó tu información y que tu vínculo
 
 ## Paso 2. Abre tu bóveda y elige «Subir versión» del RUT
 
-En «Mi bóveda» cada documento aparece una sola vez, con su versión vigente y, en «Con tus empresas», la versión que cada una aprobó. Con «Subir versión» llevas el archivo nuevo a la pantalla de carga del documento. Al guardarlo, Validasoft lo registra como la versión 2 y las empresas que usan el RUT reciben el cambio para revisarlo.
+En «Mi bóveda» cada documento aparece una sola vez, con su versión vigente y, en «Con tus empresas», la versión que cada una aprobó. Con «Subir versión» llevas el archivo nuevo a la pantalla de carga del documento. Al guardarlo, AvalaSoft lo registra como la versión 2 y las empresas que usan el RUT reciben el cambio para revisarlo.
 
 > **Pantalla:** `/boveda`
 

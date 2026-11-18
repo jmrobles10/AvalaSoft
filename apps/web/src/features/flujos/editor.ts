@@ -9,7 +9,7 @@ import type {
   TipoDocumentoTenantDto,
   TipoVerificacion,
   VerificacionRequeridaDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { SECCIONES_FICHA } from '../terceros/ficha/secciones';
 import { condicionDeAtributoCompleta, condicionDeAtributoSimple, condicionDeFichaCompleta, condicionDeFichaSimple } from './condiciones';
 import { recordatorioADto, recordatorioDesdeVersion, validarRecordatorio, type ModoRecordatorio } from './recordatorio';

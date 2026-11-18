@@ -1,6 +1,6 @@
 import { Chip, Typography } from '@mui/material';
-import type { RegistroAuditoriaDto } from '@validasoft/api-client';
-import type { ColumnaTabla } from '@validasoft/ui';
+import type { RegistroAuditoriaDto } from '@avalasoft/api-client';
+import type { ColumnaTabla } from '@avalasoft/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatearMomento, textoAccion, textoActor, textoEntidad } from './modelo';

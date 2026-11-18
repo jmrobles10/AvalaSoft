@@ -1,5 +1,5 @@
 import { Alert, TextField } from '@mui/material';
-import type { TenantDto } from '@validasoft/api-client';
+import type { TenantDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../shared/errores';

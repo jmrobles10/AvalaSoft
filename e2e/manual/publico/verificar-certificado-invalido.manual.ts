@@ -7,9 +7,9 @@ recorrido(
     actor: 'Público',
     titulo: 'Comprueba un certificado que no existe o tiene una huella mal escrita',
     resumen:
-      'Si el folio o la huella no corresponden a ningún certificado de Validasoft, la página no lo da por bueno: explica qué revisar en el PDF o en el código QR y no muestra datos de ninguna empresa ni de ningún titular.',
+      'Si el folio o la huella no corresponden a ningún certificado de AvalaSoft, la página no lo da por bueno: explica qué revisar en el PDF o en el código QR y no muestra datos de ninguna empresa ni de ningún titular.',
     precondiciones: [
-      'Un grupo empresarial registrado en Validasoft, cuyo prefijo de folio se usa para armar un folio que no existe.',
+      'Un grupo empresarial registrado en AvalaSoft, cuyo prefijo de folio se usa para armar un folio que no existe.',
       'La consulta se hace sin sesión, desde una ventana nueva del navegador.',
     ],
     relacionados: ['publico/verificar-certificado-autentico'],
@@ -24,7 +24,7 @@ recorrido(
       titulo: 'Consulta un folio que no existe',
       explicacion:
         'Cuando el folio no corresponde a ningún certificado, la página dice «No encontramos este certificado» y te pide revisar que el folio y la huella estén completos, como aparecen en el PDF. ' +
-        'Si escaneaste el código QR, puede que el documento no sea un certificado de Validasoft. La página no muestra datos de ninguna empresa ni de ningún titular.',
+        'Si escaneaste el código QR, puede que el documento no sea un certificado de AvalaSoft. La página no muestra datos de ninguna empresa ni de ningún titular.',
       resaltar: page.getByRole('heading', { level: 1, name: 'No encontramos este certificado' }),
       celular: false,
     });

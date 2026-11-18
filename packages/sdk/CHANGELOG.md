@@ -1,6 +1,6 @@
-# Cambios del SDK de Validasoft
+# Cambios del SDK de AvalaSoft
 
-Los tres paquetes —`Validasoft.Contratos` y `Validasoft.Sdk` (NuGet) y `@validasoft/sdk` (npm)— salen juntos y comparten versión.
+Los tres paquetes —`Avalasoft.Contratos` y `Avalasoft.Sdk` (NuGet) y `@avalasoft/sdk` (npm)— salen juntos y comparten versión.
 Sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el [versionado semántico](https://semver.org/lang/es/): una
 versión mayor solo cambia cuando la API v1 rompe compatibilidad (ver «Versionado y deprecación» en la guía de integración).
 

@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import type { CertificadoPublicoDto } from '@validasoft/api-client';
-import { Dato, formatearDiaCivil, formatearFechaHora, RejillaDatos } from '@validasoft/ui';
+import type { CertificadoPublicoDto } from '@avalasoft/api-client';
+import { Dato, formatearDiaCivil, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 
 /** Lo que expone la verificación pública (P-8-1): sin documentos, contactos, revisores ni motivo del bloqueo. */

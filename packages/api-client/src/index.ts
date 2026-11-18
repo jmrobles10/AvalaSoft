@@ -1,4 +1,4 @@
-// Cliente de la API de Validasoft: operaciones y hooks generados por orval + fetcher, errores y sesión.
+// Cliente de la API de AvalaSoft: operaciones y hooks generados por orval + fetcher, errores y sesión.
 export * from './configuracion';
 export * from './errores';
 export * from './fetcher';

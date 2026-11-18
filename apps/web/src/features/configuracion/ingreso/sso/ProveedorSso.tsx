@@ -1,6 +1,6 @@
 import { Alert, Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { probarConexionSso, type ConfiguracionDeSsoDto } from '@validasoft/api-client';
+import { probarConexionSso, type ConfiguracionDeSsoDto } from '@avalasoft/api-client';
 import { Copy, PlugZap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga, Tarjeta } from '../../../../shared/componentes';

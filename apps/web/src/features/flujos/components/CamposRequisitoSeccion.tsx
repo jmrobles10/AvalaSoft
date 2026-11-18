@@ -1,5 +1,5 @@
 import { Checkbox, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import { CampoNumero } from '@validasoft/ui';
+import { CampoNumero } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { SECCIONES_FICHA, seccionFicha } from '../../terceros/ficha/secciones';
 import type { RequisitoEnEditor } from '../editor';

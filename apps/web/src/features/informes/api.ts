@@ -8,7 +8,7 @@ import {
   type ObtenerInformeEstadoExpedientesParams,
   type ObtenerInformeSlaParams,
   type ObtenerInformeVinculosParams,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { conEmpresa } from '../../shared/consultas';
 
 /** Informe de estado de expedientes (`GET /informes/estado-expedientes`); se vuelve a pedir al abrir la pantalla. */

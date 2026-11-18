@@ -61,5 +61,5 @@ Tus documentos viven en tu bóveda y se comparten con cada empresa que aceptaste
 
 ## Recorridos relacionados
 
-- [Entra a Validasoft con tu correo cuando ya tienes una invitación](entrar-sin-invitacion.md)
+- [Entra a AvalaSoft con tu correo cuando ya tienes una invitación](entrar-sin-invitacion.md)
 - [Acepta la invitación y completa tu información como persona jurídica](aceptar-invitacion-persona-juridica.md)

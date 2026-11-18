@@ -1,4 +1,4 @@
-import { obtenerOpcionesPasskeyIngreso, verificarPasskeyIngreso, type PasoDeIngresoDto } from '@validasoft/api-client';
+import { obtenerOpcionesPasskeyIngreso, verificarPasskeyIngreso, type PasoDeIngresoDto } from '@avalasoft/api-client';
 import { useEffect, useRef } from 'react';
 import { esErrorDePasskey, firmarConPasskey, soportaPasskeysCondicional } from './passkeys';
 

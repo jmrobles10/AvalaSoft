@@ -1,4 +1,4 @@
-import type { AccesoSolicitadoDto, ContactoDelTerceroDto, EmpresaQueInvitoDto, SesionActivaDto } from '@validasoft/api-client';
+import type { AccesoSolicitadoDto, ContactoDelTerceroDto, EmpresaQueInvitoDto, SesionActivaDto } from '@avalasoft/api-client';
 
 /** Lo que falta decidir a los contactos del tercero. */
 export const porDecidir = (solicitudes: readonly AccesoSolicitadoDto[]): AccesoSolicitadoDto[] => solicitudes.filter((s) => s.estado === 'Pendiente');

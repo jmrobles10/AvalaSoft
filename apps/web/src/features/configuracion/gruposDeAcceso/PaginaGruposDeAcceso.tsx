@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { actualizarGrupoDeAcceso, crearGrupoDeAcceso, desactivarGrupoDeAcceso, reactivarGrupoDeAcceso, SCOPES, type GrupoDeAccesoDto } from '@validasoft/api-client';
-import { BarraFiltros, CampoBusqueda, EstadoVacio, FilasEsqueleto, FiltroMenu, MarcoTabla, visualmenteOculto } from '@validasoft/ui';
+import { actualizarGrupoDeAcceso, crearGrupoDeAcceso, desactivarGrupoDeAcceso, reactivarGrupoDeAcceso, SCOPES, type GrupoDeAccesoDto } from '@avalasoft/api-client';
+import { BarraFiltros, CampoBusqueda, EstadoVacio, FilasEsqueleto, FiltroMenu, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
 import { Ban, CircleCheck, Eye, Lock, Pencil, Plus, RotateCcw, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

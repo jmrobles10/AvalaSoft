@@ -1,4 +1,4 @@
-import type { EstadoFichaDto } from '@validasoft/api-client';
+import type { EstadoFichaDto } from '@avalasoft/api-client';
 import type { ReactNode } from 'react';
 import { FormularioEspecialidades } from './especialidades/FormularioEspecialidades';
 import { FormularioFinanciera } from './formularios/FormularioFinanciera';

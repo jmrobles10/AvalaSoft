@@ -1,4 +1,4 @@
-import { SCOPES } from '@validasoft/api-client';
+import { SCOPES } from '@avalasoft/api-client';
 import { Navigate } from 'react-router';
 import { useEmpresaActiva } from '../features/empresas/useEmpresas';
 import { usePermisos } from '../shared/usePermisos';

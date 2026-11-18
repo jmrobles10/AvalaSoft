@@ -1,6 +1,6 @@
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { SCOPES, type WebhookDto } from '@validasoft/api-client';
-import { EstadoVacio, FilasEsqueleto, formatearFechaHora, MarcoTabla } from '@validasoft/ui';
+import { SCOPES, type WebhookDto } from '@avalasoft/api-client';
+import { EstadoVacio, FilasEsqueleto, formatearFechaHora, MarcoTabla } from '@avalasoft/ui';
 import { Plus, Webhook } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

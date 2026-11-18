@@ -31,7 +31,7 @@ recorrido(
       configuracion: {
         ajuste: 'Plan de IA de la empresa',
         ruta: 'Configuración › Plan y uso de IA (/uso-ia)',
-        efecto: 'El plan lo configura Validasoft desde Plataforma; aquí solo se consulta el uso.',
+        efecto: 'El plan lo configura AvalaSoft desde Plataforma; aquí solo se consulta el uso.',
       },
       variantes: [
         { cuando: 'La empresa no tiene plan de IA', entonces: 'La pantalla dice «La revisión automática no está contratada»: sus documentos se revisan manualmente.' },

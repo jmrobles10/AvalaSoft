@@ -1,4 +1,4 @@
-import type { ConfiguracionDeIngresoDto, CorregirGrupoDto, CorregirUsuarioDto, IdentidadExternaDto, SistemaIntegradoDto, TenantDto, UsuarioDto } from '@validasoft/api-client';
+import type { ConfiguracionDeIngresoDto, CorregirGrupoDto, CorregirUsuarioDto, IdentidadExternaDto, SistemaIntegradoDto, TenantDto, UsuarioDto } from '@avalasoft/api-client';
 import { correoValido, ZONA_POR_DEFECTO } from './modelo';
 
 /**

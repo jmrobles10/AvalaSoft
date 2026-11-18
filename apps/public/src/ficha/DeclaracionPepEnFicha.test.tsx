@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente } from '@validasoft/api-client';
+import { reiniciarCliente } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { estadoFicha, guardada, json, montarFicha, seccion, ORDEN_NATURAL } from './pruebas/montar';
 

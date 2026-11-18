@@ -1,4 +1,4 @@
-import type { FilaVistaPreviaDto, TotalesLoteDto } from '@validasoft/api-client';
+import type { FilaVistaPreviaDto, TotalesLoteDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { diasRestantes } from '../expedientes/plazo';
 import { plazoADto } from '../flujos/editor';

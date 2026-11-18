@@ -1,6 +1,6 @@
 import { Alert, AlertTitle } from '@mui/material';
-import type { VinculoDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { VinculoDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { CircleCheck, CircleSlash, ShieldAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

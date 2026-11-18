@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, SCOPES, type VinculoDto } from '@validasoft/api-client';
+import { reiniciarCliente, SCOPES, type VinculoDto } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';
 import { simularApi } from '../../pruebas/simularApi';

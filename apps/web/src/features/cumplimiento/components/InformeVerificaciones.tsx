@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { CampoFecha, Dato, EstadoVacio, RejillaDatos, formatearFecha } from '@validasoft/ui';
+import { CampoFecha, Dato, EstadoVacio, RejillaDatos, formatearFecha } from '@avalasoft/ui';
 import { Download, FileSpreadsheet } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

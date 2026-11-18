@@ -1,5 +1,5 @@
 import { Chip, Tooltip } from '@mui/material';
-import type { VerificacionDelCorreoDto } from '@validasoft/api-client';
+import type { VerificacionDelCorreoDto } from '@avalasoft/api-client';
 import { ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

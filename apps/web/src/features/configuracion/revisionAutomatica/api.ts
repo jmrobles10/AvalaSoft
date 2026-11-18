@@ -4,7 +4,7 @@ import {
   getObtenerRevisionAutomaticaQueryKey,
   getObtenerRevisionAutomaticaQueryOptions,
   type ActualizarRevisionAutomaticaDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { conEmpresa } from '../../../shared/consultas';
 
 /** Revisión automática de la empresa activa (`GET /configuracion/revision-automatica`): nivel, parámetros, uso del mes y lo que se puede elegir. */

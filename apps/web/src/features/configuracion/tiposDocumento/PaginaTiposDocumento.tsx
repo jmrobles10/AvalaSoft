@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { SCOPES, type TipoDocumentoTenantDto } from '@validasoft/api-client';
-import { EstadoVacio, FilasEsqueleto, MarcoTabla } from '@validasoft/ui';
+import { SCOPES, type TipoDocumentoTenantDto } from '@avalasoft/api-client';
+import { EstadoVacio, FilasEsqueleto, MarcoTabla } from '@avalasoft/ui';
 import { Ban, CircleCheck, FileText, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

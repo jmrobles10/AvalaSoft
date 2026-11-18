@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
-import type { DocumentoBovedaDto, VigenciaDto } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import type { DocumentoBovedaDto, VigenciaDto } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { AvisoConsolidado } from './AvisoConsolidado';
@@ -37,7 +37,7 @@ const documento = (id: string, nombre: string, empresas: [string, VigenciaDto][]
 
 function montar(documentos: DocumentoBovedaDto[]) {
   return render(
-    <ThemeProvider theme={createValidasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
       <MemoryRouter>
         <AvisoConsolidado documentos={documentos} />
       </MemoryRouter>

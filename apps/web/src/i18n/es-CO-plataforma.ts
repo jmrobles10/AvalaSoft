@@ -86,7 +86,7 @@ export const plataforma = {
   sesion: '{{persona}} · operador de Plataforma desde {{sistema}}',
   grupos: {
     titulo: 'Grupos y empresas',
-    subtitulo: 'Cada grupo es un cliente de Validasoft con sus empresas. Desde aquí se dan de alta y se configura el plan de IA de cada empresa.',
+    subtitulo: 'Cada grupo es un cliente de AvalaSoft con sus empresas. Desde aquí se dan de alta y se configura el plan de IA de cada empresa.',
     nuevo: 'Nuevo grupo',
     error: 'No pudimos cargar los grupos.',
     buscar: 'Buscar por grupo, empresa o NIT',
@@ -125,10 +125,10 @@ export const plataforma = {
   },
   alta: {
     titulo: 'Nuevo grupo',
-    subtitulo: 'Queda operable de punta a punta: su primera empresa, quien lo administra y el sistema desde el que su gente entra a Validasoft.',
+    subtitulo: 'Queda operable de punta a punta: su primera empresa, quien lo administra y el sistema desde el que su gente entra a AvalaSoft.',
     volver: 'Grupos y empresas',
     grupo: 'Grupo empresarial',
-    grupoAyuda: 'El cliente de Validasoft (ADR-0008). El identificador forma parte de sus API keys y no cambia.',
+    grupoAyuda: 'El cliente de AvalaSoft (ADR-0008). El identificador forma parte de sus API keys y no cambia.',
     nombre: 'Nombre del grupo',
     slug: 'Identificador',
     slugAyuda: 'Minúsculas, números y guiones; de 3 a 30 caracteres.',
@@ -137,7 +137,7 @@ export const plataforma = {
     empresaAyuda: 'La razón social que valida a sus terceros. El grupo puede agregar más empresas después.',
     administrador: 'Administrador del grupo',
     administradorAyuda:
-      'Tiene el rol Administrador en todo el grupo: crea usuarios, áreas y flujos. Validasoft no guarda su contraseña: entra desde el sistema integrado.',
+      'Tiene el rol Administrador en todo el grupo: crea usuarios, áreas y flujos. AvalaSoft no guarda su contraseña: entra desde el sistema integrado.',
     adminNombre: 'Nombre',
     adminCorreo: 'Correo',
     adminIdExterno: 'Su usuario en el sistema (opcional)',
@@ -150,7 +150,7 @@ export const plataforma = {
     sistemaNombre: 'Nombre del sistema',
     sistemaClave: 'Clave pública (PEM)',
     sistemaClaveAyuda: 'RSA de 2048 bits o más, o EC P-256. Nunca la privada.',
-    sistemaOrigenes: 'Sitios que pueden incrustar Validasoft (opcional)',
+    sistemaOrigenes: 'Sitios que pueden incrustar AvalaSoft (opcional)',
     sistemaOrigenesAyuda: 'Uno por línea, como https://erp.cliente.co. Sin ellos, el sistema solo usa la API.',
     crear: 'Crear grupo',
     errores: {
@@ -163,7 +163,7 @@ export const plataforma = {
       'empresa-prefijo-invalido': 'El prefijo de folio lleva de 2 a 10 letras mayúsculas o números.',
       'admin-nombre-requerido': 'Falta el nombre del administrador.',
       'admin-correo-invalido': 'El correo del administrador no es válido.',
-      'modos-requeridos': 'Elige al menos una forma de ingreso: desde el sistema integrado o directo a Validasoft.',
+      'modos-requeridos': 'Elige al menos una forma de ingreso: desde el sistema integrado o directo a AvalaSoft.',
       'sistema-codigo-invalido': 'El código del sistema empieza con letra y usa mayúsculas, números o guion bajo (máx. 20).',
       'sistema-nombre-requerido': 'Falta el nombre del sistema.',
       'clave-publica-requerida': 'Pega la clave pública del sistema en PEM (-----BEGIN PUBLIC KEY-----).',
@@ -265,7 +265,7 @@ export const plataforma = {
     configurada: 'Configurada · …{{ultimos}}',
     sinConfigurar: 'Sin configurar',
     noHabilitado: 'No habilitado en esta instalación',
-    ayudaNoHabilitado: 'La instalación no habilitó a Infolaft (Validasoft:Verificadores): hasta que se habilite, las empresas no consultan con esta cuenta.',
+    ayudaNoHabilitado: 'La instalación no habilitó a Infolaft (Avalasoft:Verificadores): hasta que se habilite, las empresas no consultan con esta cuenta.',
     usuario: 'Usuario de la cuenta',
     clave: 'Clave',
     claveAyuda: 'Solo escritura: se cifra con la clave maestra y no se vuelve a mostrar. Vacío conserva la actual.',
@@ -318,7 +318,7 @@ export const plataforma = {
     confirmar:
       'Cada secreto que no esté con la clave vigente se descifra con su clave anterior y se vuelve a cifrar con la vigente. Su valor no cambia ni se muestra. Los ilegibles se dejan como están.',
     recifrados: 'Se re-cifraron {{cantidad}} secretos.',
-    ayudaIlegibles: 'Hay secretos que ninguna clave configurada puede leer: agrega su clave a Validasoft:Secretos:ClavesAnteriores (docs/07 §6.3).',
+    ayudaIlegibles: 'Hay secretos que ninguna clave configurada puede leer: agrega su clave a Avalasoft:Secretos:ClavesAnteriores (docs/07 §6.3).',
     todoVigente: 'Todo está con la clave vigente.',
   },
 } as const;

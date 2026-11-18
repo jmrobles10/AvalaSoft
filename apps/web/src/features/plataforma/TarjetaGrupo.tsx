@@ -1,6 +1,6 @@
 import { Box, Button, Chip, IconButton, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
-import type { EmpresaDeGrupoDto, GrupoDto } from '@validasoft/api-client';
-import { formatearFecha, MarcoTabla, visualmenteOculto } from '@validasoft/ui';
+import type { EmpresaDeGrupoDto, GrupoDto } from '@avalasoft/api-client';
+import { formatearFecha, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
 import { ChevronDown, ChevronUp, CircleDashed, ClipboardList, Gauge, KeyRound, Pencil, Plug, Plus, Sparkles } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -6,9 +6,9 @@
 
 ## Propósito
 
-Reunir, en un solo lugar, todas las decisiones que **todavía no están tomadas** y que condicionan el alcance, el modelo o la construcción de Validasoft. Cada pregunta es cerrada, trae opciones con su consecuencia y una recomendación justificada desde la práctica de validación documental, cumplimiento (SAGRILAFT, debida diligencia, Ley 1581 de 2012) y producto SaaS B2B. Nadie decide aquí: decide Producto (o quien se indique), y la respuesta se registra.
+Reunir, en un solo lugar, todas las decisiones que **todavía no están tomadas** y que condicionan el alcance, el modelo o la construcción de AvalaSoft. Cada pregunta es cerrada, trae opciones con su consecuencia y una recomendación justificada desde la práctica de validación documental, cumplimiento (SAGRILAFT, debida diligencia, Ley 1581 de 2012) y producto SaaS B2B. Nadie decide aquí: decide Producto (o quien se indique), y la respuesta se registra.
 
-Lo que ya está decidido no se vuelve a preguntar: stack (.NET 10, PostgreSQL, Marten, Wolverine, MinIO, Docker), dos apps React + MUI, OpenIddict propio, multi-tenant SaaS, Validasoft dueña de la UI del tercero con magic link, compartición automática de documentos globales, una sola versión vigente por tercero y tipo con revalidación obligatoria, decisiones privadas por empresa, hechos compartidos calculados una vez, vigencia en dos capas, revisión automática por niveles Manual/Asistido/Automático, IA Claude desde el MVP fail-closed, sin gRPC en el MVP, repo docs-first, hitos H0–H11.
+Lo que ya está decidido no se vuelve a preguntar: stack (.NET 10, PostgreSQL, Marten, Wolverine, MinIO, Docker), dos apps React + MUI, OpenIddict propio, multi-tenant SaaS, AvalaSoft dueña de la UI del tercero con magic link, compartición automática de documentos globales, una sola versión vigente por tercero y tipo con revalidación obligatoria, decisiones privadas por empresa, hechos compartidos calculados una vez, vigencia en dos capas, revisión automática por niveles Manual/Asistido/Automático, IA Claude desde el MVP fail-closed, sin gRPC en el MVP, repo docs-first, hitos H0–H11.
 
 ## Cómo se usa
 
@@ -522,9 +522,9 @@ Relacionados: `../00-vision-y-alcance.md`, `../02-modelo-documental-compartido.m
 
 ## Bloque 12 — Integración
 
-### P-12-1 ¿Qué sistema crea el tercero primero: el ERP o Validasoft?
+### P-12-1 ¿Qué sistema crea el tercero primero: el ERP o AvalaSoft?
 - **Por qué importa**: define el dueño de la identidad y los conflictos. 08. H9.
-- **Opciones**: (a) Validasoft es el maestro de identidad del tercero para la vinculación; el ERP recibe el tercero certificado por webhook y guarda `validasoftTerceroId`; (b) el ERP crea y Validasoft recibe; (c) cualquiera, con reconciliación por clave única.
+- **Opciones**: (a) AvalaSoft es el maestro de identidad del tercero para la vinculación; el ERP recibe el tercero certificado por webhook y guarda `avalasoftTerceroId`; (b) el ERP crea y AvalaSoft recibe; (c) cualquiera, con reconciliación por clave única.
 - **Recomendación**: (c) con regla: la identidad se reconcilia por clave única (P-1-1); los datos maestros validados por documento prevalecen; cada sistema guarda el id externo del otro.
 - **Prioridad**: N
 
@@ -540,9 +540,9 @@ Relacionados: `../00-vision-y-alcance.md`, `../02-modelo-documental-compartido.m
 - **Recomendación**: (a).
 - **Prioridad**: E
 
-### P-12-4 ¿Durante la coexistencia, el SRM sigue siendo la UI del revisor o se usa la de Validasoft?
+### P-12-4 ¿Durante la coexistencia, el SRM sigue siendo la UI del revisor o se usa la de AvalaSoft?
 - **Por qué importa**: define cuánto del SRM se toca en H9. 08. H9.
-- **Opciones**: (a) la revisión se hace en Validasoft; el SRM solo recibe estados y aplica en AyF; (b) el SRM consume la API y mantiene su UI; (c) ambas.
+- **Opciones**: (a) la revisión se hace en AvalaSoft; el SRM solo recibe estados y aplica en AyF; (b) el SRM consume la API y mantiene su UI; (c) ambas.
 - **Recomendación**: (a). Mantener dos UIs de revisión duplica el trabajo y perpetúa el legado.
 - **Prioridad**: N
 
@@ -563,7 +563,7 @@ Relacionados: `../00-vision-y-alcance.md`, `../02-modelo-documental-compartido.m
 - **Prioridad**: E
 
 ### P-13-3 ¿Usuarios del Portal: se migran o se reinvitan?
-- **Por qué importa**: contraseñas en claro en el legado; Validasoft no usa contraseña para el tercero. 07, 08. H10.
+- **Por qué importa**: contraseñas en claro en el legado; AvalaSoft no usa contraseña para el tercero. 07, 08. H10.
 - **Opciones**: (a) se migran correo y nombre; el acceso es por magic link (no hay contraseña que migrar); (b) se reinvita a todos.
 - **Recomendación**: (a).
 - **Prioridad**: E
@@ -643,7 +643,7 @@ Relacionados: `../00-vision-y-alcance.md`, `../02-modelo-documental-compartido.m
 - **Prioridad**: N
 
 ### P-15-4 ¿Soporte al tercero: quién lo atiende?
-- **Por qué importa**: el tercero verá la marca Validasoft y escribirá a la plataforma, pero la relación es con la empresa. 00, 06. H5.
+- **Por qué importa**: el tercero verá la marca AvalaSoft y escribirá a la plataforma, pero la relación es con la empresa. 00, 06. H5.
 - **Opciones**: (a) la empresa es primer nivel (contacto visible en la UI del tercero); la plataforma atiende incidentes técnicos; (b) la plataforma atiende todo.
 - **Recomendación**: (a).
 - **Prioridad**: N
@@ -769,7 +769,7 @@ Relacionados: `../00-vision-y-alcance.md`, `../02-modelo-documental-compartido.m
 | P-10-4 | Alertas | N | Dominio plataforma, Reply-To empresa |
 | P-12-1 | Integración | N | Reconciliar por clave única |
 | P-12-2 | Integración | N | Webhooks y pull desde MVP |
-| P-12-4 | Integración | N | Revisión solo en Validasoft |
+| P-12-4 | Integración | N | Revisión solo en AvalaSoft |
 | P-14-4 | Seguridad | N | 2FA admins, auditores, cumplimiento |
 | P-14-5 | Seguridad | N | Flujo formal de supresión |
 | P-14-6 | Seguridad | N | Contrato marco + anexo técnico |
@@ -826,7 +826,7 @@ Total: **97 preguntas** — 22 bloqueantes (B), 42 necesarias antes del MVP (N),
 6. **Detección de documentos manipulados**: la IA debe reportar señales de alteración (capas, fuentes inconsistentes, metadatos de edición, fecha de creación del PDF posterior a la de expedición) como hecho compartido; es el fraude más común en certificaciones bancarias y pólizas.
 7. **Conflicto de intereses del revisor**: declaración y bloqueo automático si el revisor es contacto o representante del tercero (cruce por identificación).
 8. **Reglas de exigencia por monto o riesgo del contrato**: el motor ya acepta `vinculo.atributos.*`; la semilla debería incluir "monto estimado" y "nivel de riesgo" para que un proveedor de bajo monto no pase por el flujo completo.
-9. **Modo "solo lectura de emergencia"**: si Validasoft cae, Marco necesita seguir operando; la tabla local de respaldo por webhooks debe incluir el último certificado y su vigencia, y la consulta debe degradar a ella con bandera `fuenteRespaldo=true`.
+9. **Modo "solo lectura de emergencia"**: si AvalaSoft cae, Marco necesita seguir operando; la tabla local de respaldo por webhooks debe incluir el último certificado y su vigencia, y la consulta debe degradar a ella con bandera `fuenteRespaldo=true`.
 10. **Métricas de equidad de la IA**: medir tasa de observación automática por tipo de persona, tamaño de empresa y región para detectar sesgo del modelo (documentos manuscritos de personas naturales rurales suelen fallar legibilidad); es parte del muestreo humano.
 
 ## Decisiones abiertas

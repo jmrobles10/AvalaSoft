@@ -1,5 +1,5 @@
 import { Alert, Chip, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import type { CruceDeRequisitoDto, CruceDeSeccionDto } from '@validasoft/api-client';
+import type { CruceDeRequisitoDto, CruceDeSeccionDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { SeccionFicha } from '../../terceros/SeccionesVinculo';
 import { esResultadoCruce, porcentaje, tonoDeCampo } from '../cruce';

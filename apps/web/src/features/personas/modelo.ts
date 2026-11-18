@@ -1,4 +1,4 @@
-import type { PersonaDelRequisitoDto } from '@validasoft/api-client';
+import type { PersonaDelRequisitoDto } from '@avalasoft/api-client';
 import type { TFunction } from 'i18next';
 
 const ROLES = ['RepresentanteLegal', 'Suplente', 'Socio', 'BeneficiarioFinal', 'MiembroDe'] as const;

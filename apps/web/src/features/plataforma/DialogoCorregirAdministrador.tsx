@@ -1,5 +1,5 @@
 import { Alert, Checkbox, FormControlLabel, Skeleton, TextField } from '@mui/material';
-import type { TenantDto, UsuarioDto } from '@validasoft/api-client';
+import type { TenantDto, UsuarioDto } from '@avalasoft/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../shared/errores';

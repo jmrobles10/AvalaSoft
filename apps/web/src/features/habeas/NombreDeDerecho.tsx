@@ -1,4 +1,4 @@
-import type { SolicitudHabeasDto } from '@validasoft/api-client';
+import type { SolicitudHabeasDto } from '@avalasoft/api-client';
 import { useTranslation } from 'react-i18next';
 import { comoAlcance, comoTipo } from './modelo';
 

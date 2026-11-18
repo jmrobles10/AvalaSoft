@@ -1,5 +1,5 @@
-import type { VigenciaDto } from '@validasoft/api-client';
-import { formatearDiaCivil } from '@validasoft/ui';
+import type { VigenciaDto } from '@avalasoft/api-client';
+import { formatearDiaCivil } from '@avalasoft/ui';
 import { describe, expect, it } from 'vitest';
 import { detalleComparticion } from '../boveda/versiones';
 import i18n from '../i18n';

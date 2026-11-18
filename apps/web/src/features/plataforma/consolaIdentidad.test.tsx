@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useQuery } from '@tanstack/react-query';
-import { reiniciarCliente, type ClaveDeArranqueDto, type EmpresaDeGrupoDto, type GrupoDto, type OperadorDePlataformaDto, type SistemaIntegradoDto } from '@validasoft/api-client';
+import { reiniciarCliente, type ClaveDeArranqueDto, type EmpresaDeGrupoDto, type GrupoDto, type OperadorDePlataformaDto, type SistemaIntegradoDto } from '@avalasoft/api-client';
 import type { ReactNode } from 'react';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -17,15 +17,15 @@ afterEach(() => reiniciarCliente());
 // ---------- Ingresos de los operadores (PI-16) ----------
 
 const OPERADORES: OperadorDePlataformaDto[] = [
-  { id: 'op1', sistema: 'directo', nombre: 'Camila Admin', correo: 'camila@validasoft.co', activo: true, directo: true, creadoEn: '2026-10-01T10:00:00Z', ultimoAcceso: '2026-11-10T10:00:00Z', passkeys: 2 },
-  { id: 'op2', sistema: 'directo', nombre: 'Diego Soporte', correo: 'diego@validasoft.co', activo: false, directo: true, creadoEn: '2026-10-02T10:00:00Z', ultimoAcceso: null, passkeys: 0 },
+  { id: 'op1', sistema: 'directo', nombre: 'Camila Admin', correo: 'camila@avalasoft.co', activo: true, directo: true, creadoEn: '2026-10-01T10:00:00Z', ultimoAcceso: '2026-11-10T10:00:00Z', passkeys: 2 },
+  { id: 'op2', sistema: 'directo', nombre: 'Diego Soporte', correo: 'diego@avalasoft.co', activo: false, directo: true, creadoEn: '2026-10-02T10:00:00Z', ultimoAcceso: null, passkeys: 0 },
 ];
 
 const INGRESOS = {
   datos: [
-    { id: 'i1', fecha: '2026-11-10T15:00:00Z', evento: 'IngresoExitoso', exitoso: true, operadorId: 'op1', correo: 'camila@validasoft.co', metodo: 'Passkey', motivo: null, ip: '10.0.0.5', dispositivo: 'Mozilla/5.0 (Windows NT 10.0) Chrome/130.0 Safari/537.36', actorTipo: 'Operador', actorId: 'op1', sesionId: 's1', passkeyId: 'p1' },
-    { id: 'i2', fecha: '2026-11-10T14:00:00Z', evento: 'IngresoFallido', exitoso: false, operadorId: 'op2', correo: 'diego@validasoft.co', metodo: 'Codigo', motivo: 'codigo-incorrecto', ip: '10.0.0.9', dispositivo: null, actorTipo: 'Operador', actorId: 'op2', sesionId: null, passkeyId: null },
-    { id: 'i3', fecha: '2026-11-10T13:00:00Z', evento: 'EventoQueLaAppNoConoce', exitoso: true, operadorId: 'op1', correo: 'camila@validasoft.co', metodo: null, motivo: null, ip: null, dispositivo: null, actorTipo: 'Operador', actorId: 'op1', sesionId: null, passkeyId: null },
+    { id: 'i1', fecha: '2026-11-10T15:00:00Z', evento: 'IngresoExitoso', exitoso: true, operadorId: 'op1', correo: 'camila@avalasoft.co', metodo: 'Passkey', motivo: null, ip: '10.0.0.5', dispositivo: 'Mozilla/5.0 (Windows NT 10.0) Chrome/130.0 Safari/537.36', actorTipo: 'Operador', actorId: 'op1', sesionId: 's1', passkeyId: 'p1' },
+    { id: 'i2', fecha: '2026-11-10T14:00:00Z', evento: 'IngresoFallido', exitoso: false, operadorId: 'op2', correo: 'diego@avalasoft.co', metodo: 'Codigo', motivo: 'codigo-incorrecto', ip: '10.0.0.9', dispositivo: null, actorTipo: 'Operador', actorId: 'op2', sesionId: null, passkeyId: null },
+    { id: 'i3', fecha: '2026-11-10T13:00:00Z', evento: 'EventoQueLaAppNoConoce', exitoso: true, operadorId: 'op1', correo: 'camila@avalasoft.co', metodo: null, motivo: null, ip: null, dispositivo: null, actorTipo: 'Operador', actorId: 'op1', sesionId: null, passkeyId: null },
   ],
   siguienteCursor: null,
 };
@@ -139,7 +139,7 @@ describe('Clave de arranque desde la consola (PI-17)', () => {
 
   it('desactivarla pide confirmar y llama a la API', async () => {
     const { peticiones, usuario } = montarSecretos(CLAVE_ACTIVA, {
-      'POST /api/v1/plataforma/clave-de-arranque/desactivar': { ...CLAVE_ACTIVA, desactivada: true, desactivadaEn: '2026-11-11T15:00:00Z', desactivadaPor: 'camila@validasoft.co' },
+      'POST /api/v1/plataforma/clave-de-arranque/desactivar': { ...CLAVE_ACTIVA, desactivada: true, desactivadaEn: '2026-11-11T15:00:00Z', desactivadaPor: 'camila@avalasoft.co' },
     });
     await usuario.click(await screen.findByRole('button', { name: 'Desactivar' }));
 
@@ -158,12 +158,12 @@ describe('Clave de arranque desde la consola (PI-17)', () => {
 
   it('desactivada ofrece reactivarla para rescatar la consola y dice quién y cuándo', async () => {
     const { peticiones, usuario } = montarSecretos(
-      { ...CLAVE_ACTIVA, desactivada: true, desactivadaEn: '2026-11-11T15:00:00Z', desactivadaPor: 'camila@validasoft.co' },
+      { ...CLAVE_ACTIVA, desactivada: true, desactivadaEn: '2026-11-11T15:00:00Z', desactivadaPor: 'camila@avalasoft.co' },
       { 'POST /api/v1/plataforma/clave-de-arranque/reactivar': CLAVE_ACTIVA },
     );
 
     expect(await screen.findByText('Desactivada')).toBeInTheDocument();
-    expect(screen.getByText(/camila@validasoft.co/)).toBeInTheDocument();
+    expect(screen.getByText(/camila@avalasoft.co/)).toBeInTheDocument();
     await usuario.click(screen.getByRole('button', { name: 'Reactivar' }));
     const dialogo = await screen.findByRole('dialog', { name: 'Reactivar la clave de arranque' });
     await usuario.click(within(dialogo).getByRole('button', { name: 'Reactivar' }));

@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import type { DiffCampoDto } from '@validasoft/api-client';
+import type { DiffCampoDto } from '@avalasoft/api-client';
 import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

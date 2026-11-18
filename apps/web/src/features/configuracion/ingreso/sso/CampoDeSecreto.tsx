@@ -1,6 +1,6 @@
 import { Button, Stack, TextField, Typography } from '@mui/material';
-import type { ConfiguracionDeSsoDto } from '@validasoft/api-client';
-import { enfocarNodo } from '@validasoft/ui';
+import type { ConfiguracionDeSsoDto } from '@avalasoft/api-client';
+import { enfocarNodo } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { secretoValido, type AccionDeSecreto } from './modeloSso';
 

@@ -1,13 +1,13 @@
 ---
 id: "tercero/entrar-sin-invitacion"
-titulo: "Entra a Validasoft con tu correo cuando ya tienes una invitación"
+titulo: "Entra a AvalaSoft con tu correo cuando ya tienes una invitación"
 actor: "Tercero"
 dominio: "tercero"
 resumen: "Un proveedor que ya fue invitado no abre el enlace del correo: entra por «/entrar», escribe el correo de la invitación y recibe un enlace de un solo uso. Desde «Mis empresas» ve todas sus empresas y abre la que le interesa. Si el correo no está registrado, la pantalla responde igual."
 pasos: 5
 ---
 
-# Entra a Validasoft con tu correo cuando ya tienes una invitación
+# Entra a AvalaSoft con tu correo cuando ya tienes una invitación
 
 **Actor:** Tercero · **Dominio:** Portal del tercero
 
@@ -16,7 +16,7 @@ Un proveedor que ya fue invitado no abre el enlace del correo: entra por «/entr
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y un flujo de Proveedor publicado.
-- Un tercero invitado por esa empresa, que nunca ha entrado a Validasoft con su correo.
+- Un tercero invitado por esa empresa, que nunca ha entrado a AvalaSoft con su correo.
 
 **Pasos**
 
@@ -39,7 +39,7 @@ Desde la página de inicio entras con «Entrar con mi correo». Escribe el corre
 **Variantes**
 
 - **Escribes un correo que no es válido:** La pantalla te pide un correo válido, por ejemplo nombre@empresa.com, y no envía nada.
-- **Ya tienes una sesión abierta:** No ves esta pantalla: Validasoft te lleva directo a «Mis empresas».
+- **Ya tienes una sesión abierta:** No ves esta pantalla: AvalaSoft te lleva directo a «Mis empresas».
 
 ## Paso 2. Revisa tu correo
 

@@ -51,10 +51,10 @@ La medida vale para el binario que se mide: publica en `Release` y levanta la AP
 
 ```bash
 docker compose -f infra/compose/compose.yaml up -d postgres minio
-docker exec validasoft-postgres-1 createdb -U validasoft validasoft_carga
-dotnet publish src/Validasoft.Api -c Release -o /tmp/api-carga
-ASPNETCORE_ENVIRONMENT=Development ConnectionStrings__Validasoft="Host=localhost;Port=5432;Database=validasoft_carga;Username=validasoft;Password=validasoft" \
-  dotnet /tmp/api-carga/Validasoft.Api.dll --urls http://localhost:5115
+docker exec avalasoft-postgres-1 createdb -U avalasoft avalasoft_carga
+dotnet publish src/Avalasoft.Api -c Release -o /tmp/api-carga
+ASPNETCORE_ENVIRONMENT=Development ConnectionStrings__Avalasoft="Host=localhost;Port=5432;Database=avalasoft_carga;Username=avalasoft;Password=avalasoft" \
+  dotnet /tmp/api-carga/Avalasoft.Api.dll --urls http://localhost:5115
 ```
 
 Los números dependen de la máquina y de lo que más corra en ella (PostgreSQL local, otros procesos): compáralos entre corridas de la

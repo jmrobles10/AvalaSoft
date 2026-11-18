@@ -1,5 +1,5 @@
 import { Alert, Snackbar } from '@mui/material';
-import { AnimacionExito } from '@validasoft/ui';
+import { AnimacionExito } from '@avalasoft/ui';
 import { useAvisos } from './useAvisos';
 
 export function Avisos() {

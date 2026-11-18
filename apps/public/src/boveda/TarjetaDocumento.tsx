@@ -1,6 +1,6 @@
 import { Box, Button, Card, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from '@mui/material';
-import type { DocumentoBovedaDto, VersionDocumentoDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { DocumentoBovedaDto, VersionDocumentoDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { Archive, Download, EllipsisVertical, FileText, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

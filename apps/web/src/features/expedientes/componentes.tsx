@@ -1,6 +1,6 @@
 import { Box, Chip, LinearProgress, Typography } from '@mui/material';
-import type { EstadoAreaExpediente, TerceroResumenDto } from '@validasoft/api-client';
-import { ChipEstado } from '@validasoft/ui';
+import type { EstadoAreaExpediente, TerceroResumenDto } from '@avalasoft/api-client';
+import { ChipEstado } from '@avalasoft/ui';
 import { Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { identificacionResumida } from '../vinculos/tercero';

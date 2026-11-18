@@ -1,4 +1,4 @@
-import type { RevisionAutomaticaConfigDto } from '@validasoft/api-client';
+import type { RevisionAutomaticaConfigDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { aDto, borradorDe, efectivo, hayCambios, nivelDe, pideConfirmacion, umbralDelPlan, validar, type BorradorRevision } from './modelo';
 

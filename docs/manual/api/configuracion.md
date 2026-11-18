@@ -1593,7 +1593,7 @@ Respuesta `200`:
 
 ## Plantillas notificación
 
-Plantillas de notificación de la empresa activa (docs/05 §2, docs/06 `/configuracion/.../plantillas`, PL-1): asunto, cabecera y pie de los correos que Validasoft le manda al tercero en nombre de la empresa, con auditoría y vista previa.
+Plantillas de notificación de la empresa activa (docs/05 §2, docs/06 `/configuracion/.../plantillas`, PL-1): asunto, cabecera y pie de los correos que AvalaSoft le manda al tercero en nombre de la empresa, con auditoría y vista previa.
 
 ### `GET /api/v1/plantillas-notificacion`
 

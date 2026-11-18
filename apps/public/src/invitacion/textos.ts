@@ -1,5 +1,5 @@
 import { situacionDelVinculo } from '../vinculos/situacion';
-import { esErrorApi, type ConsentimientoDto, type InvitacionPublicaDto, type TextoLegalPublicoDto, type TipoTextoLegal } from '@validasoft/api-client';
+import { esErrorApi, type ConsentimientoDto, type InvitacionPublicaDto, type TextoLegalPublicoDto, type TipoTextoLegal } from '@avalasoft/api-client';
 
 /** Orden de lectura: primero el aviso de la plataforma (solo si falta), luego la autorización y los términos de la empresa. */
 const ORDEN: Record<TipoTextoLegal, number> = { AvisoPlataforma: 0, AutorizacionEmpresa: 1, TerminosEmpresa: 2 };

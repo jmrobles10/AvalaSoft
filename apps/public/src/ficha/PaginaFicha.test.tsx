@@ -1,5 +1,5 @@
 import { screen, within } from '@testing-library/react';
-import { reiniciarCliente } from '@validasoft/api-client';
+import { reiniciarCliente } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { estadoFicha, filaEstado, montarFicha, ORDEN_NATURAL } from './pruebas/montar';
 

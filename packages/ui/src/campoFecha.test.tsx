@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { CampoFecha, fechaDeIso, isoDeFecha, type CampoFechaProps } from './campoFecha';
-import { createValidasoftTheme } from './tema';
+import { createAvalasoftTheme } from './tema';
 
 /** Un campo con estado (como lo usa un formulario) que anota cada valor que entrega. */
 function Campo({ inicial = '', alCambiar, ...resto }: { inicial?: string; alCambiar?: (iso: string) => void } & Partial<CampoFechaProps>) {
@@ -25,7 +25,7 @@ function Campo({ inicial = '', alCambiar, ...resto }: { inicial?: string; alCamb
   );
 }
 
-const montar = (nodo: React.ReactNode, app: 'web' | 'public' = 'web') => render(<ThemeProvider theme={createValidasoftTheme('light', { app })}>{nodo}</ThemeProvider>);
+const montar = (nodo: React.ReactNode, app: 'web' | 'public' = 'web') => render(<ThemeProvider theme={createAvalasoftTheme('light', { app })}>{nodo}</ThemeProvider>);
 const seccion = (nombre: string) => screen.getByRole('spinbutton', { name: nombre });
 const escribir = async (usuario: ReturnType<typeof userEvent.setup>, digitos: string) => {
   await usuario.click(seccion('Día'));
@@ -168,7 +168,7 @@ describe('CampoFecha', () => {
   it('cuando el formulario cambia el valor por su cuenta (limpiar filtros), el campo lo refleja', () => {
     const { rerender } = montar(<CampoFecha etiqueta="Desde" valor="2026-03-05" onCambiar={() => undefined} />);
     expect(seccion('Día')).toHaveTextContent('05');
-    const tema = createValidasoftTheme('light', { app: 'web' });
+    const tema = createAvalasoftTheme('light', { app: 'web' });
     rerender(
       <ThemeProvider theme={tema}>
         <CampoFecha etiqueta="Desde" valor="2026-07-20" onCambiar={() => undefined} />

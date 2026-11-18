@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import type { AdjuntoDeCumplimientoDto, PropositoDeAdjunto } from '@validasoft/api-client';
+import type { AdjuntoDeCumplimientoDto, PropositoDeAdjunto } from '@avalasoft/api-client';
 import { FileUp } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

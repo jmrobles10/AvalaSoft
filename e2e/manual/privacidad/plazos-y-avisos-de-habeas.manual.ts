@@ -68,10 +68,10 @@ recorrido(
       titulo: 'Mira la fecha límite de la solicitud',
       explicacion:
         'Cada solicitud dice hasta cuándo debe responderse (1) y cuántos días hábiles quedan: la ley da 10 o 15 días hábiles según el derecho que ejerce el titular. ' +
-        'Nadie tiene que acordarse: Validasoft revisa los plazos de las solicitudes abiertas y avisa a quienes deben responder cuando la fecha se acerca y cuando pasa.',
+        'Nadie tiene que acordarse: AvalaSoft revisa los plazos de las solicitudes abiertas y avisa a quienes deben responder cuando la fecha se acerca y cuando pasa.',
       resaltar: plazo,
       configuracion: { ajuste: 'Quién responde el habeas data', ruta: 'Configuración › Usuarios y roles (/usuarios)', efecto: 'Reciben los avisos los administradores (del grupo o de la empresa) y el oficial de cumplimiento de la empresa.' },
-      variantes: [{ cuando: 'La solicitud se dirige a Validasoft y no a una empresa', entonces: 'El aviso va a los correos de la plataforma que se configuran en el servidor, no a la campana de ninguna empresa.' }],
+      variantes: [{ cuando: 'La solicitud se dirige a AvalaSoft y no a una empresa', entonces: 'El aviso va a los correos de la plataforma que se configuran en el servidor, no a la campana de ninguna empresa.' }],
     });
 
     // 2) El aviso de plazo por vencer: faltan dos días hábiles o menos.

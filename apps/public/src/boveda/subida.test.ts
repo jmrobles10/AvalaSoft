@@ -1,5 +1,5 @@
-import { configurarCliente, ErrorApi, ErrorDeRed, reiniciarCliente, type VersionDocumentoDto } from '@validasoft/api-client';
-import { sha256Hex } from '@validasoft/ui';
+import { configurarCliente, ErrorApi, ErrorDeRed, reiniciarCliente, type VersionDocumentoDto } from '@avalasoft/api-client';
+import { sha256Hex } from '@avalasoft/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { enviarConXhr, ErrorSubida, falloDeSubida, formatearTamano, subirDocumento, TAMANO_MAXIMO_BYTES, TIPOS_PERMITIDOS, validarArchivo, type EnviarArchivo } from './subida';
 

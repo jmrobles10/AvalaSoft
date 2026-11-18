@@ -1,4 +1,4 @@
-import type { AreaDto, FlujoVersionDto, TipoDocumentoTenantDto } from '@validasoft/api-client';
+import type { AreaDto, FlujoVersionDto, TipoDocumentoTenantDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import {
   areaNueva,

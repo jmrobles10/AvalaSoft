@@ -6,7 +6,7 @@ import {
   revocarDelegacion,
   type CrearDelegacionDto,
   type ListarDelegacionesParams,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { conEmpresa, invalidarRuta } from '../../../shared/consultas';
 
 /** Delegaciones de la empresa: las propias, o todas si la persona administra expedientes (`GET /delegaciones`). */

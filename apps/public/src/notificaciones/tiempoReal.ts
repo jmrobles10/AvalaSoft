@@ -6,7 +6,7 @@ import {
   type EsperasConexion,
   type EstadoConexion,
   type MapaDeInvalidacion,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 import { useEffect } from 'react';
 import { useSesionTercero } from '../sesion/sesionTercero';
 import { useEstadoDeRefresco } from '../shared/useEstadoDeRefresco';

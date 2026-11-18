@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { SCOPES, type ExpedienteDto } from '@validasoft/api-client';
+import { SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';
 import { AvisoEsperandoEvaluaciones, PanelEvaluaciones } from './PanelEvaluaciones';

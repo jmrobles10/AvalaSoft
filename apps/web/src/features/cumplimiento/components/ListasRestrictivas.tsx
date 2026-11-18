@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, Stack, Typography } from '@mui/material';
-import type { CoincidenciaDto, DecisionCoincidencia, ExpedienteDto, VerificacionDto } from '@validasoft/api-client';
-import { Dato, formatearFecha, formatearFechaHora, RejillaDatos } from '@validasoft/ui';
+import type { CoincidenciaDto, DecisionCoincidencia, ExpedienteDto, VerificacionDto } from '@avalasoft/api-client';
+import { Dato, formatearFecha, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
 import { FilePlus2, FileDown, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

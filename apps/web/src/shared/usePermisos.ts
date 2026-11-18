@@ -1,4 +1,4 @@
-import { scopesEn, type Scope } from '@validasoft/api-client';
+import { scopesEn, type Scope } from '@avalasoft/api-client';
 import { useMemo } from 'react';
 import { useSesion } from '../sesion/sesionStore';
 

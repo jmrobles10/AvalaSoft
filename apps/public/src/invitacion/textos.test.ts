@@ -1,4 +1,4 @@
-import { ErrorApi, type InvitacionPublicaDto, type TextoLegalPublicoDto } from '@validasoft/api-client';
+import { ErrorApi, type InvitacionPublicaDto, type TextoLegalPublicoDto } from '@avalasoft/api-client';
 import { describe, expect, it } from 'vitest';
 import { claveTexto, consentimientosDe, estadoInvitacion, falloDeAceptacion, marcadosVigentes, puedeAceptar, textosOrdenados } from './textos';
 

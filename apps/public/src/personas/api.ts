@@ -8,7 +8,7 @@ import {
   getObtenerBovedaQueryKey,
   terminarRelacionDelTercero,
   type DeclararRelacionDto,
-} from '@validasoft/api-client';
+} from '@avalasoft/api-client';
 
 /** Las personas relacionadas del tercero (vigentes y propuestas de la IA). Se pide solo con acceso completo: una sesión aislada no alcanza este grupo. */
 export const useRelaciones = (habilitada = true) => useQuery({ ...getListarRelacionesDelTerceroQueryOptions(), enabled: habilitada });

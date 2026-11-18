@@ -2,8 +2,8 @@ import { generateKeyPairSync } from 'node:crypto';
 import { ThemeProvider } from '@mui/material';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente } from '@validasoft/api-client';
-import { createValidasoftTheme } from '@validasoft/ui';
+import { configurarCliente, reiniciarCliente } from '@avalasoft/api-client';
+import { createAvalasoftTheme } from '@avalasoft/ui';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FormularioSesionDev } from './FormularioSesionDev';
 import { useSesion } from './sesionStore';
@@ -18,7 +18,7 @@ const PLATAFORMA = {
   clavePlataforma: 'clave-de-plataforma',
   sistema: 'CONSOLA_DEV',
   clavePrivadaPem: CLAVE_PEM,
-  persona: { sub: 'op-paula', nombre: 'Paula Plataforma', correo: 'paula@validasoft.local' },
+  persona: { sub: 'op-paula', nombre: 'Paula Plataforma', correo: 'paula@avalasoft.local' },
 };
 
 const DEMO = {
@@ -35,7 +35,7 @@ const DEMO = {
 /** Token de la sesión de un operador de Plataforma: sin tenant, con el tipo de actor `Plataforma`. */
 function tokenDeOperador(): string {
   const exp = Math.floor(Date.now() / 1000) + 3600;
-  return `e30.${Buffer.from(JSON.stringify({ sub: 'op-paula', exp, 'validasoft:actor-tipo': 'Plataforma' })).toString('base64url')}.firma`;
+  return `e30.${Buffer.from(JSON.stringify({ sub: 'op-paula', exp, 'avalasoft:actor-tipo': 'Plataforma' })).toString('base64url')}.firma`;
 }
 
 interface Llamada {
@@ -63,7 +63,7 @@ function prepararFetch(semilla: unknown) {
 
 const montar = () =>
   render(
-    <ThemeProvider theme={createValidasoftTheme('light')}>
+    <ThemeProvider theme={createAvalasoftTheme('light')}>
       <FormularioSesionDev />
     </ThemeProvider>,
   );

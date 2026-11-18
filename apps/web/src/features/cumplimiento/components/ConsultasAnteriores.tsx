@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
-import type { ConsultaAnteriorDto } from '@validasoft/api-client';
-import { formatearFecha } from '@validasoft/ui';
+import type { ConsultaAnteriorDto } from '@avalasoft/api-client';
+import { formatearFecha } from '@avalasoft/ui';
 import { FileDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../../shared/componentes';

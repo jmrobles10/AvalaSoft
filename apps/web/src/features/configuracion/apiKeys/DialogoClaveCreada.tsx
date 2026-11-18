@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import type { ApiKeyDto, EmpresaDto } from '@validasoft/api-client';
-import { Dato, formatearFechaHora, RejillaDatos } from '@validasoft/ui';
+import type { ApiKeyDto, EmpresaDto } from '@avalasoft/api-client';
+import { Dato, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
 import { useTranslation } from 'react-i18next';
 import { DialogoValorUnaVez } from '../../../shared/DialogoValorUnaVez';
 import { textoAlcance } from './modelo';

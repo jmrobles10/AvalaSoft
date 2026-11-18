@@ -1,7 +1,7 @@
 import type { EstadoVinculo } from './generado/modelos/estadoVinculo';
 import type { VinculoDto } from './generado/modelos/vinculoDto';
 
-/** Scopes de docs/07 §3.2 (Permisos en Validasoft.Aplicacion.Comun). */
+/** Scopes de docs/07 §3.2 (Permisos en Avalasoft.Aplicacion.Comun). */
 export const SCOPES = {
   plataformaTenants: 'plataforma:tenants',
   empresasAdministrar: 'empresas:administrar',
