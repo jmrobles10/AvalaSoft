@@ -1,6 +1,6 @@
 # API · Plataforma
 
-43 operaciones en 13 recursos.
+47 operaciones en 15 recursos.
 
 ## Auditoría de operadores
 
@@ -332,6 +332,91 @@ Respuesta `200`:
   "desactivadaEn": "2026-11-12T15:00:00Z",
   "desactivadaPor": "texto",
   "operadoresConPasskey": 1
+}
+```
+
+</details>
+
+## Correccion de grupo
+
+### `PUT /api/v1/plataforma/tenants/{id}`
+
+**Corregir grupo.** Corrige el nombre, la región y la zona horaria del grupo (con su auditoría antes/después, a nombre de Plataforma). Siempre se puede: también con el grupo desactivado. Mismas reglas que el alta (`Tenant.Crear`); enviar lo mismo no escribe ni audita nada. El sandbox del grupo, si lo hay, se alinea en la misma transacción (su nombre lleva « (sandbox)»). Los folios, certificados y correos ya emitidos conservan el nombre con que salieron. 404 `tenant-no-encontrado` (un sandbox no es un grupo de la consola); 422 `nombre-requerido`, `zona-horaria-invalida`.
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `corregirGrupo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `id` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, CorregirGrupoDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `nombre` | texto | sí |  |
+| `region` | texto o null | no |  |
+| `zonaHoraria` | texto o null | no |  |
+
+**Respuestas**
+
+- `200` OK — TenantDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `slug` | texto | sí |  |
+| `nombre` | texto | sí |  |
+| `region` | texto | sí |  |
+| `plan` | texto | sí |  |
+| `zonaHoraria` | texto | sí |  |
+| `idioma` | texto | sí |  |
+| `activo` | booleano | sí |  |
+| `creadoEn` | fecha y hora | sí |  |
+| `ingreso` | ConfiguracionDeIngresoDto o null | no |  |
+| `ingreso.modos` | lista de texto | sí |  |
+| `ingreso.sesionHoras` | entero | sí |  |
+| `ingreso.inactividadMinutos` | entero | sí |  |
+| `ingreso.passkeyParaTodos` | booleano | sí |  |
+
+**Errores de negocio que lanza**
+
+- `404` `tenant-no-encontrado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X PUT "https://{host}/api/v1/plataforma/tenants/3fa85f64-5717-4562-b3fc-2c963f66afa6" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Constructora Norte S.A.S.","region":"co","zonaHoraria":"America/Bogota"}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "slug": "grupo-ejemplo",
+  "nombre": "Constructora Norte S.A.S.",
+  "region": "co",
+  "plan": "texto",
+  "zonaHoraria": "America/Bogota",
+  "idioma": "texto",
+  "activo": true,
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "ingreso": {
+    "modos": [
+      "texto"
+    ],
+    "sesionHoras": 1,
+    "inactividadMinutos": 1,
+    "passkeyParaTodos": true
+  }
 }
 ```
 
@@ -3102,6 +3187,300 @@ Respuesta `200`:
     "inactividadMinutos": 1,
     "passkeyParaTodos": true
   }
+}
+```
+
+</details>
+
+## Usuarios de grupo
+
+Las personas administradoras de un grupo, vistas y corregidas desde la consola de Plataforma, y su invitación a entrar directo.
+
+### `GET /api/v1/plataforma/tenants/{tenantId}/administradores`
+
+**Listar administradores de grupo.** Las personas con el rol Administrador del grupo (de todo el grupo o de alguna empresa), por nombre, con su correo, el id con que las reconoce cada sistema integrado, si están activas, su último ingreso, si exigen passkey y cuántas tienen. 404 `tenant-no-encontrado`.
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `listarAdministradoresDeGrupo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `tenantId` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — lista de UsuarioDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `[]` | lista de UsuarioDto | sí |  |
+| `[].id` | uuid | sí |  |
+| `[].nombre` | texto | sí |  |
+| `[].correo` | texto | sí |  |
+| `[].identificacion` | IdentificacionDto o null | no |  |
+| `[].identificacion.pais` | texto | sí |  |
+| `[].identificacion.tipo` | texto | sí |  |
+| `[].identificacion.numero` | texto | sí |  |
+| `[].identificacion.digitoVerificacion` | texto o null | no |  |
+| `[].activo` | booleano | sí |  |
+| `[].identidades` | lista de IdentidadExternaDto | sí |  |
+| `[].identidades[].sistemaId` | uuid | sí |  |
+| `[].identidades[].idExterno` | texto | sí |  |
+| `[].roles` | lista de RolAsignadoDto | sí |  |
+| `[].roles[].rol` | Rol (texto) | sí | valores: Administrador · Revisor · OficialCumplimiento · Auditor |
+| `[].roles[].empresaId` | uuid o null | no |  |
+| `[].creadoEn` | fecha y hora | sí |  |
+| `[].ultimoAcceso` | fecha y hora o null | no |  |
+| `[].exigePasskey` | booleano | no | por omisión false |
+| `[].passkeys` | entero | no | por omisión 0 |
+| `[].invitadoEn` | fecha y hora o null | no |  |
+| `[].grupos` | lista de AsignacionDeGrupoDto o null | no |  |
+| `[].grupos[].grupoId` | uuid | sí |  |
+| `[].grupos[].empresaId` | uuid o null | no |  |
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X GET "https://{host}/api/v1/plataforma/tenants/3fa85f64-5717-4562-b3fc-2c963f66afa6/administradores" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA"
+```
+
+Respuesta `200`:
+
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "nombre": "Constructora Norte S.A.S.",
+    "correo": "contacto@empresa.co",
+    "identificacion": {
+      "pais": "CO",
+      "tipo": "texto",
+      "numero": "900123456",
+      "digitoVerificacion": "texto"
+    },
+    "activo": true,
+    "identidades": [
+      {
+        "sistemaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "idExterno": "REF-0001"
+      }
+    ],
+    "roles": [
+      {
+        "rol": "Administrador",
+        "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
+    ],
+    "creadoEn": "2026-11-12T15:00:00Z",
+    "ultimoAcceso": "2026-11-12T15:00:00Z",
+    "exigePasskey": false,
+    "passkeys": 0,
+    "invitadoEn": "2026-11-12T15:00:00Z",
+    "grupos": [
+      {
+        "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      }
+    ]
+  }
+]
+```
+
+</details>
+
+### `PUT /api/v1/plataforma/tenants/{tenantId}/usuarios/{usuarioId}`
+
+**Corregir usuario de grupo.** Corrige el nombre, el correo y las identidades externas de una persona del grupo (con su auditoría antes/después, a nombre de Plataforma). Siempre se puede: también con el grupo o la cuenta desactivados. Mismas reglas que el alta (`Usuario.Crear`); el correo sigue único en el grupo contra las demás personas (enviar el propio no choca consigo mismo) y cada `sub` sigue único por sistema; enviar lo mismo no escribe ni audita nada. **Cambiar el correo cambia con quién entra la cuenta**, así que en la misma transacción se cierran sus sesiones directas abiertas, se revocan sus passkeys (quien tuvo el correo anterior —un error de digitación que cayó en otro buzón— no se queda dentro; la persona entra con el código del correo nuevo y registra otra) y se anulan los ingresos que estaban a medias con el correo anterior. Con `invitar` en `true` y el ingreso directo activo, el correo nuevo recibe además la invitación. Los registros de identidad de lo que se cerró y revocó quedan a nombre de Plataforma. Cambiar el correo o el usuario del sistema decide quién entra como esa persona, así que quien opera con una sesión directa vuelve a confirmar con su passkey (403 `reautenticacion-requerida`, PI-13); el nombre solo no lo pide y la clave de arranque ni las API keys nunca. Si la persona entra desde un sistema integrado, ese sistema manda su nombre y su correo en cada ingreso y los pone al día aquí (siempre que el correo no sea de otra persona del grupo): corrige también en el sistema, o lo corregido se deshace en el siguiente ingreso. 404 `tenant-no-encontrado`, `usuario-no-encontrado`; 409 `usuario-duplicado`, `identidad-duplicada`, `usuario-inactivo` (con `invitar`); 422 `nombre-requerido`, `correo-invalido`, `identidad-externa-invalida`, `identidades-repetidas`, `sistema-invalido`, `ingreso-directo-apagado` (con `invitar`).
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `corregirUsuarioDeGrupo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `tenantId` | path | uuid | sí |  |
+| `usuarioId` | path | uuid | sí |  |
+
+**Cuerpo de la petición** (`application/json`, CorregirUsuarioDto)
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `nombre` | texto | sí |  |
+| `correo` | texto | sí |  |
+| `identidades` | lista de IdentidadExternaDto o null | no |  |
+| `identidades[].sistemaId` | uuid | sí |  |
+| `identidades[].idExterno` | texto | sí |  |
+| `invitar` | booleano o null | no |  |
+
+**Respuestas**
+
+- `200` OK — UsuarioDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+| Campo | Tipo | Requerido | Detalle |
+|---|---|---|---|
+| `id` | uuid | sí |  |
+| `nombre` | texto | sí |  |
+| `correo` | texto | sí |  |
+| `identificacion` | IdentificacionDto o null | no |  |
+| `identificacion.pais` | texto | sí |  |
+| `identificacion.tipo` | texto | sí |  |
+| `identificacion.numero` | texto | sí |  |
+| `identificacion.digitoVerificacion` | texto o null | no |  |
+| `activo` | booleano | sí |  |
+| `identidades` | lista de IdentidadExternaDto | sí |  |
+| `identidades[].sistemaId` | uuid | sí |  |
+| `identidades[].idExterno` | texto | sí |  |
+| `roles` | lista de RolAsignadoDto | sí |  |
+| `roles[].rol` | Rol (texto) | sí | valores: Administrador · Revisor · OficialCumplimiento · Auditor |
+| `roles[].empresaId` | uuid o null | no |  |
+| `creadoEn` | fecha y hora | sí |  |
+| `ultimoAcceso` | fecha y hora o null | no |  |
+| `exigePasskey` | booleano | no | por omisión false |
+| `passkeys` | entero | no | por omisión 0 |
+| `invitadoEn` | fecha y hora o null | no |  |
+| `grupos` | lista de AsignacionDeGrupoDto o null | no |  |
+| `grupos[].grupoId` | uuid | sí |  |
+| `grupos[].empresaId` | uuid o null | no |  |
+
+**Errores de negocio que lanza**
+
+- `404` `usuario-no-encontrado`
+- `409` `usuario-duplicado`
+- `409` `usuario-inactivo`
+- `422` `ingreso-directo-apagado`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X PUT "https://{host}/api/v1/plataforma/tenants/3fa85f64-5717-4562-b3fc-2c963f66afa6/usuarios/3fa85f64-5717-4562-b3fc-2c963f66afa6" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Constructora Norte S.A.S.","correo":"contacto@empresa.co","identidades":[{"sistemaId":"3fa85f64-5717-4562-b3fc-2c963f66afa6","idExterno":"REF-0001"}],"invitar":true}'
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "nombre": "Constructora Norte S.A.S.",
+  "correo": "contacto@empresa.co",
+  "identificacion": {
+    "pais": "CO",
+    "tipo": "texto",
+    "numero": "900123456",
+    "digitoVerificacion": "texto"
+  },
+  "activo": true,
+  "identidades": [
+    {
+      "sistemaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "idExterno": "REF-0001"
+    }
+  ],
+  "roles": [
+    {
+      "rol": "Administrador",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ],
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "ultimoAcceso": "2026-11-12T15:00:00Z",
+  "exigePasskey": false,
+  "passkeys": 0,
+  "invitadoEn": "2026-11-12T15:00:00Z",
+  "grupos": [
+    {
+      "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
+}
+```
+
+</details>
+
+### `POST /api/v1/plataforma/tenants/{tenantId}/usuarios/{usuarioId}/invitar`
+
+**Invitar usuario de grupo.** «Reenviar invitación»: el correo con la dirección de la app, donde la persona pide un código con su correo (el mismo de `POST /usuarios/{id}/invitar` del grupo, pero desde la consola). 404 `tenant-no-encontrado`, `usuario-no-encontrado`; 409 `ingreso-directo-apagado`, `usuario-inactivo`.
+
+**Operador de Plataforma · API (`/api/v1`) · SDK: `invitarUsuarioDeGrupo`**
+
+**Parámetros**
+
+| Nombre | En | Tipo | Requerido | Detalle |
+|---|---|---|---|---|
+| `tenantId` | path | uuid | sí |  |
+| `usuarioId` | path | uuid | sí |  |
+
+**Respuestas**
+
+- `200` OK — UsuarioDto
+- `404` No encontrado
+
+Campos de la respuesta `200`:
+
+Mismos campos de `UsuarioDto` que se detallan en `PUT /api/v1/plataforma/tenants/{tenantId}/usuarios/{usuarioId}`.
+
+**Errores de negocio que lanza**
+
+- `404` `usuario-no-encontrado`
+- `409` `ingreso-directo-apagado`
+- `409` `usuario-inactivo`
+
+<details><summary>Ejemplo de petición y respuesta</summary>
+
+```bash
+curl -X POST "https://{host}/api/v1/plataforma/tenants/3fa85f64-5717-4562-b3fc-2c963f66afa6/usuarios/3fa85f64-5717-4562-b3fc-2c963f66afa6/invitar" \
+  -H "X-Api-Key: $CLAVE_DE_PLATAFORMA" \
+  -H "Idempotency-Key: $(uuidgen)"
+```
+
+Respuesta `200`:
+
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "nombre": "Constructora Norte S.A.S.",
+  "correo": "contacto@empresa.co",
+  "identificacion": {
+    "pais": "CO",
+    "tipo": "texto",
+    "numero": "900123456",
+    "digitoVerificacion": "texto"
+  },
+  "activo": true,
+  "identidades": [
+    {
+      "sistemaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "idExterno": "REF-0001"
+    }
+  ],
+  "roles": [
+    {
+      "rol": "Administrador",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ],
+  "creadoEn": "2026-11-12T15:00:00Z",
+  "ultimoAcceso": "2026-11-12T15:00:00Z",
+  "exigePasskey": false,
+  "passkeys": 0,
+  "invitadoEn": "2026-11-12T15:00:00Z",
+  "grupos": [
+    {
+      "grupoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "empresaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  ]
 }
 ```
 

@@ -201,11 +201,17 @@ public static class UsuariosEndpoints
     {
         await using var global = sesiones.ConsultaGlobal();
         var paraTodos = (await global.LoadAsync<Tenant>(contexto.TenantRequerido(), ct))?.PasskeyParaTodos ?? false;
+        return (paraTodos, await PasskeysActivasAsync(global, usuarios, ct));
+    }
+
+    /// <summary>Cuántas passkeys activas tiene cada persona (por su id): para mostrarlo en la lista y el detalle, también en la consola de Plataforma.</summary>
+    internal static async Task<Dictionary<string, int>> PasskeysActivasAsync(IQuerySession global, IReadOnlyList<Usuario> usuarios, CancellationToken ct)
+    {
         var ids = usuarios.Select(u => u.Id.ToString()).ToArray();
         if (ids.Length == 0)
-            return (paraTodos, []);
+            return [];
         var passkeys = await global.Query<Passkey>().Where(p => p.Propietario == TipoDePropietario.Usuario && p.RevocadaEn == null && p.SujetoId.IsOneOf(ids)).ToListAsync(ct);
-        return (paraTodos, passkeys.GroupBy(p => p.SujetoId).ToDictionary(g => g.Key, g => g.Count()));
+        return passkeys.GroupBy(p => p.SujetoId).ToDictionary(g => g.Key, g => g.Count());
     }
 
     [WolverineGet("/api/v1/usuarios/{id}")]

@@ -26,7 +26,7 @@ Ruta `/plataforma/grupos`.
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
 | Buscar por grupo, empresa o NIT | `q` busca en el nombre y el slug del grupo y en la razón social y el NIT de sus empresas (acepta puntos, espacios y dígito de verificación). | Sin filtro | Espera de 300 ms; desplazamiento infinito de 20 en 20 (la API admite de 1 a 100), por nombre y luego por id. Los sandbox no aparecen. |
-| Tarjeta de grupo | Nombre, slug, «Inactivo», número de empresas y fecha de creación; con más de 5 empresas la tabla va plegada. | — | Estados del plan de IA de cada empresa: Sin plan, Plan inactivo, Activo sin llave y Activo con llave. |
+| Tarjeta de grupo | Nombre (enlaza a la ficha del grupo), slug, «Inactivo», número de empresas y fecha de creación; con más de 5 empresas la tabla va plegada. | — | Estados del plan de IA de cada empresa: Sin plan, Plan inactivo, Activo sin llave y Activo con llave. |
 | Plan y límites | Lleva a la pantalla del plan del grupo. | — | — |
 | Sistemas | Lista los sistemas integrados del grupo. Desactivar uno revoca todas sus API keys (también las de prueba), corta sus sesiones y es inmediato entre servidores; reactivarlo no restaura las llaves. | — | Piden passkey; 409 `sistema-inactivo` si ya estaba desactivado. |
 | Agregar empresa | `POST /plataforma/tenants/{id}/empresas` con `Idempotency-Key`. No consulta el límite de empresas del plan. | — | 404 `tenant-no-encontrado`; 409 `grupo-inactivo`, `empresa-duplicada` y `prefijo-folio-duplicado`; 422 `prefijo-folio-invalido` y `nombre-requerido`. Sin passkey. |
@@ -41,7 +41,7 @@ Ruta `/plataforma/grupos/nuevo` · `POST /plataforma/tenants` con `Idempotency-K
 |---|---|---|---|
 | Nombre del grupo | Nombre visible. | Sin valor: debe configurarse | Obligatorio. |
 | Identificador (slug) | Forma parte de las API keys; es inmutable. | Se deriva del nombre | De 3 a 30 caracteres: minúsculas, números y guiones (409 `slug-duplicado`). |
-| Zona horaria | Calendario del negocio (vencimientos, «hoy»). La región es fija (`co`) y el idioma `es-CO`. | `America/Bogota` | Debe ser una zona IANA (`zona-horaria-invalida`). |
+| Zona horaria | Calendario del negocio (vencimientos, «hoy»). La pantalla fija la región en `co` y el idioma es `es-CO`; el nombre, la zona y la región se corrigen después en la ficha del grupo. | `America/Bogota` | Debe ser una zona IANA (`zona-horaria-invalida`). |
 | Primera empresa: país, tipo, número, prefijo de folio y razón social | La primera razón social del grupo. | Sin valor: debe configurarse | Prefijo de 2 a 10 caracteres `A-Z0-9`, único en el grupo; el número se valida según el tipo de identificación. |
 | Administrador: nombre, correo y usuario en el sistema (opcional) | Rol Administrador de todo el grupo; con ingreso directo recibe un correo de invitación. | Sin valor: debe configurarse | Un id externo sin sistema: 422 `sistema-requerido`. |
 | Cómo entran sus personas | Desde el sistema integrado (Delegado) y/o Directo a Validasoft. | La pantalla propone Delegado; la API sin `ingreso` crea solo Delegado | Al menos uno. |
@@ -50,6 +50,20 @@ Ruta `/plataforma/grupos/nuevo` · `POST /plataforma/tenants` con `Idempotency-K
 | Resultado | Muestra **una sola vez** dos API keys: la de administración y la del sistema, ambas con todos los permisos del grupo, empresas `*` y sin expiración. También siembra tipos de vínculo y de documento. | — | Sin documento de plan el grupo nace sin límites, con la etiqueta «Inicial». |
 
 Fuente: `src/Validasoft.Aplicacion/Plataforma/PlataformaEndpoints.cs`, `src/Validasoft.Dominio/Plataforma/Plataforma.cs`, `apps/web/src/features/plataforma/PaginaNuevoGrupo.tsx`.
+
+## Ficha del grupo
+
+Ruta `/plataforma/grupos/{grupo}` (desde el nombre del grupo o el botón «Ver ficha» de su tarjeta). Muestra en solo lectura lo que se dio de alta y cada sección tiene su «Editar». Todo cambio queda auditado a nombre de Plataforma, con el antes y el después. Sin passkey, salvo cambiar el correo o el usuario del sistema de una persona (solo a quien opera con sesión directa).
+
+| Sección | Qué muestra y qué se corrige | Variantes y límites |
+|---|---|---|
+| Grupo | Nombre, identificador, zona horaria, región, estado y fecha de creación. `PUT /plataforma/tenants/{id}` corrige el nombre, la zona y la región, también con el grupo desactivado; el sandbox del grupo los sigue. | El **identificador no se edita**: va dentro de cada API key y con él se encuentra al grupo al autenticarla. 404 `tenant-no-encontrado`; 422 `nombre-requerido` y `zona-horaria-invalida`. Una región o una zona vacías vuelven a `co` y `America/Bogota`. |
+| Empresas | Razón social, identificación y prefijo de folio de cada empresa, con «Editar» (el mismo diálogo de la lista de grupos), «Agregar empresa» y el acceso al plan de IA. | Los folios ya emitidos conservan el prefijo anterior. |
+| Administradores | Las personas con rol Administrador: nombre, correo, usuario en cada sistema integrado, si están activas, último ingreso y passkeys. «Editar» corrige el nombre, el correo y los usuarios del sistema (`PUT /plataforma/tenants/{id}/usuarios/{usuario}`); «Reenviar invitación» manda de nuevo el correo para entrar directo. | El correo es único en el grupo (409 `usuario-duplicado`) y cada usuario del sistema también (409 `identidad-duplicada`). **Al cambiar el correo se cierran las sesiones de la persona y se revocan sus passkeys**: entra con el código del correo nuevo y registra otra; con «Enviar la invitación al correo nuevo» recibe además la invitación (solo con ingreso directo). Si entra desde un sistema integrado, ese sistema manda su nombre y su correo en cada ingreso y pisa lo corregido aquí. |
+| Cómo entran sus personas | Los modos, la duración y el cierre por inactividad de la sesión directa y si todas necesitan passkey; «Editar» usa `PUT /plataforma/tenants/{id}/ingreso`. | Las mismas reglas de Configuración › Ingreso; al apagar el modo directo se cierran las sesiones directas abiertas. |
+| Sistemas integrados | Los del grupo; «Gestionar» abre el diálogo para desactivarlos y reactivarlos. | Piden passkey, como en la lista de grupos. |
+
+Fuente: `src/Validasoft.Aplicacion/Plataforma/FichaDelGrupoEndpoints.cs`, `src/Validasoft.Dominio/Plataforma/Plataforma.cs`, `src/Validasoft.Dominio/Identidad/Usuario.cs`, `apps/web/src/features/plataforma/PaginaFichaGrupo.tsx`.
 
 ## Plan de IA de una empresa
 
@@ -201,8 +215,9 @@ Fuente: `src/Validasoft.Aplicacion/Plataforma/ConsolaEndpoints.cs`, `src/Validas
 | `desactivar-clave-de-arranque`, `reactivar-clave-de-arranque` | `/plataforma/clave-de-arranque/…` | Secretos |
 | `configurar-listas-restrictivas`, `migrar-credenciales-de-listas` | `/plataforma/listas-restrictivas…` | Listas |
 | `desactivar-sso` | `/plataforma/tenants/{id}/sso/desactivar` | Solo API |
+| `corregir-usuario-de-grupo` | `PUT /plataforma/tenants/{t}/usuarios/{u}`, solo si cambia el correo o un usuario del sistema | Grupos › Ficha › Administradores |
 | `codigos-de-recuperacion` | `/mi-cuenta/codigos-de-recuperacion` | Mi cuenta |
 
-Del lado del grupo también piden passkey: `crear-api-key`, `revocar-api-key`, `rotar-api-key`, `rotar-clave-del-sistema`, `cambiar-roles`, `desactivar-usuario`, `revocar-passkey` y `configurar-sso`. **No** piden passkey en Plataforma: crear grupo, agregar empresa, plan del grupo, plan de IA y llave, tarifa, re-cifrar secretos, responder habeas (incluida la supresión irreversible), fijar un sistema de plataforma, la política de ingreso y el aviso de privacidad.
+Del lado del grupo también piden passkey: `crear-api-key`, `revocar-api-key`, `rotar-api-key`, `rotar-clave-del-sistema`, `cambiar-roles`, `desactivar-usuario`, `revocar-passkey` y `configurar-sso`. **No** piden passkey en Plataforma: crear grupo, corregir el grupo, sus empresas y su ingreso, reenviar una invitación, agregar empresa, plan del grupo, plan de IA y llave, tarifa, re-cifrar secretos, responder habeas (incluida la supresión irreversible), fijar un sistema de plataforma, la política de ingreso y el aviso de privacidad.
 
 Fuente: `src/Validasoft.Aplicacion/Plataforma/PlataformaIdentidadEndpoints.cs`, `src/Validasoft.Aplicacion/Plataforma/OperadoresDirectosEndpoints.cs`, `apps/web/src/i18n/es-CO-seguridad.ts`.

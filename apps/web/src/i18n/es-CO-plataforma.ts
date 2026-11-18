@@ -4,10 +4,12 @@
  */
 
 import { planPlataforma } from './es-CO-derechos-plan-correo';
+import { fichaGrupo } from './es-CO-ficha-grupo';
 
 export const plataforma = {
   titulo: 'Plataforma',
   plan: planPlataforma,
+  ficha: fichaGrupo,
   nav: {
     grupos: 'Grupos y empresas',
     habeas: 'Habeas data',

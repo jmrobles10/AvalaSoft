@@ -23,6 +23,7 @@ export const reautenticacion = {
     'reactivar-sistema': 'reactivar un sistema integrado',
     'cambiar-roles': 'cambiar los roles de una persona',
     'desactivar-usuario': 'desactivar a una persona',
+    'corregir-usuario-de-grupo': 'cambiar el correo o el usuario del sistema de una persona del grupo',
     'codigos-de-recuperacion': 'generar tus códigos de recuperación',
     'revocar-passkey': 'revocar una passkey',
     'configurar-sso': 'cambiar el inicio de sesión único',

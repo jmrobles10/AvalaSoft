@@ -43,7 +43,7 @@ Todo endpoint de `/api/v1` que opera sobre recursos de empresa recibe la cabecer
 #### 2.1.1 Agregados/entidades y eventos
 | Nombre | Campos clave | Invariantes probadas |
 |---|---|---|
-| `Tenant` (documento Marten, esquema `plataforma`) | `id, slug, region, claveKms, plan, presupuestoIa, politicasPorDefecto, zonaHoraria` | `slug` único; región inmutable tras el alta |
+| `Tenant` (documento Marten, esquema `plataforma`) | `id, slug, region, claveKms, plan, presupuestoIa, politicasPorDefecto, zonaHoraria` | `slug` único e inmutable (va en las API keys); el nombre, la región y la zona horaria los corrige Plataforma desde la ficha del grupo (FG) |
 | `Empresa` (documento, esquema `plataforma`; T-1) | `id, tenantId, identificacion, nombre, logoUrl, replyTo, prefijoFolio, activa` | ≥ 1 empresa por tenant; `prefijoFolio` único por tenant; el logo y el `replyTo` son por empresa (T-18) |
 | `Usuario`, `RolAsignado { rol, empresaId?, area? }` (ASP.NET Identity, esquema `identidad`) | `identificacion?` (para conflicto de intereses, I-21) | Rol `Administrador` exige 2FA activo (P-14-4) |
 | `ConcesionAccesoSoporte` (`plataforma`, B-6) | `tenantId, concedidoPor, alcance, expiraEn, usadoEn[]` | Soporte nunca ve datos sin concesión vigente; expira sola |

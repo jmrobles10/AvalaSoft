@@ -26,7 +26,7 @@ El operador de Plataforma abre la lista de grupos (clientes de Validasoft), la b
 
 ## Paso 1. Abre Grupos y empresas
 
-Es la pantalla de inicio de la consola de Plataforma. Cada grupo es un cliente de Validasoft y aparece como una tarjeta con su número de empresas, su fecha de creación y sus acciones: «Plan y límites», «Sistemas» y «Agregar empresa». Con el buscador encuentras un grupo por su nombre, por el nombre o NIT de una de sus empresas.
+Es la pantalla de inicio de la consola de Plataforma. Cada grupo es un cliente de Validasoft y aparece como una tarjeta con su número de empresas, su fecha de creación y sus acciones: «Ver ficha» (también desde el nombre del grupo), «Plan y límites», «Sistemas» y «Agregar empresa». Con el buscador encuentras un grupo por su nombre, por el nombre o NIT de una de sus empresas.
 
 > **Pantalla:** `/plataforma/grupos`
 
