@@ -46,3 +46,4 @@ El visor muestra el archivo dentro de la pantalla con el título del documento, 
 ## Recorridos relacionados
 
 - [Lee el historial de un expediente](historial-del-expediente.md)
+- [Aprueba el expediente documento por documento](aprobar-documento-por-documento.md)

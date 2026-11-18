@@ -4,7 +4,7 @@ import { abrirEmbebido } from '../../soporte/embebido';
 import { completarInvitacionYEsperarRevisionOAprobacion, esperarEstadoDelTercero } from '../../soporte/proveedor';
 import { activarIa, crearEscenario, invitar, nuevoTercero, publicarFlujoConFicha } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
-import { irASector } from '../nucleo/ficha';
+import { abrirHistorial, irASector } from '../nucleo/ficha';
 import { areaDe } from '../nucleo/semillas';
 
 const RUT = 'Registro Único Tributario';
@@ -67,11 +67,12 @@ recorrido(
       ],
     });
 
+    const panel = await abrirHistorial(sofia);
     await paso(paginaSofia, {
       titulo: 'Revisa quién registró la aprobación',
       explicacion:
         'En el historial del expediente, la aprobación del RUT figura como «Sistema (IA)», no como una persona. Así queda claro que nadie lo vio antes de aprobarse.',
-      resaltar: sofia.getByText('Sistema (IA)').first(),
+      resaltar: [panel, sofia.getByText('Sistema (IA)').first()],
     });
   },
 );

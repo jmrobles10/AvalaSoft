@@ -56,4 +56,5 @@ Tu área queda como «Aprobada». El tercero sigue «En revisión» mientras fal
 ## Recorridos relacionados
 
 - [Revisa lo que te toca desde Inicio](inicio-lo-que-te-toca.md)
+- [Aprueba el expediente documento por documento](aprobar-documento-por-documento.md)
 - [Observa un documento con motivos](observar-con-motivos.md)

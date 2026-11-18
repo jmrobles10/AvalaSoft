@@ -77,4 +77,5 @@ El informe de Norte cuenta al tercero con su situación y su coincidencia confir
 
 ## Recorridos relacionados
 
+- [Analiza una coincidencia en las listas y la descarta por homónimo](analizar-una-coincidencia.md)
 - [Rechaza el expediente por cumplimiento](rechazo-directo-del-oficial.md)

@@ -72,4 +72,5 @@ El botón «Descargar Excel» baja el mismo informe en un archivo con tres hojas
 
 ## Recorridos relacionados
 
+- [Registra el estudio de cumplimiento de un proveedor](estudio-de-cumplimiento.md)
 - [Atiende lo pendiente de Cumplimiento desde su bandeja](bandeja-del-oficial.md)

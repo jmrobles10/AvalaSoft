@@ -73,3 +73,4 @@ Descartar la coincidencia, con su justificación, deja las listas satisfechas. C
 ## Recorridos relacionados
 
 - [Revisa las listas restrictivas consultadas al pasar a revisión](pedir-listas-restrictivas.md)
+- [Analiza una coincidencia en las listas y la descarta por homónimo](analizar-una-coincidencia.md)

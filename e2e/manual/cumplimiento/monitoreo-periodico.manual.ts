@@ -101,6 +101,7 @@ recorrido(
 
     await fila.getByRole('link', { name: 'Abrir' }).click();
     await expect(olga.getByRole('heading', { level: 1, name: NOMBRE })).toBeVisible();
+    await irASector(olga, 'Oficial de cumplimiento');
     const novedad = olga.getByRole('region', { name: 'Monitoreo de listas' });
     const coincidencia = novedad.getByRole('listitem', { name: 'Roberto Coincidencia Prueba · OFAC (SDN)' });
     await expect(coincidencia).toContainText('Socio · CC 1012345678');

@@ -60,4 +60,5 @@ El proveedor recibe un solo correo con los motivos de todos los documentos obser
 ## Recorridos relacionados
 
 - [Revisa lo que corrigió el proveedor tras una observación](responder-con-lo-corregido.md)
+- [Aprueba el expediente documento por documento](aprobar-documento-por-documento.md)
 - [Rechaza un expediente por un hallazgo grave](rechazar-expediente.md)
