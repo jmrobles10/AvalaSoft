@@ -56,7 +56,6 @@ recorrido(
     const decision = sofia.getByRole('region', { name: 'Decisión automática' });
     await expect(decision).toContainText('La IA sugiere revisar');
     await expect(decision).toContainText('Confianza baja');
-    await irASector(sofia, 'Aprobaciones');
     const aprobar = regionDeArea(sofia, 'Revisión').getByRole('button', { name: /^Aprobar área/ });
     await paso(paginaSofia, {
       titulo: 'Abre el expediente con la sugerencia de la IA',
@@ -66,6 +65,7 @@ recorrido(
       variantes: [{ cuando: 'La lectura es limpia', entonces: 'La sugerencia aparece igual, pero la aprobación sigue siendo de una persona.' }],
     });
 
+    await irASector(sofia, 'Aprobaciones');
     await paso(paginaSofia, {
       titulo: 'Decide el área después de revisar el documento',
       explicacion:

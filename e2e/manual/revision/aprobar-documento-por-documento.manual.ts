@@ -67,7 +67,8 @@ recorrido(
     await expect(dialogoRut).toBeHidden();
     await expect(app.getByText(/· aprobó · v1/).first()).toBeVisible();
 
-    // 3) Aprobar la Cámara: al decidir el último documento el área queda aprobada.
+    // 3) Aprobar la Cámara: está en «Información legal». La vista por documento se conserva al cambiar de sector (ya dice «Ocultar»).
+    await irASector(app, 'Información legal');
     await app.getByRole('button', { name: `Aprobar u observar ${CAMARA} por Cumplimiento` }).click();
     const dialogoCamara = app.getByRole('dialog', { name: `${CAMARA} · Cumplimiento` });
     await dialogoCamara.getByRole('button', { name: 'Aprobar', exact: true }).click();

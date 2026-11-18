@@ -100,6 +100,7 @@ recorrido(
     await expect(nuevo).toBeHidden();
     await irASector(olga, 'Aprobaciones');
     await expect(olga.getByText(/Todas las áreas aprobaron el .* y el vínculo quedó activo\./)).toBeVisible();
+    await irASector(olga, 'Oficial de cumplimiento');
     await paso(page, {
       titulo: 'Registra un estudio nuevo y aprueba',
       explicacion:

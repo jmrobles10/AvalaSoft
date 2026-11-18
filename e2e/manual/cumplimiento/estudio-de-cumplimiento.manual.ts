@@ -98,6 +98,7 @@ recorrido(
     await expect(dialogo).toBeHidden();
     await irASector(olga, 'Aprobaciones');
     await expect(olga.getByText(/Todas las áreas aprobaron el .* y el vínculo quedó activo\./)).toBeVisible();
+    await irASector(olga, 'Oficial de cumplimiento');
     await paso(page, {
       titulo: 'Revisa el estudio registrado y el vínculo aprobado',
       explicacion:

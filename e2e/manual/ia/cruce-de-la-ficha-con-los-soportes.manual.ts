@@ -49,7 +49,7 @@ recorrido(
     const cruce = sofia.getByRole('region', { name: 'Cruce con el documento' });
     await expect(async () => {
       await abrirDesdeBandeja(sofia, cliente.nombre, 'Revisión', 'Cliente');
-      await irASector(sofia, 'Información tributaria');
+      await irASector(sofia, 'Información general');
       await expect(cruce).toContainText('Confianza de la lectura', { timeout: 1500 });
     }).toPass({ timeout: 60_000 });
     await expect(cruce.getByRole('table', { name: /^Cruce con Registro Único Tributario · versión 1/ })).toBeVisible();
@@ -61,6 +61,8 @@ recorrido(
       resaltar: cruce,
     });
 
+    // El soporte de la sección va en la tarjeta del RUT, que está en «Información tributaria».
+    await irASector(sofia, 'Información tributaria');
     const soporte = sofia.getByRole('region', { name: 'Soporte de la información' });
     await expect(soporte).toContainText('Información general (versión 1)');
     await paso(paginaSofia, {
@@ -70,6 +72,7 @@ recorrido(
       resaltar: soporte,
     });
 
+    await irASector(sofia, 'Aprobaciones');
     await aprobarArea(sofia, 'Revisión');
     await esperarEstadoDelTercero(paginaCliente, 'Aprobado');
   },
