@@ -6,7 +6,7 @@ import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto } from 
 import { createValidaloTheme } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { areaDeRequisito, expediente, requisito, requisitoFormulario, vigencia } from '../datosPrueba';
+import { area, areaDeRequisito, expediente, requisito, requisitoFormulario, vigencia } from '../datosPrueba';
 import type { ContextoRevisor } from '../reglas';
 import { DialogoDecision } from './DialogoDecision';
 import { PanelDecisionArea } from './PanelDecisionArea';
@@ -24,7 +24,12 @@ const RUT = requisito({
   versionActual: { documentoId: 'doc-rut', n: 1, sha256: 'abc', cargadaEn: '2026-11-06T14:00:00Z', vigencia: vigencia({ estado: 'PorVencer', base: 'FechaCarga' }), clase: 'Archivo' },
 });
 const SARLAFT = requisitoFormulario();
-const DATOS: ExpedienteDto = { ...expediente('EnRevision'), requisitos: [RUT, SARLAFT] };
+// «Lo que te toca decidir» solo pinta las áreas con algo por decidir: Jurídica tiene los dos documentos pendientes.
+const POR_DECIDIR = [
+  { requisitoId: RUT.id, versionVigente: 1 },
+  { requisitoId: SARLAFT.id, versionVigente: 2 },
+];
+const DATOS: ExpedienteDto = { ...expediente('EnRevision', [area({ documentosPorDecidir: POR_DECIDIR })]), requisitos: [RUT, SARLAFT] };
 
 function montar(contenido: ReactNode) {
   // Ninguna prueba debe pedir la descarga de una versión sin archivo: la API respondería 409 `version-sin-archivo`.

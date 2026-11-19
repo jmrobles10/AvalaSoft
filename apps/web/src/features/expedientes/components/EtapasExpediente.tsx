@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { Aprobaciones, ChipEstadoArea } from '../componentes';
+import { bloqueoDecisionArea, bloqueoQueSeExplica, documentosDelArea } from '../decisionArea';
 import {
   bloqueoVeredicto,
   puedeAnularVeredicto,
@@ -16,6 +17,7 @@ import {
   type DialogoExpediente,
 } from '../reglas';
 import { tieneRequisitos } from '../requisitos';
+import { AccionesDecisionArea } from './AccionesDecisionArea';
 
 export interface EtapasExpedienteProps {
   expediente: ExpedienteDto;
@@ -84,14 +86,25 @@ function TarjetaArea({
   const nombre = (id: string) => (id === contexto.usuarioId ? t('expedientes.veredictos.tu') : (nombres.get(id) ?? null));
   const pendientes = area.miembrosPendientes.map((id) => nombre(id) ?? t('expedientes.etapas.personaDelArea'));
   // Solo se explica el bloqueo a quien revisa y cuando dice algo útil (no "tu rol no emite veredictos").
-  // Con requisitos, el área decide documento por documento (RQ-4): su veredicto se deriva y no se emite aquí.
+  // Con requisitos, el área decide documento por documento (RQ-4): su veredicto se deriva y no se emite aquí, se aprueba u observa
+  // el área («Aprobar área» y «Observar», como en «Lo que te toca decidir») y quien no puede lee por qué.
   const porDocumento = tieneRequisitos(expediente);
   const emitir = bloqueo === null && !porDocumento;
+  const bloqueoDecision = porDocumento ? bloqueoDecisionArea(expediente, area, contexto) : null;
+  const decide = porDocumento && bloqueoDecision === null;
+  const revisa = contexto.scopes.has(SCOPES.expedientesRevisar);
+  const explicarDecision = porDocumento && revisa && documentosDelArea(expediente, area.areaId).length > 0 ? bloqueoQueSeExplica(bloqueoDecision) : null;
   const explicar =
-    !porDocumento && bloqueo && bloqueo !== 'sin-permiso' && bloqueo !== 'expediente-cerrado' && bloqueo !== 'area-cerrada' && contexto.scopes.has(SCOPES.expedientesRevisar);
+    !porDocumento && bloqueo && bloqueo !== 'sin-permiso' && bloqueo !== 'expediente-cerrado' && bloqueo !== 'area-cerrada' && revisa ? t(`expedientes.bloqueos.${bloqueo}`) : null;
+  const textoBloqueo = explicar ?? (explicarDecision ? t(`expedientes.decisionArea.bloqueos.${explicarDecision}`) : null);
 
   return (
-    <Box sx={{ border: 1, borderColor: area.estado === 'Observada' ? 'estado.advertencia.borde' : 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5, minWidth: 0 }}>
+    <Box
+      // Con requisitos es una región por área (como en «Lo que te toca decidir»): ahí se lee el estado de las que ya no tienen qué decidir.
+      component={porDocumento ? 'section' : 'div'}
+      aria-label={porDocumento ? area.nombre : undefined}
+      sx={{ border: 1, borderColor: area.estado === 'Observada' ? 'estado.advertencia.borde' : 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5, minWidth: 0 }}
+    >
       <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Box sx={{ minWidth: 0 }}>
           <Typography component="h4" sx={{ fontWeight: 600, fontSize: 14, lineHeight: '20px' }}>
@@ -152,23 +165,15 @@ function TarjetaArea({
 
       <Veredictos veredictos={area.veredictos} nombre={nombre} motivos={motivos} />
 
-      {(emitir || rechaza || explicar) && (
+      {(emitir || decide || rechaza || textoBloqueo) && (
         <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 1.5 }}>
           {emitir && (
             <Button variant="contained" size="small" startIcon={<Gavel size={14} aria-hidden />} onClick={() => onAccion({ tipo: 'veredicto', area })}>
               {t('expedientes.acciones.emitir')}
             </Button>
           )}
-          {rechaza && (
-            <Button variant="outlined" color="error" size="small" onClick={() => onAccion({ tipo: 'rechazar', area })}>
-              {t('expedientes.acciones.rechazar')}
-            </Button>
-          )}
-          {explicar && (
-            <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
-              {t(`expedientes.bloqueos.${bloqueo}`)}
-            </Typography>
-          )}
+          <AccionesDecisionArea area={area} puedeDecidir={decide} puedeRechazar={rechaza} onAccion={onAccion} />
+          {textoBloqueo && <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{textoBloqueo}</Typography>}
         </Stack>
       )}
     </Box>

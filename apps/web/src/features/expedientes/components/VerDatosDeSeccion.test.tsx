@@ -6,7 +6,7 @@ import { configurarCliente, reiniciarCliente, SCOPES, type RequisitoExpedienteDt
 import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DOCUMENTO } from '../../terceros/pruebas/datos';
-import { expediente, requisitoSeccion } from '../datosPrueba';
+import { area, expediente, requisitoSeccion } from '../datosPrueba';
 import type { ContextoRevisor } from '../reglas';
 import { PanelDecisionArea } from './PanelDecisionArea';
 
@@ -30,7 +30,7 @@ function montar(requisito: RequisitoExpedienteDto) {
   render(
     <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-        <PanelDecisionArea expediente={{ ...expediente('EnRevision'), requisitos: [requisito] }} contexto={() => CONTEXTO} onAccion={() => undefined} />
+        <PanelDecisionArea expediente={{ ...expediente('EnRevision', [area({ documentosPorDecidir: [{ requisitoId: requisito.id, versionVigente: 3 }] })]), requisitos: [requisito] }} contexto={() => CONTEXTO} onAccion={() => undefined} />
       </QueryClientProvider>
     </ThemeProvider>,
   );

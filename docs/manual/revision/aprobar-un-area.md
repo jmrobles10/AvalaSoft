@@ -26,7 +26,7 @@ Rubén abre el expediente de un proveedor que llegó a su bandeja, revisa los do
 
 ## Paso 1. Abre el expediente del proveedor
 
-El expediente muestra el tercero y, en «Decisión de cada área», una sección por área. Tu área, Compras, tiene el botón «Aprobar área» con los documentos que le quedan por decidir. Las demás áreas aparecen también, pero sin botones de decisión si no eres miembro de ellas.
+El expediente muestra el tercero y, en «Lo que te toca decidir», una sección por cada área donde puedes decidir ahora. Tu área, Compras, tiene el botón «Aprobar área» con los documentos que le quedan por decidir, además de «Observar». Las demás áreas no aparecen ahí: las ves en «Etapas y áreas», sin botones de decisión si no eres miembro de ellas.
 
 > **Pantalla:** `/e/{empresa}/expedientes/{id}`
 
@@ -34,7 +34,7 @@ El expediente muestra el tercero y, en «Decisión de cada área», una sección
 
 **Variantes**
 
-- **Eres miembro de otra área:** Esa área muestra «No eres miembro de esta área.» y no tiene botones de decisión.
+- **Eres miembro de otra área:** Esa área no aparece en «Lo que te toca decidir»; en «Etapas y áreas» muestra «No eres miembro de esta área.» y no tiene botones de decisión.
 - **Eres administrador y no eres miembro del área:** Puedes aprobar en nombre del área con su menú de administrador; el veredicto queda registrado a tu nombre.
 
 ## Paso 2. Confirma la aprobación del área

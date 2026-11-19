@@ -320,8 +320,7 @@ export const expedientes = {
     avisoVencidaSinFecha: 'Ya no está vigente para este vínculo.',
   },
   decisionArea: {
-    titulo: 'Decisión de cada área',
-    tuArea: 'Tu área',
+    titulo: 'Lo que te toca decidir',
     aprobar_one: 'Aprobar área ({{count}} documento)',
     aprobar_other: 'Aprobar área ({{count}} documentos)',
     observar: 'Observar',
