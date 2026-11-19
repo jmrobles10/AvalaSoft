@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { area, expediente, requisito } from './datosPrueba';
 import {
   bloqueoDecisionArea,
+  bloqueoQueSeExplica,
   documentosPorDecidir,
   falloDeDecision,
   requisitosParaObservar,
@@ -58,6 +59,12 @@ describe('«Aprobar área»: qué documentos y en qué versión', () => {
     expect(bloqueoDecisionArea(exp, a, miembro({ esMiembro: false }))).toBe('no-es-miembro');
     const nada = conPorDecidir([]);
     expect(bloqueoDecisionArea(conDocumentos('EnRevision', [rut, camara], [nada]), nada, miembro())).toBe('nada-por-decidir');
+  });
+
+  it('de los bloqueos solo se explican los que dicen algo útil a quien revisa; sin permiso, cerrado, automática o cerrada no', () => {
+    for (const util of ['expediente-observado', 'vinculo-bloqueado', 'area-esperando', 'no-es-miembro', 'nada-por-decidir'] as const) expect(bloqueoQueSeExplica(util)).toBe(util);
+    for (const inutil of ['sin-permiso', 'expediente-cerrado', 'area-automatica', 'area-cerrada'] as const) expect(bloqueoQueSeExplica(inutil)).toBeNull();
+    expect(bloqueoQueSeExplica(null)).toBeNull();
   });
 });
 

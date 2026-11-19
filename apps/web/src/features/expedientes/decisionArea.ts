@@ -65,6 +65,14 @@ export function bloqueoDecisionArea(expediente: ExpedienteDto, area: AreaExpedie
   return documentosPorDecidir(area).length === 0 ? 'nada-por-decidir' : null;
 }
 
+/** Bloqueos que se le explican a quien revisa; los demás (sin permiso, cerrado, automática) no dicen nada útil. */
+const BLOQUEOS_QUE_SE_EXPLICAN = ['expediente-observado', 'vinculo-bloqueado', 'area-esperando', 'no-es-miembro', 'nada-por-decidir'] as const;
+
+/** El bloqueo, si vale la pena explicarlo (su texto está en `expedientes.decisionArea.bloqueos.*`); si no, `null`. */
+export function bloqueoQueSeExplica(bloqueo: BloqueoDecisionArea | null): (typeof BLOQUEOS_QUE_SE_EXPLICAN)[number] | null {
+  return BLOQUEOS_QUE_SE_EXPLICAN.find((b) => b === bloqueo) ?? null;
+}
+
 /** Lo marcado en «Observar»: por documento, sus motivos y su nota; en una sección, los campos señalados (FM-28). */
 export type MarcasDeObservacion = ReadonlyMap<string, { motivos: readonly string[]; observacion: string; campos?: readonly string[] }>;
 

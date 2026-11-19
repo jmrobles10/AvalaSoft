@@ -5,12 +5,12 @@ import userEvent from '@testing-library/user-event';
 import { SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@validalo/api-client';
 import { createValidaloTheme } from '@validalo/ui';
 import { describe, expect, it, vi } from 'vitest';
-import { area, expediente, veredicto } from '../datosPrueba';
+import { area, areaDeRequisito, expediente, requisito, veredicto } from '../datosPrueba';
 import type { ContextoRevisor, DialogoExpediente } from '../reglas';
 import { EtapasExpediente } from './EtapasExpediente';
 
 /**
- * «Etapas y áreas» de un expediente de un flujo sin documentos: cada área decide sobre el expediente completo. Lo que ve cada persona de
+ * «Etapas y áreas» de un expediente de un flujo sin documentos (y, al final, con ellos): cada área decide sobre el expediente completo. Lo que ve cada persona de
  * la secuencia de etapas, de los aprobadores que faltan, de «Rechazar» y de las acciones de administrador (decisiones, secuencia y ciclo
  * del vínculo en la conversión de las e2e, PC-1).
  */
@@ -19,9 +19,18 @@ const ADMINISTRADOR = new Set<string>([SCOPES.expedientesLeer, SCOPES.expediente
 
 const etapa = (orden: number, estado: 'Esperando' | 'Activa' | 'Aprobada', areas: AreaExpedienteDto[]) => ({ orden, estado, activadaEn: null, aprobadaEn: null, areas });
 
-function montar(datos: ExpedienteDto, { scopes = REVISOR, usuarioId = 'u-1', miembro = true }: { scopes?: ReadonlySet<string>; usuarioId?: string; miembro?: boolean } = {}) {
+/** `miembroDe` (códigos de área) vuelve a la persona miembro solo de esas áreas; sin él, `miembro` vale para todas. */
+function montar(
+  datos: ExpedienteDto,
+  {
+    scopes = REVISOR,
+    usuarioId = 'u-1',
+    miembro = true,
+    miembroDe,
+  }: { scopes?: ReadonlySet<string>; usuarioId?: string; miembro?: boolean; miembroDe?: readonly string[] } = {},
+) {
   const onAccion = vi.fn<(dialogo: DialogoExpediente) => void>();
-  const contexto = (): ContextoRevisor => ({ scopes, usuarioId, esMiembro: miembro });
+  const contexto = (a: AreaExpedienteDto | null): ContextoRevisor => ({ scopes, usuarioId, esMiembro: miembroDe && a ? miembroDe.includes(a.codigo) : miembro });
   render(
     <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>
@@ -173,5 +182,121 @@ describe('Etapas y áreas: rechazar y acciones de administrador', () => {
     if (!tarjeta) throw new Error('sin tarjeta del área');
     expect(within(tarjeta).getByText(/Anulado/)).toBeInTheDocument();
     expect(within(tarjeta).getByText(/Pendiente/)).toBeInTheDocument();
+  });
+});
+
+/**
+ * En un flujo con documentos el área decide aprobando u observando lo suyo («Lo que te toca decidir» arriba, y aquí el mismo trío de
+ * acciones en la tarjeta del área): Compras revisa el RUT y Cumplimiento el RUT y la Cámara de comercio. Donde la persona no puede
+ * decidir, la tarjeta dice por qué; «Rechazar» no depende de poder decidir.
+ */
+describe('Etapas y áreas: un flujo con documentos', () => {
+  const RUT = requisito({ areas: [areaDeRequisito({ areaId: 'a-compras', codigo: 'COMPRAS' }), areaDeRequisito({ areaId: 'a-cumplimiento', codigo: 'CUMPLIMIENTO' })] });
+  const CAMARA = requisito({
+    id: 'r-camara',
+    tipoDocumento: { id: 'td-cc', codigo: 'CAMARA_COMERCIO', nombre: 'Cámara de comercio', tipoCanonico: 'CAMARA_COMERCIO', ambito: 'Global' },
+    areas: [areaDeRequisito({ areaId: 'a-cumplimiento', codigo: 'CUMPLIMIENTO' })],
+  });
+  const compras = (cambios: Partial<AreaExpedienteDto> = {}) =>
+    area({ areaId: 'a-compras', codigo: 'COMPRAS', nombre: 'Compras', documentosPorDecidir: [{ requisitoId: 'r-rut', versionVigente: 1 }], ...cambios });
+  const cumplimiento = (cambios: Partial<AreaExpedienteDto> = {}) =>
+    area({
+      areaId: 'a-cumplimiento',
+      codigo: 'CUMPLIMIENTO',
+      nombre: 'Cumplimiento',
+      puedeRechazarExpediente: true,
+      documentosPorDecidir: [
+        { requisitoId: 'r-rut', versionVigente: 1 },
+        { requisitoId: 'r-camara', versionVigente: 1 },
+      ],
+      ...cambios,
+    });
+  const conDocumentos = (estado: ExpedienteDto['estado'], areas: AreaExpedienteDto[] = [compras(), cumplimiento()]): ExpedienteDto => ({ ...expediente(estado, areas), requisitos: [RUT, CAMARA] });
+  const tarjeta = (nombre: string) => within(screen.getByRole('region', { name: nombre }));
+
+  it('donde puede decidir la tarjeta ofrece «Aprobar área», «Observar» y, si el área puede, «Rechazar»; no «Emitir veredicto»', () => {
+    montar(conDocumentos('EnRevision'));
+
+    expect(tarjeta('Compras').getByRole('button', { name: 'Aprobar área (1 documento)' })).toBeInTheDocument();
+    expect(tarjeta('Compras').getByRole('button', { name: 'Observar' })).toBeInTheDocument();
+    expect(tarjeta('Compras').queryByRole('button', { name: 'Rechazar' })).not.toBeInTheDocument();
+    expect(tarjeta('Cumplimiento').getByRole('button', { name: 'Aprobar área (2 documentos)' })).toBeInTheDocument();
+    expect(tarjeta('Cumplimiento').getByRole('button', { name: 'Observar' })).toBeInTheDocument();
+    expect(tarjeta('Cumplimiento').getByRole('button', { name: 'Rechazar' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Emitir veredicto' })).not.toBeInTheDocument();
+  });
+
+  it('cada botón abre su diálogo con el área', async () => {
+    const usuario = userEvent.setup();
+    const cumple = cumplimiento();
+    const { onAccion } = montar(conDocumentos('EnRevision', [cumple]));
+
+    await usuario.click(tarjeta('Cumplimiento').getByRole('button', { name: 'Aprobar área (2 documentos)' }));
+    expect(onAccion).toHaveBeenLastCalledWith({ tipo: 'aprobarArea', area: cumple, documentos: cumple.documentosPorDecidir });
+    await usuario.click(tarjeta('Cumplimiento').getByRole('button', { name: 'Observar' }));
+    expect(onAccion).toHaveBeenLastCalledWith({ tipo: 'observarArea', area: cumple });
+    await usuario.click(tarjeta('Cumplimiento').getByRole('button', { name: 'Rechazar' }));
+    expect(onAccion).toHaveBeenLastCalledWith({ tipo: 'rechazar', area: cumple });
+  });
+
+  it('quien no es del área lee que no es miembro y no puede aprobarla ni observarla (ni rechazar); la suya sí', () => {
+    montar(conDocumentos('EnRevision'), { scopes: ADMINISTRADOR, miembroDe: ['COMPRAS'] });
+
+    expect(tarjeta('Cumplimiento').getByText('No eres miembro de esta área.')).toBeInTheDocument();
+    expect(tarjeta('Cumplimiento').queryByRole('button', { name: /^Aprobar área/ })).not.toBeInTheDocument();
+    expect(tarjeta('Cumplimiento').queryByRole('button', { name: 'Observar' })).not.toBeInTheDocument();
+    expect(tarjeta('Cumplimiento').queryByRole('button', { name: 'Rechazar' })).not.toBeInTheDocument();
+    expect(tarjeta('Compras').getByRole('button', { name: 'Aprobar área (1 documento)' })).toBeInTheDocument();
+    expect(tarjeta('Compras').queryByText('No eres miembro de esta área.')).not.toBeInTheDocument();
+  });
+
+  it('con el expediente devuelto nadie aprueba ni observa y cada tarjeta lo explica, pero Cumplimiento todavía puede rechazar', () => {
+    montar(conDocumentos('Observado'));
+
+    for (const nombre of ['Compras', 'Cumplimiento']) {
+      expect(tarjeta(nombre).getByText('Devuelto al tercero: espera su respuesta.')).toBeInTheDocument();
+      expect(tarjeta(nombre).queryByRole('button', { name: /^Aprobar área/ })).not.toBeInTheDocument();
+      expect(tarjeta(nombre).queryByRole('button', { name: 'Observar' })).not.toBeInTheDocument();
+    }
+    expect(tarjeta('Cumplimiento').getByRole('button', { name: 'Rechazar' })).toBeInTheDocument();
+    expect(tarjeta('Compras').queryByRole('button', { name: 'Rechazar' })).not.toBeInTheDocument();
+  });
+
+  it('un área que ya decidió todo lo suyo dice que falta otra persona o el tercero, sin botones de decisión', () => {
+    montar(conDocumentos('EnRevision', [compras({ documentosPorDecidir: [] }), cumplimiento()]));
+
+    expect(tarjeta('Compras').getByText('Ya decidiste todo lo de esta área; falta otra persona o la respuesta del tercero.')).toBeInTheDocument();
+    expect(tarjeta('Compras').queryByRole('button', { name: /^Aprobar área/ })).not.toBeInTheDocument();
+    expect(tarjeta('Cumplimiento').getByRole('button', { name: 'Aprobar área (2 documentos)' })).toBeInTheDocument();
+  });
+
+  it('un área cuya etapa aún no empieza lo dice, y un área aprobada o sin documentos no explica nada', () => {
+    const legal = area({ areaId: 'a-legal', codigo: 'LEGAL', nombre: 'Legal', estado: 'Pendiente' });
+    const datos = conDocumentos('EnRevision', [compras({ estado: 'Aprobada', documentosPorDecidir: [] }), legal, cumplimiento({ estado: 'Esperando', documentosPorDecidir: [] })]);
+    montar(datos);
+
+    expect(tarjeta('Cumplimiento').getByText('Su etapa aún no empieza.')).toBeInTheDocument();
+    expect(tarjeta('Compras').queryByText(/Ya decidiste todo/)).not.toBeInTheDocument();
+    expect(tarjeta('Compras').queryByRole('button', { name: /^Aprobar área/ })).not.toBeInTheDocument();
+    expect(tarjeta('Legal').queryByText(/Ya decidiste todo/)).not.toBeInTheDocument();
+    expect(tarjeta('Legal').queryByRole('button', { name: /^Aprobar área/ })).not.toBeInTheDocument();
+  });
+
+  it('quien solo lee el expediente no ve botones de decisión ni explicaciones', () => {
+    montar(conDocumentos('EnRevision'), { scopes: new Set<string>([SCOPES.expedientesLeer]) });
+
+    expect(screen.queryByRole('button', { name: /^Aprobar área/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Observar' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Rechazar' })).not.toBeInTheDocument();
+    expect(screen.queryByText('No eres miembro de esta área.')).not.toBeInTheDocument();
+  });
+
+  it('un flujo sin documentos sigue con «Emitir veredicto» y «Rechazar», sin «Aprobar área» ni «Observar»', () => {
+    montar(expediente('EnRevision', [area({ areaId: 'a-compras', codigo: 'COMPRAS', nombre: 'Compras', puedeRechazarExpediente: true })]));
+
+    expect(screen.getByRole('button', { name: 'Emitir veredicto' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Rechazar' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Aprobar área/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Observar' })).not.toBeInTheDocument();
   });
 });
