@@ -7,8 +7,8 @@ import {
   registrarMiPasskey,
   renombrarMiPasskey,
   type PasskeyDto,
-} from '@avalasoft/api-client';
-import { enfocarNodo, EstadoVacio } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { enfocarNodo, EstadoVacio } from '@validalo/ui';
 import { KeyRound, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

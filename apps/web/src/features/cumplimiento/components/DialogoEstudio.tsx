@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import type { AdjuntoDeCumplimientoDto, ConceptoCumplimiento, ExpedienteDto, RegistrarEstudioCumplimientoDto } from '@avalasoft/api-client';
+import type { AdjuntoDeCumplimientoDto, ConceptoCumplimiento, ExpedienteDto, RegistrarEstudioCumplimientoDto } from '@validalo/api-client';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ErrorRecuperable, IconoCarga } from '../../../shared/componentes';

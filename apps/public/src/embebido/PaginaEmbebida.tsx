@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getListarVinculosPublicosQueryOptions } from '@avalasoft/api-client';
+import { getListarVinculosPublicosQueryOptions } from '@validalo/api-client';
 import { Navigate, useParams } from 'react-router';
 import { useSesionTercero } from '../sesion/sesionTercero';
 import { EsperandoSesion } from './EsperandoSesion';

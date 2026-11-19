@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ACCIONES_VINCULO, configurarCliente, reiniciarCliente, type AccionVinculo, type VinculoDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { ACCIONES_VINCULO, configurarCliente, reiniciarCliente, type AccionVinculo, type VinculoDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAvisos } from '../../../shared/useAvisos';
 import { DialogoAccion } from './DialogoAccion';
@@ -62,7 +62,7 @@ function preparar(accion: AccionVinculo, respuesta: () => Response, base: Vincul
   const onCerrar = vi.fn();
   const definicion = ACCIONES_VINCULO.find((a) => a.accion === accion)!;
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>
         <DialogoAccion definicion={definicion} vinculo={base} empresaId="e1" onCerrar={onCerrar} />
       </QueryClientProvider>

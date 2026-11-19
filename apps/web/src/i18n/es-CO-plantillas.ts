@@ -5,8 +5,8 @@
 
 export const plantillas = {
   titulo: 'Plantillas de correo',
-  subtitulo: 'Asunto, cabecera y pie de los correos que AvalaSoft le envía al tercero en nombre de {{empresa}}.',
-  ayuda: 'El cuerpo del correo (enlaces, documentos, plazos) lo arma AvalaSoft; tú agregas un texto antes y otro después.',
+  subtitulo: 'Asunto, cabecera y pie de los correos que Valídalo le envía al tercero en nombre de {{empresa}}.',
+  ayuda: 'El cuerpo del correo (enlaces, documentos, plazos) lo arma Valídalo; tú agregas un texto antes y otro después.',
   errorLista: 'No pudimos cargar las plantillas.',
   columnas: { correo: 'Correo', estado: 'Estado', version: 'Versión' },
   personalizada: 'Personalizada',
@@ -42,7 +42,7 @@ export const plantillas = {
   marcoPrevia: 'Vista previa del correo «{{nombre}}»',
   restaurar: 'Restaurar predeterminado',
   restaurarTitulo: '¿Volver al correo predeterminado?',
-  restaurarMensaje: 'Se quitan el asunto, la cabecera y el pie de «{{nombre}}». Los próximos correos saldrán con el texto de AvalaSoft.',
+  restaurarMensaje: 'Se quitan el asunto, la cabecera y el pie de «{{nombre}}». Los próximos correos saldrán con el texto de Valídalo.',
   restaurarConfirmar: 'Restaurar',
   restaurado: 'El correo volvió al texto predeterminado.',
   guardado: 'Plantilla guardada. Los próximos correos saldrán así.',

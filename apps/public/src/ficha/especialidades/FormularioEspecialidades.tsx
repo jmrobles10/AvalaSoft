@@ -1,5 +1,5 @@
 import { Alert, Box, Chip, InputAdornment, Paper, Stack, TextField, Typography } from '@mui/material';
-import { LineasEsqueleto } from '@avalasoft/ui';
+import { LineasEsqueleto } from '@validalo/ui';
 import { Search, X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

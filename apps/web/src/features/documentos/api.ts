@@ -5,7 +5,7 @@ import {
   type DocumentoVistaEmpresaDto,
   type HechosDto,
   type VersionDocumentoDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa } from '../../shared/consultas';
 
 /** Documentos compartidos con el vínculo (solo tras la aceptación del tercero, B-1; antes la lista es vacía). */

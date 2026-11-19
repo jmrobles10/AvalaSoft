@@ -1,5 +1,5 @@
 import { Box, Chip, LinearProgress, Typography } from '@mui/material';
-import type { EstadoLote, LoteDto } from '@avalasoft/api-client';
+import type { EstadoLote, LoteDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { porcentaje, procesables, TONO_LOTE } from './modelo';
 

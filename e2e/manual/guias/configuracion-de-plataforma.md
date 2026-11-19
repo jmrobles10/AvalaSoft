@@ -5,7 +5,7 @@ orden: 33
 resumen: "La consola /plataforma y los ajustes globales de la instalación: grupos, planes, IA, listas restrictivas, operadores, secretos y soporte, con valores por defecto y variantes."
 ---
 
-**Plataforma** es quien opera la instalación de AvalaSoft: da de alta grupos y empresas, fija planes y límites, configura la IA y la cuenta de listas restrictivas, administra operadores y secretos. Sus pantallas viven en `/plataforma` de la app web (`/app/#/plataforma/…`) y solo las ven los operadores de Plataforma. Los ajustes que cambian por despliegue y no desde la consola están en [Variables de entorno](guia:variables-de-entorno).
+**Plataforma** es quien opera la instalación de Valídalo: da de alta grupos y empresas, fija planes y límites, configura la IA y la cuenta de listas restrictivas, administra operadores y secretos. Sus pantallas viven en `/plataforma` de la app web (`/app/#/plataforma/…`) y solo las ven los operadores de Plataforma. Los ajustes que cambian por despliegue y no desde la consola están en [Variables de entorno](guia:variables-de-entorno).
 
 ## Reglas comunes de la consola
 
@@ -13,11 +13,11 @@ resumen: "La consola /plataforma y los ajustes globales de la instalación: grup
 |---|---|
 | Acceso | Solo con una sesión sin grupo, actor Plataforma y permiso `plataforma:tenants`; con otra sesión redirige a `/`. Pestañas: Grupos y empresas, Habeas data, Uso de IA, Operadores, Ingresos, Secretos y Listas restrictivas. «Mi cuenta» está en el menú de la cuenta. |
 | Permiso de los endpoints `/api/v1/plataforma/*` | `plataforma:tenants`: la sesión de un operador o la clave de arranque (`X-Api-Key`, actor `plataforma-bootstrap`). |
-| Cómo entra un operador | **Directo**: correo, código y passkey obligatoria; sesión de 8 horas, inactividad de 30 minutos y token de acceso de 15 minutos (`Avalasoft:Ingreso:Plataforma:SesionHoras`, `InactividadMinutos` y `Avalasoft:Ingreso:MinutosAcceso`; no se editan desde la consola). **Delegado**: el backoffice canjea la aserción en `POST /plataforma/sesiones` con la clave de arranque y recibe un token de 30 minutos con solo `plataforma:tenants`. |
+| Cómo entra un operador | **Directo**: correo, código y passkey obligatoria; sesión de 8 horas, inactividad de 30 minutos y token de acceso de 15 minutos (`Validalo:Ingreso:Plataforma:SesionHoras`, `InactividadMinutos` y `Validalo:Ingreso:MinutosAcceso`; no se editan desde la consola). **Delegado**: el backoffice canjea la aserción en `POST /plataforma/sesiones` con la clave de arranque y recibe un token de 30 minutos con solo `plataforma:tenants`. |
 | Confirmar con passkey | Vale 5 minutos y solo aplica a quien entró directo; no aplica a operadores por identidad delegada, a la clave de arranque ni a API keys. Sin confirmación reciente: 403 `reautenticacion-requerida`, y la web abre el diálogo y repite la petición una vez. Las acciones están en [Acciones que piden passkey](guia:configuracion-de-plataforma#acciones-que-piden-passkey). |
 | Auditoría | Los cambios de plan, tarifa, plan de IA, operadores, sistemas, clave de arranque y listas quedan auditados; las llaves y claves nunca se guardan. |
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/ConsolaEndpoints.cs`, `src/Avalasoft.Infraestructura/Seguridad/IdentidadDelegada.cs`, `apps/web/src/features/plataforma/ShellPlataforma.tsx`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/ConsolaEndpoints.cs`, `src/Validalo.Infraestructura/Seguridad/IdentidadDelegada.cs`, `apps/web/src/features/plataforma/ShellPlataforma.tsx`.
 
 ## Grupos y empresas
 
@@ -31,7 +31,7 @@ Ruta `/plataforma/grupos`.
 | Sistemas | Lista los sistemas integrados del grupo. Desactivar uno revoca todas sus API keys (también las de prueba), corta sus sesiones y es inmediato entre servidores; reactivarlo no restaura las llaves. | — | Piden passkey; 409 `sistema-inactivo` si ya estaba desactivado. |
 | Agregar empresa | `POST /plataforma/tenants/{id}/empresas` con `Idempotency-Key`. No consulta el límite de empresas del plan. | — | 404 `tenant-no-encontrado`; 409 `grupo-inactivo`, `empresa-duplicada` y `prefijo-folio-duplicado`; 422 `prefijo-folio-invalido` y `nombre-requerido`. Sin passkey. |
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/PlataformaEndpoints.cs`, `apps/web/src/features/plataforma/PaginaGrupos.tsx`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/PlataformaEndpoints.cs`, `apps/web/src/features/plataforma/PaginaGrupos.tsx`.
 
 ## Nuevo grupo
 
@@ -44,12 +44,12 @@ Ruta `/plataforma/grupos/nuevo` · `POST /plataforma/tenants` con `Idempotency-K
 | Zona horaria | Calendario del negocio (vencimientos, «hoy»). La pantalla fija la región en `co` y el idioma es `es-CO`; el nombre, la zona y la región se corrigen después en la ficha del grupo. | `America/Bogota` | Debe ser una zona IANA (`zona-horaria-invalida`). |
 | Primera empresa: país, tipo, número, prefijo de folio y razón social | La primera razón social del grupo. | Sin valor: debe configurarse | Prefijo de 2 a 10 caracteres `A-Z0-9`, único en el grupo; el número se valida según el tipo de identificación. |
 | Administrador: nombre, correo y usuario en el sistema (opcional) | Rol Administrador de todo el grupo; con ingreso directo recibe un correo de invitación. | Sin valor: debe configurarse | Un id externo sin sistema: 422 `sistema-requerido`. |
-| Cómo entran sus personas | Desde el sistema integrado (Delegado) y/o Directo a AvalaSoft. | La pantalla propone Delegado; la API sin `ingreso` crea solo Delegado | Al menos uno. |
+| Cómo entran sus personas | Desde el sistema integrado (Delegado) y/o Directo a Valídalo. | La pantalla propone Delegado; la API sin `ingreso` crea solo Delegado | Al menos uno. |
 | Política de sesión del grupo | Duración de la sesión, inactividad y passkey para todos; luego se cambian en Configuración › Ingreso. | 8 horas, 30 minutos, no | Sesión de 1 a 24 horas; inactividad de 5 a 480 minutos y no más que la sesión. |
 | Sistema integrado (solo con Delegado): código, nombre, clave pública y sitios | El sistema que autentica a las personas. | Sin valor: debe configurarse | Código `A-Z`, `0-9` y `_` (2 a 20), que es el `iss` de las aserciones; clave RSA de 2048 bits o más, o EC P-256; hasta 20 orígenes `https://host[:puerto]`. |
 | Resultado | Muestra **una sola vez** dos API keys: la de administración y la del sistema, ambas con todos los permisos del grupo, empresas `*` y sin expiración. También siembra tipos de vínculo y de documento. | — | Sin documento de plan el grupo nace sin límites, con la etiqueta «Inicial». |
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/PlataformaEndpoints.cs`, `src/Avalasoft.Dominio/Plataforma/Plataforma.cs`, `apps/web/src/features/plataforma/PaginaNuevoGrupo.tsx`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/PlataformaEndpoints.cs`, `src/Validalo.Dominio/Plataforma/Plataforma.cs`, `apps/web/src/features/plataforma/PaginaNuevoGrupo.tsx`.
 
 ## Ficha del grupo
 
@@ -63,7 +63,7 @@ Ruta `/plataforma/grupos/{grupo}` (desde el nombre del grupo o el botón «Ver f
 | Cómo entran sus personas | Los modos, la duración y el cierre por inactividad de la sesión directa y si todas necesitan passkey; «Editar» usa `PUT /plataforma/tenants/{id}/ingreso`. | Las mismas reglas de Configuración › Ingreso; al apagar el modo directo se cierran las sesiones directas abiertas. |
 | Sistemas integrados | Los del grupo; «Gestionar» abre el diálogo para desactivarlos y reactivarlos. | Piden passkey, como en la lista de grupos. |
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/FichaDelGrupoEndpoints.cs`, `src/Avalasoft.Dominio/Plataforma/Plataforma.cs`, `src/Avalasoft.Dominio/Identidad/Usuario.cs`, `apps/web/src/features/plataforma/PaginaFichaGrupo.tsx`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/FichaDelGrupoEndpoints.cs`, `src/Validalo.Dominio/Plataforma/Plataforma.cs`, `src/Validalo.Dominio/Identidad/Usuario.cs`, `apps/web/src/features/plataforma/PaginaFichaGrupo.tsx`.
 
 ## Plan de IA de una empresa
 
@@ -81,7 +81,7 @@ Ruta `/plataforma/grupos/{grupo}/empresas/{empresa}/plan-ia` · `PUT …/plan-ia
 | API key de OpenAI | Paga los análisis de la empresa. Es de solo escritura: se cifra con la clave maestra y solo vuelve «Configurada · ••••XXXX». | Sin llave | Empieza por `sk-` (también `sk-proj-` o `sk-svcacct-`), de 20 a 512 caracteres con letras, números, guion y guion bajo, sin espacios; sin valor conserva, vacía quita, un valor reemplaza. |
 | Probar llave | Consulta `GET {UrlBase}/models` sin consumir tokens (15 s). | — | Responde `valida`, `invalida`, `limite`, `sin-llave` o `error`. |
 
-Fuente: `src/Avalasoft.Aplicacion/Ia/IaEndpoints.cs`, `src/Avalasoft.Dominio/Ia/PlanDeIaEmpresa.cs`, `src/Avalasoft.Dominio/Ia/UsoDeIa.cs`.
+Fuente: `src/Validalo.Aplicacion/Ia/IaEndpoints.cs`, `src/Validalo.Dominio/Ia/PlanDeIaEmpresa.cs`, `src/Validalo.Dominio/Ia/UsoDeIa.cs`.
 
 ## Plan y límites del grupo
 
@@ -99,7 +99,7 @@ Ruta `/plataforma/grupos/{grupo}/plan` · `PUT /plataforma/tenants/{id}/plan`. S
 | `Usuarios` | Usuarios activos. |
 | `Empresas` | Empresas activas del grupo. |
 | `VinculosActivos` | Vínculos que no están Anulados ni Desvinculados. |
-| `Almacenamiento` | Bytes de documentos de la bóveda compartidos con el grupo (cada objeto una vez, sin versiones suprimidas); se mide cada 5 minutos (`Avalasoft:Plan:MinutosMedicionAlmacenamiento`, de 0 a 1440). |
+| `Almacenamiento` | Bytes de documentos de la bóveda compartidos con el grupo (cada objeto una vez, sin versiones suprimidas); se mide cada 5 minutos (`Validalo:Plan:MinutosMedicionAlmacenamiento`, de 0 a 1440). |
 | `LlamadasApi` | Peticiones `/api/v1` con API key de producción en el mes calendario del negocio, lecturas y escrituras; no cuentan las sesiones de pantalla, el sandbox ni Plataforma; se vuelcan cada 5 segundos. |
 
 | Concepto | Comportamiento |
@@ -107,10 +107,10 @@ Ruta `/plataforma/grupos/{grupo}/plan` · `PUT /plataforma/tenants/{id}/plan`. S
 | Niveles | Normal: menos del 80 % o sin límite. Por agotar: del 80 % a menos del 100 %. Agotado: desde el límite. Con límite 0 el porcentaje es 100. |
 | Con bloqueo suave y el límite alcanzado | 409 `limite-del-plan-alcanzado` al crear un usuario, una empresa (del grupo), un vínculo (API y lotes) y al cargar un documento propio de un vínculo; las escrituras con API key responden 429. Las lecturas y lo existente no se bloquean. |
 | Lo que el bloqueo no cubre | Las empresas creadas por Plataforma y los usuarios aprovisionados por identidad delegada o SSO. |
-| Avisos | Cada 15 minutos (`Avalasoft:Plan:Intervalo`), al 80 % y al 100 % por métrica, uno por umbral y periodo, a los administradores por campana y correo; guardar el plan reinicia los avisos enviados. `POST /plataforma/planes/revisar` revisa de inmediato. |
+| Avisos | Cada 15 minutos (`Validalo:Plan:Intervalo`), al 80 % y al 100 % por métrica, uno por umbral y periodo, a los administradores por campana y correo; guardar el plan reinicia los avisos enviados. `POST /plataforma/planes/revisar` revisa de inmediato. |
 | Derechos que habilita | Ninguno: el plan solo mide y limita estas cinco métricas. El dominio de correo y la marca no dependen del plan. |
 
-Fuente: `src/Avalasoft.Dominio/Plataforma/PlanDelGrupo.cs`, `src/Avalasoft.Aplicacion/Plataforma/PlanDelGrupoEndpoints.cs`, `src/Avalasoft.Infraestructura/Http/Http.cs`.
+Fuente: `src/Validalo.Dominio/Plataforma/PlanDelGrupo.cs`, `src/Validalo.Aplicacion/Plataforma/PlanDelGrupoEndpoints.cs`, `src/Validalo.Infraestructura/Http/Http.cs`.
 
 ## Uso de IA y tarifa
 
@@ -122,7 +122,7 @@ Ruta `/plataforma/uso-ia`.
 | Tarifa general: precio | Vale para las empresas sin precio propio. | 0: lo adicional no se valora | De 0 a 100 000 000. Sin passkey. |
 | Tarifa general: moneda | Moneda de la tarifa. | `COP` | Código ISO de 3 letras. |
 
-Fuente: `src/Avalasoft.Aplicacion/Ia/ConsumoDeIaEndpoints.cs`, `src/Avalasoft.Dominio/Ia/TarifaDeIa.cs`.
+Fuente: `src/Validalo.Aplicacion/Ia/ConsumoDeIaEndpoints.cs`, `src/Validalo.Dominio/Ia/TarifaDeIa.cs`.
 
 ## Habeas data de la plataforma
 
@@ -131,10 +131,10 @@ Ruta `/plataforma/habeas` · solicitudes de terceros dirigidas a la plataforma.
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
 | Filtro de estado | Qué solicitudes se listan. | Abiertas | Abiertas, Vencidas o Resueltas (la API admite también `todas`). |
-| Plazos | 10 días hábiles para consulta y 15 para reclamo; aviso «vence pronto» a 2 días hábiles, a los correos de `Avalasoft:Habeas:CorreosPlataforma`. | 10, 15 y 2 | Revisión horaria (`Avalasoft:Habeas:Intervalo`). |
+| Plazos | 10 días hábiles para consulta y 15 para reclamo; aviso «vence pronto» a 2 días hábiles, a los correos de `Validalo:Habeas:CorreosPlataforma`. | 10, 15 y 2 | Revisión horaria (`Validalo:Habeas:Intervalo`). |
 | Responder: atender o rechazar | Respuesta de 10 a 4000 caracteres; la base legal es opcional y solo se agrega al rechazar. Sin passkey. | — | Atender una supresión «Todo» ejecuta el plan: elimina lo no referenciado, conserva lo exigido por ley y anonimiza; es irreversible. |
 
-Fuente: `src/Avalasoft.Aplicacion/Habeas/SolicitudesHabeasEndpoints.cs`, `src/Avalasoft.Dominio/Habeas/SolicitudHabeas.cs`.
+Fuente: `src/Validalo.Aplicacion/Habeas/SolicitudesHabeasEndpoints.cs`, `src/Validalo.Dominio/Habeas/SolicitudHabeas.cs`.
 
 ## Operadores
 
@@ -147,13 +147,13 @@ Ruta `/plataforma/operadores`.
 | Reactivar | No restaura nada: entra con código y registra una passkey nueva. | — | Pide passkey. |
 | Acceso (passkeys y sesiones) | Revocar una passkey o cerrar una sesión. | — | Revocar pide passkey; cerrar sesión no. |
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/OperadoresDirectosEndpoints.cs`, `src/Avalasoft.Dominio/Identidad/OperadorDePlataforma.cs`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/OperadoresDirectosEndpoints.cs`, `src/Validalo.Dominio/Identidad/OperadorDePlataforma.cs`.
 
 ## Ingresos de los operadores
 
 Ruta `/plataforma/ingresos` · solo lectura (`GET /plataforma/auditoria-ingresos`): filtros por operador, evento (los 14 de `EventoDeIngreso`), resultado y fechas; 50 por página (máximo 200), más reciente primero.
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/PlataformaIdentidadEndpoints.cs`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/PlataformaIdentidadEndpoints.cs`.
 
 ## Secretos y clave de arranque
 
@@ -161,13 +161,13 @@ Ruta `/plataforma/secretos`.
 
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
-| Clave maestra y claves anteriores | Solo lectura: muestra el `kid` (8 hex). Se cambian en el servidor (`Avalasoft:Secretos:ClaveMaestra`, `ClavesAnteriores`, `ClavesFirmaHeredadas`). Sin clave válida la API no arranca. | Sin valor: debe configurarse | — |
+| Clave maestra y claves anteriores | Solo lectura: muestra el `kid` (8 hex). Se cambian en el servidor (`Validalo:Secretos:ClaveMaestra`, `ClavesAnteriores`, `ClavesFirmaHeredadas`). Sin clave válida la API no arranca. | Sin valor: debe configurarse | — |
 | Re-cifrar con la clave vigente | Re-cifra llaves de OpenAI, secretos de webhook, números de cuenta y credenciales de listas; es idempotente y lo ilegible queda como «Ilegibles». Sin passkey. | — | El botón se deshabilita con 0 pendientes. |
 | Clave de arranque: desactivar y reactivar | Único dato del documento `ConfiguracionDePlataforma`. Desactivar exige al menos un operador **directo** con passkey (409 `sin-operadores-con-passkey`) y vale en todos los servidores (caché de 15 s). | Activa | Reactivar sirve solo si el servidor aún tiene la clave (al menos 32 caracteres). Ambas piden passkey. |
 
 > **Ojo:** desactivar la clave de arranque también impide emitir sesiones a los operadores del backoffice (`POST /plataforma/sesiones` la exige) y la entrada de Plataforma con `X-Acceso-Soporte`; la pantalla dice que los operadores «siguen entrando con correo, código y passkey», lo cual vale solo para los directos.
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/ConsolaEndpoints.cs`, `src/Avalasoft.Dominio/Plataforma/ConfiguracionDePlataforma.cs`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/ConsolaEndpoints.cs`, `src/Validalo.Dominio/Plataforma/ConfiguracionDePlataforma.cs`.
 
 ## Listas restrictivas de la plataforma
 
@@ -181,9 +181,9 @@ Ruta `/plataforma/listas` · `PUT /plataforma/listas-restrictivas`. Infolaft es 
 | Cuota mensual de cada empresa | Búsquedas al mes de cada empresa; al llegar, no consulta más ese mes. | Vacío: sin tope | De 1 a 1 000 000. Es una sola para todas. |
 | Buscar por | Modo de búsqueda. | `PorNombre` | `PorNombre` o `PorDocumento`. |
 | Guardar, quitar la cuenta y migrar | Cambiar o quitar la cuenta; «Migrar» toma la primera credencial legible de una empresa como cuenta de la plataforma (si no hay una) y borra las propias de Infolaft de todas, sin heredar cuotas. | — | Las tres piden passkey. |
-| No habilitado en esta instalación | Depende de `Avalasoft:Verificadores:ListasRestrictivas:Proveedores:Infolaft:Habilitado`, que no se cambia desde la consola. | `false` | — |
+| No habilitado en esta instalación | Depende de `Validalo:Verificadores:ListasRestrictivas:Proveedores:Infolaft:Habilitado`, que no se cambia desde la consola. | `false` | — |
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/ListasDePlataformaEndpoints.cs`, `src/Avalasoft.Dominio/Expedientes/ListasRestrictivasEmpresa.cs`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/ListasDePlataformaEndpoints.cs`, `src/Validalo.Dominio/Expedientes/ListasRestrictivasEmpresa.cs`.
 
 ## Mi cuenta
 
@@ -194,7 +194,7 @@ Ruta `/plataforma/mi-cuenta` · perfil, passkeys, códigos de recuperación y se
 | Ajuste | Dónde y qué hace | Variantes y límites |
 |---|---|---|
 | Sistemas de plataforma (backoffice) | `PUT /plataforma/sistemas/{codigo}` y `GET /plataforma/sistemas`. Reemplazar la clave invalida al instante las aserciones anteriores. | Código `A-Z`, `0-9` y `_` (2 a 20); clave RSA de 2048 bits o más, o EC P-256; hasta 20 orígenes. Fijarlo no pide passkey; desactivar y reactivar sí. |
-| Aserción del operador | JWT RS256 o ES256 en `X-Usuario-Delegado`: `iss` = código del sistema, `aud` = `avalasoft`, `exp` de 5 minutos o menos, `jti` único y de un solo uso, `sub`, `name` y `email` obligatorios. Se canjea en `POST /plataforma/sesiones`. | Errores 401 `asercion-firma-invalida`, `asercion-vencida`, `asercion-vigencia-excesiva`, `asercion-sin-jti`, `asercion-incompleta`, `sistema-inactivo` y `operador-inactivo`. |
+| Aserción del operador | JWT RS256 o ES256 en `X-Usuario-Delegado`: `iss` = código del sistema, `aud` = `validalo`, `exp` de 5 minutos o menos, `jti` único y de un solo uso, `sub`, `name` y `email` obligatorios. Se canjea en `POST /plataforma/sesiones`. | Errores 401 `asercion-firma-invalida`, `asercion-vencida`, `asercion-vigencia-excesiva`, `asercion-sin-jti`, `asercion-incompleta`, `sistema-inactivo` y `operador-inactivo`. |
 | Sandbox del grupo | No se gestiona desde Plataforma: lo crea o reinicia el administrador del grupo o una llave de prueba con `sandbox:administrar`. Es un grupo hermano que copia solo la configuración y no aparece en la consola ni en el consumo. | Ver la [guía de integración](guia:guia-de-integracion#sandbox). |
 | Accesos de soporte (lado Plataforma) | El administrador del grupo los concede; Plataforma solo lista los vigentes (`GET /plataforma/accesos-soporte`) y entra con la clave de arranque más `X-Acceso-Soporte`. Solo lectura, nunca documentos. | Sin pantalla en la consola. |
 | Aviso de privacidad de la plataforma | `PUT` y `GET /plataforma/textos-legales/aviso`; cada publicación es una versión. | Se siembra la versión 1 (autorización de tratamiento de datos de ejemplo, Ley 1581 de 2012); cada operación puede publicar la suya. |
@@ -202,7 +202,7 @@ Ruta `/plataforma/mi-cuenta` · perfil, passkeys, códigos de recuperación y se
 | Desactivar el SSO de un grupo | `POST /plataforma/tenants/{id}/sso/desactivar`: válvula de emergencia. | 409 `sso-inactivo`; pide passkey. |
 | Barridos manuales | `POST /plataforma/{planes, verificaciones, vigencias-de-vinculos, sla, plazos-de-cargue, recordatorios-observaciones, habeas}/revisar`, `fichas/recalcular`, `catalogos/{c}/importar` e `importacion/{origen}`. | Operativos. |
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/ConsolaEndpoints.cs`, `src/Avalasoft.Aplicacion/Sandbox/SandboxEndpoints.cs`, `src/Avalasoft.Aplicacion/Configuracion/AccesosSoporteEndpoints.cs`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/ConsolaEndpoints.cs`, `src/Validalo.Aplicacion/Sandbox/SandboxEndpoints.cs`, `src/Validalo.Aplicacion/Configuracion/AccesosSoporteEndpoints.cs`.
 
 ## Acciones que piden passkey
 
@@ -220,4 +220,4 @@ Fuente: `src/Avalasoft.Aplicacion/Plataforma/ConsolaEndpoints.cs`, `src/Avalasof
 
 Del lado del grupo también piden passkey: `crear-api-key`, `revocar-api-key`, `rotar-api-key`, `rotar-clave-del-sistema`, `cambiar-roles`, `desactivar-usuario`, `revocar-passkey` y `configurar-sso`. **No** piden passkey en Plataforma: crear grupo, corregir el grupo, sus empresas y su ingreso, reenviar una invitación, agregar empresa, plan del grupo, plan de IA y llave, tarifa, re-cifrar secretos, responder habeas (incluida la supresión irreversible), fijar un sistema de plataforma, la política de ingreso y el aviso de privacidad.
 
-Fuente: `src/Avalasoft.Aplicacion/Plataforma/PlataformaIdentidadEndpoints.cs`, `src/Avalasoft.Aplicacion/Plataforma/OperadoresDirectosEndpoints.cs`, `apps/web/src/i18n/es-CO-seguridad.ts`.
+Fuente: `src/Validalo.Aplicacion/Plataforma/PlataformaIdentidadEndpoints.cs`, `src/Validalo.Aplicacion/Plataforma/OperadoresDirectosEndpoints.cs`, `apps/web/src/i18n/es-CO-seguridad.ts`.

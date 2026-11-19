@@ -40,7 +40,7 @@ updates:
 
   # Imágenes base del Dockerfile de la API (node, dotnet sdk y aspnet).
   - package-ecosystem: docker
-    directory: "/src/Avalasoft.Api"
+    directory: "/src/Validalo.Api"
     schedule:
       interval: weekly
       day: monday

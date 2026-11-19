@@ -1,4 +1,4 @@
-import type { FichaAceptadaDelVinculoDto, SeccionAceptadaVistaDto } from '@avalasoft/api-client';
+import type { FichaAceptadaDelVinculoDto, SeccionAceptadaVistaDto } from '@validalo/api-client';
 
 /** Cuántas secciones aceptó la empresa y en cuántas el tercero guardó después una versión nueva que aún no revisa. */
 export interface ResumenDeFichaAceptada {

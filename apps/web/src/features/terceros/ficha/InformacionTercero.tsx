@@ -1,6 +1,6 @@
 import { Box, Chip, Divider, Link, Stack, Typography } from '@mui/material';
-import type { SeccionFichaDto, SoporteSeccionDto, VinculoEnFichaDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { SeccionFichaDto, SoporteSeccionDto, VinculoEnFichaDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

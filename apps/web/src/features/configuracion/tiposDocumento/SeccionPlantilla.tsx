@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Skeleton, Stack, Typography } from '@mui/material';
-import { formatearFecha } from '@avalasoft/ui';
+import { formatearFecha } from '@validalo/ui';
 import { Download, FileUp, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

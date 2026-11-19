@@ -1,21 +1,21 @@
-# Entorno local de AvalaSoft (docs/04 §11).
+# Entorno local de Valídalo (docs/04 §11).
 #   docker compose -f infra/compose/compose.yaml up -d          -> PostgreSQL, Mailpit y MinIO (la API corre con dotnet run)
 #   docker compose -f infra/compose/compose.yaml --profile app up -d --build   -> PostgreSQL + API en contenedor
-name: avalasoft
+name: validalo
 
 services:
   postgres:
     image: postgres:17
     environment:
-      POSTGRES_DB: avalasoft
-      POSTGRES_USER: avalasoft
-      POSTGRES_PASSWORD: avalasoft
+      POSTGRES_DB: validalo
+      POSTGRES_USER: validalo
+      POSTGRES_PASSWORD: validalo
     ports:
       - "5432:5432"
     volumes:
       - postgres-datos:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U avalasoft -d avalasoft"]
+      test: ["CMD-SHELL", "pg_isready -U validalo -d validalo"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -37,14 +37,14 @@ services:
       - "8026:8025"
 
   # Binarios de la bóveda (S3 compatible, docs/04 §6): API S3 en 9000 y consola web en http://localhost:9001
-  # (usuario avalasoft / avalasoft-minio-solo-local). Los buckets los crea la API al arrancar en desarrollo.
+  # (usuario validalo / validalo-minio-solo-local). Los buckets los crea la API al arrancar en desarrollo.
   # Imagen: fork comunitario pgsty/minio (misma línea de comandos que minio/minio, que ya no se publica en Docker Hub).
   minio:
     image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
-      MINIO_ROOT_USER: avalasoft
-      MINIO_ROOT_PASSWORD: avalasoft-minio-solo-local
+      MINIO_ROOT_USER: validalo
+      MINIO_ROOT_PASSWORD: validalo-minio-solo-local
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -58,23 +58,23 @@ services:
     profiles: ["app"]
     build:
       context: ../..
-      dockerfile: src/Avalasoft.Api/Dockerfile
+      dockerfile: src/Validalo.Api/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: "8080"
-      ConnectionStrings__Avalasoft: "Host=postgres;Port=5432;Database=avalasoft;Username=avalasoft;Password=avalasoft"
-      Avalasoft__Plataforma__ClaveBootstrap: "dev-plataforma-solo-local-cambiar-0001"
-      Avalasoft__Sesiones__ClaveFirma: "dev-sesiones-solo-local-cambiar-000000000001"
-      Avalasoft__Secretos__ClaveMaestra: "HMyhDz1MEG6gvVomJ8uD3Ntu6cOs8mREw+8Cmf1Qufo="
-      Avalasoft__Persistencia__CrearEsquemaAlIniciar: "true"
-      Avalasoft__Correo__Host: "mailpit"
-      Avalasoft__Correo__Puerto: "1025"
-      Avalasoft__Correo__Seguridad: "None"
-      Avalasoft__Almacen__Endpoint: "http://minio:9000"
-      Avalasoft__Almacen__EndpointPublico: "http://localhost:9000"
-      Avalasoft__Almacen__AccessKey: "avalasoft"
-      Avalasoft__Almacen__SecretKey: "avalasoft-minio-solo-local"
-      Avalasoft__Almacen__CrearBucketsAlIniciar: "true"
+      ConnectionStrings__Validalo: "Host=postgres;Port=5432;Database=validalo;Username=validalo;Password=validalo"
+      Validalo__Plataforma__ClaveBootstrap: "dev-plataforma-solo-local-cambiar-0001"
+      Validalo__Sesiones__ClaveFirma: "dev-sesiones-solo-local-cambiar-000000000001"
+      Validalo__Secretos__ClaveMaestra: "HMyhDz1MEG6gvVomJ8uD3Ntu6cOs8mREw+8Cmf1Qufo="
+      Validalo__Persistencia__CrearEsquemaAlIniciar: "true"
+      Validalo__Correo__Host: "mailpit"
+      Validalo__Correo__Puerto: "1025"
+      Validalo__Correo__Seguridad: "None"
+      Validalo__Almacen__Endpoint: "http://minio:9000"
+      Validalo__Almacen__EndpointPublico: "http://localhost:9000"
+      Validalo__Almacen__AccessKey: "validalo"
+      Validalo__Almacen__SecretKey: "validalo-minio-solo-local"
+      Validalo__Almacen__CrearBucketsAlIniciar: "true"
     ports:
       - "5080:8080"
     depends_on:

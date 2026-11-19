@@ -4,7 +4,7 @@ import type {
   CrearTipoDocumentoDto,
   TipoDocumentoCanonicoDto,
   TipoDocumentoTenantDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 
 /**
  * Tipos de documento configurables (docs/05 §2.9.4, TD-1…TD-9): reglas de archivo, modo y campos, vigencia y plantilla.

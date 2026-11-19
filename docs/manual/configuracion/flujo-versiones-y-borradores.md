@@ -16,7 +16,7 @@ La administradora abre un flujo ya publicado, crea un borrador con cambios, lo g
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y un flujo de proveedores ya publicado (versión 1).
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 

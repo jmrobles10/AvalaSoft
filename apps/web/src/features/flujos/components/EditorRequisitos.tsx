@@ -1,6 +1,6 @@
 import { Box, Button, FormControlLabel, IconButton, MenuItem, Stack, Switch, TextField, Tooltip, Typography } from '@mui/material';
-import type { AreaDto, AtributoPermitidoDto, TipoDocumentoTenantDto } from '@avalasoft/api-client';
-import { AlineadoConCampo, CampoNumero } from '@avalasoft/ui';
+import type { AreaDto, AtributoPermitidoDto, TipoDocumentoTenantDto } from '@validalo/api-client';
+import { AlineadoConCampo, CampoNumero } from '@validalo/ui';
 import { ClipboardList, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { fichaEmpresa } from '../../../i18n/es-CO-ficha-empresa';

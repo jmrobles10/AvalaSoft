@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getListarPersonasDelVinculoQueryOptions, type DocumentoVistaEmpresaDto, type PersonaDelVinculoDto } from '@avalasoft/api-client';
+import { getListarPersonasDelVinculoQueryOptions, type DocumentoVistaEmpresaDto, type PersonaDelVinculoDto } from '@validalo/api-client';
 import { conEmpresa } from '../../shared/consultas';
 
 /**

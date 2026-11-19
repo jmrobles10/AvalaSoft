@@ -1,5 +1,5 @@
-import { canjearEnlace, esErrorApi, esErrorDeRed, type OtpRequeridoDto, type SesionTerceroDto } from '@avalasoft/api-client';
-import { normalizarCodigoNumerico } from '@avalasoft/ui';
+import { canjearEnlace, esErrorApi, esErrorDeRed, type OtpRequeridoDto, type SesionTerceroDto } from '@validalo/api-client';
+import { normalizarCodigoNumerico } from '@validalo/ui';
 
 /**
  * Lo que devuelve el canje: la sesión, o que el tipo de vínculo exige un código y ya salió al correo (`correo`: ese correo con la parte local tapada,

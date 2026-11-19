@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type CuentaBancariaPublicaDto, type VinculoPublicoDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, type CuentaBancariaPublicaDto, type VinculoPublicoDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PaginaCuentas } from './PaginaCuentas';
@@ -69,7 +69,7 @@ function montar(cuentas: CuentaBancariaPublicaDto[], alMutar: (p: Peticion) => R
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <MemoryRouter>
           <PaginaCuentas />

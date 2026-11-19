@@ -1,4 +1,4 @@
-import type { EntradaCatalogoDto } from '@avalasoft/api-client';
+import type { EntradaCatalogoDto } from '@validalo/api-client';
 import { sinTildes } from '../api';
 
 /** Un nodo del catálogo de especialidades: grupo (1) → categoría (2) → especialidad (3). */

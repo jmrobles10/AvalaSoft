@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { areaDeRequisito, expediente, requisito, requisitoFormulario, vigencia } from '../datosPrueba';
@@ -31,7 +31,7 @@ function montar(contenido: ReactNode) {
   const fetch = vi.fn(() => new Promise<Response>(() => undefined));
   configurarCliente({ fetch });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>{contenido}</QueryClientProvider>
     </ThemeProvider>,
   );

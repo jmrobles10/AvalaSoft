@@ -10,7 +10,7 @@ recorrido(
     actor: 'Administrador de empresa',
     titulo: 'Revisa una entrega fallida y la reenvía cuando el sistema vuelve',
     resumen:
-      'Tu sistema responde con error y AvalaSoft deja la entrega en reintento, con su próximo intento. Cuando el sistema se recupera, la administradora reenvía la entrega desde la pantalla y llega firmada otra vez.',
+      'Tu sistema responde con error y Valídalo deja la entrega en reintento, con su próximo intento. Cuando el sistema se recupera, la administradora reenvía la entrega desde la pantalla y llega firmada otra vez.',
     precondiciones: [
       'Un grupo con dos empresas y un webhook de la empresa Sur que pide el evento de vínculo creado.',
       'Un sistema integrado de prueba que responde 500 hasta que se lo indiquemos.',
@@ -41,11 +41,11 @@ recorrido(
       await paso(page, {
         titulo: 'Encuentra la entrega que no llegó',
         explicacion:
-          'Tu sistema respondió con un error, así que la entrega queda en «Reintentando»: AvalaSoft cuenta el intento y muestra la hora del próximo. ' +
-          'Si tu sistema sigue fallando, AvalaSoft sigue reintentando. Si fallan 20 entregas seguidas, el webhook se desactiva por fallos y los eventos de ese tiempo no se reenvían solos.',
+          'Tu sistema respondió con un error, así que la entrega queda en «Reintentando»: Valídalo cuenta el intento y muestra la hora del próximo. ' +
+          'Si tu sistema sigue fallando, Valídalo sigue reintentando. Si fallan 20 entregas seguidas, el webhook se desactiva por fallos y los eventos de ese tiempo no se reenvían solos.',
         resaltar: [app.getByRole('table', { name: 'Entregas recientes' }), fila],
         variantes: [
-          { cuando: 'La entrega dice «Reintentando»', entonces: 'AvalaSoft lo volverá a intentar en la hora que muestra.' },
+          { cuando: 'La entrega dice «Reintentando»', entonces: 'Valídalo lo volverá a intentar en la hora que muestra.' },
           { cuando: 'La entrega dice «Fallida»', entonces: 'Ya no se reintenta sola: solo puedes reenviarla a mano.' },
         ],
       });
@@ -66,7 +66,7 @@ recorrido(
       await paso(page, {
         titulo: 'Reenvía la entrega cuando tu sistema se recupere',
         explicacion:
-          'Cuando tu sistema vuelve a responder, pulsa «Reenviar» en la entrega. AvalaSoft la intenta en ese momento y el aviso confirma que el reenvío está en curso.',
+          'Cuando tu sistema vuelve a responder, pulsa «Reenviar» en la entrega. Valídalo la intenta en ese momento y el aviso confirma que el reenvío está en curso.',
         resaltar: fila.getByRole('button', { name: 'Reenviar' }),
         avisos: true,
       });

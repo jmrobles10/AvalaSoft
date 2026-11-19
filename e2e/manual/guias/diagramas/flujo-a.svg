@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 960" class="diagrama" role="img" aria-labelledby="titulo descripcion">
 <title id="titulo">Del vínculo a la aprobación, por actor</title>
-<desc id="descripcion">Diagrama por actor: la empresa configura y crea el vínculo; AvalaSoft invita al tercero; el tercero acepta y completa su expediente; AvalaSoft verifica y analiza; las áreas y el oficial revisan, el tercero corrige si hay observaciones y el expediente se aprueba.</desc>
+<desc id="descripcion">Diagrama por actor: la empresa configura y crea el vínculo; Valídalo invita al tercero; el tercero acepta y completa su expediente; Valídalo verifica y analiza; las áreas y el oficial revisan, el tercero corrige si hay observaciones y el expediente se aprueba.</desc>
 <defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca" d="M0 0L10 5L0 10z"/></marker><marker id="f-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-a" d="M0 0L10 5L0 10z"/></marker><marker id="f-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-ok" d="M0 0L10 5L0 10z"/></marker><marker id="f-peligro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-peligro" d="M0 0L10 5L0 10z"/></marker></defs>
 <rect class="d-carril" x="10" y="10" width="204" height="940" rx="8"/>
 <rect class="d-caja" x="18" y="18" width="188" height="34" rx="10"/>
@@ -10,7 +10,7 @@
 <text class="d-t-b d-c" x="326" y="40">Tercero</text>
 <rect class="d-carril" x="438" y="10" width="204" height="940" rx="8"/>
 <rect class="d-caja" x="446" y="18" width="188" height="34" rx="10"/>
-<text class="d-t-b d-c" x="540" y="40">AvalaSoft</text>
+<text class="d-t-b d-c" x="540" y="40">Valídalo</text>
 <rect class="d-carril" x="652" y="10" width="204" height="940" rx="8"/>
 <rect class="d-caja" x="660" y="18" width="188" height="34" rx="10"/>
 <text class="d-t-b d-c" x="754" y="40">Áreas de revisión</text>

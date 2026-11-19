@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Box } from '@mui/material';
-import type { SinSoporteDto } from '@avalasoft/api-client';
+import type { SinSoporteDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 
 /**

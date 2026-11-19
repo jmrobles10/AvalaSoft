@@ -3,7 +3,7 @@ id: "integracion/webhook-entrega-fallida-y-reenvio"
 titulo: "Revisa una entrega fallida y la reenvía cuando el sistema vuelve"
 actor: "Administrador de empresa"
 dominio: "integracion"
-resumen: "Tu sistema responde con error y AvalaSoft deja la entrega en reintento, con su próximo intento. Cuando el sistema se recupera, la administradora reenvía la entrega desde la pantalla y llega firmada otra vez."
+resumen: "Tu sistema responde con error y Valídalo deja la entrega en reintento, con su próximo intento. Cuando el sistema se recupera, la administradora reenvía la entrega desde la pantalla y llega firmada otra vez."
 pasos: 4
 ---
 
@@ -11,7 +11,7 @@ pasos: 4
 
 **Actor:** Administrador de empresa · **Dominio:** Integración
 
-Tu sistema responde con error y AvalaSoft deja la entrega en reintento, con su próximo intento. Cuando el sistema se recupera, la administradora reenvía la entrega desde la pantalla y llega firmada otra vez.
+Tu sistema responde con error y Valídalo deja la entrega en reintento, con su próximo intento. Cuando el sistema se recupera, la administradora reenvía la entrega desde la pantalla y llega firmada otra vez.
 
 **Antes de empezar**
 
@@ -27,7 +27,7 @@ Tu sistema responde con error y AvalaSoft deja la entrega en reintento, con su p
 
 ## Paso 1. Encuentra la entrega que no llegó
 
-Tu sistema respondió con un error, así que la entrega queda en «Reintentando»: AvalaSoft cuenta el intento y muestra la hora del próximo. Si tu sistema sigue fallando, AvalaSoft sigue reintentando. Si fallan 20 entregas seguidas, el webhook se desactiva por fallos y los eventos de ese tiempo no se reenvían solos.
+Tu sistema respondió con un error, así que la entrega queda en «Reintentando»: Valídalo cuenta el intento y muestra la hora del próximo. Si tu sistema sigue fallando, Valídalo sigue reintentando. Si fallan 20 entregas seguidas, el webhook se desactiva por fallos y los eventos de ese tiempo no se reenvían solos.
 
 > **Pantalla:** `/e/{empresa}/webhooks`
 
@@ -35,7 +35,7 @@ Tu sistema respondió con un error, así que la entrega queda en «Reintentando�
 
 **Variantes**
 
-- **La entrega dice «Reintentando»:** AvalaSoft lo volverá a intentar en la hora que muestra.
+- **La entrega dice «Reintentando»:** Valídalo lo volverá a intentar en la hora que muestra.
 - **La entrega dice «Fallida»:** Ya no se reintenta sola: solo puedes reenviarla a mano.
 
 ## Paso 2. Mira qué respondió tu sistema
@@ -48,7 +48,7 @@ Cada intento muestra su resultado (fallido aquí), la hora, el detalle de la res
 
 ## Paso 3. Reenvía la entrega cuando tu sistema se recupere
 
-Cuando tu sistema vuelve a responder, pulsa «Reenviar» en la entrega. AvalaSoft la intenta en ese momento y el aviso confirma que el reenvío está en curso.
+Cuando tu sistema vuelve a responder, pulsa «Reenviar» en la entrega. Valídalo la intenta en ese momento y el aviso confirma que el reenvío está en curso.
 
 > **Pantalla:** `/e/{empresa}/webhooks`
 

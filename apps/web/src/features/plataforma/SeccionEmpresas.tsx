@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
-import type { EmpresaDeGrupoDto, GrupoDto } from '@avalasoft/api-client';
-import { MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
+import type { EmpresaDeGrupoDto, GrupoDto } from '@validalo/api-client';
+import { MarcoTabla, visualmenteOculto } from '@validalo/ui';
 import { Factory, Pencil, Plus, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

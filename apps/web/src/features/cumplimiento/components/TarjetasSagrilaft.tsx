@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
-import type { InformeSagrilaftDto } from '@avalasoft/api-client';
-import { Dato, RejillaDatos } from '@avalasoft/ui';
+import type { InformeSagrilaftDto } from '@validalo/api-client';
+import { Dato, RejillaDatos } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { distribucionDeRiesgo, porcentajeDe, promedioDeDias } from '../informeSagrilaft';

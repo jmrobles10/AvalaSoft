@@ -36,7 +36,7 @@ En Mi cuenta, la sección «Códigos de recuperación» muestra si tienes códig
 
 ## Paso 2. Guarda los diez códigos ahora
 
-AvalaSoft muestra diez códigos una sola vez. Antes de verlos, el navegador te pidió confirmar con tu passkey. Cada código tiene la forma XXXXX-XXXXX y sirve una sola vez. Guárdalos en un lugar seguro, aparte de tu correo: si los pierdes, no vuelven a mostrarse.
+Valídalo muestra diez códigos una sola vez. Antes de verlos, el navegador te pidió confirmar con tu passkey. Cada código tiene la forma XXXXX-XXXXX y sirve una sola vez. Guárdalos en un lugar seguro, aparte de tu correo: si los pierdes, no vuelven a mostrarse.
 
 > **Pantalla:** `/e/{empresa}/mi-cuenta`
 

@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
-import { configurarCliente, reiniciarCliente, SCOPES } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { area, areaDeRequisito, expediente, requisito, veredicto } from '../datosPrueba';
 import type { ContextoRevisor } from '../reglas';
@@ -38,7 +38,7 @@ function montar() {
     areas: [areaDeRequisito({ areaId: 'a-compras', codigo: 'COMPRAS', estado: 'Pendiente' })],
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <PanelRequisitos expediente={{ ...expediente('EnRevision', [compras]), requisitos: [rut, bancaria] }} contexto={() => CONTEXTO} nombres={new Map()} onAccion={() => undefined} />
       </QueryClientProvider>

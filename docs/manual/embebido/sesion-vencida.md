@@ -34,7 +34,7 @@ La sesión dura 30 minutos. Dos minutos antes de que venza, la app pide una sesi
 
 ## Paso 2. Avisa que la sesión venció
 
-Si la sesión vence y el sistema aún no entrega una nueva, la app muestra «Tu sesión venció». La explicación indica que ya se pidió una sesión nueva al sistema y que, si no llega, hay que volver a abrir AvalaSoft desde allí. No se pierde lo que se guardó: al entregar una sesión nueva, la app continúa donde estaba.
+Si la sesión vence y el sistema aún no entrega una nueva, la app muestra «Tu sesión venció». La explicación indica que ya se pidió una sesión nueva al sistema y que, si no llega, hay que volver a abrir Valídalo desde allí. No se pierde lo que se guardó: al entregar una sesión nueva, la app continúa donde estaba.
 
 > **Pantalla:** `/e/{empresa}/bandeja`
 

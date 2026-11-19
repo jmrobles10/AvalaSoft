@@ -1,5 +1,5 @@
 import { Box, LinearProgress, Stack, Typography } from '@mui/material';
-import type { MedicionDePlanDto } from '@avalasoft/api-client';
+import type { MedicionDePlanDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { esMetrica, esNivel, formatearUso, porcentajeDeBarra } from './modelo';
 

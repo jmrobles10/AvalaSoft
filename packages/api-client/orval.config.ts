@@ -4,7 +4,7 @@ import { transformarOpenApi } from './openapi/transformar';
 // Cliente generado desde el snapshot del contrato (docs/06 §1.2): sin la API levantada.
 // Regenerar: `pnpm generar:api` (y `openapi:actualizar` antes, si cambió el backend).
 export default defineConfig({
-  avalasoft: {
+  validalo: {
     input: {
       target: './openapi/v1.json',
       override: { transformer: (documento) => transformarOpenApi(documento) as unknown as typeof documento },
@@ -17,7 +17,7 @@ export default defineConfig({
       httpClient: 'axios',
       clean: true,
       override: {
-        mutator: { path: './src/fetcher.ts', name: 'clienteAvalasoft' },
+        mutator: { path: './src/fetcher.ts', name: 'clienteValidalo' },
         query: { signal: true },
       },
     },

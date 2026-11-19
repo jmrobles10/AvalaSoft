@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel, Stack, Typography } from '@mui/material';
-import { SCOPES } from '@avalasoft/api-client';
+import { SCOPES } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { alternarGrupo, alternarScope, GRUPOS_PERMISOS, type ClavePermiso } from './scopes';
 

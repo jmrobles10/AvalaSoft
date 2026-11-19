@@ -1,4 +1,4 @@
-import type { RecordatorioEnviadoDto, VencimientoARecordarDto, VencimientoDto } from '@avalasoft/api-client';
+import type { RecordatorioEnviadoDto, VencimientoARecordarDto, VencimientoDto } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 
 /** Horizontes del filtro, en días; `0` = todos los que tienen fecha. */

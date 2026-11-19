@@ -1,6 +1,6 @@
 /**
  * Diálogos y paneles laterales cuando la app está embebida y el contenedor ajusta la altura del iframe a su contenido
- * (`avalasoft:resize`). En ese caso el iframe no tiene desplazamiento propio: MUI centra el diálogo en la altura total
+ * (`validalo:resize`). En ese caso el iframe no tiene desplazamiento propio: MUI centra el diálogo en la altura total
  * del contenido y, si la persona bajó en la página del contenedor, queda fuera de la vista.
  *
  * Solución en dos partes, sin depender del contenedor:
@@ -9,7 +9,7 @@
  *    laterales la ocupan entera. Si no se sabe (otro origen con el iframe estirado), se centra en la última
  *    interacción (clic o tecla sobre un control), el único punto que se sabe a la vista; los paneles, con un alto de
  *    {@link ALTO_PANEL} como mucho.
- * 2. Al abrirse se envía `avalasoft:visible { top, height }` con la región del iframe que debe verse, para que el
+ * 2. Al abrirse se envía `validalo:visible { top, height }` con la región del iframe que debe verse, para que el
  *    contenedor haga scroll si hace falta (opcional para el contenedor).
  *
  * Fuera del iframe no se instala: MUI centra en la ventana, que es lo que se ve.

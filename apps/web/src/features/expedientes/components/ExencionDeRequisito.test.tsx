@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto, type RequisitoExpedienteDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto, type RequisitoExpedienteDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { areaDeRequisito, expediente, requisito } from '../datosPrueba';
 import type { ContextoRevisor, DialogoExpediente } from '../reglas';
@@ -33,7 +33,7 @@ const eximida = camara({
 function montar(datos: ExpedienteDto, contexto: ContextoRevisor, onAccion: (d: DialogoExpediente) => void = () => undefined) {
   configurarCliente({ fetch: vi.fn(() => new Promise<Response>(() => undefined)) });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>
         <PanelRequisitos expediente={datos} contexto={() => contexto} nombres={new Map([[ANA, 'Ana Administradora']])} onAccion={onAccion} />
       </QueryClientProvider>

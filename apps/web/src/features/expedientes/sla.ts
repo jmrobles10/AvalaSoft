@@ -1,5 +1,5 @@
-import type { EstadoDeSla } from '@avalasoft/api-client';
-import type { Estado } from '@avalasoft/ui';
+import type { EstadoDeSla } from '@validalo/api-client';
+import type { Estado } from '@validalo/ui';
 
 /**
  * Estado canónico con el que se dibuja cada estado del plazo de revisión (el texto sale de `sla.indicador.estados`): a tiempo es

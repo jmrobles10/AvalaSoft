@@ -1,4 +1,4 @@
-import type { EmpresaDeGrupoDto, GrupoDto } from '@avalasoft/api-client';
+import type { EmpresaDeGrupoDto, GrupoDto } from '@validalo/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogoEmpresa } from '../configuracion/empresas/DialogoEmpresa';

@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
-import { EstadoVinculo, esErrorApi, puede, SCOPES, type VinculoDto } from '@avalasoft/api-client';
+import { EstadoVinculo, esErrorApi, puede, SCOPES, type VinculoDto } from '@validalo/api-client';
 import {
   APARIENCIA_ESTADO,
   BarraFiltros,
@@ -12,7 +12,7 @@ import {
   TablaConCursor,
   usePaginacionCursor,
   type ColumnaTabla,
-} from '@avalasoft/ui';
+} from '@validalo/ui';
 import { ClipboardCheck, FileUp, Search, UserPlus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Card, Stack, Typography } from '@mui/material';
-import type { ExportacionBovedaDto } from '@avalasoft/api-client';
-import { ChipEstado, EsqueletoTarjetas, formatearFechaHora, type Estado } from '@avalasoft/ui';
+import type { ExportacionBovedaDto } from '@validalo/api-client';
+import { ChipEstado, EsqueletoTarjetas, formatearFechaHora, type Estado } from '@validalo/ui';
 import { Download, PackageOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ErrorRecuperable } from '../shared/componentes';

@@ -1,4 +1,4 @@
-import type { AtributoPermitidoDto, CrearTipoVinculoDto, TipoDeAprobadores, TipoVinculoDto } from '@avalasoft/api-client';
+import type { AtributoPermitidoDto, CrearTipoVinculoDto, TipoDeAprobadores, TipoVinculoDto } from '@validalo/api-client';
 
 /**
  * Tipos de vínculo del grupo y sus atributos permitidos. Los atributos alimentan las condiciones «Se pide a» de los

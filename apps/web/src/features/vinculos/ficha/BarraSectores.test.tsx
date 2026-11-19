@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { createValidaloTheme } from '@validalo/ui';
 import { describe, expect, it, vi } from 'vitest';
 import { BarraSectores } from './BarraSectores';
 import type { IndicadoresSector } from './gruposSectores';
@@ -15,7 +15,7 @@ const INDICADORES: IndicadoresSector = {
 function montar(actual: Sector = 'aprobaciones') {
   const alElegir = vi.fn();
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <BarraSectores actual={actual} indicadores={INDICADORES} onElegir={alElegir} />
     </ThemeProvider>,
   );

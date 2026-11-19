@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Button, Divider, Stack } from '@mui/material';
-import type { VinculoEnFichaDto } from '@avalasoft/api-client';
-import { ChipEstado, formatearFecha } from '@avalasoft/ui';
+import type { VinculoEnFichaDto } from '@validalo/api-client';
+import { ChipEstado, formatearFecha } from '@validalo/ui';
 import { ArrowRight, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

@@ -135,7 +135,7 @@ export function construirModeloApi({ bruto, transformado, fuentes }) {
     m.total = m.recursos.reduce((n, r) => n + r.endpoints.length, 0);
     abreviarEsquemasRepetidos(m);
   }
-  return { modulos: lista, total, componentes, titulo: bruto.info?.title ?? 'AvalaSoft API', version: bruto.info?.version ?? '' };
+  return { modulos: lista, total, componentes, titulo: bruto.info?.title ?? 'Valídalo API', version: bruto.info?.version ?? '' };
 }
 
 /**
@@ -196,7 +196,7 @@ function ejemplosDe(endpoint, componentes) {
 // ---------------------------------------------------------------------------------------------------------------------------------
 
 const PROBLEMA = `{
-  "type": "https://docs.avalasoft.co/errores/requisito-no-en-alcance",
+  "type": "https://docs.validalo.co/errores/requisito-no-en-alcance",
   "title": "El requisito no está en el alcance del área",
   "status": 409,
   "detail": "El área 'financiera' no revisa 'CAMARA_COMERCIO' en el flujo 'habilitacion-proveedores' v3.",
@@ -223,7 +223,7 @@ export const CONVENCIONES = [
     titulo: 'Autenticación y alcance',
     items: [
       '`X-Api-Key: vsk_<entorno>_<tenant>_<aleatorio>` para integraciones, o `Authorization: Bearer <jwt>` para personas (sesiones embebidas y directas) y terceros. Nunca las dos.',
-      'Con la API key de un sistema integrado, la cabecera `X-Usuario-Delegado: <jwt>` actúa en nombre de una persona: JWT RS256/ES256 firmado con la clave privada del sistema, `iss` = código del sistema, `aud` = `avalasoft`, `exp` de 5 minutos como máximo, `sub`, `name`, `email` y `jti` obligatorio y de un solo uso. El permiso efectivo es la intersección de lo que permite la llave y los roles de la persona.',
+      'Con la API key de un sistema integrado, la cabecera `X-Usuario-Delegado: <jwt>` actúa en nombre de una persona: JWT RS256/ES256 firmado con la clave privada del sistema, `iss` = código del sistema, `aud` = `validalo`, `exp` de 5 minutos como máximo, `sub`, `name`, `email` y `jti` obligatorio y de un solo uso. El permiso efectivo es la intersección de lo que permite la llave y los roles de la persona.',
       'El tenant va implícito en la credencial. La **empresa** (razón social del grupo) se indica con `X-Empresa: <empresaId>` en los recursos de empresa; si la credencial solo tiene alcance a una empresa, el encabezado es opcional. `X-Tenant: <slug>` lo usa solo Plataforma en `/plataforma/*`.',
       'Un recurso de otro tenant o de otra empresa responde `404 no-encontrado`: no se revela su existencia.',
     ],
@@ -245,7 +245,7 @@ export const CONVENCIONES = [
     items: [
       'Los errores siguen RFC 9457 (`application/problem+json`) con un `codigo` estable para programar contra él, `detail` en español para mostrar y, cuando aplica, `errores` por campo. `traceId` sirve para pedir soporte.',
       'Estados que usa la API: `400` solicitud inválida, `401` no autenticado o aserción inválida, `403` sin permiso, `404` no encontrado (también si es de otro tenant o empresa), `409` conflicto de estado, `410` enlace usado o vencido, `412` versión desactualizada, `413` archivo demasiado grande, `415` tipo de archivo no soportado, `422` regla de negocio o validación, `429` límite de peticiones, `503` servicio no disponible.',
-      'Una operación que tuvo éxito nunca devuelve 4xx. Los avisos que no bloquean (por ejemplo, cupo de IA agotado) viajan en el cuerpo `2xx` como `advertencias: [{codigo, mensaje}]` y en la cabecera `Avalasoft-Advertencias`.',
+      'Una operación que tuvo éxito nunca devuelve 4xx. Los avisos que no bloquean (por ejemplo, cupo de IA agotado) viajan en el cuerpo `2xx` como `advertencias: [{codigo, mensaje}]` y en la cabecera `Validalo-Advertencias`.',
       'Cada operación lista debajo los códigos que lanza directamente su código; hay códigos comunes (por ejemplo `no-encontrado`, `sin-permiso`, `estado-invalido`) que pueden salir de reglas compartidas. El catálogo completo está en `docs/05-api-contratos-y-webhooks.md` §3.3.',
     ],
     bloque: PROBLEMA,
@@ -349,7 +349,7 @@ function paginaDeModulo(modelo, m, generado) {
   const contenido = `<h1>${escapar(m.nombre)}</h1><p class="modulo-intro">${String(m.total)} operaciones en ${String(m.recursos.length)} ${m.recursos.length === 1 ? 'recurso' : 'recursos'}. Los permisos y las descripciones salen del código de cada endpoint; los parámetros, cuerpos y respuestas, del contrato OpenAPI.</p>${unico ? '' : indice}${recursos}`;
   return pagina({
     titulo: `API · ${m.nombre}`,
-    descripcion: `Referencia de la API de AvalaSoft: ${m.nombre}.`,
+    descripcion: `Referencia de la API de Valídalo: ${m.nombre}.`,
     raiz: '../',
     seccion: 'api',
     lateral: lateralApi(modelo, m.slug),
@@ -365,7 +365,7 @@ function paginaDeConvenciones(modelo, generado) {
   ).join('');
   return pagina({
     titulo: 'API · Convenciones',
-    descripcion: 'Convenciones comunes de la API de AvalaSoft.',
+    descripcion: 'Convenciones comunes de la API de Valídalo.',
     raiz: '../',
     seccion: 'api',
     lateral: lateralApi(modelo, 'convenciones'),
@@ -383,7 +383,7 @@ function paginaDeIndice(modelo, generado) {
     )
     .join('');
   const contenido = `<div class="heroe"><h1>Referencia de la API</h1><p>Todas las operaciones del contrato (${String(modelo.total)}), agrupadas por recurso, con su permiso, parámetros, cuerpos, respuestas, errores de negocio y un ejemplo de petición y de respuesta construido del esquema.</p><p><a href="convenciones.html">Convenciones comunes →</a> autenticación, empresa activa, idempotencia y errores.</p></div><div class="rejilla">${tarjetas}</div>`;
-  return pagina({ titulo: 'API', descripcion: 'Referencia de la API de AvalaSoft.', raiz: '../', seccion: 'api', lateral: lateralApi(modelo, 'indice'), migas: [{ texto: 'Manual', href: '../index.html' }, { texto: 'API' }], contenido, generado });
+  return pagina({ titulo: 'API', descripcion: 'Referencia de la API de Valídalo.', raiz: '../', seccion: 'api', lateral: lateralApi(modelo, 'indice'), migas: [{ texto: 'Manual', href: '../index.html' }, { texto: 'API' }], contenido, generado });
 }
 
 /** Páginas HTML de la API y sus entradas de búsqueda (rutas relativas al sitio). */

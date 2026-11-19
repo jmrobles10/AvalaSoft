@@ -7,7 +7,7 @@ import {
   type ObservacionDeRequisitoDto,
   type RequisitoExpedienteDto,
   type VeredictoDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { bloqueoVeredicto, type BloqueoVeredicto, type ContextoRevisor } from './reglas';
 import { requisitosDe } from './requisitos';
 

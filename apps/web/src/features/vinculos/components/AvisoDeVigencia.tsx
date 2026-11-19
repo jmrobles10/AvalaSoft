@@ -1,5 +1,5 @@
 import { Alert, AlertTitle } from '@mui/material';
-import type { VinculoDto } from '@avalasoft/api-client';
+import type { VinculoDto } from '@validalo/api-client';
 import { CalendarClock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatearFechaDeclarada } from '../../documentos/formatoDatos';

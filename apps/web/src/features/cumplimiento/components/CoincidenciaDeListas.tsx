@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
-import type { CoincidenciaDto, DecisionCoincidencia } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { CoincidenciaDto, DecisionCoincidencia } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { ShieldCheck, ShieldX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

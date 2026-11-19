@@ -41,7 +41,7 @@ Mi información es tu ficha: está dividida en secciones y cada una dice si est�
 
 ## Paso 2. Completa los datos de la sección
 
-Cada sección tiene sus campos en el orden en que se piden. Lo que ya conoce AvalaSoft, como la razón social y la identificación, llega prellenado; el resto lo escribes tú: en este caso, el teléfono y el domicilio. Los campos obligatorios muestran el dato que falta; cuando estén listos, la barra de guardar dice que la sección está lista.
+Cada sección tiene sus campos en el orden en que se piden. Lo que ya conoce Valídalo, como la razón social y la identificación, llega prellenado; el resto lo escribes tú: en este caso, el teléfono y el domicilio. Los campos obligatorios muestran el dato que falta; cuando estén listos, la barra de guardar dice que la sección está lista.
 
 > **Pantalla:** `/ficha/general`
 
@@ -55,7 +55,7 @@ Cada sección tiene sus campos en el orden en que se piden. Lo que ya conoce Ava
 
 ## Paso 3. Guarda la sección
 
-Con «Guardar» la sección queda guardada. AvalaSoft te avisa si quedó completa o como borrador; una sección completa cuenta para tu avance y la empresa puede revisarla. Si sales sin guardar, el portal te pregunta primero para que no pierdas lo escrito.
+Con «Guardar» la sección queda guardada. Valídalo te avisa si quedó completa o como borrador; una sección completa cuenta para tu avance y la empresa puede revisarla. Si sales sin guardar, el portal te pregunta primero para que no pierdas lo escrito.
 
 > **Pantalla:** `/ficha/general`
 

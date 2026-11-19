@@ -1,4 +1,4 @@
-import { EstadoVinculo, type EmpresaDto } from '@avalasoft/api-client';
+import { EstadoVinculo, type EmpresaDto } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 
 const TIPOS_PERSONA = ['Natural', 'Juridica', 'Consorcio'] as const;

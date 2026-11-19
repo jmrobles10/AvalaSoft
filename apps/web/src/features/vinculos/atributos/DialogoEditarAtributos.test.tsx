@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type AtributoPermitidoDto, type TipoVinculoDto, type VinculoDto } from '@avalasoft/api-client';
+import { configurarCliente, reiniciarCliente, SCOPES, type AtributoPermitidoDto, type TipoVinculoDto, type VinculoDto } from '@validalo/api-client';
 import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../../pruebas/montar';

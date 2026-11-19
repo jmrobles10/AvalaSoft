@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { SCOPES, type ApiKeyDto } from '@avalasoft/api-client';
-import { EstadoVacio, FilasEsqueleto, formatearFecha, formatearFechaHora, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
+import { SCOPES, type ApiKeyDto } from '@validalo/api-client';
+import { EstadoVacio, FilasEsqueleto, formatearFecha, formatearFechaHora, MarcoTabla, visualmenteOculto } from '@validalo/ui';
 import { Ban, CalendarX, KeyRound, Plus, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

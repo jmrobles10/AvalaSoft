@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { COLUMNAS_OPCION } from './estilos';
 import { FilaOpcion } from './FilaOpcion';
 import { erroresDe, esAutomatico, MAXIMO_OPCIONES, type BorradorFactor, type CambioFactor, type CambioOpcion, type ErrorMatriz } from './modelo';
-import { CampoNumero } from '@avalasoft/ui';
+import { CampoNumero } from '@validalo/ui';
 
 export interface TarjetaFactorProps {
   factor: BorradorFactor;

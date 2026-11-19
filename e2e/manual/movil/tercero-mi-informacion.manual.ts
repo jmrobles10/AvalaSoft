@@ -46,7 +46,7 @@ recorrido(
     await paso(page, {
       titulo: 'Completa los datos de la sección',
       explicacion:
-        'Cada sección tiene sus campos en el orden en que se piden. Lo que ya conoce AvalaSoft, como la razón social y la identificación, llega prellenado; el resto lo escribes tú: en este caso, el teléfono y el domicilio. ' +
+        'Cada sección tiene sus campos en el orden en que se piden. Lo que ya conoce Valídalo, como la razón social y la identificación, llega prellenado; el resto lo escribes tú: en este caso, el teléfono y el domicilio. ' +
         'Los campos obligatorios muestran el dato que falta; cuando estén listos, la barra de guardar dice que la sección está lista.',
       resaltar: page.getByRole('group', { name: 'Guardar la sección' }),
       variantes: [
@@ -61,7 +61,7 @@ recorrido(
     await paso(page, {
       titulo: 'Guarda la sección',
       explicacion:
-        'Con «Guardar» la sección queda guardada. AvalaSoft te avisa si quedó completa o como borrador; una sección completa cuenta para tu avance y la empresa puede revisarla. ' +
+        'Con «Guardar» la sección queda guardada. Valídalo te avisa si quedó completa o como borrador; una sección completa cuenta para tu avance y la empresa puede revisarla. ' +
         'Si sales sin guardar, el portal te pregunta primero para que no pierdas lo escrito.',
       resaltar: barra,
       avisos: true,

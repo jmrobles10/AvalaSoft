@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { configurarCliente } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { useEffect, useRef, useState } from 'react';
 import { RouterProvider } from 'react-router';
 import { envolverConRenovacion } from '../sesion/renovacion';
@@ -27,7 +27,7 @@ configurarCliente({
 void useSesionTercero.getState().restaurar();
 
 // Tema del tercero: el mismo lenguaje que la consola (lienzo gris, paneles flotantes, campos «small» de 36 px y 40 en el celular). Claro por defecto.
-const tema = createAvalasoftTheme('light', { app: 'public' });
+const tema = createValidaloTheme('light', { app: 'public' });
 
 export function App() {
   const [clienteConsultas] = useState(crearClienteConsultas);

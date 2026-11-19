@@ -1,4 +1,4 @@
-import type { CodigosDeRecuperacionDto } from '@avalasoft/api-client';
+import type { CodigosDeRecuperacionDto } from '@validalo/api-client';
 
 /** Los códigos en texto plano, uno por línea (para copiarlos al portapapeles o a un gestor de contraseñas). */
 export function textoDeCodigos(codigos: readonly string[]): string {

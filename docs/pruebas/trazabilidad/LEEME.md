@@ -12,7 +12,7 @@ Un archivo por grupo de pruebas (`<grupo>.md`) con una o varias tablas de cuatro
 ```markdown
 | e2e retirada | Qué verificaba | Lo cubre | Mutación |
 |---|---|---|---|
-| `actualizaciones.spec.ts` › una versión nueva del RUT durante la revisión invalida lo que Compras ya había aprobado sobre él | El voto de Compras sobre v1 deja de contar al llegar v2 | `tests/Avalasoft.Integracion.Tests/RequisitosApiTests.cs` › Proveedor_con_rut_y_camara_compartidos_observacion_version_nueva_reenvio_y_aprobacion_por_requisito<br>`apps/web/src/features/expedientes/requisitos.test.ts` › un voto sobre una versión anterior | Sí: quitar la invalidación del voto en `Expediente.Apply(VersionNueva)` → la prueba de API falla en «Compras debe volver a decidir» |
+| `actualizaciones.spec.ts` › una versión nueva del RUT durante la revisión invalida lo que Compras ya había aprobado sobre él | El voto de Compras sobre v1 deja de contar al llegar v2 | `tests/Validalo.Integracion.Tests/RequisitosApiTests.cs` › Proveedor_con_rut_y_camara_compartidos_observacion_version_nueva_reenvio_y_aprobacion_por_requisito<br>`apps/web/src/features/expedientes/requisitos.test.ts` › un voto sobre una versión anterior | Sí: quitar la invalidación del voto en `Expediente.Apply(VersionNueva)` → la prueba de API falla en «Compras debe volver a decidir» |
 ```
 
 - **Columna 1**: `` `archivo.spec.ts` `` + ` › ` + el título **literal** de la prueba como estaba en el `.spec.ts`.

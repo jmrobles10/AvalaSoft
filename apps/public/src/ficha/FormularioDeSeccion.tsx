@@ -1,5 +1,5 @@
-import type { EstadoFichaDto } from '@avalasoft/api-client';
-import { SeccionPlana } from '@avalasoft/ui';
+import type { EstadoFichaDto } from '@validalo/api-client';
+import { SeccionPlana } from '@validalo/ui';
 import { Layers, Receipt, Scale, TrendingUp } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

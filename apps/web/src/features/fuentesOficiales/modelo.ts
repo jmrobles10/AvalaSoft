@@ -1,4 +1,4 @@
-import type { CampoCotejadoDto, CredencialesFuenteDto, TipoVerificacion } from '@avalasoft/api-client';
+import type { CampoCotejadoDto, CredencialesFuenteDto, TipoVerificacion } from '@validalo/api-client';
 
 /**
  * Reglas de la pantalla de fuentes oficiales (FO-1…FO-8), las mismas que valida la API: cuáles son, cómo se resume y se ordena

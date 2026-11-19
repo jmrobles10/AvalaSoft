@@ -3,7 +3,7 @@ id: "privacidad/solicitud-sobre-mis-datos"
 titulo: "Pide conocer, corregir o suprimir tus datos personales"
 actor: "Tercero"
 dominio: "privacidad"
-resumen: "El tercero abre «Privacidad y mis datos», crea una solicitud sobre sus datos (consulta, corrección o supresión), elige a quién se la dirige (AvalaSoft o una empresa con la que tiene vínculo) y recibe su radicado con la fecha límite de respuesta."
+resumen: "El tercero abre «Privacidad y mis datos», crea una solicitud sobre sus datos (consulta, corrección o supresión), elige a quién se la dirige (Valídalo o una empresa con la que tiene vínculo) y recibe su radicado con la fecha límite de respuesta."
 pasos: 4
 ---
 
@@ -11,7 +11,7 @@ pasos: 4
 
 **Actor:** Tercero · **Dominio:** Datos personales
 
-El tercero abre «Privacidad y mis datos», crea una solicitud sobre sus datos (consulta, corrección o supresión), elige a quién se la dirige (AvalaSoft o una empresa con la que tiene vínculo) y recibe su radicado con la fecha límite de respuesta.
+El tercero abre «Privacidad y mis datos», crea una solicitud sobre sus datos (consulta, corrección o supresión), elige a quién se la dirige (Valídalo o una empresa con la que tiene vínculo) y recibe su radicado con la fecha límite de respuesta.
 
 **Antes de empezar**
 
@@ -52,7 +52,7 @@ La solicitud empieza con el derecho que ejerces: «Conocer mis datos» te dice q
 
 ## Paso 3. Elige a quién se la pides
 
-En «Se la pides a» eliges AvalaSoft, que responde por lo que guarda en tu bóveda (documentos, información y cuentas), o una empresa con la que tienes un vínculo, que responde por los datos de esa relación. El aviso de abajo dice quién recibe la solicitud ahora, en cuántos días hábiles te responde y que te llegará un correo con el radicado.
+En «Se la pides a» eliges Valídalo, que responde por lo que guarda en tu bóveda (documentos, información y cuentas), o una empresa con la que tienes un vínculo, que responde por los datos de esa relación. El aviso de abajo dice quién recibe la solicitud ahora, en cuántos días hábiles te responde y que te llegará un correo con el radicado.
 
 > **Pantalla:** `/privacidad`
 
@@ -62,7 +62,7 @@ En «Se la pides a» eliges AvalaSoft, que responde por lo que guarda en tu bóv
 
 **Variantes**
 
-- **Eliges «AvalaSoft (mi bóveda)»:** AvalaSoft responde por tu bóveda y la solicitud no pasa por ninguna empresa.
+- **Eliges «Valídalo (mi bóveda)»:** Valídalo responde por tu bóveda y la solicitud no pasa por ninguna empresa.
 - **Eliges una empresa:** Solo aparecen las empresas con las que tienes una invitación aceptada.
 
 ## Paso 4. Envía la solicitud y guarda su radicado

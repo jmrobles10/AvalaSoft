@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getListarGruposDeAccesoQueryOptions } from '@avalasoft/api-client';
+import { getListarGruposDeAccesoQueryOptions } from '@validalo/api-client';
 
 /** Grupos de acceso del grupo empresarial, con los cuatro roles fijos como predefinidos (requiere `usuarios:administrar`). */
 export function useGruposDeAcceso(habilitado = true) {

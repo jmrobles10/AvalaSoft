@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { createValidaloTheme } from '@validalo/ui';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { DeclaracionPep } from '../tipos';
@@ -52,7 +52,7 @@ function Contenedor({ inicial, origen = NATURAL }: { inicial: Estado; origen?: O
 
 function montar(inicial: Estado, origen?: OrigenDeclaracion) {
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <Contenedor inicial={inicial} origen={origen} />
     </ThemeProvider>,
   );

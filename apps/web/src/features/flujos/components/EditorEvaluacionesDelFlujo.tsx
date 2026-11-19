@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import type { CuestionarioDto } from '@avalasoft/api-client';
+import type { CuestionarioDto } from '@validalo/api-client';
 import { Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { numero } from '../../evaluaciones/modelo';

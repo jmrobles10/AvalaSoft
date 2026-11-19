@@ -1,6 +1,6 @@
 import { Box, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import type { DebidaDiligencia } from '@avalasoft/api-client';
-import { visualmenteOculto } from '@avalasoft/ui';
+import type { DebidaDiligencia } from '@validalo/api-client';
+import { visualmenteOculto } from '@validalo/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChipNivelRiesgo } from '../../cumplimiento/components/ChipNivelRiesgo';

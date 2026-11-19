@@ -3,7 +3,7 @@ id: "integracion/invitar-por-api"
 titulo: "Invita a un proveedor desde tu sistema con la API"
 actor: "Sistema integrador"
 dominio: "integracion"
-resumen: "El ERP del cliente crea el vínculo con un POST a la API, con el tercero, su correo y su propia referencia. AvalaSoft envía la invitación y el vínculo aparece en la lista de la empresa, con esa referencia para buscarlo después."
+resumen: "El ERP del cliente crea el vínculo con un POST a la API, con el tercero, su correo y su propia referencia. Valídalo envía la invitación y el vínculo aparece en la lista de la empresa, con esa referencia para buscarlo después."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Sistema integrador · **Dominio:** Integración
 
-El ERP del cliente crea el vínculo con un POST a la API, con el tercero, su correo y su propia referencia. AvalaSoft envía la invitación y el vínculo aparece en la lista de la empresa, con esa referencia para buscarlo después.
+El ERP del cliente crea el vínculo con un POST a la API, con el tercero, su correo y su propia referencia. Valídalo envía la invitación y el vínculo aparece en la lista de la empresa, con esa referencia para buscarlo después.
 
 **Antes de empezar**
 
@@ -25,13 +25,13 @@ El ERP del cliente crea el vínculo con un POST a la API, con el tercero, su cor
 
 ## Paso 1. Envía la invitación con un POST
 
-Tu sistema llama a POST /api/v1/vinculos con la llave de la API y la empresa en la cabecera X-Empresa. El cuerpo trae los datos del tercero, su tipo de vínculo, el correo al que va la invitación y tu referencia (sistema e identificador). La cabecera Idempotency-Key identifica la invitación: si tu sistema repite la misma llamada por un fallo de red, AvalaSoft no crea un segundo vínculo.
+Tu sistema llama a POST /api/v1/vinculos con la llave de la API y la empresa en la cabecera X-Empresa. El cuerpo trae los datos del tercero, su tipo de vínculo, el correo al que va la invitación y tu referencia (sistema e identificador). La cabecera Idempotency-Key identifica la invitación: si tu sistema repite la misma llamada por un fallo de red, Valídalo no crea un segundo vínculo.
 
 ![Paso 1: Envía la invitación con un POST (escritorio)](../../../salida/manual/img/integracion/invitar-por-api/01-envia-la-invitacion-con-un-post-claro.webp)
 
 **Variantes**
 
-- **Mandas «enviarInvitacion» en verdadero:** AvalaSoft envía de inmediato el correo de invitación al contacto indicado.
+- **Mandas «enviarInvitacion» en verdadero:** Valídalo envía de inmediato el correo de invitación al contacto indicado.
 - **Mandas «enviarInvitacion» en falso:** El vínculo se crea sin correo: la invitación se envía después desde la pantalla.
 
 ## Paso 2. Encuentra el vínculo creado en la lista

@@ -1,6 +1,6 @@
 import { Box, Link, Skeleton, Stack, Typography } from '@mui/material';
-import type { MisPendientesDto } from '@avalasoft/api-client';
-import { EstadoVacio } from '@avalasoft/ui';
+import type { MisPendientesDto } from '@validalo/api-client';
+import { EstadoVacio } from '@validalo/ui';
 import { CalendarClock, CalendarX, CircleCheck, FolderClock, Landmark, RefreshCw, Workflow, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

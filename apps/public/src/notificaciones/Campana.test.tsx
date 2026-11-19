@@ -2,11 +2,11 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type BandejaNotificacionesTerceroDto, type NotificacionTerceroDto, type PreferenciasNotificacionDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, type BandejaNotificacionesTerceroDto, type NotificacionTerceroDto, type PreferenciasNotificacionDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { crearCuerpoSse } from '@avalasoft/api-client/pruebas/sse';
+import { crearCuerpoSse } from '@validalo/api-client/pruebas/sse';
 import { useSesionTercero } from '../sesion/sesionTercero';
 import { useAvisos } from '../shared/useAvisos';
 import { Campana } from './Campana';
@@ -74,7 +74,7 @@ function montar(bandeja: BandejaNotificacionesTerceroDto) {
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <MemoryRouter initialEntries={['/empresas']}>
           <Campana />

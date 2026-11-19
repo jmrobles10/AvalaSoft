@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
-import { SCOPES } from '@avalasoft/api-client';
-import { EsqueletoTarjeta } from '@avalasoft/ui';
+import { SCOPES } from '@validalo/api-client';
+import { EsqueletoTarjeta } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { EncabezadoPagina, ErrorRecuperable, SinPermiso } from '../../../shared/componentes';
 import { mensajeDeError } from '../../../shared/errores';

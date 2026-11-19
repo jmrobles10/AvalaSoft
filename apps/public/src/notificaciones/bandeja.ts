@@ -1,9 +1,9 @@
-import { claveDeTipoEn, esTextoONulo, interpretarEventoDeNotificaciones, type EventoDeNotificaciones, type EventoSse, type NotificacionTerceroDto } from '@avalasoft/api-client';
+import { claveDeTipoEn, esTextoONulo, interpretarEventoDeNotificaciones, type EventoDeNotificaciones, type EventoSse, type NotificacionTerceroDto } from '@validalo/api-client';
 
 /**
  * Lo propio de la bandeja del tercero (`GET /public/v1/notificaciones`): el total de no leídas (`noLeidas`) es de todas sus empresas.
  * Los cambios sobre la bandeja en caché (agregar, marcar leídas) y el contador son los mismos de la web de empresa y viven en
- * `@avalasoft/api-client` y `@avalasoft/ui`.
+ * `@validalo/api-client` y `@validalo/ui`.
  */
 
 /**

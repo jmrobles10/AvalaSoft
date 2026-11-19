@@ -1,4 +1,4 @@
-/* AvalaSoft: paleta segura de una empresa (marca por empresa en public). Mismo algoritmo que Avalasoft.derivarPaletaEmpresa del bundle. */
+/* Valídalo: paleta segura de una empresa (marca por empresa en public). Mismo algoritmo que Validalo.derivarPaletaEmpresa del bundle. */
 import { COLOR, type Modo } from './tokens';
 
 export interface PaletaEmpresa {

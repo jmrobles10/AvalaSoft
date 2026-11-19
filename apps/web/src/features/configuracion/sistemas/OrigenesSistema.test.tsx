@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type SistemaIntegradoDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, type SistemaIntegradoDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { OrigenesSistema } from './OrigenesSistema';
 
@@ -29,7 +29,7 @@ function montar(sistema: SistemaIntegradoDto, respuesta: (cuerpo: unknown) => Re
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>
         <OrigenesSistema sistema={sistema} />
       </QueryClientProvider>
@@ -40,7 +40,7 @@ function montar(sistema: SistemaIntegradoDto, respuesta: (cuerpo: unknown) => Re
 
 afterEach(() => reiniciarCliente());
 
-describe('Sitios que pueden incrustar AvalaSoft', () => {
+describe('Sitios que pueden incrustar Valídalo', () => {
   it('explica para qué sirve, normaliza lo escrito y guarda la lista completa con PUT', async () => {
     const usuario = userEvent.setup();
     const peticiones = montar(SISTEMA, (cuerpo) => json({ ...SISTEMA, origenesPermitidos: (cuerpo as { origenes: string[] }).origenes }));

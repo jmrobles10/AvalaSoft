@@ -1,4 +1,4 @@
-import { ErrorApi, type DefinicionDeCuestionarioDto } from '@avalasoft/api-client';
+import { ErrorApi, type DefinicionDeCuestionarioDto } from '@validalo/api-client';
 import i18n from 'i18next';
 import { describe, expect, it } from 'vitest';
 import '../../i18n';

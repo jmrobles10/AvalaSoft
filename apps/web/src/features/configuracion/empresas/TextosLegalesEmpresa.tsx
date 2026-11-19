@@ -1,5 +1,5 @@
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
-import type { EmpresaDto } from '@avalasoft/api-client';
+import type { EmpresaDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { ErrorRecuperable } from '../../../shared/componentes';
 import { mensajeDeError } from '../../../shared/errores';

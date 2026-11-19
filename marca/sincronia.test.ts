@@ -7,22 +7,21 @@ import {
   CAJA_LOGOTIPO,
   CHECK_RELLENO,
   coloresDeLogo,
-  ESPACIO_SIMBOLO,
   FAVICON,
   GUIA_CHECK,
   LONGITUD_GUIA,
-  SIMBOLO_LOGOTIPO,
+  MARGEN_LOGOTIPO,
   TIEMPOS_CARGA,
   TRANSFORMACION_CHECK_ICONO,
   TRANSFORMACION_PALABRA,
-  TRANSFORMACION_SIMBOLO,
+  TRANSFORMACION_V,
 } from '../packages/ui/src/marca/geometria';
 import { PALABRA } from '../packages/ui/src/marca/palabra';
 import { decodificarPng } from './png.ts';
 
 /**
  * Sincronía de la marca (MA-1): los recursos que el generador deja en `marca/` y las copias que usan las apps, los correos y el PDF no se
- * pueden separar de la geometría de `@avalasoft/ui` ni entre sí. El generador necesita un navegador; estas pruebas solo leen archivos.
+ * pueden separar de la geometría de `@validalo/ui` ni entre sí. El generador necesita un navegador; estas pruebas solo leen archivos.
  */
 const repo = resolve(import.meta.dirname, '..');
 const leer = (...ruta: string[]) => readFileSync(join(repo, ...ruta));
@@ -63,13 +62,12 @@ describe('recursos de marca generados', () => {
     for (const [nombre, modo] of [['claro', 'light'], ['oscuro', 'dark']] as const) {
       const c = coloresDeLogo(modo);
       const logotipo = texto('marca', 'svg', `logotipo-${nombre}.svg`);
-      expect(logotipo).toContain(CHECK_RELLENO);
       expect(logotipo).toContain(`viewBox="0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}"`);
-      expect(logotipo).toContain(`transform="${TRANSFORMACION_SIMBOLO}"`);
-      expect(logotipo).toContain(`transform="${TRANSFORMACION_PALABRA}"`);
-      expect(logotipo).toContain(`d="${PALABRA.avala}" fill="${c.avala}"`);
-      expect(logotipo).toContain(`d="${PALABRA.soft}" fill="${c.soft}"`);
-      expect(logotipo).toContain(`fill="${c.check}"`);
+      expect(logotipo).toContain(`<path d="${PALABRA.v.trazado}" fill="${c.check}" transform="${TRANSFORMACION_V}"/>`);
+      expect(logotipo).toContain(`<path d="${PALABRA.letras}" fill="${c.letras}" transform="${TRANSFORMACION_PALABRA}"/>`);
+      // La «V» es el check sin círculo: el logotipo no lleva ni círculo ni check blanco.
+      expect(logotipo).not.toContain('<circle');
+      expect(logotipo).not.toContain(c.blanco);
       // Solo trazados: el logotipo no depende de ninguna fuente.
       expect(logotipo).not.toContain('<text');
       expect(logotipo).not.toContain('font-family');
@@ -124,28 +122,25 @@ describe('copias que usan el producto', () => {
   });
 
   it('los correos incrustan el logotipo claro y el GIF de éxito claro que genera la marca', () => {
-    const recursos = ['src', 'Avalasoft.Aplicacion', 'Comun', 'RecursosDeMarca'];
+    const recursos = ['src', 'Validalo.Aplicacion', 'Comun', 'RecursosDeMarca'];
     expect(leer(...recursos, 'logotipo.png').equals(leer('marca', 'png', 'logotipo-claro@2x.png'))).toBe(true);
     expect(leer(...recursos, 'exito.gif').equals(leer('marca', 'gif', 'exito-claro.gif'))).toBe(true);
   });
 
   it('el PDF dibuja el mismo logotipo: los mismos trazados, transformaciones, caja y colores del modo claro', () => {
-    const pdf = texto('src', 'Avalasoft.Infraestructura', 'Ficha', 'LogosDePdf.cs');
+    const pdf = texto('src', 'Validalo.Infraestructura', 'Ficha', 'LogosDePdf.cs');
     const c = coloresDeLogo('light');
     expect(pdf).toContain(`viewBox="0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}"`);
-    expect(pdf).toContain(CHECK_RELLENO);
-    expect(pdf).toContain(`transform="${TRANSFORMACION_SIMBOLO}"`);
-    expect(pdf).toContain(`transform="${TRANSFORMACION_PALABRA}"`);
-    expect(pdf).toContain(`<circle cx="50" cy="50" r="${String(FAVICON.radio)}" fill="${c.check}"/>`);
-    expect(pdf).toContain(`<path d="${PALABRA.avala}" fill="${c.avala}"/>`);
-    expect(pdf).toContain(`<path d="${PALABRA.soft}" fill="${c.soft}"/>`);
-    expect(coloresDeLogo('light')).toMatchObject({ avala: '#0E8C9A', soft: '#0B1F3A' });
-    expect(coloresDeLogo('dark')).toMatchObject({ avala: '#3FC1CE', soft: '#EEF3FA' });
+    expect(pdf).toContain(`<path d="${PALABRA.v.trazado}" fill="${c.check}" transform="${TRANSFORMACION_V}"/>`);
+    expect(pdf).toContain(`<path d="${PALABRA.letras}" fill="${c.letras}" transform="${TRANSFORMACION_PALABRA}"/>`);
+    expect(pdf).not.toContain('<circle');
+    expect(coloresDeLogo('light')).toMatchObject({ letras: '#0E8C9A' });
+    expect(coloresDeLogo('dark')).toMatchObject({ letras: '#F2F5FB' });
   });
 });
 
 describe('alineación del logotipo (medida sobre el PNG)', () => {
-  /** Mide el PNG claro @2x píxel a píxel: el círculo verde y los trazados de la palabra, sin fiarse de las constantes. */
+  /** Mide el PNG claro @2x píxel a píxel: la «V» verde y las letras (verde azulado), sin fiarse de las constantes. */
   function medir() {
     const { ancho, alto, rgba } = decodificarPng(leer('marca', 'png', 'logotipo-claro@2x.png'));
     const cerca = (i: number, [r, g, b]: number[], tolerancia: number) =>
@@ -160,29 +155,44 @@ describe('alineación del logotipo (medida sobre el PNG)', () => {
             c.y0 = Math.min(c.y0, y);
             c.y1 = Math.max(c.y1, y);
           }
-      return { ...c, ancho: c.x1 - c.x0 + 1, alto: c.y1 - c.y0 + 1, centroY: (c.y0 + c.y1 + 1) / 2 };
+      return { ...c, ancho: c.x1 - c.x0 + 1, alto: c.y1 - c.y0 + 1 };
     };
-    const circulo = caja((i) => cerca(i, [0x22, 0xd3, 0x8a], 40));
-    const palabra = caja((i) => cerca(i, [0x0e, 0x8c, 0x9a], 30) || cerca(i, [0x0b, 0x1f, 0x3a], 30));
-    return { circulo, palabra };
+    const uve = caja((i) => cerca(i, [0x22, 0xd3, 0x8a], 40));
+    const palabra = caja((i) => cerca(i, [0x0e, 0x8c, 0x9a], 30));
+    const todo = caja((i) => (rgba[i + 3] ?? 0) > 8);
+    return { ancho, alto, uve, palabra, todo };
   }
 
-  it('el círculo se centra entre la línea base y lo alto de las ascendentes (a menos de un píxel del PNG @2x)', () => {
-    const { circulo, palabra } = medir();
-    // La palabra mide de lo alto de la «l» y la «f» al sobrepaso de las curvas bajo la línea base; el círculo, su centro.
-    expect(Math.abs(circulo.centroY - palabra.centroY)).toBeLessThanOrEqual(1);
-    // El borde inferior del círculo cae un poco bajo el de la palabra y el superior un poco sobre el de las ascendentes.
-    expect(circulo.y1).toBeGreaterThanOrEqual(palabra.y1);
-    expect(circulo.y0).toBeLessThanOrEqual(palabra.y0);
+  it('la «V» mide lo que la letra y se apoya en la línea base (a menos de un par de píxeles del PNG @2x)', () => {
+    const { uve, palabra } = medir();
+    // El PNG está a 32 px de letra y al doble: 100 unidades de logotipo son 64 px.
+    const pixelesPorUnidad = (32 * 2) / PALABRA.tamano;
+    expect(Math.abs(uve.alto - PALABRA.tamano * pixelesPorUnidad)).toBeLessThanOrEqual(2);
+    // La palabra llega a la línea base más el sobrepaso de sus curvas (1 unidad): la punta de la «V» cae ahí, no por debajo ni muy arriba.
+    expect(Math.abs(uve.y1 - palabra.y1)).toBeLessThanOrEqual(2);
+    // La «V» sube por encima de las ascendentes (el brazo largo del check).
+    expect(uve.y0).toBeLessThan(palabra.y0);
   });
 
-  it('el círculo mide ≈ 1,05 veces las ascendentes y deja ≈ 0,2 de su diámetro hasta la palabra', () => {
-    const { circulo, palabra } = medir();
-    expect(circulo.alto / palabra.alto).toBeGreaterThan(1.0);
-    expect(circulo.alto / palabra.alto).toBeLessThan(1.1);
-    expect(SIMBOLO_LOGOTIPO.diametro / PALABRA.altoAscendente).toBeCloseTo(1.05, 2);
-    const aire = palabra.x0 - (circulo.x1 + 1);
-    expect(aire / circulo.ancho).toBeGreaterThan(ESPACIO_SIMBOLO - 0.04);
-    expect(aire / circulo.ancho).toBeLessThan(ESPACIO_SIMBOLO + 0.04);
+  it('la «V» queda pegada a la «a»: su brazo largo se mete sobre ella (la palabra empieza antes de que termine la «V») y no la toca', () => {
+    const { uve, palabra } = medir();
+    expect(palabra.x0).toBeLessThan(uve.x1);
+    expect(palabra.x0).toBeGreaterThan(uve.x0);
+    // La «V» y la palabra son de colores distintos: si se tocaran por completo no habría una «a» legible; la distancia mínima entre sus contornos es fija (HUECO_V de contornos.mjs).
+    expect(uve.x1 - palabra.x0).toBeGreaterThan(20);
+  });
+
+  it('el PNG deja el margen de seguridad alrededor de todo el dibujo: ni la cola del check ni el acento ni la inclinación tocan el borde', () => {
+    const { ancho, alto, todo } = medir();
+    const pixelesPorUnidad = (32 * 2) / PALABRA.tamano;
+    const margen = Math.floor(MARGEN_LOGOTIPO * pixelesPorUnidad);
+    expect(todo.x0).toBeGreaterThanOrEqual(margen);
+    expect(todo.y0).toBeGreaterThanOrEqual(margen);
+    expect(ancho - 1 - todo.x1).toBeGreaterThanOrEqual(margen);
+    expect(alto - 1 - todo.y1).toBeGreaterThanOrEqual(margen);
+    expect(margen).toBeGreaterThanOrEqual(1);
+    // El tamaño del PNG sale de la caja del logotipo (a 32 px de letra y 2×).
+    expect(Math.abs(ancho - CAJA_LOGOTIPO.ancho * pixelesPorUnidad)).toBeLessThanOrEqual(1);
+    expect(Math.abs(alto - CAJA_LOGOTIPO.alto * pixelesPorUnidad)).toBeLessThanOrEqual(1);
   });
 });

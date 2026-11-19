@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
-import { SCOPES } from '@avalasoft/api-client';
-import { BarraFiltros, CampoFecha, FiltroMenu } from '@avalasoft/ui';
+import { SCOPES } from '@validalo/api-client';
+import { BarraFiltros, CampoFecha, FiltroMenu } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { usePermisos } from '../../shared/usePermisos';

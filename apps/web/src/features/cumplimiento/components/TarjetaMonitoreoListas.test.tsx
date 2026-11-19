@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, SCOPES, type MonitoreoListasDto } from '@avalasoft/api-client';
+import { reiniciarCliente, SCOPES, type MonitoreoListasDto } from '@validalo/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { coincidencia, listas } from '../datosPrueba';
 import { problema, renderizar, simularApi, type LlamadaApi } from '../pruebasApi';

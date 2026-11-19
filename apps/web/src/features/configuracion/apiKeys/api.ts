@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { crearApiKey, getListarApiKeysQueryOptions, getListarSistemasQueryOptions, revocarApiKey, rotarApiKey } from '@avalasoft/api-client';
+import { crearApiKey, getListarApiKeysQueryOptions, getListarSistemasQueryOptions, revocarApiKey, rotarApiKey } from '@validalo/api-client';
 import { invalidarRuta } from '../../../shared/consultas';
 import { cuerpoCrearApiKey, type BorradorApiKey } from './modelo';
 

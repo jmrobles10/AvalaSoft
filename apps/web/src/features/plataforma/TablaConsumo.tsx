@@ -1,6 +1,6 @@
 import { Box, Chip, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
-import type { ConsumoDeIaEmpresaDto, ConsumoDeIaGrupoDto } from '@avalasoft/api-client';
-import { MarcoTabla } from '@avalasoft/ui';
+import type { ConsumoDeIaEmpresaDto, ConsumoDeIaGrupoDto } from '@validalo/api-client';
+import { MarcoTabla } from '@validalo/ui';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

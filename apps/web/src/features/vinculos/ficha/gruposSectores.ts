@@ -1,4 +1,4 @@
-import type { GrupoNavegacion } from '@avalasoft/ui';
+import type { GrupoNavegacion } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 import { ICONO_SECTOR, type IndicadorSector, type Sector } from './sectores';
 

@@ -1,6 +1,6 @@
 import { Box, Button, Skeleton, Stack, Typography } from '@mui/material';
-import type { GrupoDto } from '@avalasoft/api-client';
-import { BarraFiltros, CampoBusqueda, EstadoVacio, TablaEsqueleto } from '@avalasoft/ui';
+import type { GrupoDto } from '@validalo/api-client';
+import { BarraFiltros, CampoBusqueda, EstadoVacio, TablaEsqueleto } from '@validalo/ui';
 import { Building2, Plus, SearchX } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

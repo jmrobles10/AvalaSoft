@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
-import { SCOPES } from '@avalasoft/api-client';
-import { BarraFiltros, CampoBusqueda, ChipEstado, EstadoVacio, FiltroMenu, TablaConCursor, usePaginacionCursor } from '@avalasoft/ui';
+import { SCOPES } from '@validalo/api-client';
+import { BarraFiltros, CampoBusqueda, ChipEstado, EstadoVacio, FiltroMenu, TablaConCursor, usePaginacionCursor } from '@validalo/ui';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { descargarArchivo, type ArchivoDescargado } from '@avalasoft/api-client';
+import { descargarArchivo, type ArchivoDescargado } from '@validalo/api-client';
 
 /** Qué declaración PEP se descarga: el tercero, la sección (`FICHA_GENERAL` o `FICHA_LEGAL`), la versión y, en la legal, la posición de la persona. */
 export interface DescargaDeclaracionPep {

@@ -1,16 +1,19 @@
 import { COLOR, type Modo } from '../tokens';
 import { PALABRA } from './palabra';
 
+export { CAJA_CHECK, CHECK_RELLENO } from './check';
+
 /**
- * Geometría y colores del logo «Anillo» de AvalaSoft (MA-1, docs/marca.md). Es la única fuente: el componente `Logo`, las
+ * Geometría y colores de la marca de Valídalo (MA-1, docs/marca.md). Es la única fuente: el componente `Logo`, las
  * animaciones y el generador de recursos (`marca/generar.mjs`) la leen de aquí; el PDF (`LogosDePdf.cs`) la repite con los mismos
  * trazados y números y una prueba los compara.
  *
- * - **Check**: una forma caligráfica rellena, de brazo derecho más largo: se lee como V y como check.
- * - **Logotipo**: el símbolo (círculo verde con el check blanco, sin inclinar) seguido de la palabra «avalasoft», toda en minúsculas, en
- *   Quicksand Bold (SIL OFL) convertida a contornos (`palabra.ts`, generado por `marca/contornos.mjs`), con seguimiento −0,04 em y
- *   espaciado parejo, e inclinada 10° a la derecha; el círculo mide lo que las ascendentes y se centra entre la línea base y lo alto de la «l» y la «f»;
- *   «avala» en verde azulado y «soft» en azul muy oscuro. Es solo geometría: no depende de ninguna fuente.
+ * - **Check («V»)**: una forma caligráfica rellena, de brazo derecho más largo: se lee como V y como check.
+ * - **Logotipo**: sin aro ni círculo. La «V» es el check verde, del alto de la letra, apoyado en la línea base, inclinado 10° como la palabra
+ *   y muy pegado a la «a» (su brazo largo se mete sobre ella); sigue «alídalo», toda en minúsculas, en Quicksand Bold (SIL OFL) convertida a
+ *   contornos (`palabra.ts`, generado por `marca/contornos.mjs`), con seguimiento −0,04 em y espaciado parejo, inclinada 10° a la derecha:
+ *   todas las letras de un solo color (verde azulado en claro, el blanco de texto de marca en oscuro). Se lee «Valídalo». Es solo geometría: no
+ *   depende de ninguna fuente.
  * - **Ícono** (app, web, PWA, avatar): un aro abierto con el check un poco más grande, cuya punta sale por el hueco del aro.
  * - **Favicon**: un círculo verde lleno con el check blanco.
  * - **Cargando** y **éxito**: el aro completo y el check revelado con una máscara (un relleno no se «dibuja» con `stroke-dashoffset`).
@@ -27,10 +30,6 @@ export const LONGITUD_ARO = 2 * Math.PI * ARO.r;
 
 /** Aro abierto del ícono: el hueco queda arriba a la derecha, por donde sale la punta del check. */
 export const ARO_ABIERTO = 'M71.1 10.3 A45 45 0 1 0 89 27.5';
-
-/** La «V» caligráfica: un check relleno con el brazo derecho más largo. */
-export const CHECK_RELLENO =
-  'M24 38 C26 34 30 34 32 37 L47 61 C56 45 66 32 80 19 C82 17 85 19 83 22 C70 37 60 52 51 71 C49 75 44 75 42 71 Z';
 
 /** Check del ícono: escalado 1,15 desde su vértice inferior para que la punta salga por el hueco del aro. */
 export const TRANSFORMACION_CHECK_ICONO = 'translate(47 70) scale(1.15) translate(-47 -70)';
@@ -62,67 +61,49 @@ export const LONGITUD_GUIA = 96;
 /** Redondea a `decimales` (los números que se repiten en SVG, PNG y PDF no arrastran ruido de coma flotante). */
 const redondear = (n: number, decimales = 2) => Math.round(n * 10 ** decimales) / 10 ** decimales;
 
-/** Diámetro del símbolo del logotipo dividido por la altura de las ascendentes («l» y «f»): un poco más alto que ellas (≈ 1,05). */
-export const PROPORCION_SIMBOLO = 1.05;
+/** Margen de seguridad alrededor del logotipo, en unidades de logotipo (la letra mide 100): el borde exacto de un trazado se pierde en el antialias del navegador. */
+export const MARGEN_LOGOTIPO = 2;
 
-/** Separación entre el símbolo y la palabra dividida por el diámetro del símbolo. */
-export const ESPACIO_SIMBOLO = 0.2;
+const ARRIBA = Math.min(PALABRA.v.caja.y0, PALABRA.limites.y0);
+const ABAJO = Math.max(PALABRA.v.caja.y1, PALABRA.limites.y1);
+const DERECHA = Math.max(PALABRA.v.caja.x1, PALABRA.inicio + PALABRA.limites.x1);
 
 /**
- * Símbolo del logotipo: el círculo verde con el check blanco del favicon (sin inclinar). Mide `PROPORCION_SIMBOLO` veces la altura de
- * las ascendentes y está centrado entre la línea base y lo alto de la «l» y la «f»: su borde inferior cae un poco bajo la línea base y el
- * superior un poco sobre las ascendentes. El aire hasta la palabra es `ESPACIO_SIMBOLO` veces el diámetro. Todo en unidades de logotipo: la
- * letra mide 100.
+ * Caja del logotipo (`viewBox="0 0 ancho alto"`) y su línea base. Incluye TODO el dibujo —la «V» inclinada con la cola de su brazo largo, el
+ * acento de la «í» y el sobrepaso de las curvas bajo la línea base— más `MARGEN_LOGOTIPO` por cada lado: nada debe quedar contra el borde.
  */
-const DIAMETRO = redondear(PALABRA.altoAscendente * PROPORCION_SIMBOLO);
-/** Altura (negativa, hacia arriba) del centro del símbolo sobre la línea base: la mitad de las ascendentes. */
-const CENTRO_SIMBOLO = -PALABRA.altoAscendente / 2;
-const ARRIBA = Math.min(PALABRA.limites.y0, CENTRO_SIMBOLO - DIAMETRO / 2);
-const ABAJO = Math.max(PALABRA.limites.y1, CENTRO_SIMBOLO + DIAMETRO / 2);
-
-export const SIMBOLO_LOGOTIPO = {
-  diametro: DIAMETRO,
-  separacion: redondear(DIAMETRO * ESPACIO_SIMBOLO),
-  /** Distancia del borde superior de la caja al borde superior del círculo. */
-  arriba: redondear(CENTRO_SIMBOLO - DIAMETRO / 2 - ARRIBA),
-} as const;
-
-/** Caja del logotipo (`viewBox="0 0 ancho alto"`), la línea base de la palabra y dónde empieza la palabra. */
 export const CAJA_LOGOTIPO = {
-  ancho: redondear(SIMBOLO_LOGOTIPO.diametro + SIMBOLO_LOGOTIPO.separacion + PALABRA.limites.x1 - PALABRA.limites.x0),
-  alto: redondear(ABAJO - ARRIBA),
+  ancho: redondear(DERECHA + 2 * MARGEN_LOGOTIPO),
+  alto: redondear(ABAJO - ARRIBA + 2 * MARGEN_LOGOTIPO),
   /** La línea base está a esta distancia del borde superior de la caja. */
-  base: redondear(-ARRIBA),
-  /** Dónde se pone el origen de la palabra para que su punto más a la izquierda quede a `separacion` del círculo. */
-  inicioPalabra: redondear(SIMBOLO_LOGOTIPO.diametro + SIMBOLO_LOGOTIPO.separacion - PALABRA.limites.x0),
+  base: redondear(MARGEN_LOGOTIPO - ARRIBA),
 } as const;
 
-/** El círculo con el check del logotipo: el del favicon (caja 2…98) escalado al diámetro del símbolo y puesto a su altura. */
-export const TRANSFORMACION_SIMBOLO = `translate(0 ${String(SIMBOLO_LOGOTIPO.arriba)}) scale(${String(redondear(SIMBOLO_LOGOTIPO.diametro / (2 * FAVICON.radio), 4))}) translate(-${String(ARO.cx - FAVICON.radio)} -${String(ARO.cy - FAVICON.radio)})`;
+/** La «V» (el check): su trazado (`PALABRA.v.trazado`) ya viene a su tamaño e inclinado, así que solo se corre a su sitio sobre la línea base. */
+export const TRANSFORMACION_V = `translate(${String(MARGEN_LOGOTIPO)} ${String(CAJA_LOGOTIPO.base)})`;
 
-/** La palabra: su origen (inicio de «avala» sobre la línea base). */
-export const TRANSFORMACION_PALABRA = `translate(${String(CAJA_LOGOTIPO.inicioPalabra)} ${String(CAJA_LOGOTIPO.base)})`;
+/** La palabra: su origen (inicio de «alídalo» sobre la línea base), con el aire que deja la «V» a la «a». */
+export const TRANSFORMACION_PALABRA = `translate(${String(redondear(MARGEN_LOGOTIPO + PALABRA.inicio))} ${String(CAJA_LOGOTIPO.base)})`;
 
-/** Colores de la palabra del logotipo en cada modo: «avala» en verde azulado y «soft» en azul muy oscuro (en oscuro, casi blanco). */
+/**
+ * Color de las letras del logotipo en cada modo: un solo color para toda la palabra. En claro, el verde azulado de marca `#0E8C9A` (4,0:1
+ * sobre #FFFFFF y 3,9:1 sobre #FAFBFD: no llega a 4,5:1 de AA para texto normal, pero la palabra es un dibujo grueso de 14 px o más y cumple el 3:1
+ * de texto grande y de logotipos). En oscuro, el blanco de texto de marca del token (`marcaTexto`, #F2F5FB: 17,5:1 sobre #0B1120).
+ */
 const COLORES_DE_LA_PALABRA = {
-  // «avala» #0E8C9A: 4,0:1 sobre #FFFFFF y 3,9:1 sobre #FAFBFD (no llega a 4,5:1 de AA para texto normal, pero la palabra es un dibujo grueso
-  // de 14 px o más: cumple 3:1 de texto grande y de logotipos); «soft» #0B1F3A: 16,5:1.
-  light: { avala: '#0E8C9A', soft: '#0B1F3A' },
-  // «avala» #3FC1CE: 8,7:1 sobre #0B1120 y 9,2:1 sobre #060A14; «soft» #EEF3FA: 16,9:1.
-  dark: { avala: '#3FC1CE', soft: '#EEF3FA' },
+  light: { letras: '#0E8C9A' },
+  dark: { letras: COLOR.dark.marcaTexto },
 } as const;
 
 /** Colores del logo en un modo (de `tokens.ts` el aro y el check; la palabra lleva los suyos; no cambian con la paleta de una empresa). */
 export interface ColoresDeLogo {
   /** Aro (ícono y carga). */
   aro: string;
-  /** Check (círculo del logotipo, ícono y favicon) y color del éxito. */
+  /** Check (la «V» del logotipo, el círculo del favicon y el ícono) y color del éxito. */
   check: string;
-  /** «avala» del logotipo. */
-  avala: string;
-  /** «soft» del logotipo. */
-  soft: string;
-  /** Check sobre el círculo lleno (éxito, favicon y logotipo). */
+  /** Las letras «alídalo» del logotipo (un solo color). */
+  letras: string;
+  /** Check sobre el círculo lleno (éxito y favicon). */
   blanco: string;
 }
 

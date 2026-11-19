@@ -1,5 +1,5 @@
 import { Box, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import type { ResultadoDeMatrizDto } from '@avalasoft/api-client';
+import type { ResultadoDeMatrizDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { claveRiesgo, formatearPuntaje } from '../modelo';
 import { ChipNivelRiesgo } from './ChipNivelRiesgo';

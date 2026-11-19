@@ -1,5 +1,5 @@
-import { obtenerSesionActual } from '@avalasoft/api-client';
-import { cargarOrigenesPermitidos, origenDelContenedor, origenesPermitidos, RECARGA_ORIGENES_MS, siguienteListaDeOrigenes, VERSION_PROTOCOLO } from '@avalasoft/sdk';
+import { obtenerSesionActual } from '@validalo/api-client';
+import { cargarOrigenesPermitidos, origenDelContenedor, origenesPermitidos, RECARGA_ORIGENES_MS, siguienteListaDeOrigenes, VERSION_PROTOCOLO } from '@validalo/sdk';
 import { useEffect, useRef } from 'react';
 import { useSesionTercero } from '../sesion/sesionTercero';
 import { ANTICIPO_PEDIDO_MS, evaluarSesion } from './embebido';
@@ -7,18 +7,18 @@ import { useEstadoPuente } from './estadoPuente';
 import { MODO_EMBEBIDO } from './modo';
 
 /**
- * Puente con el sistema integrador que aloja el iframe (IO-5; protocolo en `@avalasoft/sdk`, `embebido.ts`):
- *   - anuncia `avalasoft:ready` al contenedor (solo si su origen es uno de los permitidos de los sistemas integradores);
- *   - recibe `avalasoft:sesion` **solo** de ese contenedor y solo si el token está dirigido a su origen, y lo pone como la sesión del
+ * Puente con el sistema integrador que aloja el iframe (IO-5; protocolo en `@validalo/sdk`, `embebido.ts`):
+ *   - anuncia `validalo:ready` al contenedor (solo si su origen es uno de los permitidos de los sistemas integradores);
+ *   - recibe `validalo:sesion` **solo** de ese contenedor y solo si el token está dirigido a su origen, y lo pone como la sesión del
  *     tercero (sin cookie: el sistema renueva pidiendo otra sesión a su backend);
- *   - pide otra sesión (`avalasoft:sesion-requerida`) cuando la actual está por vencer, venció o fue rechazada;
- *   - informa el alto del contenido (`avalasoft:resize`).
+ *   - pide otra sesión (`validalo:sesion-requerida`) cuando la actual está por vencer, venció o fue rechazada;
+ *   - informa el alto del contenido (`validalo:resize`).
  */
 type MotivoPedido = 'inicial' | 'por-vencer' | 'vencida' | 'rechazada';
 
 /** Le dice al contenedor cuánto mide el contenido (el del body, no el del documento: este nunca baja del alto del iframe). */
 function avisarAlto(contenedor: string | null): void {
-  if (contenedor) window.parent.postMessage({ tipo: 'avalasoft:resize', height: Math.ceil(document.body.getBoundingClientRect().height) }, contenedor);
+  if (contenedor) window.parent.postMessage({ tipo: 'validalo:resize', height: Math.ceil(document.body.getBoundingClientRect().height) }, contenedor);
 }
 
 export function usePuenteEmbebido(): void {
@@ -34,7 +34,7 @@ export function usePuenteEmbebido(): void {
 
   const pedir = (motivo: MotivoPedido) => {
     const contenedor = contenedorRef.current;
-    if (contenedor) window.parent.postMessage({ tipo: 'avalasoft:sesion-requerida', motivo }, contenedor);
+    if (contenedor) window.parent.postMessage({ tipo: 'validalo:sesion-requerida', motivo }, contenedor);
   };
 
   // Orígenes permitidos: los de la API (se vuelven a pedir cada minuto) y, como respaldo, los de la configuración.
@@ -54,7 +54,7 @@ export function usePuenteEmbebido(): void {
       if (!contenedor) {
         setEstado((e) => (e === 'lista' ? e : 'sin-contenedor'));
       } else if (cambio) {
-        window.parent.postMessage({ tipo: 'avalasoft:ready', version: VERSION_PROTOCOLO }, contenedor);
+        window.parent.postMessage({ tipo: 'validalo:ready', version: VERSION_PROTOCOLO }, contenedor);
         avisarAlto(contenedor);
         setEstado((e) => (e === 'sin-contenedor' ? 'esperando' : e));
       }
@@ -74,7 +74,7 @@ export function usePuenteEmbebido(): void {
       const permitidos = permitidosRef.current;
       if (!permitidos || evento.source !== window.parent) return;
       const datos: unknown = evento.data;
-      if (typeof datos !== 'object' || datos === null || (datos as { tipo?: unknown }).tipo !== 'avalasoft:sesion') return;
+      if (typeof datos !== 'object' || datos === null || (datos as { tipo?: unknown }).tipo !== 'validalo:sesion') return;
       const token = (datos as { token?: unknown }).token;
       if (typeof token !== 'string') return;
 

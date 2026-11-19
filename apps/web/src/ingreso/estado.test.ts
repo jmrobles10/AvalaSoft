@@ -1,4 +1,4 @@
-import { ErrorApi, type PasoDeIngresoDto } from '@avalasoft/api-client';
+import { ErrorApi, type PasoDeIngresoDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import {
   codigoDeRecuperacionCompleto,

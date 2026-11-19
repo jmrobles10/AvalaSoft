@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@avalasoft/api-client';
-import { ChipEstado, formatearFecha, textoDelPorQue } from '@avalasoft/ui';
+import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@validalo/api-client';
+import { ChipEstado, formatearFecha, textoDelPorQue } from '@validalo/ui';
 import { ClipboardList, PencilLine } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

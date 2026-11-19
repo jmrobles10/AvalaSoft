@@ -1,7 +1,7 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Skeleton, Stack, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { getObtenerVersionTextoLegalQueryOptions, type EventoHistorialDto } from '@avalasoft/api-client';
-import { EstadoVacio, formatearFecha, formatearFechaHora } from '@avalasoft/ui';
+import { getObtenerVersionTextoLegalQueryOptions, type EventoHistorialDto } from '@validalo/api-client';
+import { EstadoVacio, formatearFecha, formatearFechaHora } from '@validalo/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ErrorRecuperable, Tarjeta } from '../../../shared/componentes';

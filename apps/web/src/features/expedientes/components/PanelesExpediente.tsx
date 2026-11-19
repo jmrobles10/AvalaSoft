@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import type { ExpedienteDto } from '@avalasoft/api-client';
-import { Dato, formatearFecha, formatearFechaHora, LineaDeTiempo, RejillaDatos } from '@avalasoft/ui';
+import type { ExpedienteDto } from '@validalo/api-client';
+import { Dato, formatearFecha, formatearFechaHora, LineaDeTiempo, RejillaDatos } from '@validalo/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSesion } from '../../../sesion/sesionStore';

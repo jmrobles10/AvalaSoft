@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { guardarArchivo } from '../../vencimientos/api';
 import { DatosDeSeccion } from './DatosDeSeccion';
@@ -63,7 +63,7 @@ function montar(datos: Record<string, unknown>, extra: { seccion?: string; versi
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <DatosDeSeccion datos={datos} empresaId="emp" terceroId={extra.terceroId ?? 't1'} seccion={extra.seccion ?? 'FICHA_LEGAL'} version={extra.version ?? 3} />
       </QueryClientProvider>

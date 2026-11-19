@@ -1,4 +1,4 @@
-import type { ComparticionPublicaDto, DocumentoBovedaDto, VigenciaDto } from '@avalasoft/api-client';
+import type { ComparticionPublicaDto, DocumentoBovedaDto, VigenciaDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import i18n from '../i18n';
 import { lineasPorRenovar } from './porRenovar';

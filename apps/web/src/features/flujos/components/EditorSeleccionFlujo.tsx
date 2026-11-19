@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import type { AtributoPermitidoDto } from '@avalasoft/api-client';
-import { CampoNumero } from '@avalasoft/ui';
+import type { AtributoPermitidoDto } from '@validalo/api-client';
+import { CampoNumero } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { atajoDe, describirCondicion } from '../condiciones';
 import type { BorradorFlujo, ErrorFlujo } from '../editor';

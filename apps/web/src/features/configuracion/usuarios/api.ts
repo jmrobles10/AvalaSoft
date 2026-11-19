@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getListarUsuariosQueryOptions, getResumirUsuariosQueryOptions, SCOPES, type EventoHistorialDto } from '@avalasoft/api-client';
+import { getListarUsuariosQueryOptions, getResumirUsuariosQueryOptions, SCOPES, type EventoHistorialDto } from '@validalo/api-client';
 import { useMemo } from 'react';
 import { conEmpresa } from '../../../shared/consultas';
 import { usePermisos } from '../../../shared/usePermisos';

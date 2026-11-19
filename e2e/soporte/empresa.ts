@@ -1,7 +1,7 @@
 import { expect, type FrameLocator, type Locator, type Page } from '@playwright/test';
 
 /**
- * Acciones de las personas de la empresa dentro de AvalaSoft embebido (el iframe que devuelve `abrirEmbebido`).
+ * Acciones de las personas de la empresa dentro de Valídalo embebido (el iframe que devuelve `abrirEmbebido`).
  * Los textos son los de apps/web/src/i18n (es-CO): si cambian, cambian aquí.
  */
 

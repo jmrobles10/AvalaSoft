@@ -3,7 +3,7 @@ id: "cumplimiento/monitoreo-periodico"
 titulo: "Sigue el monitoreo de listas de un vínculo activo"
 actor: "Oficial de cumplimiento"
 dominio: "cumplimiento"
-resumen: "Un proveedor ya aprobado sigue en monitoreo: AvalaSoft lo reconsulta en las listas cada 30 días. Cuando el proveedor agrega a un socio que aparece en una lista, la novedad llega a la bandeja de Cumplimiento y la oficial la confirma."
+resumen: "Un proveedor ya aprobado sigue en monitoreo: Valídalo lo reconsulta en las listas cada 30 días. Cuando el proveedor agrega a un socio que aparece en una lista, la novedad llega a la bandeja de Cumplimiento y la oficial la confirma."
 pasos: 4
 ---
 
@@ -11,7 +11,7 @@ pasos: 4
 
 **Actor:** Oficial de cumplimiento · **Dominio:** Cumplimiento y SAGRILAFT
 
-Un proveedor ya aprobado sigue en monitoreo: AvalaSoft lo reconsulta en las listas cada 30 días. Cuando el proveedor agrega a un socio que aparece en una lista, la novedad llega a la bandeja de Cumplimiento y la oficial la confirma.
+Un proveedor ya aprobado sigue en monitoreo: Valídalo lo reconsulta en las listas cada 30 días. Cuando el proveedor agrega a un socio que aparece en una lista, la novedad llega a la bandeja de Cumplimiento y la oficial la confirma.
 
 **Antes de empezar**
 
@@ -40,7 +40,7 @@ Un vínculo activo tiene su propio apartado de «Monitoreo de listas»: el estad
 
 ## Paso 2. La reconsulta automática corre sin novedades
 
-Al cumplirse el plazo, AvalaSoft reconsulta el vínculo sin que nadie lo pida. Si las personas siguen sin aparecer en las listas, no hay novedad: el monitoreo queda registrado como hecho por «Sistema» y la siguiente reconsulta se programa otros 30 días.
+Al cumplirse el plazo, Valídalo reconsulta el vínculo sin que nadie lo pida. Si las personas siguen sin aparecer en las listas, no hay novedad: el monitoreo queda registrado como hecho por «Sistema» y la siguiente reconsulta se programa otros 30 días.
 
 > **Pantalla:** `/e/{empresa}/vinculos/{id}`
 

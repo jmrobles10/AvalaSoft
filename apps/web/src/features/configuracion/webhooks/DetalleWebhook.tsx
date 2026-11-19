@@ -1,6 +1,6 @@
 import { Alert, Button, Divider, Stack, Typography } from '@mui/material';
-import type { EmpresaDto, WebhookDto } from '@avalasoft/api-client';
-import { Dato, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
+import type { EmpresaDto, WebhookDto } from '@validalo/api-client';
+import { Dato, formatearFechaHora, RejillaDatos } from '@validalo/ui';
 import { KeyRound, Pencil, Play, Power } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

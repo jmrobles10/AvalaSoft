@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { descargarCertificadoVerificado, getVerificarCertificadoQueryOptions, type CertificadoPublicoDto } from '@avalasoft/api-client';
-import { abrirDescarga } from '@avalasoft/ui';
+import { descargarCertificadoVerificado, getVerificarCertificadoQueryOptions, type CertificadoPublicoDto } from '@validalo/api-client';
+import { abrirDescarga } from '@validalo/ui';
 import { obtenerClaves } from './claves';
 import { verificarCertificado } from './verificacion';
 

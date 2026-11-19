@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente } from '@avalasoft/api-client';
+import { reiniciarCliente } from '@validalo/api-client';
 import { StrictMode } from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { montarPantalla } from '../pruebas/montar';
@@ -10,7 +10,7 @@ import { useSesion } from '../sesion/sesionStore';
 import { PantallaIngreso } from './PantallaIngreso';
 
 const DESAFIO = '0d0e5a3a-5f0e-47fa-a0a1-6c1e0f9bd7a1';
-const token = (exp: number) => `e30.${Buffer.from(JSON.stringify({ sub: 'u1', exp, 'avalasoft:tenant': 't1' })).toString('base64url')}.firma`;
+const token = (exp: number) => `e30.${Buffer.from(JSON.stringify({ sub: 'u1', exp, 'validalo:tenant': 't1' })).toString('base64url')}.firma`;
 const SESION = () => ({
   estado: 'Sesion',
   desafio: DESAFIO,
@@ -67,11 +67,11 @@ describe('de vuelta del proveedor de identidad de la empresa (PI-1)', () => {
 
   it('si no se puede canjear, vuelve al correo y dice por qué', async () => {
     window.history.replaceState(null, '', `/#/ingreso?sso=${DESAFIO}`);
-    simularApi({ 'POST /api/v1/ingreso/sso/completar': new ProblemaSimulado(403, 'sso-sin-cuenta', 'Tu empresa aún no te dio acceso a AvalaSoft.') });
+    simularApi({ 'POST /api/v1/ingreso/sso/completar': new ProblemaSimulado(403, 'sso-sin-cuenta', 'Tu empresa aún no te dio acceso a Valídalo.') });
 
     montar();
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Tu empresa aún no te dio acceso a AvalaSoft. Pide a un administrador de tu grupo que te invite.');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Tu empresa aún no te dio acceso a Valídalo. Pide a un administrador de tu grupo que te invite.');
     expect(screen.getByLabelText('Correo')).toBeInTheDocument();
   });
 
@@ -108,7 +108,7 @@ describe('de vuelta del proveedor de identidad de la empresa (PI-1)', () => {
   it('sin retorno en la dirección es el ingreso de siempre', () => {
     simularApi({});
     montar();
-    expect(screen.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Ingresa a Valídalo' })).toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });

@@ -1,6 +1,6 @@
 import { Alert, Box, Dialog, IconButton, Stack, Typography } from '@mui/material';
-import type { RequisitoExpedienteDto, SeccionDeRequisitoDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { RequisitoExpedienteDto, SeccionDeRequisitoDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import { MenuItem, Stack, TextField } from '@mui/material';
-import { SCOPES } from '@avalasoft/api-client';
-import { EsqueletoTarjeta, EstadoVacio } from '@avalasoft/ui';
+import { SCOPES } from '@validalo/api-client';
+import { EsqueletoTarjeta, EstadoVacio } from '@validalo/ui';
 import { Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

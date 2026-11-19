@@ -1,4 +1,4 @@
-import type { CampoCruzadoDto, DocumentoPorDecidirDto, ExpedienteDto, RequisitoExpedienteDto } from '@avalasoft/api-client';
+import type { CampoCruzadoDto, DocumentoPorDecidirDto, ExpedienteDto, RequisitoExpedienteDto } from '@validalo/api-client';
 import { requisitosDe } from './requisitos';
 
 /**

@@ -1,7 +1,7 @@
-// Generador del manual de AvalaSoft:  node e2e/manual/generador/manual.mjs  (o `pnpm manual`).
+// Generador del manual de Valídalo:  node e2e/manual/generador/manual.mjs  (o `pnpm manual`).
 //
 // Entrada:  salida/manual-recorridos/<dominio>/<archivo>/{manifiesto.json, *.png}   (lo deja `pnpm manual:recorrer`)
-//           packages/api-client/openapi/v1.json y el código de src/Avalasoft.Aplicacion (permisos y descripciones)
+//           packages/api-client/openapi/v1.json y el código de src/Validalo.Aplicacion (permisos y descripciones)
 // Salida:   salida/manual/            sitio HTML estático (gitignorado): recorridos, API, buscador, imágenes
 //           docs/manual/<dominio>/    Markdown por recorrido (texto; las imágenes viven en la salida)
 //           docs/manual/api/          referencia de la API en Markdown
@@ -71,7 +71,7 @@ async function main() {
   let modeloApi = null;
   if (!o.sinApi) {
     const { bruto, transformado } = await leerContrato();
-    modeloApi = construirModeloApi({ bruto, transformado, fuentes: leerFuentes(join(RAIZ, 'src', 'Avalasoft.Aplicacion')) });
+    modeloApi = construirModeloApi({ bruto, transformado, fuentes: leerFuentes(join(RAIZ, 'src', 'Validalo.Aplicacion')) });
   }
 
   // ---- Guías (e2e/manual/guias): lo que no sale de un recorrido ----

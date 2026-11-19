@@ -1,4 +1,4 @@
-import type { EstadoVinculo } from '@avalasoft/api-client';
+import type { EstadoVinculo } from '@validalo/api-client';
 
 /**
  * Lo que el tercero puede hacer con un vínculo según su estado, sin revelar el motivo interno:

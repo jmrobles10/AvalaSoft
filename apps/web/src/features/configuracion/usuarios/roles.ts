@@ -1,4 +1,4 @@
-import { Rol, type RolAsignadoDto } from '@avalasoft/api-client';
+import { Rol, type RolAsignadoDto } from '@validalo/api-client';
 
 export const ROLES = Object.values(Rol);
 

@@ -1,5 +1,5 @@
 import { Alert, Button, Chip, Skeleton, Stack, Typography } from '@mui/material';
-import { Dato, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
+import { Dato, formatearFechaHora, RejillaDatos } from '@validalo/ui';
 import { KeyRound, Power, PowerOff } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

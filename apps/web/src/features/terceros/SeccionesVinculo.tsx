@@ -1,6 +1,6 @@
 import { Divider, Stack, Typography } from '@mui/material';
-import type { CertificadoDelVinculoDto, CuentaDesignadaDelVinculoDto, DocumentoVistaEmpresaDto } from '@avalasoft/api-client';
-import { ChipEstado } from '@avalasoft/ui';
+import type { CertificadoDelVinculoDto, CuentaDesignadaDelVinculoDto, DocumentoVistaEmpresaDto } from '@validalo/api-client';
+import { ChipEstado } from '@validalo/ui';
 import { FileText } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { createValidaloTheme } from '@validalo/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useSesionTercero } from '../sesion/sesionTercero';
@@ -16,7 +16,7 @@ vi.mock('../embebido/usePuenteEmbebido', () => ({ usePuenteEmbebido: () => undef
 
 function montar(ruta: string) {
   return render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <MemoryRouter initialEntries={[ruta]}>
         <Routes>
           <Route element={<Shell />}>
@@ -31,38 +31,40 @@ function montar(ruta: string) {
 afterEach(() => useSesionTercero.setState({ estado: 'sin-sesion', sesion: null }));
 
 describe('Shell del tercero: la marca', () => {
-  it('la barra lleva el logotipo de AvalaSoft (el círculo con el check y «avalasoft») y, en las pantallas de entrada, el rótulo «Mis documentos»', () => {
+  it('la barra lleva el logotipo de Valídalo (la «V» con el check y «alídalo») y, en las pantallas de entrada, el rótulo «Mis documentos»', () => {
     useSesionTercero.setState({ estado: 'sin-sesion' });
     montar('/entrar');
     const barra = screen.getByRole('banner');
-    const logo = within(barra).getByRole('img', { name: 'AvalaSoft' });
-    expect(logo.querySelector('[data-parte="simbolo"] circle')).toHaveAttribute('fill', '#22D38A');
-    expect(logo.querySelector('[data-parte="avala"]')).toHaveAttribute('fill', '#0E8C9A');
+    const logo = within(barra).getByRole('img', { name: 'Valídalo' });
+    expect(logo.querySelector('[data-parte="v"]')).toHaveAttribute('fill', '#22D38A');
+    expect(logo.querySelector('[data-parte="palabra"]')).toHaveAttribute('fill', '#0E8C9A');
+    // El dibujo no se recorta en la barra: el svg deja ver lo que sobresalga y la «V» y la palabra están dentro de su caja.
+    expect(logo).toHaveStyle({ overflow: 'visible' });
     expect(within(barra).getByText('Mis documentos')).toBeInTheDocument();
   });
 
   it('en la verificación pública el rótulo es «Verificación de certificados»', () => {
     montar('/verificar/NORTE-C-2026-000001-1');
     expect(within(screen.getByRole('banner')).getByText('Verificación de certificados')).toBeInTheDocument();
-    expect(within(screen.getByRole('banner')).getByRole('img', { name: 'AvalaSoft' })).toBeInTheDocument();
+    expect(within(screen.getByRole('banner')).getByRole('img', { name: 'Valídalo' })).toBeInTheDocument();
   });
 
   it('con sesión las secciones de la barra ya dicen dónde está la persona: sin el rótulo, para que no se corte', () => {
     useSesionTercero.setState({ estado: 'activa' });
     montar('/boveda');
     const barra = screen.getByRole('banner');
-    expect(within(barra).getByRole('img', { name: 'AvalaSoft' })).toBeInTheDocument();
+    expect(within(barra).getByRole('img', { name: 'Valídalo' })).toBeInTheDocument();
     expect(within(barra).queryByText('Mis documentos')).not.toBeInTheDocument();
     expect(within(barra).getByRole('link', { name: 'Mi bóveda' })).toBeInTheDocument();
   });
 
-  it('el pie dice «con AvalaSoft» con el ícono de la marca (decorativo)', () => {
+  it('el pie dice «con Valídalo» con el ícono de la marca (decorativo)', () => {
     montar('/entrar');
     const pie = screen.getByRole('contentinfo');
-    expect(pie).toHaveTextContent('con AvalaSoft');
+    expect(pie).toHaveTextContent('con Valídalo');
     expect(pie.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
-    // El nombre «AvalaSoft» del logotipo es solo el de la barra: el ícono del pie no lo repite a los lectores de pantalla.
-    expect(within(pie).queryByRole('img', { name: 'AvalaSoft' })).not.toBeInTheDocument();
+    // El nombre «Valídalo» del logotipo es solo el de la barra: el ícono del pie no lo repite a los lectores de pantalla.
+    expect(within(pie).queryByRole('img', { name: 'Valídalo' })).not.toBeInTheDocument();
   });
 });
 

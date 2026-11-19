@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
-import { configurarCliente, reiniciarCliente, SCOPES, type PersonaDelRequisitoDto, type PersonaDelVinculoDto, type VinculoDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type PersonaDelRequisitoDto, type PersonaDelVinculoDto, type VinculoDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../../i18n';
@@ -63,7 +63,7 @@ function montar(personas: PersonaDelVinculoDto[], v: VinculoDto = vinculo()) {
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <TarjetaPersonasRelacionadas vinculo={v} empresaId="emp" />
       </QueryClientProvider>

@@ -2,7 +2,7 @@
 
 Plan y uso de IA, niveles de revisión automática y lo que ve cada persona.
 
-- [Lee el análisis automático de un documento](analisis-de-un-documento.md) — Revisor/área. Cada documento que sube el tercero se lee con IA: AvalaSoft muestra si es legible, qué tipo de documento detectó, los datos que extrajo y su confianza. Sofía, de Revisión, usa ese análisis para decidir, sin que la IA decida por ella.
+- [Lee el análisis automático de un documento](analisis-de-un-documento.md) — Revisor/área. Cada documento que sube el tercero se lee con IA: Valídalo muestra si es legible, qué tipo de documento detectó, los datos que extrajo y su confianza. Sofía, de Revisión, usa ese análisis para decidir, sin que la IA decida por ella.
 - [Compara la información del tercero con su RUT](cruce-de-la-ficha-con-los-soportes.md) — Revisor/área. Cuando el cliente llena su información general y sube el RUT, la IA lee el documento y cruza sus datos, campo por campo, con lo que el tercero declaró. Sofía, de Revisión, ve el cruce y los soportes antes de aprobar el área.
 - [Atiende los documentos cuando se agota el cupo de IA](cupo-agotado.md) — Administrador de empresa. La empresa tiene una sola validación incluida en el mes. El primer RUT la usa y se aprueba solo; el segundo ya no tiene análisis: llega a revisión humana, sin aprobarse solo, y la administradora ve el cupo agotado en «Plan y uso de IA».
 - [Revisa una lectura dudosa que la IA escaló a un modelo superior](escalamiento-a-modelo-superior.md) — Revisor/área. Cuando la lectura de un documento es dudosa, la IA vuelve a analizarlo con un modelo de mayor capacidad. Sofía, de Revisión, ve la confianza final, que el documento fue escalado y que sigue dudoso; la decisión es suya.

@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { ClienteAvalasoft, ErrorAvalasoft, validarWebhook, type EventoPublicoDto } from '@avalasoft/sdk';
+import { ClienteValidalo, ErrorValidalo, validarWebhook, type EventoPublicoDto } from '@validalo/sdk';
 import { API, llamar, nitAleatorio } from '../soporte/api';
 import { abrirEmbebido } from '../soporte/embebido';
 import { Receptor } from '../soporte/receptor';
 import { crearEscenario, type Empresa, type Escenario } from '../soporte/semilla';
 
 /**
- * H9 (CN-1…CN-6): lo que necesitan el SRM y Marco para hablar con AvalaSoft, con el SDK TypeScript (@avalasoft/sdk)
+ * H9 (CN-1…CN-6): lo que necesitan el SRM y Marco para hablar con Valídalo, con el SDK TypeScript (@validalo/sdk)
  * contra la API real: consulta de certificación (200, 304, bloqueado), eventos por pull con el mismo sobre que el webhook
  * firmado, y rotación de API keys desde la pantalla (la anterior vale hasta la fecha y luego responde 401).
  */
@@ -18,8 +18,8 @@ interface ApiKey {
   rotadaDe?: string | null;
 }
 
-function cliente(llave: string, empresa?: Empresa): ClienteAvalasoft {
-  return new ClienteAvalasoft({ urlBase: API, apiKey: llave, empresaId: empresa?.id, reintentos: 0 });
+function cliente(llave: string, empresa?: Empresa): ClienteValidalo {
+  return new ClienteValidalo({ urlBase: API, apiKey: llave, empresaId: empresa?.id, reintentos: 0 });
 }
 
 async function crearLlave(e: Escenario, nombre: string, scopes: string[], empresa: Empresa): Promise<ApiKey> {
@@ -46,7 +46,7 @@ async function vinculoCertificado(e: Escenario, empresa: Empresa): Promise<{ vin
   await llamar('POST', `/api/v1/flujos/${flujo.id}/publicar`, { llave: e.admin, empresa: empresa.id, cuerpo: {} });
 
   const identificacion = nitAleatorio();
-  const correo = `empleado.${identificacion.numero}@e2e.avalasoft.co`;
+  const correo = `empleado.${identificacion.numero}@e2e.validalo.co`;
   const srm = cliente(e.llave, empresa);
   const vinculo = await srm.vinculos.crear(
     {
@@ -173,7 +173,7 @@ test('la administradora rota una API key: la nueva funciona y la anterior vale h
   });
   expect((await cliente(nueva, e.norte).consultas.certificacion(consulta)).datos?.estadoVinculo).toBe('SinVinculo');
   await expect
-    .poll(async () => cliente(nueva, e.norte).consultas.certificacion(consulta).then(() => 200, (error: unknown) => (error instanceof ErrorAvalasoft ? error.estado : 0)), {
+    .poll(async () => cliente(nueva, e.norte).consultas.certificacion(consulta).then(() => 200, (error: unknown) => (error instanceof ErrorValidalo ? error.estado : 0)), {
       timeout: 15_000,
       intervals: [1_000],
     })

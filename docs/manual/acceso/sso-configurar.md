@@ -3,7 +3,7 @@ id: "acceso/sso-configurar"
 titulo: "Configura el inicio de sesión único con el proveedor de tu empresa"
 actor: "Administrador de empresa"
 dominio: "acceso"
-resumen: "Ana conecta AvalaSoft con el proveedor de identidad de su empresa (OIDC): le da el nombre del botón, el emisor, el identificador del cliente y el secreto, y declara el dominio de correo de su empresa. AvalaSoft pide verificar el dominio con un registro DNS. El secreto se guarda y no vuelve a mostrarse."
+resumen: "Ana conecta Valídalo con el proveedor de identidad de su empresa (OIDC): le da el nombre del botón, el emisor, el identificador del cliente y el secreto, y declara el dominio de correo de su empresa. Valídalo pide verificar el dominio con un registro DNS. El secreto se guarda y no vuelve a mostrarse."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Administrador de empresa · **Dominio:** Acceso y cuenta
 
-Ana conecta AvalaSoft con el proveedor de identidad de su empresa (OIDC): le da el nombre del botón, el emisor, el identificador del cliente y el secreto, y declara el dominio de correo de su empresa. AvalaSoft pide verificar el dominio con un registro DNS. El secreto se guarda y no vuelve a mostrarse.
+Ana conecta Valídalo con el proveedor de identidad de su empresa (OIDC): le da el nombre del botón, el emisor, el identificador del cliente y el secreto, y declara el dominio de correo de su empresa. Valídalo pide verificar el dominio con un registro DNS. El secreto se guarda y no vuelve a mostrarse.
 
 **Antes de empezar**
 
@@ -38,7 +38,7 @@ En Configuración › Inicio de sesión único, la empresa conecta su proveedor 
 
 ## Paso 2. Declara el dominio de correo de tu empresa
 
-Escribe el dominio de los correos de tu empresa y pulsa «Agregar». AvalaSoft muestra el dominio como «Por verificar» y el texto avalasoft-verificacion=… que debes publicar en el archivo /.well-known/avalasoft-verificacion.txt de ese dominio, y luego pulsar «Verificar». El inicio de sesión único solo vale para los correos de dominios que demuestres que son tuyos: mientras esté por verificar, no aplica a sus correos.
+Escribe el dominio de los correos de tu empresa y pulsa «Agregar». Valídalo muestra el dominio como «Por verificar» y el texto validalo-verificacion=… que debes publicar en el archivo /.well-known/validalo-verificacion.txt de ese dominio, y luego pulsar «Verificar». El inicio de sesión único solo vale para los correos de dominios que demuestres que son tuyos: mientras esté por verificar, no aplica a sus correos.
 
 > **Pantalla:** `/e/{empresa}/sso`
 
@@ -46,7 +46,7 @@ Escribe el dominio de los correos de tu empresa y pulsa «Agregar». AvalaSoft m
 
 ## Paso 3. Guarda la configuración
 
-Al guardar, AvalaSoft pide confirmar con tu passkey porque es una acción sensible. Después, la pantalla solo muestra con qué cuatro caracteres termina el secreto: el secreto completo nunca vuelve a verse. La pantalla indica que la configuración está «Apagado».
+Al guardar, Valídalo pide confirmar con tu passkey porque es una acción sensible. Después, la pantalla solo muestra con qué cuatro caracteres termina el secreto: el secreto completo nunca vuelve a verse. La pantalla indica que la configuración está «Apagado».
 
 > **Pantalla:** `/e/{empresa}/sso`
 

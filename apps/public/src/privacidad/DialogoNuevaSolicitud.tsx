@@ -2,8 +2,8 @@ import {
   Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, Stack, TextField,
   Typography, useMediaQuery, useTheme,
 } from '@mui/material';
-import type { SolicitudHabeasDto, VinculoPublicoDto } from '@avalasoft/api-client';
-import { FaltaParaEnviar } from '@avalasoft/ui';
+import type { SolicitudHabeasDto, VinculoPublicoDto } from '@validalo/api-client';
+import { FaltaParaEnviar } from '@validalo/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SelectorUnico } from '../ficha/selectores';
@@ -16,7 +16,7 @@ import {
 } from './modelo';
 
 /**
- * Nueva solicitud de habeas data (Ley 1581): qué derecho ejerce, a quién se la dirige (a AvalaSoft por su bóveda o a una empresa
+ * Nueva solicitud de habeas data (Ley 1581): qué derecho ejerce, a quién se la dirige (a Valídalo por su bóveda o a una empresa
  * con la que tiene un vínculo) y, en la supresión, qué se suprime. Avisa antes qué pasará: quién la recibe, en cuántos días hábiles
  * se responde y, en la supresión, que lo que la ley obliga a guardar se conserva. En el celular ocupa toda la pantalla.
  */

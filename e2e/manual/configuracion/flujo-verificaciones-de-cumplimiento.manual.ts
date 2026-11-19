@@ -11,7 +11,7 @@ recorrido(
       'La administradora agrega al flujo de proveedores dos verificaciones de cumplimiento: la consulta de listas restrictivas, que bloquea la aprobación si hay coincidencias, y el estudio del oficial de cumplimiento, con vigencia y reconsulta propias.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con miembros, y el proveedor de listas de la plataforma disponible.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['cumplimiento/matriz-de-riesgo-configuracion', 'cumplimiento/listas-restrictivas-de-la-empresa'],
   },

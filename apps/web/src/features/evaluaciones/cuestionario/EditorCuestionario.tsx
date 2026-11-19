@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, FormControlLabel, Radio, RadioGroup, Skeleton, Stack, TextField, Typography } from '@mui/material';
-import { esErrorApi, SCOPES, type CuestionarioDto, type CuestionarioVersionDto, type DefinicionDeCuestionarioDto, type QuienResponde } from '@avalasoft/api-client';
-import { CampoNumero, EsqueletoTarjeta, PaginaEstado } from '@avalasoft/ui';
+import { esErrorApi, SCOPES, type CuestionarioDto, type CuestionarioVersionDto, type DefinicionDeCuestionarioDto, type QuienResponde } from '@validalo/api-client';
+import { CampoNumero, EsqueletoTarjeta, PaginaEstado } from '@validalo/ui';
 import { Pencil, Plus, Rocket, SearchX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

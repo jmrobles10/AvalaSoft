@@ -14,7 +14,7 @@ import {
   type TextosDelFormulario,
   type VisibilidadDeFormulario,
 } from './formularioDeCuestionario';
-import { createAvalasoftTheme } from './tema';
+import { createValidaloTheme } from './tema';
 
 const TEXTOS: TextosDelFormulario = {
   comentario: 'Comentario',
@@ -72,7 +72,7 @@ const TODAS: VisibilidadDeFormulario = { preguntas: new Set(['P1', 'P3', 'P4', '
 function Prueba({ inicial = {}, visibilidad = TODAS, subir }: { inicial?: BorradorDeRespuestas; visibilidad?: VisibilidadDeFormulario | null; subir?: (p: string, a: File) => void }) {
   const [respuestas, setRespuestas] = useState<BorradorDeRespuestas>(inicial);
   return (
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'web' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'web' })}>
       <FormularioDeCuestionario
         secciones={SECCIONES}
         respuestas={respuestas}
@@ -163,7 +163,7 @@ describe('FormularioDeCuestionario', () => {
 
   it('solo lectura deshabilita los campos y no ofrece subir', () => {
     render(
-      <ThemeProvider theme={createAvalasoftTheme('light', { app: 'web' })}>
+      <ThemeProvider theme={createValidaloTheme('light', { app: 'web' })}>
         <FormularioDeCuestionario secciones={SECCIONES} respuestas={{ P1: { opciones: ['si'] } }} onCambiar={() => undefined} visibilidad={null} textos={TEXTOS} soloLectura onSubirAdjunto={() => undefined} />
       </ThemeProvider>,
     );

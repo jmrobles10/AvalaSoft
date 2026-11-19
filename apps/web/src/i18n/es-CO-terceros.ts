@@ -14,7 +14,7 @@ export const terceros = {
       identificacion: 'Identificación',
       pais: 'País',
       tipoPersona: 'Tipo de persona',
-      registrado: 'Registrado en AvalaSoft',
+      registrado: 'Registrado en Valídalo',
       contactos: 'Contactos',
       sinContactos: 'El tercero no ha registrado contactos.',
     },

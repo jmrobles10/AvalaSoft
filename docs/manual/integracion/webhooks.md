@@ -3,7 +3,7 @@ id: "integracion/webhooks"
 titulo: "Crea un webhook, guarda su secreto y revisa las entregas firmadas"
 actor: "Administrador de empresa"
 dominio: "integracion"
-resumen: "La administradora registra la dirección de su sistema para que AvalaSoft le envíe cada evento con un POST firmado. Guarda el secreto una sola vez, y luego revisa en la pantalla las entregas, con sus intentos."
+resumen: "La administradora registra la dirección de su sistema para que Valídalo le envíe cada evento con un POST firmado. Guarda el secreto una sola vez, y luego revisa en la pantalla las entregas, con sus intentos."
 pasos: 7
 ---
 
@@ -11,7 +11,7 @@ pasos: 7
 
 **Actor:** Administrador de empresa · **Dominio:** Integración
 
-La administradora registra la dirección de su sistema para que AvalaSoft le envíe cada evento con un POST firmado. Guarda el secreto una sola vez, y luego revisa en la pantalla las entregas, con sus intentos.
+La administradora registra la dirección de su sistema para que Valídalo le envíe cada evento con un POST firmado. Guarda el secreto una sola vez, y luego revisa en la pantalla las entregas, con sus intentos.
 
 **Antes de empezar**
 
@@ -30,7 +30,7 @@ La administradora registra la dirección de su sistema para que AvalaSoft le env
 
 ## Paso 1. Abre Configuración › Webhooks
 
-Un webhook es la dirección de tu sistema a la que AvalaSoft envía un aviso cada vez que pasa algo: un vínculo activo, un expediente aprobado, un certificado emitido. La tabla lista los webhooks del grupo con su destino, cuántos eventos reciben, su estado y la hora de la última entrega. Para registrar uno, pulsa «Nuevo webhook».
+Un webhook es la dirección de tu sistema a la que Valídalo envía un aviso cada vez que pasa algo: un vínculo activo, un expediente aprobado, un certificado emitido. La tabla lista los webhooks del grupo con su destino, cuántos eventos reciben, su estado y la hora de la última entrega. Para registrar uno, pulsa «Nuevo webhook».
 
 > **Pantalla:** `/e/{empresa}/webhooks`
 
@@ -63,12 +63,12 @@ Marca los eventos que quieres recibir, agrupados por vínculos, expedientes, doc
 
 **Variantes**
 
-- **Marcas «Todos los eventos»:** Recibirá también los eventos nuevos que AvalaSoft agregue más adelante.
+- **Marcas «Todos los eventos»:** Recibirá también los eventos nuevos que Valídalo agregue más adelante.
 - **Eliges solo algunos eventos:** Los demás no se envían; un evento no marcado no llega nunca a esa dirección.
 
 ## Paso 4. Copia el secreto de firma: se muestra una vez
 
-Al crear el webhook aparece su secreto de firma. Cópialo con «Copiar secreto» y guárdalo en el gestor de secretos de tu sistema: es la única vez que se muestra. Con él, tu sistema comprueba que cada entrega viene de AvalaSoft. Si lo pierdes, rota el secreto desde el webhook.
+Al crear el webhook aparece su secreto de firma. Cópialo con «Copiar secreto» y guárdalo en el gestor de secretos de tu sistema: es la única vez que se muestra. Con él, tu sistema comprueba que cada entrega viene de Valídalo. Si lo pierdes, rota el secreto desde el webhook.
 
 > **Pantalla:** `/e/{empresa}/webhooks`
 
@@ -92,7 +92,7 @@ Al abrir una entrega ves cada intento: su resultado (exitoso o fallido), la hora
 
 ## Paso 7. Verifica la firma de cada entrega
 
-Cada entrega trae la cabecera Avalasoft-Signature con una hora (t) y una firma (v1): el HMAC-SHA256 de la hora y el cuerpo con tu secreto. Recalcúlala en tu sistema y rechaza las firmas que no coincidan o que tengan más de 5 minutos. Tu sistema responde 2xx y procesa el evento después.
+Cada entrega trae la cabecera Validalo-Signature con una hora (t) y una firma (v1): el HMAC-SHA256 de la hora y el cuerpo con tu secreto. Recalcúlala en tu sistema y rechaza las firmas que no coincidan o que tengan más de 5 minutos. Tu sistema responde 2xx y procesa el evento después.
 
 > **Pantalla:** `/`
 

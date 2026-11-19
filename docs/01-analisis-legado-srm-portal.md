@@ -4,7 +4,7 @@
 |---|---|---|
 | Borrador | 2026-10-28 | Arquitectura |
 
-**Propósito.** Dejar por escrito, con referencias verificables al código, cómo funciona hoy la validación documental repartida entre el SRM (`C:\Fuentes_Git\SRM`, rama `Develop`, HEAD `420a64def`) y el Portal de Proveedores (`C:\Fuentes_Git\PortalProveedores`), qué falla, qué se reemplaza y qué debe cubrir AvalaSoft como mínimo. Todas las rutas del SRM son relativas a `C:\Fuentes_Git\SRM\BackEnd\` y las del Portal a `C:\Fuentes_Git\PortalProveedores\backend\librerias\`, salvo que se indique otra cosa.
+**Propósito.** Dejar por escrito, con referencias verificables al código, cómo funciona hoy la validación documental repartida entre el SRM (`C:\Fuentes_Git\SRM`, rama `Develop`, HEAD `420a64def`) y el Portal de Proveedores (`C:\Fuentes_Git\PortalProveedores`), qué falla, qué se reemplaza y qué debe cubrir Valídalo como mínimo. Todas las rutas del SRM son relativas a `C:\Fuentes_Git\SRM\BackEnd\` y las del Portal a `C:\Fuentes_Git\PortalProveedores\backend\librerias\`, salvo que se indique otra cosa.
 
 **Relacionados**
 - [00 Visión y alcance](00-vision-y-alcance.md)
@@ -248,7 +248,7 @@ sequenceDiagram
 - `POST /api/login/register` (`Code.API\MapRoutes\MapLogin\MapLoginRoutes.cs:296`) → `ValidacionDocumentalService.ValidarAsync` (`Code.Services\Integraciones\ValidacionDocumentalService.cs:181-284`): RUT + cédula (+ cámara si PJ) como bloques nativos PDF/imagen, modelo `claude-opus-5`, salida estructurada `{resultado: coincide|no_coincide|no_legible, mensaje, discrepancias[]}`, `effort: high`, timeout 120 s, tope 20 MB, fail-closed sin clave; prompt con reglas de tolerancia (sufijos societarios, NIT con/sin puntos, documento vencido no es discrepancia).
 - Solo aplica al autorregistro; invitaciones del SRM no pasan por aquí (`:19-23`).
 
-## 6. Mapa de endpoints que AvalaSoft reemplaza
+## 6. Mapa de endpoints que Valídalo reemplaza
 
 ### 6.1 SRM → Portal (header `ApiKey`)
 
@@ -293,7 +293,7 @@ sequenceDiagram
 ### 7.2 Tercero (Portal)
 Wizard por sectores (general, tributaria, bancaria, financiera, legal, SISO, documentos, T&C, tratamiento de datos, especialidades), subida por tipo de documento con texto adicional y plantilla, estado por documento, pendientes y vencimientos por sector con ratificar/actualizar, novedades (campana) con motivo de rechazo, 2FA, PWA; un proveedor ve varias constructoras (`frontend\reactapp\src\Pages\`: `Wizard`, `MiEmpresa`, `Pendientes`, `Vencimiento`, `Novedades`, `CompletarRegistro`).
 
-## 8. Errores del pasado → reglas para AvalaSoft
+## 8. Errores del pasado → reglas para Valídalo
 
 | # | Problema verificado | Dónde | Regla |
 |---|---|---|---|
@@ -321,7 +321,7 @@ Wizard por sectores (general, tributaria, bancaria, financiera, legal, SISO, doc
 
 ## 10. Checklist de paridad funcional
 
-Lo que AvalaSoft debe cubrir como mínimo y el hito que lo cubre según [09](09-plan-de-hitos-y-responsabilidades.md):
+Lo que Valídalo debe cubrir como mínimo y el hito que lo cubre según [09](09-plan-de-hitos-y-responsabilidades.md):
 
 | Funcionalidad del legado que debe tener paridad | Hito que lo cubre |
 |---|---|
@@ -342,12 +342,12 @@ Lo que AvalaSoft debe cubrir como mínimo y el hito que lo cubre según [09](09-
 
 ## Decisiones abiertas
 
-> **2026-11-09.** El análisis a fondo de las secciones de información del tercero en el Portal y de su uso en el SRM, y el modelo con que AvalaSoft las adopta, están en [14 — Ficha maestra del tercero](14-ficha-maestra-del-tercero.md) y [ADR-0013](adr/0013-ficha-maestra-del-tercero.md).
+> **2026-11-09.** El análisis a fondo de las secciones de información del tercero en el Portal y de su uso en el SRM, y el modelo con que Valídalo las adopta, están en [14 — Ficha maestra del tercero](14-ficha-maestra-del-tercero.md) y [ADR-0013](adr/0013-ficha-maestra-del-tercero.md).
 
 1. ~~**Alcance de los formularios de sectores.**~~ **Cerrada** (P-3-1, P-3-2): los sectores se modelan como tipos de documento clase `Formulario` con esquema base canónico y campos privados por tenant; el modelo entra en H2 y el render dinámico en H4.
-2. **Aplicación en AyF.** ¿Sigue haciéndola el SRM al recibir `certificado.emitido` / `vinculo.revalidado` (como hoy) o la hace un conector de AvalaSoft hacia Marco? Propuesta: la sigue haciendo el SRM durante la coexistencia; conector directo cuando el SRM se retire. Quién decide: Arquitectura con el equipo de Marco.
+2. **Aplicación en AyF.** ¿Sigue haciéndola el SRM al recibir `certificado.emitido` / `vinculo.revalidado` (como hoy) o la hace un conector de Valídalo hacia Marco? Propuesta: la sigue haciendo el SRM durante la coexistencia; conector directo cuando el SRM se retire. Quién decide: Arquitectura con el equipo de Marco.
 3. **Proveedores de listas restrictivas a mantener.** De los siete integrados, ¿cuáles están en uso por algún cliente? Propuesta: migrar solo los activos; el resto como adaptadores opcionales. Quién decide: Producto con Operaciones.
-4. **Retiro de las páginas HTML legacy del SRM** (`menuProveedor.html`, `AprobacionProveedor.html`, `MaestroEspecialidades.html`): ¿se congelan al activar el flag o se reemplazan por enlaces a AvalaSoft? Propuesta: enlaces a AvalaSoft con el token exchange del ERP. Quién decide: Producto.
+4. **Retiro de las páginas HTML legacy del SRM** (`menuProveedor.html`, `AprobacionProveedor.html`, `MaestroEspecialidades.html`): ¿se congelan al activar el flag o se reemplazan por enlaces a Valídalo? Propuesta: enlaces a Valídalo con el token exchange del ERP. Quién decide: Producto.
 
 ## Fuentes verificadas
 

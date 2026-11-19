@@ -4,12 +4,12 @@ import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { CampoCodigo, normalizarCodigoNumerico } from './CampoCodigo';
-import { createAvalasoftTheme } from './tema';
+import { createValidaloTheme } from './tema';
 
 function Controlado({ inicial = '', alCambiar }: { inicial?: string; alCambiar?: (valor: string) => void }) {
   const [valor, setValor] = useState(inicial);
   return (
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'web' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'web' })}>
       <CampoCodigo
         valor={valor}
         onCambiar={(nuevo) => {
@@ -71,7 +71,7 @@ describe('CampoCodigo', () => {
 
   it('marca el error en cada casilla y se puede deshabilitar', () => {
     render(
-      <ThemeProvider theme={createAvalasoftTheme('light', { app: 'web' })}>
+      <ThemeProvider theme={createValidaloTheme('light', { app: 'web' })}>
         <CampoCodigo valor="" onCambiar={() => undefined} etiqueta="Código" etiquetaDigito={(n) => `Dígito ${String(n)} de 6`} error deshabilitado />
       </ThemeProvider>,
     );

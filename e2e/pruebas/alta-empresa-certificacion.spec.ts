@@ -12,7 +12,7 @@ import { ORIGEN_SISTEMA, type Invitacion } from '../soporte/semilla';
  * Una empresa nueva, de la alta a la primera certificación (docs/16 §1, criterio de terminado): un operador de Plataforma crea el grupo
  * desde la consola; su administradora deja la configuración mínima (aceptación legal, un área con ella de revisora y un flujo que pide el
  * RUT); el sistema de la empresa invita a un proveedor; el proveedor entra por el correo, acepta y carga su RUT; la administradora lo revisa
- * y lo aprueba desde AvalaSoft embebido; y cualquiera verifica el certificado en la página pública. Nada de lo de la empresa nueva se
+ * y lo aprueba desde Valídalo embebido; y cualquiera verifica el certificado en la página pública. Nada de lo de la empresa nueva se
  * toma de un escenario sembrado: todo sale de la consola.
  */
 
@@ -44,7 +44,7 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   await consola.getByRole('textbox', { name: 'Código' }).fill('ERP');
   await consola.getByRole('textbox', { name: 'Nombre del sistema' }).fill('ERP de Cumbre');
   await consola.getByRole('textbox', { name: 'Clave pública (PEM)' }).fill(claves.publica);
-  await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar AvalaSoft (opcional)' }).fill(ORIGEN_SISTEMA);
+  await consola.getByRole('textbox', { name: 'Sitios que pueden incrustar Valídalo (opcional)' }).fill(ORIGEN_SISTEMA);
   await consola.getByRole('button', { name: 'Crear grupo' }).click();
   await expect(consola.getByRole('heading', { level: 1, name: `${grupo} creado` })).toBeVisible();
   const llave = (await consola.getByLabel('API key del sistema ERP', { exact: true }).textContent())?.trim() ?? '';
@@ -133,7 +133,7 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   await subirDocumento(page, RUT, pdf(`RUT ${identificacion.numero}`));
   await esperarEstadoDelTercero(page, 'EnRevision');
 
-  // 5. La administradora, desde AvalaSoft embebido en el sistema de la empresa, revisa y aprueba.
+  // 5. La administradora, desde Valídalo embebido en el sistema de la empresa, revisa y aprueba.
   const ventana = await (await browser.newContext()).newPage();
   const app = await abrirEmbebidoCon(ventana, { empresaId, rutaInicial: 'bandeja', sesion: () => sesionDeUsuario(llave, delegado()) });
   await expect(async () => {
@@ -155,7 +155,7 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   await publica.goto(await enlaceDeVerificacion(detalle));
   await expect(publica.getByRole('heading', { level: 2, name: 'Este certificado está vigente' })).toBeVisible();
   await expect(publica.getByRole('main')).toContainText(`${empresa} validó los documentos de ${proveedor}`);
-  await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló AvalaSoft.' })).toBeVisible();
+  await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló Valídalo.' })).toBeVisible();
   await expect(publica.getByRole('main')).not.toContainText(correoProveedor);
   expect(publica.url()).toContain(`/verificar/${prefijo}-C-`);
 });

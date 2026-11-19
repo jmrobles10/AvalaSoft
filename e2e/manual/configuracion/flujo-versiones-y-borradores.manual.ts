@@ -16,7 +16,7 @@ recorrido(
       'La administradora abre un flujo ya publicado, crea un borrador con cambios, lo guarda, descarta otros cambios sin guardar y publica la versión 2. La versión 1 queda retirada en el historial y se puede consultar en solo lectura.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y un flujo de proveedores ya publicado (versión 1).',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/flujo-por-defecto', 'configuracion/flujo-etapas-y-areas-en-paralelo'],
   },

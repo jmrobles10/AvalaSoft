@@ -1,4 +1,4 @@
-import type { ExpedientePublicoDto, RequisitoPublicoDto, SeccionDeRequisitoDto } from '@avalasoft/api-client';
+import type { ExpedientePublicoDto, RequisitoPublicoDto, SeccionDeRequisitoDto } from '@validalo/api-client';
 
 /** Datos de prueba de las secciones de «Mi información» como requisitos del expediente del tercero (F2). */
 

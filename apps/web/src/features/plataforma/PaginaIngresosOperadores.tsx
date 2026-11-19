@@ -1,7 +1,7 @@
 import { Box, Button, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { getListarOperadoresPlataformaQueryOptions } from '@avalasoft/api-client';
-import { BarraFiltros, CampoFecha, EstadoVacio, FilasEsqueleto, FiltroMenu, MarcoTabla } from '@avalasoft/ui';
+import { getListarOperadoresPlataformaQueryOptions } from '@validalo/api-client';
+import { BarraFiltros, CampoFecha, EstadoVacio, FilasEsqueleto, FiltroMenu, MarcoTabla } from '@validalo/ui';
 import { CircleAlert, CircleCheck, History } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

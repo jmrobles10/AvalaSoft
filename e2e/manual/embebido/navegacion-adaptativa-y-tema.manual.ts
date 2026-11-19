@@ -71,14 +71,14 @@ recorrido(
     await page.keyboard.press('Escape');
 
     await page.evaluate(() => {
-      const marco = document.getElementById('avalasoft') as HTMLIFrameElement | null;
-      marco?.contentWindow?.postMessage({ tipo: 'avalasoft:tema', mode: 'dark' }, '*');
+      const marco = document.getElementById('validalo') as HTMLIFrameElement | null;
+      marco?.contentWindow?.postMessage({ tipo: 'validalo:tema', mode: 'dark' }, '*');
     });
     await expect(app.getByRole('heading', { level: 1, name: 'Bandeja de revisión' })).toBeVisible();
     await paso(page, {
       titulo: 'Usa el tema oscuro del sistema',
       explicacion:
-        'Si tu sistema tiene el tema oscuro activo, envía su preferencia a la app y AvalaSoft cambia a colores oscuros al momento. ' +
+        'Si tu sistema tiene el tema oscuro activo, envía su preferencia a la app y Valídalo cambia a colores oscuros al momento. ' +
         'La app no guarda esa preferencia por su cuenta: sigue el tema que le indique el sistema que la aloja.',
       resaltar: app.getByRole('heading', { level: 1, name: 'Bandeja de revisión' }),
       variantes: [{ cuando: 'El sistema envía tema claro', entonces: 'La app vuelve al tema claro.' }],

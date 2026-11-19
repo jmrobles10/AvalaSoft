@@ -1,4 +1,4 @@
-import { formatearDiaCivil } from '@avalasoft/ui';
+import { formatearDiaCivil } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import type { AvanceTercero } from './avance';
 

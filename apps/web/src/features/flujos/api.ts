@@ -13,7 +13,7 @@ import {
   type CrearFlujoDto,
   type EditarFlujoDto,
   getListarTiposDocumentoQueryOptions,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 
 /** Tipos de documento del tenant para los requisitos del flujo (`configuracion:leer`). Cambian poco. */

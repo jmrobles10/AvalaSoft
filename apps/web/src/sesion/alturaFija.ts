@@ -4,10 +4,10 @@ import { create } from 'zustand';
 /**
  * Páginas de edición con encabezado fijo dentro del iframe embebido.
  *
- * Embebida, la app avisa su alto con `avalasoft:resize` y el contenedor estira el iframe: el iframe no tiene scroll
+ * Embebida, la app avisa su alto con `validalo:resize` y el contenedor estira el iframe: el iframe no tiene scroll
  * propio y un `position: sticky` no se pega a nada (la ventana del iframe mide todo el contenido). Por eso las páginas
  * largas de edición piden **altura fija**: la app mide lo que se ve del contenedor, se queda de ese alto (y lo avisa
- * con `resize`), `main` pasa a tener scroll propio y el encabezado se pega arriba de él. Con `avalasoft:visible
+ * con `resize`), `main` pasa a tener scroll propio y el encabezado se pega arriba de él. Con `validalo:visible
  * { top: 0, height }` el contenedor lleva el iframe a la vista. Fuera del iframe no cambia nada: la ventana desplaza
  * y el encabezado se pega bajo la barra superior.
  */
@@ -51,7 +51,7 @@ export const RESERVA_PANTALLA = 240;
 
 /**
  * Qué hace el contenedor de otro origen con el alto del iframe, que es lo único que se le puede observar desde dentro:
- * - `sigue-resize`: lo estira al alto que se le avisa con `avalasoft:resize` (el caso del SDK); la app se queda del alto pedido.
+ * - `sigue-resize`: lo estira al alto que se le avisa con `validalo:resize` (el caso del SDK); la app se queda del alto pedido.
  * - `alto-propio`: lo deja de un alto suyo (p. ej. toda la ventana bajo su cabecera) y no le hace caso a `resize`; la app
  *   llena ese alto real, sin quedarse corta (una franja vacía abajo) ni pasarse (contenido que queda fuera de la ventana).
  * - `desconocido`: aún no se sabe.
@@ -89,13 +89,13 @@ export function alturaDisponible(ventana: Window = window, altoDelMarco: AltoDel
 }
 
 export interface VigiaDelMarco {
-  /** Avisa que se pidió (con `avalasoft:resize`) este alto: si el iframe no cambia de tamaño, el contenedor no le hace caso. */
+  /** Avisa que se pidió (con `validalo:resize`) este alto: si el iframe no cambia de tamaño, el contenedor no le hace caso. */
   pedido: (altura: number) => void;
   detener: () => void;
 }
 
 /**
- * Descubre, desde dentro del iframe, si el contenedor de otro origen le hace caso a `avalasoft:resize`. Tras cada alto
+ * Descubre, desde dentro del iframe, si el contenedor de otro origen le hace caso a `validalo:resize`. Tras cada alto
  * pedido que no sea el que ya tiene el iframe espera {@link ESPERA_RESPUESTA_MS}: si el iframe cambia de tamaño (evento
  * `resize` de su ventana) y queda del alto pedido, el contenedor lo estira (`sigue-resize`); si no pasa nada, el
  * contenedor lo tiene de un alto suyo (`alto-propio`) y desde entonces se sigue el alto real de la ventana del iframe.

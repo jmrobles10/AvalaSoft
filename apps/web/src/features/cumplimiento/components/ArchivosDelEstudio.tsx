@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material';
-import type { AdjuntoDeCumplimientoDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { AdjuntoDeCumplimientoDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { FileText, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatearPeso } from '../modelo';

@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { describe, expect, it, vi } from 'vitest';
 import { area, expediente, veredicto } from '../datosPrueba';
 import type { ContextoRevisor, DialogoExpediente } from '../reglas';
@@ -23,7 +23,7 @@ function montar(datos: ExpedienteDto, { scopes = REVISOR, usuarioId = 'u-1', mie
   const onAccion = vi.fn<(dialogo: DialogoExpediente) => void>();
   const contexto = (): ContextoRevisor => ({ scopes, usuarioId, esMiembro: miembro });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>
         <EtapasExpediente expediente={datos} contexto={contexto} nombres={new Map()} motivos={new Map()} onAccion={onAccion} />
       </QueryClientProvider>

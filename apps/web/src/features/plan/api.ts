@@ -4,7 +4,7 @@ import {
   getObtenerPlanDeUnGrupoQueryOptions,
   getObtenerUsoDelGrupoQueryOptions,
   type ActualizarPlanDelGrupoDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 
 /** La consola de Plataforma no tiene empresa activa ni tenant (PT-4). */

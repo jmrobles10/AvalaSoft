@@ -1,5 +1,5 @@
 /**
- * Contratos de la API v1 que usa un sistema integrador (docs/05 §4), con los mismos nombres que `Avalasoft.Contratos`.
+ * Contratos de la API v1 que usa un sistema integrador (docs/05 §4), con los mismos nombres que `Validalo.Contratos`.
  * JSON en camelCase; fechas en ISO 8601 (`YYYY-MM-DD` las de solo día). Los DTO grandes declaran lo que un integrador
  * suele leer y dejan el resto abierto (`[campo: string]: unknown`).
  */
@@ -186,7 +186,7 @@ export interface ConsultaCertificacionDto {
   cuentaDesignada: { numeroEnmascarado: string; banco: string } | null;
   urlVerificacion: string | null;
   legacy: { estadoTercero: number } | null;
-  /** `false` desde AvalaSoft; el integrador lo pone en `true` cuando responde desde su copia local. */
+  /** `false` desde Valídalo; el integrador lo pone en `true` cuando responde desde su copia local. */
   fuenteRespaldo: boolean;
   antiguedadSegundos?: number | null;
   /**

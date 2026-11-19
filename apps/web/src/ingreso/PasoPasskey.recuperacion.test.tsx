@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type PasoDeIngresoDto } from '@avalasoft/api-client';
+import { reiniciarCliente, type PasoDeIngresoDto } from '@validalo/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../pruebas/montar';
 import { OPCIONES_DE_FIRMA, simularNavegadorConPasskeys, type NavegadorSimulado } from '../pruebas/navegadorSimulado';

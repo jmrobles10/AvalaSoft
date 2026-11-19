@@ -1,6 +1,6 @@
 import { Box, ButtonBase, Collapse, Divider, LinearProgress, Typography, useMediaQuery, useTheme, type Theme } from '@mui/material';
-import type { EstadoFichaDto, EstadoSeccionFichaDto } from '@avalasoft/api-client';
-import { PanelFlotante } from '@avalasoft/ui';
+import type { EstadoFichaDto, EstadoSeccionFichaDto } from '@validalo/api-client';
+import { PanelFlotante } from '@validalo/ui';
 import { ArrowLeft, CheckCircle2, ChevronDown, Circle, CircleAlert } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';

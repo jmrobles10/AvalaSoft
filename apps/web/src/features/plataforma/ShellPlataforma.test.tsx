@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { SesionAvalasoft } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import type { SesionValidalo } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { useSesion } from '../../sesion/sesionStore';
@@ -32,7 +32,7 @@ const GRUPOS = [
 const SECCIONES = GRUPOS.flatMap((g) => g.secciones);
 const NOMBRES = SECCIONES.map((s) => s.nombre);
 
-function sesionDeOperador(cambios: Partial<SesionAvalasoft> = {}): SesionAvalasoft {
+function sesionDeOperador(cambios: Partial<SesionValidalo> = {}): SesionValidalo {
   return {
     token: 'token',
     expira: new Date(Date.now() + 3_600_000),
@@ -52,7 +52,7 @@ function sesionDeOperador(cambios: Partial<SesionAvalasoft> = {}): SesionAvalaso
 
 function montar(ruta: string) {
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <MemoryRouter initialEntries={[ruta]}>
         <Routes>
           <Route path="/" element={<p>Inicio de la empresa</p>} />
@@ -107,7 +107,7 @@ describe('ShellPlataforma', () => {
   it('la barra superior lleva el logotipo, la píldora «Plataforma» y el chip del operador con su nombre y el sistema desde el que opera', () => {
     montar('/plataforma/grupos');
     const barra = screen.getByRole('banner');
-    expect(within(barra).getByRole('img', { name: 'AvalaSoft' })).toBeInTheDocument();
+    expect(within(barra).getByRole('img', { name: 'Valídalo' })).toBeInTheDocument();
     expect(within(barra).getByText('Plataforma')).toBeInTheDocument();
     expect(within(barra).getByText('Paula Plataforma')).toBeInTheDocument();
     expect(within(barra).getByText('Backoffice')).toBeInTheDocument();
@@ -153,7 +153,7 @@ describe('ShellPlataforma: colapsar la barra lateral', () => {
     // El texto de cada ítem sigue en el DOM y solo se desvanece.
     expect(within(navegacion()).getByText('Grupos y empresas')).toHaveStyle({ opacity: '0', whiteSpace: 'nowrap' });
     expect(within(navegacion()).getByText('Cumplimiento')).toHaveStyle({ opacity: '0' });
-    expect(window.localStorage.getItem('avalasoft:plataforma:navegacion-colapsada')).toBe('1');
+    expect(window.localStorage.getItem('validalo:plataforma:navegacion-colapsada')).toBe('1');
 
     await usuario.click(colapsar);
     expect(navegacion()).toHaveStyle({ width: '244px' });
@@ -161,7 +161,7 @@ describe('ShellPlataforma: colapsar la barra lateral', () => {
   });
 
   it('recuerda que la barra estaba colapsada', () => {
-    window.localStorage.setItem('avalasoft:plataforma:navegacion-colapsada', '1');
+    window.localStorage.setItem('validalo:plataforma:navegacion-colapsada', '1');
     montar('/plataforma/grupos');
     expect(screen.getByRole('button', { name: 'Expandir la navegación' })).toBeInTheDocument();
     expect(navegacion()).toHaveStyle({ width: '58px' });

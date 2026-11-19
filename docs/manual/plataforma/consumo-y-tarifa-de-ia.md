@@ -70,7 +70,7 @@ La tarifa general es lo que se cobra por cada validación que una empresa consum
 
 ## Paso 4. Comprueba la tarifa vigente
 
-AvalaSoft confirma que guardó la tarifa y la muestra con su fecha y quién la cambió. Desde el próximo cálculo, el valor de lo adicional de las empresas sin precio propio usa este precio. Las empresas con precio propio no cambian.
+Valídalo confirma que guardó la tarifa y la muestra con su fecha y quién la cambió. Desde el próximo cálculo, el valor de lo adicional de las empresas sin precio propio usa este precio. Las empresas con precio propio no cambian.
 
 > **Pantalla:** `/plataforma/uso-ia`
 

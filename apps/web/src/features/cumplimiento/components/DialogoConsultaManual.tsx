@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormHelperText, FormLabel, Skeleton, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import type { ExpedienteDto, RegistrarConsultaManualDto } from '@avalasoft/api-client';
+import type { ExpedienteDto, RegistrarConsultaManualDto } from '@validalo/api-client';
 import { FileText, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ import {
 import { formatearPeso } from '../modelo';
 import { FilaCoincidenciaManual } from './FilaCoincidenciaManual';
 import { SelectorDeArchivo } from './SelectorDeArchivo';
-import { CampoFecha, CampoNumero } from '@avalasoft/ui';
+import { CampoFecha, CampoNumero } from '@validalo/ui';
 
 export interface DialogoConsultaManualProps {
   expediente: ExpedienteDto;

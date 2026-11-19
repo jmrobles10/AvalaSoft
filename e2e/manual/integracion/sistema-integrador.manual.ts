@@ -13,7 +13,7 @@ recorrido(
     actor: 'Administrador de empresa',
     titulo: 'Registra un sistema integrado con su clave pública',
     resumen:
-      'La administradora registra un sistema externo (un ERP, un portal) con su código, su nombre, su clave pública y los sitios desde los que se incrusta AvalaSoft. Desde ese momento las personas pueden entrar desde ese sistema.',
+      'La administradora registra un sistema externo (un ERP, un portal) con su código, su nombre, su clave pública y los sitios desde los que se incrusta Valídalo. Desde ese momento las personas pueden entrar desde ese sistema.',
     precondiciones: [
       'Un grupo empresarial con dos empresas y una administradora que puede administrar sistemas integrados.',
       'El sistema E2E ya registrado en el grupo (así se ve la tabla con datos).',
@@ -30,8 +30,8 @@ recorrido(
     await paso(page, {
       titulo: 'Abre Configuración › Sistemas integrados',
       explicacion:
-        'La tabla lista los sistemas desde los que entran las personas del grupo y crean vínculos por API. Cada fila muestra el nombre y el código del sistema, si está activo, la huella de su clave pública, cuántos sitios pueden incrustar AvalaSoft y la fecha de registro. ' +
-        'AvalaSoft solo guarda la clave pública: el sistema firma con su clave privada la identidad de sus usuarios, y esa clave privada nunca llega a AvalaSoft.',
+        'La tabla lista los sistemas desde los que entran las personas del grupo y crean vínculos por API. Cada fila muestra el nombre y el código del sistema, si está activo, la huella de su clave pública, cuántos sitios pueden incrustar Valídalo y la fecha de registro. ' +
+        'Valídalo solo guarda la clave pública: el sistema firma con su clave privada la identidad de sus usuarios, y esa clave privada nunca llega a Valídalo.',
       resaltar: [app.getByRole('table', { name: 'Sistemas integrados' }), app.getByRole('button', { name: 'Registrar sistema' })],
       configuracion: {
         ajuste: 'Sistemas integrados',
@@ -48,7 +48,7 @@ recorrido(
     await paso(page, {
       titulo: 'Escribe el código y el nombre del sistema',
       explicacion:
-        'El código (iss) es el emisor de las aserciones que firma el sistema: AvalaSoft lo usa para saber de qué sistema llega cada identidad, así que no cambia después. ' +
+        'El código (iss) es el emisor de las aserciones que firma el sistema: Valídalo lo usa para saber de qué sistema llega cada identidad, así que no cambia después. ' +
         'Se escribe en mayúsculas, sin espacios, y el nombre es el que verás en la tabla. Mientras falte alguno, el botón «Registrar sistema» queda deshabilitado y te dice qué falta.',
       resaltar: [dialogo.getByRole('textbox', { name: /^Código/ }), dialogo.getByRole('textbox', { name: /^Nombre/ })],
     });
@@ -58,7 +58,7 @@ recorrido(
       titulo: 'Pega la clave pública del sistema',
       explicacion:
         'Pega la clave pública en formato PEM, la que empieza por «-----BEGIN PUBLIC KEY-----». Acepta RSA de 2048 bits o más, o EC P-256. ' +
-        'AvalaSoft la verifica al guardar; una clave privada o un formato no válido se rechaza. Si el sistema debe rotarla luego, usa «Rotar clave» desde su ficha.',
+        'Valídalo la verifica al guardar; una clave privada o un formato no válido se rechaza. Si el sistema debe rotarla luego, usa «Rotar clave» desde su ficha.',
       resaltar: dialogo.getByRole('textbox', { name: /^Clave pública/ }),
       variantes: [
         { cuando: 'La clave es RSA de 2048 bits o más, o EC P-256', entonces: 'Se acepta y el sistema queda listo para firmar.' },
@@ -68,9 +68,9 @@ recorrido(
 
     await dialogo.getByRole('textbox', { name: /^Sitios que pueden incrustar/ }).fill(ORIGEN);
     await paso(page, {
-      titulo: 'Indica desde qué sitios se incrusta AvalaSoft',
+      titulo: 'Indica desde qué sitios se incrusta Valídalo',
       explicacion:
-        'Escribe un sitio por línea, con el protocolo y el dominio (y el puerto si aplica), sin ruta. Solo esos sitios pueden mostrar AvalaSoft dentro de un iframe y solo a ellos se les entrega la sesión. ' +
+        'Escribe un sitio por línea, con el protocolo y el dominio (y el puerto si aplica), sin ruta. Solo esos sitios pueden mostrar Valídalo dentro de un iframe y solo a ellos se les entrega la sesión. ' +
         'Es opcional: si lo dejas vacío, nadie puede incrustarlo todavía y puedes agregarlos después desde la ficha del sistema.',
       resaltar: dialogo.getByRole('textbox', { name: /^Sitios que pueden incrustar/ }),
       variantes: [

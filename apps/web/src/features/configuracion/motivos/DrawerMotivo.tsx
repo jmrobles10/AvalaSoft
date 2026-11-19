@@ -6,7 +6,7 @@ import {
   CategoriaMotivo,
   crearMotivo,
   type MotivoTipificadoDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import type { EstadoLote, FilaVistaPreviaDto, LoteDto, TotalesLoteDto } from '@avalasoft/api-client';
+import type { EstadoLote, FilaVistaPreviaDto, LoteDto, TotalesLoteDto } from '@validalo/api-client';
 
 /** Tono del chip de estado del lote (colores de MUI). */
 export const TONO_LOTE: Readonly<Record<EstadoLote, 'info' | 'warning' | 'success' | 'error' | 'default'>> = {

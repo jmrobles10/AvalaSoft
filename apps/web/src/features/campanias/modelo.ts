@@ -6,8 +6,8 @@ import type {
   FiltroDeCampaniaDto,
   TotalesCampaniaDto,
   VistaPreviaCampaniaDto,
-} from '@avalasoft/api-client';
-import { formatearDiaCivil } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { formatearDiaCivil } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 
 /** Tono del chip de estado de la campaña (colores de MUI). */

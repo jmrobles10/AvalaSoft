@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { VARIABLE_TOPE } from '@avalasoft/ui';
+import { VARIABLE_TOPE } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, Outlet, useLocation } from 'react-router';
 import { useEmpresaActiva, type ContextoEmpresa } from '../features/empresas/useEmpresas';

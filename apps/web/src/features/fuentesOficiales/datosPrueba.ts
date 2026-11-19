@@ -1,4 +1,4 @@
-import type { CampoCotejadoDto, DatosOficialesDto, FuenteOficialConfigDto, FuentesOficialesConfigDto, MonitoreoFuentesOficialesDto, VerificacionDto } from '@avalasoft/api-client';
+import type { CampoCotejadoDto, DatosOficialesDto, FuenteOficialConfigDto, FuentesOficialesConfigDto, MonitoreoFuentesOficialesDto, VerificacionDto } from '@validalo/api-client';
 
 /** Datos de prueba de las fuentes oficiales (FO-1…FO-8). */
 

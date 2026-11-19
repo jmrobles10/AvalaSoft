@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { agregarDominioSso, quitarDominioSso, verificarDominioSso, type DominioDeSsoDto } from '@avalasoft/api-client';
+import { agregarDominioSso, quitarDominioSso, verificarDominioSso, type DominioDeSsoDto } from '@validalo/api-client';
 import { Chip } from '@mui/material';
 import { BadgeCheck, Clock, Copy, Plus, Trash2 } from 'lucide-react';
 import { useState, type KeyboardEvent } from 'react';
@@ -57,7 +57,7 @@ function FilaDominio({ dominio }: { dominio: DominioDeSsoDto }) {
       {!dominio.verificado && (
         <Stack spacing={1} sx={{ mt: 1 }}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {t('sso.dominios.instruccion', { ruta: `https://${dominio.dominio}/.well-known/avalasoft-verificacion.txt` })}
+            {t('sso.dominios.instruccion', { ruta: `https://${dominio.dominio}/.well-known/validalo-verificacion.txt` })}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Box component="code" sx={{ flex: 1, minWidth: 0, px: 1, py: 0.5, borderRadius: (th) => `${String(th.radio.sm)}px`, bgcolor: 'superficie.nivel2', fontFamily: (th) => th.typography.mono.fontFamily, fontSize: 12, wordBreak: 'break-all' }}>

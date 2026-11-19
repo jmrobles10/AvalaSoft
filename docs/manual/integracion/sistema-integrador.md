@@ -3,7 +3,7 @@ id: "integracion/sistema-integrador"
 titulo: "Registra un sistema integrado con su clave pública"
 actor: "Administrador de empresa"
 dominio: "integracion"
-resumen: "La administradora registra un sistema externo (un ERP, un portal) con su código, su nombre, su clave pública y los sitios desde los que se incrusta AvalaSoft. Desde ese momento las personas pueden entrar desde ese sistema."
+resumen: "La administradora registra un sistema externo (un ERP, un portal) con su código, su nombre, su clave pública y los sitios desde los que se incrusta Valídalo. Desde ese momento las personas pueden entrar desde ese sistema."
 pasos: 5
 ---
 
@@ -11,7 +11,7 @@ pasos: 5
 
 **Actor:** Administrador de empresa · **Dominio:** Integración
 
-La administradora registra un sistema externo (un ERP, un portal) con su código, su nombre, su clave pública y los sitios desde los que se incrusta AvalaSoft. Desde ese momento las personas pueden entrar desde ese sistema.
+La administradora registra un sistema externo (un ERP, un portal) con su código, su nombre, su clave pública y los sitios desde los que se incrusta Valídalo. Desde ese momento las personas pueden entrar desde ese sistema.
 
 **Antes de empezar**
 
@@ -23,12 +23,12 @@ La administradora registra un sistema externo (un ERP, un portal) con su código
 1. Abre Configuración › Sistemas integrados
 2. Escribe el código y el nombre del sistema
 3. Pega la clave pública del sistema
-4. Indica desde qué sitios se incrusta AvalaSoft
+4. Indica desde qué sitios se incrusta Valídalo
 5. Revisa el sistema registrado
 
 ## Paso 1. Abre Configuración › Sistemas integrados
 
-La tabla lista los sistemas desde los que entran las personas del grupo y crean vínculos por API. Cada fila muestra el nombre y el código del sistema, si está activo, la huella de su clave pública, cuántos sitios pueden incrustar AvalaSoft y la fecha de registro. AvalaSoft solo guarda la clave pública: el sistema firma con su clave privada la identidad de sus usuarios, y esa clave privada nunca llega a AvalaSoft.
+La tabla lista los sistemas desde los que entran las personas del grupo y crean vínculos por API. Cada fila muestra el nombre y el código del sistema, si está activo, la huella de su clave pública, cuántos sitios pueden incrustar Valídalo y la fecha de registro. Valídalo solo guarda la clave pública: el sistema firma con su clave privada la identidad de sus usuarios, y esa clave privada nunca llega a Valídalo.
 
 > **Pantalla:** `/e/{empresa}/sistemas`
 
@@ -40,7 +40,7 @@ La tabla lista los sistemas desde los que entran las personas del grupo y crean 
 
 ## Paso 2. Escribe el código y el nombre del sistema
 
-El código (iss) es el emisor de las aserciones que firma el sistema: AvalaSoft lo usa para saber de qué sistema llega cada identidad, así que no cambia después. Se escribe en mayúsculas, sin espacios, y el nombre es el que verás en la tabla. Mientras falte alguno, el botón «Registrar sistema» queda deshabilitado y te dice qué falta.
+El código (iss) es el emisor de las aserciones que firma el sistema: Valídalo lo usa para saber de qué sistema llega cada identidad, así que no cambia después. Se escribe en mayúsculas, sin espacios, y el nombre es el que verás en la tabla. Mientras falte alguno, el botón «Registrar sistema» queda deshabilitado y te dice qué falta.
 
 > **Pantalla:** `/e/{empresa}/sistemas`
 
@@ -48,7 +48,7 @@ El código (iss) es el emisor de las aserciones que firma el sistema: AvalaSoft 
 
 ## Paso 3. Pega la clave pública del sistema
 
-Pega la clave pública en formato PEM, la que empieza por «-----BEGIN PUBLIC KEY-----». Acepta RSA de 2048 bits o más, o EC P-256. AvalaSoft la verifica al guardar; una clave privada o un formato no válido se rechaza. Si el sistema debe rotarla luego, usa «Rotar clave» desde su ficha.
+Pega la clave pública en formato PEM, la que empieza por «-----BEGIN PUBLIC KEY-----». Acepta RSA de 2048 bits o más, o EC P-256. Valídalo la verifica al guardar; una clave privada o un formato no válido se rechaza. Si el sistema debe rotarla luego, usa «Rotar clave» desde su ficha.
 
 > **Pantalla:** `/e/{empresa}/sistemas`
 
@@ -59,13 +59,13 @@ Pega la clave pública en formato PEM, la que empieza por «-----BEGIN PUBLIC KE
 - **La clave es RSA de 2048 bits o más, o EC P-256:** Se acepta y el sistema queda listo para firmar.
 - **La clave es menor o de otro tipo:** Se rechaza con un mensaje; no se guarda nada.
 
-## Paso 4. Indica desde qué sitios se incrusta AvalaSoft
+## Paso 4. Indica desde qué sitios se incrusta Valídalo
 
-Escribe un sitio por línea, con el protocolo y el dominio (y el puerto si aplica), sin ruta. Solo esos sitios pueden mostrar AvalaSoft dentro de un iframe y solo a ellos se les entrega la sesión. Es opcional: si lo dejas vacío, nadie puede incrustarlo todavía y puedes agregarlos después desde la ficha del sistema.
+Escribe un sitio por línea, con el protocolo y el dominio (y el puerto si aplica), sin ruta. Solo esos sitios pueden mostrar Valídalo dentro de un iframe y solo a ellos se les entrega la sesión. Es opcional: si lo dejas vacío, nadie puede incrustarlo todavía y puedes agregarlos después desde la ficha del sistema.
 
 > **Pantalla:** `/e/{empresa}/sistemas`
 
-![Paso 4: Indica desde qué sitios se incrusta AvalaSoft (escritorio)](../../../salida/manual/img/integracion/sistema-integrador/04-indica-desde-que-sitios-se-incrusta-avalasoft-claro.webp)
+![Paso 4: Indica desde qué sitios se incrusta Valídalo (escritorio)](../../../salida/manual/img/integracion/sistema-integrador/04-indica-desde-que-sitios-se-incrusta-validalo-claro.webp)
 
 **Variantes**
 

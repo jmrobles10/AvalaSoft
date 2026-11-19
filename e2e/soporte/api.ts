@@ -1,6 +1,6 @@
 import { createSign, generateKeyPairSync, randomUUID } from 'node:crypto';
 
-/** Origen de AvalaSoft bajo prueba (el mismo de `use.baseURL`). */
+/** Origen de Valídalo bajo prueba (el mismo de `use.baseURL`). */
 export const API = process.env.E2E_BASE_URL ?? `http://localhost:${process.env.E2E_PUERTO ?? '5090'}`;
 
 /** Clave de plataforma de desarrollo (appsettings.Development.json); en otro entorno, E2E_CLAVE_PLATAFORMA. */
@@ -65,7 +65,7 @@ export function asercion(sistema: string, clavePrivada: string, persona: Persona
   const ahora = Math.floor(Date.now() / 1000);
   const cabecera = b64(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
   const carga = b64(
-    JSON.stringify({ iss: sistema, aud: 'avalasoft', sub: persona.sub, name: persona.nombre, email: persona.correo, jti: randomUUID(), iat: ahora, exp: ahora + 300 }),
+    JSON.stringify({ iss: sistema, aud: 'validalo', sub: persona.sub, name: persona.nombre, email: persona.correo, jti: randomUUID(), iat: ahora, exp: ahora + 300 }),
   );
   const firma = createSign('RSA-SHA256').update(`${cabecera}.${carga}`).sign(clavePrivada);
   return `${cabecera}.${carga}.${b64(firma)}`;

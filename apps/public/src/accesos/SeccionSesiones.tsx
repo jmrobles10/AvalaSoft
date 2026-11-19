@@ -1,6 +1,6 @@
 import { Box, Button, Card, Chip, Stack, Typography } from '@mui/material';
-import type { SesionActivaDto } from '@avalasoft/api-client';
-import { EsqueletoTarjetas, EstadoVacio, formatearFechaHora } from '@avalasoft/ui';
+import type { SesionActivaDto } from '@validalo/api-client';
+import { EsqueletoTarjetas, EstadoVacio, formatearFechaHora } from '@validalo/ui';
 import { MonitorSmartphone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useSesionTercero } from '../sesion/sesionTercero';

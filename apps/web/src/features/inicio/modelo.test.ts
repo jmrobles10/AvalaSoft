@@ -1,4 +1,4 @@
-import type { MisPendientesDto } from '@avalasoft/api-client';
+import type { MisPendientesDto } from '@validalo/api-client';
 import i18n from 'i18next';
 import { describe, expect, it } from 'vitest';
 import { accesosPendientes, aNumero, estaAlDia, formatearConteo, formatearDias, leerVentana, textoArea } from './modelo';

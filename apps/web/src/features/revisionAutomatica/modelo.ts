@@ -1,5 +1,5 @@
-import type { ExcepcionDeRevisionDto, MotivoDeRevisionDto, RevisionAutomaticaDto } from '@avalasoft/api-client';
-import { haceCuanto, LOCALE } from '@avalasoft/ui';
+import type { ExcepcionDeRevisionDto, MotivoDeRevisionDto, RevisionAutomaticaDto } from '@validalo/api-client';
+import { haceCuanto, LOCALE } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 
 /** Niveles de la revisión automática de una empresa (ADR-0012): el sistema solo informa, sugiere o aprueba por sí solo. */

@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import type { CuentaBancariaPublicaDto } from '@avalasoft/api-client';
-import { ChipEstado } from '@avalasoft/ui';
+import type { CuentaBancariaPublicaDto } from '@validalo/api-client';
+import { ChipEstado } from '@validalo/ui';
 import { Archive, Landmark } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,12 +1,12 @@
 # apps/public: pantallas del tercero
 
-App del tercero (docs/06 §3.2), **móvil primero** y en es-CO: enlace con OTP, mis empresas, invitación con textos legales, mi bóveda con subida en dos pasos y mi revisión con cada empresa. Usa el tema `createAvalasoftTheme('light', { app: 'public' })` del design system «Registro»: densidad cómoda, controles de 44 px y radio 18 en tarjetas y diálogos.
+App del tercero (docs/06 §3.2), **móvil primero** y en es-CO: enlace con OTP, mis empresas, invitación con textos legales, mi bóveda con subida en dos pasos y mi revisión con cada empresa. Usa el tema `createValidaloTheme('light', { app: 'public' })` del design system «Registro»: densidad cómoda, controles de 44 px y radio 18 en tarjetas y diálogos.
 
 Comandos, lint, pruebas y build: los del workspace (ver [apps/web/README.md](../web/README.md)). Esta app agrega:
 
 ```bash
-pnpm --filter @avalasoft/public dev        # Vite en :5181 (proxy de /public/v1 a la API y de /__mailpit a Mailpit)
-pnpm --filter @avalasoft/public build      # dist/ (sin /dev/correos)
+pnpm --filter @validalo/public dev        # Vite en :5181 (proxy de /public/v1 a la API y de /__mailpit a Mailpit)
+pnpm --filter @validalo/public build      # dist/ (sin /dev/correos)
 ```
 
 ## Rutas
@@ -21,7 +21,7 @@ pnpm --filter @avalasoft/public build      # dist/ (sin /dev/correos)
 | `/expediente/:id` | Mi revisión: estado («te faltan N documentos» en la fase de carga), los documentos que pide la empresa agrupados en «Te toca», «Lo revisa la empresa» y «Listo», cada observado con sus motivos y su observación, y desde cada tarjeta «Subir documento», «Subir versión corregida» u «Subir otra versión» (va a `/boveda/subir` con el tipo fijo y vuelve aquí). «Enviar respuesta» reenvía con o sin respuesta escrita (`requisitos-sin-corregir` se explica). Se refresca solo mientras esté abierto o devuelto: la versión subida llega al expediente por una cola. |
 | `/dev/correos` | Solo `vite dev`: lee Mailpit por el proxy `/__mailpit` y muestra «Abrir enlace» y el código OTP de cada correo. |
 
-**Sesión** (`src/sesion/`, contrato de `feature/H2-reingreso`): el access (JWT de 30 min) vive en memoria y viaja como `Authorization: Bearer`; la cookie `vs_tercero` (HttpOnly, SameSite=Lax, `Path=/public/v1/sesion`, hasta 8 h desde el canje) lo renueva con `POST /public/v1/sesion/renovar` (cabecera `X-Avalasoft-Cliente: public`):
+**Sesión** (`src/sesion/`, contrato de `feature/H2-reingreso`): el access (JWT de 30 min) vive en memoria y viaja como `Authorization: Bearer`; la cookie `vs_tercero` (HttpOnly, SameSite=Lax, `Path=/public/v1/sesion`, hasta 8 h desde el canje) lo renueva con `POST /public/v1/sesion/renovar` (cabecera `X-Validalo-Cliente: public`):
 - al arrancar se intenta renovar: con cookie vigente la persona sigue dentro tras recargar; sin ella (401) ve «Entrar con mi correo»;
 - dos minutos antes de vencer se renueva solo (una sola petición aunque la pidan varias llamadas: la cookie rota);
 - si una llamada responde 401, se renueva una vez y se repite (`sesion/renovacion.ts`); si tampoco, «Tu sesión terminó»;
@@ -34,9 +34,9 @@ pnpm --filter @avalasoft/public build      # dist/ (sin /dev/correos)
 
 ```bash
 docker compose -f infra/compose/compose.yaml up -d      # PostgreSQL, Mailpit (:8025) y MinIO (:9000, consola :9001)
-ASPNETCORE_ENVIRONMENT=Development Avalasoft__Correo__UrlPublica=http://localhost:5181 dotnet run --project src/Avalasoft.Api --urls http://localhost:5080
+ASPNETCORE_ENVIRONMENT=Development Validalo__Correo__UrlPublica=http://localhost:5181 dotnet run --project src/Validalo.Api --urls http://localhost:5080
 pnpm semilla:dev                                         # PROVEEDOR con OTP, flujo con requisitos (RUT y Cámara) publicado y textos de Norte
-pnpm --filter @avalasoft/public dev
+pnpm --filter @validalo/public dev
 ```
 
 1. `http://localhost:5181/dev/correos` → «Abrir enlace» del correo de `contacto1…` (Aceros del Norte, proveedor de Norte).

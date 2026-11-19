@@ -1,4 +1,4 @@
-import type { GrupoDeAccesoDto } from '@avalasoft/api-client';
+import type { GrupoDeAccesoDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { alternarSector, cambiarNivel, enOrdenDeLaFicha, firmaDeGrupo, grupoDesde, grupoNuevo, normalizarCodigoDeGrupo, sectoresADto, validarGrupo } from './modelo';
 

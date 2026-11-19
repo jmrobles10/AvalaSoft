@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getListarEmpresasQueryOptions } from '@avalasoft/api-client';
+import { getListarEmpresasQueryOptions } from '@validalo/api-client';
 import { useMemo } from 'react';
 
 /** Nombre de cada empresa del grupo por su id (para rotular los roles de «Mi cuenta»); vacío si no aplica (operadores de Plataforma). */

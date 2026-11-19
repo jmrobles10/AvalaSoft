@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Validalo.Adaptadores.Portal/Validalo.Adaptadores.Portal.csproj" />
+    <Project Path="src/Validalo.Api/Validalo.Api.csproj" />
+    <Project Path="src/Validalo.Aplicacion/Validalo.Aplicacion.csproj" />
+    <Project Path="src/Validalo.Contratos/Validalo.Contratos.csproj" />
+    <Project Path="src/Validalo.Dominio/Validalo.Dominio.csproj" />
+    <Project Path="src/Validalo.Infraestructura/Validalo.Infraestructura.csproj" />
+    <Project Path="src/Validalo.Sdk/Validalo.Sdk.csproj" />
+  </Folder>
+  <Folder Name="/docs/ejemplos/">
+    <Project Path="docs/ejemplos/IntegradorSrm/IntegradorSrm.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Validalo.Adaptadores.Portal.Tests/Validalo.Adaptadores.Portal.Tests.csproj" />
+    <Project Path="tests/Validalo.Dominio.Tests/Validalo.Dominio.Tests.csproj" />
+    <Project Path="tests/Validalo.Integracion.Tests/Validalo.Integracion.Tests.csproj" />
+    <Project Path="tests/Validalo.Sdk.Tests/Validalo.Sdk.Tests.csproj" />
+  </Folder>
+</Solution>

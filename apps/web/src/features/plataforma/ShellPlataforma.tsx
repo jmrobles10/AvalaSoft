@@ -1,6 +1,6 @@
 import { Box, Drawer, IconButton, Tooltip } from '@mui/material';
-import { esSesionDePlataforma } from '@avalasoft/api-client';
-import { BarraSuperior, ChipUsuario, Logo, NavegacionLateral, PanelFlotante, PildoraContexto, VARIABLE_FONDO, VARIABLE_TOPE, type GrupoNavegacion } from '@avalasoft/ui';
+import { esSesionDePlataforma } from '@validalo/api-client';
+import { BarraSuperior, ChipUsuario, Logo, NavegacionLateral, PanelFlotante, PildoraContexto, VARIABLE_FONDO, VARIABLE_TOPE, type GrupoNavegacion } from '@validalo/ui';
 import { Building2, CalendarDays, Database, FileLock2, ListChecks, LogIn, Lock, Menu, Moon, ShieldCheck, Sparkles, Sun, UsersRound, X, type LucideIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,7 @@ const GRUPOS = [
 ] as const satisfies readonly { clave: string; secciones: readonly Seccion[] }[];
 
 /** Colapsada la barra lateral solo muestra los íconos; la elección se recuerda en el navegador (sin romper si está bloqueado). */
-const CLAVE_COLAPSO = 'avalasoft:plataforma:navegacion-colapsada';
+const CLAVE_COLAPSO = 'validalo:plataforma:navegacion-colapsada';
 function leerColapso(): boolean {
   try {
     return window.localStorage.getItem(CLAVE_COLAPSO) === '1';

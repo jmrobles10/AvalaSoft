@@ -1,4 +1,4 @@
-import { SCOPES, type Scope } from '@avalasoft/api-client';
+import { SCOPES, type Scope } from '@validalo/api-client';
 import {
   Building2,
   ClipboardCheck,

@@ -4,7 +4,7 @@
 |---|---|---|
 | Borrador | 2026-10-28 | Arquitectura |
 
-**Propósito.** Definir cómo se construye, despliega y opera AvalaSoft: estructura de la solución, persistencia (Marten), mensajería (Wolverine), almacenamiento documental (MinIO/S3), módulo de IA con revisión automática por niveles, notificaciones, observabilidad, Docker, CI y testing. El *qué* del dominio está en `03-dominio-y-eventos.md`; el *cómo se comparte un documento entre empresas* en `02-modelo-documental-compartido.md`.
+**Propósito.** Definir cómo se construye, despliega y opera Valídalo: estructura de la solución, persistencia (Marten), mensajería (Wolverine), almacenamiento documental (MinIO/S3), módulo de IA con revisión automática por niveles, notificaciones, observabilidad, Docker, CI y testing. El *qué* del dominio está en `03-dominio-y-eventos.md`; el *cómo se comparte un documento entre empresas* en `02-modelo-documental-compartido.md`.
 
 **Relacionados:** [00-vision-y-alcance.md](00-vision-y-alcance.md) · [02-modelo-documental-compartido.md](02-modelo-documental-compartido.md) · [03-dominio-y-eventos.md](03-dominio-y-eventos.md) · [05-api-contratos-y-webhooks.md](05-api-contratos-y-webhooks.md) · [06-frontend-y-ux.md](06-frontend-y-ux.md) · [07-seguridad-identidad-y-tenancy.md](07-seguridad-identidad-y-tenancy.md) · [08-integracion-y-migracion.md](08-integracion-y-migracion.md) · [09-plan-de-hitos-y-responsabilidades.md](09-plan-de-hitos-y-responsabilidades.md) · [decisiones/registro.md](decisiones/registro.md) · ADR-0001, 0002, 0003, 0004, 0007, 0008
 
@@ -83,8 +83,8 @@ flowchart LR
 | `Integracion` | Endpoints `/importacion/*`, sincronización inversa al legado | Comandos idempotentes |
 
 **Reglas de aislamiento (verificadas por NetArchTest en CI):**
-1. `Avalasoft.Dominio` no referencia ningún paquete salvo BCL.
-2. Un módulo de `Aplicacion` no referencia tipos internos de otro módulo; se comunica por mensajes de `Avalasoft.Contratos.Eventos` o por consultas de lectura declaradas en `Avalasoft.Contratos.Lecturas`.
+1. `Validalo.Dominio` no referencia ningún paquete salvo BCL.
+2. Un módulo de `Aplicacion` no referencia tipos internos de otro módulo; se comunica por mensajes de `Validalo.Contratos.Eventos` o por consultas de lectura declaradas en `Validalo.Contratos.Lecturas`.
 3. Ninguna consulta a `validacion` sin `TenantId` **y**, para vínculos, expedientes, aceptaciones, decisiones, certificados y bandejas, sin `EmpresaId`: el `IDocumentSession` se abre siempre por el middleware de tenant; la empresa activa llega en el token (claim `empresa`), en la cabecera `X-Empresa` (usuarios con rol en varias empresas; T-5) o en el alcance de la API key; un `IAuthorizationHandler` verifica que el usuario tenga rol en esa empresa y toda lectura de `validacion` pasa por `ISesionDeEmpresa` (un `IQuerySession` envuelto que añade el predicado `empresa_id`, T-3); un recurso de otro tenant o empresa responde **404** (T-4). `boveda` se consulta por `TerceroId` y el acceso a versiones pasa por `comparticion_version` (que apunta a un **vínculo**, es decir, a una empresa).
 4. Todo proceso periódico es un *scheduled message* o un job del `Worker`; ningún endpoint HTTP dispara trabajo recurrente.
 5. La IA es un `IVerificador` más: si está deshabilitada, el pipeline de hechos "sin IA" (§7.3) sigue funcionando y las decisiones caen en nivel `Manual`.
@@ -123,45 +123,45 @@ flowchart LR
 ## 3. Estructura de la solución (monorepo)
 
 ```
-C:\Fuentes_Git\Avalasoft\
+C:\Fuentes_Git\Validalo\
 ├── .github/
 │   ├── workflows/{ci.yml, e2e.yml, imagenes.yml, desplegar.yml}
 │   ├── ISSUE_TEMPLATE/{entregable.yml, bug.yml, decision.yml}
 │   ├── PULL_REQUEST_TEMPLATE.md  CODEOWNERS  dependabot.yml
-├── Avalasoft.sln
+├── Validalo.sln
 ├── Directory.Build.props            # net10.0, nullable, warnings as errors, analizadores
 ├── global.json                      # SDK fijado
 ├── src/
-│   ├── Avalasoft.Api/              # host HTTP
+│   ├── Validalo.Api/              # host HTTP
 │   │   ├── Program.cs               # composición: Marten, Wolverine, OpenIddict, OTel, RateLimit, ProblemDetails
 │   │   ├── Hosting/                 # middleware de tenant, correlación, idempotencia
 │   │   └── appsettings*.json
-│   ├── Avalasoft.Worker/           # host sin HTTP (misma imagen, AVALASOFT_ROL=worker)
-│   ├── Avalasoft.Dominio/          # agregados, eventos, invariantes, EvaluadorDeExigencia, cálculo de vigencia
+│   ├── Validalo.Worker/           # host sin HTTP (misma imagen, VALIDALO_ROL=worker)
+│   ├── Validalo.Dominio/          # agregados, eventos, invariantes, EvaluadorDeExigencia, cálculo de vigencia
 │   │   ├── Validacion/{Vinculo,Expediente,Certificado}/
 │   │   ├── Documentos/              # Documento (archivo y formulario), hechos, comparación de versiones
 │   │   ├── Terceros/Identificacion/ # validadores por país (NIT, CC, CE, PA, RFC, CUIT…)
 │   │   └── Configuracion/{Exigencia,Formularios}/
-│   ├── Avalasoft.Aplicacion/       # un folder por módulo; un caso de uso = una carpeta
+│   ├── Validalo.Aplicacion/       # un folder por módulo; un caso de uso = una carpeta
 │   │   └── Expedientes/
 │   │       ├── CrearExpediente/{Endpoint,Comando,Validador,Handler}.cs
 │   │       ├── EmitirVeredicto/
 │   │       └── Procesos/ProcesoDeValidacionSaga.cs
-│   ├── Avalasoft.Infraestructura/  # Marten (config, proyecciones), Wolverine, MinIO, MailKit, Anthropic, ClamAV, PDFium
-│   ├── Avalasoft.Contratos/        # DTOs públicos, eventos de webhook, enums, lecturas (NuGet)
-│   ├── Avalasoft.Sdk/              # cliente .NET + WebhookVerifier (NuGet, multi-target net7.0;net8.0;net10.0 mientras exista el SRM, T-16)
-│   └── Avalasoft.Herramientas.Importacion/   # CLI de migración (doc 08)
+│   ├── Validalo.Infraestructura/  # Marten (config, proyecciones), Wolverine, MinIO, MailKit, Anthropic, ClamAV, PDFium
+│   ├── Validalo.Contratos/        # DTOs públicos, eventos de webhook, enums, lecturas (NuGet)
+│   ├── Validalo.Sdk/              # cliente .NET + WebhookVerifier (NuGet, multi-target net7.0;net8.0;net10.0 mientras exista el SRM, T-16)
+│   └── Validalo.Herramientas.Importacion/   # CLI de migración (doc 08)
 ├── apps/
 │   ├── web/                         # revisor/admin (OIDC PKCE)
 │   └── public/                      # tercero (PWA), verificador, embed
 ├── packages/
 │   ├── ui/  forms/  api-client/  sdk-ts/  i18n/  domain/  config/
 ├── tests/
-│   ├── Avalasoft.Dominio.Tests/
-│   ├── Avalasoft.Aplicacion.Tests/
-│   ├── Avalasoft.Integracion.Tests/      # Testcontainers Postgres + MinIO + Mailpit
-│   ├── Avalasoft.Api.ContractTests/      # Verify: snapshot de OpenAPI y payloads
-│   ├── Avalasoft.Arquitectura.Tests/     # NetArchTest
+│   ├── Validalo.Dominio.Tests/
+│   ├── Validalo.Aplicacion.Tests/
+│   ├── Validalo.Integracion.Tests/      # Testcontainers Postgres + MinIO + Mailpit
+│   ├── Validalo.Api.ContractTests/      # Verify: snapshot de OpenAPI y payloads
+│   ├── Validalo.Arquitectura.Tests/     # NetArchTest
 │   ├── e2e/                               # Playwright
 │   └── carga/                             # k6 (certificacion.k6.js: consulta de certificación, tests/carga/README.md)
 ├── infra/
@@ -218,11 +218,11 @@ Configuración: **un solo `DocumentStore` con `Events.TenancyStyle = Conjoined` 
 | `KpisTenant`, `KpisFlujo`, `KpisEmpresa` (con `decisionesAutomaticas`, `consumoIa` y `equidad` como campos) | Async (agregación diaria) | `Expediente`, `Documento`, `UsoRegistrado` | Inicio, facturación del servicio automático y métricas de equidad (adición 10) |
 | `uso_tenant` | Async (agregación diaria) | `UsoRegistrado` | Medición y planes |
 
-Reconstrucción: `dotnet Avalasoft.Api -- proyecciones rebuild <nombre>` (comando JasperFx), con el daemon async en el `Worker` (un solo nodo líder; HA con *hot/cold*).
+Reconstrucción: `dotnet Validalo.Api -- proyecciones rebuild <nombre>` (comando JasperFx), con el daemon async en el `Worker` (un solo nodo líder; HA con *hot/cold*).
 
 ### 4.3 Migraciones
 - Dev: `AutoCreate.CreateOrUpdate`.
-- Test/prod: `dotnet Avalasoft.Api -- migrar` como job previo al despliegue (nunca en el arranque del API; lección del Portal, cuyo `Database.Migrate()` al arrancar provocaba timeouts en la primera petición).
+- Test/prod: `dotnet Validalo.Api -- migrar` como job previo al despliegue (nunca en el arranque del API; lección del Portal, cuyo `Database.Migrate()` al arrancar provocaba timeouts en la primera petición).
 - Versionado de eventos: *upcasters* en `Infraestructura/Marten/Upcasters`; nunca se reescriben eventos.
 
 ---
@@ -231,7 +231,7 @@ Reconstrucción: `dotnet Avalasoft.Api -- proyecciones rebuild <nombre>` (comand
 
 | Aspecto | Decisión |
 |---|---|
-| Transporte | PostgreSQL (`UsePostgresqlPersistenceAndTransport`); colas durables `avalasoft.expedientes`, `avalasoft.documentos`, `avalasoft.verificacion`, `avalasoft.notificaciones`, `avalasoft.webhooks`, `avalasoft.importacion` |
+| Transporte | PostgreSQL (`UsePostgresqlPersistenceAndTransport`); colas durables `validalo.expedientes`, `validalo.documentos`, `validalo.verificacion`, `validalo.notificaciones`, `validalo.webhooks`, `validalo.importacion` |
 | Outbox | `IntegrateWithWolverine()` sobre Marten + `UseDurableOutboxOnAllSendingEndpoints()`; los eventos de dominio se publican con *event forwarding* a los suscriptores |
 | Inbox | Durable; los handlers son idempotentes por clave natural (`documentoId+version`, `expedienteId+requisitoId+versionId`) |
 | Scheduled messages | SLA de etapa (`VencerSlaRevision`), expiración de magic link, recordatorio de carga pendiente, `PlazoRevalidacionVencido` (tras `diasRevalidacion`, 15 por defecto ⇒ certificado `ConPendientes` bloqueante, A-2) |
@@ -436,7 +436,7 @@ Cada decisión automática emite `VeredictoAutomaticoEmitido(expediente, requisi
 
 | Servicio | dev | test (CI) | prod |
 |---|---|---|---|
-| `api`, `worker` (misma imagen, `AVALASOFT_ROL`) | ✔ | ✔ | ✔ (réplicas; un líder del daemon async) |
+| `api`, `worker` (misma imagen, `VALIDALO_ROL`) | ✔ | ✔ | ✔ (réplicas; un líder del daemon async) |
 | `web`, `public` (nginx estático) | Vite dev server | ✔ | ✔ |
 | `postgres:17` | ✔ | Testcontainers | ✔ o gestionado |
 | `minio` | ✔ | Testcontainers | ✔ o S3/Blob |
@@ -448,33 +448,33 @@ Cada decisión automática emite `VeredictoAutomaticoEmitido(expediente, requisi
 # infra/compose/compose.yaml (extracto)
 services:
   api:
-    image: avalasoft/app:${VERSION:-dev}
+    image: validalo/app:${VERSION:-dev}
     environment:
-      AVALASOFT_ROL: api
-      AVALASOFT__Postgres__ConnectionString_FILE: /run/secrets/pg
-      AVALASOFT__Minio__Endpoint: http://minio:9000
-      AVALASOFT__Ia__ApiKey_FILE: /run/secrets/anthropic
-      AVALASOFT__Ia__ModeloVerificacion: claude-opus-5-5
+      VALIDALO_ROL: api
+      VALIDALO__Postgres__ConnectionString_FILE: /run/secrets/pg
+      VALIDALO__Minio__Endpoint: http://minio:9000
+      VALIDALO__Ia__ApiKey_FILE: /run/secrets/anthropic
+      VALIDALO__Ia__ModeloVerificacion: claude-opus-5-5
     depends_on: [postgres, minio]
     ports: ["8080:8080"]
   worker:
-    image: avalasoft/app:${VERSION:-dev}
-    environment: { AVALASOFT_ROL: worker }
+    image: validalo/app:${VERSION:-dev}
+    environment: { VALIDALO_ROL: worker }
 ```
 
-**Implementado en `infra/compose/compose.yaml` (2026-11-06):** `postgres:17`, `mailpit` (SMTP 1025, bandeja 8025) y `minio` con la imagen `pgsty/minio:RELEASE.2026-08-04T00-00-00Z` (fork comunitario con la misma línea de comandos; `minio/minio` ya no se publica en Docker Hub), API S3 en `9000` y consola en `http://localhost:9001` (`avalasoft` / `avalasoft-minio-solo-local`, solo local). La API crea el bucket `boveda` al arrancar si `Avalasoft:Almacen:CrearBucketsAlIniciar` está activo (desarrollo) y los `tenant-{id}` con la primera carga `PorVinculo`. El servicio `api` (perfil `app`) usa `Avalasoft__Almacen__Endpoint=http://minio:9000` para leer y `Avalasoft__Almacen__EndpointPublico=http://localhost:9000` para firmar las URLs que abre el navegador. El servicio `api` corre en `Development` con las claves de desarrollo del repositorio: es solo para desarrollo local y la API no arranca con esas claves en otro entorno (docs/07 §6.4, CL-1). Las pruebas de integración levantan la misma imagen con `Testcontainers.Minio`. Aún no hay `worker`, `otel-lgtm` ni `clamav`.
+**Implementado en `infra/compose/compose.yaml` (2026-11-06):** `postgres:17`, `mailpit` (SMTP 1025, bandeja 8025) y `minio` con la imagen `pgsty/minio:RELEASE.2026-08-04T00-00-00Z` (fork comunitario con la misma línea de comandos; `minio/minio` ya no se publica en Docker Hub), API S3 en `9000` y consola en `http://localhost:9001` (`validalo` / `validalo-minio-solo-local`, solo local). La API crea el bucket `boveda` al arrancar si `Validalo:Almacen:CrearBucketsAlIniciar` está activo (desarrollo) y los `tenant-{id}` con la primera carga `PorVinculo`. El servicio `api` (perfil `app`) usa `Validalo__Almacen__Endpoint=http://minio:9000` para leer y `Validalo__Almacen__EndpointPublico=http://localhost:9000` para firmar las URLs que abre el navegador. El servicio `api` corre en `Development` con las claves de desarrollo del repositorio: es solo para desarrollo local y la API no arranca con esas claves en otro entorno (docs/07 §6.4, CL-1). Las pruebas de integración levantan la misma imagen con `Testcontainers.Minio`. Aún no hay `worker`, `otel-lgtm` ni `clamav`.
 
-**Un solo origen: la API sirve las apps (2026-11-08, SE-3).** Opcional por configuración; la imagen de `src/Avalasoft.Api/Dockerfile` lo trae encendido.
+**Un solo origen: la API sirve las apps (2026-11-08, SE-3).** Opcional por configuración; la imagen de `src/Validalo.Api/Dockerfile` lo trae encendido.
 
 | Ruta | Qué sirve | Configuración |
 |---|---|---|
-| `/app/` (`/app` redirige 301 a `/app/`) | `apps/web` (embebible; rutas con `#`, build con `base: './'`). Cualquier ruta sin extensión o `.html` bajo `/app/` ⇒ `index.html` con `Cache-Control: no-cache` y `Content-Security-Policy: frame-ancestors 'self' {orígenes de los sistemas activos}; base-uri 'self'; object-src 'none'` | `Avalasoft:Apps:Web` = carpeta del `dist/` (relativa a la raíz de contenido) |
-| `/` | `apps/public` (tercero; rutas con historial, p. ej. `/e/{token}`). Fallback a `index.html` con `frame-ancestors 'self'` (en `/embed/{componente}`, que es la que va en el iframe de un sistema, además los orígenes de los sistemas activos: IO-5) salvo en `/api`, `/public`, `/health`, `/openapi`, `/docs` y `/app` | `Avalasoft:Apps:Publica` |
+| `/app/` (`/app` redirige 301 a `/app/`) | `apps/web` (embebible; rutas con `#`, build con `base: './'`). Cualquier ruta sin extensión o `.html` bajo `/app/` ⇒ `index.html` con `Cache-Control: no-cache` y `Content-Security-Policy: frame-ancestors 'self' {orígenes de los sistemas activos}; base-uri 'self'; object-src 'none'` | `Validalo:Apps:Web` = carpeta del `dist/` (relativa a la raíz de contenido) |
+| `/` | `apps/public` (tercero; rutas con historial, p. ej. `/e/{token}`). Fallback a `index.html` con `frame-ancestors 'self'` (en `/embed/{componente}`, que es la que va en el iframe de un sistema, además los orígenes de los sistemas activos: IO-5) salvo en `/api`, `/public`, `/health`, `/openapi`, `/docs` y `/app` | `Validalo:Apps:Publica` |
 | `…/assets/*` | Archivos con hash: `Cache-Control: public, max-age=31536000, immutable` y `X-Content-Type-Options: nosniff` | — |
 
-Vacías, la API no sirve esa app (en desarrollo se usa Vite: `/app` y `/` no existen en la API). Configuradas y sin `index.html` ⇒ la API no arranca. Con este despliegue `UrlPublica` es el mismo host, `apps/public` y `apps/web` llaman a `/public/v1` y `/api/v1` del mismo origen y no hace falta CORS; `Avalasoft:Cors:OrigenesPermitidos[]` solo para dominios separados ([07 §2.6](07-seguridad-identidad-y-tenancy.md) punto 8). Detrás de un proxy o balanceador, `Avalasoft:Proxies:Confiables[]` (IP o CIDR) y `Avalasoft:Proxies:Saltos` para que el límite por IP use la IP real.
+Vacías, la API no sirve esa app (en desarrollo se usa Vite: `/app` y `/` no existen en la API). Configuradas y sin `index.html` ⇒ la API no arranca. Con este despliegue `UrlPublica` es el mismo host, `apps/public` y `apps/web` llaman a `/public/v1` y `/api/v1` del mismo origen y no hace falta CORS; `Validalo:Cors:OrigenesPermitidos[]` solo para dominios separados ([07 §2.6](07-seguridad-identidad-y-tenancy.md) punto 8). Detrás de un proxy o balanceador, `Validalo:Proxies:Confiables[]` (IP o CIDR) y `Validalo:Proxies:Saltos` para que el límite por IP use la IP real.
 
-**Imagen (`src/Avalasoft.Api/Dockerfile`, contexto = raíz).** Tres etapas: `node:22-bookworm-slim` con corepack/pnpm (`pnpm install --frozen-lockfile` sobre los manifiestos y `pnpm --filter @avalasoft/web --filter @avalasoft/public build`), `dotnet/sdk:10.0` (`dotnet publish`) y `dotnet/aspnet:10.0` con los `dist/` en `/app/frontend/{web,public}` y `Avalasoft__Apps__Web=frontend/web`, `Avalasoft__Apps__Publica=frontend/public`. `.dockerignore` deja fuera `node_modules`, `bin/obj`, `dist`, `.git`, `.claude`, `docs` y `tests`.
+**Imagen (`src/Validalo.Api/Dockerfile`, contexto = raíz).** Tres etapas: `node:22-bookworm-slim` con corepack/pnpm (`pnpm install --frozen-lockfile` sobre los manifiestos y `pnpm --filter @validalo/web --filter @validalo/public build`), `dotnet/sdk:10.0` (`dotnet publish`) y `dotnet/aspnet:10.0` con los `dist/` en `/app/frontend/{web,public}` y `Validalo__Apps__Web=frontend/web`, `Validalo__Apps__Publica=frontend/public`. `.dockerignore` deja fuera `node_modules`, `bin/obj`, `dist`, `.git`, `.claude`, `docs` y `tests`.
 
 Comandos: `make up | down | migrar | seed | test | e2e | logs` y `build.ps1` equivalentes. `-- seed demo` crea el tenant `demo` con **dos empresas internas** (`Constructora Norte`, `Constructora Sur`), flujo "Habilitación de proveedores" (Compras, Legal, Financiera, Cumplimiento; SST opcional), semilla de tipos canónicos (P-2-3), catálogo de identificación multipaís, usuarios por rol y tres terceros con documentos fixture (uno compartido por las dos empresas para demostrar aislamiento de decisiones y revalidación).
 
@@ -490,7 +490,7 @@ Secretos: variables `_FILE` (Docker secrets) o proveedor `IConfiguration` de Key
 |---|---|---|---|
 | `ci.yml` | PR y push a `main` | `dotnet build` + `pnpm -r build` + lint (ESLint, analizadores) · tests Dominio, Aplicación, Integración (Testcontainers en runner Linux), Contract (snapshot de `/openapi/v1.json` y payloads), Arquitectura (NetArchTest) · regeneración de `api-client`/SDKs y `git diff --exit-code` | warnings (son errores); cualquier test; cambio de OpenAPI sin SDK regenerado |
 | `e2e.yml` | **Solo bajo demanda** (`workflow_dispatch`, con el filtro opcional `grep`); no corre en push ni en PR (E2E-1) | Playwright en su imagen oficial contra la API que sirve las dos apps, con PostgreSQL, Mailpit y MinIO reales; ensayo mensual de restauración de backup (pendiente) | flujos a–h rojos |
-| `imagenes.yml` | Tag `v*` y `main` | Build multi-stage de `app` (`api`/`worker`), `web`, `public`; SBOM (Syft); escaneo (Trivy); firma (cosign keyless); push a **GHCR**; publicación de NuGet (`Contratos`, `Sdk`) en GitHub Packages y de `@avalasoft/sdk` en npm interno | vulnerabilidad crítica |
+| `imagenes.yml` | Tag `v*` y `main` | Build multi-stage de `app` (`api`/`worker`), `web`, `public`; SBOM (Syft); escaneo (Trivy); firma (cosign keyless); push a **GHCR**; publicación de NuGet (`Contratos`, `Sdk`) en GitHub Packages y de `@validalo/sdk` en npm interno | vulnerabilidad crítica |
 | `desplegar.yml` | Manual (`workflow_dispatch`) o tras `imagenes` | Por entorno con **GitHub Environments** (`test` automático, `prod` con *required reviewers*); `-- migrar` antes del `api`; smoke de `/health/ready` | migración o smoke fallidos |
 
 **Implementado (2026-11-08, SE-7):** `.github/workflows/ci.yml` en cada push y PR con tres jobs en paralelo: **backend** (`setup-dotnet` 10.0.x, caché de `~/.nuget/packages` por hash de `Directory.Packages.props`/`*.csproj`, `dotnet build -c Release` —`TreatWarningsAsErrors`: una advertencia de compilación rompe el job—, `dotnet test` con Testcontainers sobre el Docker del runner, `dotnet list package --vulnerable` informativo y los `.trx` como artefacto si falla), **frontend** (`pnpm/action-setup` con la versión de `packageManager`, `setup-node` 22 con caché de pnpm, `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`) e **imagen** (Buildx + `build-push-action` con `push: false` y caché `gha`). `.github/dependabot.yml`: NuGet, npm (pnpm), GitHub Actions y las imágenes base del Dockerfile, semanal, menores y parches agrupados. Aún no: snapshot de OpenAPI, regeneración del `api-client`, NetArchTest, `imagenes.yml`, `desplegar.yml`.
@@ -521,8 +521,8 @@ Versionado: SemVer con MinVer desde tags; imágenes `vX.Y.Z` y `sha-…`; API v1
 | H6 | `Vencimientos` (`VencimientoProgramado`, job diario, avisos consolidados), saga `Revalidacion` (decide por empresa, T-7), `BandejaRevalidaciones`, `Expediente(Renovacion/Actualizacion)`, ratificación sin área, cuentas globales + `CambioCuentaDesignada`, `EstadoCertificacionTercero` con revalidación y `motivoBloqueo` |
 | H7 | `IVerificador` listas restrictivas y estudio de cumplimiento, UBO/PEP como formularios, suspensión/restablecimiento del certificado por bloqueo (B-5), expiración de verificaciones del representante saliente con confirmación, motor de decisión completo (niveles, umbrales, muestreo, presupuesto de decisiones, revisión humana), `ColaDeExcepciones`, campos `decisionesAutomaticas` y `equidad` de `KpisTenant`, señales de manipulación completas, Batches API (solo terceros con consentimiento) |
 | H8 | `InvitacionMasiva`, campañas, delegación, conflicto de intereses, exportación ZIP firmada, `SupresionDatos`, plantillas Liquid, dominio propio de correo, planes y límites sobre `uso_tenant`, matriz de riesgo |
-| H9 | `Avalasoft.Sdk` (multi-target `net7.0;net8.0;net10.0`), `@avalasoft/sdk`, sandbox por API key, `desplegar.yml` a entornos de clientes; **depende de H7** para no perder SAGRILAFT al activar el flag (B-8) |
-| H10 | `Avalasoft.Herramientas.Importacion`, `/importacion/*`, sincronización inversa |
+| H9 | `Validalo.Sdk` (multi-target `net7.0;net8.0;net10.0`), `@validalo/sdk`, sandbox por API key, `desplegar.yml` a entornos de clientes; **depende de H7** para no perder SAGRILAFT al activar el flag (B-8) |
+| H10 | `Validalo.Herramientas.Importacion`, `/importacion/*`, sincronización inversa |
 | H11 | pgBackRest/réplica, Object Lock en prod, ClamAV, sello de tiempo, Helm, RabbitMQ opcional, k6 |
 
 ---

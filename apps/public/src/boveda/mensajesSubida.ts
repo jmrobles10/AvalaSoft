@@ -1,4 +1,4 @@
-import { esErrorApi } from '@avalasoft/api-client';
+import { esErrorApi } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 import { mensajeDeError } from '../shared/errores';
 import { enumerarFormatos, sonPropias } from '../tipoDocumento/reglas';

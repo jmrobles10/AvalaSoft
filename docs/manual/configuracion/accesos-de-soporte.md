@@ -3,7 +3,7 @@ id: "configuracion/accesos-de-soporte"
 titulo: "Concede un acceso de soporte por unas horas y luego lo revoca"
 actor: "Administrador de empresa"
 dominio: "configuracion"
-resumen: "El soporte de AvalaSoft no ve nada del grupo salvo que se lo concedan. La administradora concede acceso a Constructora Sur por cuatro horas, con una razón, revisa cuánto le queda y, cuando ya no hace falta, lo revoca."
+resumen: "El soporte de Valídalo no ve nada del grupo salvo que se lo concedan. La administradora concede acceso a Constructora Sur por cuatro horas, con una razón, revisa cuánto le queda y, cuando ya no hace falta, lo revoca."
 pasos: 5
 ---
 
@@ -11,12 +11,12 @@ pasos: 5
 
 **Actor:** Administrador de empresa · **Dominio:** Configuración
 
-El soporte de AvalaSoft no ve nada del grupo salvo que se lo concedan. La administradora concede acceso a Constructora Sur por cuatro horas, con una razón, revisa cuánto le queda y, cuando ya no hace falta, lo revoca.
+El soporte de Valídalo no ve nada del grupo salvo que se lo concedan. La administradora concede acceso a Constructora Sur por cuatro horas, con una razón, revisa cuánto le queda y, cuando ya no hace falta, lo revoca.
 
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y sin accesos de soporte vigentes.
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 
@@ -28,7 +28,7 @@ El soporte de AvalaSoft no ve nada del grupo salvo que se lo concedan. La admini
 
 ## Paso 1. Abre Configuración › Accesos de soporte
 
-El soporte de AvalaSoft no entra a tu grupo por su cuenta. Esta pantalla lista los accesos que has concedido: la empresa, para qué, cuándo expira y su estado. Si no hay ninguno, la tabla lo dice; cuando el soporte necesite revisar algo, concedes un acceso temporal desde «Conceder acceso».
+El soporte de Valídalo no entra a tu grupo por su cuenta. Esta pantalla lista los accesos que has concedido: la empresa, para qué, cuándo expira y su estado. Si no hay ninguno, la tabla lo dice; cuando el soporte necesite revisar algo, concedes un acceso temporal desde «Conceder acceso».
 
 > **Pantalla:** `/e/{empresa}/accesos-soporte`
 

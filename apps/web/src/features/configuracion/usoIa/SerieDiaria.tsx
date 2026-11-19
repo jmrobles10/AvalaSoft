@@ -1,6 +1,6 @@
 import { Box, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import type { UsoIaDiaDto } from '@avalasoft/api-client';
-import { visualmenteOculto } from '@avalasoft/ui';
+import type { UsoIaDiaDto } from '@validalo/api-client';
+import { visualmenteOculto } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { formatearConteo, serieDelMes } from './modelo';

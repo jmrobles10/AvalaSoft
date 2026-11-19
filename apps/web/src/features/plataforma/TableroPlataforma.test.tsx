@@ -1,5 +1,5 @@
 import { screen, within } from '@testing-library/react';
-import { reiniciarCliente, type EmpresaDeGrupoDto, type GrupoDto, type SesionAvalasoft, type SolicitudDeAccesoDePlataformaDto } from '@avalasoft/api-client';
+import { reiniciarCliente, type EmpresaDeGrupoDto, type GrupoDto, type SesionValidalo, type SolicitudDeAccesoDePlataformaDto } from '@validalo/api-client';
 import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';
@@ -66,7 +66,7 @@ function montar(solicitudes: SolicitudDeAccesoDePlataformaDto[] | ProblemaSimula
 beforeEach(() => {
   // Hora local (no con zona): el saludo usa `getHours()` y el CI corre en UTC; «09:00-05:00» allá son las 14:00 («Buenas tardes»).
   vi.useFakeTimers({ toFake: ['Date'], now: new Date(2026, 10, 18, 9, 0, 0) });
-  useSesion.setState({ sesion: { nombre: 'Paula Plataforma', usuarioId: 'op-1' } as SesionAvalasoft, estado: 'activa' });
+  useSesion.setState({ sesion: { nombre: 'Paula Plataforma', usuarioId: 'op-1' } as SesionValidalo, estado: 'activa' });
 });
 
 afterEach(() => {

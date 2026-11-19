@@ -1,9 +1,9 @@
 {
-  "emisor": "AvalaSoft",
+  "emisor": "Valídalo",
   "algoritmo": "Ed25519",
   "mensajeFirmado": "Ed25519 sobre los 32 bytes del SHA-256 (hashContenido en hexadecimal) del contenidoCanonico canonicalizado con RFC 8785 (JCS).",
   "esquemas": [
-    "avalasoft.certificado.v1"
+    "validalo.certificado.v1"
   ],
   "claves": [
     {

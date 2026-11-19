@@ -2,7 +2,7 @@
 
 > **Estado:** propuesta (2026-11-10). **Quién decide:** Producto con Cumplimiento y Operaciones.
 > **Contexto:** Sinco paga una suscripción de Infolaft (listas restrictivas SARLAFT/SAGRILAFT) que hoy nadie usa. Este
-> documento explica por qué y propone cómo aprovecharla desde AvalaSoft (hito H7, [11 §H7](11-trazabilidad-por-hito.md)).
+> documento explica por qué y propone cómo aprovecharla desde Valídalo (hito H7, [11 §H7](11-trazabilidad-por-hito.md)).
 
 ## 1. Qué hay hoy
 
@@ -19,7 +19,7 @@
 **Por qué nadie la usa:** la integración se empezó en 2024 (URL y cliente) y nunca se terminó. Sin adaptador ni valor
 en `AplicaSarlaft`, ningún cliente pudo seleccionarla. Luego el esfuerzo se fue a TusDatos, Inspektor y TransUnion.
 
-## 2. Acciones inmediatas (fuera de AvalaSoft)
+## 2. Acciones inmediatas (fuera de Valídalo)
 
 1. **Rotar la contraseña del usuario de servicio de Infolaft** y borrar `TestInfoLab.html` de ADPRO y ADPRO-jerarquia,
    incluido su historial si el repositorio es accesible fuera del equipo. Confirmar que `Views/Test` no se publica.
@@ -29,7 +29,7 @@ en `AplicaSarlaft`, ningún cliente pudo seleccionarla. Luego el esfuerzo se fue
      límites de velocidad y si se puede buscar por POST con cuerpo (hoy el nombre va en la URL);
    - un usuario de pruebas.
 
-## 3. Propuesta en AvalaSoft
+## 3. Propuesta en Valídalo
 
 - **Proveedor principal de listas para Sinco: Infolaft.** Se implementa detrás de `IVerificadorDeListas` (H7), con el
   proveedor simulado para desarrollo y pruebas y los demás adaptadores (Stradata, Compliance) opcionales.
@@ -64,7 +64,7 @@ en `AplicaSarlaft`, ningún cliente pudo seleccionarla. Luego el esfuerzo se fue
 
 1. Rotar la credencial y borrar la página de prueba (Operaciones, hoy).
 2. Pedir a Infolaft el plan, la documentación y el usuario de pruebas (Producto).
-3. En AvalaSoft H7: verificador con proveedor simulado y evidencia manual, adaptador de Infolaft con configuración
+3. En Valídalo H7: verificador con proveedor simulado y evidencia manual, adaptador de Infolaft con configuración
    cifrada por empresa y contador de uso (en curso, rama `feature/verificaciones`, filas VE del registro).
 4. Validar el adaptador contra el ambiente de pruebas de Infolaft y ajustar el parser al formato real.
 5. Monitoreo y reconsulta de los vínculos activos, y tablero de consumo.
@@ -73,14 +73,14 @@ en `AplicaSarlaft`, ningún cliente pudo seleccionarla. Luego el esfuerzo se fue
 
 ## 5. Estado del adaptador y qué falta confirmar con Infolaft (CU-11)
 
-**Hecho (sin conectarse a Infolaft):** el adaptador vive detrás de `IVerificadorDeListas` y apagado por omisión; en desarrollo y pruebas se usa el simulado. Probado con un manejador HTTP de guion (`VerificadorInfolaftTests`): Basic con las credenciales de la empresa, búsqueda por nombre y por documento, errores 401/403 (credenciales), 429 (límite del plan) y respuesta que no es JSON. La forma de la consulta es **configuración** (`Avalasoft:Verificadores:ListasRestrictivas:Proveedores:Infolaft:*`: `RutaBusqueda`, `Exactitud`, `ParametroNombre`, `ModoNombre`, `ParametroDocumento`, `ModoDocumento`, `ParametroTipoDocumento`), así que ajustarla cuando llegue la documentación no necesita código. Mientras tanto el oficial puede consultar en la página de Infolaft y registrar la consulta con su PDF (CU-6).
+**Hecho (sin conectarse a Infolaft):** el adaptador vive detrás de `IVerificadorDeListas` y apagado por omisión; en desarrollo y pruebas se usa el simulado. Probado con un manejador HTTP de guion (`VerificadorInfolaftTests`): Basic con las credenciales de la empresa, búsqueda por nombre y por documento, errores 401/403 (credenciales), 429 (límite del plan) y respuesta que no es JSON. La forma de la consulta es **configuración** (`Validalo:Verificadores:ListasRestrictivas:Proveedores:Infolaft:*`: `RutaBusqueda`, `Exactitud`, `ParametroNombre`, `ModoNombre`, `ParametroDocumento`, `ModoDocumento`, `ParametroTipoDocumento`), así que ajustarla cuando llegue la documentación no necesita código. Mientras tanto el oficial puede consultar en la página de Infolaft y registrar la consulta con su PDF (CU-6).
 
 **Falta confirmar con Infolaft** (cada punto es un supuesto hoy):
 
 1. El plan contratado y si incluye acceso por API.
 2. El formato exacto de la respuesta de `Search/searchPaginated`: dónde está la lista de resultados, cómo se llama la lista restrictiva, el nombre encontrado, el puntaje y la fecha de actualización. Hoy se lee con `LectorDeRespuestaDeListas`, que busca las claves habituales.
 3. La **búsqueda por documento**: nombres de los parámetros, si pide el tipo de documento y si el resultado es exacto. Hoy se asume `queryByDocument` y `searchMode=SearchByDocument`; el modo se elige por empresa (`PorNombre` o `PorDocumento`).
-4. Si entrega un **PDF por API**: en base64, por URL o por un servicio aparte. Hoy se usa el PDF si viene en las claves habituales y la consulta cubre a una sola persona; con varias personas AvalaSoft genera el suyo y guarda la respuesta cruda con su hash.
+4. Si entrega un **PDF por API**: en base64, por URL o por un servicio aparte. Hoy se usa el PDF si viene en las claves habituales y la consulta cubre a una sola persona; con varias personas Valídalo genera el suyo y guarda la respuesta cruda con su hash.
 5. Si hay una consulta masiva que dé **un solo PDF** para varias personas, y el límite de consultas por minuto y por mes.
 6. Si se puede buscar por **POST con cuerpo** en vez de la query string (Habeas Data: hoy el nombre o el documento queda en la URL).
 7. El monitoreo con alertas propio (webhooks o consulta de alertas) para no reconsultar a todos los vínculos.
@@ -92,5 +92,5 @@ en `AplicaSarlaft`, ningún cliente pudo seleccionarla. Luego el esfuerzo se fue
    2026-11-11): uno solo para todos los clientes, con la cuenta de la plataforma**; no se adopta la propuesta «por
    empresa». Las credenciales pasaron de cada empresa a la configuración de la plataforma (implementado en PP-4…PP-8; el
    consumo por empresa se conserva para atribuir el costo).
-2. ~~¿Se usa en el SRM durante la coexistencia (paso 6) o solo desde AvalaSoft?~~ **Resuelta (G-4):** solo desde
-   AvalaSoft; la integración con el SRM llega después de probar AvalaSoft solo.
+2. ~~¿Se usa en el SRM durante la coexistencia (paso 6) o solo desde Valídalo?~~ **Resuelta (G-4):** solo desde
+   Valídalo; la integración con el SRM llega después de probar Valídalo solo.

@@ -11,7 +11,7 @@ recorrido(
       'La administradora hace que la validación de los proveedores venza cada 365 días, con avisos a 30, 15 y 5 días antes y diez días de gracia. Al llegar el primer aviso, el proveedor ratifica o actualiza la información que pide el flujo.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con miembros y la sección «Información general» disponible.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/flujo-secciones-de-la-ficha', 'configuracion/flujo-plazo-reintento-y-recordatorios'],
   },

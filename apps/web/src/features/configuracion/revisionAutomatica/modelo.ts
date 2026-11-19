@@ -1,4 +1,4 @@
-import type { ActualizarRevisionAutomaticaDto, RevisionAutomaticaConfigDto } from '@avalasoft/api-client';
+import type { ActualizarRevisionAutomaticaDto, RevisionAutomaticaConfigDto } from '@validalo/api-client';
 import { esNivel, numeroDe, type NivelDeRevision } from '../../revisionAutomatica/modelo';
 
 /** Confianza mínima que admite la API (`RevisionAutomaticaEmpresa.UmbralMinimo`): 0,85. En la pantalla va en porcentaje. */

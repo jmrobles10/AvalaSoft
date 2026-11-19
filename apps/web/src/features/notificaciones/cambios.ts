@@ -1,4 +1,4 @@
-import type { MapaDeInvalidacion } from '@avalasoft/api-client';
+import type { MapaDeInvalidacion } from '@validalo/api-client';
 
 /**
  * Qué consultas de la web de empresa se refrescan cuando el stream avisa que cambió un recurso de la empresa activa (NT-12). Son

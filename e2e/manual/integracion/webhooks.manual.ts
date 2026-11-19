@@ -11,7 +11,7 @@ recorrido(
     actor: 'Administrador de empresa',
     titulo: 'Crea un webhook, guarda su secreto y revisa las entregas firmadas',
     resumen:
-      'La administradora registra la dirección de su sistema para que AvalaSoft le envíe cada evento con un POST firmado. Guarda el secreto una sola vez, y luego revisa en la pantalla las entregas, con sus intentos.',
+      'La administradora registra la dirección de su sistema para que Valídalo le envíe cada evento con un POST firmado. Guarda el secreto una sola vez, y luego revisa en la pantalla las entregas, con sus intentos.',
     precondiciones: [
       'Un grupo empresarial con dos empresas y una administradora que puede administrar webhooks.',
       'Una dirección local que recibe las entregas (el «sistema integrado» de prueba, en su propio puerto).',
@@ -28,7 +28,7 @@ recorrido(
       await paso(page, {
         titulo: 'Abre Configuración › Webhooks',
         explicacion:
-          'Un webhook es la dirección de tu sistema a la que AvalaSoft envía un aviso cada vez que pasa algo: un vínculo activo, un expediente aprobado, un certificado emitido. ' +
+          'Un webhook es la dirección de tu sistema a la que Valídalo envía un aviso cada vez que pasa algo: un vínculo activo, un expediente aprobado, un certificado emitido. ' +
           'La tabla lista los webhooks del grupo con su destino, cuántos eventos reciben, su estado y la hora de la última entrega. Para registrar uno, pulsa «Nuevo webhook».',
         resaltar: [app.getByRole('table', { name: 'Webhooks' }), app.getByRole('button', { name: 'Nuevo webhook' })],
         configuracion: {
@@ -61,7 +61,7 @@ recorrido(
           'Luego elige si el webhook sigue a todas las empresas del grupo o solo a algunas; un webhook sin evento ni empresa no se puede guardar.',
         resaltar: [drawer.getByRole('group', { name: /Qué eventos/ }), drawer.getByRole('radiogroup', { name: /De qué empresas/ })],
         variantes: [
-          { cuando: 'Marcas «Todos los eventos»', entonces: 'Recibirá también los eventos nuevos que AvalaSoft agregue más adelante.' },
+          { cuando: 'Marcas «Todos los eventos»', entonces: 'Recibirá también los eventos nuevos que Valídalo agregue más adelante.' },
           { cuando: 'Eliges solo algunos eventos', entonces: 'Los demás no se envían; un evento no marcado no llega nunca a esa dirección.' },
         ],
       });
@@ -73,7 +73,7 @@ recorrido(
         titulo: 'Copia el secreto de firma: se muestra una vez',
         explicacion:
           'Al crear el webhook aparece su secreto de firma. Cópialo con «Copiar secreto» y guárdalo en el gestor de secretos de tu sistema: es la única vez que se muestra. ' +
-          'Con él, tu sistema comprueba que cada entrega viene de AvalaSoft. Si lo pierdes, rota el secreto desde el webhook.',
+          'Con él, tu sistema comprueba que cada entrega viene de Valídalo. Si lo pierdes, rota el secreto desde el webhook.',
         resaltar: secreto.getByText(/es la única vez que lo mostramos/),
       });
 
@@ -112,14 +112,14 @@ recorrido(
       const pagina = await mostrarCodigo(page, {
         titulo: 'Así llega cada entrega a tu sistema',
         peticion: `POST ${receptor.url}`,
-        cabeceras: { 'Content-Type': 'application/json', 'Avalasoft-Signature': entrega.firma },
+        cabeceras: { 'Content-Type': 'application/json', 'Validalo-Signature': entrega.firma },
         cuerpo,
         respuesta: { estado: 200 },
       });
       await paso(page, {
         titulo: 'Verifica la firma de cada entrega',
         explicacion:
-          'Cada entrega trae la cabecera Avalasoft-Signature con una hora (t) y una firma (v1): el HMAC-SHA256 de la hora y el cuerpo con tu secreto. ' +
+          'Cada entrega trae la cabecera Validalo-Signature con una hora (t) y una firma (v1): el HMAC-SHA256 de la hora y el cuerpo con tu secreto. ' +
           'Recalcúlala en tu sistema y rechaza las firmas que no coincidan o que tengan más de 5 minutos. Tu sistema responde 2xx y procesa el evento después.',
         resaltar: [pagina.peticion, pagina.respuesta],
         celular: false,

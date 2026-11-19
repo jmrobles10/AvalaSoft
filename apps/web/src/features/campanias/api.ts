@@ -16,7 +16,7 @@ import {
   type FiltroDeCampaniaDto,
   type ListarCampaniasParams,
   type ListarFilasCampaniaParams,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 import { enCurso, type AccionDeCampania } from './modelo';
 

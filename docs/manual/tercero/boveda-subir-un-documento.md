@@ -25,7 +25,7 @@ Desde «Subir documento» llevas a tu bóveda un documento que quizá una empres
 
 ## Paso 1. Elige el tipo de documento
 
-En «Tipo de documento» eliges qué vas a subir. Solo aparecen los tipos que AvalaSoft acepta en la bóveda. Al elegirlo, debajo ves qué debe contener el archivo. Si una empresa te pide ese documento más adelante, se lo compartimos sin que lo vuelvas a cargar.
+En «Tipo de documento» eliges qué vas a subir. Solo aparecen los tipos que Valídalo acepta en la bóveda. Al elegirlo, debajo ves qué debe contener el archivo. Si una empresa te pide ese documento más adelante, se lo compartimos sin que lo vuelvas a cargar.
 
 > **Pantalla:** `/boveda/subir`
 
@@ -35,7 +35,7 @@ En «Tipo de documento» eliges qué vas a subir. Solo aparecen los tipos que Av
 
 ## Paso 2. Sube el archivo y revisa el resultado
 
-Elige el archivo o arrástralo a la zona. AvalaSoft lo guarda como la versión 1 del documento, y el resultado te dice si alguna empresa lo está pidiendo. Aquí ninguna empresa la exige, así que queda en tu bóveda para cuando la pidan. Desde «Ver mi bóveda» la encuentras con su fecha de carga.
+Elige el archivo o arrástralo a la zona. Valídalo lo guarda como la versión 1 del documento, y el resultado te dice si alguna empresa lo está pidiendo. Aquí ninguna empresa la exige, así que queda en tu bóveda para cuando la pidan. Desde «Ver mi bóveda» la encuentras con su fecha de carga.
 
 > **Pantalla:** `/boveda/subir`
 
@@ -46,7 +46,7 @@ Elige el archivo o arrástralo a la zona. AvalaSoft lo guarda como la versión 1
 **Variantes**
 
 - **Una empresa ya te pide ese documento:** El resultado dice «Ya la tiene» seguido del nombre de la empresa, y la empresa empieza a revisarla.
-- **Subes el mismo archivo que ya tienes:** AvalaSoft lo detecta y no lo vuelve a guardar: indica que es idéntico a tu versión vigente.
+- **Subes el mismo archivo que ya tienes:** Valídalo lo detecta y no lo vuelve a guardar: indica que es idéntico a tu versión vigente.
 
 ## Recorridos relacionados
 

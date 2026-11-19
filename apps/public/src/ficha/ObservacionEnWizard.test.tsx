@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type ObservacionDeSeccionDto } from '@avalasoft/api-client';
+import { reiniciarCliente, type ObservacionDeSeccionDto } from '@validalo/api-client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { observacionesDeSeccion } from './useObservacionesDeSeccion';
 import { escribir, estadoFicha, montarFicha, seccion } from './pruebas/montar';

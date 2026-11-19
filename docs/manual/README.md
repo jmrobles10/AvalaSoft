@@ -1,4 +1,4 @@
-# Manual de AvalaSoft
+# Manual de Valídalo
 
 Documentación de cada flujo del producto, **generada a partir de recorridos reales** de la aplicación (pruebas Playwright en `e2e/manual/`) y del contrato OpenAPI. No se edita a mano: si el producto cambia, se vuelve a recorrer y a generar (`pnpm manual:todo`).
 
@@ -19,7 +19,7 @@ Los pantallazos no se guardan en git: se generan en `salida/manual/` junto con e
 - [Datos personales](privacidad/README.md) — Habeas data: solicitudes de consulta, corrección y supresión; consentimientos y privacidad.
 - [Consola de Plataforma](plataforma/README.md) — Grupos, empresas, planes, operadores, secretos, listas y accesos de soporte.
 - [Integración](integracion/README.md) — API, llaves, sistemas integradores, webhooks, eventos, sandbox, SSO de sistemas e importación.
-- [Uso embebido](embebido/README.md) — AvalaSoft dentro de otro sistema: app de la empresa en un iframe y sesiones del tercero embebidas.
+- [Uso embebido](embebido/README.md) — Valídalo dentro de otro sistema: app de la empresa en un iframe y sesiones del tercero embebidas.
 - [Verificación pública](publico/README.md) — Páginas sin sesión: verificación de certificados y enlaces públicos.
 - [Experiencia móvil](movil/README.md) — Recorridos pensados para el celular: navegación, subida de documentos y avisos.
 
@@ -44,7 +44,7 @@ Lo que no sale de un recorrido (se escribe en `e2e/manual/guias/`):
 
 ## Referencia de la API
 
-- [API de AvalaSoft](api/README.md): cada recurso con sus operaciones, permisos, parámetros, cuerpos, respuestas y ejemplos, generada de `packages/api-client/openapi/v1.json`.
+- [API de Valídalo](api/README.md): cada recurso con sus operaciones, permisos, parámetros, cuerpos, respuestas y ejemplos, generada de `packages/api-client/openapi/v1.json`.
 
 ## Cómo se genera
 

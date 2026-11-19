@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { configurarCliente, reiniciarCliente } from '@avalasoft/api-client';
+import { configurarCliente, reiniciarCliente } from '@validalo/api-client';
 import { renderHook, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cargarOrigenesPermitidos, origenesPermitidos, RECARGA_ORIGENES_MS, RUTA_ORIGENES_PERMITIDOS, siguienteListaDeOrigenes } from './puenteEmbed';
@@ -25,23 +25,23 @@ afterEach(() => {
 describe('orígenes permitidos en tiempo de ejecución (SE-2)', () => {
   it('usa la lista de la API y deja VITE_ORIGENES_CONTENEDOR solo como respaldo', () => {
     const configurados = 'https://viejo.cliente.co';
-    expect(origenesPermitidos(configurados, 'https://avalasoft.co', [SRM])).toEqual(['https://avalasoft.co', SRM]);
-    expect(origenesPermitidos(configurados, 'https://avalasoft.co', [SRM], true)).toEqual([
-      'https://avalasoft.co',
+    expect(origenesPermitidos(configurados, 'https://validalo.co', [SRM])).toEqual(['https://validalo.co', SRM]);
+    expect(origenesPermitidos(configurados, 'https://validalo.co', [SRM], true)).toEqual([
+      'https://validalo.co',
       SRM,
       'https://viejo.cliente.co',
     ]);
     // Sin lista de la API (aún no llega o falló): el propio y los configurados.
-    expect(origenesPermitidos(configurados, 'https://avalasoft.co', null)).toEqual(['https://avalasoft.co', 'https://viejo.cliente.co']);
-    expect(origenesPermitidos(undefined, 'https://avalasoft.co', [])).toEqual(['https://avalasoft.co']);
+    expect(origenesPermitidos(configurados, 'https://validalo.co', null)).toEqual(['https://validalo.co', 'https://viejo.cliente.co']);
+    expect(origenesPermitidos(undefined, 'https://validalo.co', [])).toEqual(['https://validalo.co']);
   });
 
   it('lee la lista del endpoint público y descarta lo que no es un origen', async () => {
     const fetchFalso = vi.fn<typeof fetch>(() =>
       Promise.resolve(respuestaJson({ origenes: [SRM, 'https://srm.cliente.co/ruta', 42, 'http://localhost:5173'], vigenciaSegundos: 60 })),
     );
-    await expect(cargarOrigenesPermitidos('https://api.avalasoft.co', fetchFalso)).resolves.toEqual([SRM, 'http://localhost:5173']);
-    expect(fetchFalso).toHaveBeenCalledWith(`https://api.avalasoft.co${RUTA_ORIGENES_PERMITIDOS}`, expect.anything());
+    await expect(cargarOrigenesPermitidos('https://api.validalo.co', fetchFalso)).resolves.toEqual([SRM, 'http://localhost:5173']);
+    expect(fetchFalso).toHaveBeenCalledWith(`https://api.validalo.co${RUTA_ORIGENES_PERMITIDOS}`, expect.anything());
   });
 
   it('devuelve null si la API falla o responde otra cosa', async () => {
@@ -56,7 +56,7 @@ describe('usePuenteEmbed con orígenes de la API', () => {
     let entregar: (r: Response) => void = () => undefined;
     const fetchFalso = vi.fn<typeof fetch>(() => new Promise<Response>((resolver) => (entregar = resolver)));
     vi.stubGlobal('fetch', fetchFalso);
-    configurarCliente({ baseUrl: 'https://api.avalasoft.co' });
+    configurarCliente({ baseUrl: 'https://api.validalo.co' });
     vi.spyOn(document, 'referrer', 'get').mockReturnValue(`${SRM}/compras/proveedor/7`);
     const postMessage = vi.spyOn(window.parent, 'postMessage').mockImplementation(() => undefined);
 
@@ -65,11 +65,11 @@ describe('usePuenteEmbed con orígenes de la API', () => {
     // Antes de la respuesta, el SRM no está en el respaldo: no se le envía nada.
     expect(result.current.origenContenedor).toBeNull();
     expect(postMessage).not.toHaveBeenCalled();
-    expect(fetchFalso).toHaveBeenCalledWith(`https://api.avalasoft.co${RUTA_ORIGENES_PERMITIDOS}`, expect.anything());
+    expect(fetchFalso).toHaveBeenCalledWith(`https://api.validalo.co${RUTA_ORIGENES_PERMITIDOS}`, expect.anything());
 
     entregar(respuestaJson({ origenes: [SRM], vigenciaSegundos: 60 }));
     await waitFor(() => expect(result.current.origenContenedor).toBe(SRM));
-    expect(postMessage).toHaveBeenCalledWith({ tipo: 'avalasoft:ready', version: 1 }, SRM);
+    expect(postMessage).toHaveBeenCalledWith({ tipo: 'validalo:ready', version: 1 }, SRM);
   });
 
   it('no responde a un contenedor que la API no publica', async () => {

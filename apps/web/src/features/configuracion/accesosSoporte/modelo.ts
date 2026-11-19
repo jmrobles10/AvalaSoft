@@ -1,4 +1,4 @@
-import type { AccesoSoporteDto } from '@avalasoft/api-client';
+import type { AccesoSoporteDto } from '@validalo/api-client';
 
 /** Igual que `AccesoSoporte` del dominio (CF-2). */
 export const HORAS_MINIMAS = 1;

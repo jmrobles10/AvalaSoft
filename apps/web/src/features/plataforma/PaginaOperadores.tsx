@@ -9,8 +9,8 @@ import {
   getListarSesionesOperadorQueryOptions,
   revocarPasskeyOperador,
   type OperadorDePlataformaDto,
-} from '@avalasoft/api-client';
-import { AvatarActor, BarraFiltros, CampoBusqueda, enfocarNodo, EstadoVacio, FilasEsqueleto, formatearFechaHora, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { AvatarActor, BarraFiltros, CampoBusqueda, enfocarNodo, EstadoVacio, FilasEsqueleto, formatearFechaHora, MarcoTabla, visualmenteOculto } from '@validalo/ui';
 import { Ban, CircleCheck, KeyRound, Plus, UserCheck, UserX, X } from 'lucide-react';
 import { useMemo, useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

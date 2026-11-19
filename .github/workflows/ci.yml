@@ -4,7 +4,7 @@
 #   frontend  -> pnpm install --frozen-lockfile, lint, typecheck, build y el paquete npm del SDK.
 #   pruebas-web -> pnpm install --frozen-lockfile y `pnpm test` (Vitest de todos los paquetes). Va en su propio trabajo, en paralelo con
 #                  `frontend`, para que cada uno tenga sus 4 CPU: juntos pasaban de 8 min y el trabajo más largo del CI era este (PV-6).
-#   imagen    -> construye la imagen de la API con el frontend (src/Avalasoft.Api/Dockerfile) sin publicarla.
+#   imagen    -> construye la imagen de la API con el frontend (src/Validalo.Api/Dockerfile) sin publicarla.
 # Las pruebas de punta a punta (Playwright) NO corren aquí: viven en e2e.yml, que solo se dispara a mano (decisión E2E-1 en
 # docs/decisiones/registro.md). Las reglas se prueban con las pruebas de dominio, de integración y de Vitest de los trabajos de arriba.
 name: ci
@@ -46,26 +46,26 @@ jobs:
           restore-keys: nuget-${{ runner.os }}-
 
       - name: Restaurar
-        run: dotnet restore Avalasoft.slnx
+        run: dotnet restore Validalo.slnx
 
       - name: Compilar (0 advertencias)
-        run: dotnet build Avalasoft.slnx --configuration Release --no-restore
+        run: dotnet build Validalo.slnx --configuration Release --no-restore
 
       - name: Probar (dominio e integración con Testcontainers)
         run: >-
-          dotnet test Avalasoft.slnx --configuration Release --no-build
+          dotnet test Validalo.slnx --configuration Release --no-build
           --logger GitHubActions --logger "trx;LogFilePrefix=resultados" --results-directory TestResults
 
       # Que el empaquetado de los SDK no se pudra entre publicaciones (docs/08 §2.4): sin publicar nada. Sin `--no-build`: la documentación XML
-      # de Avalasoft.Contratos solo se genera al empaquetar (`_IsPacking`), así que `pack` debe compilar (igual que sdk-publicar.yml).
+      # de Validalo.Contratos solo se genera al empaquetar (`_IsPacking`), así que `pack` debe compilar (igual que sdk-publicar.yml).
       - name: Empaquetar el SDK .NET (sin publicar)
         run: |
-          dotnet pack src/Avalasoft.Contratos/Avalasoft.Contratos.csproj --configuration Release --output artefactos/nuget
-          dotnet pack src/Avalasoft.Sdk/Avalasoft.Sdk.csproj --configuration Release --output artefactos/nuget
+          dotnet pack src/Validalo.Contratos/Validalo.Contratos.csproj --configuration Release --output artefactos/nuget
+          dotnet pack src/Validalo.Sdk/Validalo.Sdk.csproj --configuration Release --output artefactos/nuget
 
       - name: Paquetes con vulnerabilidades conocidas (informativo)
         if: always()
-        run: dotnet list Avalasoft.slnx package --vulnerable --include-transitive
+        run: dotnet list Validalo.slnx package --vulnerable --include-transitive
 
       - name: Publicar resultados de las pruebas
         if: failure()
@@ -141,8 +141,8 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: src/Avalasoft.Api/Dockerfile
+          file: src/Validalo.Api/Dockerfile
           push: false
-          tags: avalasoft/app:ci-${{ github.sha }}
+          tags: validalo/app:ci-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

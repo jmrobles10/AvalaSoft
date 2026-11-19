@@ -1,4 +1,4 @@
-import type { CertificadoPublicoDto, ClavePublicaDeCertificadosDto, ClavesDeCertificadosDto } from '@avalasoft/api-client';
+import type { CertificadoPublicoDto, ClavePublicaDeCertificadosDto, ClavesDeCertificadosDto } from '@validalo/api-client';
 import { aHex, desdeBase64, desdeHex, importarClaveEd25519, sha256, SinSoporteCriptografico, verificarEd25519 } from './cripto';
 import { bytesCanonicos } from './jcs';
 
@@ -6,7 +6,7 @@ import { bytesCanonicos } from './jcs';
  * Verificación del certificado en el navegador (docs/05 §2.6.1, «Cómo verifica un cliente»), paso a paso:
  * 1. contenido: RFC 8785 + SHA-256 de `contenidoCanonico` = `hashContenido`, y los datos mostrados son los sellados;
  * 2. huella: la del enlace (QR) es el inicio de ese hash;
- * 3. clave: `firma.kid` es una clave publicada por la plataforma en `/.well-known/avalasoft-certificados.json`; una clave retirada
+ * 3. clave: `firma.kid` es una clave publicada por la plataforma en `/.well-known/validalo-certificados.json`; una clave retirada
  *    (`vigente: false`) solo vale si el certificado se emitió hasta su `retiradaEn` y, cuando la clave trae `verificableHasta`, si esa
  *    fecha no ha pasado (CL-2, docs/07 §6.4);
  * 4. sello: Ed25519 de `firma.valor` (base64) sobre los 32 bytes de `hashContenido`.

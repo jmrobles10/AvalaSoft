@@ -1,5 +1,5 @@
-import type { BandejaNotificacionesTerceroDto, NotificacionTerceroDto } from '@avalasoft/api-client';
-import { Logo, PanelDeNotificaciones, type MarcaDeNotificacion } from '@avalasoft/ui';
+import type { BandejaNotificacionesTerceroDto, NotificacionTerceroDto } from '@validalo/api-client';
+import { Logo, PanelDeNotificaciones, type MarcaDeNotificacion } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { LogoEmpresa } from '../shared/componentes';
 
@@ -16,7 +16,7 @@ export interface PanelNotificacionesProps {
 
 /**
  * La marca de la empresa que originó el aviso (logo y, si la tiene, su color en el borde). Los que no son de ninguna empresa (una
- * propuesta desde un documento) llevan el ícono de AvalaSoft.
+ * propuesta desde un documento) llevan el ícono de Valídalo.
  */
 function marcaDe({ empresa }: NotificacionTerceroDto): MarcaDeNotificacion {
   return {

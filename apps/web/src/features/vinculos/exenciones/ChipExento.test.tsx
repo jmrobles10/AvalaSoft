@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ExencionDeVinculoDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import type { ExencionDeVinculoDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { describe, expect, it } from 'vitest';
 import { ChipExento, ChipExentoDeFila } from './ChipExento';
 
@@ -20,7 +20,7 @@ function exencion(parcial: Partial<ExencionDeVinculoDto> = {}): ExencionDeVincul
   };
 }
 
-const conTema = (hijo: React.ReactNode) => <ThemeProvider theme={createAvalasoftTheme('light')}>{hijo}</ThemeProvider>;
+const conTema = (hijo: React.ReactNode) => <ThemeProvider theme={createValidaloTheme('light')}>{hijo}</ThemeProvider>;
 
 describe('insignia «Exento» (EX-6)', () => {
   it('el vínculo con una exención vigente muestra «Exento» y su tooltip dice de qué y hasta cuándo', async () => {

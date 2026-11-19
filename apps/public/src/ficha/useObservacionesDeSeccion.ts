@@ -1,4 +1,4 @@
-import type { EstadoFichaDto, ObservacionPublicaDto } from '@avalasoft/api-client';
+import type { EstadoFichaDto, ObservacionPublicaDto } from '@validalo/api-client';
 
 /** Lo que una empresa observó de la sección, con los campos que señaló. */
 export interface ObservacionDeEmpresa {

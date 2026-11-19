@@ -4,18 +4,18 @@ import { invitar, nuevoTercero } from '../../soporte/semilla';
 import { expect, paso, recorrido } from '../nucleo';
 import { escenarioConFichaCompleta } from '../nucleo/semillas';
 
-const ASUNTO_ENLACE = /^Tu enlace para entrar a AvalaSoft$/;
+const ASUNTO_ENLACE = /^Tu enlace para entrar a Valídalo$/;
 
 recorrido(
   {
     dominio: 'tercero',
     actor: 'Tercero',
-    titulo: 'Entra a AvalaSoft con tu correo cuando ya tienes una invitación',
+    titulo: 'Entra a Valídalo con tu correo cuando ya tienes una invitación',
     resumen:
       'Un proveedor que ya fue invitado no abre el enlace del correo: entra por «/entrar», escribe el correo de la invitación y recibe un enlace de un solo uso. Desde «Mis empresas» ve todas sus empresas y abre la que le interesa. Si el correo no está registrado, la pantalla responde igual.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y un flujo de Proveedor publicado.',
-      'Un tercero invitado por esa empresa, que nunca ha entrado a AvalaSoft con su correo.',
+      'Un tercero invitado por esa empresa, que nunca ha entrado a Valídalo con su correo.',
     ],
     relacionados: ['tercero/aceptar-invitacion-persona-juridica', 'tercero/invitacion-vencida-o-usada'],
   },
@@ -36,7 +36,7 @@ recorrido(
       resaltar: [page.getByRole('textbox', { name: 'Correo de la invitación' }), page.getByRole('button', { name: 'Enviarme el enlace' })],
       variantes: [
         { cuando: 'Escribes un correo que no es válido', entonces: 'La pantalla te pide un correo válido, por ejemplo nombre@empresa.com, y no envía nada.' },
-        { cuando: 'Ya tienes una sesión abierta', entonces: 'No ves esta pantalla: AvalaSoft te lleva directo a «Mis empresas».' },
+        { cuando: 'Ya tienes una sesión abierta', entonces: 'No ves esta pantalla: Valídalo te lleva directo a «Mis empresas».' },
       ],
     });
 
@@ -86,7 +86,7 @@ recorrido(
     // 4. Un correo sin invitación responde igual, desde una sesión sin entrar (con sesión, /entrar lleva a Mis empresas).
     const anonimo = await (await browser.newContext()).newPage();
     await anonimo.goto('/entrar');
-    const desconocido = `nadie.${Date.now().toString(36)}@e2e.avalasoft.co`;
+    const desconocido = `nadie.${Date.now().toString(36)}@e2e.validalo.co`;
     await anonimo.getByRole('textbox', { name: 'Correo de la invitación' }).fill(desconocido);
     await anonimo.getByRole('button', { name: 'Enviarme el enlace' }).click();
     await expect(anonimo.getByRole('heading', { name: 'Revisa tu correo' })).toBeVisible();

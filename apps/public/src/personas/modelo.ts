@@ -1,4 +1,4 @@
-import type { DeclararRelacionDto, DocumentoDePersonaDto, RelacionEntreTercerosDto } from '@avalasoft/api-client';
+import type { DeclararRelacionDto, DocumentoDePersonaDto, RelacionEntreTercerosDto } from '@validalo/api-client';
 
 /** Cómo se relaciona una persona con el tercero (ADR-0010), en el orden en que se muestran. */
 export const ROLES = ['RepresentanteLegal', 'Suplente', 'Socio', 'BeneficiarioFinal', 'MiembroDe'] as const;

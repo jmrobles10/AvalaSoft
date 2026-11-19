@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Button, Stack, Typography } from '@mui/material';
-import type { VinculoDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { VinculoDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { CircleCheck, CircleSlash, Hourglass, SendHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

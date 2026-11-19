@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
-import type { VerificacionDto } from '@avalasoft/api-client';
-import { ChipEstado } from '@avalasoft/ui';
+import type { VerificacionDto } from '@validalo/api-client';
+import { ChipEstado } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { esFuenteOficial } from '../../fuentesOficiales/modelo';

@@ -1,7 +1,7 @@
 import { Alert, AlertTitle, Button, TextField } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { reabrirExpediente, SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import { reabrirExpediente, SCOPES, type ExpedienteDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { FolderOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,5 +1,5 @@
 import { BottomNavigation, BottomNavigationAction, Box, ButtonBase, Stack, Typography, type Theme } from '@mui/material';
-import { BarraSuperior, Logo } from '@avalasoft/ui';
+import { BarraSuperior, Logo } from '@validalo/ui';
 import { Building2, FolderCheck, IdCard, Landmark, LogOut, ShieldCheck, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, Link as RouterLink, useLocation } from 'react-router';
@@ -101,7 +101,7 @@ function AccionDeBarra({ icono: Icono, etiqueta, onClick }: { icono: LucideIcon;
 /**
  * Shell del tercero, móvil primero (design system «Registro»): sobre el lienzo gris, la barra superior sin fondo propio (el logotipo, las
  * secciones como píldoras, la campana y «Salir»), el contenido en un panel blanco flotante (una sección de Mi información trae sus propios
- * paneles), el pie «con AvalaSoft» y, con sesión, la navegación inferior en el celular.
+ * paneles), el pie «con Valídalo» y, con sesión, la navegación inferior en el celular.
  */
 export function Shell() {
   // Dentro del iframe de un sistema integrador: sin cabecera, navegación ni pie (el sistema pone su propio marco) y con el puente de mensajes.
@@ -192,7 +192,7 @@ function ShellNormal() {
           <span>{t('comun.pie')}</span>
           <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
             <Logo variante="icono" tamano={14} decorativo />
-            {t('comun.conAvalasoft')}
+            {t('comun.conValidalo')}
           </Box>
         </Stack>
       </Box>

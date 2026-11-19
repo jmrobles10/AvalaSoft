@@ -83,7 +83,7 @@ recorrido(
     await paso(page, {
       titulo: 'Comprueba la tarifa vigente',
       explicacion:
-        'AvalaSoft confirma que guardó la tarifa y la muestra con su fecha y quién la cambió. Desde el próximo cálculo, el valor de lo adicional de las empresas sin precio propio usa este precio. ' +
+        'Valídalo confirma que guardó la tarifa y la muestra con su fecha y quién la cambió. Desde el próximo cálculo, el valor de lo adicional de las empresas sin precio propio usa este precio. ' +
         'Las empresas con precio propio no cambian.',
       resaltar: consola.getByText('por validación adicional').first(),
     });

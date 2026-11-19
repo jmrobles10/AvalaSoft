@@ -1,4 +1,4 @@
-import type { AdjuntoDeCumplimientoDto, RegistrarConsultaManualDto } from '@avalasoft/api-client';
+import type { AdjuntoDeCumplimientoDto, RegistrarConsultaManualDto } from '@validalo/api-client';
 
 /**
  * Consulta de listas hecha por fuera (CU-16): el oficial consultó en otro lugar y registra el PDF, de dónde salió, cuándo y, si

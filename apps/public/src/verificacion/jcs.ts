@@ -1,6 +1,6 @@
 /**
  * JSON Canonicalization Scheme (RFC 8785), el mismo que usa la API para hashear el certificado
- * (`Avalasoft.Dominio.Certificados.Jcs`): claves de cada objeto ordenadas por unidades de código UTF-16, sin espacios,
+ * (`Validalo.Dominio.Certificados.Jcs`): claves de cada objeto ordenadas por unidades de código UTF-16, sin espacios,
  * cadenas con el escape mínimo de ECMAScript (solo `"`, `\` y controles; lo demás va literal) y números con la
  * serialización de `Number.prototype.toString` (`-0` es `0`). Lo que no es JSON válido para JCS (números no finitos,
  * sustitutos UTF-16 sueltos, `undefined`, funciones…) lanza un error en lugar de producir otros bytes.

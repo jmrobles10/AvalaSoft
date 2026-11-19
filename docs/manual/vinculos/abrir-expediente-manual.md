@@ -51,7 +51,7 @@ El diálogo propone el flujo por defecto del tipo de vínculo, con sus etapas y 
 
 ## Paso 3. Comprueba que el expediente quedó abierto
 
-AvalaSoft confirma con el folio del expediente y te lleva a su pantalla, con «Datos del expediente» y el estado de cada área. La invitación sigue pendiente: cuando el tercero acepte, el mismo expediente continúa y no se vuelve a empezar.
+Valídalo confirma con el folio del expediente y te lleva a su pantalla, con «Datos del expediente» y el estado de cada área. La invitación sigue pendiente: cuando el tercero acepte, el mismo expediente continúa y no se vuelve a empezar.
 
 > **Pantalla:** `/e/{empresa}/expedientes/{id}`
 

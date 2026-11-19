@@ -1,4 +1,4 @@
-import type { EstadoExpediente, EstadoVinculo } from '@avalasoft/api-client';
+import type { EstadoExpediente, EstadoVinculo } from '@validalo/api-client';
 import { situacionDelVinculo } from './situacion';
 
 /**

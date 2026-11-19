@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import { formatearFecha } from '@avalasoft/ui';
+import { formatearFecha } from '@validalo/ui';
 import { Ban, ChevronDown, Lock, RotateCcw, Send, Undo2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

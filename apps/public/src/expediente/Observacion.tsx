@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
-import type { ObservacionPublicaDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { ObservacionPublicaDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { etiquetaDeCampo } from '../ficha/etiquetas';
 

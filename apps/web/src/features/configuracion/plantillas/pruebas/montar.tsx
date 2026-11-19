@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
-import { configurarCliente, type PlantillaNotificacionDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, type PlantillaNotificacionDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { vi } from 'vitest';
 import { PaginaPlantillas } from '../PaginaPlantillas';
 
@@ -64,7 +64,7 @@ export function montar(responder: (p: Peticion) => Response | undefined = () => 
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <PaginaPlantillas />
       </QueryClientProvider>

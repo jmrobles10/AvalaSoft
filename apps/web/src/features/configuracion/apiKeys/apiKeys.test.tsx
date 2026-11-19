@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type ApiKeyDto, type EmpresaDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, type ApiKeyDto, type EmpresaDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { useState, type ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DialogoApiKey } from './DialogoApiKey';
@@ -22,7 +22,7 @@ import {
 } from './modelo';
 import { alternarGrupo, claveDeScope, resumirScopes, SCOPES_DEL_TENANT, scopesDeGrupo } from './scopes';
 
-/** `Permisos.DelTenant` (src/Avalasoft.Aplicacion/Comun/Permisos.cs): lo único que la API acepta en una llave. */
+/** `Permisos.DelTenant` (src/Validalo.Aplicacion/Comun/Permisos.cs): lo único que la API acepta en una llave. */
 const DEL_TENANT = [
   'empresas:administrar', 'api-keys:administrar', 'sistemas:administrar', 'usuarios:administrar', 'configuracion:leer', 'configuracion:escribir',
   'terceros:leer', 'terceros:escribir', 'vinculos:leer', 'vinculos:escribir', 'vinculos:bloquear', 'vinculos:eximir', 'cuentas:aprobar', 'auditoria:leer', 'auditoria:exportar',
@@ -63,7 +63,7 @@ function montar(ui: ReactNode, responder: (url: string, metodo: string) => Respo
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>{ui}</QueryClientProvider>
     </ThemeProvider>,
   );

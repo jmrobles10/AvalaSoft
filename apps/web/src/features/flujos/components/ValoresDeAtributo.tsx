@@ -1,6 +1,6 @@
 import { Autocomplete, Box, MenuItem, TextField } from '@mui/material';
-import type { AtributoPermitidoDto } from '@avalasoft/api-client';
-import { CampoFecha } from '@avalasoft/ui';
+import type { AtributoPermitidoDto } from '@validalo/api-client';
+import { CampoFecha } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { modoUnSoloValor, type ModoDeAtributo } from '../condiciones';
 

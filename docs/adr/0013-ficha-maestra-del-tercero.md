@@ -1,4 +1,4 @@
-# ADR-0013 — Ficha maestra del tercero por secciones, en AvalaSoft
+# ADR-0013 — Ficha maestra del tercero por secciones, en Valídalo
 
 | Estado | Fecha | Reemplaza |
 |---|---|---|
@@ -13,9 +13,9 @@ La información del tercero que hoy usa el SRM para validar, aprobar y crear el 
 - llevar el **vencimiento por sector**;
 - **aplicar en AyF** lo aprobado.
 
-AvalaSoft hasta hoy solo guarda la identidad del tercero, sus contactos y sus cuentas bancarias. Los campos que llena el proveedor existen solo por vínculo (TD-4). El formulario canónico global decidido en P-3-1 no se había entregado.
+Valídalo hasta hoy solo guarda la identidad del tercero, sus contactos y sus cuentas bancarias. Los campos que llena el proveedor existen solo por vínculo (TD-4). El formulario canónico global decidido en P-3-1 no se había entregado.
 
-El Portal tiene además problemas que AvalaSoft no debe heredar:
+El Portal tiene además problemas que Valídalo no debe heredar:
 
 - **Sin versionado.** Cada guardado sobrescribe y el rechazo de una constructora **no revierte** el dato, que sigue vigente para todas.
 - **Soportes genéricos.** No tienen dueño ni tipo documental.
@@ -23,10 +23,10 @@ El Portal tiene además problemas que AvalaSoft no debe heredar:
 - **Datos poco confiables.** El DV puede valer 0 sin validar y `NoObligFacturar` tiene la semántica invertida.
 - **Sin integridad.** No hay integridad referencial y cualquier ApiKey puede leer o editar a cualquier tercero.
 
-Producto decidió que **la ficha maestra es de AvalaSoft y se migra desde el Portal** (2026-11-09).
+Producto decidió que **la ficha maestra es de Valídalo y se migra desde el Portal** (2026-11-09).
 
 ## Decisión
-- **AvalaSoft es el dueño de la ficha maestra del tercero.** Adopta las secciones y campos del Portal como modelo de referencia, normalizados. El Portal y el SRM pasan a leerla o a embeber la UI de AvalaSoft (H9). Durante la coexistencia se sincroniza en un solo sentido, del Portal a AvalaSoft (FM-11), hasta el corte de cada empresa.
+- **Valídalo es el dueño de la ficha maestra del tercero.** Adopta las secciones y campos del Portal como modelo de referencia, normalizados. El Portal y el SRM pasan a leerla o a embeber la UI de Valídalo (H9). Durante la coexistencia se sincroniza en un solo sentido, del Portal a Valídalo (FM-11), hasta el corte de cada empresa.
 - **Cada sección es un formulario canónico global de la bóveda**, con la misma mecánica de los documentos (ADR-0004/0005, M-8):
   - versiones inmutables y una sola vigente por tercero y sección;
   - compartida con las empresas vinculadas que la exigen;
@@ -34,13 +34,13 @@ Producto decidió que **la ficha maestra es de AvalaSoft y se migra desde el Por
   - Lo que una empresa rechaza **no** cambia lo que ya aceptó: sigue viendo su versión aceptada hasta aceptar una nueva. Así se corrige el «rechazo que no revierte» del Portal.
 - **Las secciones son requisitos de los flujos**, igual que los documentos. La completitud, los veredictos por área, los motivos tipificados, la vigencia y avisos por sección, la revalidación y la auditoría reutilizan lo que ya existe.
 - **El documento es la fuente de las secciones.** Un mismo documento respalda campos de varias secciones: el RUT respalda la general, la tributaria y los representantes; la Cámara, la legal; los estados financieros, la financiera; la certificación, la cuenta. Un documento que la empresa exige como requisito **también sirve de soporte** de esas secciones (opción por requisito, activa por omisión). La **actualización nace del documento**: el tercero sube el RUT nuevo, la IA propone los cambios de sus secciones, el tercero los confirma y cada empresa revisa una sola actualización con el documento como evidencia (FM-13, FM-14).
-- **Cruce automático sección ↔ documento** con los hechos de IA del documento (ADR-0012). Se compara campo por campo, con resultado `Coincide`, `Discrepa` o `NoVerificable`. Es evidencia para el revisor y entrada para la revisión automática. El SRM no tiene este cruce: es valor agregado de AvalaSoft.
+- **Cruce automático sección ↔ documento** con los hechos de IA del documento (ADR-0012). Se compara campo por campo, con resultado `Coincide`, `Discrepa` o `NoVerificable`. Es evidencia para el revisor y entrada para la revisión automática. El SRM no tiene este cruce: es valor agregado de Valídalo.
 - **La completitud de cada sector es un dato guardado** (FM-16). La calcula una sola regla del dominio al guardar la versión y la publica una proyección por tercero y sección. El wizard avanza con ella, y de ella sale el motivo legible de cada empresa. Nunca se deduce en pantalla ni se fabrica al leer.
 - **Hacia el ERP**: la aceptación de una sección por una empresa emite el evento público `seccion.aceptada` con el contenido aceptado. El SRM lo aplica en AyF con el mismo mapeo de hoy (H9).
 
 ## Alternativas descartadas
-- **Leer el Portal en vivo** (el Portal sigue siendo dueño): hereda la falta de versionado y la aprobación por empresa queda fuera del control de AvalaSoft; los problemas de calidad del dato siguen.
-- **Una tabla plana por sección en AvalaSoft sin versionado**: repetiría el error del Portal.
+- **Leer el Portal en vivo** (el Portal sigue siendo dueño): hereda la falta de versionado y la aprobación por empresa queda fuera del control de Valídalo; los problemas de calidad del dato siguen.
+- **Una tabla plana por sección en Valídalo sin versionado**: repetiría el error del Portal.
 - **Secciones por vínculo** (como TD-4): duplicaría la información en cada empresa; la ficha es del tercero, solo la decisión es de cada empresa.
 
 ## Consecuencias

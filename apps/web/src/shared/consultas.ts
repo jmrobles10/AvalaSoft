@@ -1,4 +1,4 @@
-import { esErrorApi } from '@avalasoft/api-client';
+import { esErrorApi } from '@validalo/api-client';
 import { QueryClient, type QueryKey } from '@tanstack/react-query';
 
 /**

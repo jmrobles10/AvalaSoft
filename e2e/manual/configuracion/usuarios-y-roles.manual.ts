@@ -20,7 +20,7 @@ recorrido(
       'La administradora agrega a una persona al grupo con un rol en una empresa y otro para todo el grupo, cambia sus roles y después la desactiva. Las personas entran desde su sistema; aquí se decide qué puede hacer cada una.',
     precondiciones: [
       'Un grupo empresarial con las empresas «Constructora Norte S.A.S.» y «Constructora Sur S.A.S.», y personas con roles (Rubén, Olga, Sofía).',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/permisos-por-rol', 'configuracion/areas-y-miembros'],
   },
@@ -42,7 +42,7 @@ recorrido(
         ruta: 'Configuración › Usuarios y roles (/usuarios)',
         efecto: 'Decide qué puede hacer cada persona en cada empresa del grupo.',
       },
-      variantes: [{ cuando: 'Una persona no tiene roles', entonces: 'Aparece «Sin roles» y no puede hacer nada en AvalaSoft hasta que le agregues al menos uno.' }],
+      variantes: [{ cuando: 'Una persona no tiene roles', entonces: 'Aparece «Sin roles» y no puede hacer nada en Valídalo hasta que le agregues al menos uno.' }],
     });
 
     // 2. Datos y roles de una persona nueva. Se documenta el panel antes de guardar.
@@ -64,7 +64,7 @@ recorrido(
       titulo: 'Agrega una persona con sus roles',
       explicacion:
         'Escribe el nombre y el correo de la persona. Luego agrega un rol por cada empresa o uno para todo el grupo: cada fila elige la empresa (o «Todo el grupo») y el rol. ' +
-        'Los roles son Administrador, Revisor, Oficial de cumplimiento y Auditor. Aquí la persona es Revisora en Constructora Sur y Auditora de todo el grupo. Sin ningún rol la persona no puede hacer nada en AvalaSoft.',
+        'Los roles son Administrador, Revisor, Oficial de cumplimiento y Auditor. Aquí la persona es Revisora en Constructora Sur y Auditora de todo el grupo. Sin ningún rol la persona no puede hacer nada en Valídalo.',
       resaltar: [panel.getByLabel('Nombre').first(), rolDeLaFila(panel, 1)],
       variantes: [
         { cuando: 'El grupo admite el ingreso directo', entonces: 'Aparece la casilla «Enviar una invitación por correo», marcada por omisión: la persona recibe un correo para entrar con código y passkey.' },
@@ -104,7 +104,7 @@ recorrido(
         'El panel «Editar roles» muestra la persona y sus filas de roles, con los mismos controles que al agregarla. Quitar una fila con la X y agregar otra cambia sus permisos. ' +
         'En este caso cambiamos su rol para todo el grupo a Oficial de cumplimiento. El cambio no se aplica en su sesión actual: se nota en su próximo ingreso.',
       resaltar: rolDeLaFila(edicion, 1),
-      variantes: [{ cuando: 'Quitas todas las filas de roles', entonces: 'La pantalla avisa que sin roles la persona no puede hacer nada en AvalaSoft.' }],
+      variantes: [{ cuando: 'Quitas todas las filas de roles', entonces: 'La pantalla avisa que sin roles la persona no puede hacer nada en Valídalo.' }],
     });
     await edicion.getByRole('button', { name: 'Guardar roles' }).click();
     await expect(app.getByText('Roles actualizados.')).toBeVisible();

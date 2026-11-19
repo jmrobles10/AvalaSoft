@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import type { TenantDto } from '@avalasoft/api-client';
-import { Dato, formatearFecha, RejillaDatos, ValorLargo } from '@avalasoft/ui';
+import type { TenantDto } from '@validalo/api-client';
+import { Dato, formatearFecha, RejillaDatos, ValorLargo } from '@validalo/ui';
 import { Building2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

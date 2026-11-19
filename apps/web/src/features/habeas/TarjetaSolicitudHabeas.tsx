@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import type { SolicitudHabeasDto } from '@avalasoft/api-client';
-import { ChipEstado, formatearDiaCivil, formatearFechaHora } from '@avalasoft/ui';
+import type { SolicitudHabeasDto } from '@validalo/api-client';
+import { ChipEstado, formatearDiaCivil, formatearFechaHora } from '@validalo/ui';
 import { MessageSquareReply, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { chipDeSolicitud, estaAbierta, estadoDePlazo } from './modelo';

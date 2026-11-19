@@ -14,7 +14,7 @@ recorrido(
       'La administradora agrega a los motivos del grupo uno propio, «Foto del documento borrosa», con el texto que lee el proveedor. Luego lo desactiva para que los revisores ya no lo puedan elegir.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y los motivos de la plataforma ya cargados.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/tipo-de-documento-y-flujo'],
   },

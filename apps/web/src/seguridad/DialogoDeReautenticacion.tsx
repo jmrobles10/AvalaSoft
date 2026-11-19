@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { confirmarReautenticacion, obtenerOpcionesReautenticacion } from '@avalasoft/api-client';
+import { confirmarReautenticacion, obtenerOpcionesReautenticacion } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 import { Fingerprint } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

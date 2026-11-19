@@ -1,5 +1,5 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import type { UsoIaDto } from '@avalasoft/api-client';
+import type { UsoIaDto } from '@validalo/api-client';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';

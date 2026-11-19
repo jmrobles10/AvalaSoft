@@ -1,6 +1,6 @@
 import { Alert, Button } from '@mui/material';
-import { SCOPES, type RegistroAuditoriaDto } from '@avalasoft/api-client';
-import { EstadoVacio, TablaConCursor, usePaginacionCursor } from '@avalasoft/ui';
+import { SCOPES, type RegistroAuditoriaDto } from '@validalo/api-client';
+import { EstadoVacio, TablaConCursor, usePaginacionCursor } from '@validalo/ui';
 import { Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

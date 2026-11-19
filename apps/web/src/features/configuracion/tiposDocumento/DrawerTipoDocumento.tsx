@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Drawer, IconButton, Stack, Typography } from '@mui/material';
-import type { TipoDocumentoTenantDto } from '@avalasoft/api-client';
-import { FaltaParaEnviar } from '@avalasoft/ui';
+import type { TipoDocumentoTenantDto } from '@validalo/api-client';
+import { FaltaParaEnviar } from '@validalo/ui';
 import { X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { EsqueletoFormulario, PaginaEstado } from '@avalasoft/ui';
+import { EsqueletoFormulario, PaginaEstado } from '@validalo/ui';
 import { SearchX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Outlet, Link as RouterLink } from 'react-router';

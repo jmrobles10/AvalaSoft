@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, SCOPES, type ConfiguracionDeSsoDto, type DominioDeSsoDto } from '@avalasoft/api-client';
+import { reiniciarCliente, SCOPES, type ConfiguracionDeSsoDto, type DominioDeSsoDto } from '@validalo/api-client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../../../pruebas/montar';
 import { ProblemaSimulado, simularApi } from '../../../../pruebas/simularApi';
@@ -22,7 +22,7 @@ const VERIFICADO: DominioDeSsoDto = { dominio: 'andina.co', verificado: true, to
 const PENDIENTE: DominioDeSsoDto = {
   dominio: 'andina.com',
   verificado: false,
-  token: 'avalasoft-verificacion=abc123',
+  token: 'validalo-verificacion=abc123',
   instruccion: 'publica',
   creadoEn: '2026-11-02T10:00:00Z',
   verificadoEn: null,
@@ -35,7 +35,7 @@ function configuracion(cambios: Partial<ConfiguracionDeSsoDto> = {}): Configurac
     proveedor: 'oidc',
     nombre: 'Andina',
     autoridad: 'https://login.andina.co/v2.0',
-    clientId: 'avalasoft-andina',
+    clientId: 'validalo-andina',
     secretoConfigurado: true,
     ultimosCuatroSecreto: 'wxyz',
     alcances: ['openid', 'email', 'profile'],
@@ -48,7 +48,7 @@ function configuracion(cambios: Partial<ConfiguracionDeSsoDto> = {}): Configurac
     reglas: [],
     sincronizarRoles: false,
     modo: 'Complementario',
-    urlDeRetorno: 'https://avalasoft.co/api/v1/ingreso/sso/retorno',
+    urlDeRetorno: 'https://validalo.co/api/v1/ingreso/sso/retorno',
     workOsDisponible: false,
     actualizadoEn: '2026-11-03T10:00:00Z',
     ...cambios,
@@ -74,10 +74,10 @@ describe('Configuración › Inicio de sesión único (PI-1…PI-5)', () => {
 
     expect(await screen.findByRole('heading', { name: 'Inicio de sesión único' })).toBeInTheDocument();
     expect(screen.getByLabelText('Emisor (issuer)')).toHaveValue('https://login.andina.co/v2.0');
-    expect(screen.getByLabelText('Client ID')).toHaveValue('avalasoft-andina');
+    expect(screen.getByLabelText('Client ID')).toHaveValue('validalo-andina');
     expect(screen.getByText('Secreto guardado, termina en wxyz')).toBeInTheDocument();
     expect(screen.queryByLabelText('Secreto del cliente')).not.toBeInTheDocument();
-    expect(screen.getByText('https://avalasoft.co/api/v1/ingreso/sso/retorno')).toBeInTheDocument();
+    expect(screen.getByText('https://validalo.co/api/v1/ingreso/sso/retorno')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Guardar' })).toBeDisabled();
   });
 
@@ -92,7 +92,7 @@ describe('Configuración › Inicio de sesión único (PI-1…PI-5)', () => {
 
     await waitFor(() => expect(peticiones.some((p) => p.metodo === 'PUT')).toBe(true));
     const cuerpo = peticiones.find((p) => p.metodo === 'PUT')?.cuerpo as Record<string, unknown>;
-    expect(cuerpo).toMatchObject({ proveedor: 'oidc', nombre: 'Andina Grupo', autoridad: 'https://login.andina.co/v2.0', clientId: 'avalasoft-andina', modo: 'Complementario' });
+    expect(cuerpo).toMatchObject({ proveedor: 'oidc', nombre: 'Andina Grupo', autoridad: 'https://login.andina.co/v2.0', clientId: 'validalo-andina', modo: 'Complementario' });
     expect(cuerpo.secretoDelCliente).toBeNull();
   });
 
@@ -213,8 +213,8 @@ describe('Dominios del SSO (PI-2)', () => {
     expect(await screen.findByText('@andina.co')).toBeInTheDocument();
     expect(screen.getByText('Verificado')).toBeInTheDocument();
     expect(screen.getByText('Por verificar')).toBeInTheDocument();
-    expect(screen.getByText('avalasoft-verificacion=abc123')).toBeInTheDocument();
-    expect(screen.getByText(/https:\/\/andina\.com\/\.well-known\/avalasoft-verificacion\.txt/)).toBeInTheDocument();
+    expect(screen.getByText('validalo-verificacion=abc123')).toBeInTheDocument();
+    expect(screen.getByText(/https:\/\/andina\.com\/\.well-known\/validalo-verificacion\.txt/)).toBeInTheDocument();
   });
 
   it('agrega un dominio con POST y vacía el campo', async () => {
@@ -260,14 +260,14 @@ describe('Dominios del SSO (PI-2)', () => {
       },
     });
     await usuario.type(await screen.findByLabelText('Nombre del botón'), 'Andina');
-    await usuario.type(screen.getByLabelText('Client ID'), 'avalasoft-andina');
+    await usuario.type(screen.getByLabelText('Client ID'), 'validalo-andina');
 
     await usuario.type(screen.getByLabelText('Dominio'), 'nuevo.co');
     await usuario.click(screen.getByRole('button', { name: 'Agregar' }));
 
     expect(await screen.findByText('@nuevo.co')).toBeInTheDocument();
     expect(screen.getByLabelText('Nombre del botón')).toHaveValue('Andina');
-    expect(screen.getByLabelText('Client ID')).toHaveValue('avalasoft-andina');
+    expect(screen.getByLabelText('Client ID')).toHaveValue('validalo-andina');
   });
 
   it('verificar un dominio no borra lo que se está editando en el formulario', async () => {

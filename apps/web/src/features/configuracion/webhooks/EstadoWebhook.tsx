@@ -1,5 +1,5 @@
-import type { WebhookDto } from '@avalasoft/api-client';
-import { ChipEstado, type Estado } from '@avalasoft/ui';
+import type { WebhookDto } from '@validalo/api-client';
+import { ChipEstado, type Estado } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { estadoWebhook } from './modelo';
 

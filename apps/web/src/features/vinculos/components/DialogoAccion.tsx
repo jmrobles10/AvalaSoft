@@ -1,10 +1,10 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { accionPermitidaPorEstado, esErrorApi, type DefinicionAccion, type VinculoDto } from '@avalasoft/api-client';
+import { accionPermitidaPorEstado, esErrorApi, type DefinicionAccion, type VinculoDto } from '@validalo/api-client';
 import { RotateCcw } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CampoFecha, CampoNumero, FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
+import { CampoFecha, CampoNumero, FaltaParaEnviar, FormularioDeDialogo } from '@validalo/ui';
 import { IconoCarga } from '../../../shared/componentes';
 import { invalidarRuta } from '../../../shared/consultas';
 import { mensajeDeError } from '../../../shared/errores';

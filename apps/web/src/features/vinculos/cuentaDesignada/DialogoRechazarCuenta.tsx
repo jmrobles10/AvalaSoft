@@ -1,5 +1,5 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
-import { FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
+import { FaltaParaEnviar, FormularioDeDialogo } from '@validalo/ui';
 import { X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

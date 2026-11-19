@@ -8,8 +8,8 @@ import {
   type EstadoFichaDto,
   type SeccionFichaDto,
   type SeccionGuardadaDto,
-} from '@avalasoft/api-client';
-import { AvisoCambiosNuevos, fondoDelContenedor } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { AvisoCambiosNuevos, fondoDelContenedor } from '@validalo/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

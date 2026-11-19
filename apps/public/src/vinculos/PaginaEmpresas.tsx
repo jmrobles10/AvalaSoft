@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import type { VinculoPublicoDto } from '@avalasoft/api-client';
-import { ChipEstado, EstadoVacio, formatearFecha } from '@avalasoft/ui';
+import type { VinculoPublicoDto } from '@validalo/api-client';
+import { ChipEstado, EstadoVacio, formatearFecha } from '@validalo/ui';
 import { Building2, ChevronRight, Contact, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

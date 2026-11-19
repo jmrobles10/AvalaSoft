@@ -1,6 +1,6 @@
 import { Button, Chip, IconButton, Skeleton, Stack, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
-import { SCOPES, type MotivoTipificadoDto } from '@avalasoft/api-client';
-import { MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
+import { SCOPES, type MotivoTipificadoDto } from '@validalo/api-client';
+import { MarcoTabla, visualmenteOculto } from '@validalo/ui';
 import { Lock, Pencil, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

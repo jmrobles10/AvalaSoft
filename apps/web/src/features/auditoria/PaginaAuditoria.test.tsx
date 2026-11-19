@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, SCOPES } from '@avalasoft/api-client';
+import { reiniciarCliente, SCOPES } from '@validalo/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CAMBIO_AREA, CAMBIO_WEBHOOK, DESCARGA_CERTIFICADO, montar, parametrosDe } from './pruebas/montar';
 

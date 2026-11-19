@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { formatearFecha } from '@avalasoft/ui';
+import { formatearFecha } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { DialogoValorUnaVez } from '../../../shared/DialogoValorUnaVez';
 

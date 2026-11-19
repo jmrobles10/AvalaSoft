@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Button, Card, Stack } from '@mui/material';
-import type { CampoFormularioDto, ConfirmacionCargaDto } from '@avalasoft/api-client';
-import { FaltaParaEnviar } from '@avalasoft/ui';
+import type { CampoFormularioDto, ConfirmacionCargaDto } from '@validalo/api-client';
+import { FaltaParaEnviar } from '@validalo/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

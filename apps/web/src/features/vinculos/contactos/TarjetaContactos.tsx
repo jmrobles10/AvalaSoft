@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
-import { SCOPES, type VinculoDto } from '@avalasoft/api-client';
-import { aEditables, desdeEditables, EditorDeContactos, FormularioDeDialogo, ROLES_DE_CONTACTO, validarContactos, type ContactoEditable } from '@avalasoft/ui';
+import { SCOPES, type VinculoDto } from '@validalo/api-client';
+import { aEditables, desdeEditables, EditorDeContactos, FormularioDeDialogo, ROLES_DE_CONTACTO, validarContactos, type ContactoEditable } from '@validalo/ui';
 import { Pencil } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

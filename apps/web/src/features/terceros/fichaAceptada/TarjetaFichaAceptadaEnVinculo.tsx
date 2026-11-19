@@ -1,5 +1,5 @@
 import { Button, Skeleton, Stack, Typography } from '@mui/material';
-import { SCOPES, type FichaAceptadaDelVinculoDto, type VinculoDto } from '@avalasoft/api-client';
+import { SCOPES, type FichaAceptadaDelVinculoDto, type VinculoDto } from '@validalo/api-client';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

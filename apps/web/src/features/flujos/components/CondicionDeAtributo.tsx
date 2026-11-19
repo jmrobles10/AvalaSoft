@@ -1,5 +1,5 @@
 import { Box, MenuItem, TextField, Typography } from '@mui/material';
-import type { AtributoPermitidoDto, CondicionDto } from '@avalasoft/api-client';
+import type { AtributoPermitidoDto, CondicionDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import {
   condicionDeAtributoCompleta,

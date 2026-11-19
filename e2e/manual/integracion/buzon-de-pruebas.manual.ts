@@ -28,7 +28,7 @@ recorrido(
     actor: 'Sistema integrador',
     titulo: 'Lee y vacía el buzón de correo de pruebas',
     resumen:
-      'En el sandbox, los correos que AvalaSoft enviaría no salen a nadie: quedan en un buzón. El sistema integrador lista ese buzón, abre un correo para ver su contenido y lo vacía cuando termina sus pruebas.',
+      'En el sandbox, los correos que Valídalo enviaría no salen a nadie: quedan en un buzón. El sistema integrador lista ese buzón, abre un correo para ver su contenido y lo vacía cuando termina sus pruebas.',
     precondiciones: [
       'Un grupo con Constructora Norte y su flujo de proveedor publicado, con el sandbox creado por una llave de prueba.',
     ],

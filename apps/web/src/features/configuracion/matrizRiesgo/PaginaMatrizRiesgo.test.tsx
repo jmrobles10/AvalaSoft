@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, SCOPES, type ActualizarMatrizDeRiesgoDto, type MatrizDeRiesgoDto } from '@avalasoft/api-client';
+import { reiniciarCliente, SCOPES, type ActualizarMatrizDeRiesgoDto, type MatrizDeRiesgoDto } from '@validalo/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { matrizDePrueba } from '../../cumplimiento/datosPrueba';
 import { problema, renderizar, simularApi, type LlamadaApi } from '../../cumplimiento/pruebasApi';

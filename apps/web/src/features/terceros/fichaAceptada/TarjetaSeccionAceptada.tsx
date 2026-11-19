@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Collapse, Divider, Link, Stack, Typography } from '@mui/material';
-import type { SeccionAceptadaVistaDto, SoporteSeccionDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { SeccionAceptadaVistaDto, SoporteSeccionDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { ChevronDown, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import type { FilaEstadoExpedienteDto, FilaInformeVinculoDto } from '@avalasoft/api-client';
-import { ChipEstado, formatearFecha, type ColumnaTabla } from '@avalasoft/ui';
+import type { FilaEstadoExpedienteDto, FilaInformeVinculoDto } from '@validalo/api-client';
+import { ChipEstado, formatearFecha, type ColumnaTabla } from '@validalo/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatearFechaDeclarada } from '../documentos/formatoDatos';

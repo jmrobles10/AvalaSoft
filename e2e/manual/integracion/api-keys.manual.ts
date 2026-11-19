@@ -86,7 +86,7 @@ recorrido(
     await paso(page, {
       titulo: 'Copia la clave: solo se muestra una vez',
       explicacion:
-        'Al crear la clave, AvalaSoft la muestra completa una sola vez. Cópiala con «Copiar clave» y guárdala en el gestor de secretos del sistema que la va a usar. Ese sistema la envía en la cabecera X-Api-Key de cada llamada. ' +
+        'Al crear la clave, Valídalo la muestra completa una sola vez. Cópiala con «Copiar clave» y guárdala en el gestor de secretos del sistema que la va a usar. Ese sistema la envía en la cabecera X-Api-Key de cada llamada. ' +
         'Si la pierdes, no hay forma de recuperarla: crea otra y revoca esta.',
       resaltar: aviso.getByText(/no la volveremos a mostrar/),
     });
@@ -153,7 +153,7 @@ recorrido(
     await paso(page, {
       titulo: 'Confirma que la clave quedó revocada',
       explicacion:
-        'AvalaSoft confirma con un aviso que la clave quedó revocada, y su fila muestra el estado correspondiente. Desde ese momento, las llamadas con esa clave responden 401.',
+        'Valídalo confirma con un aviso que la clave quedó revocada, y su fila muestra el estado correspondiente. Desde ese momento, las llamadas con esa clave responden 401.',
       resaltar: app.getByRole('row', { name: new RegExp(NOMBRE) }).first(),
       avisos: true,
     });

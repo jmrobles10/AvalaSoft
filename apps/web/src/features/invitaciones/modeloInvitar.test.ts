@@ -1,4 +1,4 @@
-import type { AtributoPermitidoDto, TipoIdentificacionDto } from '@avalasoft/api-client';
+import type { AtributoPermitidoDto, TipoIdentificacionDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { borradorInvitacionNuevo, correoValido, cuerpoInvitacion, erroresDeAtributosDeLaApi, erroresDeLaApi, validarInvitacion, type BorradorInvitacion } from './modeloInvitar';
 

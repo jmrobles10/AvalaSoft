@@ -58,7 +58,7 @@ test('cualquiera verifica el certificado: vigente, auténtico en su navegador, c
   await expect(publica.getByRole('main')).not.toContainText(invitacion.correo);
 
   // El navegador recalcula el contenido (JCS + SHA-256) y valida el sello Ed25519 con la clave publicada.
-  await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló AvalaSoft.' })).toBeVisible();
+  await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló Valídalo.' })).toBeVisible();
   for (const comprobacion of ['Contenido íntegro', 'Huella del enlace', 'Clave de la plataforma', 'Sello válido'])
     await expect(publica.getByRole('listitem').filter({ hasText: comprobacion })).toContainText('Correcto');
 

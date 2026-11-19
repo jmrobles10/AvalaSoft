@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Button, Stack } from '@mui/material';
-import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type RequisitoExpedienteDto } from '@avalasoft/api-client';
+import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type RequisitoExpedienteDto } from '@validalo/api-client';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';

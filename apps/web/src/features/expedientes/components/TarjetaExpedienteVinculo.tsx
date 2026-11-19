@@ -1,6 +1,6 @@
 import { Alert, Button, Stack, Typography } from '@mui/material';
-import { SCOPES, type VinculoDto } from '@avalasoft/api-client';
-import { ChipEstado } from '@avalasoft/ui';
+import { SCOPES, type VinculoDto } from '@validalo/api-client';
+import { ChipEstado } from '@validalo/ui';
 import { ArrowRight, FolderOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

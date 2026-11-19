@@ -14,7 +14,7 @@ recorrido(
     actor: 'Sistema integrador',
     titulo: 'Entra a una persona de tu sistema con identidad delegada',
     resumen:
-      'Tu sistema firma una aserción con su clave privada que dice quién es la persona, la envía con su llave de API y AvalaSoft devuelve una sesión de 30 minutos con los permisos de esa persona. ' +
+      'Tu sistema firma una aserción con su clave privada que dice quién es la persona, la envía con su llave de API y Valídalo devuelve una sesión de 30 minutos con los permisos de esa persona. ' +
       'Cada aserción vale una sola vez: para la siguiente petición, tu sistema firma otra.',
     precondiciones: [
       'Un grupo con Constructora Norte y el sistema integrado E2E registrado con su clave pública.',
@@ -37,11 +37,11 @@ recorrido(
       titulo: 'Firma quién es la persona',
       explicacion:
         'Tu sistema firma con su clave privada un JWT con los datos de la persona: «sub» (su identificador en tu sistema), «name» y «email». ' +
-        'El campo «iss» es el código de tu sistema y «aud» es avalasoft. La aserción vale como máximo 5 minutos, y su «jti» identifica esta firma: AvalaSoft lo recuerda para que no se pueda reutilizar.',
+        'El campo «iss» es el código de tu sistema y «aud» es validalo. La aserción vale como máximo 5 minutos, y su «jti» identifica esta firma: Valídalo lo recuerda para que no se pueda reutilizar.',
       resaltar: aserciones,
       variantes: [
-        { cuando: 'La aserción vence en más de 5 minutos', entonces: 'AvalaSoft la rechaza con 401 «asercion-vigencia-excesiva»: firma una nueva, con vigencia corta.' },
-        { cuando: 'El sistema está desactivado', entonces: 'AvalaSoft responde 401 «sistema-inactivo», aunque la aserción esté bien firmada.' },
+        { cuando: 'La aserción vence en más de 5 minutos', entonces: 'Valídalo la rechaza con 401 «asercion-vigencia-excesiva»: firma una nueva, con vigencia corta.' },
+        { cuando: 'El sistema está desactivado', entonces: 'Valídalo responde 401 «sistema-inactivo», aunque la aserción esté bien firmada.' },
       ],
     });
 
@@ -53,18 +53,18 @@ recorrido(
       titulo: 'Canjea la aserción por una sesión',
       peticion: 'POST /api/v1/sesiones-usuario',
       cabeceras: { 'X-Api-Key': '<llave de API del sistema>', 'X-Usuario-Delegado': '<la aserción firmada>' },
-      respuesta: { estado: 200, cuerpo: { token: '<token de sesión de AvalaSoft>', expira: sesion.expira } },
+      respuesta: { estado: 200, cuerpo: { token: '<token de sesión de Valídalo>', expira: sesion.expira } },
     });
     const canje = page.locator('#respuesta');
     await paso(page, {
       titulo: 'Canjea la aserción por una sesión',
       explicacion:
         'Tu sistema llama a POST /api/v1/sesiones-usuario con su llave de API y la aserción en la cabecera X-Usuario-Delegado. ' +
-        'La respuesta trae un token de AvalaSoft que dura 30 minutos (campo «expira») y tiene el permiso efectivo de esa persona en la empresa. ' +
+        'La respuesta trae un token de Valídalo que dura 30 minutos (campo «expira») y tiene el permiso efectivo de esa persona en la empresa. ' +
         'Ese token se envía como Authorization: Bearer; tu pantalla embebida lo usa hasta que vence.',
       resaltar: canje,
       variantes: [
-        { cuando: 'La persona está desactivada en AvalaSoft', entonces: 'El canje responde 401: un usuario desactivado no actúa por delegación, aunque su sistema lo autentique.' },
+        { cuando: 'La persona está desactivada en Valídalo', entonces: 'El canje responde 401: un usuario desactivado no actúa por delegación, aunque su sistema lo autentique.' },
       ],
     });
 
@@ -82,7 +82,7 @@ recorrido(
     await paso(page, {
       titulo: 'Una aserción no sirve dos veces',
       explicacion:
-        'AvalaSoft guarda el «jti» de cada aserción aceptada hasta que vence. Si llega la misma aserción otra vez, responde 401 «asercion-reutilizada». ' +
+        'Valídalo guarda el «jti» de cada aserción aceptada hasta que vence. Si llega la misma aserción otra vez, responde 401 «asercion-reutilizada». ' +
         'Por eso tu sistema firma una aserción nueva para cada sesión o petición, aunque la persona sea la misma.',
       resaltar: rechazo,
     });

@@ -1,4 +1,4 @@
-import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type MotivoTipificadoDto } from '@avalasoft/api-client';
+import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type MotivoTipificadoDto } from '@validalo/api-client';
 import { useCallback, useMemo, useState } from 'react';
 import { useSesion } from '../../sesion/sesionStore';
 import { usePermisos } from '../../shared/usePermisos';

@@ -1,16 +1,16 @@
 {
-  "name": "@avalasoft/marca",
+  "name": "@validalo/marca",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Recursos de marca de AvalaSoft: favicon, íconos de la app, logotipos y GIF de éxito y de carga, generados desde los componentes de @avalasoft/ui (docs/marca.md).",
+  "description": "Recursos de marca de Valídalo: favicon, íconos de la app, logotipos y GIF de éxito y de carga, generados desde los componentes de @validalo/ui (docs/marca.md).",
   "scripts": {
     "generar": "node generar.mjs",
     "contornos": "node contornos.mjs",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@avalasoft/ui": "workspace:*",
+    "@validalo/ui": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^9.5.0",

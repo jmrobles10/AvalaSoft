@@ -1,4 +1,4 @@
-import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@avalasoft/api-client';
+import type { ExpedientePublicoDto, RequisitoPublicoDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { destinoFijo, rutaSegura } from '../boveda/parametrosSubida';
 import {

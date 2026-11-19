@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { aplicarEventoDeBandeja, useTiempoReal, type BandejaNotificacionesDto, type EsperasConexion, type EstadoConexion } from '@avalasoft/api-client';
+import { aplicarEventoDeBandeja, useTiempoReal, type BandejaNotificacionesDto, type EsperasConexion, type EstadoConexion } from '@validalo/api-client';
 import { useSesion } from '../../sesion/sesionStore';
 import { claveBandeja } from './api';
 import { interpretarEvento } from './bandeja';

@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
-import { SCOPES, type FichaTerceroDto, type VinculoDto } from '@avalasoft/api-client';
-import { ChipEstado, EsqueletoTarjeta, EstadoVacio } from '@avalasoft/ui';
+import { SCOPES, type FichaTerceroDto, type VinculoDto } from '@validalo/api-client';
+import { ChipEstado, EsqueletoTarjeta, EstadoVacio } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';

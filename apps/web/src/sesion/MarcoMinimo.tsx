@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Logo } from '@avalasoft/ui';
+import { Logo } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 

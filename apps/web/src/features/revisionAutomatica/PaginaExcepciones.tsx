@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Tab, Tabs } from '@mui/material';
-import { SCOPES } from '@avalasoft/api-client';
-import { BarraFiltros, EsqueletoTarjetas, EstadoVacio, FiltroMenu } from '@avalasoft/ui';
+import { SCOPES } from '@validalo/api-client';
+import { BarraFiltros, EsqueletoTarjetas, EstadoVacio, FiltroMenu } from '@validalo/ui';
 import { CircleCheck, ShieldCheck } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

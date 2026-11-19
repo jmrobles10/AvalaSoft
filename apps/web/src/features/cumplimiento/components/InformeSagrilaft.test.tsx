@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente } from '@avalasoft/api-client';
+import { reiniciarCliente } from '@validalo/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { filaSagrilaft, informeSagrilaft } from '../datosPrueba';
 import { renderizar, simularApi, type LlamadaApi } from '../pruebasApi';

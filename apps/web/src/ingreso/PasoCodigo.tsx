@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Stack, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { solicitarCodigoIngreso, verificarCodigoIngreso, type CodigoSolicitadoDto, type PasoDeIngresoDto } from '@avalasoft/api-client';
-import { CampoCodigo, formatearHora } from '@avalasoft/ui';
+import { solicitarCodigoIngreso, verificarCodigoIngreso, type CodigoSolicitadoDto, type PasoDeIngresoDto } from '@validalo/api-client';
+import { CampoCodigo, formatearHora } from '@validalo/ui';
 import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../shared/componentes';

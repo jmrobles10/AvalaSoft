@@ -1,6 +1,6 @@
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { SCOPES, type AreaDto, type ConfiguracionSlaDto } from '@avalasoft/api-client';
-import { CampoNumero, EsqueletoFormulario, EsqueletoTabla, EstadoVacio, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
+import { SCOPES, type AreaDto, type ConfiguracionSlaDto } from '@validalo/api-client';
+import { CampoNumero, EsqueletoFormulario, EsqueletoTabla, EstadoVacio, MarcoTabla, visualmenteOculto } from '@validalo/ui';
 import { Timer } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

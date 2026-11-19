@@ -1,7 +1,7 @@
 import { Alert, Box, ButtonBase, Chip, Stack, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { elegirCuentaIngreso, type CuentaDeIngresoDto, type PasoDeIngresoDto } from '@avalasoft/api-client';
-import { AvatarActor } from '@avalasoft/ui';
+import { elegirCuentaIngreso, type CuentaDeIngresoDto, type PasoDeIngresoDto } from '@validalo/api-client';
+import { AvatarActor } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeIngreso } from './mensajes';
 

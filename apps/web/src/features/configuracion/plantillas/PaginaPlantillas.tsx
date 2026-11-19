@@ -1,6 +1,6 @@
 import { Button, Chip, Skeleton, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { SCOPES, type PlantillaNotificacionDto } from '@avalasoft/api-client';
-import { MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
+import { SCOPES, type PlantillaNotificacionDto } from '@validalo/api-client';
+import { MarcoTabla, visualmenteOculto } from '@validalo/ui';
 import { Eye, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

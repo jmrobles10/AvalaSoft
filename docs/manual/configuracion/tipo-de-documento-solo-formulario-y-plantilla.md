@@ -17,7 +17,7 @@ La administradora crea un tipo de documento que el proveedor entrega como archiv
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y el flujo de Proveedor publicado.
 - Un archivo PDF que servirá de plantilla (se siembra por la API del sistema de pruebas al subirlo en el paso correspondiente).
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 
@@ -82,11 +82,11 @@ La sección «Plantilla para descargar» dice que el tipo no tiene plantilla. Es
 
 **Variantes**
 
-- **Se entrega como «Formulario»:** La sección no aparece: el proveedor llena los datos en la pantalla de AvalaSoft.
+- **Se entrega como «Formulario»:** La sección no aparece: el proveedor llena los datos en la pantalla de Valídalo.
 
 ## Paso 6. Sube la plantilla
 
-Con «Subir plantilla» eliges el archivo desde tu equipo. AvalaSoft acepta PDF, DOCX o XLSX; otro formato se rechaza con un aviso. Al subirlo queda como versión 1 con su peso y la fecha de carga, y el proveedor la verá en la pantalla de carga del documento.
+Con «Subir plantilla» eliges el archivo desde tu equipo. Valídalo acepta PDF, DOCX o XLSX; otro formato se rechaza con un aviso. Al subirlo queda como versión 1 con su peso y la fecha de carga, y el proveedor la verá en la pantalla de carga del documento.
 
 > **Pantalla:** `/e/{empresa}/tipos-documento`
 

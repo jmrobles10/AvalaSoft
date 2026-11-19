@@ -10,16 +10,16 @@ import { agruparPorDia, LineaDeTiempo, type EventoTimeline } from './LineaDeTiem
 import { contraste, derivarPaletaEmpresa } from './marcaEmpresa';
 import { SelectorEmpresa } from './SelectorEmpresa';
 import { TablaConCursor } from './TablaConCursor';
-import { createAvalasoftTheme } from './tema';
+import { createValidaloTheme } from './tema';
 import { COLOR } from './tokens';
 import { usePaginacionCursor } from './usePaginacionCursor';
 
-const tema = createAvalasoftTheme('light');
+const tema = createValidaloTheme('light');
 const conTema = (nodo: ReactNode) => render(<ThemeProvider theme={tema}>{nodo}</ThemeProvider>);
 
 describe('tema', () => {
   it('el claro es el de partida y los textos de estado pasan 4.5:1 en ambos modos', () => {
-    expect(createAvalasoftTheme().palette.mode).toBe('light');
+    expect(createValidaloTheme().palette.mode).toBe('light');
     for (const modo of ['light', 'dark'] as const) {
       const c = COLOR[modo];
       for (const tono of ['Encurso', 'Exito', 'Advertencia', 'Error', 'Info', 'Neutro'] as const) {
@@ -31,13 +31,13 @@ describe('tema', () => {
   });
 
   it('public deriva una paleta segura del color de la empresa', () => {
-    const t = createAvalasoftTheme('light', { app: 'public', colorEmpresa: '#FFD400' });
+    const t = createValidaloTheme('light', { app: 'public', colorEmpresa: '#FFD400' });
     const empresa = derivarPaletaEmpresa('#FFD400', 'light');
     expect(t.palette.primary.main).toBe(empresa.accion);
     expect(contraste(empresa.textoAccion, empresa.accion)).toBeGreaterThanOrEqual(4.5);
     expect(contraste(empresa.enlace, COLOR.light.superficieNivel1)).toBeGreaterThanOrEqual(4.5);
     // web ignora el color de la empresa.
-    expect(createAvalasoftTheme('light', { app: 'web', colorEmpresa: '#FFD400' }).palette.empresa).toBeNull();
+    expect(createValidaloTheme('light', { app: 'web', colorEmpresa: '#FFD400' }).palette.empresa).toBeNull();
   });
 });
 
@@ -165,11 +165,11 @@ describe('LineaDeTiempo', () => {
 
 describe('ValorLargo (un valor largo no se parte a mitad de la palabra)', () => {
   it('un correo se parte solo en la «@»: el usuario con la «@» y el dominio, cada uno en su propio tramo recortable', () => {
-    const { container } = conTema(<ValorLargo valor="proveedor.971986726.4c57ac@e2e.avalasoft.co" partirEn="@" />);
+    const { container } = conTema(<ValorLargo valor="proveedor.971986726.4c57ac@e2e.validalo.co" partirEn="@" />);
     const tramos = [...container.querySelectorAll('span > span')].map((tramo) => tramo.textContent);
-    expect(tramos).toEqual(['proveedor.971986726.4c57ac@', 'e2e.avalasoft.co']);
+    expect(tramos).toEqual(['proveedor.971986726.4c57ac@', 'e2e.validalo.co']);
     // El texto completo sigue siendo el del correo (se puede seleccionar y copiar).
-    expect(container.textContent).toBe('proveedor.971986726.4c57ac@e2e.avalasoft.co');
+    expect(container.textContent).toBe('proveedor.971986726.4c57ac@e2e.validalo.co');
     for (const tramo of container.querySelectorAll('span > span')) {
       const estilo = getComputedStyle(tramo);
       expect(estilo.whiteSpace).toBe('nowrap');

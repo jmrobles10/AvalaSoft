@@ -61,7 +61,7 @@ Cada toque en la barra inferior cambia de sección sin volver a entrar. Mi infor
 
 ## Paso 4. Sal del portal desde la parte de arriba
 
-«Salir» cierra tu sesión en este dispositivo. Para volver a entrar, pide el enlace con tu correo: AvalaSoft no te pide contraseña.
+«Salir» cierra tu sesión en este dispositivo. Para volver a entrar, pide el enlace con tu correo: Valídalo no te pide contraseña.
 
 > **Pantalla:** `/ficha`
 

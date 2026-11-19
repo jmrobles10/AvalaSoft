@@ -31,7 +31,7 @@ describe('base64url', () => {
 
 describe('opciones del servidor', () => {
   const registro = {
-    rp: { id: 'avalasoft.co', name: 'AvalaSoft' },
+    rp: { id: 'validalo.co', name: 'Valídalo' },
     user: { id: bytesABase64Url(new Uint8Array([1, 2, 3])), name: 'ana@aceros.co', displayName: 'Ana' },
     challenge: bytesABase64Url(new Uint8Array([9, 9, 9, 9])),
     pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
@@ -45,7 +45,7 @@ describe('opciones del servidor', () => {
     const opciones = opcionesDeRegistro(registro);
     expect([...new Uint8Array(opciones.challenge as ArrayBuffer)]).toEqual([9, 9, 9, 9]);
     expect([...new Uint8Array(opciones.user.id as ArrayBuffer)]).toEqual([1, 2, 3]);
-    expect(opciones.rp).toEqual({ id: 'avalasoft.co', name: 'AvalaSoft' });
+    expect(opciones.rp).toEqual({ id: 'validalo.co', name: 'Valídalo' });
     expect(opciones.user.name).toBe('ana@aceros.co');
     expect(opciones.excludeCredentials).toHaveLength(1);
     expect([...new Uint8Array(opciones.excludeCredentials?.[0]?.id as ArrayBuffer)]).toEqual([7, 7]);
@@ -60,10 +60,10 @@ describe('opciones del servidor', () => {
   });
 
   it('las opciones de firma sin credenciales dejan que el navegador ofrezca las del sitio y exigen verificar al usuario', () => {
-    const opciones = opcionesDeFirma({ challenge: bytesABase64Url(new Uint8Array([5, 5])), rpId: 'avalasoft.co' });
+    const opciones = opcionesDeFirma({ challenge: bytesABase64Url(new Uint8Array([5, 5])), rpId: 'validalo.co' });
     expect(opciones.allowCredentials).toEqual([]);
     expect(opciones.userVerification).toBe('required');
-    expect(opciones.rpId).toBe('avalasoft.co');
+    expect(opciones.rpId).toBe('validalo.co');
 
     const conCredencial = opcionesDeFirma({ challenge: bytesABase64Url(new Uint8Array([5])), allowCredentials: [{ type: 'public-key', id: bytesABase64Url(new Uint8Array([1])) }] });
     expect(conCredencial.allowCredentials).toHaveLength(1);

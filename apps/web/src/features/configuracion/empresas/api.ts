@@ -5,7 +5,7 @@ import {
   getListarPaisesQueryOptions,
   getObtenerTextosLegalesEmpresaQueryOptions,
   publicarTextoLegalEmpresa,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { invalidarRuta } from '../../../shared/consultas';
 import { cuerpoCrearEmpresa, type BorradorEmpresa, type RutaTexto } from './modelo';
 

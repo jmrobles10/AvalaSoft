@@ -23,7 +23,7 @@ export async function capturar(page: Page, nombre: string): Promise<void> {
 
 /** Estira el iframe de la página anfitriona (si lo hay) al alto de su contenido, captura la página completa y lo restaura. */
 async function tomar(page: Page, ruta: string): Promise<void> {
-  const marco = page.locator('iframe#avalasoft');
+  const marco = page.locator('iframe#validalo');
   const hayMarco = (await marco.count()) > 0;
   if (hayMarco) {
     // El iframe es de otro origen: su alto se mide desde Playwright (su marco), no desde la página anfitriona. Con el ancho nuevo el

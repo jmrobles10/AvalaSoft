@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Button } from '@mui/material';
-import type { VinculoDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { VinculoDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { CircleSlash } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

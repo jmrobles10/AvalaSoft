@@ -1,5 +1,5 @@
-import type { ObtenerInformeSlaParams } from '@avalasoft/api-client';
-import { LOCALE } from '@avalasoft/ui';
+import type { ObtenerInformeSlaParams } from '@validalo/api-client';
+import { LOCALE } from '@validalo/ui';
 import { aNumero } from './modelo';
 
 /** Filtros del informe de cumplimiento del plazo de revisión en la URL (vacío = sin filtro). */

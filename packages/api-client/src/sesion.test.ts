@@ -13,9 +13,9 @@ function token(claims: Record<string, unknown>): string {
 const base = {
   sub: 'usuario-1',
   exp: 1_900_000_000,
-  'avalasoft:tenant': 'tenant-1',
-  'avalasoft:sistema': 'SRM',
-  'avalasoft:actor-tipo': 'Usuario',
+  'validalo:tenant': 'tenant-1',
+  'validalo:sistema': 'SRM',
+  'validalo:actor-tipo': 'Usuario',
 };
 
 describe('leerSesion', () => {
@@ -24,8 +24,8 @@ describe('leerSesion', () => {
       token({
         ...base,
         scope: ['vinculos:leer', 'terceros:leer'],
-        'avalasoft:scope-empresa': ['vinculos:escribir|e1', 'vinculos:bloquear|e1', 'vinculos:escribir|e2'],
-        'avalasoft:empresa': ['e1', 'e2'],
+        'validalo:scope-empresa': ['vinculos:escribir|e1', 'vinculos:bloquear|e1', 'vinculos:escribir|e2'],
+        'validalo:empresa': ['e1', 'e2'],
       }),
     );
 
@@ -41,14 +41,14 @@ describe('leerSesion', () => {
   });
 
   it('acepta claims únicos como texto y el comodín de empresas', () => {
-    const sesion = leerSesion(token({ ...base, scope: 'usuarios:administrar', 'avalasoft:empresa': '*' }));
+    const sesion = leerSesion(token({ ...base, scope: 'usuarios:administrar', 'validalo:empresa': '*' }));
     expect(puede(sesion, 'usuarios:administrar', null)).toBe(true);
     expect(sesion.empresas).toBe('*');
     expect(accedeAEmpresa(sesion, 'cualquiera')).toBe(true);
   });
 
   it('lee nombres con tildes (UTF-8 en base64url)', () => {
-    const sesion = leerSesion(token({ ...base, 'avalasoft:sistema': 'Compañía' }));
+    const sesion = leerSesion(token({ ...base, 'validalo:sistema': 'Compañía' }));
     expect(sesion.sistema).toBe('Compañía');
   });
 
@@ -57,14 +57,14 @@ describe('leerSesion', () => {
     expect(esSesionDirecta(delegada)).toBe(false);
     expect(delegada.metodoIngreso).toBeNull();
 
-    const directa = leerSesion(token({ ...base, 'avalasoft:sistema': undefined, 'avalasoft:sesion-id': 'sesion-1', 'avalasoft:metodo': 'Passkey' }));
+    const directa = leerSesion(token({ ...base, 'validalo:sistema': undefined, 'validalo:sesion-id': 'sesion-1', 'validalo:metodo': 'Passkey' }));
     expect(esSesionDirecta(directa)).toBe(true);
     expect(directa.sesionId).toBe('sesion-1');
     expect(directa.metodoIngreso).toBe('Passkey');
     expect(directa.sistema).toBeNull();
 
     // Un método desconocido no se toma por válido.
-    expect(leerSesion(token({ ...base, 'avalasoft:sesion-id': 's', 'avalasoft:metodo': 'Otro' })).metodoIngreso).toBeNull();
+    expect(leerSesion(token({ ...base, 'validalo:sesion-id': 's', 'validalo:metodo': 'Otro' })).metodoIngreso).toBeNull();
   });
 
   it('calcula el tiempo restante', () => {
@@ -76,12 +76,12 @@ describe('leerSesion', () => {
     expect(() => leerSesion('no-es-jwt')).toThrow(TokenInvalido);
     expect(() => leerSesion(token({ sub: 'x' }))).toThrow(TokenInvalido);
     // Sin tenant solo vale la sesión de Plataforma.
-    expect(() => leerSesion(token({ sub: 'x', exp: 1_900_000_000, 'avalasoft:actor-tipo': 'Usuario' }))).toThrow(TokenInvalido);
+    expect(() => leerSesion(token({ sub: 'x', exp: 1_900_000_000, 'validalo:actor-tipo': 'Usuario' }))).toThrow(TokenInvalido);
   });
 
   it('lee la sesión de un operador de Plataforma: sin tenant, con su nombre y solo plataforma:tenants', () => {
     const sesion = leerSesion(
-      token({ sub: 'BACKOFFICE:jperez', exp: 1_900_000_000, 'avalasoft:actor-tipo': 'Plataforma', name: 'Juana Pérez', scope: 'plataforma:tenants' }),
+      token({ sub: 'BACKOFFICE:jperez', exp: 1_900_000_000, 'validalo:actor-tipo': 'Plataforma', name: 'Juana Pérez', scope: 'plataforma:tenants' }),
     );
     expect(sesion.tenantId).toBeNull();
     expect(sesion.nombre).toBe('Juana Pérez');

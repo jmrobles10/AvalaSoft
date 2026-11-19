@@ -1,5 +1,5 @@
 import { Button, Tooltip } from '@mui/material';
-import { SCOPES } from '@avalasoft/api-client';
+import { SCOPES } from '@validalo/api-client';
 import { FileArchive } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../shared/errores';

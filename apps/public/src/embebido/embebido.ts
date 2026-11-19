@@ -1,5 +1,5 @@
-import type { SesionTerceroDto } from '@avalasoft/api-client';
-import { leerReclamosDeJwt, origenPermitido } from '@avalasoft/sdk';
+import type { SesionTerceroDto } from '@validalo/api-client';
+import { leerReclamosDeJwt, origenPermitido } from '@validalo/sdk';
 
 /**
  * Lógica pura del modo embebido del tercero (IO-5, docs/06 §3.2): la app corre dentro del iframe de un sistema integrador, que le entrega

@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Skeleton, Stack } from '@mui/material';
-import { esErrorApi, SCOPES, type FlujoDto } from '@avalasoft/api-client';
-import { EsqueletoTarjeta, PaginaEstado } from '@avalasoft/ui';
+import { esErrorApi, SCOPES, type FlujoDto } from '@validalo/api-client';
+import { EsqueletoTarjeta, PaginaEstado } from '@validalo/ui';
 import { Pencil, Rocket, SearchX, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
-import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type ExpedienteDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { expediente, requisito } from '../datosPrueba';
 import type { ContextoRevisor } from '../reglas';
@@ -19,7 +19,7 @@ const sinRetiro = requisito({ versionActual: { documentoId: 'doc-rut', n: 7, sha
 function montar(datos: ExpedienteDto) {
   configurarCliente({ fetch: vi.fn(() => new Promise<Response>(() => undefined)) });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient()}>
         <PanelRequisitos expediente={datos} contexto={() => CONTEXTO} nombres={new Map()} onAccion={() => undefined} />
       </QueryClientProvider>

@@ -46,7 +46,7 @@ El filtro «Estado» usa los mismos estados que la lista de vínculos (Invitado,
 
 ## Paso 3. Descarga el informe en Excel
 
-«Descargar Excel» baja el informe con los filtros que tengas puestos en ese momento. El archivo trae las mismas filas que ves en la tabla, para trabajar con ellas fuera de AvalaSoft.
+«Descargar Excel» baja el informe con los filtros que tengas puestos en ese momento. El archivo trae las mismas filas que ves en la tabla, para trabajar con ellas fuera de Valídalo.
 
 > **Pantalla:** `/e/{empresa}/informes/vinculos`
 

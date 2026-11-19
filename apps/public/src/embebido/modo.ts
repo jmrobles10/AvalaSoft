@@ -1,6 +1,6 @@
-import { estaEmbebida } from '@avalasoft/sdk';
+import { estaEmbebida } from '@validalo/sdk';
 
-const CLAVE = 'avalasoft:embebido';
+const CLAVE = 'validalo:embebido';
 
 /**
  * ¿La app corre dentro del iframe de un sistema integrador (IO-5)? Se decide al cargar: dentro de un iframe y entrando por `/embed/…`

@@ -1,4 +1,4 @@
-import type { FilaBandejaDto, RecordatoriosEnviadosDto } from '@avalasoft/api-client';
+import type { FilaBandejaDto, RecordatoriosEnviadosDto } from '@validalo/api-client';
 import { createInstance } from 'i18next';
 import { describe, expect, it } from 'vitest';
 import { esCO } from '../../i18n/es-CO';

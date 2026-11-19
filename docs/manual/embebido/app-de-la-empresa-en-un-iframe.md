@@ -3,7 +3,7 @@ id: "embebido/app-de-la-empresa-en-un-iframe"
 titulo: "Abre la app de tu empresa dentro de tu sistema"
 actor: "Revisor/área"
 dominio: "embebido"
-resumen: "Rubén usa AvalaSoft sin ver una pantalla de ingreso: abre la página de su sistema, que muestra la app en un marco y le entrega la sesión por dentro. La app se abre en Constructora Norte y, al cerrar la sesión desde el sistema, la app lo avisa y deja de mostrar datos."
+resumen: "Rubén usa Valídalo sin ver una pantalla de ingreso: abre la página de su sistema, que muestra la app en un marco y le entrega la sesión por dentro. La app se abre en Constructora Norte y, al cerrar la sesión desde el sistema, la app lo avisa y deja de mostrar datos."
 pasos: 4
 ---
 
@@ -11,27 +11,27 @@ pasos: 4
 
 **Actor:** Revisor/área · **Dominio:** Uso embebido
 
-Rubén usa AvalaSoft sin ver una pantalla de ingreso: abre la página de su sistema, que muestra la app en un marco y le entrega la sesión por dentro. La app se abre en Constructora Norte y, al cerrar la sesión desde el sistema, la app lo avisa y deja de mostrar datos.
+Rubén usa Valídalo sin ver una pantalla de ingreso: abre la página de su sistema, que muestra la app en un marco y le entrega la sesión por dentro. La app se abre en Constructora Norte y, al cerrar la sesión desde el sistema, la app lo avisa y deja de mostrar datos.
 
 **Antes de empezar**
 
 - Un grupo con Constructora Norte, su flujo de proveedor publicado y Rubén como miembro del área Compras.
-- La página del sistema integrado (E2E) registrada en AvalaSoft como origen permitido.
+- La página del sistema integrado (E2E) registrada en Valídalo como origen permitido.
 
 **Pasos**
 
-1. Abre AvalaSoft desde tu sistema
+1. Abre Valídalo desde tu sistema
 2. Revisa la empresa con la que trabajas
 3. Cambia de empresa con el selector
 4. Cierra la sesión desde tu sistema
 
-## Paso 1. Abre AvalaSoft desde tu sistema
+## Paso 1. Abre Valídalo desde tu sistema
 
-Tu sistema muestra AvalaSoft en un marco (iframe) dentro de sus propias pantallas. Rubén no ingresa con usuario y contraseña: cuando la app necesita sesión, el sistema le pide a su backend una sesión para Rubén y se la entrega a la app. La app aparece sin barra de ingreso y sin el marco de AvalaSoft, con la navegación propia de la empresa.
+Tu sistema muestra Valídalo en un marco (iframe) dentro de sus propias pantallas. Rubén no ingresa con usuario y contraseña: cuando la app necesita sesión, el sistema le pide a su backend una sesión para Rubén y se la entrega a la app. La app aparece sin barra de ingreso y sin el marco de Valídalo, con la navegación propia de la empresa.
 
 > **Pantalla:** `/e/{empresa}/bandeja`
 
-![Paso 1: Abre AvalaSoft desde tu sistema (escritorio)](../../../salida/manual/img/embebido/app-de-la-empresa-en-un-iframe/01-abre-avalasoft-desde-tu-sistema-claro.webp)
+![Paso 1: Abre Valídalo desde tu sistema (escritorio)](../../../salida/manual/img/embebido/app-de-la-empresa-en-un-iframe/01-abre-validalo-desde-tu-sistema-claro.webp)
 
 **Variantes**
 
@@ -60,7 +60,7 @@ Quien tiene roles en varias empresas del grupo, como la administradora, ve en la
 
 ## Paso 4. Cierra la sesión desde tu sistema
 
-Cuando el sistema cierra la sesión (por ejemplo, al salir de su propia cuenta), envía el aviso a la app y esta deja de mostrar datos. Para volver a entrar hay que abrir AvalaSoft de nuevo desde el sistema.
+Cuando el sistema cierra la sesión (por ejemplo, al salir de su propia cuenta), envía el aviso a la app y esta deja de mostrar datos. Para volver a entrar hay que abrir Valídalo de nuevo desde el sistema.
 
 > **Pantalla:** `/e/{empresa}/bandeja`
 

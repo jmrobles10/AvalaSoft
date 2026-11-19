@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type RevisionAutomaticaConfigDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type RevisionAutomaticaConfigDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAvisos } from '../../../shared/useAvisos';
@@ -82,7 +82,7 @@ function montar(config: RevisionAutomaticaConfigDto = CONFIG, { guardar = (cuerp
   });
   const router = createMemoryRouter([{ path: '/e/:empresaId/revision-automatica', element: <PaginaRevisionAutomatica /> }], { initialEntries: ['/e/emp/revision-automatica'] });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <RouterProvider router={router} />
       </QueryClientProvider>

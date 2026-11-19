@@ -1,5 +1,5 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
-import type { SolicitudDeAccesoDePlataformaDto } from '@avalasoft/api-client';
+import type { SolicitudDeAccesoDePlataformaDto } from '@validalo/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../shared/componentes';

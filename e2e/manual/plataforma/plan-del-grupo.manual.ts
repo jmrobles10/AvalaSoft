@@ -43,7 +43,7 @@ recorrido(
       titulo: 'Define el código y los límites',
       explicacion:
         'El código del plan es un nombre corto, como «estándar» o «empresarial», que el grupo ve en su pantalla de plan. Cada límite cuenta lo que ya existe: empresas activas, personas activas, terceros vinculados, documentos recibidos, almacenamiento y llamadas a la API por mes. ' +
-        'Deja un campo vacío para no poner límite a ese recurso. AvalaSoft avisa al 80 % y al 100 % de cada uno.',
+        'Deja un campo vacío para no poner límite a ese recurso. Valídalo avisa al 80 % y al 100 % de cada uno.',
       resaltar: [
         consola.getByRole('textbox', { name: 'Código del plan' }),
         consola.getByRole('textbox', { name: 'Empresas' }),

@@ -1,13 +1,13 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { PersonaInformeDto } from '@avalasoft/api-client';
+import type { PersonaInformeDto } from '@validalo/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderizar } from '../pruebasApi';
 import { DeclaracionPepDePersona } from './DeclaracionPepDePersona';
 
 const descargarArchivo = vi.hoisted(() => vi.fn());
 const guardarArchivo = vi.hoisted(() => vi.fn());
-vi.mock('@avalasoft/api-client', async (importar) => ({ ...(await importar<typeof import('@avalasoft/api-client')>()), descargarArchivo }));
+vi.mock('@validalo/api-client', async (importar) => ({ ...(await importar<typeof import('@validalo/api-client')>()), descargarArchivo }));
 vi.mock('../../vencimientos/api', async (importar) => ({ ...(await importar<typeof import('../../vencimientos/api')>()), guardarArchivo }));
 
 const persona = (cambio: Partial<PersonaInformeDto>): PersonaInformeDto => ({

@@ -1,7 +1,7 @@
 import { Button, Skeleton, Stack, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { cerrarMiSesion, getListarMisSesionesQueryOptions } from '@avalasoft/api-client';
-import { EstadoVacio } from '@avalasoft/ui';
+import { cerrarMiSesion, getListarMisSesionesQueryOptions } from '@validalo/api-client';
+import { EstadoVacio } from '@validalo/ui';
 import { Laptop, LogOut } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeIngreso } from '../../ingreso/mensajes';

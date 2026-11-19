@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import type { SesionTerceroDto } from '@avalasoft/api-client';
+import type { SesionTerceroDto } from '@validalo/api-client';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { RequiereAccesoCompleto } from './PaginasSesion';

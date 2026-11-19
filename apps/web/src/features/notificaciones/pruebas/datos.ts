@@ -1,4 +1,4 @@
-import type { NotificacionDto } from '@avalasoft/api-client';
+import type { NotificacionDto } from '@validalo/api-client';
 
 let secuencia = 0;
 

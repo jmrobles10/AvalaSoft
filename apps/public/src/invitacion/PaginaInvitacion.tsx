@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Card, Checkbox, FormControlLabel, Stack, Typography } from '@mui/material';
-import { esErrorApi } from '@avalasoft/api-client';
-import { formatearFecha, PaginaEstado } from '@avalasoft/ui';
+import { esErrorApi } from '@validalo/api-client';
+import { formatearFecha, PaginaEstado } from '@validalo/ui';
 import { CircleCheck, CirclePause, CircleSlash, FileClock, SearchX } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

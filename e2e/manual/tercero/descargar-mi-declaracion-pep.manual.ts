@@ -61,7 +61,7 @@ recorrido(
     await paso(page, {
       titulo: 'Descarga el PDF y guárdalo',
       explicacion:
-        'El PDF tiene tus datos de la declaración tal como quedaron firmados, con la firma que dibujaste. El PDF lleva el logo de AvalaSoft y, si la empresa que te invitó tiene logo, también el suyo. ' +
+        'El PDF tiene tus datos de la declaración tal como quedaron firmados, con la firma que dibujaste. El PDF lleva el logo de Valídalo y, si la empresa que te invitó tiene logo, también el suyo. ' +
         'Guárdalo en tu equipo.',
       resaltar: boton,
     });

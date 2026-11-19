@@ -11,7 +11,7 @@ recorrido(
       'La administradora agrega a un flujo de proveedores dos secciones de «Mi información»: la financiera, por periodos, y la legal, solo para personas jurídicas. Define la vigencia y el plazo de revalidación de cada una y guarda el borrador.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con miembros y los tipos de documento base.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/flujo-condiciones-por-tipo-de-persona', 'configuracion/flujo-vigencia-del-vinculo'],
   },

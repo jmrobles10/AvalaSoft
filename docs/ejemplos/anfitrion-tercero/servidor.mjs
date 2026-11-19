@@ -1,19 +1,19 @@
 // Backend mínimo del sistema anfitrión ficticio (IO-5, docs/integracion.md §8.1). Sirve index.html y expone POST /sesion: canjea con la API key del
-// sistema (que solo vive aquí, en el servidor) una sesión del tercero en AvalaSoft y devuelve a la página únicamente el resultado.
+// sistema (que solo vive aquí, en el servidor) una sesión del tercero en Valídalo y devuelve a la página únicamente el resultado.
 //
-//   AVALASOFT_URL=http://localhost:5080 AVALASOFT_API_KEY=vsk_… AVALASOFT_EMPRESA=<id> AVALASOFT_VINCULO=<id> \
+//   VALIDALO_URL=http://localhost:5080 VALIDALO_API_KEY=vsk_… VALIDALO_EMPRESA=<id> VALIDALO_VINCULO=<id> \
 //   ORIGEN_ANFITRION=http://localhost:5199 PUERTO=5199 node servidor.mjs
 //
-// Requisitos en AvalaSoft: un sistema integrador cuyo `origenesPermitidos` incluya ORIGEN_ANFITRION, una API key suya con el permiso
+// Requisitos en Valídalo: un sistema integrador cuyo `origenesPermitidos` incluya ORIGEN_ANFITRION, una API key suya con el permiso
 // `sesiones-tercero:crear` y un vínculo (de la empresa) con la invitación aceptada que lleve la referencia de ese sistema.
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const { AVALASOFT_URL, AVALASOFT_API_KEY, AVALASOFT_EMPRESA, AVALASOFT_VINCULO, ORIGEN_ANFITRION = 'http://localhost:5199', PUERTO = '5199' } = process.env;
-if (!AVALASOFT_URL || !AVALASOFT_API_KEY || !AVALASOFT_EMPRESA || !AVALASOFT_VINCULO) {
-  console.error('Faltan AVALASOFT_URL, AVALASOFT_API_KEY, AVALASOFT_EMPRESA o AVALASOFT_VINCULO.');
+const { VALIDALO_URL, VALIDALO_API_KEY, VALIDALO_EMPRESA, VALIDALO_VINCULO, ORIGEN_ANFITRION = 'http://localhost:5199', PUERTO = '5199' } = process.env;
+if (!VALIDALO_URL || !VALIDALO_API_KEY || !VALIDALO_EMPRESA || !VALIDALO_VINCULO) {
+  console.error('Faltan VALIDALO_URL, VALIDALO_API_KEY, VALIDALO_EMPRESA o VALIDALO_VINCULO.');
   process.exit(1);
 }
 
@@ -21,12 +21,12 @@ const pagina = await readFile(join(dirname(fileURLToPath(import.meta.url)), 'ind
 
 /** POST /api/v1/sesiones-tercero con la API key del sistema; el vínculo lo decide el sistema, no la página. */
 async function abrirSesion(componente) {
-  const respuesta = await fetch(`${AVALASOFT_URL}/api/v1/sesiones-tercero`, {
+  const respuesta = await fetch(`${VALIDALO_URL}/api/v1/sesiones-tercero`, {
     method: 'POST',
-    headers: { 'X-Api-Key': AVALASOFT_API_KEY, 'X-Empresa': AVALASOFT_EMPRESA, 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
-    body: JSON.stringify({ vinculoId: AVALASOFT_VINCULO, componente, origen: ORIGEN_ANFITRION, minutos: 10 }),
+    headers: { 'X-Api-Key': VALIDALO_API_KEY, 'X-Empresa': VALIDALO_EMPRESA, 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
+    body: JSON.stringify({ vinculoId: VALIDALO_VINCULO, componente, origen: ORIGEN_ANFITRION, minutos: 10 }),
   });
-  if (!respuesta.ok) throw new Error(`AvalaSoft respondió ${respuesta.status}: ${await respuesta.text()}`);
+  if (!respuesta.ok) throw new Error(`Valídalo respondió ${respuesta.status}: ${await respuesta.text()}`);
   return respuesta.json();
 }
 

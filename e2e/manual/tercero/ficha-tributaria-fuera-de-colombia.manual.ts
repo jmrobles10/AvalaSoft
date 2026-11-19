@@ -34,7 +34,7 @@ recorrido(
     await paso(page, {
       titulo: 'Acepta la invitación con tu RUC panameño',
       explicacion:
-        'La invitación funciona igual que en Colombia: aceptas los textos legales y ves lo que te pide la empresa. Tu identificación es un RUC de Panamá, así que AvalaSoft aplica las reglas de tu país: ' +
+        'La invitación funciona igual que en Colombia: aceptas los textos legales y ves lo que te pide la empresa. Tu identificación es un RUC de Panamá, así que Valídalo aplica las reglas de tu país: ' +
         'la ficha pide el dígito de verificación de tu RUC y la información tributaria con las preguntas de tu país, no las de la DIAN.',
       resaltar: fraseDeEstado(page, 'Abierto'),
       variantes: [
@@ -68,7 +68,7 @@ recorrido(
     await paso(page, {
       titulo: 'Declara el dígito de verificación de tu RUC',
       explicacion:
-        'Tu RUC panameño trae su dígito de verificación (DV), de 2 dígitos, que figura junto al RUC en tu certificado de la DGI. Lo escribes tú: AvalaSoft no lo calcula para RUC de Panamá, y ' +
+        'Tu RUC panameño trae su dígito de verificación (DV), de 2 dígitos, que figura junto al RUC en tu certificado de la DGI. Lo escribes tú: Valídalo no lo calcula para RUC de Panamá, y ' +
         'el DV viaja con tu información a la empresa tal como lo declaraste. Los demás datos de contacto y domicilio se llenan como siempre.',
       resaltar: dv,
       variantes: [{ cuando: 'Dejas el DV vacío', entonces: 'La sección no se puede guardar: el DV es obligatorio para tu RUC.' }],

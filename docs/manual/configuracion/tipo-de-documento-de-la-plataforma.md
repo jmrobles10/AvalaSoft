@@ -3,7 +3,7 @@ id: "configuracion/tipo-de-documento-de-la-plataforma"
 titulo: "Crea un documento a partir de uno de la plataforma"
 actor: "Administrador de empresa"
 dominio: "configuracion"
-resumen: "La administradora parte de la Cédula de ciudadanía, un documento conocido de la plataforma. AvalaSoft fija el ámbito compartido y los techos de formato y peso; ella intenta un límite más laxo, recibe el error y lo corrige antes de crear el tipo."
+resumen: "La administradora parte de la Cédula de ciudadanía, un documento conocido de la plataforma. Valídalo fija el ámbito compartido y los techos de formato y peso; ella intenta un límite más laxo, recibe el error y lo corrige antes de crear el tipo."
 pasos: 5
 ---
 
@@ -11,12 +11,12 @@ pasos: 5
 
 **Actor:** Administrador de empresa · **Dominio:** Configuración
 
-La administradora parte de la Cédula de ciudadanía, un documento conocido de la plataforma. AvalaSoft fija el ámbito compartido y los techos de formato y peso; ella intenta un límite más laxo, recibe el error y lo corrige antes de crear el tipo.
+La administradora parte de la Cédula de ciudadanía, un documento conocido de la plataforma. Valídalo fija el ámbito compartido y los techos de formato y peso; ella intenta un límite más laxo, recibe el error y lo corrige antes de crear el tipo.
 
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y el catálogo de documentos de la plataforma disponible.
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 
@@ -65,7 +65,7 @@ La sección «Archivo» muestra lo que la plataforma permite para este documento
 
 ## Paso 4. Intenta un peso mayor que el de la plataforma
 
-La plataforma fija un máximo de 20 MB para este documento y no lo muestra en el campo. Escribir 999 MB es un límite más laxo: al crear el tipo, AvalaSoft lo rechaza, dice cuál es el máximo de la plataforma y el panel queda abierto en rojo. Nada se guarda hasta que corrijas el valor; así el proveedor nunca recibe una regla que la plataforma no permite.
+La plataforma fija un máximo de 20 MB para este documento y no lo muestra en el campo. Escribir 999 MB es un límite más laxo: al crear el tipo, Valídalo lo rechaza, dice cuál es el máximo de la plataforma y el panel queda abierto en rojo. Nada se guarda hasta que corrijas el valor; así el proveedor nunca recibe una regla que la plataforma no permite.
 
 > **Pantalla:** `/e/{empresa}/tipos-documento`
 

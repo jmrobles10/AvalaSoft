@@ -15,7 +15,7 @@ recorrido(
     actor: 'Revisor/área',
     titulo: 'Lee el análisis automático de un documento',
     resumen:
-      'Cada documento que sube el tercero se lee con IA: AvalaSoft muestra si es legible, qué tipo de documento detectó, los datos que extrajo y su confianza. Sofía, de Revisión, usa ese análisis para decidir, sin que la IA decida por ella.',
+      'Cada documento que sube el tercero se lee con IA: Valídalo muestra si es legible, qué tipo de documento detectó, los datos que extrajo y su confianza. Sofía, de Revisión, usa ese análisis para decidir, sin que la IA decida por ella.',
     precondiciones: ['Un grupo con Constructora Sur, la IA activa y un flujo de Cliente que pide el RUT al área Revisión.'],
     relacionados: ['ia/cruce-de-la-ficha-con-los-soportes', 'ia/revision-asistida-y-excepciones'],
   },

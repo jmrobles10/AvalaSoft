@@ -1,4 +1,4 @@
-import type { ConfiguracionDeSsoDto } from '@avalasoft/api-client';
+import type { ConfiguracionDeSsoDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { aRolSso, cuerpoDeSso, dominiosVerificados, formularioDesde, problemasDeSso, secretoParaEnviar, secretoValido, sinCambiosDeSso } from './modeloSso';
 
@@ -11,7 +11,7 @@ function configuracion(cambios: Partial<ConfiguracionDeSsoDto> = {}): Configurac
     proveedor: 'oidc',
     nombre: 'Andina',
     autoridad: 'https://login.andina.co/v2.0',
-    clientId: 'avalasoft-andina',
+    clientId: 'validalo-andina',
     secretoConfigurado: true,
     ultimosCuatroSecreto: 'wxyz',
     alcances: ['openid', 'email', 'profile'],
@@ -20,14 +20,14 @@ function configuracion(cambios: Partial<ConfiguracionDeSsoDto> = {}): Configurac
     conexionWorkOs: null,
     dominios: [
       { dominio: 'andina.co', verificado: true, token: null, instruccion: null, creadoEn: '2026-11-01T10:00:00Z', verificadoEn: '2026-11-01T11:00:00Z' },
-      { dominio: 'andina.com', verificado: false, token: 'avalasoft-verificacion=abc', instruccion: 'publica', creadoEn: '2026-11-02T10:00:00Z', verificadoEn: null },
+      { dominio: 'andina.com', verificado: false, token: 'validalo-verificacion=abc', instruccion: 'publica', creadoEn: '2026-11-02T10:00:00Z', verificadoEn: null },
     ],
     aprovisionamientoJit: true,
     rolesPorOmision: [{ rol: 'Revisor', empresaId: null }],
     reglas: [{ grupo: 'Oficiales', rol: 'OficialCumplimiento', empresaId: EMPRESA }],
     sincronizarRoles: true,
     modo: 'Complementario',
-    urlDeRetorno: 'https://avalasoft.co/api/v1/ingreso/sso/retorno',
+    urlDeRetorno: 'https://validalo.co/api/v1/ingreso/sso/retorno',
     workOsDisponible: false,
     actualizadoEn: '2026-11-03T10:00:00Z',
     ...cambios,
@@ -64,7 +64,7 @@ describe('cuerpo de PUT /configuracion/sso', () => {
   it('con OIDC envía emisor y client id, sin los datos de WorkOS, y el secreto como se pidió', () => {
     const f = formularioDesde(configuracion());
     const conservar = cuerpoDeSso(f, secretoParaEnviar('conservar', ''));
-    expect(conservar).toMatchObject({ proveedor: 'oidc', autoridad: 'https://login.andina.co/v2.0', clientId: 'avalasoft-andina', organizacionWorkOs: null, conexionWorkOs: null });
+    expect(conservar).toMatchObject({ proveedor: 'oidc', autoridad: 'https://login.andina.co/v2.0', clientId: 'validalo-andina', organizacionWorkOs: null, conexionWorkOs: null });
     expect(conservar.secretoDelCliente).toBeNull();
     expect(cuerpoDeSso(f, secretoParaEnviar('cambiar', ' nuevo-secreto-1 ')).secretoDelCliente).toBe('nuevo-secreto-1');
     expect(cuerpoDeSso(f, secretoParaEnviar('quitar', '')).secretoDelCliente).toBe('');

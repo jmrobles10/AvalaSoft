@@ -3,7 +3,7 @@ id: "privacidad/lo-que-acepte-y-textos-nuevos"
 titulo: "Lee y acepta los textos legales de una empresa"
 actor: "Tercero"
 dominio: "privacidad"
-resumen: "Antes de compartir sus documentos con una empresa, el tercero lee cada texto legal vigente con su versión y lo marca como aceptado. AvalaSoft registra qué aceptó y en qué versión; si un texto cambia mientras lo lee, debe volver a marcarlo."
+resumen: "Antes de compartir sus documentos con una empresa, el tercero lee cada texto legal vigente con su versión y lo marca como aceptado. Valídalo registra qué aceptó y en qué versión; si un texto cambia mientras lo lee, debe volver a marcarlo."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Tercero · **Dominio:** Datos personales
 
-Antes de compartir sus documentos con una empresa, el tercero lee cada texto legal vigente con su versión y lo marca como aceptado. AvalaSoft registra qué aceptó y en qué versión; si un texto cambia mientras lo lee, debe volver a marcarlo.
+Antes de compartir sus documentos con una empresa, el tercero lee cada texto legal vigente con su versión y lo marca como aceptado. Valídalo registra qué aceptó y en qué versión; si un texto cambia mientras lo lee, debe volver a marcarlo.
 
 **Antes de empezar**
 
@@ -26,7 +26,7 @@ Antes de compartir sus documentos con una empresa, el tercero lee cada texto leg
 
 ## Paso 1. Lee los textos legales de la empresa
 
-En «Lo que aceptas» aparece cada texto legal que la empresa exige, con su nombre (por ejemplo, el aviso de tratamiento de datos de AvalaSoft y la autorización de la empresa), la versión publicada y la fecha de publicación. Lee el texto completo dentro de su recuadro antes de marcarlo: la aceptación queda registrada con esa versión exacta.
+En «Lo que aceptas» aparece cada texto legal que la empresa exige, con su nombre (por ejemplo, el aviso de tratamiento de datos de Valídalo y la autorización de la empresa), la versión publicada y la fecha de publicación. Lee el texto completo dentro de su recuadro antes de marcarlo: la aceptación queda registrada con esa versión exacta.
 
 > **Pantalla:** `/empresas/{id}`
 

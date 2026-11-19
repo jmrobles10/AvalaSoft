@@ -1,4 +1,4 @@
-// Pasos de empaquetado de @avalasoft/sdk que tsc no hace (los llama el script `build` del paquete):
+// Pasos de empaquetado de @validalo/sdk que tsc no hace (los llama el script `build` del paquete):
 //   - dist/cjs/package.json con "type": "commonjs", para que Node lea la salida CJS como tal aunque el paquete sea ESM;
 //   - LICENSE.md copiado de LICENCIA-SDK.md (la fuente única), que npm exige dentro de la carpeta del paquete.
 import { copyFileSync, mkdirSync, writeFileSync } from 'node:fs';

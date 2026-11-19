@@ -1,5 +1,5 @@
-import type { VigenciaDto } from '@avalasoft/api-client';
-import type { Estado } from '@avalasoft/ui';
+import type { VigenciaDto } from '@validalo/api-client';
+import type { Estado } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 import { formatearFechaDeclarada } from './formatoDatos';
 

@@ -1,6 +1,6 @@
 import { Box, FormControlLabel, MenuItem, Radio, RadioGroup, Stack, Switch, TextField, Typography } from '@mui/material';
-import { CampoNumero } from '@avalasoft/ui';
-import type { AreaDto, AtributoPermitidoDto, CuestionarioDto, PoliticaDevolucion, TipoDocumentoTenantDto, TipoVinculoDto } from '@avalasoft/api-client';
+import { CampoNumero } from '@validalo/ui';
+import type { AreaDto, AtributoPermitidoDto, CuestionarioDto, PoliticaDevolucion, TipoDocumentoTenantDto, TipoVinculoDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { limpiarAreasDeRequisitos, type BorradorFlujo, type ErrorFlujo } from '../editor';

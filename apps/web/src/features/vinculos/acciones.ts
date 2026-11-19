@@ -1,4 +1,4 @@
-import type { AccionVinculo } from '@avalasoft/api-client';
+import type { AccionVinculo } from '@validalo/api-client';
 import { Ban, Lock, LockOpen, RotateCcw, Send, Unlink, type LucideIcon } from 'lucide-react';
 
 /** Ícono de cada acción del vínculo (botón, menú y confirmación usan el mismo). */

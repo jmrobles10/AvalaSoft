@@ -15,7 +15,7 @@ recorrido(
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» y un flujo de Proveedor ya publicado como por defecto.',
       'Un segundo flujo de Proveedor publicado (se siembra por la API del sistema de pruebas, sin documentos).',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/tipo-de-documento-y-flujo', 'configuracion/flujo-etapas-y-areas-en-paralelo'],
   },

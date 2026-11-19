@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
-import { configurarCliente, reiniciarCliente, SCOPES, type DocumentoVistaEmpresaDto, type VersionDocumentoDto, type VinculoDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type DocumentoVistaEmpresaDto, type VersionDocumentoDto, type VinculoDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DocumentosVinculo } from './DocumentosVinculo';
 
@@ -54,7 +54,7 @@ function montar(documentos: DocumentoVistaEmpresaDto[], scopes: readonly string[
   permisos.scopes = new Set(scopes);
   configurarCliente({ fetch: vi.fn(() => Promise.resolve(json(documentos))) });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <DocumentosVinculo vinculo={VINCULO} />
       </QueryClientProvider>
