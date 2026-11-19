@@ -34,7 +34,7 @@ const AYUDA = `Réplica local del CI de AvalaSoft (ci.yml y e2e.yml) en contened
 Uso: ci-local.sh [opciones]            (Git Bash)
      ci-local.ps1 [opciones]           (PowerShell)
 
-  --solo <trabajo>[,<trabajo>]   backend, frontend, e2e o imagen (por omisión: backend y frontend, como ci.yml; la e2e es bajo demanda: --solo e2e)
+  --solo <trabajo>[,<trabajo>]   backend, frontend, pruebas-web, e2e o imagen (por omisión: backend, frontend y pruebas-web, como ci.yml; la e2e es bajo demanda: --solo e2e)
   --directorio <ruta>            carpeta (worktree) a probar, con sus cambios sin confirmar (por omisión: la del propio script)
   --rama <rama|commit>           prueba lo confirmado en esa rama o commit, sin tocar ninguna carpeta (p. ej. origin/main)
   --salida <ruta>                dónde dejar logs y reportes (por omisión: <temp>/avalasoft-ci-local/<id>)

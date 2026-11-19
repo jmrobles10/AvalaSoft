@@ -1,11 +1,11 @@
 # Réplica local del CI
 
-Corre en esta máquina (Windows con Docker Desktop y WSL2) **lo mismo que `.github/workflows/ci.yml` (backend, frontend e imagen) y, bajo demanda, `.github/workflows/e2e.yml` (las pruebas de punta a punta), en contenedores Linux**. Los errores de entorno (rutas con mayúsculas, el SDK de .NET de Linux, Node 22, Testcontainers, Playwright en su imagen, servicios sin `localhost`) aparecen aquí y no en GitHub. No usa `act` ni descarga nada que no sea una imagen oficial. Decisiones CI-1 a CI-9 y E2E-1 (la e2e fuera del CI, bajo demanda) en `docs/decisiones/registro.md`; flujo de trabajo en `docs/13-flujo-de-trabajo-con-claude-code.md` §10.
+Corre en esta máquina (Windows con Docker Desktop y WSL2) **lo mismo que `.github/workflows/ci.yml` (backend, frontend, pruebas-web e imagen) y, bajo demanda, `.github/workflows/e2e.yml` (las pruebas de punta a punta), en contenedores Linux**. Los errores de entorno (rutas con mayúsculas, el SDK de .NET de Linux, Node 22, Testcontainers, Playwright en su imagen, servicios sin `localhost`) aparecen aquí y no en GitHub. No usa `act` ni descarga nada que no sea una imagen oficial. Decisiones CI-1 a CI-9 y E2E-1 (la e2e fuera del CI, bajo demanda) en `docs/decisiones/registro.md`; flujo de trabajo en `docs/13-flujo-de-trabajo-con-claude-code.md` §10.
 
 ```bash
-infra/ci-local/ci-local.sh                          # backend y frontend sobre esta carpeta, como ci.yml (Git Bash)
+infra/ci-local/ci-local.sh                          # backend, frontend y pruebas-web sobre esta carpeta, como ci.yml (Git Bash)
 .\infra\ci-local\ci-local.ps1                       # lo mismo en PowerShell
-infra/ci-local/ci-local.sh --solo frontend          # un trabajo (backend, frontend, e2e, imagen)
+infra/ci-local/ci-local.sh --solo frontend          # un trabajo (backend, frontend, pruebas-web, e2e, imagen)
 infra/ci-local/ci-local.sh --solo e2e                # la e2e, bajo demanda (lee e2e.yml)
 infra/ci-local/ci-local.sh --solo backend,frontend --paralelo
 infra/ci-local/ci-local.sh --rama origin/main       # lo confirmado en una rama o commit, sin tocar ninguna carpeta
@@ -19,7 +19,7 @@ Requisitos: Docker Desktop encendido, Node ≥ 22 y Git en el `PATH`. La primera
 
 | Opción | Qué hace |
 |---|---|
-| `--solo a,b` | Trabajos a correr: `backend`, `frontend`, `e2e`, `imagen`. Por omisión `backend` y `frontend`: lo que corre `ci.yml` en cada push y pull request menos la imagen. **La e2e no corre por omisión** (decisión E2E-1: solo se corre cuando hace falta): `--solo e2e` |
+| `--solo a,b` | Trabajos a correr: `backend`, `frontend`, `pruebas-web`, `e2e`, `imagen`. Por omisión `backend`, `frontend` y `pruebas-web`: lo que corre `ci.yml` en cada push y pull request menos la imagen. **La e2e no corre por omisión** (decisión E2E-1: solo se corre cuando hace falta): `--solo e2e` |
 | `--directorio <ruta>` | Carpeta (worktree) a probar, **con sus cambios sin confirmar**. Por omisión, la del propio script |
 | `--rama <rama o commit>` | Prueba lo confirmado (`git archive`), sin tocar ninguna carpeta. Sirve para `origin/main` o una rama rebasada |
 | `--salida <ruta>` | Logs y reportes. Por omisión `<temp>/avalasoft-ci-local/<id>` (se imprime al final) |
@@ -65,7 +65,7 @@ Los reportes se copian **siempre**, no solo cuando falla (ci.yml los sube solo s
 
 | Flujo | Se dispara | Trabajos | Aquí |
 |---|---|---|---|
-| `ci.yml` | push y pull request | backend, frontend, imagen | `backend` y `frontend` por omisión; `imagen` con `--solo imagen` |
+| `ci.yml` | push y pull request | backend, frontend, pruebas-web, imagen | `backend`, `frontend` y `pruebas-web` por omisión; `imagen` con `--solo imagen` |
 | `e2e.yml` | solo a mano (`workflow_dispatch`, con el filtro opcional `grep`) | e2e (Playwright) | solo con `--solo e2e` |
 
 La e2e salió del CI el 2026-11-12 (decisión E2E-1): tarda ≈ 17 min y las reglas se prueban con las pruebas de dominio, de integración y de Vitest. Se corre cuando un cambio toca la conexión entre las piezas (arranque, autenticación, configuración del stack) o antes de una entrega. El filtro del flujo (`grep`) se replica con `--e2e-args "--grep <texto>"`.
@@ -86,7 +86,8 @@ Los flujos se **leen** (`lib/plan.mjs`): los comandos de cada paso son los de `c
 | Playwright en `mcr.microsoft.com/playwright:v<versión de e2e/package.json>-noble` | El mismo `docker run` del flujo, con `--network host` reemplazado por la red de la API |
 
 - **backend** (SDK .NET 10): `dotnet restore`, `build` en Release con advertencias como error, `test` de dominio, SDK, adaptador e integración, `pack` de los SDK y el informe de vulnerabilidades, igual que el flujo. Testcontainers dentro del contenedor usa el socket de Docker de la máquina (*Docker outside of Docker*): se monta `/var/run/docker.sock`; PostgreSQL, MinIO y Ryuk de las pruebas de integración corren como contenedores hermanos con puertos aleatorios del anfitrión y se alcanzan por `host.docker.internal` (`TESTCONTAINERS_HOST_OVERRIDE`; sin eso Ryuk no conecta y todas las pruebas de integración fallan con «Initialization has been cancelled»).
-- **frontend** (Node 22): `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build` y el paquete npm del SDK. Incluye `sincronia.test.mjs`.
+- **frontend** (Node 22): `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `build` y el paquete npm del SDK.
+- **pruebas-web** (Node 22): `pnpm install --frozen-lockfile` y `pnpm test` (Vitest de todos los paquetes, incluido `sincronia.test.mjs`). Va en su propio trabajo, en paralelo con `frontend`, para que cada uno tenga sus CPU (PV-6).
 - **e2e** (`e2e.yml`, bajo demanda): PostgreSQL, Mailpit y MinIO van en una **red Docker propia** (`avalasoft-ci-<id>_default`), con nombres de servicio (`postgres`, `mailpit`, `minio`) y sin publicar puertos: no chocan con la API del usuario en :5080, Mailpit :8025, MinIO :9000 ni las bases que ya corren. La API (`node e2e/soporte/api.mjs`, tal cual) corre en un contenedor con el SDK de .NET 10 y Node 22 juntos (`Dockerfile.dotnet-node`, dos imágenes oficiales) y ve los servicios por nombre con cuatro variables de entorno (`ConnectionStrings__Avalasoft`, `Avalasoft__Correo__Host`/`Puerto`, `Avalasoft__Almacen__Endpoint`). Playwright corre en **su imagen oficial de la versión exacta de `e2e/package.json`**, compartiendo la red del contenedor de la API (el equivalente de `--network host` del runner: `localhost:5090` es la API y los webhooks de las pruebas la alcanzan), con `CI=true` (2 trabajadores, 1 reintento, como en GitHub) y `E2E_MAILPIT` apuntando al Mailpit de la red.
 - **imagen** (solo con `--solo imagen`): construye `src/Avalasoft.Api/Dockerfile` sin publicarlo y descarta el resultado.
 

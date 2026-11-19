@@ -157,9 +157,18 @@ describe('ci.yml y la réplica local', () => {
     // pnpm: el de `packageManager` (el flujo no fija otro).
     expect(plan.trabajos.frontend.pnpm).toBe(versionPnpm(paquete, null));
     expect(plan.trabajos.e2e.pnpm).toBe(plan.trabajos.frontend.pnpm);
+    expect(plan.trabajos['pruebas-web'].pnpm).toBe(plan.trabajos.frontend.pnpm);
+    expect(plan.trabajos['pruebas-web'].node).toBe(plan.trabajos.frontend.node);
     // Playwright: la imagen es la versión EXACTA de e2e/package.json.
     expect(plan.playwright).toBe(versionPlaywright(JSON.parse(archivos.paqueteE2e)));
     expect(/^\d+\.\d+\.\d+$/.test(plan.playwright)).toBe(true);
+  });
+
+  it('Vitest (`pnpm test`, que incluye esta prueba) corre en su propio trabajo, en paralelo con lint, tipos y build', () => {
+    const scripts = (id) => plan.trabajos[id].pasos.filter((p) => p.tipo === 'ejecutar').map((p) => p.script);
+    expect(scripts('pruebas-web')).toContain('pnpm test');
+    expect(scripts('frontend')).not.toContain('pnpm test');
+    for (const comando of ['pnpm lint', 'pnpm typecheck', 'pnpm build']) expect(scripts('frontend')).toContain(comando);
   });
 
   it('el trabajo e2e (e2e.yml) levanta los servicios con compose y corre Playwright como la réplica sabe repetirlo', () => {

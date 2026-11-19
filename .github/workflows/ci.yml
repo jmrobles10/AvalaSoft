@@ -1,7 +1,9 @@
 # Integración continua (docs/04 §11, SE-7). En cada push y en cada pull request:
 #   backend   -> dotnet build (TreatWarningsAsErrors: una advertencia de compilación rompe el build) y dotnet test
 #                (las pruebas de integración levantan PostgreSQL y MinIO con Testcontainers: el runner ya trae Docker).
-#   frontend  -> pnpm install --frozen-lockfile, lint, typecheck, test y build.
+#   frontend  -> pnpm install --frozen-lockfile, lint, typecheck, build y el paquete npm del SDK.
+#   pruebas-web -> pnpm install --frozen-lockfile y `pnpm test` (Vitest de todos los paquetes). Va en su propio trabajo, en paralelo con
+#                  `frontend`, para que cada uno tenga sus 4 CPU: juntos pasaban de 8 min y el trabajo más largo del CI era este (PV-6).
 #   imagen    -> construye la imagen de la API con el frontend (src/Avalasoft.Api/Dockerfile) sin publicarla.
 # Las pruebas de punta a punta (Playwright) NO corren aquí: viven en e2e.yml, que solo se dispara a mano (decisión E2E-1 en
 # docs/decisiones/registro.md). Las reglas se prueban con las pruebas de dominio, de integración y de Vitest de los trabajos de arriba.
@@ -97,15 +99,34 @@ jobs:
       - name: Tipos
         run: pnpm typecheck
 
-      - name: Pruebas
-        run: pnpm test
-
       - name: Build
         run: pnpm build
 
       # El paquete npm del SDK trae ESM y CJS: las dos salidas cargan y validan un webhook firmado.
       - name: Paquete npm del SDK (ESM y CJS)
         run: node infra/sdk/verificar-paquete.mjs
+
+  pruebas-web:
+    name: Pruebas del frontend (Vitest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # Sin `version`: usa la de `packageManager` en package.json.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar
+        run: pnpm install --frozen-lockfile
+
+      # Incluye infra/ci-local/sincronia.test.mjs: que la réplica local del CI siga leyendo los flujos.
+      - name: Pruebas
+        run: pnpm test
 
   imagen:
     name: Imagen Docker (sin publicar)

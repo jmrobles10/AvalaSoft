@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "pnpm --filter @avalasoft/web dev",
     "lint": "eslint . --max-warnings 0",
+    "lint:rapido": "eslint . --max-warnings 0 --cache --cache-location node_modules/.cache/eslint/ --concurrency=auto",
     "typecheck": "pnpm -r --parallel typecheck",
     "build": "pnpm -r build",
     "test": "vitest run",
