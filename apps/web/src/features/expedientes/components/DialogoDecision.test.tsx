@@ -176,7 +176,8 @@ describe('DialogoDecision: eximir un documento (RQ-6)', () => {
     await waitFor(() => expect(onCerrar).toHaveBeenCalled());
     const post = fetch.mock.calls.find(([, init]) => init?.method === 'POST');
     expect(post?.[0]).toBe('/api/v1/expedientes/e1/requisitos/r-rut/eximir');
-    expect(JSON.parse(String(post?.[1]?.body))).toEqual({ justificacion: 'Está inscrita en la Cámara de otro país.' });
+    const cuerpo = post?.[1]?.body;
+    expect(typeof cuerpo === 'string' ? (JSON.parse(cuerpo) as unknown) : null).toEqual({ justificacion: 'Está inscrita en la Cámara de otro país.' });
     expect(useAvisos.getState().actual?.mensaje).toBe('Registro Único Tributario eximido.');
   });
 });

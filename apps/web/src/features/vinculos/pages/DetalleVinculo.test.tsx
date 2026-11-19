@@ -117,10 +117,10 @@ describe('Detalle del vínculo: el estado a la vista', () => {
 
   it('un bloqueo con fecha dice el motivo y hasta cuándo dura', async () => {
     montar(
-      vinculo({ estado: 'Bloqueado', bloqueo: { motivo: 'Revisión temporal de sanciones.', desde: '2026-11-12T15:00:00Z', hasta: '2026-11-13T23:59:59Z' } as VinculoDto['bloqueo'] }),
+      vinculo({ estado: 'Bloqueado', bloqueo: { motivo: 'Revisión temporal de sanciones.', desde: '2026-11-12T15:00:00Z', hasta: '2026-11-13T23:59:59Z' } }),
     );
 
-    const aviso = (await screen.findByText('Vínculo bloqueado', { selector: '.MuiAlertTitle-root' })).closest('[role="alert"]') as HTMLElement;
+    const aviso = (await screen.findByText('Vínculo bloqueado', { selector: '.MuiAlertTitle-root' })).closest('[role="alert"]')!;
     expect(aviso).toHaveTextContent('Revisión temporal de sanciones.');
     expect(aviso).toHaveTextContent(/Desde el 12\/11\/2026 hasta el 13\/11\/2026/);
   });
