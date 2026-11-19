@@ -263,7 +263,7 @@ describe('Inicio', () => {
     expect(within(reparto).getByText('Cada vínculo cuenta en un solo grupo; en total hay 115.')).toBeInTheDocument();
     expect(within(reparto).getByRole('img', { name: 'Reparto de los vínculos: Activos al día 80, Por vencer 20, En proceso 15' })).toBeInTheDocument();
     expect(within(reparto).getAllByRole('term').map((t) => t.textContent)).toEqual(['Activos al día', 'Por vencer', 'En proceso']);
-    expect(within(reparto).getByText('Invitados, en validación y en revisión')).toBeInTheDocument();
+    expect(within(reparto).getByTitle('Invitados, en validación y en revisión')).toBeInTheDocument();
     expect(within(reparto).queryByText('Vencidos o bloqueados')).not.toBeInTheDocument();
   });
 

@@ -28,10 +28,10 @@ function Grupo({ titulo, icono, children }: { titulo: string; icono: typeof User
 /** Los tres grupos con la forma de lo que llega: el rótulo del grupo y sus tarjetas grises (5 de vínculos, 6 de expedientes y 3 de certificados como mínimo). */
 function EsqueletoIndicadores({ etiqueta }: { etiqueta: string }) {
   return (
-    <Stack spacing={3} role="status" aria-busy aria-label={etiqueta}>
+    <Stack spacing={2.5} role="status" aria-busy aria-label={etiqueta}>
       {[5, 6, 3].map((cantidad) => (
         <Box key={cantidad}>
-          <Skeleton variant="rounded" width={140} height={18} sx={{ mb: 2 }} />
+          <Skeleton variant="rounded" width={140} height={18} sx={{ mb: 1.25 }} />
           <EsqueletoKpis cantidad={cantidad} />
         </Box>
       ))}
@@ -81,16 +81,16 @@ export function Indicadores({ empresaId, puedeVerVinculos, puedeVerCertificados 
       ) : !datos ? (
         <EsqueletoIndicadores etiqueta={t('inicio.indicadores.cargando')} />
       ) : (
-        <Stack spacing={3} sx={{ opacity: consulta.isPlaceholderData ? 0.6 : 1, transition: 'opacity 120ms' }} aria-busy={consulta.isPlaceholderData || undefined}>
+        <Stack spacing={2.5} sx={{ opacity: consulta.isPlaceholderData ? 0.6 : 1, transition: 'opacity 120ms' }} aria-busy={consulta.isPlaceholderData || undefined}>
           <Grupo titulo={t('inicio.indicadores.vinculos')} icono={Users}>
             <ResumenKpis kpis={kpisVinculos(datos, t, aVinculos)} />
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 1.5 }}>
               <RepartoVinculos indicadores={datos} />
             </Box>
           </Grupo>
           <Grupo titulo={t('inicio.indicadores.expedientes')} icono={FolderOpen}>
             <ResumenKpis kpis={kpisExpedientes(datos, t, aInforme)} />
-            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1.5 }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
               {t('inicio.indicadores.enLaVentana', { count: datos.dias })}
             </Typography>
           </Grupo>

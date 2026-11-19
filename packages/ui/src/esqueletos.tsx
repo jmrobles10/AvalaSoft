@@ -1,6 +1,6 @@
 import { Box, Skeleton, Stack, Table, TableBody, TableCell, TableHead, TableRow, useTheme, type SxProps, type Theme } from '@mui/material';
 import type { ReactNode } from 'react';
-import { columnasKpi, GrillaKpi } from './tarjetas';
+import { columnasKpi, GrillaKpi, type ColumnasKpi } from './tarjetas';
 
 /**
  * Esqueletos de carga con la forma real del contenido (UI-1): mientras algo carga, la pantalla muestra bloques grises con
@@ -85,12 +85,12 @@ export function EsqueletoTarjetas({ cantidad = 2, lineas = 2, alto, etiqueta, sx
  * Las tarjetas de cifras de un tablero (`TarjetaKpi`) con su forma: el mismo alto y la misma rejilla que las reales. `columnas` por omisión
  * sale de `cantidad` (`columnasKpi`), como en la rejilla real.
  */
-export function EsqueletoKpis({ cantidad = 5, columnas, etiqueta, sx }: Comun & { cantidad?: number; columnas?: 3 | 4 | 5 }) {
+export function EsqueletoKpis({ cantidad = 5, columnas, etiqueta, sx }: Comun & { cantidad?: number; columnas?: ColumnasKpi }) {
   return (
     <Region etiqueta={etiqueta} sx={sx}>
       <GrillaKpi columnas={columnas ?? columnasKpi(cantidad)}>
         {Array.from({ length: cantidad }, (_, i) => (
-          <Skeleton key={i} variant="rounded" height={136} sx={{ borderRadius: radioMarco }} />
+          <Skeleton key={i} variant="rounded" height={92} sx={{ borderRadius: radioMarco }} />
         ))}
       </GrillaKpi>
     </Region>

@@ -190,7 +190,8 @@ export function TarjetaKpi({
     display: 'block',
     width: '100%',
     minWidth: 0,
-    p: 2.25,
+    px: 1.75,
+    py: 1.25,
     textAlign: 'left',
     border: 1,
     borderColor: alerta ? t.palette.estado.error.borde : 'divider',
@@ -201,12 +202,12 @@ export function TarjetaKpi({
   });
   const cuerpo = (
     <>
-      <Stack direction="row" sx={{ alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+      <Stack direction="row" sx={{ alignItems: 'center', gap: 1, mb: 0.75 }}>
         <Box
           aria-hidden
-          sx={(t) => ({ display: 'grid', placeItems: 'center', flex: 'none', width: 36, height: 36, borderRadius: '10px', bgcolor: coloresDeKpi(t, tono).fondo, color: coloresDeKpi(t, tono).texto })}
+          sx={(t) => ({ display: 'grid', placeItems: 'center', flex: 'none', width: 26, height: 26, borderRadius: '7px', bgcolor: coloresDeKpi(t, tono).fondo, color: coloresDeKpi(t, tono).texto })}
         >
-          <Icono size={18} strokeWidth={1.75} />
+          <Icono size={14} strokeWidth={1.75} />
         </Box>
         <Typography component="span" variant="body2" sx={{ flex: 1, minWidth: 0, color: 'text.secondary', fontWeight: 400 }}>
           {titulo}
@@ -221,7 +222,7 @@ export function TarjetaKpi({
         <Box sx={{ minWidth: 0 }}>
           <Typography
             component="p"
-            sx={{ m: 0, fontSize: 30, lineHeight: '36px', fontWeight: 500, letterSpacing: '-0.02em', color: alerta ? (t) => t.palette.estado.error.texto : undefined }}
+            sx={{ m: 0, fontSize: 24, lineHeight: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: alerta ? (t) => t.palette.estado.error.texto : undefined }}
           >
             {valor}
           </Typography>
@@ -252,14 +253,15 @@ export function TarjetaKpi({
 
 /**
  * Cuántas columnas da en pantallas anchas la rejilla a un grupo de `cantidad` tarjetas, para no dejar filas a medias donde se pueda evitar:
- * 3 o menos en una fila de 3; 4 y 5 en una fila; 6 en dos filas de 3; 7 o más en filas de 4.
+ * 3 o menos en una fila de 3; de 4 a 6 en una sola fila; 7 o más en filas de 4.
  */
-export function columnasKpi(cantidad: number): 3 | 4 | 5 {
+export function columnasKpi(cantidad: number): ColumnasKpi {
   if (cantidad <= 3) return 3;
-  if (cantidad === 4) return 4;
-  if (cantidad === 5) return 5;
-  return cantidad === 6 ? 3 : 4;
+  if (cantidad <= 6) return cantidad as 4 | 5 | 6;
+  return 4;
 }
+
+export type ColumnasKpi = 3 | 4 | 5 | 6;
 
 /**
  * Rejilla de las tarjetas del tablero: 1 columna en el celular, 2 desde `sm` y, en pantallas anchas, 3, 4 o 5 columnas (las tarjetas no se
@@ -267,7 +269,7 @@ export function columnasKpi(cantidad: number): 3 | 4 | 5 {
  * la última ocupa la fila entera (con 5, la quinta en `sm`, y en `md` se reparten 3 y 2, las de la segunda fila a medio ancho cada una).
  * Con `etiqueta` es una región con nombre; `ocupada` la marca como actualizándose.
  */
-export function GrillaKpi({ columnas = 4, etiqueta, ocupada = false, children, sx }: { columnas?: 3 | 4 | 5; etiqueta?: string; ocupada?: boolean; children: ReactNode; sx?: SxProps<Theme> }) {
+export function GrillaKpi({ columnas = 4, etiqueta, ocupada = false, children, sx }: { columnas?: ColumnasKpi; etiqueta?: string; ocupada?: boolean; children: ReactNode; sx?: SxProps<Theme> }) {
   const n = (cantidad: number) => `repeat(${String(cantidad)}, minmax(0, 1fr))`;
   return (
     <Box
@@ -277,8 +279,9 @@ export function GrillaKpi({ columnas = 4, etiqueta, ocupada = false, children, s
       sx={[
         (t: Theme) => ({
           display: 'grid',
-          gap: 2,
-          gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: n(2), lg: n(columnas) },
+          gap: 1.5,
+          // Con 6, en `md` van en dos filas de 3 antes de caber las 6 en una sola.
+          gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: n(2), ...(columnas === 6 && { md: n(3) }), lg: n(columnas) },
           ...(columnas === 5
             ? {
                 [t.breakpoints.only('sm')]: { '& > :nth-child(5)': { gridColumn: '1 / -1' } },
