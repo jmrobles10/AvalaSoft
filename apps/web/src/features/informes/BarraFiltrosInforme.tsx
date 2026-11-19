@@ -23,7 +23,7 @@ export function BarraFiltrosInforme({ children, hayFiltros, onLimpiar }: { child
         boxShadow: tema.sombra.suave,
       })}
     >
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'repeat(auto-fill, minmax(190px, 1fr))' }, gap: 1.5, alignItems: 'start' }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'repeat(auto-fit, minmax(168px, 1fr))' }, gap: 1.5, alignItems: 'start' }}>
         {children}
         {hayFiltros && (
           <Button variant="text" startIcon={<X size={14} aria-hidden />} onClick={onLimpiar} sx={{ justifySelf: { xs: 'stretch', sm: 'start' } }}>
