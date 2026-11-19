@@ -1,5 +1,5 @@
 import type { ObtenerInformeSlaParams } from '@validalo/api-client';
-import { LOCALE } from '@validalo/ui';
+import { LOCALE, type TonoKpi } from '@validalo/ui';
 import { aNumero } from './modelo';
 
 /** Filtros del informe de cumplimiento del plazo de revisión en la URL (vacío = sin filtro). */
@@ -47,6 +47,12 @@ export function tonoDeCumplimiento(valor: number | string | null | undefined): '
   if (numero === null) return 'inherit';
   if (numero >= 90) return 'success';
   return numero >= 70 ? 'warning' : 'error';
+}
+
+/** Tono de la tarjeta del cumplimiento: el de la barra (verde, ámbar, rojo); sin dato, el neutro del tablero. */
+export function tonoKpiDeCumplimiento(valor: number | string | null | undefined): TonoKpi {
+  const tono = tonoDeCumplimiento(valor);
+  return tono === 'success' ? 'verde' : tono === 'warning' ? 'ambar' : tono === 'error' ? 'rojo' : 'cian';
 }
 
 /** Un retraso en horas (el contrato las trae como número o texto): de 48 horas en adelante se cuenta en días. */

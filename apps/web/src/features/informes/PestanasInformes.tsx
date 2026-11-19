@@ -1,12 +1,19 @@
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs, type Theme } from '@mui/material';
 import { SCOPES } from '@validalo/api-client';
+import { ChartNoAxesColumn, ClipboardCheck, Timer, Users, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { usePermisos } from '../../shared/usePermisos';
 
 export type PestanaInforme = 'estado-expedientes' | 'vinculos' | 'sla' | 'evaluaciones';
 
-/** Pestañas de `/informes`: cada informe es una ruta; solo se muestran los que la persona puede ver. */
+const ICONOS: Record<PestanaInforme, LucideIcon> = { 'estado-expedientes': ChartNoAxesColumn, vinculos: Users, sla: Timer, evaluaciones: ClipboardCheck };
+
+/**
+ * Pestañas de `/informes`: cada informe es una ruta y solo se muestran los que la persona puede ver. Van como píldoras, igual que la
+ * navegación lateral del resto de la app: la activa es una píldora blanca con sombra suave y el ícono en el acento; el resto, texto gris.
+ * En pantallas angostas se desplazan dentro de su fila (la página nunca se desplaza de lado).
+ */
 export function PestanasInformes({ empresaId, actual }: { empresaId: string; actual: PestanaInforme }) {
   const { t } = useTranslation();
   const permisos = usePermisos(empresaId);
@@ -17,11 +24,40 @@ export function PestanasInformes({ empresaId, actual }: { empresaId: string; act
   if (permisos.puede(SCOPES.evaluacionesLeer)) pestanas.push({ valor: 'evaluaciones', etiqueta: t('informes.pestanas.evaluaciones') });
 
   return (
-    <Box sx={{ mb: 1.5, borderBottom: 1, borderColor: 'divider' }}>
-      <Tabs value={actual} aria-label={t('informes.pestanas.etiqueta')}>
-        {pestanas.map((p) => (
-          <Tab key={p.valor} value={p.valor} label={p.etiqueta} component={RouterLink} to={`/e/${empresaId}/informes/${p.valor}`} />
-        ))}
+    <Box sx={{ mx: -0.5, mb: 1.5 }}>
+      <Tabs
+        value={actual}
+        aria-label={t('informes.pestanas.etiqueta')}
+        variant="scrollable"
+        scrollButtons={false}
+        slotProps={{ indicator: { sx: { display: 'none' } } }}
+        // El relleno de la fila da espacio a la sombra de la píldora activa y al anillo de foco (la fila recorta lo que se sale); el margen
+        // negativo de la caja lo compensa para que las pestañas queden alineadas con el resto del contenido.
+        sx={{ minHeight: 0, '& .MuiTabs-scroller': { p: 0.5 }, '& .MuiTabs-flexContainer': { gap: 0.5 } }}
+      >
+        {pestanas.map((p) => {
+          const Icono = ICONOS[p.valor];
+          return (
+            <Tab
+              key={p.valor}
+              value={p.valor}
+              label={p.etiqueta}
+              icon={<Icono size={16} strokeWidth={1.75} aria-hidden />}
+              iconPosition="start"
+              component={RouterLink}
+              to={`/e/${empresaId}/informes/${p.valor}`}
+              sx={(t2: Theme) => ({
+                minHeight: 36,
+                px: 1.5,
+                gap: 0.75,
+                borderRadius: '10px',
+                '& .MuiTab-icon': { m: 0 },
+                '&:hover': { bgcolor: t2.palette.superficie.nivel2, color: t2.palette.text.primary },
+                '&.Mui-selected': { bgcolor: t2.palette.background.paper, color: t2.palette.text.primary, boxShadow: t2.sombra.pildora, '& .MuiTab-icon': { color: t2.palette.acento.main } },
+              })}
+            />
+          );
+        })}
       </Tabs>
     </Box>
   );

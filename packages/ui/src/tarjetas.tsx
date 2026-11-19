@@ -140,26 +140,48 @@ export function AvatarIniciales({ nombre, tamano = 32, solido = false }: { nombr
   );
 }
 
-export type TonoKpi = 'cian' | 'violeta' | 'verde' | 'ambar';
+/** `rojo` es el tono de alerta (algo vencido, incumplido o fallido): la tarjeta lleva borde y cifra en rojo, no solo el ícono. */
+export type TonoKpi = 'cian' | 'violeta' | 'verde' | 'ambar' | 'rojo';
 
-const PALETA_KPI = { cian: 'encurso', verde: 'exito', ambar: 'advertencia' } as const;
+const PALETA_KPI = { cian: 'encurso', verde: 'exito', ambar: 'advertencia', rojo: 'error' } as const;
 
-function coloresDeKpi(t: Theme, tono: TonoKpi) {
+/** Los cuatro colores de un tono del tablero (`solido`, `texto`, `fondo`, `borde`): los usan las tarjetas, las barras y las listas. */
+export function coloresDeKpi(t: Theme, tono: TonoKpi) {
   return tono === 'violeta' ? t.palette.violeta : t.palette.estado[PALETA_KPI[tono]];
 }
 
 /**
- * Tarjeta del tablero: ícono dentro de un cuadrado redondeado de color suave (cian, violeta, verde o ámbar), el rótulo, la cifra grande, un
- * detalle opcional y, si hay datos que dibujar, una mini gráfica (`grafica`).
+ * Tarjeta del tablero: ícono dentro de un cuadrado redondeado de color suave (cian, violeta, verde, ámbar o rojo), el rótulo, la cifra grande,
+ * un detalle opcional y, si hay datos que dibujar, una mini gráfica (`grafica`). Es un grupo con el nombre del rótulo (`etiqueta`, o el
+ * `titulo` si es texto): el lector de pantalla lee el rótulo con su cifra. En `rojo` el borde y la cifra también se pintan de alerta.
  */
-export function TarjetaKpi({ icono: Icono, tono, titulo, valor, detalle, grafica }: { icono: LucideIcon; tono: TonoKpi; titulo: ReactNode; valor: ReactNode; detalle?: ReactNode; grafica?: ReactNode }) {
+export function TarjetaKpi({
+  icono: Icono,
+  tono,
+  titulo,
+  valor,
+  detalle,
+  grafica,
+  etiqueta,
+}: {
+  icono: LucideIcon;
+  tono: TonoKpi;
+  titulo: ReactNode;
+  valor: ReactNode;
+  detalle?: ReactNode;
+  grafica?: ReactNode;
+  etiqueta?: string;
+}) {
+  const alerta = tono === 'rojo';
   return (
     <Box
+      role="group"
+      aria-label={etiqueta ?? (typeof titulo === 'string' ? titulo : undefined)}
       sx={(t) => ({
         minWidth: 0,
         p: 2.25,
         border: 1,
-        borderColor: 'divider',
+        borderColor: alerta ? t.palette.estado.error.borde : 'divider',
         borderRadius: `${String(t.radio.md)}px`,
         bgcolor: 'background.paper',
         boxShadow: t.sombra.suave,
@@ -178,7 +200,10 @@ export function TarjetaKpi({ icono: Icono, tono, titulo, valor, detalle, grafica
       </Stack>
       <Stack direction="row" sx={{ alignItems: 'flex-end', justifyContent: 'space-between', gap: 2 }}>
         <Box sx={{ minWidth: 0 }}>
-          <Typography component="p" sx={{ m: 0, fontSize: 30, lineHeight: '36px', fontWeight: 500, letterSpacing: '-0.02em' }}>
+          <Typography
+            component="p"
+            sx={{ m: 0, fontSize: 30, lineHeight: '36px', fontWeight: 500, letterSpacing: '-0.02em', color: alerta ? (t) => t.palette.estado.error.texto : undefined }}
+          >
             {valor}
           </Typography>
           {detalle && (
@@ -189,6 +214,37 @@ export function TarjetaKpi({ icono: Icono, tono, titulo, valor, detalle, grafica
         </Box>
         {grafica && <Box sx={{ flex: 'none' }}>{grafica}</Box>}
       </Stack>
+    </Box>
+  );
+}
+
+/**
+ * Rejilla de las tarjetas del tablero: 1 columna en el celular, 2 desde `sm` y, en pantallas anchas, 4 o 5 columnas (las tarjetas no se
+ * angostan hasta partir sus rótulos). Con 5 tarjetas nunca queda una suelta en una fila a medias: en `sm` la quinta ocupa la fila entera y en
+ * `md` se reparten 3 y 2 (las de la segunda fila, a medio ancho cada una). Con `etiqueta` es una región con nombre; `ocupada` la marca como
+ * actualizándose.
+ */
+export function GrillaKpi({ columnas = 4, etiqueta, ocupada = false, children, sx }: { columnas?: 4 | 5; etiqueta?: string; ocupada?: boolean; children: ReactNode; sx?: SxProps<Theme> }) {
+  const n = (cantidad: number) => `repeat(${String(cantidad)}, minmax(0, 1fr))`;
+  return (
+    <Box
+      component={etiqueta ? 'section' : 'div'}
+      aria-label={etiqueta}
+      aria-busy={ocupada || undefined}
+      sx={[
+        (t: Theme) => ({
+          display: 'grid',
+          gap: 2,
+          gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: n(2), lg: n(columnas) },
+          ...(columnas === 5 && {
+            [t.breakpoints.only('sm')]: { '& > :nth-child(5)': { gridColumn: '1 / -1' } },
+            [t.breakpoints.between('md', 'lg')]: { gridTemplateColumns: n(6), '& > :nth-child(-n+3)': { gridColumn: 'span 2' }, '& > :nth-child(n+4)': { gridColumn: 'span 3' } },
+          }),
+        }),
+        ...sxComoLista(sx),
+      ]}
+    >
+      {children}
     </Box>
   );
 }

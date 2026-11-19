@@ -1,9 +1,11 @@
 import { Typography } from '@mui/material';
-import type { FilaEstadoExpedienteDto, FilaInformeVinculoDto } from '@validalo/api-client';
+import type { FilaEstadoExpedienteDto, FilaInformeEvaluacionDto, FilaInformeVinculoDto } from '@validalo/api-client';
 import { ChipEstado, formatearFecha, type ColumnaTabla } from '@validalo/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatearFechaDeclarada } from '../documentos/formatoDatos';
+import { formatearPuntaje, textoDeMotivo } from '../evaluaciones/modelo';
+import { ChipEvaluacion } from '../evaluaciones/PaginaEvaluaciones';
 import { TerceroEnLinea } from '../expedientes/componentes';
 import { formatearDias } from './modelo';
 
@@ -109,6 +111,48 @@ export function useColumnasVinculos(): ColumnaTabla<FilaInformeVinculoDto>[] {
         encabezado: t('informes.vinculos.columnas.secciones'),
         ancho: 200,
         celda: (f) => (f.seccionesPendientes.length > 0 ? f.seccionesPendientes.join(', ') : t('informes.sinDato')),
+      },
+    ],
+    [t],
+  );
+}
+
+/** Columnas del informe de evaluaciones: tercero (con el folio o el motivo), cuestionario, estado, puntaje, motivos y cuándo se respondió. */
+export function useColumnasEvaluaciones(): ColumnaTabla<FilaInformeEvaluacionDto>[] {
+  const { t } = useTranslation();
+  return useMemo<ColumnaTabla<FilaInformeEvaluacionDto>[]>(
+    () => [
+      {
+        id: 'tercero',
+        encabezado: t('evaluaciones.lista.columnas.tercero'),
+        celda: (f) => (
+          <>
+            <Typography variant="h4" component="span" sx={{ display: 'block' }}>
+              {f.tercero.nombre}
+            </Typography>
+            <Typography component="span" variant="caption" sx={{ color: 'text.secondary' }}>
+              {f.folio ?? t(`evaluaciones.motivo.${f.motivo}`)}
+            </Typography>
+          </>
+        ),
+      },
+      {
+        id: 'cuestionario',
+        encabezado: t('evaluaciones.lista.columnas.cuestionario'),
+        celda: (f) => `${f.cuestionario} · ${t('evaluaciones.cuestionarios.version', { version: String(f.versionCuestionario) })}`,
+      },
+      { id: 'estado', encabezado: t('evaluaciones.lista.columnas.estado'), ancho: 150, celda: (f) => <ChipEvaluacion estado={f.estado} aprobada={f.aprobada} /> },
+      { id: 'puntaje', encabezado: t('evaluaciones.lista.columnas.puntaje'), ancho: 90, alinear: 'right', celda: (f) => <Typography variant="monoTabla">{formatearPuntaje(f.puntaje)}</Typography> },
+      {
+        id: 'motivos',
+        encabezado: t('evaluaciones.informe.columnas.motivos'),
+        celda: (f) => f.motivos.map((m) => textoDeMotivo(m, t)).join(', ') || t('informes.sinDato'),
+      },
+      {
+        id: 'respondida',
+        encabezado: t('evaluaciones.informe.columnas.respondida'),
+        ancho: 130,
+        celda: (f) => (f.respondidaEn ? <Typography variant="monoTabla">{formatearFecha(f.respondidaEn)}</Typography> : t('informes.sinDato')),
       },
     ],
     [t],

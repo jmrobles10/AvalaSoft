@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cumplimientoParaBarra, desgloseDeRetraso, formatearCumplimiento, hayFiltrosSla, leerFiltrosSla, parametrosSla, tonoDeCumplimiento } from './modeloSla';
+import { cumplimientoParaBarra, desgloseDeRetraso, formatearCumplimiento, hayFiltrosSla, leerFiltrosSla, parametrosSla, tonoDeCumplimiento, tonoKpiDeCumplimiento } from './modeloSla';
 
 describe('informe de cumplimiento del plazo de revisión: modelo', () => {
   it('lee los filtros de la URL y solo manda a la API los que tienen valor', () => {
@@ -35,6 +35,13 @@ describe('informe de cumplimiento del plazo de revisión: modelo', () => {
     expect(tonoDeCumplimiento(70)).toBe('warning');
     expect(tonoDeCumplimiento(69.9)).toBe('error');
     expect(tonoDeCumplimiento(null)).toBe('inherit');
+  });
+
+  it('la tarjeta del cumplimiento usa el mismo semáforo que la barra: verde, ámbar, rojo y, sin dato, el neutro del tablero', () => {
+    expect(tonoKpiDeCumplimiento(95)).toBe('verde');
+    expect(tonoKpiDeCumplimiento('80')).toBe('ambar');
+    expect(tonoKpiDeCumplimiento(50)).toBe('rojo');
+    expect(tonoKpiDeCumplimiento(null)).toBe('cian');
   });
 
   it('el retraso se cuenta en horas hasta 47 y de ahí en días y horas', () => {

@@ -25,6 +25,7 @@ export * from './usePaginacionCursor';
 export * from './esqueletos';
 export * from './disposicion';
 export * from './tarjetas';
+export * from './barras';
 export * from './marco';
 export * from './AvisoCambiosNuevos';
 export * from './EditorDeContactos';

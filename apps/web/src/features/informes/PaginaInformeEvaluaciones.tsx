@@ -1,22 +1,22 @@
-import { Box, Button, Typography } from '@mui/material';
-import { SCOPES, type FilaInformeEvaluacionDto } from '@validalo/api-client';
-import { BarraFiltros, EstadoVacio, FiltroMenu, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@validalo/ui';
-import { Download } from 'lucide-react';
-import { useEffect, useMemo } from 'react';
+import { SCOPES } from '@validalo/api-client';
+import { EstadoVacio, FiltroMenu, MiniBarra, SeccionPlana, TablaConCursor, usePaginacionCursor } from '@validalo/ui';
+import { CircleCheck, CircleX, ClipboardCheck, Gauge, Hourglass } from 'lucide-react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
-import { EncabezadoPagina, SinPermiso } from '../../shared/componentes';
+import { SinPermiso } from '../../shared/componentes';
 import { mensajeDeError } from '../../shared/errores';
-import { useAvisos } from '../../shared/useAvisos';
 import { usePermisos } from '../../shared/usePermisos';
 import { useCuestionarios, useInformeEvaluaciones } from '../evaluaciones/api';
-import { formatearPuntaje, textoDeMotivo } from '../evaluaciones/modelo';
-import { ChipEvaluacion } from '../evaluaciones/PaginaEvaluaciones';
+import { formatearPuntaje } from '../evaluaciones/modelo';
 import { useEmpresaActiva } from '../empresas/useEmpresas';
-import { Cifra, GrupoCifras } from '../inicio/Cifras';
-import { guardarArchivo } from '../vencimientos/api';
-import { useDescarga } from './api';
-import { PestanasInformes } from './PestanasInformes';
+import { AccionesDescarga } from './AccionesDescarga';
+import { BarraFiltrosInforme } from './BarraFiltrosInforme';
+import { useColumnasEvaluaciones } from './columnas';
+import { MarcoInforme } from './MarcoInforme';
+import { RUTAS, tonoDeAlerta } from './modelo';
+import { ResumenKpis, type KpiInforme } from './ResumenKpis';
+import { useFiltrosEnUrl } from './useFiltrosEnUrl';
 
 const TAMANO_PAGINA = 50;
 const ESTADOS = ['Pendiente', 'Calificada', 'Vencida', 'Anulada'] as const;
@@ -31,13 +31,13 @@ export function PaginaInformeEvaluaciones() {
   const { empresa } = useEmpresaActiva();
   const permisos = usePermisos(empresa.id);
   const puede = permisos.puede(SCOPES.evaluacionesLeer);
-  const mostrar = useAvisos((s) => s.mostrar);
-  const [parametros, setParametros] = useSearchParams();
+  const [parametros] = useSearchParams();
+  const { cambiar, limpiar } = useFiltrosEnUrl();
   const estado = parametros.get('estado') ?? '';
   const cuestionarioId = parametros.get('cuestionarioId') ?? '';
   const paginacion = usePaginacionCursor();
   const { reiniciar } = paginacion;
-  const descarga = useDescarga(empresa.id);
+  const columnas = useColumnasEvaluaciones();
   const cuestionarios = useCuestionarios(empresa.id, permisos.puede(SCOPES.cuestionariosLeer));
 
   useEffect(() => {
@@ -47,75 +47,35 @@ export function PaginaInformeEvaluaciones() {
   const filtros = { ...(estado ? { estado } : {}), ...(cuestionarioId ? { cuestionarioId } : {}) };
   const consulta = useInformeEvaluaciones(empresa.id, { ...filtros, limite: TAMANO_PAGINA, cursor: paginacion.cursor ?? undefined }, puede);
 
-  const columnas = useMemo<ColumnaTabla<FilaInformeEvaluacionDto>[]>(
-    () => [
-      {
-        id: 'tercero',
-        encabezado: t('evaluaciones.lista.columnas.tercero'),
-        celda: (f) => (
-          <>
-            <Typography component="span" sx={{ display: 'block', fontWeight: 500 }}>
-              {f.tercero.nombre}
-            </Typography>
-            <Typography component="span" variant="caption" sx={{ color: 'text.secondary' }}>
-              {f.folio ?? t(`evaluaciones.motivo.${f.motivo}`)}
-            </Typography>
-          </>
-        ),
-      },
-      {
-        id: 'cuestionario',
-        encabezado: t('evaluaciones.lista.columnas.cuestionario'),
-        celda: (f) => `${f.cuestionario} · ${t('evaluaciones.cuestionarios.version', { version: String(f.versionCuestionario) })}`,
-      },
-      { id: 'estado', encabezado: t('evaluaciones.lista.columnas.estado'), ancho: 150, celda: (f) => <ChipEvaluacion estado={f.estado} aprobada={f.aprobada} /> },
-      { id: 'puntaje', encabezado: t('evaluaciones.lista.columnas.puntaje'), ancho: 90, alinear: 'right', celda: (f) => <Typography variant="monoTabla">{formatearPuntaje(f.puntaje)}</Typography> },
-      {
-        id: 'motivos',
-        encabezado: t('evaluaciones.informe.columnas.motivos'),
-        celda: (f) => f.motivos.map((m) => textoDeMotivo(m, t)).join(', ') || '—',
-      },
-      { id: 'respondida', encabezado: t('evaluaciones.informe.columnas.respondida'), ancho: 130, celda: (f) => (f.respondidaEn ? <Typography variant="monoTabla">{formatearFecha(f.respondidaEn)}</Typography> : '—') },
-    ],
-    [t],
-  );
-
   if (!puede) return <SinPermiso seccion={t('nav.informes')} />;
 
-  const cambiar = (clave: 'estado' | 'cuestionarioId', valor: string) =>
-    setParametros(
-      (previos) => {
-        const nuevos = new URLSearchParams(previos);
-        if (valor) nuevos.set(clave, valor);
-        else nuevos.delete(clave);
-        return nuevos;
-      },
-      { replace: true },
-    );
-  const descargar = () =>
-    descarga.mutate(
-      { url: '/api/v1/informes/evaluaciones/excel', params: filtros },
-      {
-        onSuccess: (archivo) => guardarArchivo(archivo, t('evaluaciones.informe.excelNombre')),
-        onError: (error) => mostrar(`${t('informes.descargaError')} ${mensajeDeError(error, t)}`, 'error'),
-      },
-    );
   const resumen = consulta.data?.resumen;
+  const calificadas = resumen ? resumen.aprobadas + resumen.reprobadas : 0;
+  const kpis: KpiInforme[] | undefined = resumen && [
+    { clave: 'total', icono: ClipboardCheck, tono: 'cian', titulo: t('evaluaciones.informe.resumen.total'), valor: String(resumen.total), detalle: t('informes.evaluaciones.kpi.totalDetalle') },
+    { clave: 'pendientes', icono: Hourglass, tono: 'ambar', titulo: t('evaluaciones.informe.resumen.pendientes'), valor: String(resumen.pendientes), detalle: t('informes.evaluaciones.kpi.pendientesDetalle') },
+    {
+      clave: 'aprobadas',
+      icono: CircleCheck,
+      tono: 'verde',
+      titulo: t('evaluaciones.informe.resumen.aprobadas'),
+      valor: String(resumen.aprobadas),
+      detalle: t('informes.evaluaciones.kpi.aprobadasDetalle', { calificadas: String(calificadas) }),
+      grafica: <MiniBarra valor={resumen.aprobadas} total={calificadas} tono="verde" etiqueta={t('informes.evaluaciones.kpi.aprobadasBarra', { aprobadas: String(resumen.aprobadas), calificadas: String(calificadas) })} />,
+    },
+    { clave: 'reprobadas', icono: CircleX, tono: tonoDeAlerta(resumen.reprobadas), titulo: t('evaluaciones.informe.resumen.reprobadas'), valor: String(resumen.reprobadas), detalle: t('informes.evaluaciones.kpi.reprobadasDetalle') },
+    { clave: 'promedio', icono: Gauge, tono: 'violeta', titulo: t('evaluaciones.informe.resumen.promedio'), valor: formatearPuntaje(resumen.puntajePromedio), detalle: t('informes.evaluaciones.kpi.promedioDetalle') },
+  ];
 
   return (
-    <>
-      <EncabezadoPagina
-        titulo={t('informes.titulo')}
-        subtitulo={t('informes.subtitulo', { empresa: empresa.nombre })}
-        acciones={
-          <Button variant="outlined" startIcon={<Download size={16} aria-hidden />} disabled={descarga.isPending || resumen?.total === 0} onClick={descargar}>
-            {t('informes.excel')}
-          </Button>
-        }
-      />
-      <PestanasInformes empresaId={empresa.id} actual="evaluaciones" />
-      <BarraFiltros>
+    <MarcoInforme
+      empresa={empresa}
+      actual="evaluaciones"
+      acciones={<AccionesDescarga empresaId={empresa.id} params={filtros} descargas={[{ formato: 'excel', url: RUTAS.evaluacionesExcel, nombre: t('evaluaciones.informe.excelNombre') }]} deshabilitado={resumen?.total === 0} />}
+    >
+      <BarraFiltrosInforme hayFiltros={Boolean(estado || cuestionarioId)} onLimpiar={limpiar}>
         <FiltroMenu
+          fullWidth
           etiqueta={t('evaluaciones.lista.filtroEstado')}
           textoTodos={t('comun.todos')}
           valor={estado}
@@ -124,6 +84,7 @@ export function PaginaInformeEvaluaciones() {
         />
         {cuestionarios.data && cuestionarios.data.length > 0 && (
           <FiltroMenu
+            fullWidth
             etiqueta={t('evaluaciones.informe.filtroCuestionario')}
             textoTodos={t('comun.todos')}
             valor={cuestionarioId}
@@ -131,34 +92,26 @@ export function PaginaInformeEvaluaciones() {
             opciones={cuestionarios.data.map((c) => ({ valor: c.id, etiqueta: c.nombre }))}
           />
         )}
-      </BarraFiltros>
+      </BarraFiltrosInforme>
 
-      {resumen && (
-        <Box sx={{ mb: 2 }}>
-          <GrupoCifras titulo={t('informes.estado.resumen.titulo')}>
-            <Cifra etiqueta={t('evaluaciones.informe.resumen.total')} valor={String(resumen.total)} />
-            <Cifra etiqueta={t('evaluaciones.informe.resumen.pendientes')} valor={String(resumen.pendientes)} />
-            <Cifra etiqueta={t('evaluaciones.informe.resumen.aprobadas')} valor={String(resumen.aprobadas)} />
-            <Cifra etiqueta={t('evaluaciones.informe.resumen.reprobadas')} valor={String(resumen.reprobadas)} />
-            <Cifra etiqueta={t('evaluaciones.informe.resumen.promedio')} valor={formatearPuntaje(resumen.puntajePromedio)} />
-          </GrupoCifras>
-        </Box>
-      )}
+      {!(consulta.isError && !resumen) && <ResumenKpis etiqueta={t('informes.evaluaciones.kpi.etiqueta')} kpis={kpis} actualizando={consulta.isPlaceholderData} />}
 
-      <TablaConCursor
-        etiqueta={t('informes.pestanas.evaluaciones')}
-        columnas={columnas}
-        filas={consulta.data?.filas}
-        claveFila={(f) => f.id}
-        cargando={consulta.isPending || (consulta.isFetching && consulta.isPlaceholderData)}
-        error={consulta.isError ? `${t('evaluaciones.informe.errorLista')} ${mensajeDeError(consulta.error, t)}` : null}
-        onReintentar={() => void consulta.refetch()}
-        paginacion={paginacion}
-        siguienteCursor={consulta.data?.siguienteCursor}
-        onFila={(f) => void navegar(`/e/${empresa.id}/evaluaciones/${f.id}`)}
-        etiquetaFila={(f) => t('evaluaciones.lista.abrir', { tercero: f.tercero.nombre, cuestionario: f.cuestionario })}
-        vacio={<EstadoVacio compacto titulo={t('evaluaciones.informe.vacio')} />}
-      />
-    </>
+      <SeccionPlana titulo={t('informes.evaluaciones.seccion.titulo')} ayuda={t('informes.evaluaciones.seccion.ayuda')} icono={ClipboardCheck}>
+        <TablaConCursor
+          etiqueta={t('informes.pestanas.evaluaciones')}
+          columnas={columnas}
+          filas={consulta.data?.filas}
+          claveFila={(f) => f.id}
+          cargando={consulta.isPending || (consulta.isFetching && consulta.isPlaceholderData)}
+          error={consulta.isError ? `${t('evaluaciones.informe.errorLista')} ${mensajeDeError(consulta.error, t)}` : null}
+          onReintentar={() => void consulta.refetch()}
+          paginacion={paginacion}
+          siguienteCursor={consulta.data?.siguienteCursor}
+          onFila={(f) => void navegar(`/e/${empresa.id}/evaluaciones/${f.id}`)}
+          etiquetaFila={(f) => t('evaluaciones.lista.abrir', { tercero: f.tercero.nombre, cuestionario: f.cuestionario })}
+          vacio={<EstadoVacio compacto titulo={t('evaluaciones.informe.vacio')} />}
+        />
+      </SeccionPlana>
+    </MarcoInforme>
   );
 }
