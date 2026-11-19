@@ -190,7 +190,7 @@ describe('passkeys en el campo del correo (PI-14)', () => {
     expect(screen.getByRole('button', { name: 'Entrar con una passkey' })).toBeInTheDocument();
   });
 
-  it('usar el botón de la passkey aborta la condicional sin dejar un error y entra por la ventana', async () => {
+  it('usar el botón de la passkey aborta la condicional, espera a que se libere y entra por la ventana (Chrome: «A request is already pending»)', async () => {
     navegador = simularNavegadorConPasskeys({ condicional: true, esperaLaFirma: true });
     simularApi({
       'POST /api/v1/ingreso/passkey/opciones': { desafio: 'd9', opciones: OPCIONES_DE_FIRMA },
@@ -205,6 +205,36 @@ describe('passkeys en el campo del correo (PI-14)', () => {
     await waitFor(() => expect(alResultado).toHaveBeenCalledTimes(1));
     expect(alResultado.mock.calls[0]?.[0]).toEqual(SESION);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    expect(navegador.llamadas.map((l) => l.mediation)).toEqual(['conditional', undefined]);
+    // Si la persona siguiera en el paso (aquí `alResultado` no lo cambia), el autocompletado vuelve a quedar abierto.
+    expect(navegador.llamadas.map((l) => l.mediation)).toEqual(['conditional', undefined, 'conditional']);
+    expect(navegador.senales[0]?.aborted).toBe(true);
+    expect(navegador.senales[1]?.aborted).toBe(false);
+  });
+
+  it('si la ventana se cierra, explica el fallo, vuelve a dejar abierta la condicional y el botón se puede usar otra vez', async () => {
+    navegador = simularNavegadorConPasskeys({ condicional: true, esperaLaFirma: true, falloDeLaModal: 'NotAllowedError' });
+    simularApi({
+      'POST /api/v1/ingreso/passkey/opciones': { desafio: 'd9', opciones: OPCIONES_DE_FIRMA },
+      'POST /api/v1/ingreso/passkey/verificar': SESION,
+    });
+    const alResultado = vi.fn();
+    const usuario = montar(alResultado);
+    await waitFor(() => expect(navegador?.senales).toHaveLength(1));
+
+    await usuario.click(screen.getByRole('button', { name: 'Entrar con una passkey' }));
+
+    expect(await screen.findByText('No se completó el paso de la passkey. Inténtalo de nuevo cuando quieras.')).toBeInTheDocument();
+    expect(alResultado).not.toHaveBeenCalled();
+    // El autocompletado vuelve a ofrecer las passkeys: hay otra petición condicional, esta vez abierta.
+    await waitFor(() => expect(navegador?.senales).toHaveLength(2));
+    expect(navegador.senales[0]?.aborted).toBe(true);
+    expect(navegador.senales[1]?.aborted).toBe(false);
+
+    await usuario.click(screen.getByRole('button', { name: 'Entrar con una passkey' }));
+
+    await waitFor(() => expect(alResultado).toHaveBeenCalledTimes(1));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(navegador.senales[1]?.aborted).toBe(true);
+    expect(navegador.llamadas.map((l) => l.mediation)).toEqual(['conditional', undefined, 'conditional', undefined, 'conditional']);
   });
 });

@@ -53,4 +53,19 @@ describe('UI condicional de passkeys (PI-14)', () => {
     expect(esErrorDePasskey(error)).toBe(true);
     expect(error).toMatchObject({ causa: 'cancelada' });
   });
+
+  it('el navegador (el simulador imita a Chrome) no admite dos peticiones a la vez: la ventana se rechaza hasta que la condicional abortada se asienta', async () => {
+    navegador = simularNavegadorConPasskeys({ condicional: true, esperaLaFirma: true });
+    const control = new AbortController();
+    const condicional = firmarConPasskey(OPCIONES_DE_FIRMA, control.signal, true).catch((e: unknown) => e);
+
+    // Abortar no libera al instante: la ventana pedida enseguida choca con la petición que sigue pendiente.
+    control.abort();
+    await expect(firmarConPasskey(OPCIONES_DE_FIRMA)).rejects.toMatchObject({ causa: 'otra' });
+    await expect(navegador.get.mock.results[1]?.value).rejects.toMatchObject({ name: 'OperationError', message: 'A request is already pending.' });
+
+    // Una vez asentada la condicional, la ventana se abre sin problema.
+    await expect(condicional).resolves.toMatchObject({ causa: 'cancelada' });
+    await expect(firmarConPasskey(OPCIONES_DE_FIRMA)).resolves.toMatchObject({ id: 'cred-1' });
+  });
 });

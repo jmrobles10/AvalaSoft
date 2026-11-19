@@ -40,17 +40,21 @@ export function PasoCorreo({ correoInicial = '', alCodigo, alResultado }: PasoCo
     onSuccess: (respuesta) => alCodigo(correo.trim().toLowerCase(), respuesta),
   });
 
+  const iniciarSso = useIniciarSso(correo);
+  const { detenerCondicional, reanudarCondicional } = useUiCondicionalDePasskeys(alResultado, setFalloCondicional, !soloSso);
+
   const conPasskey = useMutation({
     mutationFn: async () => {
       const { desafio, opciones } = await obtenerOpcionesPasskeyIngreso(SIN_CREDENCIAL);
+      // El navegador solo admite una petición de passkey a la vez: la del autocompletado se libera antes de abrir la ventana.
+      await detenerCondicional();
       const respuesta = await firmarConPasskey(opciones);
       return verificarPasskeyIngreso({ desafio, respuesta }, SIN_CREDENCIAL);
     },
     onSuccess: alResultado,
+    // Si la persona sigue en el paso (cerró la ventana o falló), el autocompletado vuelve a ofrecer sus passkeys.
+    onSettled: reanudarCondicional,
   });
-
-  const iniciarSso = useIniciarSso(correo);
-  useUiCondicionalDePasskeys(alResultado, setFalloCondicional, !soloSso);
 
   const invalido = intentado && !esCorreoPlausible(correo);
   // Tras iniciar el SSO el navegador se va: el botón queda ocupado hasta que cambie de página.
