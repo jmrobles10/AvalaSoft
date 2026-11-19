@@ -208,3 +208,52 @@ describe('historial: cuenta bancaria designada (CB-4)', () => {
     expect(eventoExpedienteATimeline(evento('evaluacion_del_expediente_actualizada', { estado: 'Rara' }), contexto, t).detalle).toBeNull();
   });
 });
+
+describe('historial: decisiones por documento y exención', () => {
+  const evento = (tipo: string, datos: Record<string, unknown>): EventoHistorialDto => ({
+    version: 14,
+    tipo,
+    fecha: '2026-11-12T12:00:00Z',
+    actorTipo: 'Usuario',
+    actorId: 'u-sofia',
+    sistema: null,
+    datos,
+  });
+  const conDocumentos = {
+    usuarioActual: null,
+    areas: new Map([['a-revision', 'Revisión']]),
+    requisitos: new Map([
+      ['r-rut', 'Registro Único Tributario'],
+      ['r-banco', 'Certificación bancaria'],
+      ['r-camara', 'Certificado de existencia y representación legal'],
+    ]),
+  };
+
+  it('aprobar documentos en lote deja una línea por cada documento, con su área y la versión que se aprobó', () => {
+    const aprobo = (requisitoId: string) =>
+      eventoExpedienteATimeline(evento('veredicto_de_requisito_emitido', { requisitoId, areaId: 'a-revision', veredicto: 'Aprobado', sobreVersion: 2, motivos: [] }), conDocumentos, t);
+
+    expect(aprobo('r-rut').titulo).toBe('Revisión aprobó Registro Único Tributario (v2)');
+    expect(aprobo('r-banco').titulo).toBe('Revisión aprobó Certificación bancaria (v2)');
+  });
+
+  it('un documento observado se cuenta aparte con sus motivos', () => {
+    const observado = eventoExpedienteATimeline(
+      evento('veredicto_de_requisito_emitido', { requisitoId: 'r-rut', areaId: 'a-revision', veredicto: 'Observado', sobreVersion: 3, motivos: [], observacion: 'Falta la hoja 2.' }),
+      conDocumentos,
+      t,
+    );
+    expect(observado.titulo).toBe('Revisión observó Registro Único Tributario (v3)');
+    expect(observado.motivo).toBe('Falta la hoja 2.');
+  });
+
+  it('eximir un documento dice cuál y deja la justificación como motivo', () => {
+    const entrada = eventoExpedienteATimeline(
+      evento('requisito_eximido', { requisitoId: 'r-camara', justificacion: 'Está inscrita en la Cámara de otro país.' }),
+      conDocumentos,
+      t,
+    );
+    expect(entrada.titulo).toBe('Certificado de existencia y representación legal eximido');
+    expect(entrada.motivo).toBe('Está inscrita en la Cámara de otro país.');
+  });
+});

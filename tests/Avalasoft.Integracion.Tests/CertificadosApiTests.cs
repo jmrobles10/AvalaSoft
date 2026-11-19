@@ -23,7 +23,7 @@ namespace Avalasoft.Integracion.Tests;
 /// recalcula y cuyo sello verifica con la clave de <c>.well-known</c>; bloquear suspende, desbloquear restablece, revocar
 /// es definitivo y anular el vínculo revoca por el sistema; la vista pública no expone revisores ni contactos.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api2)]
 [Trait("Requiere", "Docker")]
 public sealed class CertificadosApiTests(ApiFixture fixture)
 {
@@ -223,6 +223,12 @@ public sealed class CertificadosApiTests(ApiFixture fixture)
         publico.Bloqueante.ShouldBeTrue();
         publico.PdfDescargable.ShouldBeFalse();
         publico.ContenidoCanonico.GetRawText().ShouldNotContain("Sanción"); // el bloqueo es privado: no cambia el contenido sellado
+        (await (await PublicoAsync("GET", $"/public/v1/verificar/{folio}", null, 200)).ReadAsTextAsync()).ShouldNotContain("Sanción"); // ni nada de lo que se ve
+        // El tercero se entera por correo de que se suspendió, sin el motivo (NW-16).
+        var avisoDeSuspension = await fixture.Correos.EsperarAsync(vinculo.CorreoTercero, m => m.Asunto.Contains("suspendió tu certificado"));
+        avisoDeSuspension.Texto.ShouldContain(folio);
+        avisoDeSuspension.Texto.ShouldNotContain("Sanción");
+        avisoDeSuspension.Html.ShouldNotContain("Sanción");
         (await CodigoAsync(await PublicoAsync("POST", $"/public/v1/verificar/{folio}/descarga", null, 409))).ShouldBe("certificado-no-vigente");
 
         // Desbloquear ⇒ restablecido a Vigente con el mismo hash.
@@ -251,6 +257,14 @@ public sealed class CertificadosApiTests(ApiFixture fixture)
         var final = await PublicoAsync<CertificadoPublicoDto>("GET", $"/public/v1/verificar/{folio}", 200);
         final.Estado.ShouldBe("Revocado");
         final.Bloqueante.ShouldBeTrue();
+        final.PdfDescargable.ShouldBeFalse();
+        // El motivo de la revocación es interno (CE-8): ni la verificación pública ni el correo al tercero lo traen (NW-16).
+        var textoFinal = await (await PublicoAsync("GET", $"/public/v1/verificar/{folio}", null, 200)).ReadAsTextAsync();
+        textoFinal.ShouldNotContain("Fraude");
+        var avisoDeRevocacion = await fixture.Correos.EsperarAsync(vinculo.CorreoTercero, m => m.Asunto.Contains("revocó tu certificado"));
+        avisoDeRevocacion.Texto.ShouldContain(folio);
+        avisoDeRevocacion.Texto.ShouldNotContain("Fraude");
+        avisoDeRevocacion.Html.ShouldNotContain("Fraude");
     }
 
     [Fact]

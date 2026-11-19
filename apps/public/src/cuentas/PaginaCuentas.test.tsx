@@ -8,6 +8,8 @@ import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PaginaCuentas } from './PaginaCuentas';
 
+// Los menús y las listas de MUI necesitan el retardo de un macrotask entre acciones: `userEvent.setup()` lo quita por omisión en la preparación de las pruebas (PV-5).
+
 const json = (estado: number, cuerpo: unknown) =>
   new Response(JSON.stringify(cuerpo), { status: estado, headers: { 'Content-Type': estado >= 400 ? 'application/problem+json' : 'application/json' } });
 
@@ -142,7 +144,7 @@ describe('mis cuentas bancarias', () => {
   });
 
   it('valida antes de enviar y registra la cuenta con el cuerpo que espera la API', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const mutaciones = montar([], () => json(201, cuenta('nueva')));
 
     await usuario.click(await screen.findByRole('button', { name: 'Agregar cuenta' }));
@@ -179,7 +181,7 @@ describe('mis cuentas bancarias', () => {
   });
 
   it('un banco que no está en la lista se escribe con su país y su SWIFT, sin código de compensación', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const mutaciones = montar([], () => json(201, cuenta('nueva')));
 
     await usuario.click(await screen.findByRole('button', { name: 'Agregar cuenta' }));
@@ -198,7 +200,7 @@ describe('mis cuentas bancarias', () => {
   });
 
   it('un error de validación de la API se muestra en su campo', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     montar([], () => json(422, { status: 422, codigo: 'moneda-invalida', detail: 'La moneda es un código ISO de tres letras (COP, USD…).' }));
 
     await usuario.click(await screen.findByRole('button', { name: 'Agregar cuenta' }));
@@ -216,7 +218,7 @@ describe('mis cuentas bancarias', () => {
   });
 
   it('al designar sin certificación bancaria explica que primero debe subirla y lleva a hacerlo', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const mutaciones = montar([cuenta('c1')], () =>
       json(422, { status: 422, codigo: 'certificacion-requerida', detail: 'Sube tu certificación bancaria antes de designar una cuenta.' }),
     );
@@ -237,7 +239,7 @@ describe('mis cuentas bancarias', () => {
   });
 
   it('no deja retirar una cuenta designada: pide elegir otra primero', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     montar(
       [cuenta('c1', { designadaEn: [{ vinculoId: 'v1', empresaId: 'emp-v1', empresa: 'Constructora Norte', estado: 'Aprobada', motivoRechazo: null }] })],
       () => json(409, { status: 409, codigo: 'cuenta-en-uso', detail: 'Esa cuenta está designada con una empresa: primero designa otra.' }),

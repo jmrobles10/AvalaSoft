@@ -27,33 +27,10 @@ namespace Avalasoft.Integracion.Tests;
 /// se adjunta sola (outbox) invalidando solo ese requisito. Además: exención, flujos distintos por empresa, idempotencia
 /// de la sincronización y las lecturas de identidad (<c>/usuarios/resumen</c>, <c>/yo</c>).
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api2)]
 [Trait("Requiere", "Docker")]
-public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHelper salida)
+public sealed class RequisitosApiTests(ApiFixture fixture, ITestOutputHelper salida) : RequisitosApiBase(fixture, salida)
 {
-    private static readonly HttpClient Http = new();
-
-    private static readonly string[] ScopesDeSistema =
-    [
-        "configuracion:leer", "vinculos:leer", "flujos:leer", "expedientes:leer", "expedientes:revisar", "documentos:leer", "cuentas:aprobar"
-    ];
-
-    private IAlbaHost Host => fixture.Host;
-
-    [GeneratedRegex(@"/e/([A-Za-z0-9_-]{43})")]
-    private static partial Regex RegexToken();
-
-    [GeneratedRegex(@"\b(\d{6})\b")]
-    private static partial Regex RegexCodigo();
-
-    private sealed record Credencial(string ApiKey, Guid? Empresa = null, string? Delegado = null);
-
-    private sealed record Persona(UsuarioDto Usuario, string Sub);
-
-    private sealed record Empresa(string Admin, EmpresaDto Datos, string LlaveSrm, RSA ClaveSrm);
-
-    private sealed record Escenario(Empresa Norte, AreaDto Compras, AreaDto Cumplimiento, Persona Laura, Persona Carlos, FlujoDto Flujo);
-
     // ---------- flujo principal ----------
 
     [Fact]
@@ -122,7 +99,7 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
         (await CodigoAsync(frenado)).ShouldBe("expediente-observado");
 
         // Correo y vista pública: el documento y el motivo, nunca el área ni el revisor.
-        var correoObservacion = await fixture.Correos.EsperarAsync(correo, m => m.Asunto.Contains("observaciones"));
+        var correoObservacion = await Fixture.Correos.EsperarAsync(correo, m => m.Asunto.Contains("observaciones"));
         correoObservacion.Texto.ShouldContain(requisitoCamara.TipoDocumento.Nombre);
         correoObservacion.Texto.ShouldContain("La cámara está cortada.");
         correoObservacion.Texto.ShouldNotContain("CUMPLIMIENTO");
@@ -218,7 +195,7 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
         Area(observado, "CUMPLIMIENTO").Estado.ShouldBe("Observada");
         Area(observado, "COMPRAS").DocumentosPorDecidir!.ShouldBeEmpty(); // devuelto: nadie decide
 
-        var aviso = await fixture.Correos.EsperarAsync(correo, m => m.Asunto.Contains("observaciones"));
+        var aviso = await Fixture.Correos.EsperarAsync(correo, m => m.Asunto.Contains("observaciones"));
         aviso.Texto.ShouldContain(rut.TipoDocumento.Nombre);
         aviso.Texto.ShouldContain(camara.TipoDocumento.Nombre);
         aviso.Texto.ShouldContain("El RUT no está actualizado.");
@@ -231,7 +208,7 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
         await EsperarAsync(e.Norte, expedienteId, x => x.Requisitos!.All(r => r.VersionActual!.N == 2));
         (await TerceroAsync<ExpedientePublicoDto>("POST", $"/public/v1/expedientes/{expedienteId}/reenviar", sesion.AccessToken,
             new ReenviarExpedienteDto(), 200)).Estado.ShouldBe("EnRevision");
-        fixture.Correos.Para(correo).Count(m => m.Asunto.Contains("observaciones")).ShouldBe(1);
+        Fixture.Correos.Para(correo).Count(m => m.Asunto.Contains("observaciones")).ShouldBe(1);
 
         // Compras «Aprobar área» con lo que leyó.
         var leidoPorLaura = await ApiAsync<ExpedienteDto>("GET", url, Delegado(e.Norte, e.Laura), null, 200);
@@ -460,7 +437,7 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
         invitacion.Vinculo.Empresa.LogoUrl.ShouldBe("https://cdn.norte.example/logo.svg");
 
         // Y el correo de soporte es el Reply-To de los correos de la empresa: el tercero que responde le escribe a ese equipo.
-        (await fixture.Correos.EsperarAsync(correo, m => m.Asunto.Contains("te invita"))).ResponderA.ShouldBe("proveedores@norte.example");
+        (await Fixture.Correos.EsperarAsync(correo, m => m.Asunto.Contains("te invita"))).ResponderA.ShouldBe("proveedores@norte.example");
     }
 
     // ---------- accesos de soporte de la Plataforma (B-6) ----------
@@ -599,95 +576,6 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
 
     // ---------- renovación por vencimiento y ratificación (RN-1, RN-2) ----------
 
-    private sealed record Aprobado(Escenario E, VinculoDto Vinculo, SesionTerceroDto Sesion, Guid Expediente, int Emision);
-
-    /// <summary>Proveedor de Norte con RUT y Cámara aprobados por Compras y Cumplimiento.</summary>
-    private async Task<Aprobado> ProveedorAprobadoAsync()
-    {
-        var e = await PrepararAsync();
-        var correo = CorreoNuevo();
-        var vinculo = await CrearVinculoAsync(e.Norte, "PROVEEDOR", correo);
-        var sesion = await SesionAsync(correo);
-        await SubirAsync(sesion, "RUT", Pdf("RUT v1"));
-        await SubirAsync(sesion, "CAMARA_COMERCIO", Pdf("Cámara v1"));
-        await AceptarAsync(sesion, vinculo.Id);
-        var inicial = await ExpedienteAbiertoAsync(e, vinculo.Id);
-        await AprobarAreasAsync(e, inicial);
-        (await ApiAsync<ExpedienteDto>("GET", $"/api/v1/expedientes/{inicial}", Admin(e.Norte), null, 200)).Estado.ShouldBe("Aprobado");
-        var certificado = (await ApiAsync<CertificadoDelVinculoDto>("GET", $"/api/v1/vinculos/{vinculo.Id}/certificado", Admin(e.Norte), null, 200)).Actual!;
-        return new Aprobado(e, vinculo, sesion, inicial, certificado.Emision);
-    }
-
-    private async Task<Guid> ExpedienteAbiertoAsync(Escenario e, Guid vinculoId)
-    {
-        var limite = DateTime.UtcNow.AddSeconds(20);
-        while (true)
-        {
-            if ((await ApiAsync<VinculoDto>("GET", $"/api/v1/vinculos/{vinculoId}", Admin(e.Norte), null, 200)).ExpedienteAbiertoId is { } id)
-                return id;
-            if (DateTime.UtcNow > limite)
-                throw new TimeoutException("No se abrió el expediente.");
-            await Task.Delay(200);
-        }
-    }
-
-    /// <summary>
-    /// Compras y Cumplimiento aprueban lo que les toca del expediente. Si el procesador de certificados escribe a la vez
-    /// (con el reloj adelantado vence el certificado), la decisión pierde la carrera (412) y se repite, como al recargar.
-    /// </summary>
-    private async Task AprobarAreasAsync(Escenario e, Guid expedienteId)
-    {
-        foreach (var (area, persona, codigo) in new[] { (e.Compras, e.Laura, "COMPRAS"), (e.Cumplimiento, e.Carlos, "CUMPLIMIENTO") })
-        {
-            for (var intento = 1; ; intento++)
-            {
-                var leido = await ApiAsync<ExpedienteDto>("GET", $"/api/v1/expedientes/{expedienteId}", Delegado(e.Norte, persona), null, 200);
-                var porDecidir = Area(leido, codigo).DocumentosPorDecidir ?? [];
-                if (porDecidir.Count == 0)
-                    break;
-                try
-                {
-                    await AreaAsync<ExpedienteDto>(e, expedienteId, area, persona,
-                        new VeredictoDto("Aprobado", Versiones: porDecidir.ToDictionary(d => d.RequisitoId, d => d.VersionVigente)));
-                    break;
-                }
-                catch (Exception ex) when (intento < 5 && ex.Message.Contains("version-desactualizada"))
-                {
-                    await Task.Delay(200);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Adelanta el reloj al día siguiente del fin de la gracia del documento para el vínculo y dispara su vencimiento (el
-    /// mensaje programado, aquí invocado). Devuelve la vigencia que tenía y la renovación que abrió Norte.
-    /// </summary>
-    private async Task<(VigenciaDeVersion Vigencia, Guid Renovacion)> VencerAsync(Aprobado a, string codigo)
-    {
-        var expediente = await ApiAsync<ExpedienteDto>("GET", $"/api/v1/expedientes/{a.Expediente}", Admin(a.E.Norte), null, 200);
-        var documentoId = expediente.Requisitos!.Single(r => r.TipoDocumento.Codigo == codigo).VersionActual!.DocumentoId;
-        VigenciaDeVersion? vigencia = null;
-        var limite = DateTime.UtcNow.AddSeconds(20);
-        while (vigencia?.VigenteHasta is null)
-        {
-            await using (var boveda = Host.Services.GetRequiredService<IDocumentStore>().QuerySession(TenantsTecnicos.Boveda))
-                vigencia = (await boveda.LoadAsync<Documento>(documentoId))!.Buscar(1)!.VigenciaPara(a.Vinculo.Id);
-            if (vigencia?.VigenteHasta is not null)
-                break;
-            if (DateTime.UtcNow > limite)
-                throw new TimeoutException($"{codigo} no tiene vigencia para Norte.");
-            await Task.Delay(200);
-        }
-
-        var hoy = CalculadoraDeVigencia.Fecha(DateTimeOffset.UtcNow);
-        fixture.Reloj.Desfase = TimeSpan.FromDays(vigencia.FinDeGracia!.Value.AddDays(1).DayNumber - hoy.DayNumber);
-        using (var alcance = Host.Services.CreateScope())
-            await alcance.ServiceProvider.GetRequiredService<IMessageBus>().InvokeAsync(
-                new Avalasoft.Aplicacion.Documentos.VencerVersionDeDocumento(documentoId, 1, a.Vinculo.Id, vigencia.VigenteHasta!.Value, vigencia.DiasGracia));
-        return (vigencia, await ExpedienteAbiertoAsync(a.E, a.Vinculo.Id));
-    }
-
     [Fact]
     public async Task Al_vencer_el_RUT_el_vinculo_vence_se_abre_la_renovacion_y_el_tercero_la_cierra_ratificando()
     {
@@ -735,7 +623,7 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
         }
         finally
         {
-            fixture.Reloj.Desfase = TimeSpan.Zero;
+            Fixture.Reloj.Desfase = TimeSpan.Zero;
         }
     }
 
@@ -746,7 +634,7 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
         try
         {
             var (_, renovacionId) = await VencerAsync(a, "CAMARA_COMERCIO");
-            fixture.Reloj.Desfase = TimeSpan.Zero; // ya venció; las aserciones de los revisores se firman con la hora real
+            Fixture.Reloj.Desfase = TimeSpan.Zero; // ya venció; las aserciones de los revisores se firman con la hora real
             var renovacion = await ApiAsync<ExpedienteDto>("GET", $"/api/v1/expedientes/{renovacionId}", Admin(a.E.Norte), null, 200);
             var camara = renovacion.Requisitos!.ShouldHaveSingleItem();
             camara.TipoDocumento.Codigo.ShouldBe("CAMARA_COMERCIO");
@@ -777,7 +665,7 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
         }
         finally
         {
-            fixture.Reloj.Desfase = TimeSpan.Zero;
+            Fixture.Reloj.Desfase = TimeSpan.Zero;
         }
     }
 
@@ -930,289 +818,5 @@ public sealed partial class RequisitosApiTests(ApiFixture fixture, ITestOutputHe
         admin.TenantId.ShouldBe(e.Norte.Datos.TenantId);
         admin.Empresas.ShouldHaveSingleItem().Nombre.ShouldBe("Norte S.A.S.");
         admin.Permisos.ShouldContain("expedientes:administrar");
-    }
-
-    // ---------- preparación ----------
-
-    /// <summary>
-    /// Empresa con Compras (Laura) y Cumplimiento (Carlos) en paralelo y el flujo PROVEEDOR que pide RUT (ambas áreas) y
-    /// Cámara de comercio (solo Cumplimiento), publicado y por defecto; textos legales publicados.
-    /// </summary>
-    private async Task<Escenario> PrepararAsync()
-    {
-        var norte = await EmpresaNuevaAsync("Norte S.A.S.", "NORTE");
-
-        async Task<Persona> PersonaAsync(string nombre, string rol)
-        {
-            var correo = $"{nombre.Split(' ')[0].ToLowerInvariant()}.{Guid.NewGuid():N}@constructora.co";
-            var usuario = await ApiAsync<UsuarioDto>("POST", "/api/v1/usuarios", new Credencial(norte.Admin),
-                new CrearUsuarioDto(nombre, correo, null, [new RolAsignadoDto(rol, norte.Datos.Id)], null), 201);
-            return new Persona(usuario, "srm-" + Guid.NewGuid().ToString("N")[..8]);
-        }
-
-        var laura = await PersonaAsync("Laura Compras", "Revisor");
-        var carlos = await PersonaAsync("Carlos Cumplimiento", "OficialCumplimiento");
-        var compras = await ApiAsync<AreaDto>("POST", "/api/v1/areas", Admin(norte), new CrearAreaDto("COMPRAS", "Compras"), 201);
-        var cumplimiento = await ApiAsync<AreaDto>("POST", "/api/v1/areas", Admin(norte), new CrearAreaDto("CUMPLIMIENTO", "Cumplimiento"), 201);
-        await ApiAsync<AreaDto>("PUT", $"/api/v1/areas/{compras.Id}/miembros", Admin(norte), new MiembrosAreaDto([laura.Usuario.Id]), 200);
-        await ApiAsync<AreaDto>("PUT", $"/api/v1/areas/{cumplimiento.Id}/miembros", Admin(norte), new MiembrosAreaDto([carlos.Usuario.Id]), 200);
-
-        var flujo = await FlujoConAsync(norte, "PROVEEDOR",
-        [
-            new RequisitoDelFlujoDto(TipoDocumento: "RUT", AreasQueRevisan: [compras.Id, cumplimiento.Id]),
-            new RequisitoDelFlujoDto(TipoDocumento: "CAMARA_COMERCIO", AreasQueRevisan: [cumplimiento.Id])
-        ]);
-        flujo.Publicada!.Requisitos!.Select(r => r.TipoDocumento).ShouldBe(["RUT", "CAMARA_COMERCIO"]);
-        return new Escenario(norte, compras, cumplimiento, laura, carlos, flujo);
-    }
-
-    private async Task<Empresa> EmpresaNuevaAsync(string nombre, string prefijo)
-    {
-        var slug = "t" + Guid.NewGuid().ToString("N")[..10];
-        var tenant = await ApiAsync<TenantCreadoDto>("POST", "/api/v1/plataforma/tenants", new Credencial(ApiFixture.ClavePlataforma),
-            new CrearTenantDto(slug, "Grupo " + nombre, "co", "America/Bogota"), 201);
-        var admin = tenant.ApiKeyAdministrador.Valor!;
-        var datos = await ApiAsync<EmpresaDto>("POST", "/api/v1/empresas", new Credencial(admin),
-            new CrearEmpresaDto(new IdentificacionDto("CO", "NIT", "800197268-4"), nombre, prefijo, null, null), 201);
-
-        var rsa = RSA.Create(2048);
-        var sistema = await ApiAsync<SistemaIntegradoDto>("POST", "/api/v1/sistemas", new Credencial(admin),
-            new CrearSistemaIntegradoDto("SRM", "SRM del cliente", rsa.ExportSubjectPublicKeyInfoPem()), 201);
-        var llave = await ApiAsync<ApiKeyDto>("POST", "/api/v1/api-keys", new Credencial(admin),
-            new CrearApiKeyDto("Integración SRM", ScopesDeSistema, null, null, SistemaId: sistema.Id), 201);
-
-        await ApiAsync<TextoLegalDto>("PUT", $"/api/v1/empresas/{datos.Id}/textos-legales/autorizacion", new Credencial(admin),
-            new PublicarTextoLegalDto($"Autorizo a {nombre}"), 200);
-        await ApiAsync<TextoLegalDto>("PUT", $"/api/v1/empresas/{datos.Id}/textos-legales/terminos", new Credencial(admin),
-            new PublicarTextoLegalDto($"Términos de {nombre}"), 200);
-        await ExigirCuentaDelProveedorAsync(admin, false);
-        return new Empresa(admin, datos, llave.Valor!, rsa);
-    }
-
-    /// <summary>
-    /// El tipo PROVEEDOR nace exigiendo cuenta designada: con ella, el expediente espera en revisión hasta que la empresa apruebe la cuenta (CB-4).
-    /// Las pruebas que aprueban expedientes sin hablar de cuentas la quitan; las de la cuenta la vuelven a poner.
-    /// </summary>
-    private async Task ExigirCuentaDelProveedorAsync(string admin, bool exige)
-    {
-        var tipos = await ApiAsync<List<TipoVinculoDto>>("GET", "/api/v1/tipos-vinculo", new Credencial(admin), null, 200);
-        var proveedor = tipos.Single(t => t.Codigo == "PROVEEDOR");
-        await ApiAsync<TipoVinculoDto>("PUT", $"/api/v1/tipos-vinculo/{proveedor.Id}", new Credencial(admin),
-            new CrearTipoVinculoDto(proveedor.Codigo, proveedor.Nombre, proveedor.AtributosPermitidos, exige, proveedor.ExigeOtpEnEnlace), 200);
-    }
-
-    /// <summary>Crea y publica (queda por defecto) un flujo con todas las áreas activas en paralelo y los requisitos dados.</summary>
-    private async Task<FlujoDto> FlujoConAsync(Empresa empresa, string tipoVinculo, IReadOnlyList<RequisitoDelFlujoDto> requisitos)
-    {
-        var areas = await ApiAsync<List<AreaDto>>("GET", "/api/v1/areas", Admin(empresa), null, 200);
-        if (areas.Count == 0)
-            await ApiAsync<AreaDto>("POST", "/api/v1/areas", Admin(empresa), new CrearAreaDto("REVISION", "Revisión"), 201);
-
-        var flujo = await ApiAsync<FlujoDto>("POST", "/api/v1/flujos", Admin(empresa),
-            new CrearFlujoDto("HAB_" + tipoVinculo, "Habilitación " + tipoVinculo, tipoVinculo, Requisitos: requisitos), 201);
-        flujo.Borrador!.Requisitos!.Count.ShouldBe(requisitos.Count);
-        return await ApiAsync<FlujoDto>("POST", $"/api/v1/flujos/{flujo.Id}/publicar", Admin(empresa), new { }, 200);
-    }
-
-    private Task<VinculoDto> CrearVinculoAsync(Empresa empresa, string tipo, string correo, string? nit = null)
-    {
-        nit ??= Nit();
-        return ApiAsync<VinculoDto>("POST", "/api/v1/vinculos", Admin(empresa), new CrearVinculoDto(
-            TerceroId: null,
-            Tercero: new CrearTerceroDto(new IdentificacionDto("CO", "NIT", nit), "Juridica", "Tercero " + nit, null,
-                [new ContactoDto("Ana Gómez", correo, null, "Comercial")]),
-            TipoVinculo: tipo,
-            Atributos: null,
-            CorreoInvitacion: correo,
-            ReferenciaExterna: null), 201);
-    }
-
-    /// <summary>
-    /// Canjea el enlace del correo de invitación (de la empresa indicada, si hay varias) y devuelve la sesión del tercero;
-    /// si el tipo de vínculo exige OTP (PROVEEDOR), lo verifica con el código que llega al mismo correo.
-    /// </summary>
-    private async Task<SesionTerceroDto> SesionAsync(string correo, string? empresa = null)
-    {
-        var invitacion = await fixture.Correos.EsperarAsync(correo, m => empresa is null || m.Asunto.Contains(empresa));
-        var token = RegexToken().Match(invitacion.Texto).Groups[1].Value;
-        var canje = await PublicoAsync($"/public/v1/enlaces/{token}/canjear", null);
-        if (canje.Context.Response.StatusCode == StatusCodes.Status200OK)
-            return (await canje.ReadAsJsonAsync<SesionTerceroDto>())!;
-
-        canje.Context.Response.StatusCode.ShouldBe(StatusCodes.Status202Accepted);
-        var codigo = RegexCodigo().Match((await fixture.Correos.EsperarAsync(correo, m => m.Asunto.Contains("código"))).Texto).Groups[1].Value;
-        var verificado = await PublicoAsync($"/public/v1/enlaces/{token}/otp", new VerificarOtpDto(codigo));
-        verificado.Context.Response.StatusCode.ShouldBe(StatusCodes.Status200OK);
-        return (await verificado.ReadAsJsonAsync<SesionTerceroDto>())!;
-    }
-
-    private Task<IScenarioResult> PublicoAsync(string url, object? cuerpo) =>
-        Host.Scenario(s =>
-        {
-            Preparar(s, "POST", url, cuerpo);
-            IpAleatoria(s);
-            s.IgnoreStatusCode();
-        });
-
-    private async Task<InvitacionAceptadaDto> AceptarAsync(SesionTerceroDto sesion, Guid vinculoId)
-    {
-        var invitacion = await TerceroAsync<InvitacionPublicaDto>("GET", $"/public/v1/invitaciones/{vinculoId}", sesion.AccessToken, null, 200);
-        return await TerceroAsync<InvitacionAceptadaDto>("POST", $"/public/v1/invitaciones/{vinculoId}/aceptar", sesion.AccessToken,
-            new AceptarInvitacionDto([.. invitacion.TextosPorAceptar.Select(t => new ConsentimientoDto(t.Tipo, t.TextoVersion, true))]), 200);
-    }
-
-    /// <summary>Paso 1, PUT directo a MinIO con la URL prefirmada y paso 2 (documento global del canónico).</summary>
-    private async Task<ConfirmacionCargaDto> SubirAsync(SesionTerceroDto sesion, string canonico, byte[] contenido)
-    {
-        var carga = await TerceroAsync<CargaPrefirmadaDto>("POST", "/public/v1/boveda/documentos", sesion.AccessToken,
-            new IniciarCargaDto(canonico.ToLowerInvariant() + ".pdf", contenido.Length, "application/pdf", TipoCanonico: canonico), 201);
-        using var put = new HttpRequestMessage(HttpMethod.Put, carga.Carga!.Url) { Content = new ByteArrayContent(contenido) };
-        put.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(carga.Carga.Cabeceras["Content-Type"]);
-        using var respuesta = await Http.SendAsync(put);
-        respuesta.StatusCode.ShouldBe(HttpStatusCode.OK);
-        return await TerceroAsync<ConfirmacionCargaDto>("POST",
-            $"/public/v1/boveda/documentos/{carga.DocumentoId}/versiones/{carga.Version}/confirmar", sesion.AccessToken, null, 200);
-    }
-
-    /// <summary>La adjunción de versiones llega por el outbox: espera (hasta 20 s) a que el expediente cumpla la condición.</summary>
-    private async Task<ExpedienteDto> EsperarAsync(Empresa empresa, Guid expedienteId, Func<ExpedienteDto, bool> condicion)
-    {
-        var limite = DateTime.UtcNow.AddSeconds(20);
-        while (true)
-        {
-            var expediente = await ApiAsync<ExpedienteDto>("GET", $"/api/v1/expedientes/{expedienteId}", Admin(empresa), null, 200);
-            if (condicion(expediente))
-                return expediente;
-            if (DateTime.UtcNow > limite)
-                throw new TimeoutException($"El expediente {expedienteId} no llegó al estado esperado (está {expediente.Estado}).");
-            await Task.Delay(100);
-        }
-    }
-
-    private async Task InvocarAsync(SincronizarRequisitosDelVinculo mensaje)
-    {
-        using var alcance = Host.Services.CreateScope();
-        await alcance.ServiceProvider.GetRequiredService<IMessageBus>().InvokeAsync(mensaje);
-    }
-
-    private async Task<IReadOnlyList<object>> EventosAsync(Guid tenantId, Guid streamId)
-    {
-        await using var consulta = Host.Services.GetRequiredService<IDocumentStore>().QuerySession(tenantId.ToString("N"));
-        return [.. (await consulta.Events.FetchStreamAsync(streamId)).Select(x => x.Data)];
-    }
-
-    private Task<T> VeredictoAsync<T>(Escenario e, Guid expedienteId, Guid requisitoId, AreaDto area, Persona persona, VeredictoDto dto) =>
-        ApiAsync<T>("POST", $"/api/v1/expedientes/{expedienteId}/requisitos/{requisitoId}/areas/{area.Id}/veredicto", Delegado(e.Norte, persona), dto, 200);
-
-    private Task<IScenarioResult> VeredictoAsync(Escenario e, Guid expedienteId, Guid requisitoId, AreaDto area, Persona persona, VeredictoDto dto,
-        int esperado) =>
-        ApiAsync("POST", $"/api/v1/expedientes/{expedienteId}/requisitos/{requisitoId}/areas/{area.Id}/veredicto", Delegado(e.Norte, persona), dto,
-            esperado);
-
-    private Task<T> AreaAsync<T>(Escenario e, Guid expedienteId, AreaDto area, Persona persona, VeredictoDto dto) =>
-        ApiAsync<T>("POST", $"/api/v1/expedientes/{expedienteId}/areas/{area.Id}/veredicto", Delegado(e.Norte, persona), dto, 200);
-
-    private Task<IScenarioResult> AreaAsync(Escenario e, Guid expedienteId, AreaDto area, Persona persona, VeredictoDto dto, int esperado) =>
-        ApiAsync("POST", $"/api/v1/expedientes/{expedienteId}/areas/{area.Id}/veredicto", Delegado(e.Norte, persona), dto, esperado);
-
-    private static RequisitoExpedienteDto Requisito(ExpedienteDto expediente, string codigo) =>
-        expediente.Requisitos!.Single(r => r.TipoDocumento.Codigo == codigo);
-
-    private static AreaExpedienteDto Area(ExpedienteDto expediente, string codigo) =>
-        expediente.Etapas.SelectMany(x => x.Areas).Single(a => a.Codigo == codigo);
-
-    private static Credencial Admin(Empresa empresa) => new(empresa.Admin, empresa.Datos.Id);
-
-    /// <summary>La persona actúa desde el SRM con una aserción firmada por la clave privada del sistema (ADR-0011).</summary>
-    private static Credencial Delegado(Empresa empresa, Persona p)
-    {
-        var ahora = DateTime.UtcNow;
-        var asercion = new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
-        {
-            Issuer = "SRM",
-            Audience = "avalasoft",
-            // jti de un solo uso (SE-4): cada petición lleva su propia aserción.
-            Subject = new ClaimsIdentity([new Claim("sub", p.Sub), new Claim("name", p.Usuario.Nombre), new Claim("email", p.Usuario.Correo),
-                new Claim("jti", Guid.NewGuid().ToString())]),
-            IssuedAt = ahora.AddSeconds(-5),
-            NotBefore = ahora.AddSeconds(-5),
-            Expires = ahora.AddMinutes(2),
-            SigningCredentials = new SigningCredentials(new RsaSecurityKey(empresa.ClaveSrm), SecurityAlgorithms.RsaSha256)
-        });
-        return new Credencial(empresa.LlaveSrm, empresa.Datos.Id, asercion);
-    }
-
-    private static string CorreoNuevo() => $"t{Guid.NewGuid():N}@prueba.co";
-
-    private static string Nit() => "9" + Random.Shared.Next(10_000_000, 99_999_999).ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-    /// <summary>PDF mínimo válido de una página; el texto lo hace único (otro hash).</summary>
-    private static byte[] Pdf(string texto) => Encoding.Latin1.GetBytes(new StringBuilder()
-        .Append("%PDF-1.4\n")
-        .Append(System.Globalization.CultureInfo.InvariantCulture, $"% {texto} {Guid.NewGuid():N}\n")
-        .Append("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n")
-        .Append("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n")
-        .Append("3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] >>\nendobj\n")
-        .Append("trailer\n<< /Root 1 0 R >>\n%%EOF\n")
-        .ToString());
-
-    private static string Sha256(byte[] contenido) => Convert.ToHexStringLower(SHA256.HashData(contenido));
-
-    private static async Task<string?> CodigoAsync(IScenarioResult resultado) =>
-        (await resultado.ReadAsJsonAsync<JsonElement>()).GetProperty("codigo").GetString();
-
-    private async Task<T> ApiAsync<T>(string metodo, string url, Credencial credencial, object? cuerpo, int esperado) =>
-        (await (await ApiAsync(metodo, url, credencial, cuerpo, esperado)).ReadAsJsonAsync<T>())!;
-
-    private Task<IScenarioResult> ApiAsync(string metodo, string url, Credencial credencial, object? cuerpo, int esperado) =>
-        Host.Scenario(s =>
-        {
-            Preparar(s, metodo, url, cuerpo);
-            s.WithRequestHeader("X-Api-Key", credencial.ApiKey);
-            if (credencial.Empresa is not null)
-                s.WithRequestHeader("X-Empresa", credencial.Empresa.Value.ToString());
-            if (credencial.Delegado is not null)
-                s.WithRequestHeader("X-Usuario-Delegado", credencial.Delegado);
-            if (metodo == "POST")
-                s.WithRequestHeader("Idempotency-Key", Guid.NewGuid().ToString());
-            s.StatusCodeShouldBe(esperado);
-        });
-
-    private Task<IScenarioResult> TerceroAsync(string metodo, string url, string token, object? cuerpo, int esperado) =>
-        Host.Scenario(s =>
-        {
-            Preparar(s, metodo, url, cuerpo);
-            s.WithRequestHeader("Authorization", "Bearer " + token);
-            IpAleatoria(s);
-            s.StatusCodeShouldBe(esperado);
-        });
-
-    private async Task<T> TerceroAsync<T>(string metodo, string url, string token, object? cuerpo, int esperado) =>
-        (await (await TerceroAsync(metodo, url, token, cuerpo, esperado)).ReadAsJsonAsync<T>())!;
-
-    private static void IpAleatoria(Scenario s) =>
-        s.ConfigureHttpContext(c => c.Connection.RemoteIpAddress =
-            new IPAddress([10, (byte)Random.Shared.Next(256), (byte)Random.Shared.Next(256), (byte)Random.Shared.Next(1, 255)]));
-
-    private static void Preparar(Scenario s, string metodo, string url, object? cuerpo)
-    {
-        switch (metodo)
-        {
-            case "GET":
-                s.Get.Url(url);
-                break;
-            case "PUT":
-                s.Put.Json(cuerpo ?? new { }).ToUrl(url);
-                break;
-            case "DELETE":
-                s.Delete.Url(url);
-                break;
-            case "POST" when cuerpo is null:
-                s.Post.Url(url);
-                break;
-            default:
-                s.Post.Json(cuerpo!).ToUrl(url);
-                break;
-        }
     }
 }

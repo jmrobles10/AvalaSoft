@@ -24,7 +24,7 @@ namespace Avalasoft.Integracion.Tests;
 /// real (Kestrel en 127.0.0.1), receptor que falla (reintentos, deshabilitación, aviso y reenvío manual), concurrencia sin
 /// pérdidas ni duplicados, alcance por empresa, campana, correo consolidado a revisores y constancia al tercero.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api3)]
 [Trait("Requiere", "Docker")]
 public sealed partial class NotificacionesApiTests(ApiFixture fixture)
 {

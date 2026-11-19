@@ -11,7 +11,7 @@ namespace Avalasoft.Integracion.Tests;
 /// Reingreso del tercero (H2-reingreso): cookie de refresco <c>vs_tercero</c> al canjear, renovación con rotación,
 /// detección de reuso, cierre, defensa CSRF por cabecera y acceso pidiendo un enlace con el correo.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api3)]
 [Trait("Requiere", "Docker")]
 public sealed partial class ReingresoApiTests(ApiFixture fixture)
 {

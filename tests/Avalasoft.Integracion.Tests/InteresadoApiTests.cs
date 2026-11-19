@@ -11,7 +11,7 @@ namespace Avalasoft.Integracion.Tests;
 /// Validación por el interesado: enlace de un solo uso (con OTP para proveedores), sesión del tercero entre tenants,
 /// textos legales versionados, aceptación con consentimientos, autorregistro y límite de peticiones.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api2)]
 [Trait("Requiere", "Docker")]
 public sealed partial class InteresadoApiTests(ApiFixture fixture)
 {

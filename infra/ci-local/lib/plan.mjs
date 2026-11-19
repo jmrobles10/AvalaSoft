@@ -1,5 +1,5 @@
 // De los flujos de CI (`.github/workflows/ci.yml` y `.github/workflows/e2e.yml`) a un plan que la réplica local sabe ejecutar en contenedores Linux.
-// `ci.yml` trae backend, frontend e imagen; `e2e.yml` (solo `workflow_dispatch`: la e2e corre bajo demanda, decisión E2E-1) trae el trabajo e2e.
+// `ci.yml` trae backend, frontend, pruebas-web (Vitest) e imagen; `e2e.yml` (solo `workflow_dispatch`: la e2e corre bajo demanda, decisión E2E-1) trae el trabajo e2e.
 // Todo lo que se puede leer de los flujos se lee de ellos (comandos, versiones, rutas, condiciones); lo único fijo es el mapa de
 // «acciones de GitHub → equivalente local» y la forma de tres pasos que no son comandos de shell (servicios con compose,
 // Playwright en su imagen, artefactos). Si el flujo cambia de forma que este archivo no entiende, `planificar` lanza un error
@@ -8,19 +8,19 @@
 import { leerYaml } from './yaml.mjs';
 
 /** Trabajos de `ci.yml` (push y pull request) que la réplica sabe ejecutar. Uno nuevo hace fallar la prueba de sincronía hasta que se replique. */
-export const TRABAJOS_DE_CI = ['frontend', 'backend', 'imagen'];
+export const TRABAJOS_DE_CI = ['frontend', 'pruebas-web', 'backend', 'imagen'];
 
 /** Trabajos de `e2e.yml` (solo bajo demanda). */
 export const TRABAJOS_DE_E2E = ['e2e'];
 
 /** Todos los trabajos que la réplica sabe ejecutar. */
-export const TRABAJOS_CONOCIDOS = ['frontend', 'backend', 'e2e', 'imagen'];
+export const TRABAJOS_CONOCIDOS = ['frontend', 'pruebas-web', 'backend', 'e2e', 'imagen'];
 
 /**
  * Trabajos que corren por omisión: los del CI normal. `e2e` (bajo demanda) e `imagen` solo con `--solo`: la e2e tarda ≈ 17 min y se corre cuando un
  * cambio toca la conexión entre las piezas o antes de una entrega; construir la imagen tarda y rara vez falla distinto.
  */
-export const TRABAJOS_POR_OMISION = ['frontend', 'backend'];
+export const TRABAJOS_POR_OMISION = ['frontend', 'pruebas-web', 'backend'];
 
 /** Lo que `e2e.yml` agrega al final del comando de Playwright para el filtro opcional (entrada `grep`): la réplica lo quita (se filtra con `--e2e-args`). */
 const FILTRO_OPCIONAL = '${FILTRO[@]}';

@@ -129,6 +129,22 @@ describe('DialogoDecision', () => {
     expect(onCerrar).not.toHaveBeenCalled();
   });
 
+  it('con separación de funciones, a quien invitó al tercero le explica por qué no decide y deja el diálogo abierto', async () => {
+    const usuario = userEvent.setup();
+    const { onCerrar } = preparar({
+      inicial: enRevision,
+      dialogo: { tipo: 'veredicto', area: pendiente },
+      respuesta: () => json(403, { codigo: 'separacion-de-funciones', detail: 'El flujo exige separación de funciones: quien invitó o abrió el expediente no puede decidir sobre él.' }),
+      recarga: null,
+    });
+
+    await usuario.click(screen.getByRole('button', { name: 'Aprobar' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/separación de funciones y tú invitaste al tercero o abriste el expediente/);
+    expect(onCerrar).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Aprobar' })).toBeEnabled();
+  });
+
   it('el reenvío también se cierra con la respuesta aunque el expediente deje de estar observado', async () => {
     const usuario = userEvent.setup();
     const observado = expediente('Observado', [area({ estado: 'Observada', veredictos: [veredicto({ veredicto: 'Observado' })] })]);
@@ -139,6 +155,30 @@ describe('DialogoDecision', () => {
     await waitFor(() => expect(onCerrar).toHaveBeenCalled());
     expect(screen.queryByText(YA_NO_APLICA)).not.toBeInTheDocument();
     expect(useAvisos.getState().actual?.mensaje).toBe('Expediente reenviado; vuelven a revisar las áreas que observaron.');
+  });
+});
+
+describe('DialogoDecision: eximir un documento (RQ-6)', () => {
+  it('avisa qué pasará con el documento, envía la justificación y confirma «Registro Único Tributario eximido.»', async () => {
+    const usuario = userEvent.setup();
+    const { fetch, onCerrar } = preparar({
+      inicial: { ...expediente('EnRevision'), requisitos: [requisito()] },
+      dialogo: { tipo: 'eximir', requisito: requisito() },
+      respuesta: () => json(200, expediente('EnRevision')),
+      recarga: null,
+    });
+
+    expect(screen.getByRole('heading', { name: /^Eximir Registro Único Tributario/ })).toBeInTheDocument();
+    expect(screen.getByText(/El documento deja de exigirse en este expediente y sus veredictos dejan de contar/)).toBeInTheDocument();
+    await usuario.type(screen.getByRole('textbox', { name: /Justificación/ }), 'Está inscrita en la Cámara de otro país.');
+    await usuario.click(screen.getByRole('button', { name: 'Eximir documento' }));
+
+    await waitFor(() => expect(onCerrar).toHaveBeenCalled());
+    const post = fetch.mock.calls.find(([, init]) => init?.method === 'POST');
+    expect(post?.[0]).toBe('/api/v1/expedientes/e1/requisitos/r-rut/eximir');
+    const cuerpo = post?.[1]?.body;
+    expect(typeof cuerpo === 'string' ? (JSON.parse(cuerpo) as unknown) : null).toEqual({ justificacion: 'Está inscrita en la Cámara de otro país.' });
+    expect(useAvisos.getState().actual?.mensaje).toBe('Registro Único Tributario eximido.');
   });
 });
 

@@ -6,7 +6,7 @@ import { configurarCliente, reiniciarCliente, type CertificadoPublicoDto, type C
 import { createAvalasoftTheme } from '@avalasoft/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { certificadoSellado } from '../pruebas/certificados';
+import { CERTIFICADO_REAL, CLAVES_REAL, certificadoSellado } from '../pruebas/certificados';
 import { PaginaVerificacion } from './PaginaVerificacion';
 
 const json = (cuerpo: unknown, status = 200) =>
@@ -69,6 +69,19 @@ describe('verificación pública del certificado', () => {
     expect(urls).toContain('/.well-known/avalasoft-certificados.json');
   });
 
+  it('el certificado real de la API (vector dorado): vigente, con el NIT enmascarado y auténtico en los cuatro pasos', async () => {
+    montar(ruta(CERTIFICADO_REAL), () => json(CERTIFICADO_REAL), () => json(CLAVES_REAL));
+
+    expect(await screen.findByRole('heading', { name: 'Este certificado está vigente' })).toBeInTheDocument();
+    expect(screen.getByText(/Constructora Verificación S\.A\.S\. validó los documentos de Cliente de Verificación S\.A\.S\./)).toBeInTheDocument();
+    expect(screen.getByText(/NIT \d{2}\*+\d{2}/)).toBeInTheDocument();
+    expect(screen.queryByText(/@/)).not.toBeInTheDocument();
+
+    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló AvalaSoft.')).toBeInTheDocument();
+    for (const comprobacion of ['Contenido íntegro', 'Huella del enlace', 'Clave de la plataforma', 'Sello válido'])
+      expect(screen.getByText(new RegExp(`^${comprobacion}`)).closest('li')).toHaveTextContent('Correcto');
+  });
+
   it('en verificación (VR-11): sigue vigente, lo dice sin alarma, con su fecha de vencimiento y ofrece el PDF', async () => {
     const { certificado, claves } = await certificadoSellado({ estado: 'ConPendientes', bloqueante: false, enVerificacion: true, pdfDescargable: true, estadoDesde: '2026-11-20T15:00:00Z' });
     montarSellado(certificado, claves);
@@ -86,6 +99,17 @@ describe('verificación pública del certificado', () => {
 
     expect(await screen.findByRole('heading', { name: 'Este certificado tiene pendientes' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Descargar PDF' })).not.toBeInTheDocument();
+  });
+
+  it('suspendido (el vínculo está bloqueado): lo dice, no ofrece el PDF y no trae el motivo del bloqueo', async () => {
+    const { certificado, claves } = await certificadoSellado({ estado: 'Suspendido', bloqueante: true, pdfDescargable: false, estadoDesde: '2026-11-20T15:00:00Z' });
+    montarSellado(certificado, claves);
+
+    expect(await screen.findByRole('heading', { name: 'Este certificado está suspendido' })).toBeInTheDocument();
+    expect(screen.getByText('Desde el 20/11/2026 Constructora Verificación S.A.S. suspendió temporalmente su vínculo con Cliente de Verificación S.A.S.: mientras siga así, no lo aceptes.')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Descargar PDF' })).not.toBeInTheDocument();
+    expect(screen.getByText('El PDF solo se entrega mientras el certificado está vigente.')).toBeInTheDocument();
+    expect(screen.queryByText(/motivo/i)).not.toBeInTheDocument();
   });
 
   it('revocado: lo dice sin rodeos y no ofrece el PDF', async () => {

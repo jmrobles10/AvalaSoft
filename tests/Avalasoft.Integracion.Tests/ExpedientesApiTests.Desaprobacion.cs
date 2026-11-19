@@ -84,6 +84,8 @@ public sealed partial class ExpedientesApiTests
         (await CodigoAsync(antes)).ShouldBe("area-no-activa");
         await AprobarAreaAsync(e, expediente.Id, e.Aprobador, e.Laura);
         (await AprobarAreaAsync(e, expediente.Id, e.Cumplimiento, e.Carlos)).Estado.ShouldBe("Aprobado");
+        // Aprobado de nuevo tras reabrir la etapa, el vínculo queda activo (igual que con una primera aprobación).
+        (await VinculoAsync(e, vinculo.Id)).Estado.ShouldBe("Activo");
 
         var historial = await ApiAsync<List<EventoHistorialDto>>("GET", $"/api/v1/expedientes/{expediente.Id}/historial", Admin(e), null, 200);
         historial.Select(h => h.Tipo).ShouldContain("etapa_reabierta");
@@ -258,6 +260,7 @@ public sealed partial class ExpedientesApiTests
         (await CodigoAsync(noDesvinculado)).ShouldBe("estado-invalido");
 
         await ApiAsync<VinculoDto>("POST", $"/api/v1/vinculos/{vinculo.Id}/desvincular", Admin(e), new MotivoDto("Fin del contrato"), 200);
+        (await VinculoAsync(e, vinculo.Id)).Estado.ShouldBe("Desvinculado");
         (await CertificadoAsync(e, vinculo.Id)).Actual!.Estado.ShouldBe("Revocado");
 
         var viabilidad = await ApiAsync<ViabilidadDeReintegroDto>("GET", $"/api/v1/vinculos/{vinculo.Id}/reintegro", Admin(e), null, 200);
@@ -319,6 +322,8 @@ public sealed partial class ExpedientesApiTests
         var expediente = await AbrirManualAsync(e, vinculo);
         await ApiAsync<VinculoDto>("POST", $"/api/v1/vinculos/{vinculo.Id}/desvincular", Admin(e), new MotivoDto("Se canceló"), 200);
         (await ApiAsync<ExpedienteDto>("GET", $"/api/v1/expedientes/{expediente.Id}", Admin(e), null, 200)).Estado.ShouldBe("Anulado");
+        // Desvincular anula el expediente abierto en la misma transacción y suelta el vínculo de él.
+        (await VinculoAsync(e, vinculo.Id)).ExpedienteAbiertoId.ShouldBeNull();
 
         var viabilidad = await ApiAsync<ViabilidadDeReintegroDto>("GET", $"/api/v1/vinculos/{vinculo.Id}/reintegro", Admin(e), null, 200);
         viabilidad.PuedeSinRevalidar.ShouldBeFalse();

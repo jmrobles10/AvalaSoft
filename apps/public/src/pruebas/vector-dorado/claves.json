@@ -1,0 +1,24 @@
+{
+  "emisor": "AvalaSoft",
+  "algoritmo": "Ed25519",
+  "mensajeFirmado": "Ed25519 sobre los 32 bytes del SHA-256 (hashContenido en hexadecimal) del contenidoCanonico canonicalizado con RFC 8785 (JCS).",
+  "esquemas": [
+    "avalasoft.certificado.v1"
+  ],
+  "claves": [
+    {
+      "kid": "vs-desarrollo-solo-local",
+      "algoritmo": "Ed25519",
+      "clavePublica": "mi2TRx5jMSmbEY01mZwdTQQl5OcaaVvL07PjrVI5RZ0=",
+      "jwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "mi2TRx5jMSmbEY01mZwdTQQl5OcaaVvL07PjrVI5RZ0",
+        "kid": "vs-desarrollo-solo-local",
+        "alg": "EdDSA",
+        "use": "sig"
+      },
+      "vigente": true
+    }
+  ]
+}

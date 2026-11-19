@@ -4,6 +4,8 @@ import { reiniciarCliente } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { estadoFicha, guardada, json, montarFicha, seccion, ORDEN_NATURAL } from './pruebas/montar';
 
+// Los menús y las listas de MUI necesitan el retardo de un macrotask entre acciones: `userEvent.setup()` lo quita por omisión en la preparación de las pruebas (PV-5).
+
 // jsdom no tiene lienzo: la firma se simula con un botón.
 vi.mock('./pep/FirmaPad', () => ({
   FirmaPad: ({ onCambiar }: { onCambiar: (png: string | null) => void }) => (
@@ -53,7 +55,7 @@ const respuesta = (valor: 'Sí' | 'No') => within(screen.getByRole('radiogroup',
 
 describe('Mi información: declaración PEP de la persona natural', () => {
   it('responder «Sí» abre la declaración y salir sin declarar devuelve la respuesta a «No»', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     montarNatural();
     await screen.findByRole('radiogroup', { name: PREGUNTA });
     await usuario.click(respuesta('Sí'));
@@ -69,7 +71,7 @@ describe('Mi información: declaración PEP de la persona natural', () => {
   });
 
   it('un «Sí» sin declaración avisa que falta y el guardado manda la respuesta sin declaración (el servidor lo rechaza)', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const guardados = montarNatural({ ...GENERAL_NATURAL, datos: { ...(GENERAL_NATURAL.datos as object), pep: true } }, () =>
       json(422, {
         status: 422,
@@ -90,7 +92,7 @@ describe('Mi información: declaración PEP de la persona natural', () => {
   });
 
   it('con la declaración ya guardada muestra su firma, abre precargada y guarda los cambios sin los sellos', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const guardados = montarNatural({ ...GENERAL_NATURAL, datos: { ...(GENERAL_NATURAL.datos as object), pep: true, declaracion_pep: DECLARACION } });
     expect(await screen.findByText('Declaración firmada el 01/11/2026')).toBeInTheDocument();
 
@@ -116,7 +118,7 @@ describe('Mi información: declaración PEP de la persona natural', () => {
   });
 
   it('pasar a «No» conserva la declaración en los datos (inactiva) y la pregunta de vínculo con una PEP no abre nada', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const guardados = montarNatural({ ...GENERAL_NATURAL, datos: { ...(GENERAL_NATURAL.datos as object), pep: true, declaracion_pep: DECLARACION } });
     await screen.findByRole('radiogroup', { name: PREGUNTA });
     await usuario.click(respuesta('No'));
@@ -147,7 +149,7 @@ describe('Mi información: declaración PEP de las personas de la información l
   });
 
   it('al responder «Sí» en el diálogo de la persona se abre la declaración con su relación con la empresa', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     montarLegal([{ ...persona, pep: false }]);
     await usuario.click(await screen.findByRole('button', { name: 'Editar a Jorge Iván Castro Pinto' }));
     const persona_ = screen.getByRole('dialog', { name: 'Editar persona' });
@@ -162,7 +164,7 @@ describe('Mi información: declaración PEP de las personas de la información l
   });
 
   it('un error del servidor dentro de la declaración de una persona cuenta como un dato por corregir en su tarjeta', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     montarLegal([{ ...persona, declaracion_pep: DECLARACION }], () =>
       json(422, {
         status: 422,

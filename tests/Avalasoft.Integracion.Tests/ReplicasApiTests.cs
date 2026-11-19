@@ -11,7 +11,7 @@ namespace Avalasoft.Integracion.Tests;
 /// Varias réplicas sobre la misma base (OC-4) con PostgreSQL real: los procesos periódicos corren solo en el nodo líder (bloqueo consultivo),
 /// otra réplica toma el relevo si el líder cae, y un trabajo que se factura se reclama una sola vez.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api4)]
 [Trait("Requiere", "Docker")]
 public sealed class ReplicasApiTests(ApiFixture fixture)
 {

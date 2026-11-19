@@ -943,7 +943,7 @@ public sealed partial class IngresoApiTests
             await using (var conexion = new NpgsqlConnection(configuracion.GetConnectionString("Avalasoft")))
             {
                 await conexion.OpenAsync();
-                await using var comando = new NpgsqlCommand("select count(pg_terminate_backend(pid)) from pg_stat_activity where query like 'listen avalasoft_invalidaciones%' and pid <> pg_backend_pid()", conexion);
+                await using var comando = new NpgsqlCommand("select count(pg_terminate_backend(pid)) from pg_stat_activity where datname = current_database() and query like 'listen avalasoft_invalidaciones%' and pid <> pg_backend_pid()", conexion);
                 var terminadas = (long)(await comando.ExecuteScalarAsync())!;
                 terminadas.ShouldBeGreaterThanOrEqualTo(2L);
             }
@@ -965,7 +965,7 @@ public sealed partial class IngresoApiTests
     {
         await using var conexion = new NpgsqlConnection(configuracion.GetConnectionString("Avalasoft"));
         await conexion.OpenAsync();
-        await using var comando = new NpgsqlCommand("select count(*) from pg_stat_activity where query like 'listen avalasoft_invalidaciones%'", conexion);
+        await using var comando = new NpgsqlCommand("select count(*) from pg_stat_activity where datname = current_database() and query like 'listen avalasoft_invalidaciones%'", conexion);
         return (long)(await comando.ExecuteScalarAsync())!;
     }
 

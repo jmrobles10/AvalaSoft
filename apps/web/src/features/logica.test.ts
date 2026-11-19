@@ -134,6 +134,36 @@ describe('historial del vínculo', () => {
     expect(desbloqueado).toMatchObject({ antes: 'Bloqueado', despues: 'Invitado', motivo: 'Allegó los documentos al día.' });
   });
 
+  it('desvincular y reintegrar (DS-3) se leen con su título, el cambio de estado y la justificación', () => {
+    const evento = (tipo: string, datos: Record<string, unknown>): EventoHistorialDto => ({
+      version: 7,
+      tipo,
+      fecha: '2026-11-12T15:00:00Z',
+      actorTipo: 'Usuario',
+      actorId: 'usuario-ana',
+      sistema: null,
+      datos,
+    });
+
+    expect(eventoATimeline(evento('vinculo_desvinculado', { EstadoPrevio: 'Activo', Motivo: 'Terminó el contrato marco.' }), { usuarioActual: null }, t)).toMatchObject({
+      titulo: 'Tercero desvinculado',
+      antes: 'Activo',
+      despues: 'Desvinculado',
+      motivo: 'Terminó el contrato marco.',
+    });
+    expect(eventoATimeline(evento('vinculo_reintegrado', { EstadoResultante: 'Activo', Justificacion: 'Se renovó el contrato marco.', SinRevalidar: true }), { usuarioActual: null }, t)).toMatchObject({
+      titulo: 'Vínculo reintegrado',
+      antes: 'Desvinculado',
+      despues: 'Activo',
+      motivo: 'Se renovó el contrato marco.',
+    });
+    // Revalidando, el vínculo vuelve a validación en vez de a lo que era.
+    expect(eventoATimeline(evento('vinculo_reintegrado', { EstadoResultante: 'EnValidacion', Justificacion: 'Retoma la relación.' }), { usuarioActual: null }, t)).toMatchObject({
+      titulo: 'Vínculo reintegrado',
+      despues: 'EnValidacion',
+    });
+  });
+
   it('usa el nombre conocido del usuario y tolera tipos nuevos', () => {
     const otro = eventoATimeline({ ...historial[2]!, actorId: 'otro' }, { usuarioActual: null, nombres: new Map([['otro', 'Rubén']]) }, t);
     expect(otro.actor.nombre).toBe('Rubén');

@@ -286,4 +286,35 @@ describe('Mis empresas', () => {
     expect(tarjeta('Bodegas del Sur').queryByText('Motivos')).not.toBeInTheDocument(); // una anulación no lleva motivos: son internos
     expect(tarjeta('Bodegas del Sur').queryByText('Aprobado')).not.toBeInTheDocument();
   });
+
+  it('vencido con la renovación abierta: «Ratifica tu información» y que la validación venció, con el enlace a su revisión', async () => {
+    const vinculos = [vinculo('a', 'Aceros del Norte', { estado: 'Vencido', vigenteHasta: '2027-11-06' })];
+    const expedientes: Record<string, Partial<ExpedientePublicoDto>> = {
+      'exp-a': { ...expediente('exp-a', 'Abierto', 1), tipo: 'Renovacion' },
+    };
+    configurarCliente({
+      fetch: vi.fn((url: RequestInfo | URL) => {
+        const ruta = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url;
+        const id = ruta.split('/expedientes/')[1];
+        return Promise.resolve(json(id ? expedientes[id] : vinculos));
+      }),
+    });
+    render(
+      <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <MemoryRouter>
+            <PaginaEmpresas />
+          </MemoryRouter>
+        </QueryClientProvider>
+      </ThemeProvider>,
+    );
+
+    const li = (await screen.findByRole('heading', { name: 'Aceros del Norte' })).closest('li');
+    if (!li) throw new Error('Sin tarjeta para Aceros del Norte');
+    const tarjeta = within(li);
+    expect(await tarjeta.findByText('Ratifica tu información')).toBeInTheDocument();
+    expect(tarjeta.getByText(/La validación con Aceros del Norte venció\. Ratifica/)).toBeInTheDocument();
+    expect(tarjeta.getByRole('link', { name: 'Ratificar mi información' })).toHaveAttribute('href', '/expediente/exp-a');
+    expect(tarjeta.queryByText('Aprobado')).not.toBeInTheDocument();
+  });
 });

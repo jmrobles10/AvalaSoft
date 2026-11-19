@@ -13,7 +13,7 @@ namespace Avalasoft.Integracion.Tests;
 /// Identidad delegada (ADR-0011): sistemas integrados con clave pública, usuarios JIT sin roles, intersección de
 /// permisos, sesiones embebidas y una sola validación compartida entre sistemas (I-0).
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api1)]
 [Trait("Requiere", "Docker")]
 public sealed class IdentidadDelegadaApiTests(ApiFixture fixture)
 {

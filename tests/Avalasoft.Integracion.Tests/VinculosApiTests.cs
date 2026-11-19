@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Avalasoft.Aplicacion.Comun;
-using Testcontainers.Minio;
-using Testcontainers.PostgreSql;
 using Avalasoft.Contratos;
 
 namespace Avalasoft.Integracion.Tests;
@@ -34,9 +32,6 @@ public sealed class ApiFixture : IAsyncLifetime
     public const string OrigenDeLaApp = "https://app.avalasoft.test";
     public const long TamanoMaximo = 3 * 1024 * 1024;
 
-    /// <summary>Fork comunitario de MinIO (misma línea de comandos; minio/minio ya no se publica en Docker Hub).</summary>
-    public const string ImagenMinio = "pgsty/minio:RELEASE.2026-08-04T00-00-00Z";
-
     /// <summary>Origen de un frontend en otro dominio con CORS habilitado (SE-5).</summary>
     public const string OrigenCors = "https://app.cliente.test";
 
@@ -54,8 +49,9 @@ public sealed class ApiFixture : IAsyncLifetime
     /// <summary>JSON del Portal que lee el sincronizador de coexistencia (origen configurado <c>Archivo</c>, F4); lo escriben las pruebas.</summary>
     public string ArchivoPortal { get; } = Path.Combine(Path.GetTempPath(), "avalasoft-portal-" + Guid.NewGuid().ToString("N") + ".json");
 
-    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17").Build();
-    private readonly MinioContainer _minio = new MinioBuilder(ImagenMinio).Build();
+    private ServiciosCompartidos _servicios = null!;
+    private string _cadenaDeConexion = null!;
+    private bool _serviciosAdquiridos;
 
     public IAlbaHost Host { get; private set; } = null!;
 
@@ -68,7 +64,7 @@ public sealed class ApiFixture : IAsyncLifetime
     public ComprobadorDeDominiosDePrueba Dominios { get; } = new();
 
     /// <summary>Cadena de conexión de la base de las pruebas (para leer y escribir como lo haría otro servidor).</summary>
-    public string CadenaDeConexion => _postgres.GetConnectionString();
+    public string CadenaDeConexion => _cadenaDeConexion;
 
     public RelojDePruebas Reloj { get; } = new();
 
@@ -77,17 +73,19 @@ public sealed class ApiFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        await Task.WhenAll(_postgres.StartAsync(), _minio.StartAsync());
+        _servicios = await ServiciosCompartidos.AdquirirAsync();
+        _serviciosAdquiridos = true;
+        _cadenaDeConexion = await _servicios.CrearBaseAsync();
         Idp = await IdpSimulado.IniciarAsync();
         CrearApps();
         Host = await AlbaHost.For<Program>(b =>
         {
             b.UseEnvironment("Development");
-            b.UseSetting("ConnectionStrings:Avalasoft", _postgres.GetConnectionString());
-            b.UseSetting("Avalasoft:Almacen:Endpoint", _minio.GetConnectionString());
+            b.UseSetting("ConnectionStrings:Avalasoft", _cadenaDeConexion);
+            b.UseSetting("Avalasoft:Almacen:Endpoint", _servicios.EndpointMinio);
             b.UseSetting("Avalasoft:Almacen:EndpointPublico", "");
-            b.UseSetting("Avalasoft:Almacen:AccessKey", _minio.GetAccessKey());
-            b.UseSetting("Avalasoft:Almacen:SecretKey", _minio.GetSecretKey());
+            b.UseSetting("Avalasoft:Almacen:AccessKey", _servicios.ClaveDeAccesoMinio);
+            b.UseSetting("Avalasoft:Almacen:SecretKey", _servicios.ClaveSecretaMinio);
             b.UseSetting("Avalasoft:Almacen:CrearBucketsAlIniciar", "true");
             b.UseSetting("Avalasoft:Boveda:TamanoMaximoBytes", TamanoMaximo.ToString(System.Globalization.CultureInfo.InvariantCulture));
             b.UseSetting("Avalasoft:Correo:UrlPublica", UrlPublica);
@@ -148,11 +146,14 @@ public sealed class ApiFixture : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        await Host.DisposeAsync();
-        await Idp.DisposeAsync();
-        await _postgres.DisposeAsync();
-        await _minio.DisposeAsync();
-        Directory.Delete(CarpetaApps, recursive: true);
+        if (Host is not null)
+            await Host.DisposeAsync();
+        if (Idp is not null)
+            await Idp.DisposeAsync();
+        if (_serviciosAdquiridos)
+            await ServiciosCompartidos.LiberarAsync();
+        if (Directory.Exists(CarpetaApps))
+            Directory.Delete(CarpetaApps, recursive: true);
     }
 
     private void CrearApps()
@@ -207,10 +208,7 @@ public sealed class CorreosCapturados : ITransporteDeCorreo, IEnviadorDeCorreo
     }
 }
 
-[CollectionDefinition("api")]
-public sealed class ColeccionApi : ICollectionFixture<ApiFixture>;
-
-[Collection("api")]
+[Collection(Colecciones.Api3)]
 [Trait("Requiere", "Docker")]
 public sealed class VinculosApiTests(ApiFixture fixture)
 {

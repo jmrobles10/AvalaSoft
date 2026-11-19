@@ -15,7 +15,7 @@ namespace Avalasoft.Integracion.Tests;
 /// el SDK, sesión embebida con identidad delegada y rotación de API keys con solapamiento (la anterior vale hasta la fecha y
 /// luego 401).
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api1)]
 [Trait("Requiere", "Docker")]
 public sealed class IntegracionSdkApiTests(ApiFixture fixture)
 {

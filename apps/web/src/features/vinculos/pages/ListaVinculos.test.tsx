@@ -43,13 +43,13 @@ const VINCULOS = [
   vinculo('c', { estado: 'PorVencer', enRevision: true, expedienteAbiertoId: 'exp-c' }),
 ];
 
-function montar(ruta = '/e/emp/vinculos', datos: VinculoDto[] = VINCULOS) {
+function montar(ruta = '/e/emp/vinculos', datos: VinculoDto[] | ((url: string) => VinculoDto[]) = VINCULOS) {
   const urls: string[] = [];
   configurarCliente({
     fetch: vi.fn((entrada: RequestInfo | URL) => {
       const url = typeof entrada === 'string' ? entrada : entrada instanceof URL ? entrada.href : entrada.url;
       urls.push(url);
-      if (url.startsWith('/api/v1/vinculos')) return Promise.resolve(json({ datos, siguienteCursor: null }));
+      if (url.startsWith('/api/v1/vinculos')) return Promise.resolve(json({ datos: typeof datos === 'function' ? datos(url) : datos, siguienteCursor: null }));
       if (url.startsWith('/api/v1/terceros/')) {
         const id = url.split('/').pop() ?? '';
         return Promise.resolve(json({ id, identificacion: { pais: 'CO', tipo: 'NIT', numero: '900123456' }, nombre: `Tercero ${id}`, tipoPersona: 'Juridica', contactos: [], esExtranjero: false, creadoEn: '2026-11-01T15:00:00Z' }));
@@ -146,3 +146,18 @@ describe('Lista de vínculos: crear un vínculo desde la app', () => {
   });
 });
 
+describe('Lista de vínculos: el filtro «Activo» no repite los que se ven «En revisión»', () => {
+  it('si todos los vínculos activos están en revisión, el filtro «Activo» no deja ninguno y lo dice', async () => {
+    permisos.scopes = new Set([SCOPES.vinculosLeer]);
+    const usuario = userEvent.setup();
+    // El servidor excluye de «Activo» (`enRevision=false`) lo que tiene una actualización abierta: aquí es el único vínculo.
+    montar('/e/emp/vinculos', (url) => (url.includes('enRevision=false') ? [] : [VINCULOS[0]!]));
+
+    expect(await screen.findByRole('row', { name: 'Abrir vínculo de a@proveedor.co' })).toBeInTheDocument();
+    await usuario.click(screen.getByRole('button', { name: /^Estado/ }));
+    await usuario.click(await screen.findByRole('menuitem', { name: 'Activo' }));
+
+    expect(await screen.findByText('Ningún vínculo coincide con esos filtros.')).toBeInTheDocument();
+    expect(screen.queryByRole('row', { name: 'Abrir vínculo de a@proveedor.co' })).not.toBeInTheDocument();
+  });
+});

@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { configurarCliente, reiniciarCliente } from '@avalasoft/api-client';
 import { renderHook, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
