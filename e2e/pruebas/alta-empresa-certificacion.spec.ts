@@ -69,7 +69,7 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   }
   // PROVEEDOR nace exigiendo una cuenta bancaria designada y aprobada por dos personas (CB-4): sin ella el expediente espera en revisión aunque el área
   // apruebe. Esta empresa nueva, con una sola administradora, no la exige (como los escenarios sembrados, `e2e/soporte/semilla.ts`): aquí se prueba
-  // el camino de la certificación; la espera por la cuenta se prueba en `CuentaDesignadaDelExpedienteTests` y `RequisitosApiTests.Cuentas`.
+  // el camino de la certificación; la espera por la cuenta se prueba en `CuentaDesignadaDelExpedienteTests` y `RequisitosCuentasApiTests`.
   const tipos = await llamar<{ id: string; codigo: string; activo: boolean }[]>('GET', '/api/v1/tipos-vinculo', { ...comoAdmin, delegado: delegado() });
   const proveedorTipo = tipos.find((t) => t.codigo === 'PROVEEDOR');
   expect(proveedorTipo).toBeDefined();
