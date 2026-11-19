@@ -1,7 +1,7 @@
-import { Alert, AlertTitle, Box, Button, Drawer, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Alert, AlertTitle, Box, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { accionesDisponibles, SCOPES, type DefinicionAccion, type VinculoDto } from '@validalo/api-client';
 import { formatearFecha } from '@validalo/ui';
-import { History, Lock, X } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
@@ -17,7 +17,6 @@ import { AvisoDeVigencia } from '../components/AvisoDeVigencia';
 import { DialogoAccion } from '../components/DialogoAccion';
 import { ANCHO_BARRA_SECTORES, BarraSectores } from './BarraSectores';
 import { ContenidoSector } from './ContenidoSector';
-import { HistorialFicha } from './HistorialFicha';
 import { Encabezado } from './PartesVinculo';
 import { esSector, indicadoresPorSector, type Sector } from './sectores';
 import { SelectorSector } from './SelectorSector';
@@ -35,14 +34,13 @@ interface Props {
  * Ficha del vínculo: una sola pantalla para el vínculo y su expediente, con la información repartida en sectores (barra lateral, como la
  * ficha del tercero del SRM) en lugar de una columna de tarjetas. Desde `lg` los sectores van en la barra lateral de la Plataforma; por
  * debajo, en un selector desplegable compacto (sin scroll horizontal). El sector va en la URL (`?sector=`) para compartirlo y volver a él.
- * El historial es un sector y, desde cualquier otro, un panel lateral que se abre con «Historial».
+ * El historial es un sector más de la barra (sin botón aparte en el encabezado).
  */
 export function FichaVinculo({ vinculo, expedienteId, sectorPorDefecto, volver }: Props) {
   const { t } = useTranslation();
   const permisos = usePermisos(vinculo.empresaId);
   const [parametros, setParametros] = useSearchParams();
   const [accion, setAccion] = useState<DefinicionAccion | null>(null);
-  const [verHistorial, setVerHistorial] = useState(false);
 
   const puedeExpediente = permisos.puede(SCOPES.expedientesLeer);
   const consultaExpediente = useExpediente(vinculo.empresaId, puedeExpediente && expedienteId ? expedienteId : '');
@@ -78,16 +76,9 @@ export function FichaVinculo({ vinculo, expedienteId, sectorPorDefecto, volver }
     });
   };
 
-  const botonHistorial =
-    actual !== 'historial' ? (
-      <Button variant="outlined" startIcon={<History size={16} aria-hidden />} onClick={() => setVerHistorial(true)} aria-haspopup="dialog">
-        {t('vinculos.ficha.verHistorial')}
-      </Button>
-    ) : undefined;
-
   return (
     <>
-      <Encabezado vinculo={vinculo} acciones={accionesDisponibles(vinculo, permisos.scopes)} onAccion={setAccion} antes={volver} extra={botonHistorial} />
+      <Encabezado vinculo={vinculo} acciones={accionesDisponibles(vinculo, permisos.scopes)} onAccion={setAccion} antes={volver} />
       <Stack spacing={1.5} sx={{ mb: 2, '&:empty': { display: 'none' } }}>
         {vinculo.bloqueo && (
           <Alert severity="error" icon={<Lock size={18} strokeWidth={1.75} />}>
@@ -114,20 +105,6 @@ export function FichaVinculo({ vinculo, expedienteId, sectorPorDefecto, volver }
           <ContenidoSector sector={actual} vinculo={vinculo} control={control} cargandoExpediente={Boolean(expedienteId) && puedeExpediente && consultaExpediente.isPending} ficha={ficha.data} />
         </Box>
       </Box>
-
-      <Drawer anchor="right" open={verHistorial} onClose={() => setVerHistorial(false)} slotProps={{ paper: { sx: { width: { xs: '100%', sm: 440 } } } }}>
-        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography variant="h4" component="h2">
-            {t('vinculos.ficha.historial')}
-          </Typography>
-          <IconButton aria-label={t('comun.cerrar')} onClick={() => setVerHistorial(false)}>
-            <X size={18} />
-          </IconButton>
-        </Stack>
-        <Box sx={{ px: 2, pb: 2, overflow: 'auto' }}>
-          <HistorialFicha empresaId={vinculo.empresaId} vinculoId={vinculo.id} expediente={expediente ?? null} />
-        </Box>
-      </Drawer>
 
       {accion && <DialogoAccion definicion={accion} vinculo={vinculo} empresaId={vinculo.empresaId} onCerrar={() => setAccion(null)} />}
       {control && <DialogosExpediente control={control} />}
