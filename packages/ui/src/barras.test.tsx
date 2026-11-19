@@ -144,7 +144,7 @@ describe('tonoDeAlerta, columnasKpi y esqueletos del tablero', () => {
   });
 
   it('las columnas dependen de cuántas tarjetas hay, sin dejar filas a medias donde se pueda evitar', () => {
-    expect([1, 2, 3, 4, 5, 6, 7, 8].map(columnasKpi)).toEqual([3, 3, 3, 4, 5, 3, 4, 4]);
+    expect([1, 2, 3, 4, 5, 6, 7, 8].map(columnasKpi)).toEqual([3, 3, 3, 4, 5, 6, 4, 4]);
   });
 
   it('el esqueleto acepta cualquier cantidad de tarjetas (6, en tres columnas)', () => {

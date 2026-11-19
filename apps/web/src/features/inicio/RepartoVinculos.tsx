@@ -21,26 +21,22 @@ export function RepartoVinculos({ indicadores }: { indicadores: IndicadoresDto }
   return (
     <Tarjeta titulo={t('inicio.indicadores.reparto.titulo')} etiqueta={t('inicio.indicadores.reparto.titulo')} ayuda={t('inicio.indicadores.reparto.ayuda', { total: formatearConteo(total) })} icono={ChartPie} nivel="h3">
       <BarraSegmentada etiqueta={t('inicio.indicadores.reparto.barra', { detalle })} segmentos={presentes.map((s) => ({ clave: s.clave, valor: s.valor, tono: s.tono }))} />
-      <Box component="dl" sx={{ m: 0, mt: 2, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 2 }}>
+      {/* Leyenda en una sola línea: color, grupo, cifra y peso; el detalle de «En proceso» va en su tooltip. */}
+      <Box component="dl" sx={{ m: 0, mt: 1.25, display: 'flex', flexWrap: 'wrap', columnGap: 3, rowGap: 0.75 }}>
         {presentes.map((s) => (
-          <Box key={s.clave} sx={{ minWidth: 0 }}>
+          <Box key={s.clave} title={s.clave === 'enProceso' ? t('inicio.indicadores.reparto.enProcesoDetalle') : undefined} sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
             <Box component="dt" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Box aria-hidden sx={(th) => ({ flex: 'none', width: 10, height: 10, borderRadius: '3px', bgcolor: coloresDeKpi(th, s.tono).solido })} />
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {t(`inicio.indicadores.reparto.${s.clave}`)}
               </Typography>
             </Box>
-            <Typography variant="h2" component="dd" sx={{ m: 0, mt: 0.25 }}>
+            <Typography component="dd" variant="body2" sx={{ m: 0, fontWeight: 600 }}>
               {formatearConteo(s.valor)}
-              <Typography component="span" variant="caption" sx={{ ml: 1, color: 'text.secondary' }}>
+              <Typography component="span" variant="caption" sx={{ ml: 0.75, color: 'text.secondary' }}>
                 {t('inicio.indicadores.reparto.porcentaje', { valor: formatearPorcentaje(s.porcentaje) })}
               </Typography>
             </Typography>
-            {s.clave === 'enProceso' && (
-              <Typography component="dd" variant="caption" sx={{ m: 0, display: 'block', color: 'text.secondary', fontWeight: 400 }}>
-                {t('inicio.indicadores.reparto.enProcesoDetalle')}
-              </Typography>
-            )}
           </Box>
         ))}
       </Box>
