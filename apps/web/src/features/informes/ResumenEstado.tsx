@@ -1,9 +1,9 @@
 import type { ResumenEstadoExpedientesDto } from '@validalo/api-client';
-import { MiniBarra } from '@validalo/ui';
+import { MiniBarra, tonoDeAlerta } from '@validalo/ui';
 import { CircleCheck, FolderOpen, Hourglass, TimerOff, Undo2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { aNumero, formatearDias, tonoDeAlerta } from './modelo';
-import { ResumenKpis, type KpiInforme } from './ResumenKpis';
+import { ResumenKpis, type KpiResumen } from '../../shared/ResumenKpis';
+import { aNumero, formatearDias } from './modelo';
 import { TiempoPorFase } from './TiempoPorFase';
 import { TiemposPorArea } from './TiemposPorArea';
 
@@ -18,7 +18,7 @@ export function ResumenEstado({ resumen, actualizando = false }: { resumen: Resu
 
   const dias = (valor: number | string | null) => formatearDias(valor, t('informes.sinDato'));
   const total = String(resumen.total);
-  const kpis: KpiInforme[] = [
+  const kpis: KpiResumen[] = [
     { clave: 'total', icono: FolderOpen, tono: 'cian', titulo: t('informes.estado.kpi.total'), valor: total, detalle: t('informes.estado.kpi.totalDetalle') },
     {
       clave: 'aprobados',

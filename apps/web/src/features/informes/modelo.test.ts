@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aNumero, fechaNegocio, formatearDias, hayFiltrosEstado, leerFiltrosEstado, parametrosEstado, rangoInvalido, rutaInformeDeVentana, sinPaginacion, tiemposPorFase, tonoDeAlerta, topeDeAreas } from './modelo';
+import { aNumero, fechaNegocio, formatearDias, hayFiltrosEstado, leerFiltrosEstado, parametrosEstado, rangoInvalido, rutaInformeDeVentana, sinPaginacion, tiemposPorFase, topeDeAreas } from './modelo';
 
 describe('filtros del informe de estado', () => {
   it('lee la URL y solo envía lo que tiene valor; la fecha de cierre viaja, la de apertura es la de siempre', () => {
@@ -57,10 +57,5 @@ describe('tiempo por fase y escala de las áreas', () => {
     expect(topeDeAreas([{ promedioDias: 1.5, maximoDias: '6.5' }, { promedioDias: 3, maximoDias: 9.1 }])).toBe(9.1);
     expect(topeDeAreas([{ promedioDias: 4, maximoDias: null }])).toBe(4);
     expect(topeDeAreas([])).toBe(0);
-  });
-
-  it('una cifra de alerta es roja si hay algo y verde si no', () => {
-    expect(tonoDeAlerta(3)).toBe('rojo');
-    expect(tonoDeAlerta(0)).toBe('verde');
   });
 });

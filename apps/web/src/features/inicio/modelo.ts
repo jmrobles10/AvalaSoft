@@ -1,5 +1,5 @@
 import type { IndicadoresDto, MisPendientesDto, PendientesDeAreaDto } from '@validalo/api-client';
-import { LOCALE } from '@validalo/ui';
+import { LOCALE, type TonoKpi } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 
 /** Ventanas del selector de indicadores, en días. */
@@ -17,11 +17,15 @@ export function leerVentana(params: URLSearchParams): Ventana {
   return esVentana(dias) ? dias : VENTANA_POR_DEFECTO;
 }
 
+/** Hace cuánto llegó el expediente más antiguo del área: «el más antiguo hace 5 días» o «el más antiguo es de hoy». */
+export function antiguedadDeArea(area: PendientesDeAreaDto, t: TFunction): string {
+  return area.masAntiguoDias === 0 ? t('inicio.pendientes.antiguoHoy') : t('inicio.pendientes.antiguo', { count: area.masAntiguoDias });
+}
+
 /** «Compras: 3 expedientes por revisar · el más antiguo hace 5 días», o «Compras: Al día». */
 export function textoArea(area: PendientesDeAreaDto, t: TFunction): string {
   if (area.cantidad === 0) return t('inicio.pendientes.area', { nombre: area.nombre, detalle: t('inicio.pendientes.alDia') });
-  const antiguo = area.masAntiguoDias === 0 ? t('inicio.pendientes.antiguoHoy') : t('inicio.pendientes.antiguo', { count: area.masAntiguoDias });
-  return t('inicio.pendientes.area', { nombre: area.nombre, detalle: `${t('inicio.pendientes.porRevisar', { count: area.cantidad })} · ${antiguo}` });
+  return t('inicio.pendientes.area', { nombre: area.nombre, detalle: `${t('inicio.pendientes.porRevisar', { count: area.cantidad })} · ${antiguedadDeArea(area, t)}` });
 }
 
 export type ClaveAcceso = 'revalidaciones' | 'cuentas' | 'aperturas' | 'porVencer' | 'vencidos';
@@ -49,6 +53,13 @@ export function accesosPendientes(p: MisPendientesDto): Acceso[] {
   return todos.filter((a) => a.cantidad > 0);
 }
 
+const TONO_DE_ACCESO: Readonly<Record<ClaveAcceso, TonoKpi>> = { revalidaciones: 'cian', cuentas: 'cian', aperturas: 'cian', porVencer: 'ambar', vencidos: 'rojo' };
+
+/** El tono de la fila de un pendiente: rojo lo ya vencido y las revalidaciones que ya bloquean un certificado; ámbar lo que está por vencer. */
+export function tonoDeAcceso(a: Acceso): TonoKpi {
+  return a.clave === 'revalidaciones' && (a.bloqueantes ?? 0) > 0 ? 'rojo' : TONO_DE_ACCESO[a.clave];
+}
+
 /** Nada por revisar en las áreas ni en los demás pendientes. */
 export function estaAlDia(p: MisPendientesDto): boolean {
   return p.porArea.every((a) => a.cantidad === 0) && accesosPendientes(p).length === 0;
@@ -73,4 +84,37 @@ export function formatearConteo(valor: number): string {
 export function formatearDias(valor: IndicadoresDto['tiempoPromedioDias'], sinDato: string): string {
   const numero = aNumero(valor);
   return numero === null ? sinDato : UN_DECIMAL.format(numero);
+}
+
+/** Los grupos en que se reparten los vínculos de la empresa (cada vínculo cuenta en uno solo). */
+export type ClaveReparto = 'alDia' | 'porVencer' | 'enProceso' | 'conProblema';
+
+export interface SegmentoReparto {
+  clave: ClaveReparto;
+  valor: number;
+  /** Del total de vínculos contados, de 0 a 100. */
+  porcentaje: number;
+  tono: TonoKpi;
+}
+
+/**
+ * Cómo se reparten los vínculos por estado, con lo que la API ya entrega: «Activos» incluye los por vencer (por eso el grupo «al día» los
+ * descuenta), y «en revisión» es aparte de activos, por vencer y vencidos. Cuatro grupos: al día, por vencer, en proceso (invitados, en
+ * validación y en revisión) y con problema (vencidos y bloqueados). `total` es la suma; con cero no hay nada que repartir.
+ */
+export function repartoVinculos(d: IndicadoresDto): { total: number; segmentos: SegmentoReparto[] } {
+  const porVencer = d.vinculosPorVencer ?? 0;
+  const base: Omit<SegmentoReparto, 'porcentaje'>[] = [
+    { clave: 'alDia', valor: Math.max(0, d.vinculosActivos - porVencer), tono: 'verde' },
+    { clave: 'porVencer', valor: porVencer, tono: 'ambar' },
+    { clave: 'enProceso', valor: d.vinculosEnValidacion + (d.vinculosEnRevision ?? 0) + d.vinculosInvitados, tono: 'cian' },
+    { clave: 'conProblema', valor: d.vinculosVencidos + d.vinculosBloqueados, tono: 'rojo' },
+  ];
+  const total = base.reduce((suma, s) => suma + s.valor, 0);
+  return { total, segmentos: base.map((s) => ({ ...s, porcentaje: total > 0 ? (s.valor / total) * 100 : 0 })) };
+}
+
+/** Un porcentaje entero («82»), o «<1» si hay algo pero menos de uno por ciento (que no se vea como cero). */
+export function formatearPorcentaje(porcentaje: number): string {
+  return porcentaje > 0 && porcentaje < 1 ? '<1' : String(Math.round(porcentaje));
 }

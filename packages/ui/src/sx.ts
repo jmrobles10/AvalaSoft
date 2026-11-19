@@ -11,3 +11,26 @@ export function sxComoLista(sx?: SxProps<Theme>): ElementoSx[] {
   if (sx === undefined) return [];
   return Array.isArray(sx) ? [...(sx as ElementoSx[])] : [sx as ElementoSx];
 }
+
+/**
+ * Estilo de la píldora de selección del tablero (las pestañas de Informes, la ventana de los indicadores de Inicio): la elegida es una píldora
+ * blanca con sombra suave sobre el lienzo y el resto, texto gris que se tiñe al pasar el cursor. Se aplica a un control de MUI cuya
+ * seleccionada lleva `Mui-selected` (`Tab`, `ToggleButton`). Con `claseIcono` (el ícono del control) se quita su margen y, elegida, se pinta
+ * en el acento.
+ */
+export function sxPildora(t: Theme, claseIcono?: string) {
+  return {
+    minHeight: 36,
+    px: 1.5,
+    gap: 0.75,
+    borderRadius: '10px',
+    '&:hover': { bgcolor: t.palette.superficie.nivel2, color: t.palette.text.primary },
+    '&.Mui-selected, &.Mui-selected:hover': {
+      bgcolor: t.palette.background.paper,
+      color: t.palette.text.primary,
+      boxShadow: t.sombra.pildora,
+      ...(claseIcono && { [`& ${claseIcono}`]: { color: t.palette.acento.main } }),
+    },
+    ...(claseIcono && { [`& ${claseIcono}`]: { m: 0 } }),
+  };
+}

@@ -1,25 +1,25 @@
 import { Alert } from '@mui/material';
 import { SCOPES, type InformeSlaDto } from '@validalo/api-client';
-import { EsqueletoTabla, MiniBarra } from '@validalo/ui';
+import { EsqueletoTabla, MiniBarra, tonoDeAlerta } from '@validalo/ui';
 import { AlarmClock, ClipboardList, CircleCheck, Gauge, TimerOff } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { ErrorRecuperable, SinPermiso } from '../../shared/componentes';
 import { mensajeDeError } from '../../shared/errores';
+import { ResumenKpis, type KpiResumen } from '../../shared/ResumenKpis';
 import { usePermisos } from '../../shared/usePermisos';
 import { useEmpresaActiva } from '../empresas/useEmpresas';
 import { AccionesDescarga } from './AccionesDescarga';
 import { useInformeSla } from './api';
 import { FiltrosInformeSla } from './FiltrosInformeSla';
 import { MarcoInforme } from './MarcoInforme';
-import { aNumero, rangoInvalido, RUTAS, tonoDeAlerta } from './modelo';
+import { aNumero, rangoInvalido, RUTAS } from './modelo';
 import { cumplimientoParaBarra, formatearCumplimiento, leerFiltrosSla, parametrosSla, tonoKpiDeCumplimiento } from './modeloSla';
-import { ResumenKpis, type KpiInforme } from './ResumenKpis';
 import { CumplimientoPorArea, VencidosAhora } from './TablasInformeSla';
 
 /** Las cifras del informe de plazo de revisión como tarjetas: el cumplimiento primero, con su barra, y lo vencido en rojo si hay. */
-function kpisDeSla(resumen: InformeSlaDto['resumen'], t: TFunction): KpiInforme[] {
+function kpisDeSla(resumen: InformeSlaDto['resumen'], t: TFunction): KpiResumen[] {
   const cumplimiento = formatearCumplimiento(resumen.cumplimiento, t('informes.sinDato'));
   const tono = tonoKpiDeCumplimiento(resumen.cumplimiento);
   return [

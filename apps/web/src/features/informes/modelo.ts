@@ -6,7 +6,7 @@ import type {
   ResumenEstadoExpedientesDto,
   TipoExpediente,
 } from '@validalo/api-client';
-import { LOCALE, type TonoKpi } from '@validalo/ui';
+import { LOCALE } from '@validalo/ui';
 
 export const ESTADOS_EXPEDIENTE: readonly EstadoExpediente[] = ['Abierto', 'EnRevision', 'Observado', 'Aprobado', 'Rechazado', 'Anulado', 'Caducado'];
 export const TIPOS_EXPEDIENTE: readonly TipoExpediente[] = ['Inicial', 'Renovacion', 'Actualizacion'];
@@ -148,9 +148,4 @@ export function tiemposPorFase(r: Pick<ResumenEstadoExpedientesDto, 'promedioEnC
 /** El máximo de días de las áreas: el tope común de las barras, para que se comparen entre sí. */
 export function topeDeAreas(areas: readonly Pick<ResumenEstadoExpedientesDto['porArea'][number], 'promedioDias' | 'maximoDias'>[]): number {
   return areas.reduce((tope, a) => Math.max(tope, aNumero(a.maximoDias) ?? 0, aNumero(a.promedioDias) ?? 0), 0);
-}
-
-/** El tono de una cifra que es una alerta cuando es mayor que cero (lo vencido, lo incumplido): rojo si hay, verde si no. */
-export function tonoDeAlerta(cantidad: number): TonoKpi {
-  return cantidad > 0 ? 'rojo' : 'verde';
 }

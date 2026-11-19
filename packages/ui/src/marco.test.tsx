@@ -116,6 +116,38 @@ describe('piezas del tablero', () => {
     await userEvent.click(fila);
     expect(alClic).toHaveBeenCalledOnce();
   });
+
+  it('FilaAtencion con destino es un enlace; sin destino ni clic es una fila informativa, sin chevron', () => {
+    const Enlace = ({ to, children, ...resto }: { to: string; children?: ReactNode; className?: string }) => (
+      <a href={to} {...resto}>
+        {children}
+      </a>
+    );
+    const { container } = conTema(
+      <>
+        <FilaAtencion icono={Settings} titulo="Con enlace" componente={Enlace} to="/ruta" />
+        <FilaAtencion icono={Settings} titulo="Solo informa" subtitulo="Sin acción" />
+      </>,
+    );
+    expect(screen.getByRole('link', { name: /Con enlace/ })).toHaveAttribute('href', '/ruta');
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Solo informa/ })).not.toBeInTheDocument();
+    expect(screen.getByText('Solo informa')).toBeInTheDocument();
+    // Íconos: uno por fila y un chevron solo en la fila con enlace.
+    expect(container.querySelectorAll('svg')).toHaveLength(3);
+  });
+
+  it('FilaAtencion trunca el título en una línea por omisión y con truncar={false} lo deja envolver; las notas van debajo', () => {
+    conTema(
+      <>
+        <FilaAtencion icono={Settings} titulo="Se trunca" onClick={() => undefined} />
+        <FilaAtencion icono={Settings} titulo="Se envuelve" truncar={false} notas={<span>Aviso aparte</span>} onClick={() => undefined} />
+      </>,
+    );
+    expect(getComputedStyle(screen.getByText('Se trunca')).whiteSpace).toBe('nowrap');
+    expect(getComputedStyle(screen.getByText('Se envuelve')).whiteSpace).not.toBe('nowrap');
+    expect(within(screen.getByRole('button', { name: /Se envuelve/ })).getByText('Aviso aparte')).toBeInTheDocument();
+  });
 });
 
 describe('marco de la app', () => {

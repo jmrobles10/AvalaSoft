@@ -1,45 +1,47 @@
-import { Box, Link, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import type { MisPendientesDto } from '@validalo/api-client';
-import { EstadoVacio } from '@validalo/ui';
-import { CalendarClock, CalendarX, CircleCheck, FolderClock, Landmark, RefreshCw, Workflow, type LucideIcon } from 'lucide-react';
+import { coloresDeKpi, EsqueletoFilas, Sobretitulo } from '@validalo/ui';
+import { CircleCheck, ListChecks } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router';
 import { ErrorRecuperable, Tarjeta } from '../../shared/componentes';
 import { mensajeDeError } from '../../shared/errores';
 import { useMisPendientes } from './api';
-import { accesosPendientes, estaAlDia, textoArea, type ClaveAcceso } from './modelo';
+import { FilaAcceso, FilaArea } from './FilasPendientes';
+import { accesosPendientes, estaAlDia } from './modelo';
 
-const ICONOS: Readonly<Record<ClaveAcceso, LucideIcon>> = {
-  revalidaciones: RefreshCw,
-  cuentas: Landmark,
-  aperturas: FolderClock,
-  porVencer: CalendarClock,
-  vencidos: CalendarX,
-};
-
-/** Fila de una lista de pendientes: ícono pequeño y el texto (enlace o no). */
-function Fila({ icono: Icono, children }: { icono: LucideIcon; children: ReactNode }) {
+/** Una columna de «Lo que te toca»: su sobretítulo y la lista de filas. */
+function Columna({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
-    <Box component="li" sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, minWidth: 0 }}>
-      <Box component="span" aria-hidden sx={{ display: 'inline-flex', pt: '2px', color: 'text.secondary', flex: 'none' }}>
-        <Icono size={16} strokeWidth={1.75} />
-      </Box>
-      <Box sx={{ minWidth: 0 }}>{children}</Box>
+    <Box sx={{ minWidth: 0 }}>
+      <Sobretitulo sx={{ px: 1.5, pb: 0.75 }}>{titulo}</Sobretitulo>
+      <Stack component="ul" spacing={0.25} sx={{ m: 0, p: 0, listStyle: 'none' }}>
+        {children}
+      </Stack>
     </Box>
   );
 }
 
-function Lista({ titulo, children }: { titulo: string; children: ReactNode }) {
+/** Todo en cero: un mensaje en tono de éxito (ícono verde en su círculo), sin sonar a error ni a vacío. */
+function TodoAlDia() {
+  const { t } = useTranslation();
   return (
-    <Box sx={{ minWidth: 0 }}>
-      <Typography variant="overline" component="h3" sx={{ color: 'text.secondary', display: 'block', mb: 0.75 }}>
-        {titulo}
-      </Typography>
-      <Stack component="ul" spacing={1} sx={{ m: 0, p: 0, listStyle: 'none' }}>
-        {children}
-      </Stack>
-    </Box>
+    <Stack direction="row" sx={{ alignItems: 'center', gap: 2, px: { xs: 2, sm: 2.5 }, py: { xs: 2, sm: 2.25 } }}>
+      <Box
+        aria-hidden
+        sx={(th) => ({ display: 'grid', placeItems: 'center', flex: 'none', width: 44, height: 44, borderRadius: '50%', bgcolor: coloresDeKpi(th, 'verde').fondo, color: coloresDeKpi(th, 'verde').texto })}
+      >
+        <CircleCheck size={22} strokeWidth={1.75} />
+      </Box>
+      <Box sx={{ minWidth: 0 }}>
+        <Typography variant="h3" component="p">
+          {t('inicio.pendientes.vacio')}
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          {t('inicio.pendientes.vacioAyuda')}
+        </Typography>
+      </Box>
+    </Stack>
   );
 }
 
@@ -48,55 +50,33 @@ function Pendientes({ datos, empresaId }: { datos: MisPendientesDto; empresaId: 
   const accesos = accesosPendientes(datos);
   const dosColumnas = datos.porArea.length > 0 && accesos.length > 0;
   return (
-    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: dosColumnas ? 'repeat(2, minmax(0, 1fr))' : 'minmax(0, 1fr)' }, gap: 2 }}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: dosColumnas ? 'repeat(2, minmax(0, 1fr))' : 'minmax(0, 1fr)' }, columnGap: 3, rowGap: 2, p: { xs: 1, sm: 1.5 } }}>
       {datos.porArea.length > 0 && (
-        <Lista titulo={t('inicio.pendientes.porArea')}>
+        <Columna titulo={t('inicio.pendientes.porArea')}>
           {datos.porArea.map((a) => (
-            <Fila key={a.areaId} icono={Workflow}>
-              {a.cantidad > 0 ? (
-                <Link component={RouterLink} to={`/e/${empresaId}/bandeja?area=${encodeURIComponent(a.areaId)}`}>
-                  {textoArea(a, t)}
-                </Link>
-              ) : (
-                <Typography sx={{ color: 'text.secondary' }}>{textoArea(a, t)}</Typography>
-              )}
-            </Fila>
+            <li key={a.areaId}>
+              <FilaArea area={a} empresaId={empresaId} />
+            </li>
           ))}
-        </Lista>
+        </Columna>
       )}
       {accesos.length > 0 && (
-        <Lista titulo={t('inicio.pendientes.otros')}>
-          {accesos.map((a) => {
-            const texto = t(`inicio.pendientes.${a.clave}`, { count: a.cantidad });
-            return (
-              <Fila key={a.clave} icono={ICONOS[a.clave]}>
-                {a.ruta ? (
-                  <Link component={RouterLink} to={`/e/${empresaId}/${a.ruta}`}>
-                    {texto}
-                  </Link>
-                ) : (
-                  <Typography>{texto}</Typography>
-                )}
-                {a.bloqueantes !== undefined && a.bloqueantes > 0 && (
-                  <Typography variant="body2" sx={{ color: 'error.main' }}>
-                    {t('inicio.pendientes.bloqueantes', { count: a.bloqueantes })}
-                  </Typography>
-                )}
-                {a.clave === 'cuentas' && (
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {t('inicio.pendientes.cuentasAyuda')}
-                  </Typography>
-                )}
-              </Fila>
-            );
-          })}
-        </Lista>
+        <Columna titulo={t('inicio.pendientes.otros')}>
+          {accesos.map((a) => (
+            <li key={a.clave}>
+              <FilaAcceso acceso={a} empresaId={empresaId} />
+            </li>
+          ))}
+        </Columna>
       )}
     </Box>
   );
 }
 
-/** «Lo que te toca» (INI-1): expedientes por revisar en tus áreas y los demás pendientes, cada uno con su pantalla. */
+/**
+ * «Lo que te toca» (INI-1): expedientes por revisar en tus áreas y los demás pendientes, cada uno con su pantalla, en un panel con filas de
+ * ícono, nombre, cifra destacada y chevron. Carga con esqueletos de filas; si todo está en cero, un vacío en tono de éxito.
+ */
 export function LoQueTeToca({ empresaId }: { empresaId: string }) {
   const { t } = useTranslation();
   const consulta = useMisPendientes(empresaId);
@@ -104,24 +84,20 @@ export function LoQueTeToca({ empresaId }: { empresaId: string }) {
   const titulo = t('inicio.pendientes.titulo');
 
   let contenido: ReactNode;
+  let sinRelleno = true;
   if (consulta.isError && !datos) {
+    sinRelleno = false;
     contenido = <ErrorRecuperable mensaje={`${t('inicio.pendientes.error')} ${mensajeDeError(consulta.error, t)}`} onReintentar={() => void consulta.refetch()} />;
   } else if (!datos) {
-    contenido = (
-      <Stack spacing={1} aria-busy>
-        {[0, 1, 2].map((i) => (
-          <Skeleton key={i} variant="rounded" height={18} width={`${String(70 - i * 15)}%`} />
-        ))}
-      </Stack>
-    );
+    contenido = <EsqueletoFilas cantidad={3} etiqueta={t('inicio.pendientes.cargando')} sx={{ p: { xs: 1, sm: 1.5 } }} />;
   } else if (estaAlDia(datos)) {
-    contenido = <EstadoVacio compacto icono={CircleCheck} titulo={t('inicio.pendientes.vacio')} texto={t('inicio.pendientes.vacioAyuda')} />;
+    contenido = <TodoAlDia />;
   } else {
     contenido = <Pendientes datos={datos} empresaId={empresaId} />;
   }
 
   return (
-    <Tarjeta titulo={titulo} etiqueta={titulo}>
+    <Tarjeta titulo={titulo} etiqueta={titulo} icono={ListChecks} sinRelleno={sinRelleno}>
       {contenido}
     </Tarjeta>
   );

@@ -1,7 +1,7 @@
-import type { MisPendientesDto } from '@validalo/api-client';
+import type { IndicadoresDto, MisPendientesDto } from '@validalo/api-client';
 import i18n from 'i18next';
 import { describe, expect, it } from 'vitest';
-import { accesosPendientes, aNumero, estaAlDia, formatearConteo, formatearDias, leerVentana, textoArea } from './modelo';
+import { accesosPendientes, aNumero, antiguedadDeArea, estaAlDia, formatearConteo, formatearDias, formatearPorcentaje, leerVentana, repartoVinculos, textoArea, tonoDeAcceso } from './modelo';
 
 const t = i18n.t.bind(i18n);
 
@@ -14,6 +14,27 @@ function pendientes(parcial: Partial<MisPendientesDto> = {}): MisPendientesDto {
     aperturasPendientes: 0,
     documentosPorVencer: 0,
     documentosVencidos: 0,
+    ...parcial,
+  };
+}
+
+function indicadores(parcial: Partial<IndicadoresDto> = {}): IndicadoresDto {
+  return {
+    dias: 30,
+    vinculosActivos: 0,
+    vinculosEnValidacion: 0,
+    vinculosInvitados: 0,
+    vinculosVencidos: 0,
+    vinculosBloqueados: 0,
+    expedientesEnCurso: 0,
+    expedientesObservados: 0,
+    expedientesAprobados: 0,
+    expedientesRechazados: 0,
+    tiempoPromedioDias: null,
+    tiempoMedianaDias: null,
+    certificadosVigentes: 0,
+    certificadosConPendientes: 0,
+    certificadosNoValidos: 0,
     ...parcial,
   };
 }
@@ -64,5 +85,54 @@ describe('inicio', () => {
     expect(formatearDias('12', '—')).toBe('12,0');
     expect(formatearDias(null, '—')).toBe('—');
     expect(formatearConteo(1234)).toBe('1.234');
+  });
+
+  it('la antigüedad del área dice hace cuánto llegó el más antiguo, o que es de hoy', () => {
+    expect(antiguedadDeArea(area(3, 5), t)).toBe('el más antiguo hace 5 días');
+    expect(antiguedadDeArea(area(3, 1), t)).toBe('el más antiguo hace 1 día');
+    expect(antiguedadDeArea(area(3, 0), t)).toBe('el más antiguo es de hoy');
+  });
+
+  it('el tono de un pendiente: rojo lo vencido y las revalidaciones que bloquean, ámbar lo por vencer, y el resto neutro', () => {
+    const acceso = (parcial: Partial<Parameters<typeof tonoDeAcceso>[0]>) => ({ clave: 'cuentas' as const, cantidad: 1, ruta: null, ...parcial });
+    expect(tonoDeAcceso(acceso({ clave: 'vencidos' }))).toBe('rojo');
+    expect(tonoDeAcceso(acceso({ clave: 'porVencer' }))).toBe('ambar');
+    expect(tonoDeAcceso(acceso({ clave: 'revalidaciones', bloqueantes: 1 }))).toBe('rojo');
+    expect(tonoDeAcceso(acceso({ clave: 'revalidaciones', bloqueantes: 0 }))).toBe('cian');
+    expect(tonoDeAcceso(acceso({ clave: 'cuentas' }))).toBe('cian');
+    expect(tonoDeAcceso(acceso({ clave: 'aperturas' }))).toBe('cian');
+  });
+
+  it('reparte los vínculos en cuatro grupos sin contar dos veces: activos suma los por vencer y en revisión es aparte', () => {
+    const { total, segmentos } = repartoVinculos(
+      indicadores({ vinculosActivos: 100, vinculosPorVencer: 20, vinculosEnValidacion: 8, vinculosEnRevision: 2, vinculosInvitados: 5, vinculosVencidos: 3, vinculosBloqueados: 2 }),
+    );
+    expect(total).toBe(120);
+    expect(segmentos.map((s) => [s.clave, s.valor, s.tono])).toEqual([
+      ['alDia', 80, 'verde'],
+      ['porVencer', 20, 'ambar'],
+      ['enProceso', 15, 'cian'],
+      ['conProblema', 5, 'rojo'],
+    ]);
+    expect(segmentos.reduce((suma, s) => suma + s.porcentaje, 0)).toBeCloseTo(100);
+    expect(segmentos[0]!.porcentaje).toBeCloseTo((80 / 120) * 100);
+  });
+
+  it('sin los campos opcionales de la API el reparto sigue cuadrando, y sin vínculos no hay nada que repartir', () => {
+    const { total, segmentos } = repartoVinculos(indicadores({ vinculosActivos: 10, vinculosInvitados: 5 }));
+    expect(total).toBe(15);
+    expect(segmentos.map((s) => s.valor)).toEqual([10, 0, 5, 0]);
+    const vacio = repartoVinculos(indicadores());
+    expect(vacio.total).toBe(0);
+    expect(vacio.segmentos.every((s) => s.porcentaje === 0)).toBe(true);
+    // Por robustez: si la API entregara más por vencer que activos, el grupo al día no queda negativo.
+    expect(repartoVinculos(indicadores({ vinculosActivos: 2, vinculosPorVencer: 5 })).segmentos[0]!.valor).toBe(0);
+  });
+
+  it('el porcentaje es entero y lo que existe pero es menor que uno se ve como «<1», no como cero', () => {
+    expect(formatearPorcentaje(82.4)).toBe('82');
+    expect(formatearPorcentaje(99.6)).toBe('100');
+    expect(formatearPorcentaje(0.24)).toBe('<1');
+    expect(formatearPorcentaje(0)).toBe('0');
   });
 });

@@ -5,9 +5,9 @@ import { CircleX } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { BarraMedida, BarraSegmentada } from './barras';
-import { EsqueletoKpis } from './esqueletos';
+import { EsqueletoFilas, EsqueletoKpis } from './esqueletos';
 import { FiltroMenu } from './filtros';
-import { GrillaKpi, TarjetaKpi } from './tarjetas';
+import { columnasKpi, GrillaKpi, TarjetaKpi, tonoDeAlerta } from './tarjetas';
 import { createValidaloTheme } from './tema';
 import { COLOR } from './tokens';
 
@@ -100,6 +100,63 @@ describe('TarjetaKpi en rojo, GrillaKpi y EsqueletoKpis', () => {
     const region = screen.getByRole('status', { name: 'Cargando el resumen' });
     expect(region).toHaveAttribute('aria-busy', 'true');
     expect(container.querySelectorAll('.MuiSkeleton-root')).toHaveLength(5);
+  });
+});
+
+describe('TarjetaKpi como enlace', () => {
+  it('con `to` la tarjeta entera es un enlace con su rótulo, su cifra y un chevron oculto a los lectores; sin él sigue siendo un grupo', () => {
+    conTema(
+      <>
+        <TarjetaKpi icono={CircleX} tono="cian" titulo="Con lista" valor="4" detalle="Ver la lista" to="/lista" />
+        <TarjetaKpi icono={CircleX} tono="cian" titulo="Sin lista" valor="9" />
+      </>,
+    );
+    const enlace = screen.getByRole('link', { name: /^Con lista/ });
+    expect(enlace).toHaveAttribute('href', '/lista');
+    expect(enlace).toHaveTextContent('4');
+    expect(enlace).toHaveTextContent('Ver la lista');
+    // El ícono del rótulo y el chevron son decorativos.
+    for (const icono of enlace.querySelectorAll('svg')) expect(icono.closest('[aria-hidden="true"]')).not.toBeNull();
+    expect(screen.queryByRole('group', { name: 'Con lista' })).not.toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Sin lista' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Sin lista/ })).not.toBeInTheDocument();
+  });
+
+  it('usa el componente de enlace que se le dé (el del enrutador) y, en rojo, conserva el borde y la cifra de alerta', () => {
+    const Enlace = ({ to, children, ...resto }: { to: string; children?: ReactNode; className?: string }) => (
+      <a data-enrutador="" href={`#${to}`} {...resto}>
+        {children}
+      </a>
+    );
+    conTema(<TarjetaKpi icono={CircleX} tono="rojo" titulo="Vencidos" valor="5" componente={Enlace} to="/vencidos" etiqueta="Vencidos: 5" />);
+    const enlace = screen.getByRole('link', { name: 'Vencidos: 5' });
+    expect(enlace).toHaveAttribute('data-enrutador');
+    expect(enlace).toHaveAttribute('href', '#/vencidos');
+    expect(getComputedStyle(enlace).borderColor).toBe(hexARgb(COLOR.light.estadoErrorBorde));
+    expect(getComputedStyle(within(enlace).getByText('5')).color).toBe(hexARgb(COLOR.light.estadoErrorTexto));
+  });
+});
+
+describe('tonoDeAlerta, columnasKpi y esqueletos del tablero', () => {
+  it('una cifra de alerta es roja si hay algo y verde si no', () => {
+    expect(tonoDeAlerta(3)).toBe('rojo');
+    expect(tonoDeAlerta(0)).toBe('verde');
+  });
+
+  it('las columnas dependen de cuántas tarjetas hay, sin dejar filas a medias donde se pueda evitar', () => {
+    expect([1, 2, 3, 4, 5, 6, 7, 8].map(columnasKpi)).toEqual([3, 3, 3, 4, 5, 3, 4, 4]);
+  });
+
+  it('el esqueleto acepta cualquier cantidad de tarjetas (6, en tres columnas)', () => {
+    const { container } = conTema(<EsqueletoKpis etiqueta="Cargando" cantidad={6} />);
+    expect(container.querySelectorAll('.MuiSkeleton-root')).toHaveLength(6);
+  });
+
+  it('el esqueleto de filas es una región ocupada con un círculo, dos líneas y la cifra por fila', () => {
+    const { container } = conTema(<EsqueletoFilas etiqueta="Cargando las filas" cantidad={2} />);
+    expect(screen.getByRole('status', { name: 'Cargando las filas' })).toHaveAttribute('aria-busy', 'true');
+    expect(container.querySelectorAll('.MuiSkeleton-circular')).toHaveLength(2);
+    expect(container.querySelectorAll('.MuiSkeleton-root')).toHaveLength(2 * 4);
   });
 });
 
