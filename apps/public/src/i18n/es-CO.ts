@@ -233,8 +233,16 @@ export const esCO = {
     retirar: 'Retirar esta versión',
     versiones: 'Ver versiones ({{n}})',
     ocultarVersiones: 'Ocultar versiones',
+    // Una fila por versión, compacta: «v2 · estado · archivo · 279 KB · 17/11/2026 · Descargar · Retirar».
+    versionesDelDocumento: 'Versiones del documento',
+    versionCorta: 'v{{n}}',
+    retirarCorto: 'Retirar',
+    retirarVersion: 'Retirar la versión {{n}}',
+    descargarVersion: 'Descargar la versión {{n}}',
     empresas: 'Con tus empresas',
     sinEmpresas: 'Aún no la compartes con ninguna empresa.',
+    // Una empresa que no exige el documento no se lista ni se cuenta; si ninguna lo exige, solo este texto gris.
+    ningunaLaExige: 'Ninguna empresa la exige.',
     // Lo que tiene cada empresa de este documento, sin contradecir la versión vigente de arriba (RT-5): «la vigente» es la
     // única palabra para la versión que vale hoy; «otra» es la segunda versión que la frase nombra.
     vigente: 'Vigente',
@@ -272,6 +280,38 @@ export const esCO = {
       TieneOtra: 'tiene v{{version}}',
     },
     columnas: { documento: 'Documento', estado: 'Estado', empresas: 'Empresas' },
+    // Con muchas empresas, la columna las resume por estado: un chip de conteo por estado (el español solo distingue «uno» y «otros»).
+    resumen: {
+      SinVigente_one: '{{count}} sin versión',
+      SinVigente_other: '{{count}} sin versión',
+      Observada_one: '{{count}} observada',
+      Observada_other: '{{count}} observadas',
+      Revalida_one: '{{count}} revalida',
+      Revalida_other: '{{count}} revalidan',
+      Revisando_one: '{{count}} revisa',
+      Revisando_other: '{{count}} revisan',
+      AproboVigente_one: '{{count}} aprobada',
+      AproboVigente_other: '{{count}} aprobadas',
+      TieneVigente_one: '{{count}} tiene la vigente',
+      TieneVigente_other: '{{count}} tienen la vigente',
+      TieneOtra_one: '{{count}} tiene otra versión',
+      TieneOtra_other: '{{count}} tienen otra versión',
+      AlDia_one: 'Al día con {{count}} empresa',
+      AlDia_other: 'Al día con {{count}} empresas',
+      verDetalle: 'Ver el detalle por empresa',
+    },
+    // El detalle que se abre al tocar el resumen: las empresas agrupadas por estado, cada una con su frase completa.
+    detalle: {
+      buscar: 'Buscar empresa',
+      sinCoincidencias: 'Ninguna empresa coincide con «{{texto}}».',
+    },
+    // Filtro «Empresa: Todas | …» de arriba de la lista (solo con dos o más empresas).
+    filtro: {
+      etiqueta: 'Empresa',
+      todas: 'Todas',
+      sinResultados: 'Ninguna empresa coincide.',
+      sinEstaEmpresa: 'No aplica para esta empresa.',
+    },
     venceDistinto: 'Cada empresa cuenta la vigencia con su propia regla: la fecha de arriba es la más próxima, la de {{empresa}}.',
     descargaLista: 'Descargando {{nombre}}…',
     porRenovar: {
@@ -291,6 +331,26 @@ export const esCO = {
       // Español no distingue dos y tres en sus plurales (solo «one» y «other»): la cantidad elige la clave.
       conLas: { dos: 'las dos', tres: 'las tres', todas: 'todas' },
       subir: 'Subir versión nueva',
+      // Con muchas empresas la línea se resume: la fecha más próxima, para cuántas y cuál es la primera. «Ver empresas» abre el detalle.
+      resumido: {
+        vence_one: 'vence el {{fecha}} para {{empresa}}.',
+        vence_other: 'vence el {{fecha}} para {{count}} empresas (la primera, {{empresa}}).',
+        vencio_one: 'venció el {{fecha}} para {{empresa}}.',
+        vencio_other: 'venció el {{fecha}} para {{count}} empresas (la primera, {{empresa}}).',
+        // Entre las que piden atención hay vencidas y por vencer: no se dice «vence» ni «venció» para todas.
+        mezcla_other: 'ya venció o vence pronto para {{count}} empresas; la primera fecha, el {{fecha}}, es la de {{empresa}}.',
+        sinFecha_one: 'pide una versión nueva para {{empresa}}.',
+        sinFecha_other: 'pide una versión nueva para {{count}} empresas (la primera, {{empresa}}).',
+      },
+      detalle: {
+        enGracia: 'En periodo de gracia hasta el {{fecha}}',
+        vencido: 'Ya venció',
+        vencePronto: 'Vence pronto',
+      },
+      verEmpresas: 'Ver empresas',
+      ocultarEmpresas: 'Ocultar empresas',
+      verMas: 'Ver {{count}} más',
+      verMenos: 'Ver menos',
     },
     retiro: {
       titulo: 'Retirar la versión {{n}} de {{tipo}}',

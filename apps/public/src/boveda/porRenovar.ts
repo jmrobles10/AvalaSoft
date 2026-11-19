@@ -4,11 +4,27 @@ import { formatearDiaCivil } from '@validalo/ui';
 import { estadoDeVigencia, requiereAtencion, type EstadoVigencia } from '../vigencia/vigencia';
 import { enlaceSubirVersion, sePuedeSubirVersion } from './versiones';
 
+/** Cuántas líneas muestra el bloque «Por renovar» antes de pedir «Ver N más». */
+export const MAXIMO_LINEAS_AVISO = 4;
+
+/**
+ * Hasta cuántas empresas se nombran en la frase de una línea («vence para A el …, para B el … y para C el …»). Con más, la línea se
+ * resume y el detalle por empresa va en «Ver empresas».
+ */
+export const MAXIMO_EMPRESAS_EN_FRASE = 3;
+
 /** Lo que vence de un documento con una empresa (cada una calcula su propia vigencia, TD-6). */
 interface VencimientoConEmpresa {
   empresa: string;
   estado: Exclude<EstadoVigencia, 'SinVencimiento'>;
   vigencia: VigenciaDto;
+}
+
+/** Lo que pasa con una empresa en el detalle de una línea resumida: su estado y su fecha («Vence el 30/11/2026»). */
+export interface DetalleDeVencimiento {
+  empresa: string;
+  estado: EstadoVigencia;
+  texto: string;
 }
 
 /** Una línea del bloque «Por renovar» (AvisoConsolidado de docs/06): un documento y qué hacer con él. */
@@ -17,6 +33,10 @@ export interface LineaPorRenovar {
   documento: string;
   /** Qué pasa con cada empresa y antes de cuándo renovarlo, sin el nombre del documento. */
   texto: string;
+  /** Con más empresas de las que caben en una frase, la línea se resume y esto es lo que pasa con cada una («Ver empresas»); si no, `null`. */
+  empresas: DetalleDeVencimiento[] | null;
+  /** Con la línea resumida, antes de cuándo renovar para quedar al día con todas (va en el detalle); si no, `null`. */
+  cierre: string | null;
   /** La vigencia más urgente entre las empresas, para el chip. */
   vigencia: VigenciaDto;
   /** Enlace para subir la versión nueva; `null` si se actualiza desde la revisión (formularios). */
@@ -104,6 +124,29 @@ function cierre(lista: readonly VencimientoConEmpresa[], t: TFunction): string |
   return plazo === null ? t('boveda.porRenovar.renuevaYa', { empresas }) : t('boveda.porRenovar.renuevaAntes', { fecha: diaYMes(plazo), empresas });
 }
 
+/** «Vence el 30/11/2026», «En periodo de gracia hasta el 16/11/2026», «Venció el 01/11/2026»: lo que pasa con una empresa, para su lugar en el detalle. */
+function textoDeVencimiento({ estado, vigencia }: VencimientoConEmpresa, t: TFunction): string {
+  const { vigenteHasta, finDeGracia } = vigencia;
+  if (estado === 'EnGracia' && finDeGracia) return t('boveda.porRenovar.detalle.enGracia', { fecha: formatearDiaCivil(finDeGracia) });
+  if (estado === 'EnGracia' || estado === 'Vencida') return vigenteHasta ? t('vigencia.vencioEl', { fecha: formatearDiaCivil(vigenteHasta) }) : t('boveda.porRenovar.detalle.vencido');
+  return vigenteHasta ? t('vigencia.venceEl', { fecha: formatearDiaCivil(vigenteHasta) }) : t('boveda.porRenovar.detalle.vencePronto');
+}
+
+/**
+ * La frase de una línea con muchas empresas: la fecha más próxima, para cuántas empresas pide renovarlo y cuál es la primera («vence el
+ * 30/11/2026 para 24 empresas (la primera, Constructora Norte)»). Cuenta solo las que piden atención; las demás (aún vigentes) quedan en
+ * el detalle. Si entre ellas hay vencidas y por vencer, no dice «vence» ni «venció» para todas.
+ */
+function textoResumido(lista: readonly VencimientoConEmpresa[], t: TFunction): string {
+  const atencion = lista.filter((v) => requiereAtencion(v.vigencia));
+  const primera = atencion[0] ?? lista[0];
+  if (!primera) return '';
+  const fecha = primera.vigencia.vigenteHasta;
+  const yaVencidas = atencion.filter((v) => v.estado === 'EnGracia' || v.estado === 'Vencida').length;
+  const clase = !fecha ? 'sinFecha' : yaVencidas === 0 ? 'vence' : yaVencidas === atencion.length ? 'vencio' : 'mezcla';
+  return t(`boveda.porRenovar.resumido.${clase}`, { count: atencion.length, empresa: primera.empresa, fecha: fecha ? formatearDiaCivil(fecha) : '' });
+}
+
 /** Une «a», «a y b», «a, b y c» como se dice en español. */
 function enumerar(partes: readonly string[]): string {
   return new Intl.ListFormat('es-CO', { style: 'long', type: 'conjunction' }).format(partes);
@@ -111,7 +154,8 @@ function enumerar(partes: readonly string[]): string {
 
 /**
  * El aviso consolidado de la bóveda (docs/02 §8.3): una línea por documento que vence pronto, está en gracia o venció
- * para alguna empresa, con lo que pasa con cada una y antes de cuándo renovarlo. Primero lo que vence antes.
+ * para alguna empresa, con lo que pasa con cada una y antes de cuándo renovarlo. Primero lo que vence antes. Con más de
+ * {@link MAXIMO_EMPRESAS_EN_FRASE} empresas la línea se resume (fecha más próxima, cuántas y la primera) y el detalle por empresa va aparte.
  */
 export function lineasPorRenovar(documentos: readonly DocumentoBovedaDto[], t: TFunction): LineaPorRenovar[] {
   const lineas: LineaPorRenovar[] = [];
@@ -120,11 +164,14 @@ export function lineasPorRenovar(documentos: readonly DocumentoBovedaDto[], t: T
     if (!lista.some((v) => requiereAtencion(v.vigencia))) continue;
     const masUrgente = lista.reduce((a, b) => (URGENCIA[b.estado] < URGENCIA[a.estado] ? b : a));
     const final = cierre(lista, t);
-    const texto = `${enumerar(textosEmpresas(lista, t))}.`;
+    const enFrase = lista.length <= MAXIMO_EMPRESAS_EN_FRASE;
+    const nombradas = `${enumerar(textosEmpresas(lista, t))}.`;
     lineas.push({
       documentoId: documento.id,
       documento: documento.tipo.nombre,
-      texto: final ? `${texto} ${final}` : texto,
+      texto: !enFrase ? textoResumido(lista, t) : final ? `${nombradas} ${final}` : nombradas,
+      empresas: enFrase ? null : lista.map((v) => ({ empresa: v.empresa, estado: v.estado, texto: textoDeVencimiento(v, t) })),
+      cierre: enFrase ? null : final,
       vigencia: masUrgente.vigencia,
       subir: sePuedeSubirVersion(documento) ? enlaceSubirVersion(documento) : null,
       fecha: lista[0]?.vigencia.vigenteHasta ?? null,

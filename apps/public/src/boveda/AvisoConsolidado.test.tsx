@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type { DocumentoBovedaDto, VigenciaDto } from '@validalo/api-client';
 import { createValidaloTheme } from '@validalo/ui';
 import { MemoryRouter } from 'react-router';
@@ -77,5 +78,73 @@ describe('bloque «Por renovar» de la bóveda', () => {
     const { container } = montar([documento('rut', 'Registro Único Tributario', [['Constructora Norte', vigencia('Vigente', '2027-06-01')]])]);
     expect(container).toBeEmptyDOMElement();
     expect(screen.queryByRole('region')).not.toBeInTheDocument();
+  });
+
+  it('con muchas empresas la línea se resume y «Ver empresas» abre la fecha de cada una', async () => {
+    const usuario = userEvent.setup();
+    const muchas: [string, VigenciaDto][] = Array.from({ length: 25 }, (_, i) => [
+      `Empresa ${String(i + 1).padStart(2, '0')}`,
+      i < 3 ? vigencia('PorVencer', `2026-11-${String(20 + i)}`) : vigencia('Vigente', '2027-06-01'),
+    ]);
+    montar([documento('camara', 'Cámara de comercio', muchas)]);
+
+    const bloque = screen.getByRole('region', { name: 'Por renovar' });
+    // Una sola línea corta: ni las 25 empresas en una frase ni una lista de chips.
+    expect(within(bloque).getAllByRole('listitem')).toHaveLength(1);
+    expect(bloque).toHaveTextContent('Cámara de comercio: vence el 20/11/2026 para 3 empresas (la primera, Empresa 01).');
+    expect(bloque).not.toHaveTextContent('Empresa 25');
+    expect(within(bloque).getByRole('link', { name: 'Subir versión nueva: Cámara de comercio' })).toBeInTheDocument();
+
+    const ver = within(bloque).getByRole('button', { name: 'Ver empresas: Cámara de comercio' });
+    expect(ver).toHaveAttribute('aria-expanded', 'false');
+    await usuario.click(ver);
+
+    expect(within(bloque).getByRole('button', { name: 'Ocultar empresas: Cámara de comercio' })).toHaveAttribute('aria-expanded', 'true');
+    const detalle = within(bloque).getByRole('region', { name: 'Con tus empresas' });
+    const filas = within(detalle).getAllByRole('listitem');
+    expect(filas).toHaveLength(25);
+    expect(filas[0]).toHaveTextContent('Empresa 01 · Vence el 20/11/2026');
+    expect(filas[24]).toHaveTextContent('Empresa 25 · Vence el 01/06/2027');
+    expect(bloque).toHaveTextContent('Renueva antes del 20/11 y quedas al día con todas.');
+
+    // Con tantas empresas, un buscador por nombre.
+    await usuario.type(within(bloque).getByRole('searchbox', { name: 'Buscar empresa' }), 'empresa 07');
+    expect(within(within(bloque).getByRole('region', { name: 'Con tus empresas' })).getAllByRole('listitem')).toHaveLength(1);
+
+    await usuario.click(within(bloque).getByRole('button', { name: 'Ocultar empresas: Cámara de comercio' }));
+    expect(within(bloque).queryByRole('region', { name: 'Con tus empresas' })).not.toBeInTheDocument();
+  });
+
+  it('con una sola empresa no hay «Ver empresas»', () => {
+    montar([documento('rut', 'Registro Único Tributario', [['Constructora Norte', vigencia('PorVencer', '2026-11-30')]])]);
+
+    expect(screen.queryByRole('button', { name: /Ver empresas/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Por renovar' })).toHaveTextContent('vence para Constructora Norte el 30/11/2026.');
+  });
+
+  it('con más de cuatro líneas muestra las cuatro primeras y «Ver N más»', async () => {
+    const usuario = userEvent.setup();
+    montar(
+      Array.from({ length: 7 }, (_, i) =>
+        documento(`d${String(i + 1)}`, `Documento ${String(i + 1)}`, [['Constructora Norte', vigencia('PorVencer', `2026-11-${String(10 + i)}`)]]),
+      ),
+    );
+
+    const bloque = screen.getByRole('region', { name: 'Por renovar' });
+    expect(within(bloque).getAllByRole('listitem').map((l) => /Documento \d/.exec(l.textContent)?.[0])).toEqual(['Documento 1', 'Documento 2', 'Documento 3', 'Documento 4']);
+    const mas = within(bloque).getByRole('button', { name: 'Ver 3 más' });
+    expect(mas).toHaveAttribute('aria-expanded', 'false');
+
+    await usuario.click(mas);
+    expect(within(bloque).getAllByRole('listitem')).toHaveLength(7);
+    await usuario.click(within(bloque).getByRole('button', { name: 'Ver menos' }));
+    expect(within(bloque).getAllByRole('listitem')).toHaveLength(4);
+  });
+
+  it('con cuatro líneas no pide «Ver más»', () => {
+    montar(Array.from({ length: 4 }, (_, i) => documento(`d${String(i + 1)}`, `Documento ${String(i + 1)}`, [['Constructora Norte', vigencia('PorVencer', `2026-11-${String(10 + i)}`)]])));
+
+    expect(within(screen.getByRole('region', { name: 'Por renovar' })).getAllByRole('listitem')).toHaveLength(4);
+    expect(screen.queryByRole('button', { name: /Ver .* más/ })).not.toBeInTheDocument();
   });
 });
