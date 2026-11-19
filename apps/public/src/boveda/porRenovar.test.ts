@@ -59,17 +59,77 @@ describe('aviso consolidado de la bóveda', () => {
     ]);
   });
 
-  it('con tres empresas dice «las tres» y con más, «todas»', () => {
+  it('con tres empresas dice «las tres» y las nombra a todas', () => {
     const tres = documento('camara', 'Cámara de comercio', [
       empresa('A', vigencia('PorVencer', '2026-11-20')),
       empresa('B', vigencia('Vigente', '2027-01-10')),
       empresa('C', vigencia('Vigente', '2027-02-10')),
     ]);
-    expect(lineasPorRenovar([tres], t)[0]?.texto).toBe(
-      'vence para A el 20/11/2026, para B el 10/01/2027 y para C el 10/02/2027. Renueva antes del 20/11 y quedas al día con las tres.',
-    );
-    const cuatro = { ...tres, porEmpresa: [...tres.porEmpresa, empresa('D', vigencia('Vigente', '2027-03-10'))] };
-    expect(lineasPorRenovar([cuatro], t)[0]?.texto).toMatch(/quedas al día con todas\.$/);
+    const [linea3] = lineasPorRenovar([tres], t);
+    expect(linea3?.texto).toBe('vence para A el 20/11/2026, para B el 10/01/2027 y para C el 10/02/2027. Renueva antes del 20/11 y quedas al día con las tres.');
+    // Con pocas empresas la frase lo dice todo: no hay detalle aparte.
+    expect(linea3?.empresas).toBeNull();
+    expect(linea3?.cierre).toBeNull();
+  });
+
+  describe('con más de tres empresas la línea se resume', () => {
+    /** `cantidad` empresas «Empresa 01…» vigentes hasta una fecha lejana. */
+    const lejanas = (cantidad: number) => Array.from({ length: cantidad }, (_, i) => empresa(`Empresa ${String(i + 4).padStart(2, '0')}`, vigencia('Vigente', '2027-06-01')));
+
+    it('dice la fecha más próxima, cuántas empresas piden atención y cuál es la primera', () => {
+      const camara = documento('camara', 'Cámara de comercio', [
+        empresa('Empresa 03', vigencia('PorVencer', '2026-11-25')),
+        empresa('Empresa 01', vigencia('PorVencer', '2026-11-20')),
+        empresa('Empresa 02', vigencia('PorVencer', '2026-11-22')),
+        ...lejanas(22),
+      ]);
+      const [resumida] = lineasPorRenovar([camara], t);
+      expect(resumida?.texto).toBe('vence el 20/11/2026 para 3 empresas (la primera, Empresa 01).');
+      // La línea es una sola frase corta: lo demás va en el detalle, con la fecha de cada empresa (la más próxima primero).
+      expect(resumida?.empresas).toHaveLength(25);
+      expect(resumida?.empresas?.slice(0, 3)).toEqual([
+        { empresa: 'Empresa 01', estado: 'PorVencer', texto: 'Vence el 20/11/2026' },
+        { empresa: 'Empresa 02', estado: 'PorVencer', texto: 'Vence el 22/11/2026' },
+        { empresa: 'Empresa 03', estado: 'PorVencer', texto: 'Vence el 25/11/2026' },
+      ]);
+      expect(resumida?.empresas?.[3]).toEqual({ empresa: 'Empresa 04', estado: 'Vigente', texto: 'Vence el 01/06/2027' });
+      expect(resumida?.cierre).toBe('Renueva antes del 20/11 y quedas al día con todas.');
+      expect(resumida?.subir).toBe('/boveda/subir?documento=camara&tipo=CAMARA');
+    });
+
+    it('con una sola empresa que pide atención la nombra sin hablar de cuántas', () => {
+      const camara = documento('camara', 'Cámara de comercio', [empresa('Empresa 00', vigencia('PorVencer', '2026-11-20')), ...lejanas(3)]);
+      expect(linea(camara)).toEqual(['Cámara de comercio: vence el 20/11/2026 para Empresa 00.']);
+    });
+
+    it('si todas las que piden atención ya vencieron dice «venció el»', () => {
+      const rut = documento('rut', 'Registro Único Tributario', [
+        empresa('Empresa 01', vigencia('Vencida', '2026-11-01')),
+        empresa('Empresa 02', vigencia('EnGracia', '2026-11-05', { finDeGracia: '2026-11-20' })),
+        empresa('Empresa 03', vigencia('Vencida', '2026-11-10')),
+        ...lejanas(3),
+      ]);
+      const [resumida] = lineasPorRenovar([rut], t);
+      expect(resumida?.texto).toBe('venció el 01/11/2026 para 3 empresas (la primera, Empresa 01).');
+      expect(resumida?.vigencia.estado).toBe('Vencida');
+      expect(resumida?.empresas?.map((e) => e.texto)).toEqual([
+        'Venció el 01/11/2026',
+        'En periodo de gracia hasta el 20/11/2026',
+        'Venció el 10/11/2026',
+        'Vence el 01/06/2027',
+        'Vence el 01/06/2027',
+        'Vence el 01/06/2027',
+      ]);
+    });
+
+    it('si hay vencidas y por vencer no dice «vence» ni «venció» para todas', () => {
+      const rut = documento('rut', 'Registro Único Tributario', [
+        empresa('Empresa 01', vigencia('Vencida', '2026-11-01')),
+        empresa('Empresa 02', vigencia('PorVencer', '2026-11-30')),
+        ...lejanas(3),
+      ]);
+      expect(linea(rut)).toEqual(['Registro Único Tributario: ya venció o vence pronto para 2 empresas; la primera fecha, el 01/11/2026, es la de Empresa 01.']);
+    });
   });
 
   it('en gracia dice hasta cuándo se acepta y ese es el plazo para quedar al día', () => {

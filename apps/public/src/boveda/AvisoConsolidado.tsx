@@ -1,23 +1,27 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import type { DocumentoBovedaDto } from '@validalo/api-client';
-import { CalendarClock, Upload } from 'lucide-react';
+import { CalendarClock } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router';
-import { ChipVigencia } from '../vigencia/ChipVigencia';
-import { lineasPorRenovar } from './porRenovar';
+import { LineaDelAviso } from './LineaDelAviso';
+import { lineasPorRenovar, MAXIMO_LINEAS_AVISO } from './porRenovar';
 
 /**
  * «Por renovar» (AvisoConsolidado de docs/06): arriba de la bóveda, qué documentos renovar primero y con qué empresas
  * quedas al día, con la acción de subir la versión nueva. Es el bloque que más pesa de la pantalla: un fondo con el tinte del tono
- * (ámbar; rojo si algo ya venció), sin borde, a diferencia de la lista de documentos que va debajo. No se muestra si no hay nada
+ * (ámbar; rojo si algo ya venció), sin borde, a diferencia de la lista de documentos que va debajo. Una línea por documento, resumida si
+ * son muchas empresas; con más de {@link MAXIMO_LINEAS_AVISO} líneas, las primeras y «Ver N más». No se muestra si no hay nada
  * que atender.
  */
 export function AvisoConsolidado({ documentos }: { documentos: readonly DocumentoBovedaDto[] }) {
   const { t } = useTranslation();
+  const [verTodas, setVerTodas] = useState(false);
   const lineas = lineasPorRenovar(documentos, t);
   if (lineas.length === 0) return null;
   const urgente = lineas.some((l) => l.vigencia.estado === 'Vencida');
   const tono = urgente ? 'error' : 'advertencia';
+  const visibles = verTodas ? lineas : lineas.slice(0, MAXIMO_LINEAS_AVISO);
+  const ocultas = lineas.length - MAXIMO_LINEAS_AVISO;
 
   return (
     <Box
@@ -37,35 +41,15 @@ export function AvisoConsolidado({ documentos }: { documentos: readonly Document
         </Typography>
       </Stack>
       <Box component="ul" sx={{ p: 0, m: 0, mt: 0.25 }}>
-        {lineas.map((l) => (
-          <Stack
-            key={l.documentoId}
-            component="li"
-            direction={{ xs: 'column', sm: 'row' }}
-            sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, columnGap: 2, rowGap: 0.25, py: 0.5, pl: { sm: 4.25 }, listStyle: 'none' }}
-          >
-            <Box sx={{ minWidth: 0, flex: 1, display: 'flex', flexWrap: 'wrap', alignItems: 'center', columnGap: 1, rowGap: 0.25 }}>
-              <ChipVigencia vigencia={l.vigencia} />
-              <Typography component="span" sx={{ fontSize: 14, lineHeight: '20px', minWidth: 0 }}>
-                <Box component="strong" sx={{ fontWeight: 500 }}>{`${l.documento}:`}</Box> {l.texto}
-              </Typography>
-            </Box>
-            {l.subir && (
-              <Button
-                component={RouterLink}
-                to={l.subir}
-                variant="text"
-                startIcon={<Upload size={16} aria-hidden />}
-                aria-label={`${t('boveda.porRenovar.subir')}: ${l.documento}`}
-                size="small"
-                sx={{ flex: 'none', ml: { xs: -1, sm: 0 } }}
-              >
-                {t('boveda.porRenovar.subir')}
-              </Button>
-            )}
-          </Stack>
+        {visibles.map((l) => (
+          <LineaDelAviso key={l.documentoId} linea={l} />
         ))}
       </Box>
+      {ocultas > 0 && (
+        <Button variant="text" size="small" onClick={() => setVerTodas((v) => !v)} aria-expanded={verTodas} sx={{ ml: { xs: -1, sm: 3.25 } }}>
+          {verTodas ? t('boveda.porRenovar.verMenos') : t('boveda.porRenovar.verMas', { count: ocultas })}
+        </Button>
+      )}
     </Box>
   );
 }

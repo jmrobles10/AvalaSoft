@@ -30,7 +30,7 @@ const SITUACIONES = [
   'TieneOtra',
 ] as const;
 
-type Situacion = (typeof SITUACIONES)[number];
+export type Situacion = (typeof SITUACIONES)[number];
 
 /** Una situación que la API agregue después se lee por lo que ya se sabe: la tiene o no la tiene. */
 function situacionDe(c: Pick<ComparticionPublicaDto, 'situacion' | 'compartido'>): Situacion {
@@ -70,17 +70,19 @@ const TONO_DE_SITUACION: Record<Situacion, TonoDeComparticion> = {
 /** Situaciones que piden algo del tercero (subir, corregir o esperar una revalidación): solo ahí se muestra la frase larga bajo el chip. */
 const PIDEN_ACCION: readonly Situacion[] = ['SinVigente', 'Observada', 'RevalidaRetirada', 'Revalida', 'PorRevalidar'];
 
+/** En qué situación está una empresa con este documento, con qué tono se pinta y si pide algo del tercero (lo comparten el chip y los resúmenes). */
+export function clasificarComparticion(c: Pick<ComparticionPublicaDto, 'situacion' | 'compartido'>): { situacion: Situacion; tono: TonoDeComparticion; pideAccion: boolean } {
+  const situacion = situacionDe(c);
+  return { situacion, tono: TONO_DE_SITUACION[situacion], pideAccion: PIDEN_ACCION.includes(situacion) };
+}
+
 /**
  * Lo que tiene una empresa de este documento en pocas palabras para su chip («aprobada v1», «revisa v2», «no la exige»), con el tono que
  * le toca, y si hay algo que hacer. La frase completa sigue siendo {@link detalleComparticion}.
  */
 export function resumenCorto(c: ComparticionPublicaDto, t: TFunction): { texto: string; tono: TonoDeComparticion; pideAccion: boolean } {
-  const situacion = situacionDe(c);
-  return {
-    texto: t(`boveda.corto.${situacion}`, { version: String(c.version ?? ''), otra: String(c.otraVersion ?? '') }),
-    tono: TONO_DE_SITUACION[situacion],
-    pideAccion: PIDEN_ACCION.includes(situacion),
-  };
+  const { situacion, tono, pideAccion } = clasificarComparticion(c);
+  return { texto: t(`boveda.corto.${situacion}`, { version: String(c.version ?? ''), otra: String(c.otraVersion ?? '') }), tono, pideAccion };
 }
 
 /** El vencimiento propio de la empresa para la versión vigente, solo si ya pasó o difiere del de la cabecera. */
