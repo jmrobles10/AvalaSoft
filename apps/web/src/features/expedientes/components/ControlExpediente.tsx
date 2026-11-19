@@ -1,6 +1,6 @@
-import { Alert, AlertTitle, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Alert, AlertTitle, Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { formatearFecha } from '@validalo/ui';
-import { Ban, Ellipsis, Lock, RotateCcw, Send, Undo2 } from 'lucide-react';
+import { Ban, ChevronDown, Lock, RotateCcw, Send, Undo2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePermisos } from '../../../shared/usePermisos';
@@ -41,17 +41,16 @@ export function AccionesExpediente({ control }: { control: ControlExpediente }) 
       )}
       {masAcciones && (
         <>
-          <Tooltip title={t('expedientes.acciones.mas')}>
-            <IconButton
-              aria-label={t('expedientes.acciones.mas')}
-              aria-haspopup="menu"
-              aria-expanded={ancla ? 'true' : undefined}
-              onClick={(e) => setAncla(e.currentTarget)}
-              sx={{ border: 1, borderColor: 'divider', borderRadius: '10px', width: 36, height: 36 }}
-            >
-              <Ellipsis size={18} aria-hidden />
-            </IconButton>
-          </Tooltip>
+          <Button
+            variant="outlined"
+            size="small"
+            endIcon={<ChevronDown size={16} aria-hidden />}
+            aria-haspopup="menu"
+            aria-expanded={ancla ? 'true' : undefined}
+            onClick={(e) => setAncla(e.currentTarget)}
+          >
+            {t('expedientes.acciones.mas')}
+          </Button>
           <Menu anchorEl={ancla} open={Boolean(ancla)} onClose={() => setAncla(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
             {acciones.includes('faseInicial') && (
               <MenuItem onClick={() => elegir({ tipo: 'faseInicial' })}>
