@@ -15,7 +15,7 @@ namespace Avalasoft.Integracion.Tests;
 /// correo al tercero sin revisores, reenvío, aprobación que activa el vínculo, áreas automáticas, rechazo terminal,
 /// aceptación sin flujo, apertura manual, pertenencia al área, aprobadores distintos y folios concurrentes.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api1)]
 [Trait("Requiere", "Docker")]
 public sealed partial class ExpedientesApiTests(ApiFixture fixture)
 {

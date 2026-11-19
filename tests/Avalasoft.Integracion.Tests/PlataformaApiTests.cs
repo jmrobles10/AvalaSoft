@@ -19,7 +19,7 @@ namespace Avalasoft.Integracion.Tests;
 /// punta, plan de IA con su llave de solo escritura (nunca vuelve en claro ni va a la auditoría), «Probar llave» y
 /// re-cifrado de los secretos con la clave maestra.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api2)]
 [Trait("Requiere", "Docker")]
 public sealed class PlataformaApiTests(ApiFixture fixture)
 {

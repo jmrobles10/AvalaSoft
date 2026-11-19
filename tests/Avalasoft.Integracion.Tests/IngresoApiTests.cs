@@ -11,7 +11,7 @@ namespace Avalasoft.Integracion.Tests;
 /// Ingreso directo sin contraseñas (ING-1…ING-7): código por correo (vencimiento, un solo uso, límites, sin revelar si el correo existe), modos por
 /// grupo, passkeys obligatorias por rol, ingreso solo con passkey, renovación con inactividad, Mi cuenta, gestión por administradores y auditoría.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api4)]
 [Trait("Requiere", "Docker")]
 public sealed partial class IngresoApiTests(ApiFixture fixture)
 {

@@ -14,7 +14,7 @@ namespace Avalasoft.Integracion.Tests;
 /// del grupo y ningún dato, sus correos no salen (van a un buzón consultable), no deja nada en producción —terceros, certificados
 /// verificables, listados de la consola, correos de acceso— y se reinicia sin perder empresas ni llaves.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api3)]
 [Trait("Requiere", "Docker")]
 public sealed class SandboxApiTests(ApiFixture fixture)
 {

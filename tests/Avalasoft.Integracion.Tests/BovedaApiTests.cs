@@ -20,11 +20,14 @@ namespace Avalasoft.Integracion.Tests;
 /// archivo en el servidor (hash, tamaño, magic bytes, PDF activo), compartición solo tras aceptar la invitación (B-1) y
 /// descarga auditada por la empresa. E1 de docs/02 §11 con dos empresas de tenants distintos.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api4)]
 [Trait("Requiere", "Docker")]
 public sealed partial class BovedaApiTests(ApiFixture fixture)
 {
     private static readonly HttpClient Http = new();
+
+    /// <summary>Claves <c>cargas/{id}</c> de las subidas que hizo esta prueba (para comprobar que la zona temporal queda limpia).</summary>
+    private readonly List<string> _clavesTemporales = [];
 
     private IAlbaHost Host => fixture.Host;
 
@@ -112,7 +115,11 @@ public sealed partial class BovedaApiTests(ApiFixture fixture)
         versionB.N.ShouldBe(versionA.N);
         versionB.Sha256.ShouldBe(versionA.Sha256);
         (await ObjetosAsync(ClavesDeAlmacen.BucketBoveda, $"terceros/{e.Sesion.TerceroId:N}/")).ShouldBe([$"terceros/{e.Sesion.TerceroId:N}/{Sha256(rut)}"]);
-        (await ObjetosAsync(ClavesDeAlmacen.BucketBoveda, "cargas/")).ShouldBeEmpty(); // la zona temporal se limpia
+        // La zona temporal se limpia: las cargas de ESTA prueba ya no dejan nada (no se lista toda la zona: otras colecciones de pruebas comparten
+        // MinIO y pueden estar subiendo a la vez).
+        _clavesTemporales.ShouldNotBeEmpty();
+        foreach (var temporal in _clavesTemporales)
+            (await ObjetosAsync(ClavesDeAlmacen.BucketBoveda, temporal)).ShouldBeEmpty();
 
         // Versión nueva: pasa a actual y se comparte con A y B en la misma confirmación.
         var rut2 = Pdf("RUT v2 con dirección nueva");
@@ -453,6 +460,7 @@ public sealed partial class BovedaApiTests(ApiFixture fixture)
         carga.Carga!.Metodo.ShouldBe("PUT");
         carga.Carga.Expira.ShouldBeGreaterThan(DateTimeOffset.UtcNow);
 
+        _clavesTemporales.Add(System.Text.RegularExpressions.Regex.Match(carga.Carga.Url, @"cargas/[0-9a-f]{32}").Value);
         using var put = new HttpRequestMessage(HttpMethod.Put, carga.Carga.Url) { Content = new ByteArrayContent(contenido) };
         put.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(carga.Carga.Cabeceras["Content-Type"]);
         using var respuesta = await Http.SendAsync(put);

@@ -23,7 +23,7 @@ namespace Avalasoft.Integracion.Tests;
 /// recalcula y cuyo sello verifica con la clave de <c>.well-known</c>; bloquear suspende, desbloquear restablece, revocar
 /// es definitivo y anular el vínculo revoca por el sistema; la vista pública no expone revisores ni contactos.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api2)]
 [Trait("Requiere", "Docker")]
 public sealed class CertificadosApiTests(ApiFixture fixture)
 {

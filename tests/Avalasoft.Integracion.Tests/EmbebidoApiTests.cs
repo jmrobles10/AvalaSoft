@@ -16,7 +16,7 @@ namespace Avalasoft.Integracion.Tests;
 /// de la app embebible con esos orígenes, endpoint público de orígenes, apps servidas por la API con fallback, CORS
 /// opcional y <c>X-Forwarded-For</c> solo desde proxies confiables.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api2)]
 [Trait("Requiere", "Docker")]
 public sealed class EmbebidoApiTests(ApiFixture fixture)
 {

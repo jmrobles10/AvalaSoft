@@ -22,7 +22,7 @@ namespace Avalasoft.Integracion.Tests;
 /// Tipos de documento configurables (TD-1…TD-6) con PostgreSQL y MinIO reales: formato, peso y páginas por tipo, plantilla
 /// descargable versionada, campos que llena el proveedor (formularios) y vigencia con aviso programado y vencimiento.
 /// </summary>
-[Collection("api")]
+[Collection(Colecciones.Api4)]
 [Trait("Requiere", "Docker")]
 public sealed partial class TiposDocumentoApiTests(ApiFixture fixture)
 {
