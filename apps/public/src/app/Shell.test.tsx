@@ -37,7 +37,7 @@ describe('Shell del tercero: la marca', () => {
     const barra = screen.getByRole('banner');
     const logo = within(barra).getByRole('img', { name: 'Valídalo' });
     expect(logo.querySelector('[data-parte="v"]')).toHaveAttribute('fill', '#22D38A');
-    expect(logo.querySelector('[data-parte="lo"]')).toHaveAttribute('fill', '#0E8C9A');
+    expect(logo.querySelector('[data-parte="palabra"]')).toHaveAttribute('fill', '#0E8C9A');
     // El dibujo no se recorta en la barra: el svg deja ver lo que sobresalga y la «V» y la palabra están dentro de su caja.
     expect(logo).toHaveStyle({ overflow: 'visible' });
     expect(within(barra).getByText('Mis documentos')).toBeInTheDocument();

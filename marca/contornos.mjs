@@ -28,9 +28,8 @@ const AJUSTE_MAXIMO = 6;
 const HUECO_MAXIMO = 24;
 /** Decimales de los trazados: a 1 décima de unidad (0,1 % de la letra) no se ve a ningún tamaño del producto. */
 const DECIMALES = 1;
-/** La palabra que sigue a la «V»: «alída» (azul oscuro) y «lo» (verde azulado). Se lee «Valídalo». */
+/** La palabra que sigue a la «V»: «alídalo», toda de un solo color. Se lee «Valídalo». */
 const TEXTO = 'alídalo';
-const CUANTAS_ALIDA = 5;
 /** Alto de la «V» (el check) en unidades de logotipo: la letra mide 100 y la «V» mide lo que la letra, apoyada en la línea base. */
 const ALTO_V = 100;
 /** Separación mínima (distancia real, no solo en horizontal) entre el contorno de la «V» y el de la «a»: la cola del check se mete sobre la «a». */
@@ -155,16 +154,9 @@ function trazado(desde, hasta) {
   return inclinar(camino);
 }
 
-const trazadoAlida = trazado(0, CUANTAS_ALIDA);
-const trazadoLo = trazado(CUANTAS_ALIDA, glifos.length);
-const cajaAlida = trazadoAlida.getBoundingBox();
-const cajaLo = trazadoLo.getBoundingBox();
-const limites = {
-  x0: Math.min(cajaAlida.x1, cajaLo.x1),
-  x1: Math.max(cajaAlida.x2, cajaLo.x2),
-  y0: Math.min(cajaAlida.y1, cajaLo.y1),
-  y1: Math.max(cajaAlida.y2, cajaLo.y2),
-};
+const trazadoLetras = trazado(0, glifos.length);
+const cajaLetras = trazadoLetras.getBoundingBox();
+const limites = { x0: cajaLetras.x1, x1: cajaLetras.x2, y0: cajaLetras.y1, y1: cajaLetras.y2 };
 
 // La «V»: el check a la altura de la letra, apoyado en la línea base e inclinado como la palabra. Su borde izquierdo es x = 0.
 const uve = disponerLaV(ALTO_V, INCLINACION);
@@ -228,10 +220,8 @@ export const PALABRA = {
   },
   /** Dónde va el origen de la palabra, medido desde el borde izquierdo de la «V»: el contorno de la «a» queda a ${String(HUECO_V)} unidades del check (la cola de la «V» se mete sobre la «a»). */
   inicio: ${String(inicioPalabra)},
-  /** «alída» (azul oscuro). */
-  alida: '${trazadoAlida.toPathData(DECIMALES)}',
-  /** «lo» (verde azulado). */
-  lo: '${trazadoLo.toPathData(DECIMALES)}',
+  /** Las siete letras de «alídalo» en un solo trazado (un solo color). */
+  letras: '${trazadoLetras.toPathData(DECIMALES)}',
 } as const;
 `;
 writeFileSync(join(repo, 'packages', 'ui', 'src', 'marca', 'palabra.ts'), salida);

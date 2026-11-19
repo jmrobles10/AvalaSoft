@@ -12,7 +12,8 @@ export { CAJA_CHECK, CHECK_RELLENO } from './check';
  * - **Logotipo**: sin aro ni círculo. La «V» es el check verde, del alto de la letra, apoyado en la línea base, inclinado 10° como la palabra
  *   y muy pegado a la «a» (su brazo largo se mete sobre ella); sigue «alídalo», toda en minúsculas, en Quicksand Bold (SIL OFL) convertida a
  *   contornos (`palabra.ts`, generado por `marca/contornos.mjs`), con seguimiento −0,04 em y espaciado parejo, inclinada 10° a la derecha:
- *   «alída» en azul muy oscuro y «lo» en verde azulado. Se lee «Valídalo». Es solo geometría: no depende de ninguna fuente.
+ *   todas las letras de un solo color (verde azulado en claro, el blanco de texto de marca en oscuro). Se lee «Valídalo». Es solo geometría: no
+ *   depende de ninguna fuente.
  * - **Ícono** (app, web, PWA, avatar): un aro abierto con el check un poco más grande, cuya punta sale por el hueco del aro.
  * - **Favicon**: un círculo verde lleno con el check blanco.
  * - **Cargando** y **éxito**: el aro completo y el check revelado con una máscara (un relleno no se «dibuja» con `stroke-dashoffset`).
@@ -81,16 +82,17 @@ export const CAJA_LOGOTIPO = {
 /** La «V» (el check): su trazado (`PALABRA.v.trazado`) ya viene a su tamaño e inclinado, así que solo se corre a su sitio sobre la línea base. */
 export const TRANSFORMACION_V = `translate(${String(MARGEN_LOGOTIPO)} ${String(CAJA_LOGOTIPO.base)})`;
 
-/** La palabra: su origen (inicio de «alída» sobre la línea base), con el aire que deja la «V» a la «a». */
+/** La palabra: su origen (inicio de «alídalo» sobre la línea base), con el aire que deja la «V» a la «a». */
 export const TRANSFORMACION_PALABRA = `translate(${String(redondear(MARGEN_LOGOTIPO + PALABRA.inicio))} ${String(CAJA_LOGOTIPO.base)})`;
 
-/** Colores de la palabra del logotipo en cada modo: «alída» en azul muy oscuro (en oscuro, casi blanco) y «lo» en verde azulado. */
+/**
+ * Color de las letras del logotipo en cada modo: un solo color para toda la palabra. En claro, el verde azulado de marca `#0E8C9A` (4,0:1
+ * sobre #FFFFFF y 3,9:1 sobre #FAFBFD: no llega a 4,5:1 de AA para texto normal, pero la palabra es un dibujo grueso de 14 px o más y cumple el 3:1
+ * de texto grande y de logotipos). En oscuro, el blanco de texto de marca del token (`marcaTexto`, #F2F5FB: 17,5:1 sobre #0B1120).
+ */
 const COLORES_DE_LA_PALABRA = {
-  // «alída» #0B1F3A: 16,5:1 sobre #FFFFFF; «lo» #0E8C9A: 4,0:1 sobre #FFFFFF y 3,9:1 sobre #FAFBFD (no llega a 4,5:1 de AA para texto
-  // normal, pero la palabra es un dibujo grueso de 14 px o más: cumple 3:1 de texto grande y de logotipos).
-  light: { alida: '#0B1F3A', lo: '#0E8C9A' },
-  // «alída» #EEF3FA: 16,9:1 sobre #0B1120; «lo» #3FC1CE: 8,7:1 sobre #0B1120 y 9,2:1 sobre #060A14.
-  dark: { alida: '#EEF3FA', lo: '#3FC1CE' },
+  light: { letras: '#0E8C9A' },
+  dark: { letras: COLOR.dark.marcaTexto },
 } as const;
 
 /** Colores del logo en un modo (de `tokens.ts` el aro y el check; la palabra lleva los suyos; no cambian con la paleta de una empresa). */
@@ -99,10 +101,8 @@ export interface ColoresDeLogo {
   aro: string;
   /** Check (la «V» del logotipo, el círculo del favicon y el ícono) y color del éxito. */
   check: string;
-  /** «alída» del logotipo. */
-  alida: string;
-  /** «lo» del logotipo. */
-  lo: string;
+  /** Las letras «alídalo» del logotipo (un solo color). */
+  letras: string;
   /** Check sobre el círculo lleno (éxito y favicon). */
   blanco: string;
 }

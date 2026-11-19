@@ -196,8 +196,8 @@ public sealed class LogosDePdfTests
         var pdf = Contenido(logotipo, 364.1, 105);
         pdf.ShouldContain("0.133333 0.827451 0.541176 rg");  // #22D38A: la «V» (el check)
         pdf.ShouldNotContain("1 1 1 rg");                     // sin círculo ni check blanco
-        pdf.ShouldContain("0.054902 0.54902 0.603922 rg");   // #0E8C9A: «lo»
-        pdf.ShouldContain("0.043137 0.121569 0.227451 rg");  // #0B1F3A: «alída»
+        pdf.ShouldContain("0.054902 0.54902 0.603922 rg");   // #0E8C9A: las letras, todas de un solo color
+        pdf.ShouldNotContain("0.043137 0.121569 0.227451 rg"); // #0B1F3A: el azul oscuro de «alída» ya no está en el logotipo
         pdf.ShouldContain(" c\n");                           // las curvas de las letras (contornos, no texto)
         pdf.ShouldNotContain("Tj");                           // sin texto: no depende de ninguna fuente
         pdf.ShouldNotContain("/ShadingType");                // sin degradado
@@ -211,8 +211,8 @@ public sealed class LogosDePdfTests
         LogosDePdf.Validalo.Dibujar(pdf, 48, 700, 110, 34);
         var texto = Encoding.Latin1.GetString(pdf.Construir("t", "a", new DateTimeOffset(2026, 11, 12, 0, 0, 0, TimeSpan.Zero), (_, _) => { }));
         texto.ShouldContain("0.133333 0.827451 0.541176 rg");   // la «V» verde
-        texto.ShouldContain("0.054902 0.54902 0.603922 rg");    // «lo»: #0E8C9A
-        texto.ShouldContain("0.043137 0.121569 0.227451 rg");   // «alída»: #0B1F3A
+        texto.ShouldContain("0.054902 0.54902 0.603922 rg");    // las letras: #0E8C9A
+        texto.ShouldNotContain("0.043137 0.121569 0.227451 rg"); // el azul oscuro de «alída» ya no está
         texto.ShouldNotContain("Tj");
         // 110 × 34 con un logotipo de 364,1 × 105: manda el ancho (110 / 364,1 = 0,3021) y el alto queda en 31,72 puntos, centrado en la caja.
         texto.ShouldContain("0.302115 0 0 -0.302115");

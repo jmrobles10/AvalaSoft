@@ -18,7 +18,7 @@ export type VarianteLogo = 'logotipo' | 'icono' | 'favicon';
 
 export interface LogoProps {
   /**
-   * `logotipo` (por omisión): la «V» (el check verde) seguida de «alídalo» (en minúsculas, redondeada e inclinada), todo en contornos; se lee «Valídalo». Va en barras, ingreso, correos y documentos.
+   * `logotipo` (por omisión): la «V» (el check verde) seguida de «alídalo» (en minúsculas, redondeada, inclinada y de un solo color), todo en contornos; se lee «Valídalo». Va en barras, ingreso, correos y documentos.
    * `icono`: el aro abierto con el check; va donde solo cabe un símbolo (app instalada, avatar de la marca, notificaciones).
    * `favicon`: el círculo verde lleno con el check blanco, que se lee bien a 16 px.
    */
@@ -68,7 +68,7 @@ function Favicon({ lado, colores, titulo, decorativo }: { lado: number; colores:
 }
 
 /**
- * El logotipo: la «V» (el check verde) y la palabra «alídalo» en dos tonos. Todo son trazados: no depende de fuentes. El `viewBox` abarca el dibujo
+ * El logotipo: la «V» (el check verde) y la palabra «alídalo» de un solo color. Todo son trazados: no depende de fuentes. El `viewBox` abarca el dibujo
  * completo con un margen (`CAJA_LOGOTIPO`) y el `svg` no recorta (`overflow: visible`): ni la cola del check ni el acento de la «í» ni la
  * inclinación pueden quedar cortados, ni siquiera en una barra de alto ajustado.
  */
@@ -84,10 +84,7 @@ function Logotipo({ letra, colores, titulo, decorativo }: { letra: number; color
       {...accesibilidad(titulo, decorativo)}
     >
       <path data-parte="v" d={PALABRA.v.trazado} fill={colores.check} transform={TRANSFORMACION_V} />
-      <g data-parte="palabra" transform={TRANSFORMACION_PALABRA}>
-        <path data-parte="alida" d={PALABRA.alida} fill={colores.alida} />
-        <path data-parte="lo" d={PALABRA.lo} fill={colores.lo} />
-      </g>
+      <path data-parte="palabra" d={PALABRA.letras} fill={colores.letras} transform={TRANSFORMACION_PALABRA} />
     </svg>
   );
 }

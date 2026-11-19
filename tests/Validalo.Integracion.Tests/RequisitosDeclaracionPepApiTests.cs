@@ -237,7 +237,7 @@ public sealed class RequisitosDeclaracionPepApiTests(ApiFixture fixture, ITestOu
         var texto = Encoding.Latin1.GetString(pdf.Contenido);
         texto.ShouldStartWith("%PDF-1.7");
         texto.ShouldContain("(Valídalo)");
-        texto.ShouldContain("0.054902 0.54902 0.603922 rg");   // el logotipo de Valídalo: la «V» verde y «lo» en contornos (verde azulado)
+        texto.ShouldContain("0.054902 0.54902 0.603922 rg");   // el logotipo de Valídalo: la «V» verde y «alídalo» en contornos (verde azulado)
         texto.ShouldContain("0.133333 0.827451 0.541176 rg");
         texto.ShouldContain("/Subtype /Image");       // la firma
         texto.ShouldContain("(Alcalde municipal)");

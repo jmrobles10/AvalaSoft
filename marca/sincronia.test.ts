@@ -64,9 +64,7 @@ describe('recursos de marca generados', () => {
       const logotipo = texto('marca', 'svg', `logotipo-${nombre}.svg`);
       expect(logotipo).toContain(`viewBox="0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}"`);
       expect(logotipo).toContain(`<path d="${PALABRA.v.trazado}" fill="${c.check}" transform="${TRANSFORMACION_V}"/>`);
-      expect(logotipo).toContain(`transform="${TRANSFORMACION_PALABRA}"`);
-      expect(logotipo).toContain(`d="${PALABRA.alida}" fill="${c.alida}"`);
-      expect(logotipo).toContain(`d="${PALABRA.lo}" fill="${c.lo}"`);
+      expect(logotipo).toContain(`<path d="${PALABRA.letras}" fill="${c.letras}" transform="${TRANSFORMACION_PALABRA}"/>`);
       // La «V» es el check sin círculo: el logotipo no lleva ni círculo ni check blanco.
       expect(logotipo).not.toContain('<circle');
       expect(logotipo).not.toContain(c.blanco);
@@ -134,17 +132,15 @@ describe('copias que usan el producto', () => {
     const c = coloresDeLogo('light');
     expect(pdf).toContain(`viewBox="0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}"`);
     expect(pdf).toContain(`<path d="${PALABRA.v.trazado}" fill="${c.check}" transform="${TRANSFORMACION_V}"/>`);
-    expect(pdf).toContain(`transform="${TRANSFORMACION_PALABRA}"`);
-    expect(pdf).toContain(`<path d="${PALABRA.alida}" fill="${c.alida}"/>`);
-    expect(pdf).toContain(`<path d="${PALABRA.lo}" fill="${c.lo}"/>`);
+    expect(pdf).toContain(`<path d="${PALABRA.letras}" fill="${c.letras}" transform="${TRANSFORMACION_PALABRA}"/>`);
     expect(pdf).not.toContain('<circle');
-    expect(coloresDeLogo('light')).toMatchObject({ alida: '#0B1F3A', lo: '#0E8C9A' });
-    expect(coloresDeLogo('dark')).toMatchObject({ alida: '#EEF3FA', lo: '#3FC1CE' });
+    expect(coloresDeLogo('light')).toMatchObject({ letras: '#0E8C9A' });
+    expect(coloresDeLogo('dark')).toMatchObject({ letras: '#F2F5FB' });
   });
 });
 
 describe('alineación del logotipo (medida sobre el PNG)', () => {
-  /** Mide el PNG claro @2x píxel a píxel: la «V» verde y los trazados de la palabra, sin fiarse de las constantes. */
+  /** Mide el PNG claro @2x píxel a píxel: la «V» verde y las letras (verde azulado), sin fiarse de las constantes. */
   function medir() {
     const { ancho, alto, rgba } = decodificarPng(leer('marca', 'png', 'logotipo-claro@2x.png'));
     const cerca = (i: number, [r, g, b]: number[], tolerancia: number) =>
@@ -162,7 +158,7 @@ describe('alineación del logotipo (medida sobre el PNG)', () => {
       return { ...c, ancho: c.x1 - c.x0 + 1, alto: c.y1 - c.y0 + 1 };
     };
     const uve = caja((i) => cerca(i, [0x22, 0xd3, 0x8a], 40));
-    const palabra = caja((i) => cerca(i, [0x0e, 0x8c, 0x9a], 30) || cerca(i, [0x0b, 0x1f, 0x3a], 30));
+    const palabra = caja((i) => cerca(i, [0x0e, 0x8c, 0x9a], 30));
     const todo = caja((i) => (rgba[i + 3] ?? 0) > 8);
     return { ancho, alto, uve, palabra, todo };
   }

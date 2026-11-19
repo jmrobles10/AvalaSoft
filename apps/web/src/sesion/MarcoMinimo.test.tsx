@@ -18,15 +18,13 @@ describe('MarcoMinimo (la cabecera del ingreso): la marca', () => {
     montar('light');
     const logo = within(screen.getByRole('banner')).getByRole('img', { name: 'Valídalo' });
     expect(logo.querySelector('[data-parte="v"]')).toHaveAttribute('fill', '#22D38A');
-    expect(logo.querySelector('[data-parte="lo"]')).toHaveAttribute('fill', '#0E8C9A');
-    expect(logo.querySelector('[data-parte="alida"]')).toHaveAttribute('fill', '#0B1F3A');
+    expect(logo.querySelector('[data-parte="palabra"]')).toHaveAttribute('fill', '#0E8C9A');
   });
 
   it('cambia de colores con el tema oscuro', () => {
     montar('dark');
     const logo = within(screen.getByRole('banner')).getByRole('img', { name: 'Valídalo' });
     expect(logo.querySelector('[data-parte="v"]')).toHaveAttribute('fill', '#2BE29A');
-    expect(logo.querySelector('[data-parte="lo"]')).toHaveAttribute('fill', '#3FC1CE');
-    expect(logo.querySelector('[data-parte="alida"]')).toHaveAttribute('fill', '#EEF3FA');
+    expect(logo.querySelector('[data-parte="palabra"]')).toHaveAttribute('fill', '#F2F5FB');
   });
 });

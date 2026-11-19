@@ -84,7 +84,7 @@ function svgLogotipo(c) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" role="img" aria-label="Valídalo">
   <title>Valídalo</title>
   <path d="${marca.palabra.v.trazado}" fill="${c.check}" transform="${marca.transformacionV}"/>
-  <g transform="${marca.transformacionPalabra}"><path d="${marca.palabra.alida}" fill="${c.alida}"/><path d="${marca.palabra.lo}" fill="${c.lo}"/></g>
+  <path d="${marca.palabra.letras}" fill="${c.letras}" transform="${marca.transformacionPalabra}"/>
 </svg>
 `;
 }

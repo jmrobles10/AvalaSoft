@@ -10,13 +10,13 @@
 
 ## 1. La idea
 
-El producto se llama **Valídalo**, y el logotipo se lee así: un **check verde que hace de «V»** (el mismo trazo caligráfico del favicon, con el brazo derecho más largo) seguido de **«alídalo»** en minúsculas, en una tipografía redondeada y gruesa, inclinada hacia la derecha y en dos tonos («alída» en azul muy oscuro, «lo» en verde azulado). La «V» no lleva círculo ni aro: es del alto de la letra, se apoya en la línea base y va pegada a la «a», con la cola de su brazo largo sobre ella. El check es un trazo caligráfico: se lee como «validado». Un **aro** lo acompaña en el ícono, donde hace falta un símbolo compacto (la app instalada, las animaciones): el check rompe el aro por arriba a la derecha, como algo que se confirma y sale. El favicon y el éxito conservan el **círculo verde** con el check blanco, porque ahí el círculo es intencional.
+El producto se llama **Valídalo**, y el logotipo se lee así: un **check verde que hace de «V»** (el mismo trazo caligráfico del favicon, con el brazo derecho más largo) seguido de **«alídalo»** en minúsculas, en una tipografía redondeada y gruesa, inclinada hacia la derecha y de un solo color (verde azulado en claro, blanco en oscuro). La «V» no lleva círculo ni aro: es del alto de la letra, se apoya en la línea base y va pegada a la «a», con la cola de su brazo largo sobre ella. El check es un trazo caligráfico: se lee como «validado». Un **aro** lo acompaña en el ícono, donde hace falta un símbolo compacto (la app instalada, las animaciones): el check rompe el aro por arriba a la derecha, como algo que se confirma y sale. El favicon y el éxito conservan el **círculo verde** con el check blanco, porque ahí el círculo es intencional.
 
 ## 2. Las piezas
 
 | Pieza | Qué es | Dónde va |
 |---|---|---|
-| **Logotipo** | La «V» (el check verde, sin círculo ni aro) y, pegada a ella, **alídalo** (todo en minúsculas, inclinada 10°; «alída» en azul muy oscuro y «lo» en verde azulado). Se lee «Valídalo». | Barras de las dos apps, ingreso, consola de Plataforma, verificador público, correos, PDF, documentación |
+| **Logotipo** | La «V» (el check verde, sin círculo ni aro) y, pegada a ella, **alídalo** (todo en minúsculas, inclinada 10°; todas las letras de un solo color: verde azulado en claro y blanco en oscuro). Se lee «Valídalo». | Barras de las dos apps, ingreso, consola de Plataforma, verificador público, correos, PDF, documentación |
 | **Ícono** | El aro abierto con el check un poco más grande, cuya punta sale por el hueco | App instalada (PWA), `apple-touch-icon`, avatar de la marca, notificaciones del tercero, pie del portal |
 | **Favicon** | Círculo verde lleno con el check blanco (más grande y con contorno propio: a 16 px se sigue leyendo) | Pestaña del navegador (`favicon.svg` con modo claro/oscuro y PNG de 16, 32 y 48) |
 | **Éxito** | El aro verde se dibuja, el círculo se llena y el check blanco se revela; «pop» final | Aprobación de un expediente, ficha completa, revisión aprobada del tercero, certificado vigente, GIF del correo de aprobación |
@@ -27,7 +27,7 @@ El producto se llama **Valídalo**, y el logotipo se lee así: un **check verde 
 Todo está en un lienzo de coordenadas fijas; los números son los de `geometria.ts` y no se «aproximan» a mano.
 
 - **Check**: `M24 38 C26 34 30 34 32 37 L47 61 C56 45 66 32 80 19 C82 17 85 19 83 22 C70 37 60 52 51 71 C49 75 44 75 42 71 Z`, relleno (`packages/ui/src/marca/check.ts`). Su caja exacta (la de su dibujo, no la de sus puntos de control) es `CAJA_CHECK`: x de 24 a 83,66 e y de 18,2 a 74.
-- **Logotipo**: la **«V»** es el check escalado para medir **la letra** (100 unidades), con su punta de abajo en la **línea base** e **inclinado 10°** como la palabra; `check.ts` (`disponerLaV`) calcula ese trazado y `marca/contornos.mjs` lo escribe en `palabra.ts` (`PALABRA.v`: trazado y caja, con su borde izquierdo en x = 0). Sigue la palabra **«alídalo»** en minúsculas: **«alída»** en azul muy oscuro y **«lo»** en verde azulado, con **Quicksand Bold** (SIL OFL) convertida a **contornos** (`PALABRA.alida` y `PALABRA.lo`), seguimiento **−0,04 em**, espaciado parejo par por par e **inclinación de 10°** a la derecha. La palabra empieza **encima de la cola de la «V»** (margen negativo, `PALABRA.inicio`): el contorno de la «a» queda a **5 unidades** del check, medido como distancia real entre contornos (no solo en horizontal), así que la «V» se mete sobre la «a» sin tocarla. El `viewBox` es el de `CAJA_LOGOTIPO` y **incluye todo el dibujo** (la «V» inclinada con la cola de su brazo largo, el acento de la «í» y el sobrepaso de las curvas bajo la línea base) más `MARGEN_LOGOTIPO` (2 unidades) por cada lado; el `svg` de `Logo` además no recorta (`overflow: visible`) ni fija un alto que lo mutile. Las transformaciones son `TRANSFORMACION_V` y `TRANSFORMACION_PALABRA`. No hay texto ni fuentes: el logotipo es geometría.
+- **Logotipo**: la **«V»** es el check escalado para medir **la letra** (100 unidades), con su punta de abajo en la **línea base** e **inclinado 10°** como la palabra; `check.ts` (`disponerLaV`) calcula ese trazado y `marca/contornos.mjs` lo escribe en `palabra.ts` (`PALABRA.v`: trazado y caja, con su borde izquierdo en x = 0). Sigue la palabra **«alídalo»** en minúsculas: todas las letras **de un solo color** (verde azulado en claro, blanco en oscuro), con **Quicksand Bold** (SIL OFL) convertida a **contornos** (`PALABRA.letras`, un solo trazado), seguimiento **−0,04 em**, espaciado parejo par por par e **inclinación de 10°** a la derecha. La palabra empieza **encima de la cola de la «V»** (margen negativo, `PALABRA.inicio`): el contorno de la «a» queda a **5 unidades** del check, medido como distancia real entre contornos (no solo en horizontal), así que la «V» se mete sobre la «a» sin tocarla. El `viewBox` es el de `CAJA_LOGOTIPO` y **incluye todo el dibujo** (la «V» inclinada con la cola de su brazo largo, el acento de la «í» y el sobrepaso de las curvas bajo la línea base) más `MARGEN_LOGOTIPO` (2 unidades) por cada lado; el `svg` de `Logo` además no recorta (`overflow: visible`) ni fija un alto que lo mutile. Las transformaciones son `TRANSFORMACION_V` y `TRANSFORMACION_PALABRA`. No hay texto ni fuentes: el logotipo es geometría.
 - **Ícono**: caja `-3 -6 110 110`; aro abierto `M71.1 10.3 A45 45 0 1 0 89 27.5` (trazo 5, extremos redondeados); el check escalado ×1,15 desde su vértice (`translate(47 70) scale(1.15) translate(-47 -70)`).
 - **Favicon**: círculo de radio 48 y el check blanco centrado, ×1,12, con contorno de 2,4 (único lugar donde se engrosa el check).
 - **Aro completo** (éxito y carga): círculo de radio 45, trazo 5.
@@ -35,14 +35,13 @@ Todo está en un lienzo de coordenadas fijas; los números son los de `geometria
 
 ### Colores
 
-El aro y el verde del check salen de `tokens.ts`; los dos tonos de la palabra son propios de `geometria.ts` («alída» a 16,5:1 sobre blanco; «lo» a 4,0:1, que cumple el 3:1 de texto grande y de logotipos al ser un dibujo grueso de 14 px o más). Nada cambia con la paleta de una empresa: el logo de Valídalo nunca toma el color de la empresa que se muestra en pantalla.
+El aro y el verde del check salen de `tokens.ts`; el color de las letras es propio de `geometria.ts` en claro (`#0E8C9A`, 4,0:1 sobre blanco, que cumple el 3:1 de texto grande y de logotipos al ser un dibujo grueso de 14 px o más) y es el texto de marca del token en oscuro (`marcaTexto`, 17,5:1 sobre el fondo oscuro). Nada cambia con la paleta de una empresa: el logo de Valídalo nunca toma el color de la empresa que se muestra en pantalla.
 
 | Parte | Claro | Oscuro | Token |
 |---|---|---|---|
 | Aro | `#3D6BFF` | `#6E8FFF` | `marcaAzul` |
 | Check (la «V» del logotipo, el círculo del favicon y el ícono), verde | `#22D38A` | `#2BE29A` | `marcaVerde` |
-| «lo» (palabra) | `#0E8C9A` | `#3FC1CE` | — (propio de la palabra) |
-| «alída» (palabra) | `#0B1F3A` | `#EEF3FA` | — (propio de la palabra) |
+| Letras «alídalo» (palabra, un solo color) | `#0E8C9A` | `#F2F5FB` | — en claro (propio de la palabra); `marcaTexto` en oscuro |
 | Check sobre el círculo verde (favicon y éxito) | `#FFFFFF` | `#FFFFFF` | — |
 | Fondo de los íconos de la app y de los GIF oscuros | — | `#0B1120` | `superficieNivel1` oscuro |
 
