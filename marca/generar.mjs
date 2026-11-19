@@ -2,7 +2,7 @@
 // `@validalo/ui` (Logo, AnimacionExito, Cargando) en un navegador (Playwright + Vite), captura los cuadros y escribe:
 //
 //   marca/svg/     logotipo e ícono en claro y oscuro, y el favicon (con `prefers-color-scheme`)
-//                  (el logotipo es solo trazados: los contornos de «validalo» salen de `contornos.mjs` y no hace falta ninguna fuente)
+//                  (el logotipo es solo trazados: la «V» y los contornos de «alídalo» salen de `contornos.mjs` y no hace falta ninguna fuente)
 //   splash         la carga de marca que ven las dos apps mientras llega su JavaScript (entre las marcas de `index.html`)
 //   marca/png/     favicon 16/32/48, ícono de la app 192/512 (y maskable), apple-touch-icon, avatar, logotipos @2x y la hoja de la marca
 //   marca/gif/     éxito y carga, en claro y oscuro (2× para nitidez, con el fondo de cada modo)
@@ -78,19 +78,13 @@ await contextoMarca.close();
 
 const caja = marca.cajaIcono;
 
-/** El círculo verde con el check blanco del favicon, como símbolo del logotipo (no se inclina). */
-function simboloLogotipo(c) {
-  const f = marca.favicon;
-  return `<g transform="${marca.transformacionSimbolo}"><circle cx="${marca.aro.cx}" cy="${marca.aro.cy}" r="${f.radio}" fill="${c.check}"/><path d="${marca.checkRelleno}" fill="${c.blanco}" stroke="${c.blanco}" stroke-width="${f.contorno}" stroke-linejoin="round" transform="${f.transformacion}"/></g>`;
-}
-
-/** SVG del logotipo: el círculo con el check y la palabra «validalo» ya en contornos (inclinada), sin texto ni fuentes. */
+/** SVG del logotipo: la «V» (el check verde) y la palabra «alídalo» ya en contornos (inclinada), sin texto ni fuentes. */
 function svgLogotipo(c) {
   const { ancho, alto } = marca.cajaLogotipo;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${ancho} ${alto}" width="${ancho}" height="${alto}" role="img" aria-label="Valídalo">
   <title>Valídalo</title>
-  ${simboloLogotipo(c)}
-  <g transform="${marca.transformacionPalabra}"><path d="${marca.palabra.avala}" fill="${c.avala}"/><path d="${marca.palabra.soft}" fill="${c.soft}"/></g>
+  <path d="${marca.palabra.v.trazado}" fill="${c.check}" transform="${marca.transformacionV}"/>
+  <g transform="${marca.transformacionPalabra}"><path d="${marca.palabra.alida}" fill="${c.alida}"/><path d="${marca.palabra.lo}" fill="${c.lo}"/></g>
 </svg>
 `;
 }

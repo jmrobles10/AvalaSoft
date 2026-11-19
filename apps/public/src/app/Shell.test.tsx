@@ -31,13 +31,15 @@ function montar(ruta: string) {
 afterEach(() => useSesionTercero.setState({ estado: 'sin-sesion', sesion: null }));
 
 describe('Shell del tercero: la marca', () => {
-  it('la barra lleva el logotipo de Valídalo (el círculo con el check y «validalo») y, en las pantallas de entrada, el rótulo «Mis documentos»', () => {
+  it('la barra lleva el logotipo de Valídalo (la «V» con el check y «alídalo») y, en las pantallas de entrada, el rótulo «Mis documentos»', () => {
     useSesionTercero.setState({ estado: 'sin-sesion' });
     montar('/entrar');
     const barra = screen.getByRole('banner');
     const logo = within(barra).getByRole('img', { name: 'Valídalo' });
-    expect(logo.querySelector('[data-parte="simbolo"] circle')).toHaveAttribute('fill', '#22D38A');
-    expect(logo.querySelector('[data-parte="avala"]')).toHaveAttribute('fill', '#0E8C9A');
+    expect(logo.querySelector('[data-parte="v"]')).toHaveAttribute('fill', '#22D38A');
+    expect(logo.querySelector('[data-parte="lo"]')).toHaveAttribute('fill', '#0E8C9A');
+    // El dibujo no se recorta en la barra: el svg deja ver lo que sobresalga y la «V» y la palabra están dentro de su caja.
+    expect(logo).toHaveStyle({ overflow: 'visible' });
     expect(within(barra).getByText('Mis documentos')).toBeInTheDocument();
   });
 

@@ -189,15 +189,15 @@ public sealed class LogosDePdfTests
     }
 
     [Fact]
-    public void El_logotipo_de_Validalo_es_un_dibujo_vectorial_con_el_circulo_verde_y_la_palabra_en_contornos()
+    public void El_logotipo_de_Validalo_es_un_dibujo_vectorial_con_la_uve_verde_y_la_palabra_en_contornos()
     {
         var logotipo = SvgDibujable.Leer(LogosDePdf.LogotipoDeValidalo).ShouldNotBeNull();
-        (logotipo.Ancho, logotipo.Alto).ShouldBe((522.74, 77.7));
-        var pdf = Contenido(logotipo, 522.74, 77.7);
-        pdf.ShouldContain("0.133333 0.827451 0.541176 rg");  // #22D38A: el círculo
-        pdf.ShouldContain("1 1 1 rg");                        // el check blanco
-        pdf.ShouldContain("0.054902 0.54902 0.603922 rg");   // #0E8C9A: «avala»
-        pdf.ShouldContain("0.043137 0.121569 0.227451 rg");  // #0B1F3A: «soft»
+        (logotipo.Ancho, logotipo.Alto).ShouldBe((364.1, 105));
+        var pdf = Contenido(logotipo, 364.1, 105);
+        pdf.ShouldContain("0.133333 0.827451 0.541176 rg");  // #22D38A: la «V» (el check)
+        pdf.ShouldNotContain("1 1 1 rg");                     // sin círculo ni check blanco
+        pdf.ShouldContain("0.054902 0.54902 0.603922 rg");   // #0E8C9A: «lo»
+        pdf.ShouldContain("0.043137 0.121569 0.227451 rg");  // #0B1F3A: «alída»
         pdf.ShouldContain(" c\n");                           // las curvas de las letras (contornos, no texto)
         pdf.ShouldNotContain("Tj");                           // sin texto: no depende de ninguna fuente
         pdf.ShouldNotContain("/ShadingType");                // sin degradado
@@ -210,12 +210,12 @@ public sealed class LogosDePdfTests
         var pdf = new Validalo.Infraestructura.Certificados.LienzoPdf();
         LogosDePdf.Validalo.Dibujar(pdf, 48, 700, 110, 34);
         var texto = Encoding.Latin1.GetString(pdf.Construir("t", "a", new DateTimeOffset(2026, 11, 12, 0, 0, 0, TimeSpan.Zero), (_, _) => { }));
-        texto.ShouldContain("0.133333 0.827451 0.541176 rg");   // el círculo verde
-        texto.ShouldContain("0.054902 0.54902 0.603922 rg");    // «avala»: #0E8C9A
-        texto.ShouldContain("0.043137 0.121569 0.227451 rg");   // «soft»: #0B1F3A
+        texto.ShouldContain("0.133333 0.827451 0.541176 rg");   // la «V» verde
+        texto.ShouldContain("0.054902 0.54902 0.603922 rg");    // «lo»: #0E8C9A
+        texto.ShouldContain("0.043137 0.121569 0.227451 rg");   // «alída»: #0B1F3A
         texto.ShouldNotContain("Tj");
-        // 110 × 34 con un logotipo de 522,74 × 77,7: manda el ancho (110 / 522,74 = 0,2104) y el alto queda en 16,35 puntos, centrado en la caja.
-        texto.ShouldContain("0.21043 0 0 -0.21043");
+        // 110 × 34 con un logotipo de 364,1 × 105: manda el ancho (110 / 364,1 = 0,3021) y el alto queda en 31,72 puntos, centrado en la caja.
+        texto.ShouldContain("0.302115 0 0 -0.302115");
     }
 
     [Fact]
@@ -246,8 +246,8 @@ public sealed class LogosDePdfTests
             LogosDePdf.Resolver(sinLogo).ShouldBeSameAs(LogosDePdf.Validalo);
         }
 
-        // El logotipo no es cuadrado: el círculo, el aire y «validalo» ocupan 522,74 × 77,7 (≈ 6,7 de ancho por 1 de alto).
-        LogosDePdf.Validalo.Proporcion.ShouldBeInRange(6.6, 6.8);
+        // El logotipo no es cuadrado: la «V» y «alídalo» ocupan 364,1 × 105 (≈ 3,5 de ancho por 1 de alto).
+        LogosDePdf.Validalo.Proporcion.ShouldBeInRange(3.4, 3.55);
     }
 
     // ---------- El PDF ----------
@@ -308,7 +308,7 @@ public sealed class LogosDePdfTests
         conSvg.ShouldContain("0.878431 0.478431 0.121569 rg"); // #E07A1F
         conSvg.ShouldNotContain("0.054902 0.54902 0.603922 rg");
 
-        // Sin logo, o con uno que no se puede dibujar: el logotipo de Valídalo (el círculo verde y «validalo» en contornos).
+        // Sin logo, o con uno que no se puede dibujar: el logotipo de Valídalo (la «V» verde y «alídalo» en contornos).
         foreach (var (logo, nombre) in new (string?, string)[] { (null, "logo-validalo"), ("https://ejemplo.co/logo.png", "logo-url") })
         {
             var texto = Encoding.Latin1.GetString(GenerarPdf("Valídalo", logo, nombre));

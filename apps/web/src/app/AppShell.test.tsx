@@ -35,7 +35,7 @@ afterEach(() => {
 });
 
 describe('AppShell', () => {
-  it('lleva el logotipo de Valídalo en la barra (el círculo con el check y «validalo»), con su nombre accesible', () => {
+  it('lleva el logotipo de Valídalo en la barra (la «V» con el check y «alídalo»), con su nombre accesible', () => {
     permisos.scopes = new Set([SCOPES.vinculosLeer]);
     montar('/e/emp/vinculos');
     const logo = screen.getByRole('img', { name: 'Valídalo' });

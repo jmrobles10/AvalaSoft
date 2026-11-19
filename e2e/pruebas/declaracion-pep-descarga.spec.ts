@@ -90,7 +90,7 @@ test('persona natural: el botón «Descargar PDF» aparece solo con la declaraci
   expect(propio.nombre).toMatch(/^declaracion-pep-ana-maria-perez-gomez-[a-z0-9]+-\d{8}\.pdf$/);
   expect(propio.pdf.startsWith('%PDF-1.7')).toBe(true);
   expect(propio.pdf).toContain('(Valídalo)');
-  expect(propio.pdf).toContain('0.054902 0.54902 0.603922 rg'); // el logotipo de Valídalo: el círculo verde y «avala» en contornos (verde azulado)
+  expect(propio.pdf).toContain('0.054902 0.54902 0.603922 rg'); // el logotipo de Valídalo: la «V» verde y «lo» en contornos (verde azulado)
   expect(propio.pdf).toContain('0.133333 0.827451 0.541176 rg');
   expect(propio.pdf).toContain('/Subtype /Image'); // la firma
   expect(propio.pdf).toContain('(Alcalde encargado)');

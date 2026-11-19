@@ -237,7 +237,7 @@ public sealed class RequisitosDeclaracionPepApiTests(ApiFixture fixture, ITestOu
         var texto = Encoding.Latin1.GetString(pdf.Contenido);
         texto.ShouldStartWith("%PDF-1.7");
         texto.ShouldContain("(Valídalo)");
-        texto.ShouldContain("0.054902 0.54902 0.603922 rg");   // el logotipo de Valídalo: el círculo verde y «avala» en contornos (verde azulado)
+        texto.ShouldContain("0.054902 0.54902 0.603922 rg");   // el logotipo de Valídalo: la «V» verde y «lo» en contornos (verde azulado)
         texto.ShouldContain("0.133333 0.827451 0.541176 rg");
         texto.ShouldContain("/Subtype /Image");       // la firma
         texto.ShouldContain("(Alcalde municipal)");
@@ -324,7 +324,7 @@ public sealed class RequisitosDeclaracionPepApiTests(ApiFixture fixture, ITestOu
         async Task FijarLogoAsync(string logo) =>
             await ApiAsync("PUT", $"/api/v1/empresas/{e.Norte.Datos.Id}", Admin(e.Norte), new ActualizarEmpresaDto(LogoUrl: logo), 200);
 
-        // Sin logo configurado: el logotipo de Valídalo (vectores: el círculo verde y «validalo» en contornos) y la firma como única imagen.
+        // Sin logo configurado: el logotipo de Valídalo (vectores: la «V» verde y «alídalo» en contornos) y la firma como única imagen.
         var sinLogo = await PdfAsync();
         sinLogo.ShouldContain("0.054902 0.54902 0.603922 rg");
         sinLogo.Split("/Subtype /Image").Length.ShouldBe(2);

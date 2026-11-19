@@ -6,6 +6,7 @@ import { createValidaloTheme } from '../tema';
 import { COLOR } from '../tokens';
 import { AnimacionExito, AnimacionExitoUnaVez } from './AnimacionExito';
 import { Cargando } from './Cargando';
+import { CAJA_CHECK, cajaDeTrazado } from './check';
 import {
   ARCO_DE_CARGA,
   ARO_ABIERTO,
@@ -13,18 +14,16 @@ import {
   CAJA_LOGOTIPO,
   CHECK_RELLENO,
   coloresDeLogo,
-  ESPACIO_SIMBOLO,
   FAVICON,
   GUIA_CHECK,
   LONGITUD_ARO,
   LONGITUD_GUIA,
-  PROPORCION_SIMBOLO,
-  SIMBOLO_LOGOTIPO,
+  MARGEN_LOGOTIPO,
   TIEMPOS_CARGA,
   TIEMPOS_EXITO,
   TRANSFORMACION_CHECK_ICONO,
   TRANSFORMACION_PALABRA,
-  TRANSFORMACION_SIMBOLO,
+  TRANSFORMACION_V,
 } from './geometria';
 import { PALABRA } from './palabra';
 import { Logo } from './Logo';
@@ -66,12 +65,12 @@ afterEach(() => {
 });
 
 describe('colores del logo (MA-1)', () => {
-  it('son los del encargo: aro y círculo del design system y la palabra en verde azulado y azul muy oscuro (en oscuro, más claros)', () => {
-    expect(coloresDeLogo('light')).toMatchObject({ aro: '#3D6BFF', check: '#22D38A', avala: '#0E8C9A', soft: '#0B1F3A', blanco: '#FFFFFF' });
-    expect(coloresDeLogo('dark')).toMatchObject({ aro: '#6E8FFF', check: '#2BE29A', avala: '#3FC1CE', soft: '#EEF3FA', blanco: '#FFFFFF' });
+  it('son los del encargo: aro y check del design system y la palabra en azul muy oscuro («alída») y verde azulado («lo»), más claros en oscuro', () => {
+    expect(coloresDeLogo('light')).toMatchObject({ aro: '#3D6BFF', check: '#22D38A', alida: '#0B1F3A', lo: '#0E8C9A', blanco: '#FFFFFF' });
+    expect(coloresDeLogo('dark')).toMatchObject({ aro: '#6E8FFF', check: '#2BE29A', alida: '#EEF3FA', lo: '#3FC1CE', blanco: '#FFFFFF' });
   });
 
-  it('el aro y el círculo salen de los tokens del design system, que siguen llegando a la paleta del tema', () => {
+  it('el aro y el check salen de los tokens del design system, que siguen llegando a la paleta del tema', () => {
     for (const modo of ['light', 'dark'] as const) {
       const c = COLOR[modo];
       expect(coloresDeLogo(modo)).toMatchObject({ aro: c.marcaAzul, check: c.marcaVerde });
@@ -80,7 +79,7 @@ describe('colores del logo (MA-1)', () => {
     }
   });
 
-  it('la palabra cumple contraste AA de texto grande (3:1) sobre los fondos de cada modo, y «soft» también el de texto normal (4,5:1)', () => {
+  it('la palabra cumple contraste AA de texto grande (3:1) sobre los fondos de cada modo, y «alída» también el de texto normal (4,5:1)', () => {
     const luminancia = (hex: string) => {
       const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
       return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (b ?? 0);
@@ -90,12 +89,12 @@ describe('colores del logo (MA-1)', () => {
       return ((claro ?? 0) + 0.05) / ((oscuro ?? 0) + 0.05);
     };
     for (const fondo of ['#FFFFFF', '#FAFBFD']) {
-      expect(contraste(coloresDeLogo('light').avala, fondo)).toBeGreaterThanOrEqual(3);
-      expect(contraste(coloresDeLogo('light').soft, fondo)).toBeGreaterThanOrEqual(4.5);
+      expect(contraste(coloresDeLogo('light').lo, fondo)).toBeGreaterThanOrEqual(3);
+      expect(contraste(coloresDeLogo('light').alida, fondo)).toBeGreaterThanOrEqual(4.5);
     }
     for (const fondo of ['0B1120', '060A14'].map((f) => `#${f}`)) {
-      expect(contraste(coloresDeLogo('dark').avala, fondo)).toBeGreaterThanOrEqual(4.5);
-      expect(contraste(coloresDeLogo('dark').soft, fondo)).toBeGreaterThanOrEqual(4.5);
+      expect(contraste(coloresDeLogo('dark').lo, fondo)).toBeGreaterThanOrEqual(4.5);
+      expect(contraste(coloresDeLogo('dark').alida, fondo)).toBeGreaterThanOrEqual(4.5);
     }
   });
 });
@@ -116,6 +115,13 @@ describe('geometría del logo', () => {
     expect(CAJA_ICONO).toEqual({ x: -3, y: -6, ancho: 110, alto: 110 });
   });
 
+  it('la caja exacta del check (la de su dibujo, no la de sus puntos de control) está dentro de su lienzo', () => {
+    expect(CAJA_CHECK.x0).toBeCloseTo(24, 0);
+    expect(CAJA_CHECK.x1).toBeCloseTo(83.7, 1);
+    expect(CAJA_CHECK.y0).toBeCloseTo(18.2, 1);
+    expect(CAJA_CHECK.y1).toBeCloseTo(74, 1);
+  });
+
   it('los tiempos del éxito suman 1,45 s y los de la carga son 1 s de vuelta y 1,4 s de check', () => {
     expect(Object.values(TIEMPOS_EXITO).reduce((a, b) => a + b, 0)).toBe(1450);
     expect(TIEMPOS_CARGA).toEqual({ vuelta: 1000, check: 1400 });
@@ -132,70 +138,90 @@ describe('Logo', () => {
     expect(container.querySelector('text')).toBeNull();
   });
 
-  it('es el círculo verde con el check blanco y la palabra «validalo» en contornos, en dos tonos (claro)', () => {
+  it('es la «V» (el check verde) y la palabra «alídalo» en contornos, en dos tonos (claro), sin círculo', () => {
     const { container } = conTema(<Logo tamano={40} />);
     const svg = screen.getByRole('img', { name: 'Valídalo' });
     expect(svg).toHaveAttribute('viewBox', `0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}`);
     expect(svg).toHaveAttribute('height', String(CAJA_LOGOTIPO.alto * 0.4));
-    const simbolo = container.querySelector('[data-parte="simbolo"]');
-    expect(simbolo).toHaveAttribute('transform', TRANSFORMACION_SIMBOLO);
-    expect(simbolo?.querySelector('circle')).toHaveAttribute('fill', '#22D38A');
-    expect(simbolo?.querySelector('circle')).toHaveAttribute('r', String(FAVICON.radio));
-    const check = simbolo?.querySelector('path');
-    expect(check).toHaveAttribute('d', CHECK_RELLENO);
-    expect(check).toHaveAttribute('fill', '#FFFFFF');
+    expect(container.querySelector('circle')).toBeNull();
+    const uve = container.querySelector('[data-parte="v"]');
+    expect(uve).toHaveAttribute('d', PALABRA.v.trazado);
+    expect(uve).toHaveAttribute('transform', TRANSFORMACION_V);
+    expect(uve).toHaveAttribute('fill', '#22D38A');
     expect(container.querySelector('[data-parte="palabra"]')).toHaveAttribute('transform', TRANSFORMACION_PALABRA);
-    expect(container.querySelector('[data-parte="avala"]')).toHaveAttribute('d', PALABRA.avala);
-    expect(container.querySelector('[data-parte="avala"]')).toHaveAttribute('fill', '#0E8C9A');
-    expect(container.querySelector('[data-parte="soft"]')).toHaveAttribute('d', PALABRA.soft);
-    expect(container.querySelector('[data-parte="soft"]')).toHaveAttribute('fill', '#0B1F3A');
+    expect(container.querySelector('[data-parte="alida"]')).toHaveAttribute('d', PALABRA.alida);
+    expect(container.querySelector('[data-parte="alida"]')).toHaveAttribute('fill', '#0B1F3A');
+    expect(container.querySelector('[data-parte="lo"]')).toHaveAttribute('d', PALABRA.lo);
+    expect(container.querySelector('[data-parte="lo"]')).toHaveAttribute('fill', '#0E8C9A');
   });
 
-  it('el círculo mide ≈ 1,05 veces las ascendentes, está centrado entre la línea base y su altura y deja un quinto de su diámetro hasta la palabra', () => {
-    const d = SIMBOLO_LOGOTIPO.diametro;
-    expect(PROPORCION_SIMBOLO).toBe(1.05);
-    expect(d / PALABRA.altoAscendente).toBeCloseTo(1.05, 2);
-    // Centro del círculo a la altura de la caja: arriba + radio; el de las ascendentes: la línea base menos la mitad de su altura.
-    const centroDelCirculo = SIMBOLO_LOGOTIPO.arriba + d / 2;
-    const centroDeLasAscendentes = CAJA_LOGOTIPO.base - PALABRA.altoAscendente / 2;
-    expect(Math.abs(centroDelCirculo - centroDeLasAscendentes)).toBeLessThan(0.05);
-    // Su borde inferior cae bajo la línea base y el superior sobre las ascendentes.
-    expect(centroDelCirculo + d / 2).toBeGreaterThan(CAJA_LOGOTIPO.base);
-    expect(centroDelCirculo - d / 2).toBeLessThanOrEqual(CAJA_LOGOTIPO.base - PALABRA.altoAscendente);
-    expect(SIMBOLO_LOGOTIPO.separacion / d).toBeCloseTo(ESPACIO_SIMBOLO, 2);
-    // El punto más a la izquierda de la palabra queda a `separacion` del borde derecho del círculo.
-    expect(CAJA_LOGOTIPO.inicioPalabra + PALABRA.limites.x0 - d).toBeCloseTo(SIMBOLO_LOGOTIPO.separacion, 1);
-    // La caja envuelve el círculo y la palabra sin recortarlos.
-    expect(SIMBOLO_LOGOTIPO.arriba).toBeGreaterThanOrEqual(0);
-    expect(CAJA_LOGOTIPO.base + PALABRA.limites.y1).toBeLessThanOrEqual(CAJA_LOGOTIPO.alto + 0.01);
-    expect(CAJA_LOGOTIPO.inicioPalabra + PALABRA.limites.x1).toBeLessThanOrEqual(CAJA_LOGOTIPO.ancho + 0.01);
+  it('la «V» mide lo que la letra, se apoya en la línea base, va inclinada como la palabra y se mete sobre la «a» (pegada)', () => {
+    const { v, limites } = PALABRA;
+    // Del alto de la letra (100 unidades) y con su punta en la línea base (y = 0; hacia arriba, negativo).
+    expect(v.caja.y1 - v.caja.y0).toBeCloseTo(PALABRA.tamano, 0);
+    expect(v.caja.y1).toBeCloseTo(0, 0);
+    expect(v.caja.x0).toBe(0);
+    // La inclinación de 10° corre la punta de arriba a la derecha: la «V» es más ancha que el check escalado sin inclinar.
+    const sinInclinar = ((CAJA_CHECK.x1 - CAJA_CHECK.x0) / (CAJA_CHECK.y1 - CAJA_CHECK.y0)) * PALABRA.tamano;
+    expect(v.caja.x1 - v.caja.x0).toBeGreaterThan(sinInclinar);
+    expect(v.caja.x1 - v.caja.x0).toBeLessThan(sinInclinar + Math.tan((PALABRA.inclinacion * Math.PI) / 180) * PALABRA.tamano + 1);
+    // Margen negativo: la palabra empieza antes de que termine la «V» (la cola del check queda sobre la «a»).
+    expect(PALABRA.inicio + limites.x0).toBeLessThan(v.caja.x1);
+    expect(PALABRA.inicio + limites.x0).toBeGreaterThan(0);
   });
 
-  it('la palabra va inclinada 10° y toda en minúsculas: su dibujo no trae más letras que «validalo»', () => {
+  it('el viewBox contiene TODO el dibujo: la caja del check (con la cola de su brazo largo y la inclinación) y la de la palabra, con margen y sin recortar', () => {
+    const { container } = conTema(<Logo tamano={20} />);
+    const svg = screen.getByRole('img', { name: 'Valídalo' });
+    const [x0, y0, ancho, alto] = (svg.getAttribute('viewBox') ?? '').split(' ').map(Number) as [number, number, number, number];
+    expect([x0, y0]).toEqual([0, 0]);
+    const traslado = (transformacion: string | null) => (/translate\(([-\d.]+) ([-\d.]+)\)/.exec(transformacion ?? '') ?? []).slice(1).map(Number) as [number, number];
+    const dentro = (caja: { x0: number; y0: number; x1: number; y1: number }, [dx, dy]: [number, number]) => {
+      // Se mide el trazado tal como se dibuja (aplanado), no las cajas que declara la geometría.
+      expect(caja.x0 + dx).toBeGreaterThanOrEqual(MARGEN_LOGOTIPO - 0.01);
+      expect(caja.y0 + dy).toBeGreaterThanOrEqual(MARGEN_LOGOTIPO - 0.01);
+      expect(caja.x1 + dx).toBeLessThanOrEqual(ancho - MARGEN_LOGOTIPO + 0.01);
+      expect(caja.y1 + dy).toBeLessThanOrEqual(alto - MARGEN_LOGOTIPO + 0.01);
+    };
+    const uve = container.querySelector('[data-parte="v"]');
+    const posicionDeLaV = traslado(uve?.getAttribute('transform') ?? null);
+    const cajaDelCheck = cajaDeTrazado(uve?.getAttribute('d') ?? '');
+    dentro(cajaDelCheck, posicionDeLaV);
+    // La punta de arriba a la derecha (la cola del check) es lo más alto y lo más a la derecha de la «V»: existe y cabe.
+    expect(cajaDelCheck.x1).toBeGreaterThan(100);
+    const palabra = traslado(container.querySelector('[data-parte="palabra"]')?.getAttribute('transform') ?? null);
+    for (const parte of ['alida', 'lo']) dentro(cajaDeTrazado(container.querySelector(`[data-parte="${parte}"]`)?.getAttribute('d') ?? ''), palabra);
+    // Nada lo recorta: el svg deja ver lo que se salga y su alto sigue a la caja (no es un alto fijo que mutile el dibujo).
+    expect(svg.style.overflow).toBe('visible');
+    expect(Number(svg.getAttribute('height'))).toBeCloseTo((CAJA_LOGOTIPO.alto * 20) / PALABRA.tamano, 6);
+    expect(Number(svg.getAttribute('width'))).toBeCloseTo((CAJA_LOGOTIPO.ancho * 20) / PALABRA.tamano, 6);
+  });
+
+  it('la palabra va inclinada 10° y toda en minúsculas: su dibujo no trae más letras que «alídalo»', () => {
     expect(PALABRA.inclinacion).toBe(10);
     expect(PALABRA.fuente).toContain('Quicksand Bold');
-    // Nueve letras en dos trazados: «avala» (a, v, a, l, a) y «soft» (s, o, f, t); cada contorno empieza con una «M» (la «a» y la «o» traen uno más, el de su hueco).
+    // Siete letras en dos trazados: «alída» (a, l, í, d, a) y «lo» (l, o); cada contorno empieza con una «M» (la «a», la «d» y la «o» traen uno más, el de su hueco; la «í», el de su acento).
     const contornos = (d: string) => (d.match(/M/g) ?? []).length;
-    expect(contornos(PALABRA.avala)).toBe(8);
-    expect(contornos(PALABRA.soft)).toBe(5);
+    expect(contornos(PALABRA.alida)).toBe(9);
+    expect(contornos(PALABRA.lo)).toBe(3);
   });
 
   it('cambia con el tema: en oscuro usa los colores del modo oscuro', () => {
     const { container } = conTema(<Logo />, 'dark');
-    expect(container.querySelector('circle')).toHaveAttribute('fill', '#2BE29A');
-    expect(container.querySelector('[data-parte="avala"]')).toHaveAttribute('fill', '#3FC1CE');
-    expect(container.querySelector('[data-parte="soft"]')).toHaveAttribute('fill', '#EEF3FA');
+    expect(container.querySelector('[data-parte="v"]')).toHaveAttribute('fill', '#2BE29A');
+    expect(container.querySelector('[data-parte="lo"]')).toHaveAttribute('fill', '#3FC1CE');
+    expect(container.querySelector('[data-parte="alida"]')).toHaveAttribute('fill', '#EEF3FA');
   });
 
   it('`modo` fuerza los colores aunque el tema sea otro', () => {
     const { container } = conTema(<Logo modo="dark" />, 'light');
-    expect(container.querySelector('circle')).toHaveAttribute('fill', '#2BE29A');
+    expect(container.querySelector('[data-parte="v"]')).toHaveAttribute('fill', '#2BE29A');
   });
 
   it('no toma el color de la empresa aunque la página use su paleta', () => {
     const { container } = conTema(<Logo />, 'light', '#C2410C');
-    expect(container.querySelector('circle')).toHaveAttribute('fill', '#22D38A');
-    expect(container.querySelector('[data-parte="avala"]')).toHaveAttribute('fill', '#0E8C9A');
+    expect(container.querySelector('[data-parte="v"]')).toHaveAttribute('fill', '#22D38A');
+    expect(container.querySelector('[data-parte="lo"]')).toHaveAttribute('fill', '#0E8C9A');
   });
 
   it('el ícono es el aro abierto y el check escalado desde su vértice, en los colores del modo', () => {

@@ -1,4 +1,4 @@
-// Contornos de la palabra «validalo» del logotipo (MA-1, docs/marca.md). Lee la fuente Quicksand Bold (SIL OFL 1.1, paquete
+// Contornos del logotipo «Valídalo» (MA-1, docs/marca.md): la palabra «alídalo» y la «V» que la antecede. Lee la fuente Quicksand Bold (SIL OFL 1.1, paquete
 // `@fontsource/quicksand`, solo dependencia de desarrollo de la marca), compone la palabra glifo a glifo con un seguimiento negativo y un
 // ajuste óptico por pares (mide el espacio real entre cada par de letras y lo parejo), la inclina y escribe los trazados en
 // `packages/ui/src/marca/palabra.ts`. A partir de ahí el logotipo es geometría: `Logo`, los SVG, los PNG y el PDF dibujan esos trazados y
@@ -10,6 +10,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import opentype from 'opentype.js';
+import { aplanarTrazado, disponerLaV } from '../packages/ui/src/marca/check.ts';
 
 const aqui = import.meta.dirname;
 const repo = resolve(aqui, '..');
@@ -27,9 +28,13 @@ const AJUSTE_MAXIMO = 6;
 const HUECO_MAXIMO = 24;
 /** Decimales de los trazados: a 1 décima de unidad (0,1 % de la letra) no se ve a ningún tamaño del producto. */
 const DECIMALES = 1;
-/** Letras que forman «avala» (color de marca); el resto es «soft». */
-const TEXTO = 'validalo';
-const CUANTAS_AVALA = 5;
+/** La palabra que sigue a la «V»: «alída» (azul oscuro) y «lo» (verde azulado). Se lee «Valídalo». */
+const TEXTO = 'alídalo';
+const CUANTAS_ALIDA = 5;
+/** Alto de la «V» (el check) en unidades de logotipo: la letra mide 100 y la «V» mide lo que la letra, apoyada en la línea base. */
+const ALTO_V = 100;
+/** Separación mínima (distancia real, no solo en horizontal) entre el contorno de la «V» y el de la «a»: la cola del check se mete sobre la «a». */
+const HUECO_V = 5;
 
 const archivo = readFileSync(join(aqui, FUENTE.archivo));
 const fuente = opentype.parse(archivo.buffer.slice(archivo.byteOffset, archivo.byteOffset + archivo.byteLength));
@@ -38,8 +43,8 @@ const escala = TAMANO / fuente.unitsPerEm;
 const glifos = [...TEXTO].map((c) => fuente.charToGlyph(c));
 const caja = (g) => g.getPath(0, 0, TAMANO).getBoundingBox();
 const alturaX = -caja(fuente.charToGlyph('x')).y1;
-/** Altura de las ascendentes: la más alta entre la «l» y la «f» (la «t» es más baja). */
-const altoL = Math.max(-caja(fuente.charToGlyph('l')).y1, -caja(fuente.charToGlyph('f')).y1);
+/** Altura de las ascendentes: la más alta entre la «l» y la «d». */
+const altoL = Math.max(-caja(fuente.charToGlyph('l')).y1, -caja(fuente.charToGlyph('d')).y1);
 
 /** Aplana un glifo (a su tamaño, y hacia abajo) en segmentos rectos para medir dónde cruza una línea horizontal. */
 function segmentos(camino) {
@@ -150,19 +155,58 @@ function trazado(desde, hasta) {
   return inclinar(camino);
 }
 
-const trazadoAvala = trazado(0, CUANTAS_AVALA);
-const trazadoSoft = trazado(CUANTAS_AVALA, glifos.length);
-const cajaAvala = trazadoAvala.getBoundingBox();
-const cajaSoft = trazadoSoft.getBoundingBox();
+const trazadoAlida = trazado(0, CUANTAS_ALIDA);
+const trazadoLo = trazado(CUANTAS_ALIDA, glifos.length);
+const cajaAlida = trazadoAlida.getBoundingBox();
+const cajaLo = trazadoLo.getBoundingBox();
 const limites = {
-  x0: Math.min(cajaAvala.x1, cajaSoft.x1),
-  x1: Math.max(cajaAvala.x2, cajaSoft.x2),
-  y0: Math.min(cajaAvala.y1, cajaSoft.y1),
-  y1: Math.max(cajaAvala.y2, cajaSoft.y2),
+  x0: Math.min(cajaAlida.x1, cajaLo.x1),
+  x1: Math.max(cajaAlida.x2, cajaLo.x2),
+  y0: Math.min(cajaAlida.y1, cajaLo.y1),
+  y1: Math.max(cajaAlida.y2, cajaLo.y2),
 };
-const redondear = (n) => Math.round(n * 10 ** DECIMALES) / 10 ** DECIMALES;
 
-const salida = `/* Contornos de la palabra «validalo» del logotipo. GENERADO por marca/contornos.mjs (pnpm --filter @validalo/marca contornos); no editar a mano.
+// La «V»: el check a la altura de la letra, apoyado en la línea base e inclinado como la palabra. Su borde izquierdo es x = 0.
+const uve = disponerLaV(ALTO_V, INCLINACION);
+
+/** Puntos del contorno de un trazado, densificados a menos de `paso` unidades entre vecinos (para medir distancias entre contornos). */
+function densificar(contornos, paso = 0.6) {
+  const salida = [];
+  for (const c of contornos)
+    for (let i = 1; i < c.length; i += 1) {
+      const [x0, y0] = c[i - 1];
+      const [x1, y1] = c[i];
+      const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / paso));
+      for (let k = 0; k < n; k += 1) salida.push([x0 + ((x1 - x0) * k) / n, y0 + ((y1 - y0) * k) / n]);
+    }
+  return salida;
+}
+const puntosUve = densificar(aplanarTrazado(uve.trazado, 96));
+// La primera letra («a») ya inclinada y en su sitio dentro de la palabra (origen 0).
+const puntosA = densificar(aplanarTrazado(trazado(0, 1).toPathData(3), 96));
+const distanciaMinima = (desplazamiento) => {
+  let minimo = Infinity;
+  for (const [vx, vy] of puntosUve)
+    for (const [ax, ay] of puntosA) {
+      const d = Math.hypot(vx - (ax + desplazamiento), vy - ay);
+      if (d < minimo) minimo = d;
+    }
+  return minimo;
+};
+// Se acerca la palabra a la «V» desde la derecha hasta que el contorno de la «a» queda a HUECO_V del check (el brazo largo sube por encima de la «a»).
+let inicioPalabra = uve.caja.x1 + 20;
+// De grueso a fino: se avanza de a 4, se retrocede un paso y se vuelve a avanzar de a menos, hasta 0,05 unidades.
+for (const paso of [4, 1, 0.25, 0.05]) {
+  while (distanciaMinima(inicioPalabra) > HUECO_V && inicioPalabra > 0) inicioPalabra -= paso;
+  if (paso > 0.05) inicioPalabra += paso;
+}
+inicioPalabra = Math.round(inicioPalabra * 10) / 10;
+console.log(`«V»: caja ${JSON.stringify(uve.caja)}; la palabra empieza en x = ${inicioPalabra} (solapa ${(uve.caja.x1 - (inicioPalabra + limites.x0)).toFixed(1)} unidades con el borde derecho de la «V»), a ${distanciaMinima(inicioPalabra).toFixed(2)} de la «a».`);
+const redondear = (n) => Math.round(n * 10 ** DECIMALES) / 10 ** DECIMALES;
+/** Redondeo hacia afuera de una caja (el mínimo hacia abajo, el máximo hacia arriba): la caja publicada nunca es menor que el dibujo. */
+const haciaAfuera = (n, esMaximo) => (esMaximo ? Math.ceil(n * 10 ** DECIMALES - 1e-9) : Math.floor(n * 10 ** DECIMALES + 1e-9)) / 10 ** DECIMALES;
+
+const salida = `/* Contornos del logotipo «Valídalo»: la «V» (el check) y la palabra «alídalo». GENERADO por marca/contornos.mjs (pnpm --filter @validalo/marca contornos); no editar a mano.
  * Fuente: ${FUENTE.nombre}, convertida a trazados, con seguimiento de ${String(SEGUIMIENTO / 100).replace('.', ',')} em y espaciado parejo por pares, e inclinada ${String(INCLINACION)}°.
  * Tamaño de la letra: ${String(TAMANO)} unidades; línea base en y = 0 y hacia arriba, negativo. */
 
@@ -173,14 +217,21 @@ export const PALABRA = {
   seguimiento: ${String(SEGUIMIENTO)},
   /** Altura de las minúsculas sin ascendente (la de la «x»). */
   alturaX: ${String(redondear(alturaX))},
-  /** Altura de las ascendentes («l» y «f»: la más alta de la palabra), sobre la línea base. */
+  /** Altura de las ascendentes («l» y «d»), sobre la línea base. */
   altoAscendente: ${String(redondear(altoL))},
   /** Límites de los contornos ya inclinados (x, y de la esquina superior izquierda y de la inferior derecha). */
-  limites: { x0: ${String(redondear(limites.x0))}, y0: ${String(redondear(limites.y0))}, x1: ${String(redondear(limites.x1))}, y1: ${String(redondear(limites.y1))} },
-  /** «avala» (color de marca). */
-  avala: '${trazadoAvala.toPathData(DECIMALES)}',
-  /** «soft» (color oscuro). */
-  soft: '${trazadoSoft.toPathData(DECIMALES)}',
+  limites: { x0: ${String(haciaAfuera(limites.x0, false))}, y0: ${String(haciaAfuera(limites.y0, false))}, x1: ${String(haciaAfuera(limites.x1, true))}, y1: ${String(haciaAfuera(limites.y1, true))} },
+  /** La «V» (el check) a ${String(ALTO_V)} unidades de alto, apoyada en la línea base e inclinada como la palabra: trazado y caja, con su borde izquierdo en x = 0. */
+  v: {
+    trazado: '${uve.trazado}',
+    caja: { x0: ${String(haciaAfuera(uve.caja.x0, false))}, y0: ${String(haciaAfuera(uve.caja.y0, false))}, x1: ${String(haciaAfuera(uve.caja.x1, true))}, y1: ${String(haciaAfuera(uve.caja.y1, true))} },
+  },
+  /** Dónde va el origen de la palabra, medido desde el borde izquierdo de la «V»: el contorno de la «a» queda a ${String(HUECO_V)} unidades del check (la cola de la «V» se mete sobre la «a»). */
+  inicio: ${String(inicioPalabra)},
+  /** «alída» (azul oscuro). */
+  alida: '${trazadoAlida.toPathData(DECIMALES)}',
+  /** «lo» (verde azulado). */
+  lo: '${trazadoLo.toPathData(DECIMALES)}',
 } as const;
 `;
 writeFileSync(join(repo, 'packages', 'ui', 'src', 'marca', 'palabra.ts'), salida);
