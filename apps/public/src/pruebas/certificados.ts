@@ -1,105 +1,18 @@
 import type { CertificadoPublicoDto, ClavesDeCertificadosDto, JsonElement } from '@avalasoft/api-client';
 import { aHex, sha256 } from '../verificacion/cripto';
 import { bytesCanonicos } from '../verificacion/jcs';
+import certificadoReal from './vector-dorado/certificado.json';
+import clavesReales from './vector-dorado/claves.json';
 
 /**
- * Certificados de prueba para la verificación pública. `REAL_*` es una emisión tal como la devolvió la API local
- * (sellada por el backend en C# con la clave de desarrollo `vs-desarrollo-solo-local`): prueba que el JCS y el SHA-256
- * de aquí producen los mismos bytes que los del servidor.
+ * Certificados de prueba para la verificación pública. `CERTIFICADO_REAL` y `CLAVES_REAL` son el vector dorado: una emisión tal como
+ * la devolvió la API (sellada por el backend en C# con la clave de desarrollo `vs-desarrollo-solo-local`), en `vector-dorado/*.json`.
+ * Los lee también la prueba de dominio `VectorDoradoDelCertificadoTests`, así que el navegador y la API validan los mismos bytes: si
+ * cambia cómo se canonicaliza, se calcula el hash o se sella, una de las dos falla y el vector se vuelve a emitir.
  */
-export const CERTIFICADO_REAL: CertificadoPublicoDto = {
-  folio: 'VERIF-C-2026-000001-1',
-  emision: 1,
-  estado: 'Vigente',
-  bloqueante: false,
-  titular: { nombre: 'Cliente de Verificación S.A.S.', identificacionEnmascarada: 'NIT 90*****67' },
-  emisor: { empresa: 'Constructora Verificación S.A.S.', logoUrl: null },
-  flujo: { codigo: 'VERIFICACION', nombre: 'Flujo de verificación', version: 1 },
-  emitidoEn: '2026-11-09T00:02:30.7897957+00:00',
-  vigenteHasta: '2026-12-08',
-  huella: '7bbd·48b2·3712',
-  hashContenido: '7bbd48b237123fdeb39b67323e48bb4613016fafd469ed9a48b0cc14e2d14e9b',
-  contenidoCanonico: {
-    areas: [
-      { area: 'Compras', codigo: 'COMPRAS', fecha: '2026-11-09T00:02:30Z', origen: 'Humano' },
-      { area: 'Cumplimiento', codigo: 'CUMPLIMIENTO', fecha: '2026-11-09T00:02:30Z', origen: 'Humano' },
-    ],
-    emision: 1,
-    emitidoEn: '2026-11-09T00:02:30Z',
-    empresa: {
-      id: '01a1bce5-2f49-73d2-b110-c1ad7f3986ad',
-      identificacion: { digitoVerificacion: '1', numero: '899999068', pais: 'CO', tipo: 'NIT' },
-      nombre: 'Constructora Verificación S.A.S.',
-    },
-    esquema: 'avalasoft.certificado.v1',
-    flujo: { codigo: 'VERIFICACION', nombre: 'Flujo de verificación', version: 1 },
-    folio: 'VERIF-C-2026-000001-1',
-    requisitos: [
-      {
-        codigo: 'CAMARA_COMERCIO',
-        eximido: false,
-        nombre: 'Certificado de existencia y representación legal',
-        sha256: 'b0746c1974830b2b40d6a97c9dd185eba9734fe761fcf372f6fa80cfc5eb97be',
-        versionN: 1,
-        vigenteHasta: '2026-12-08',
-      },
-      {
-        codigo: 'CERTIFICACION_BANCARIA',
-        eximido: false,
-        nombre: 'Certificación bancaria',
-        sha256: '977b7258ac6186f2d7279428bb0c9c3f29de9352861d72087c1ce5f2a63ed935',
-        versionN: 1,
-        vigenteHasta: '2027-02-06',
-      },
-      {
-        codigo: 'ESTADOS_FINANCIEROS',
-        eximido: false,
-        nombre: 'Estados financieros',
-        sha256: '02bc63293864c507af12619d27adaee66edc9af845bcb40a914f80d922f8424f',
-        versionN: 1,
-      },
-      {
-        codigo: 'RUT',
-        eximido: false,
-        nombre: 'Registro Único Tributario',
-        sha256: '4e35689d3e87e1c7bbd2325e17f7925326ce4fcc0557e1f9b9a1b65aceb702cb',
-        versionN: 1,
-        vigenteHasta: '2027-11-08',
-      },
-    ],
-    tercero: { identificacionEnmascarada: 'NIT 90*****67', nombre: 'Cliente de Verificación S.A.S.', pais: 'CO', tipoPersona: 'Juridica' },
-    tipoVinculo: { codigo: 'CLIENTE', nombre: 'Cliente' },
-    verificaciones: [],
-    vigenteHasta: '2026-12-08',
-  },
-  urlVerificacion: 'http://localhost:5181/verificar/VERIF-C-2026-000001-1?huella=7bbd48b23712',
-  pendientes: [],
-  firma: {
-    algoritmo: 'Ed25519',
-    kid: 'vs-desarrollo-solo-local',
-    clavePublicaUrl: 'http://localhost:5181/.well-known/avalasoft-certificados.json',
-    valor: 'A6hTXkWKNtTjaz2P4M0MrRWWZ1jMF6xppr7lNf8v6y0uE2YLzA+0UydkUbk7eLOURaIYm9Y3pzV+V35VC3sLCg==',
-  },
-  estadoDesde: '2026-11-09T00:02:30.7897957+00:00',
-  reemplazadoPor: null,
-  pdfDescargable: true,
-};
+export const CERTIFICADO_REAL: CertificadoPublicoDto = certificadoReal;
 
-export const CLAVES_REAL: ClavesDeCertificadosDto = {
-  emisor: 'AvalaSoft',
-  algoritmo: 'Ed25519',
-  mensajeFirmado: 'Ed25519 sobre los 32 bytes del SHA-256 (hashContenido en hexadecimal) del contenidoCanonico canonicalizado con RFC 8785 (JCS).',
-  esquemas: ['avalasoft.certificado.v1'],
-  claves: [
-    {
-      kid: 'vs-desarrollo-solo-local',
-      algoritmo: 'Ed25519',
-      clavePublica: 'mi2TRx5jMSmbEY01mZwdTQQl5OcaaVvL07PjrVI5RZ0=',
-      jwk: { kty: 'OKP', crv: 'Ed25519', x: 'mi2TRx5jMSmbEY01mZwdTQQl5OcaaVvL07PjrVI5RZ0', kid: 'vs-desarrollo-solo-local', alg: 'EdDSA', use: 'sig' },
-      vigente: true,
-    },
-  ],
-};
+export const CLAVES_REAL: ClavesDeCertificadosDto = clavesReales;
 
 const aBase64 = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes));
 
