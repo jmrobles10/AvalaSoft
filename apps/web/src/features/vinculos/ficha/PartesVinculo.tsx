@@ -1,7 +1,7 @@
-import { Box, Button, ListItemIcon, ListItemText, Menu, MenuItem, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import type { DefinicionAccion, VinculoDto } from '@validalo/api-client';
 import { AvatarActor, ChipEstado, Dato, EstadoVacio, formatearFecha, LineaDeTiempo, MarcoTabla, RejillaDatos, ValorLargo } from '@validalo/ui';
-import { ChevronDown } from 'lucide-react';
+import { Ellipsis } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSesion } from '../../../sesion/sesionStore';
@@ -94,15 +94,17 @@ export function Encabezado({
             })}
             {destructivas.length > 0 && (
               <>
-                <Button
-                  variant="outlined"
-                  endIcon={<ChevronDown size={16} aria-hidden />}
-                  aria-haspopup="menu"
-                  aria-expanded={ancla ? 'true' : undefined}
-                  onClick={(e) => setAncla(e.currentTarget)}
-                >
-                  {t('vinculos.detalle.masAcciones')}
-                </Button>
+                <Tooltip title={t('vinculos.detalle.masAcciones')}>
+                  <IconButton
+                    aria-label={t('vinculos.detalle.masAcciones')}
+                    aria-haspopup="menu"
+                    aria-expanded={ancla ? 'true' : undefined}
+                    onClick={(e) => setAncla(e.currentTarget)}
+                    sx={{ border: 1, borderColor: 'divider', borderRadius: '10px', width: 36, height: 36 }}
+                  >
+                    <Ellipsis size={18} aria-hidden />
+                  </IconButton>
+                </Tooltip>
                 <Menu
                   anchorEl={ancla}
                   open={Boolean(ancla)}

@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { SCOPES } from '@validalo/api-client';
 import { FileArchive } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -30,10 +30,27 @@ export function BotonExportarExpediente({ empresaId, expedienteId }: { empresaId
     );
 
   return (
-    <Tooltip describeChild title={t('informes.expediente.exportarAyuda')}>
-      <Button variant="outlined" startIcon={<FileArchive size={16} aria-hidden />} disabled={descarga.isPending} onClick={exportar}>
-        {t('informes.expediente.exportar')}
-      </Button>
+    // Botón de ícono: el nombre va en `aria-label` y el tooltip dice qué trae el ZIP.
+    <Tooltip
+      describeChild
+      title={
+        <>
+          <strong>{t('informes.expediente.exportar')}</strong>
+          <br />
+          {t('informes.expediente.exportarAyuda')}
+        </>
+      }
+    >
+      <span>
+        <IconButton
+          aria-label={t('informes.expediente.exportar')}
+          disabled={descarga.isPending}
+          onClick={exportar}
+          sx={{ border: 1, borderColor: 'divider', borderRadius: '10px', width: 36, height: 36 }}
+        >
+          <FileArchive size={18} aria-hidden />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 }

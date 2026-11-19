@@ -22,6 +22,7 @@ import { TarjetaFichaAceptadaEnVinculo } from '../../terceros/fichaAceptada/Tarj
 import { TarjetaSeccion } from '../../terceros/ficha/InformacionTercero';
 import { TarjetaContactos } from '../contactos/TarjetaContactos';
 import { TarjetaCuentaDesignada } from '../cuentaDesignada/TarjetaCuentaDesignada';
+import { estadoVisibleDelVinculo } from '../estadoVisible';
 import { TarjetaExenciones } from '../exenciones/TarjetaExenciones';
 import { AceptacionesDelTercero } from './AceptacionesDelTercero';
 import { ContactoDelTercero } from './ContactoDelTercero';
@@ -173,7 +174,8 @@ function SectorAprobaciones({ vinculo, control, cargando }: { vinculo: VinculoDt
         <Typography component="span" variant="mono" sx={{ color: 'text.secondary' }}>
           {expediente.folio}
         </Typography>
-        <ChipEstado estado={expediente.estado} fecha={expediente.cerradoEn ?? expediente.actualizadoEn} />
+        {/* Si el expediente está como el vínculo (p. ej. los dos «En revisión»), el chip del encabezado ya lo dice: no se repite. */}
+        {expediente.estado !== estadoVisibleDelVinculo(vinculo) && <ChipEstado estado={expediente.estado} fecha={expediente.cerradoEn ?? expediente.actualizadoEn} />}
         <Stack direction="row" spacing={1} useFlexGap sx={{ ml: 'auto', flexWrap: 'wrap' }}>
           <AccionesExpediente control={control} />
         </Stack>
