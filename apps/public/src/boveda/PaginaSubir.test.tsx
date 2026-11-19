@@ -82,6 +82,18 @@ describe('subir lo que pide un requisito', () => {
     expect(elegir).toBeEnabled();
   });
 
+  it('una fecha de expedición futura no se admite: dice qué corregir y no deja elegir el archivo', async () => {
+    const usuario = userEvent.setup();
+    montar(TIPO);
+
+    const elegir = await screen.findByRole('button', { name: 'Elegir archivo' });
+    await usuario.click(within(screen.getByRole('group', { name: /Fecha de expedición/ })).getByRole('spinbutton', { name: 'Día' }));
+    await usuario.keyboard('01012099');
+
+    expect(screen.getByRole('status')).toHaveTextContent('Para subir el archivo, corrige: Fecha de expedición.');
+    expect(elegir).toBeDisabled();
+  });
+
   it('solo formulario: se llena aquí mismo, sin zona de archivo', async () => {
     montar({ ...TIPO, modo: 'Formulario', archivo: null, tienePlantilla: false, campos: [{ clave: 'banco', etiqueta: 'Banco', tipo: 'Lista', opciones: ['Uno', 'Dos'], obligatorio: true }] });
 
