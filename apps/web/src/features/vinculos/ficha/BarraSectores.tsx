@@ -14,7 +14,7 @@ interface Props {
 
 /**
  * Barra lateral de la ficha del vínculo: la misma navegación agrupada de la consola de Plataforma (panel flotante, títulos de grupo en gris
- * y el sector activo como una píldora blanca con sombra suave), fija al desplazar la página. Cada sector muestra cuántos requisitos del
+ * y el sector activo como una píldora blanca con sombra suave), fija al desplazar la página y siempre del alto disponible. Cada sector muestra cuántos requisitos del
  * expediente siguen pendientes (en ámbar si alguno está observado o rechazado). Va sin el rótulo ni el control de colapsar: es una lista
  * corta que debe verse entera, así que los ítems son compactos y, si la pantalla es muy baja, la lista desplaza dentro del panel. En
  * pantallas angostas la reemplaza `SelectorSector`.
@@ -29,12 +29,15 @@ export function BarraSectores({ actual, indicadores, onElegir }: Props) {
       sx={{
         width: '100%',
         position: 'sticky',
-        top: 'calc(var(--vs-tope, 0px) + var(--vs-alto-encabezado, 96px) + 12px)',
+        // Pegada a la misma distancia del encabezado fijo que su lugar natural (el margen de 4 px del encabezado): al cambiar de sector no salta,
+        // tenga o no scroll el contenido.
+        top: 'calc(var(--vs-tope, 0px) + var(--vs-alto-encabezado, 96px) + 4px)',
         alignSelf: 'start',
-        // Si no cabe bajo el encabezado fijo, la lista desplaza dentro del panel (nunca se corta ni se sale de la pantalla).
-        maxHeight: 'calc(100dvh - var(--vs-tope, 0px) - var(--vs-alto-encabezado, 96px) - 24px)',
+        // Siempre todo el alto disponible bajo el encabezado, sin importar el sector: solo cambia el contenido de la derecha. Si los
+        // sectores no caben, la lista desplaza dentro del panel.
+        height: 'calc(100dvh - var(--vs-tope, 0px) - var(--vs-alto-encabezado, 96px) - 4px - 16px)',
         // En pantallas muy bajas deja de fijarse: un solo scroll, el de la página.
-        '@media (max-height: 640px)': { position: 'static', maxHeight: 'none' },
+        '@media (max-height: 640px)': { position: 'static', height: 'auto' },
       }}
     />
   );
