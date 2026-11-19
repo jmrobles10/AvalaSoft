@@ -44,7 +44,7 @@ function FilaNivel({ nivel: n, errores, deshabilitado, onCambiar }: { nivel: Bor
       </TextField>
       <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
         <CampoDigitos valor={n.meses} onCambiar={(meses) => onCambiar(n.nivel, { meses })} etiqueta={`${t('matrizRiesgo.niveles.meses')} · ${t(`cumplimiento.riesgos.${claveRiesgo(n.nivel)}`)}`} error={errorMeses} deshabilitado={deshabilitado} maxDigitos={2} ancho={72} />
-        <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
           {t('cumplimiento.mesesAbreviado')}
         </Typography>
       </Stack>
@@ -58,8 +58,8 @@ export function TarjetaNiveles({ niveles, errores, deshabilitado, onCambiar }: T
   const generales = errores.filter((e) => e.codigo === 'debida-descendente' || e.codigo === 'alto-intensificada');
   return (
     <Stack spacing={1.5}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('matrizRiesgo.niveles.ayuda')}</Typography>
-      <Box sx={{ display: { xs: 'none', sm: 'grid' }, gridTemplateColumns: COLUMNAS, gap: 1.5, color: 'text.secondary', fontSize: 12, fontWeight: 500 }} aria-hidden>
+      <Typography sx={{ color: 'text.secondary' }}>{t('matrizRiesgo.niveles.ayuda')}</Typography>
+      <Box sx={{ typography: 'caption', display: { xs: 'none', sm: 'grid' }, gridTemplateColumns: COLUMNAS, gap: 1.5, color: 'text.secondary' }} aria-hidden>
         <span />
         <span>{t('matrizRiesgo.niveles.debida')}</span>
         <span>{t('matrizRiesgo.niveles.meses')}</span>
@@ -70,11 +70,11 @@ export function TarjetaNiveles({ niveles, errores, deshabilitado, onCambiar }: T
         ))}
       </Box>
       {[...new Set(generales.map((e) => e.codigo))].map((codigo) => (
-        <Typography key={codigo} role="alert" sx={{ color: 'error.main', fontSize: 12 }}>
+        <Typography variant="caption" component="p" key={codigo} role="alert" sx={{ color: 'error.main' }}>
           {t(`matrizRiesgo.validacion.${codigo}`)}
         </Typography>
       ))}
-      <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('matrizRiesgo.niveles.mesesAyuda')}</Typography>
+      <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('matrizRiesgo.niveles.mesesAyuda')}</Typography>
     </Stack>
   );
 }

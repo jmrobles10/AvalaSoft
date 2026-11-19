@@ -26,10 +26,10 @@ export function EditorVigenciaVinculo({ borrador, onCambiar, errores, soloLectur
 
   return (
     <Box component="fieldset" disabled={soloLectura} sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-      <Typography component="legend" sx={{ fontSize: 13, fontWeight: 600, mb: 0.5 }}>
+      <Typography variant="subtitle2" component="legend" sx={{ mb: 0.5 }}>
         {t('flujoVigencia.titulo')}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', fontSize: 12, mb: 1.5 }}>{t('flujoVigencia.ayuda')}</Typography>
+      <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mb: 1.5 }}>{t('flujoVigencia.ayuda')}</Typography>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '160px minmax(0,320px) 160px' }, gap: 2, alignItems: 'start' }}>
         <CampoNumero
           etiqueta={t('flujoVigencia.dias')}

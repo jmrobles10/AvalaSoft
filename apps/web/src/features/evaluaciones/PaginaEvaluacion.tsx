@@ -30,7 +30,7 @@ function Ficha({ evaluacion, empresaId }: { evaluacion: EvaluacionDto; empresaId
           [
             t('evaluaciones.detalle.expediente'),
             evaluacion.expedienteId ? (
-              <Link key="e" component={RouterLink} to={`/e/${empresaId}/expedientes/${evaluacion.expedienteId}`}>
+              <Link key="e" component={RouterLink} to={`/e/${empresaId}/expedientes/${evaluacion.expedienteId}`} sx={{ whiteSpace: 'nowrap' }}>
                 {evaluacion.folio}
               </Link>
             ) : (

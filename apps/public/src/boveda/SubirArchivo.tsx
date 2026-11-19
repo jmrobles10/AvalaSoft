@@ -89,10 +89,10 @@ export function SubirArchivo({ parametros, delRequisito }: { parametros: URLSear
 
         {conCampos && (
           <Box component="section" aria-labelledby="titulo-datos-archivo">
-            <Typography id="titulo-datos-archivo" component="h2" variant="h4">
+            <Typography id="titulo-datos-archivo" component="h2" variant="h6">
               {t('subir.datosDelArchivo')}
             </Typography>
-            <Typography sx={{ color: 'text.secondary', fontSize: 14, mb: 1.5 }}>
+            <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
               {t('subir.datosAyuda', { empresa })}
             </Typography>
             <CamposFormulario campos={campos} formulario={formulario} deshabilitado={ocupado} />

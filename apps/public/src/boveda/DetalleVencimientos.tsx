@@ -17,7 +17,7 @@ export function DetalleVencimientos({ id, empresas, cierre }: { id: string; empr
       etiqueta={t('boveda.empresas')}
       pie={
         cierre && (
-          <Typography variant="caption" component="p" sx={{ m: 0, mt: 1, fontWeight: 400 }}>
+          <Typography variant="caption" component="p" sx={{ m: 0, mt: 1 }}>
             {cierre}
           </Typography>
         )
@@ -27,7 +27,7 @@ export function DetalleVencimientos({ id, empresas, cierre }: { id: string; empr
         const visibles = buscarPorNombre(empresas, busqueda, (e) => e.empresa);
         if (visibles.length === 0) {
           return (
-            <Typography variant="caption" component="p" sx={{ m: 0, color: 'text.secondary', fontWeight: 400 }}>
+            <Typography variant="caption" component="p" sx={{ m: 0, color: 'text.secondary' }}>
               {t('boveda.detalle.sinCoincidencias', { texto: busqueda.trim() })}
             </Typography>
           );
@@ -35,8 +35,8 @@ export function DetalleVencimientos({ id, empresas, cierre }: { id: string; empr
         return (
           <Box component="ul" sx={{ p: 0, m: 0, listStyle: 'none' }}>
             {visibles.map((e) => (
-              <Box key={e.empresa} component="li" sx={{ py: 0.25, fontSize: 13, lineHeight: '18px', overflowWrap: 'anywhere' }}>
-                <Box component="span" sx={{ fontWeight: 500 }}>
+              <Box key={e.empresa} component="li" sx={{ typography: 'body2', py: 0.25, overflowWrap: 'anywhere' }}>
+                <Box component="span" sx={{ typography: 'subtitle2' }}>
                   {e.empresa}
                 </Box>
                 <Box component="span" sx={{ color: 'text.secondary' }}>{` · ${e.texto}`}</Box>

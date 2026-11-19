@@ -42,12 +42,12 @@ export function PaginaPlanGrupo() {
           <Tarjeta titulo={t('plan.tuPlan')}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 4 }}>
               <Box>
-                <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('plan.codigo')}</Typography>
-                <Typography sx={{ fontWeight: 600, fontSize: 16 }}>{uso.plan.configurado ? uso.plan.codigo : t('plan.sinPlan')}</Typography>
+                <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('plan.codigo')}</Typography>
+                <Typography variant="h6" component="p">{uso.plan.configurado ? uso.plan.codigo : t('plan.sinPlan')}</Typography>
               </Box>
               <Box sx={{ minWidth: 0 }}>
-                <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('plan.alLlegarAlLimite')}</Typography>
-                <Typography sx={{ fontSize: 14, lineHeight: '20px' }}>{uso.plan.bloqueoSuave ? t('plan.bloqueoActivo') : t('plan.bloqueoInactivo')}</Typography>
+                <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('plan.alLlegarAlLimite')}</Typography>
+                <Typography>{uso.plan.bloqueoSuave ? t('plan.bloqueoActivo') : t('plan.bloqueoInactivo')}</Typography>
               </Box>
             </Stack>
             {!uso.plan.configurado && (
@@ -62,7 +62,7 @@ export function PaginaPlanGrupo() {
 
           <Tarjeta titulo={t('plan.usoDelMes', { mes: etiquetaMes(uso.mes).toLowerCase() })}>
             <MedidoresDeUso mediciones={uso.mediciones} />
-            <Typography sx={{ mt: 2, fontSize: 12, color: 'text.secondary', lineHeight: '16px' }}>{t('plan.nota')}</Typography>
+            <Typography variant="caption" component="p" sx={{ mt: 2, color: 'text.secondary' }}>{t('plan.nota')}</Typography>
           </Tarjeta>
         </Stack>
       )}

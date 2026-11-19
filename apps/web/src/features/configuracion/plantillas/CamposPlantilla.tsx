@@ -52,7 +52,7 @@ export function CamposPlantilla({
     <Stack spacing={2}>
       {!soloLectura && variables.length > 0 && (
         <Box>
-          <Typography variant="body2" component="h3" sx={{ fontWeight: 500 }}>
+          <Typography variant="subtitle2" component="h3">
             {t('plantillas.variables')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>

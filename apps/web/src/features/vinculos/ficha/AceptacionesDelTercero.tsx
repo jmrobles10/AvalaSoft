@@ -65,16 +65,16 @@ export function AceptacionesDelTercero({ empresaId, vinculoId }: { empresaId: st
       <Stack spacing={1.5}>
         {aceptaciones.map((a) => (
           <Box key={a.fecha}>
-            <Typography sx={{ fontSize: 12, color: 'text.secondary', mb: 0.5 }}>
+            <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mb: 0.5 }}>
               {t('vinculos.ficha.aceptaciones.cuando', { fecha: formatearFechaHora(a.fecha) })}
               {a.correo && ` · ${a.correo}`}
               {a.otpVerificado && ` · ${t('vinculos.ficha.aceptaciones.conCodigo')}`}
             </Typography>
             <Stack component="ul" spacing={0.5} sx={{ p: 0, m: 0, listStyle: 'none' }}>
               {a.consentimientos.map((c) => (
-                <Typography component="li" key={`${c.tipo}-${String(c.version)}`} sx={{ fontSize: 14, display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', columnGap: 0.5 }} title={c.hash ? `SHA-256 ${c.hash}` : undefined}>
+                <Typography component="li" key={`${c.tipo}-${String(c.version)}`} sx={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', columnGap: 0.5 }} title={c.hash ? `SHA-256 ${c.hash}` : undefined}>
                   {nombreDe(c.tipo)}
-                  <Typography component="span" sx={{ color: 'text.secondary', fontSize: 13 }}>
+                  <Typography component="span" sx={{ color: 'text.secondary' }}>
                     {' · '}
                     {t('vinculos.ficha.aceptaciones.version', { n: String(c.version) })}
                   </Typography>
@@ -103,7 +103,7 @@ function DialogoTextoAceptado({ empresaId, aceptado, titulo, onCerrar }: { empre
     <Dialog open onClose={onCerrar} maxWidth="md" fullWidth aria-labelledby="titulo-texto-aceptado">
       <DialogTitle id="titulo-texto-aceptado">
         {titulo}
-        <Typography component="span" sx={{ display: 'block', color: 'text.secondary', fontSize: 13 }}>
+        <Typography component="span" sx={{ display: 'block', color: 'text.secondary' }}>
           {t('vinculos.ficha.aceptaciones.version', { n: String(aceptado.version) })}
           {consulta.data && ` · ${t('vinculos.ficha.aceptaciones.publicado', { fecha: formatearFecha(consulta.data.publicadoEn) })}`}
         </Typography>

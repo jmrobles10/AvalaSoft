@@ -46,7 +46,7 @@ export function CampoBusqueda({ valor, onCambiar, onBuscar, placeholder, ancho =
         onChange={(e) => onCambiar(e.target.value)}
         placeholder={placeholder}
         inputProps={{ 'aria-label': placeholder }}
-        sx={{ flex: 1, fontSize: 14, '& input': { p: 0, '&::placeholder': { color: 'text.secondary', opacity: 1 } } }}
+        sx={{ typography: 'body2', flex: 1, '& input': { p: 0, '&::placeholder': { color: 'text.secondary', opacity: 1 } } }}
       />
     </Box>
   );
@@ -93,6 +93,7 @@ export function FiltroMenu({ etiqueta, valor, opciones, onCambiar, textoTodos, f
         aria-controls={ancla ? idMenu : undefined}
         onClick={(e) => setAncla(e.currentTarget)}
         sx={{
+          typography: 'body2',
           gap: 0.75,
           height: ALTO_CONTROL,
           pl: 1.25,
@@ -103,7 +104,6 @@ export function FiltroMenu({ etiqueta, valor, opciones, onCambiar, textoTodos, f
           borderRadius: (t) => `${String(t.radio.sm)}px`,
           bgcolor: activo ? 'acento.tinte' : 'superficie.nivel1',
           color: 'text.primary',
-          fontSize: 14,
           whiteSpace: 'nowrap',
         }}
       >
@@ -112,7 +112,7 @@ export function FiltroMenu({ etiqueta, valor, opciones, onCambiar, textoTodos, f
         </Box>
         <Box
           component="span"
-          sx={{ fontWeight: 600, color: activo ? 'acento.main' : 'text.primary', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', ...(fullWidth && { flex: 1, minWidth: 0, maxWidth: 'none' }) }}
+          sx={{ typography: 'subtitle2', color: activo ? 'acento.main' : 'text.primary', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', ...(fullWidth && { flex: 1, minWidth: 0, maxWidth: 'none' }) }}
         >
           {elegida?.etiqueta ?? textoTodos}
         </Box>

@@ -34,7 +34,7 @@ export function TarjetasSagrilaft({ informe }: { informe: InformeSagrilaftDto })
             <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
               {t(`cumplimiento.sagrilaft.tarjetas.${clave}`)}
             </Typography>
-            <Typography sx={{ fontSize: 24, fontWeight: 600, lineHeight: '32px', color: tono && valor > 0 ? `estado.${tono}.texto` : 'text.primary' }}>{valor.toLocaleString('es-CO')}</Typography>
+            <Typography variant="h4" component="p" sx={{ color: tono && valor > 0 ? `estado.${tono}.texto` : 'text.primary' }}>{valor.toLocaleString('es-CO')}</Typography>
           </Box>
         );
       })}
@@ -50,7 +50,7 @@ export function RiesgoSagrilaft({ informe }: { informe: InformeSagrilaftDto }) {
   return (
     <Tarjeta titulo={t('cumplimiento.sagrilaft.riesgo.titulo')} etiqueta={t('cumplimiento.sagrilaft.riesgo.titulo')} nivel="h3">
       {maximo === 0 ? (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.sagrilaft.riesgo.sinDatos')}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.sagrilaft.riesgo.sinDatos')}</Typography>
       ) : (
         <Stack component="ul" spacing={1.25} sx={{ listStyle: 'none', p: 0, m: 0 }}>
           {distribucion.map(({ nivel, cantidad }) => (
@@ -61,7 +61,7 @@ export function RiesgoSagrilaft({ informe }: { informe: InformeSagrilaftDto }) {
               <Box aria-hidden sx={{ flex: 1, height: 12, borderRadius: '6px', bgcolor: 'superficie.nivel2', overflow: 'hidden' }}>
                 <Box data-barra={nivel} sx={{ height: '100%', width: `${String(porcentajeDe(cantidad, maximo))}%`, bgcolor: `estado.${tonoDeRiesgo(nivel)}.solido`, borderRadius: '6px' }} />
               </Box>
-              <Typography component="span" sx={{ width: 28, textAlign: 'right', fontSize: 14, fontWeight: 500 }}>
+              <Typography variant="subtitle1" component="span" sx={{ width: 28, textAlign: 'right' }}>
                 {cantidad}
               </Typography>
             </Stack>
@@ -85,7 +85,7 @@ export function TiemposSagrilaft({ informe }: { informe: InformeSagrilaftDto }) 
         <Dato etiqueta={t('cumplimiento.sagrilaft.tiempos.abiertas')}>{tiempos.abiertas}</Dato>
         <Dato etiqueta={t('cumplimiento.sagrilaft.tiempos.abiertasMasDe7Dias')}>{tiempos.abiertasMasDe7Dias}</Dato>
       </RejillaDatos>
-      <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 1.5 }}>{t('cumplimiento.sagrilaft.tiempos.ayuda')}</Typography>
+      <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 1.5 }}>{t('cumplimiento.sagrilaft.tiempos.ayuda')}</Typography>
     </Tarjeta>
   );
 }

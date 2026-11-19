@@ -56,7 +56,7 @@ export function PanelDeNotificaciones<N extends NotificacionVisible>(props: Pane
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flex: 'none', pl: 2, pr: 1, py: 1, borderBottom: 1, borderColor: 'divider' }}>
-        <Typography id="titulo-notificaciones" component="h2" sx={{ flex: 1, fontSize: 15, lineHeight: '22px', fontWeight: 600 }}>
+        <Typography variant="subtitle1" id="titulo-notificaciones" component="h2" sx={{ flex: 1 }}>
           {textos.titulo}
         </Typography>
         <Button

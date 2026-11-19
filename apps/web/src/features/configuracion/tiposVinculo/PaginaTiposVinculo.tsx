@@ -96,7 +96,7 @@ export function PaginaTiposVinculo() {
                 <TableRow key={tipo.id} sx={{ opacity: tipo.activo ? 1 : 0.65 }}>
                   <TableCell>
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', minWidth: 0 }}>
-                      <Typography component="span" noWrap sx={{ fontWeight: 500, fontSize: 14 }}>
+                      <Typography variant="subtitle1" component="span" noWrap>
                         {tipo.nombre}
                       </Typography>
                       <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>
@@ -110,7 +110,7 @@ export function PaginaTiposVinculo() {
                         {t('tiposVinculo.sinAtributos')}
                       </Typography>
                     ) : (
-                      <Typography component="span" variant="monoTabla" sx={{ display: 'block', overflowWrap: 'anywhere' }}>
+                      <Typography component="span" variant="monoTabla" sx={{ display: 'block', overflowWrap: 'anywhere', whiteSpace: 'normal' }}>
                         {tipo.atributosPermitidos.map((a) => a.clave).join(', ')}
                       </Typography>
                     )}

@@ -42,7 +42,7 @@ export function DrawerGrupo({ grupo, guardando, error, onGuardar, onCerrar }: Dr
       <Box component="form" onSubmit={enviar} noValidate sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', px: 3, pt: 2.5, pb: 1 }}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="h3" component="h2" id="titulo-grupo">
+            <Typography variant="h6" component="h2" id="titulo-grupo">
               {titulo}
             </Typography>
             {grupo && (

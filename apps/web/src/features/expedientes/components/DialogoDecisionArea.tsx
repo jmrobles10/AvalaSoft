@@ -113,7 +113,7 @@ export function DialogoDecisionArea({
       <FormularioDeDialogo onSubmit={enviar}>
         <DialogTitle id="titulo-decision-area">
           {observando ? t('expedientes.decisionArea.tituloObservar', { area: area.nombre }) : t('expedientes.decisionArea.tituloAprobar', { area: area.nombre })}
-          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
             {expediente.folio} · {expediente.tercero.nombre}
           </Typography>
         </DialogTitle>

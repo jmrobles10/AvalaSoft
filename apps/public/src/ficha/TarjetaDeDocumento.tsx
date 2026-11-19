@@ -46,8 +46,8 @@ export function TarjetaDeDocumento({ documento, version, datosDistintos, noLeido
     >
       <Box sx={{ minWidth: 0 }}>
         <Stack direction="row" useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 0.75 }}>
-          <Typography component="span" sx={{ fontSize: 14, lineHeight: '20px' }}>
-            <Box component="span" sx={{ fontWeight: 600 }}>
+          <Typography component="span">
+            <Box component="span" sx={{ typography: 'subtitle2' }}>
               {t('ficha.propuesta.nombreDelDocumento', { documento })}
             </Box>
             <Box component="span" sx={{ color: 'text.secondary' }}>{` · ${t('ficha.propuesta.version', { n: String(version) })}`}</Box>

@@ -67,7 +67,7 @@ export function TarjetaMonitoreoListas({ vinculoId, empresaId }: { vinculoId: st
       }
     >
       <Stack spacing={1.5}>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.monitoreo.ayuda', { dias: String(monitoreo.frecuenciaDias) })}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.monitoreo.ayuda', { dias: String(monitoreo.frecuenciaDias) })}</Typography>
         <RejillaDatos columnas={3}>
           <Dato etiqueta={t('cumplimiento.monitoreo.estado')}>
             <ChipEstado estado={listas.estado} etiqueta={t(`cumplimiento.estados.${listas.estado}`)} />
@@ -85,9 +85,9 @@ export function TarjetaMonitoreoListas({ vinculoId, empresaId }: { vinculoId: st
           </Alert>
         )}
         <div>
-          <Typography sx={{ fontSize: 13, fontWeight: 500, mb: 0.5 }}>{t('cumplimiento.panel.coincidencias')}</Typography>
+          <Typography variant="subtitle2" component="p" sx={{ mb: 0.5 }}>{t('cumplimiento.panel.coincidencias')}</Typography>
           {listas.coincidencias.length === 0 ? (
-            <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.panel.sinCoincidencias')}</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.panel.sinCoincidencias')}</Typography>
           ) : (
             <Stack component="ul" spacing={1} sx={{ listStyle: 'none', p: 0, m: 0 }}>
               {listas.coincidencias.map((c) => (

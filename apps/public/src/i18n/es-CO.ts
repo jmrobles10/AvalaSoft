@@ -561,7 +561,7 @@ export const esCO = {
   },
   expediente: {
     titulo: 'Tu revisión con {{empresa}}',
-    folio: 'Folio {{folio}}',
+    folio: 'Expediente {{folio}}',
     estadoTexto: {
       Abierto: '{{empresa}} está preparando la revisión.',
       EnRevision: '{{empresa}} está revisando tu información. Te avisamos por correo si necesita algo.',

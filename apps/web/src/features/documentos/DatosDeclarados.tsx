@@ -34,7 +34,7 @@ export function DatosDeclarados({ datos, limite, conTitulo = false }: DatosDecla
       <Box
         component="dl"
         aria-label={conTitulo ? undefined : t('expedientes.datosDeclarados.titulo')}
-        sx={{ m: 0, display: 'grid', gridTemplateColumns: 'minmax(0, max-content) minmax(0, 1fr)', columnGap: 1.5, rowGap: 0.5, fontSize: 13, lineHeight: '18px' }}
+        sx={{ typography: 'body2', m: 0, display: 'grid', gridTemplateColumns: 'minmax(0, max-content) minmax(0, 1fr)', columnGap: 1.5, rowGap: 0.5 }}
       >
         {visibles.map((dato) => (
           <Box key={dato.clave} sx={{ display: 'contents' }}>

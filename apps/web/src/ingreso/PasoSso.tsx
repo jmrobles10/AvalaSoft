@@ -37,7 +37,7 @@ export function PasoCompletarSso({ desafio, alResultado, alFallar }: PasoSsoProp
   return (
     <Stack spacing={2} role="status" aria-busy aria-label={t('ingreso.sso.terminando')}>
       <Box>
-        <Typography variant="h2" component="h1" sx={{ mb: 0.5 }}>
+        <Typography variant="h5" component="h1" sx={{ mb: 0.5 }}>
           {t('ingreso.sso.terminando')}
         </Typography>
         <Typography sx={{ color: 'text.secondary' }}>{t('ingreso.sso.terminandoAyuda')}</Typography>

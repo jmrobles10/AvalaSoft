@@ -7,7 +7,7 @@ import { explicarOrigenDelFlujo } from '../origenFlujo';
 export function OrigenDelFlujo({ flujo }: { flujo: FlujoDeExpedienteDto }) {
   const { t } = useTranslation();
   return (
-    <Typography variant="body2" data-origen-flujo={flujo.origen} sx={{ color: 'text.secondary', display: 'block', fontSize: 12, mt: 0.25 }}>
+    <Typography component="p" variant="caption" data-origen-flujo={flujo.origen} sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
       {explicarOrigenDelFlujo(flujo, t)}
     </Typography>
   );

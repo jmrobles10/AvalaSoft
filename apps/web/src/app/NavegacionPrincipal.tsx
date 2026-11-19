@@ -29,9 +29,7 @@ function estiloPestana(actual: boolean) {
     borderBottom: 2,
     borderColor: actual ? 'acento.main' : 'transparent',
     color: actual ? 'text.primary' : 'text.secondary',
-    fontSize: 14,
-    lineHeight: '20px',
-    fontWeight: actual ? 600 : 500,
+    typography: 'subtitle2',
     textDecoration: 'none',
     whiteSpace: 'nowrap',
     '&:hover': { color: 'text.primary' },
@@ -142,7 +140,7 @@ export function NavegacionPrincipal<C extends string = ClavePestana>({ pestanas,
             {enMas.map((p) => {
               const actual = activa === p.clave;
               return (
-                <MenuItem key={p.clave} component={RouterLink} to={destino(p)} selected={actual} aria-current={actual ? 'page' : undefined} onClick={() => setAncla(null)} sx={{ fontWeight: actual ? 600 : 500 }}>
+                <MenuItem key={p.clave} component={RouterLink} to={destino(p)} selected={actual} aria-current={actual ? 'page' : undefined} onClick={() => setAncla(null)} sx={{ typography: actual ? 'subtitle1' : 'subtitle2' }}>
                   {etiquetaDe(p)}
                 </MenuItem>
               );

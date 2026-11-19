@@ -38,17 +38,17 @@ export function TarjetaRequisito({ requisito, expediente, enlace }: { requisito:
           <FileText size={16} />
         </Box>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography component="h4" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" component="h4">
             {tipo.nombre}
           </Typography>
           {persona && (
-            <Typography sx={{ fontSize: 13, lineHeight: '18px' }}>
+            <Typography>
               {persona.sinPersona
                 ? t('personas.expediente.sinPersona', { rol: rolDePersona.toLowerCase() })
                 : t('personas.expediente.de', { nombre: persona.nombre ?? '', rol: rolDePersona })}
             </Typography>
           )}
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
             {requisito.ratificadoEn
               ? t('expediente.ratificar.ratificado', { fecha: formatearFecha(requisito.ratificadoEn) })
               : version
@@ -63,7 +63,7 @@ export function TarjetaRequisito({ requisito, expediente, enlace }: { requisito:
           <LineaVigencia vigencia={version?.vigencia} />
           {/* Por qué se le pide este documento: lo que declaró en su ficha y lo hizo aplicar (EF-6). */}
           {(requisito.porQue?.length ?? 0) > 0 && (
-            <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', mt: 0.25 }} data-por-que="">
+            <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.25 }} data-por-que="">
               {t('expediente.documentos.porQue', { empresa: expediente.empresa.nombre, motivos: textoDelPorQue(requisito.porQue ?? []) })}
             </Typography>
           )}
@@ -79,9 +79,9 @@ export function TarjetaRequisito({ requisito, expediente, enlace }: { requisito:
 
       {teToca && (Boolean(tipo.textoAyuda) || modo !== 'Formulario') && (
         <Box sx={{ mt: 0.75, pl: 3.25 }}>
-          {tipo.textoAyuda && <Typography sx={{ fontSize: 13, lineHeight: '18px' }}>{tipo.textoAyuda}</Typography>}
+          {tipo.textoAyuda && <Typography>{tipo.textoAyuda}</Typography>}
           {modo !== 'Formulario' && (
-            <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', mt: tipo.textoAyuda ? 0.25 : 0 }}>
+            <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: tipo.textoAyuda ? 0.25 : 0 }}>
               {textoReglas(reglasDe(tipo.archivo), t)}
             </Typography>
           )}

@@ -36,7 +36,7 @@ type Edicion = { tipo: 'crear'; clave: string } | { tipo: 'roles'; usuario: Usua
 function EstadoCuenta({ activa }: { activa: boolean }) {
   const { t } = useTranslation();
   return (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 13, '& svg': { color: activa ? 'estado.exito.texto' : 'text.secondary' } }}>
+    <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75, '& svg': { color: activa ? 'estado.exito.texto' : 'text.secondary' } }}>
       {activa ? <CircleCheck size={14} strokeWidth={1.75} aria-hidden /> : <Ban size={14} strokeWidth={1.75} aria-hidden />}
       {activa ? t('usuarios.activa') : t('usuarios.desactivada')}
     </Box>
@@ -183,10 +183,10 @@ export function PaginaUsuarios() {
                     <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', minWidth: 0 }}>
                       <AvatarActor tipo="persona" nombre={u.nombre} />
                       <Box sx={{ minWidth: 0 }}>
-                        <Typography noWrap sx={{ fontWeight: 500 }}>
+                        <Typography variant="subtitle2" component="p" noWrap>
                           {u.nombre}
                         </Typography>
-                        <Typography noWrap sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                        <Typography variant="caption" component="p" noWrap sx={{ color: 'text.secondary' }}>
                           {u.correo}
                         </Typography>
                       </Box>
@@ -200,17 +200,17 @@ export function PaginaUsuarios() {
                     ) : (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', columnGap: 1.5, rowGap: 0.5 }}>
                         {u.roles.map((r) => (
-                          <Box component="span" key={`${r.rol}|${r.empresaId ?? ''}`} sx={{ display: 'inline-flex', flexDirection: 'column', fontSize: 13, lineHeight: '16px' }}>
-                            <span style={{ fontWeight: 500 }}>{t(`usuarios.roles.${r.rol}`)}</span>
-                            <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                          <Box component="span" key={`${r.rol}|${r.empresaId ?? ''}`} sx={{ typography: 'body2', display: 'inline-flex', flexDirection: 'column' }}>
+                            <Typography component="span" variant="subtitle2">{t(`usuarios.roles.${r.rol}`)}</Typography>
+                            <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
                               {nombreEmpresa(r.empresaId)}
                             </Typography>
                           </Box>
                         ))}
                         {(u.grupos ?? []).map((g) => (
-                          <Box component="span" key={`grupo|${g.grupoId}|${g.empresaId ?? ''}`} sx={{ display: 'inline-flex', flexDirection: 'column', fontSize: 13, lineHeight: '16px' }}>
-                            <span style={{ fontWeight: 500 }}>{nombreGrupo.get(g.grupoId) ?? t('gruposDeAcceso.asignacion.columna')}</span>
-                            <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                          <Box component="span" key={`grupo|${g.grupoId}|${g.empresaId ?? ''}`} sx={{ typography: 'body2', display: 'inline-flex', flexDirection: 'column' }}>
+                            <Typography component="span" variant="subtitle2">{nombreGrupo.get(g.grupoId) ?? t('gruposDeAcceso.asignacion.columna')}</Typography>
+                            <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
                               {nombreEmpresa(g.empresaId)}
                             </Typography>
                           </Box>
@@ -221,7 +221,7 @@ export function PaginaUsuarios() {
                   <TableCell>{u.identidades.map((i) => codigoSistema.get(i.sistemaId) ?? '—').join(', ') || '—'}</TableCell>
                   {admiteDirecto && (
                     <TableCell>
-                      <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 13 }}>
+                      <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
                         <KeyRound size={14} strokeWidth={1.75} aria-hidden />
                         {(u.passkeys ?? 0) > 0 ? t('usuariosIngreso.passkeysCuenta', { count: u.passkeys ?? 0 }) : u.exigePasskey ? t('usuariosIngreso.exigida') : t('usuariosIngreso.sinPasskeys')}
                       </Box>

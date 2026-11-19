@@ -87,14 +87,14 @@ function FilaBandeja({ fila: f, empresaId }: { fila: FilaCumplimientoDto; empres
   return (
     <TableRow hover>
       <TableCell>
-        <Typography sx={{ fontWeight: 500, fontSize: 14 }}>{f.tercero.nombre}</Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="subtitle1" component="p">{f.tercero.nombre}</Typography>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
           {t(`cumplimiento.bandeja.origenes.${f.origen}`)}
           {f.tipoVinculo ? ` · ${f.tipoVinculo}` : ''}
         </Typography>
       </TableCell>
       <TableCell>
-        <Typography component="span" variant="mono">
+        <Typography component="span" variant="monoTabla">
           {f.folio}
         </Typography>
       </TableCell>
@@ -102,7 +102,7 @@ function FilaBandeja({ fila: f, empresaId }: { fila: FilaCumplimientoDto; empres
         <Stack direction="row" spacing={0.5} useFlexGap sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
           {f.pendientes.map((p) => (
             <Box key={p.tipo} sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
-              <Typography component="span" sx={{ fontSize: 13 }}>
+              <Typography component="span">
                 {t(`cumplimiento.tipos.${p.tipo}`)}
               </Typography>
               <ChipEstado estado={p.estado} etiqueta={t(`cumplimiento.estados.${p.estado}`)} />

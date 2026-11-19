@@ -91,7 +91,7 @@ export function PaginaAyudasDeDocumentos() {
                   return (
                     <TableRow key={a.tipoDocumentoId}>
                       <TableCell>
-                        <Typography component="span" sx={{ display: 'block', fontWeight: 500 }}>
+                        <Typography variant="subtitle2" component="span" sx={{ display: 'block' }}>
                           {a.nombre}
                         </Typography>
                         <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>

@@ -101,7 +101,7 @@ export function PaginaEmpresas() {
                   sx={{ cursor: 'pointer', opacity: e.activa ? 1 : 0.65, '&:focus-visible': { outlineOffset: -2 } }}
                 >
                   <TableCell>
-                    <Typography component="span" noWrap sx={{ display: 'block', fontWeight: 500, fontSize: 14 }}>
+                    <Typography variant="subtitle1" component="span" noWrap sx={{ display: 'block' }}>
                       {e.nombre}
                     </Typography>
                   </TableCell>

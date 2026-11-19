@@ -55,7 +55,7 @@ export function useColumnasFilasCampania(empresaId: string): ColumnaTabla<FilaCa
               {f.errores.map((e) => e.mensaje).join(' ')}
             </Typography>
           ) : f.accion && tieneExpediente(f) ? (
-            <Link component={RouterLink} to={`/e/${empresaId}/expedientes/${f.expedienteId ?? ''}`} onClick={(e) => e.stopPropagation()}>
+            <Link component={RouterLink} to={`/e/${empresaId}/expedientes/${f.expedienteId ?? ''}`} onClick={(e) => e.stopPropagation()} sx={{ whiteSpace: 'nowrap' }}>
               {`${accionDe(f) ?? ''} · ${f.folio ?? ''}`}
             </Link>
           ) : (

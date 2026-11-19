@@ -45,7 +45,7 @@ export function FilaTextoLegal({ empresaId, empresaNombre, ruta, vigente, puedeE
     <Box component="li" sx={{ py: 1, '& + &': { borderTop: 1, borderColor: 'divider' } }}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minHeight: 32 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography component="h4" sx={{ fontSize: 14, fontWeight: 500 }}>
+          <Typography variant="subtitle1" component="h4">
             {nombre}
           </Typography>
           {vigente ? (

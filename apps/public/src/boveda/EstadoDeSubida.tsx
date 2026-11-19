@@ -45,8 +45,8 @@ export function EstadoDeSubida({
         <FileText size={20} />
       </Box>
       <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ fontWeight: 500, wordBreak: 'break-word' }}>{estado.archivo.name}</Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+        <Typography variant="subtitle2" component="p" sx={{ wordBreak: 'break-word' }}>{estado.archivo.name}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>
           {formatearTamano(estado.archivo.size)}
         </Typography>
       </Box>
@@ -64,7 +64,7 @@ export function EstadoDeSubida({
           aria-label={t('subir.progreso')}
           sx={{ mt: 2, height: 6 }}
         />
-        <Typography aria-live="polite" sx={{ color: 'text.secondary', fontSize: 14, mt: 1 }}>
+        <Typography aria-live="polite" sx={{ color: 'text.secondary', mt: 1 }}>
           {t(`subir.fases.${estado.etapa}`, { pct: String(pct) })}
         </Typography>
         <Button variant="text" onClick={onCancelar} sx={{ mt: 1, color: 'text.primary' }}>

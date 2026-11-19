@@ -48,7 +48,7 @@ export function DialogoRevertirAprobacion({ empresaId, destino, onCerrar }: Dial
       <FormularioDeDialogo onSubmit={enviar}>
         <DialogTitle id="titulo-revertir-aprobacion">
           {t('revisionAutomatica.excepciones.revertirDialogo.titulo')}
-          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
             {destino.folio} · {destino.tercero}
           </Typography>
         </DialogTitle>

@@ -29,7 +29,7 @@ export function PanelEvaluaciones({ expediente, empresaId }: { expediente: Exped
             <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
               <Box sx={{ minWidth: 0 }}>
                 <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Typography component="span" variant="body2" sx={{ fontWeight: 600 }}>
+                  <Typography component="span" variant="subtitle2">
                     {e.nombre}
                   </Typography>
                   <Chip size="small" color={COLOR[e.estado]} variant={e.estado === 'Anulada' ? 'outlined' : 'filled'} label={t(`evaluaciones.panel.estados.${e.estado}`)} />

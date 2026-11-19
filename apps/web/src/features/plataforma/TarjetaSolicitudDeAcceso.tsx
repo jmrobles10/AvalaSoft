@@ -37,24 +37,24 @@ export function TarjetaSolicitudDeAcceso({
         acciones={<ChipEstado estado={estado} etiqueta={t(`plataforma.accesos.estados.${solicitud.estado === 'Aprobada' ? 'Aprobada' : solicitud.estado === 'Rechazada' ? 'Rechazada' : 'Pendiente'}`)} />}
       >
         <Stack spacing={1.25}>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+          <Typography sx={{ color: 'text.secondary' }}>
             {t('plataforma.accesos.tercero', { tercero: solicitud.tercero, identificacion: solicitud.identificacion, fecha: formatearFecha(solicitud.desde) })}
           </Typography>
-          {solicitud.contactoDesplazado && <Typography sx={{ fontSize: 13 }}>{t('plataforma.accesos.desplazado')}</Typography>}
+          {solicitud.contactoDesplazado && <Typography>{t('plataforma.accesos.desplazado')}</Typography>}
 
           <Box component="section" aria-label={t('plataforma.accesos.invitaron')}>
-            <Typography sx={{ color: 'text.secondary', fontSize: 13, mb: 0.25 }}>{t('plataforma.accesos.invitaron')}</Typography>
+            <Typography sx={{ color: 'text.secondary', mb: 0.25 }}>{t('plataforma.accesos.invitaron')}</Typography>
             {solicitud.empresas.map((e) => (
-              <Typography key={`${e.tenantId}-${e.fecha}-${e.empresa}`} sx={{ fontSize: 14 }}>
+              <Typography key={`${e.tenantId}-${e.fecha}-${e.empresa}`}>
                 {t('plataforma.accesos.empresa', { empresa: e.empresa, grupo: e.grupo, fecha: formatearFecha(e.fecha) })}
               </Typography>
             ))}
           </Box>
 
           <Box component="section" aria-label={t('plataforma.accesos.contactos')}>
-            <Typography sx={{ color: 'text.secondary', fontSize: 13, mb: 0.25 }}>{t('plataforma.accesos.contactos')}</Typography>
+            <Typography sx={{ color: 'text.secondary', mb: 0.25 }}>{t('plataforma.accesos.contactos')}</Typography>
             {solicitud.contactos.length === 0 ? (
-              <Typography sx={{ fontSize: 14 }}>{t('plataforma.accesos.sinContactos')}</Typography>
+              <Typography>{t('plataforma.accesos.sinContactos')}</Typography>
             ) : (
               <Stack component="ul" spacing={0.5} sx={{ p: 0, m: 0, listStyle: 'none' }}>
                 {solicitud.contactos.map((c) => (
@@ -64,7 +64,7 @@ export function TarjetaSolicitudDeAcceso({
             )}
           </Box>
 
-          <Typography sx={{ fontSize: 14 }}>
+          <Typography>
             {solicitud.correosOficiales.length === 0
               ? t('plataforma.accesos.sinCorreoOficial')
               : solicitud.correosOficiales
@@ -82,12 +82,12 @@ export function TarjetaSolicitudDeAcceso({
           </Typography>
 
           {!pendiente && solicitud.decididoPor && solicitud.decididoEn && (
-            <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+            <Typography sx={{ color: 'text.secondary' }}>
               {t('plataforma.accesos.decididoPor', { quien: solicitud.decididoPor, via: t(`plataforma.accesos.vias.${via}`), fecha: formatearFecha(solicitud.decididoEn) })}
               {solicitud.motivo ? ` · ${t('plataforma.accesos.motivo', { motivo: solicitud.motivo })}` : ''}
             </Typography>
           )}
-          {pendiente && !solicitud.enCola && <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('plataforma.accesos.decideUnContacto')}</Typography>}
+          {pendiente && !solicitud.enCola && <Typography sx={{ color: 'text.secondary' }}>{t('plataforma.accesos.decideUnContacto')}</Typography>}
           {pendiente && solicitud.enCola && (
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
               <Button variant="contained" onClick={() => onDecidir(true)} aria-label={t('plataforma.accesos.aprobarEste', { correo: solicitud.correo })}>
@@ -121,9 +121,9 @@ function ContactoDeLaSolicitud({
   const medio = contacto.medio ? t(`plataforma.accesos.medios.${contacto.medio}`, { defaultValue: contacto.medio }) : null;
   return (
     <Stack component="li" direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
-      <Typography sx={{ fontSize: 14, overflowWrap: 'anywhere' }}>{contacto.correo}</Typography>
+      <Typography sx={{ overflowWrap: 'anywhere' }}>{contacto.correo}</Typography>
       <Chip size="small" variant="outlined" icon={<Icono size={14} strokeWidth={1.75} aria-hidden />} label={t(`plataforma.accesos.estadosContacto.${estado}`)} />
-      {medio && <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{medio}</Typography>}
+      {medio && <Typography sx={{ color: 'text.secondary' }}>{medio}</Typography>}
       {puedeVerificar && contacto.verificacion !== 'Verificado' && (
         <Button size="small" variant="text" disabled={verificando} onClick={onVerificar} aria-label={t('plataforma.accesos.verificarEste', { correo: contacto.correo })}>
           {t('plataforma.accesos.verificar')}

@@ -83,10 +83,10 @@ export function PaginaTiposDocumento() {
                   sx={{ cursor: puedeEscribir ? 'pointer' : 'default', opacity: tipo.activo ? 1 : 0.65 }}
                 >
                   <TableCell>
-                    <Typography component="span" sx={{ display: 'block', fontWeight: 500, fontSize: 14 }}>
+                    <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                       {tipo.nombre}
                     </Typography>
-                    <Stack direction="row" useFlexGap sx={{ columnGap: 0.75, flexWrap: 'wrap', color: 'text.secondary', fontSize: 12, '& > *': { whiteSpace: 'nowrap' } }}>
+                    <Stack direction="row" useFlexGap sx={{ typography: 'caption', columnGap: 0.75, flexWrap: 'wrap', color: 'text.secondary', '& > *': { whiteSpace: 'nowrap' } }}>
                       <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>
                         {tipo.codigo}
                       </Typography>
@@ -101,7 +101,7 @@ export function PaginaTiposDocumento() {
                     <Typography variant="body2">{resumenVigencia(tipo, t)}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 13, '& svg': { color: tipo.activo ? 'estado.exito.texto' : 'text.secondary' } }}>
+                    <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75, '& svg': { color: tipo.activo ? 'estado.exito.texto' : 'text.secondary' } }}>
                       {tipo.activo ? <CircleCheck size={14} strokeWidth={1.75} aria-hidden /> : <Ban size={14} strokeWidth={1.75} aria-hidden />}
                       {tipo.activo ? t('comun.activo') : t('tiposDocumento.inactivo')}
                     </Box>

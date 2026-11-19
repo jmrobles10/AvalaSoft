@@ -21,7 +21,7 @@ export function IndicadorSla({ sla, vence }: { sla?: EstadoDeSla | null; vence?:
     <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, whiteSpace: 'nowrap' }}>
       <ChipEstado estado={ESTADO_CANONICO_SLA[sla]} etiqueta={t(`sla.indicador.estados.${sla}`)} />
       {vence && (
-        <Typography component="span" title={formatearFechaHora(vence)} sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+        <Typography variant="caption" component="span" title={formatearFechaHora(vence)} sx={{ color: 'text.secondary' }}>
           {t(sla === 'Vencido' ? 'sla.indicador.vencio' : 'sla.indicador.vence', { fecha: formatearFecha(vence) })}
         </Typography>
       )}

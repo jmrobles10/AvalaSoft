@@ -21,9 +21,9 @@ function ValorCopiable({ etiqueta, valor }: { etiqueta: string; valor: string })
   };
   return (
     <Box sx={{ minWidth: 0 }}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>{etiqueta}</Typography>
+      <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{etiqueta}</Typography>
       <Stack direction="row" spacing={0.5} sx={{ alignItems: 'flex-start' }}>
-        <Typography variant="mono" component="p" sx={{ m: 0, flex: 1, minWidth: 0, fontSize: 13, lineHeight: '20px', overflowWrap: 'anywhere' }}>
+        <Typography variant="mono" component="p" sx={{ m: 0, flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}>
           {valor}
         </Typography>
         <Tooltip title={copiado ? t('dominioCorreo.copiado') : t('dominioCorreo.copiar')}>
@@ -44,10 +44,10 @@ function Registro({ registro, dominio }: { registro: RegistroDnsDto; dominio: Do
   return (
     <Box component="li" sx={(th) => ({ listStyle: 'none', p: 1.5, border: 1, borderColor: 'divider', borderRadius: `${String(th.radio.sm)}px` })}>
       <Stack direction="row" useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', columnGap: 1, rowGap: 0.5, mb: 1 }}>
-        <Typography component="h4" sx={{ fontWeight: 600, fontSize: 14, lineHeight: '20px' }}>
+        <Typography variant="subtitle1" component="h4">
           {finalidad ? t(`dominioCorreo.finalidades.${finalidad}.nombre`) : registro.finalidad}
         </Typography>
-        <Typography variant="mono" sx={{ fontSize: 12, color: 'text.secondary' }}>
+        <Typography variant="mono" sx={{ color: 'text.secondary' }}>
           {t('dominioCorreo.registroTipo', { tipo: registro.tipo })}
         </Typography>
         <Box sx={{ ml: 'auto' }}>
@@ -57,13 +57,13 @@ function Registro({ registro, dominio }: { registro: RegistroDnsDto; dominio: Do
           />
         </Box>
       </Stack>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', mb: 1 }}>{finalidad ? t(`dominioCorreo.finalidades.${finalidad}.para`) : ''}</Typography>
+      <Typography sx={{ color: 'text.secondary', mb: 1 }}>{finalidad ? t(`dominioCorreo.finalidades.${finalidad}.para`) : ''}</Typography>
       <Box sx={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 1.25 }}>
         <ValorCopiable etiqueta={t('dominioCorreo.registroNombre')} valor={registro.nombre} />
         <ValorCopiable etiqueta={t('dominioCorreo.registroValor')} valor={registro.valor} />
       </Box>
       {comprobacion && !comprobacion.correcto && (
-        <Typography sx={{ mt: 1, fontSize: 12, lineHeight: '16px', color: 'error.main', overflowWrap: 'anywhere' }}>
+        <Typography variant="caption" component="p" sx={{ mt: 1, color: 'error.main', overflowWrap: 'anywhere' }}>
           {comprobacion.encontrado ? t('dominioCorreo.encontrado', { valor: comprobacion.encontrado }) : t('dominioCorreo.noEncontrado')}
         </Typography>
       )}

@@ -29,7 +29,7 @@ export function EditorVerificaciones({ verificaciones, onCambiar, errores, soloL
 
   return (
     <Stack spacing={1.5}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('flujos.editor.verificaciones.ayuda')}</Typography>
+      <Typography sx={{ color: 'text.secondary' }}>{t('flujos.editor.verificaciones.ayuda')}</Typography>
       {TIPOS_VERIFICACION.map((tipo) => {
         const v = verificaciones.find((x) => x.tipo === tipo);
         const nombre = t(`flujos.editor.verificaciones.tipos.${tipo}`);
@@ -49,10 +49,10 @@ export function EditorVerificaciones({ verificaciones, onCambiar, errores, soloL
               sx={{ alignItems: 'flex-start', mx: 0 }}
               label={
                 <Box sx={{ pt: '6px' }}>
-                  <Typography component="span" sx={{ display: 'block', fontSize: 14, fontWeight: 500 }}>
+                  <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                     {t('flujos.editor.verificaciones.pedir', { tipo: nombre })}
                   </Typography>
-                  <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 12 }}>
+                  <Typography variant="caption" component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                     {t(`flujos.editor.verificaciones.ayudas.${tipo}`)}
                   </Typography>
                 </Box>

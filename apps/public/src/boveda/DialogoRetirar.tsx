@@ -72,7 +72,7 @@ export function DialogoRetirar({ documentoId, tipo, version, enlaceSubir, onCerr
             {afectadas && (
               <Alert severity="warning" icon={false} sx={{ alignItems: 'center' }}>
                 <Stack spacing={1}>
-                  <Typography sx={{ fontSize: 14 }}>
+                  <Typography>
                     {t('boveda.retiro.avisaremos')} {t('boveda.retiro.alternativa')}
                   </Typography>
                   {enlaceSubir && (
@@ -123,7 +123,7 @@ function ImpactoDelRetiro({ impacto, tipo }: { impacto: ImpactoDeRetiroDto; tipo
 
   return (
     <Stack spacing={1.5}>
-      <Typography sx={{ fontWeight: 600 }}>{textoDeVersionVigente(impacto, tipo, t)}</Typography>
+      <Typography variant="subtitle2" component="p">{textoDeVersionVigente(impacto, tipo, t)}</Typography>
       {sinNadie && <Typography sx={{ color: 'text.secondary' }}>{t('boveda.retiro.nadie')}</Typography>}
       {soloSinCambios && <Typography sx={{ color: 'text.secondary' }}>{t('boveda.retiro.sinAfectadas')}</Typography>}
       {empresas.length > 0 && (
@@ -152,7 +152,7 @@ function ImpactoDelRetiro({ impacto, tipo }: { impacto: ImpactoDeRetiroDto; tipo
 function Bloque({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
     <Box sx={(th) => ({ border: 1, borderColor: 'divider', borderRadius: `${String(th.radio.md)}px`, overflow: 'hidden' })}>
-      <Typography component="h3" sx={{ px: 1.5, py: 0.75, bgcolor: 'superficie.nivel2', fontWeight: 600, fontSize: 13 }}>
+      <Typography variant="subtitle2" component="h3" sx={{ px: 1.5, py: 0.75, bgcolor: 'superficie.nivel2' }}>
         {titulo}
       </Typography>
       <Box component="ul" sx={{ p: 0, m: 0, listStyle: 'none' }}>
@@ -164,7 +164,7 @@ function Bloque({ titulo, children }: { titulo: string; children: ReactNode }) {
 
 function Fila({ enfasis, children }: { enfasis: boolean; children: ReactNode }) {
   return (
-    <Typography component="li" sx={{ px: 1.5, py: 1, borderTop: 1, borderColor: 'divider', fontSize: 14, color: enfasis ? 'text.primary' : 'text.secondary' }}>
+    <Typography component="li" sx={{ px: 1.5, py: 1, borderTop: 1, borderColor: 'divider', color: enfasis ? 'text.primary' : 'text.secondary' }}>
       {children}
     </Typography>
   );

@@ -85,10 +85,10 @@ function FilaDeRevision({ expediente, requisito, revision, vista, nombreArea, co
 
   return (
     <Box component="li" sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', columnGap: 1, rowGap: 0.5 }}>
-      <Typography component="span" sx={{ fontWeight: 500, fontSize: 13, lineHeight: '20px' }}>
+      <Typography variant="subtitle2" component="span">
         {nombreArea}
       </Typography>
-      <Typography component="span" sx={{ fontSize: 13, lineHeight: '20px', color: vista.tipo === 'excepcion' && !vista.abierta ? 'text.secondary' : 'text.primary' }}>
+      <Typography component="span" sx={{ color: vista.tipo === 'excepcion' && !vista.abierta ? 'text.secondary' : 'text.primary' }}>
         {textoDeLaVista(vista, t)}
       </Typography>
       {(vista.tipo === 'sugerida' && vista.sugerencia === 'Revisar') || vista.tipo === 'excepcion' ? (
@@ -98,7 +98,7 @@ function FilaDeRevision({ expediente, requisito, revision, vista, nombreArea, co
         <>
           {vista.pendiente && <Chip size="small" variant="outlined" label={t('revisionAutomatica.panel.pendienteConfirmar')} sx={{ borderRadius: (th) => `${String(th.radio.xs)}px` }} />}
           {vista.resolucion && (
-            <Typography component="span" sx={{ flexBasis: '100%', fontSize: 13, lineHeight: '20px', color: 'text.secondary' }}>
+            <Typography component="span" sx={{ flexBasis: '100%', color: 'text.secondary' }}>
               {textoDeLaResolucion(vista.resolucion, persona, t)}
               {vista.resolucion === 'Revertida' && revision.justificacionResolucion ? ` · ${t('revisionAutomatica.panel.justificacion', { texto: revision.justificacionResolucion })}` : ''}
             </Typography>

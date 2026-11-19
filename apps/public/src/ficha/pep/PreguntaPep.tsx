@@ -91,7 +91,7 @@ export function PreguntaPep({ etiqueta, pep, declaracion, origen, onCambiar, men
           }
         >
           {errorDeclaracion ?? t('ficha.pep.estado.falta')}
-          {!errorDeclaracion && <Typography component="span" sx={{ display: 'block', fontSize: 14 }}>{t('ficha.pep.estado.faltaAyuda')}</Typography>}
+          {!errorDeclaracion && <Typography component="span" sx={{ display: 'block' }}>{t('ficha.pep.estado.faltaAyuda')}</Typography>}
         </Alert>
       )}
       {pep === true && conErrores && <Alert severity="error">{t('ficha.pep.estado.conErrores')}</Alert>}

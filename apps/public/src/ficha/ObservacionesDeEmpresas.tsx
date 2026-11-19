@@ -23,9 +23,9 @@ export function ObservacionesDeEmpresas({ observaciones }: { observaciones: read
                 <li key={m.codigo}>{m.texto}</li>
               ))}
             </Box>
-            {observacion.observacion && <Typography sx={{ mt: 0.5, fontSize: 14, whiteSpace: 'pre-wrap' }}>“{observacion.observacion}”</Typography>}
+            {observacion.observacion && <Typography sx={{ mt: 0.5, whiteSpace: 'pre-wrap' }}>“{observacion.observacion}”</Typography>}
             {campos.length > 0 && (
-              <Typography sx={{ mt: 0.5, fontSize: 14 }}>{t('ficha.observada.campos', { campos: campos.map((c) => etiquetaDeCampo(c, t)).join(', ') })}</Typography>
+              <Typography sx={{ mt: 0.5 }}>{t('ficha.observada.campos', { campos: campos.map((c) => etiquetaDeCampo(c, t)).join(', ') })}</Typography>
             )}
           </Alert>
         );

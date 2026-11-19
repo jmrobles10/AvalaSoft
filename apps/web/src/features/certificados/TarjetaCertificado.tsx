@@ -39,7 +39,7 @@ export function TarjetaCertificado({ vinculo }: { vinculo: Pick<VinculoDto, 'id'
         <Stack spacing={1.5}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
             {esEstadoCertificado(visible) ? <ChipEstado estado={visible} bloqueante={actual.bloqueante} /> : <Typography variant="body2">{actual.estado}</Typography>}
-            <Typography variant="mono" sx={{ fontSize: 13 }}>
+            <Typography variant="monoTabla">
               {actual.folio}
             </Typography>
           </Stack>
@@ -63,7 +63,7 @@ export function TarjetaCertificado({ vinculo }: { vinculo: Pick<VinculoDto, 'id'
             <Dato etiqueta={t('certificados.emitido')}>{formatearFecha(actual.emitidoEn)}</Dato>
             <Dato etiqueta={t('certificados.vigenteHasta')}>{actual.vigenteHasta ? formatearDiaCivil(actual.vigenteHasta) : t('certificados.sinVencimiento')}</Dato>
             <Dato etiqueta={t('certificados.expediente')}>
-              <Typography component="span" variant="mono">
+              <Typography component="span" variant="monoTabla">
                 {actual.expedienteFolio}
               </Typography>
             </Dato>
@@ -95,7 +95,7 @@ export function TarjetaCertificado({ vinculo }: { vinculo: Pick<VinculoDto, 'id'
               <Stack component="ul" spacing={0.5} sx={{ m: 0, mt: 1, pl: 2.5 }}>
                 {anteriores.map((e) => (
                   <Typography component="li" variant="body2" key={e.folio}>
-                    {t('certificados.emisionN', { n: String(e.emision) })} · <span style={{ fontFamily: 'monospace' }}>{e.folio}</span> · {e.estado} · {formatearFecha(e.emitidoEn)}
+                    {t('certificados.emisionN', { n: String(e.emision) })} · <Typography component="span" variant="monoTabla">{e.folio}</Typography> · {e.estado} · {formatearFecha(e.emitidoEn)}
                   </Typography>
                 ))}
               </Stack>

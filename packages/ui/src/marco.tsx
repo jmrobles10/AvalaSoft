@@ -81,9 +81,7 @@ export function PildoraContexto({
           borderRadius: '10px',
           bgcolor: 'background.paper',
           boxShadow: t.sombra.suave,
-          fontSize: 14,
-          lineHeight: '20px',
-          fontWeight: 500,
+          typography: 'subtitle2',
           cursor: interactiva ? 'pointer' : 'default',
           ...(interactiva && { '&:hover': { bgcolor: t.palette.superficie.nivel2 } }),
         }),
@@ -121,11 +119,11 @@ export function ChipUsuario({
   const contenido = (
     <>
       <Box sx={{ minWidth: 0, textAlign: 'right', display: { xs: 'none', sm: 'block' } }}>
-        <Typography component="span" noWrap sx={{ display: 'block', fontSize: 14, lineHeight: '18px', fontWeight: 500, maxWidth: 220 }}>
+        <Typography variant="subtitle1" component="span" noWrap sx={{ display: 'block', maxWidth: 220 }}>
           {nombre}
         </Typography>
         {rol && (
-          <Typography component="span" noWrap sx={{ display: 'block', fontSize: 12, lineHeight: '16px', color: 'text.secondary', maxWidth: 220 }}>
+          <Typography variant="caption" component="span" noWrap sx={{ display: 'block', color: 'text.secondary', maxWidth: 220 }}>
             {rol}
           </Typography>
         )}
@@ -270,9 +268,9 @@ export function NavegacionLateral({
             {i > 0 && <Divider sx={{ my: 1 }} />}
             {/* El título del grupo no se desmonta: se desvanece y ocupa el mismo alto, así no salta nada. */}
             {grupo.titulo && (
-              <Typography
+              <Typography variant="caption"
                 component="p"
-                sx={{ m: 0, px: 1.25, pb: 0.5, fontSize: 12, lineHeight: '16px', fontWeight: 500, color: 'text.secondary', whiteSpace: 'nowrap', overflow: 'hidden', opacity: colapsada ? 0 : 1, transition: TRANSICION_OPACIDAD }}
+                sx={{ m: 0, px: 1.25, pb: 0.5, color: 'text.secondary', whiteSpace: 'nowrap', overflow: 'hidden', opacity: colapsada ? 0 : 1, transition: TRANSICION_OPACIDAD }}
               >
                 {grupo.titulo}
               </Typography>
@@ -340,9 +338,7 @@ function ElementoNavegacion({
           borderRadius: '10px',
           overflow: 'hidden',
           textAlign: 'left',
-          fontSize: 14,
-          lineHeight: '20px',
-          fontWeight: item.activo ? 500 : 400,
+          typography: item.activo ? 'subtitle2' : 'body2',
           color: item.activo ? 'text.primary' : 'text.secondary',
           bgcolor: item.activo ? t.palette.background.paper : 'transparent',
           boxShadow: item.activo ? t.sombra.pildora : 'none',
@@ -379,16 +375,14 @@ function ElementoNavegacion({
             aria-hidden
             data-testid="contador"
             sx={{
+              typography: 'caption',
               flex: 'none',
               minWidth: 20,
               height: 20,
               mr: 1,
               px: 0.75,
               borderRadius: '10px',
-              fontSize: 11,
-              lineHeight: '20px',
               textAlign: 'center',
-              fontWeight: 600,
               bgcolor: advertencia ? 'estado.advertencia.fondo' : 'action.hover',
               color: advertencia ? 'estado.advertencia.texto' : 'text.secondary',
               opacity: colapsada ? 0 : 1,

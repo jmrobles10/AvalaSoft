@@ -40,11 +40,11 @@ export function AvisoRechazo({ vinculo }: { vinculo: VinculoPublicoDto }) {
         bgcolor: 'background.default',
       }}
     >
-      <Typography sx={{ fontSize: 14, fontWeight: 600, lineHeight: '20px' }}>
+      <Typography variant="subtitle1" component="p">
         {t('rechazo.titulo', { empresa: vinculo.empresa.nombre, fecha: formatearFecha(reintento.rechazadoEn) })}
       </Typography>
       {reintento.motivos.length > 0 && (
-        <Box component="ul" sx={{ m: 0, mt: 0.5, pl: 2.5, color: 'text.secondary', fontSize: 14, lineHeight: '20px' }}>
+        <Box component="ul" sx={{ typography: 'body2', m: 0, mt: 0.5, pl: 2.5, color: 'text.secondary' }}>
           {reintento.motivos.map((motivo) => (
             <li key={motivo.codigo}>{motivo.texto}</li>
           ))}
@@ -70,10 +70,10 @@ export function AvisoRechazo({ vinculo }: { vinculo: VinculoPublicoDto }) {
             >
               {t('rechazo.volver')}
             </Button>
-            <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('rechazo.volverAyuda')}</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>{t('rechazo.volverAyuda')}</Typography>
           </>
         ) : (
-          <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+          <Typography sx={{ color: 'text.secondary' }}>
             {reintento.permitido && reintento.desde
               ? t('rechazo.enEspera', { fecha: formatearFecha(reintento.desde) })
               : t('rechazo.noPermitido', { empresa: vinculo.empresa.nombre })}

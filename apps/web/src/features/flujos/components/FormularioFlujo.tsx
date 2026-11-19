@@ -85,7 +85,7 @@ export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocume
           </Box>
 
           <Box component="fieldset" disabled={soloLectura} sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-            <Typography component="legend" sx={{ fontSize: 13, fontWeight: 600, mb: 0.5 }}>
+            <Typography variant="subtitle2" component="legend" sx={{ mb: 0.5 }}>
               {t('flujos.editor.politica')}
             </Typography>
             <RadioGroup value={borrador.politicaDevolucion} onChange={(e) => onCambiar({ ...borrador, politicaDevolucion: e.target.value as PoliticaDevolucion })}>
@@ -98,10 +98,10 @@ export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocume
                   sx={{ alignItems: 'flex-start', mx: 0 }}
                   label={
                     <Box sx={{ pt: '5px' }}>
-                      <Typography component="span" sx={{ display: 'block', fontSize: 14, fontWeight: 500 }}>
+                      <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                         {t(`flujos.editor.politicas.${p}.titulo`)}
                       </Typography>
-                      <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 12 }}>
+                      <Typography variant="caption" component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                         {t(`flujos.editor.politicas.${p}.ayuda`)}
                       </Typography>
                     </Box>
@@ -117,10 +117,10 @@ export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocume
             sx={{ alignItems: 'flex-start', mx: 0 }}
             label={
               <Box sx={{ pt: '6px' }}>
-                <Typography component="span" sx={{ display: 'block', fontSize: 14, fontWeight: 500 }}>
+                <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                   {t('flujos.editor.separacion')}
                 </Typography>
-                <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 12 }}>
+                <Typography variant="caption" component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                   {t('flujos.editor.separacionAyuda')}
                 </Typography>
               </Box>
@@ -128,10 +128,10 @@ export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocume
           />
 
           <Box component="fieldset" disabled={soloLectura} sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-            <Typography component="legend" sx={{ fontSize: 13, fontWeight: 600, mb: 0.5 }}>
+            <Typography variant="subtitle2" component="legend" sx={{ mb: 0.5 }}>
               {t('flujoPlazo.titulo')}
             </Typography>
-            <Typography sx={{ color: 'text.secondary', fontSize: 12, mb: 1.5 }}>{t('flujoPlazo.ayuda')}</Typography>
+            <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mb: 1.5 }}>{t('flujoPlazo.ayuda')}</Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '160px minmax(0,320px)' }, gap: 2 }}>
               <CampoNumero etiqueta={t('flujoPlazo.dias')} valor={borrador.plazoDias} onCambiar={(texto) => onCambiar({ ...borrador, plazoDias: texto })} />
               <TextField
@@ -147,7 +147,7 @@ export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocume
           <EditorRecordatorioFlujo borrador={borrador} onCambiar={onCambiar} errores={errores} soloLectura={soloLectura} />
 
           <Box component="fieldset" disabled={soloLectura} sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-            <Typography component="legend" sx={{ fontSize: 13, fontWeight: 600, mb: 0.5 }}>
+            <Typography variant="subtitle2" component="legend" sx={{ mb: 0.5 }}>
               {t('flujoReintento.titulo')}
             </Typography>
             <FormControlLabel
@@ -156,10 +156,10 @@ export function FormularioFlujo({ borrador, onCambiar, areas, tipos, tiposDocume
               sx={{ alignItems: 'flex-start', mx: 0 }}
               label={
                 <Box sx={{ pt: '6px' }}>
-                  <Typography component="span" sx={{ display: 'block', fontSize: 14, fontWeight: 500 }}>
+                  <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                     {t('flujoReintento.permitir')}
                   </Typography>
-                  <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 12 }}>
+                  <Typography variant="caption" component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                     {t('flujoReintento.ayuda')}
                   </Typography>
                 </Box>

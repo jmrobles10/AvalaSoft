@@ -29,7 +29,7 @@ export function InformacionTercero({ empresaId, terceroId, secciones, vinculos }
   return (
     <Stack component="section" aria-label={titulo} spacing={1.5} sx={{ minWidth: 0 }}>
       <Box>
-        <Typography variant="h4" component="h2">
+        <Typography variant="h6" component="h2">
           {titulo}
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>

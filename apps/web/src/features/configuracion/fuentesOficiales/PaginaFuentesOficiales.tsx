@@ -61,13 +61,13 @@ function Fuente({ empresaId, fuente, puedeEscribir }: { empresaId: string; fuent
       titulo={fuente.nombre}
       etiqueta={fuente.nombre}
       acciones={
-        <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
           {fuente.proveedorEfectivo ? t('fuentesOficiales.configuracion.efectivo', { proveedor: t(`fuentesOficiales.proveedores.${fuente.proveedorEfectivo as 'Simulado'}`, { defaultValue: fuente.proveedorEfectivo }) }) : t('fuentesOficiales.configuracion.sinEfectivo')}
         </Typography>
       }
     >
       <Stack spacing={2}>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{fuente.descripcion}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{fuente.descripcion}</Typography>
         <TextField
           select
           size="small"
@@ -117,17 +117,17 @@ function Proveedor({ empresaId, fuente, proveedor: p, puedeEscribir }: { empresa
   return (
     <Box component="section" aria-label={t(`fuentesOficiales.proveedores.${p.nombre as 'Simulado'}`, { defaultValue: p.nombre })} sx={{ border: 1, borderColor: 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5 }}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mb: 0.5 }}>
-        <Typography component="h3" sx={{ fontSize: 14, fontWeight: 500 }}>
+        <Typography variant="subtitle1" component="h3">
           {t(`fuentesOficiales.proveedores.${p.nombre as 'Simulado'}`, { defaultValue: p.nombre })}
         </Typography>
         <Chip size="small" variant="outlined" color={p.disponible ? 'success' : 'default'} label={p.disponible ? t('fuentesOficiales.configuracion.disponible') : t('fuentesOficiales.configuracion.noDisponible')} />
         {!p.habilitadoEnInstalacion && <Chip size="small" variant="outlined" label={t('fuentesOficiales.configuracion.noHabilitado')} />}
       </Stack>
-      <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t(`fuentesOficiales.descripciones.${p.nombre as 'Simulado'}`, { defaultValue: '' })}</Typography>
+      <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t(`fuentesOficiales.descripciones.${p.nombre as 'Simulado'}`, { defaultValue: '' })}</Typography>
       {p.real && (
         <>
-          {p.credencialesDeLaPlataforma && <Typography sx={{ fontSize: 12, mt: 0.5 }}>{t('fuentesOficiales.configuracion.credencialesDeLaPlataforma')}</Typography>}
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>
+          {p.credencialesDeLaPlataforma && <Typography variant="caption" component="p" sx={{ mt: 0.5 }}>{t('fuentesOficiales.configuracion.credencialesDeLaPlataforma')}</Typography>}
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5 }}>
             {p.credencialesPropias ? t('fuentesOficiales.configuracion.configurada', { ultimos: p.ultimosCuatroClave ?? '' }) : t('fuentesOficiales.configuracion.sinCredenciales')}
           </Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5, mt: 1.5 }}>

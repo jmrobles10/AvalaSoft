@@ -65,7 +65,7 @@ export function FiltroCampania({
         </TextField>
       )}
       <Box role="group" aria-labelledby="estados-de-campania" sx={{ gridColumn: tipos ? { sm: '1 / -1', lg: 'auto' } : 'auto', minWidth: 0 }}>
-        <Typography id="estados-de-campania" variant="body2" sx={{ fontSize: 13, lineHeight: '18px', fontWeight: 500, mb: 0.5 }}>
+        <Typography component="p" id="estados-de-campania" variant="subtitle2" sx={{ mb: 0.5 }}>
           {t('campanias.nuevaCampania.estados')}
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -82,8 +82,8 @@ export function FiltroCampania({
                 label={t(`campanias.estadosVinculo.${estado}`)}
                 onClick={() => onCambiar({ ...borrador, estados: alternarEstado(borrador.estados, estado) })}
                 sx={{
+                  typography: 'body2',
                   height: 32,
-                  fontSize: 13,
                   borderRadius: (tema) => `${String(tema.radio.sm)}px`,
                   borderColor: marcado ? 'acento.main' : 'borde.control',
                   bgcolor: marcado ? 'acento.tinte' : 'superficie.nivel1',

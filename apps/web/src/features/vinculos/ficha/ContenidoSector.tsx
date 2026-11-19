@@ -168,10 +168,10 @@ function SectorAprobaciones({ vinculo, control, cargando }: { vinculo: VinculoDt
   return (
     <Stack spacing={2}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-        <Typography variant="h3" component="h2" sx={{ mr: 0.5 }}>
+        <Typography variant="h6" component="h2" sx={{ mr: 0.5 }}>
           {t(`expedientes.tipo.${expediente.tipo}`)}
         </Typography>
-        <Typography component="span" variant="mono" sx={{ color: 'text.secondary' }}>
+        <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>
           {expediente.folio}
         </Typography>
         {/* Si el expediente está como el vínculo (p. ej. los dos «En revisión»), el chip del encabezado ya lo dice: no se repite. */}
@@ -204,7 +204,7 @@ function SeccionesDeclaradas({ sector, empresaId, ficha, sinVacio = false }: { s
   }
   return (
     <Stack spacing={1.5}>
-      <Typography variant="h4" component="h2">
+      <Typography variant="h6" component="h2">
         {t('vinculos.ficha.declarado')}
       </Typography>
       {secciones.map((s) => (

@@ -113,7 +113,7 @@ export function CampoSiNo({ etiqueta, valor, onCambiar, mensaje, deshabilitado =
       disabled={deshabilitado}
       sx={enLinea ? { display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'minmax(0, 1fr) auto' }, columnGap: 3, alignItems: 'center' } : undefined}
     >
-      <FormLabel id={`${id}-etiqueta`} sx={enLinea ? { fontSize: 14, lineHeight: '20px', color: 'text.primary', fontWeight: 400 } : undefined}>
+      <FormLabel id={`${id}-etiqueta`} sx={enLinea ? { typography: 'body2', color: 'text.primary' } : undefined}>
         {etiqueta}
       </FormLabel>
       <RadioGroup
@@ -139,10 +139,10 @@ export function Rejilla({ children }: { children: ReactNode }) {
 export function Subtitulo({ children, ayuda }: { children: ReactNode; ayuda?: ReactNode }) {
   return (
     <Box>
-      <Typography variant="h3" component="h2" sx={{ fontSize: 16, lineHeight: '24px', fontWeight: 600 }}>
+      <Typography variant="h6" component="h2">
         {children}
       </Typography>
-      {ayuda && <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px', mt: 0.25 }}>{ayuda}</Typography>}
+      {ayuda && <Typography sx={{ color: 'text.secondary', mt: 0.25 }}>{ayuda}</Typography>}
     </Box>
   );
 }

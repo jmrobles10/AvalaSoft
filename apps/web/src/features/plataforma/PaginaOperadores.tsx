@@ -28,7 +28,7 @@ const RUTA = '/api/v1/plataforma/operadores';
 function EstadoOperador({ activo }: { activo: boolean }) {
   const { t } = useTranslation();
   return (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 13, '& svg': { color: activo ? 'estado.exito.texto' : 'text.secondary' } }}>
+    <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75, '& svg': { color: activo ? 'estado.exito.texto' : 'text.secondary' } }}>
       {activo ? <CircleCheck size={14} strokeWidth={1.75} aria-hidden /> : <Ban size={14} strokeWidth={1.75} aria-hidden />}
       {activo ? t('operadores.activo') : t('operadores.inactivo')}
     </Box>
@@ -97,7 +97,7 @@ function DrawerOperador({ operador, onCerrar }: { operador: OperadorDePlataforma
     <Drawer anchor="right" open onClose={onCerrar} slotProps={{ paper: { sx: { width: { xs: '100%', sm: 520 } }, 'aria-labelledby': 'titulo-acceso-operador' } }}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', px: 3, pt: 2.5, pb: 1 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography variant="h3" component="h2" id="titulo-acceso-operador">
+          <Typography variant="h6" component="h2" id="titulo-acceso-operador">
             {t('accesoUsuario.titulo', { nombre: operador.nombre })}
           </Typography>
           <Typography variant="body2" noWrap sx={{ color: 'text.secondary' }}>
@@ -215,10 +215,10 @@ export function PaginaOperadores() {
                     <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', minWidth: 0 }}>
                       <AvatarActor tipo="persona" nombre={o.nombre} />
                       <Box sx={{ minWidth: 0 }}>
-                        <Typography noWrap sx={{ fontWeight: 500 }}>
+                        <Typography variant="subtitle2" component="p" noWrap>
                           {o.nombre}
                         </Typography>
-                        <Typography noWrap sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                        <Typography variant="caption" component="p" noWrap sx={{ color: 'text.secondary' }}>
                           {o.correo}
                         </Typography>
                       </Box>
@@ -227,7 +227,7 @@ export function PaginaOperadores() {
                   <TableCell>{o.directo ? t('operadores.directo') : t('operadores.delegado', { sistema: o.sistema })}</TableCell>
                   <TableCell>
                     {o.directo ? (
-                      <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 13 }}>
+                      <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
                         <KeyRound size={14} strokeWidth={1.75} aria-hidden />
                         {t('usuariosIngreso.passkeysCuenta', { count: o.passkeys })}
                       </Box>

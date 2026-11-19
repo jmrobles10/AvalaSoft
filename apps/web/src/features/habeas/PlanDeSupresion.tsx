@@ -12,9 +12,9 @@ const MAXIMO_VISIBLES = 8;
 function Cuenta({ cantidad, etiqueta, ayuda }: { cantidad: number; etiqueta: string; ayuda: string }) {
   return (
     <Box sx={(th) => ({ minWidth: 0, p: 1.25, border: 1, borderColor: 'divider', borderRadius: `${String(th.radio.sm)}px` })}>
-      <Typography sx={{ fontSize: 20, lineHeight: '24px', fontWeight: 600 }}>{cantidad.toLocaleString('es-CO')}</Typography>
-      <Typography sx={{ fontSize: 13, lineHeight: '18px', fontWeight: 600 }}>{etiqueta}</Typography>
-      <Typography sx={{ fontSize: 12, lineHeight: '16px', color: 'text.secondary' }}>{ayuda}</Typography>
+      <Typography variant="h4" component="p">{cantidad.toLocaleString('es-CO')}</Typography>
+      <Typography variant="subtitle2" component="p">{etiqueta}</Typography>
+      <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{ayuda}</Typography>
     </Box>
   );
 }
@@ -35,14 +35,14 @@ function Detalle({ plan }: { plan: PlanDeSupresionDto }) {
           {visibles.map((e) => {
             const accion = comoAccion(e.accion);
             return (
-              <Box component="li" key={`${e.tipo}-${e.referencia}`} sx={{ fontSize: 13, lineHeight: '18px', overflowWrap: 'anywhere' }}>
-                <Typography component="span" sx={{ fontWeight: 600, fontSize: 13 }}>
+              <Box component="li" key={`${e.tipo}-${e.referencia}`} sx={{ typography: 'body2', overflowWrap: 'anywhere' }}>
+                <Typography variant="subtitle2" component="span">
                   {accion ? t(`habeas.plan.acciones.${accion}`) : e.accion}
                 </Typography>
                 {' · '}
                 {e.descripcion}
                 {accion === 'Retener' && e.baseLegal && (
-                  <Typography component="span" sx={{ display: 'block', color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                  <Typography variant="caption" component="span" sx={{ display: 'block', color: 'text.secondary' }}>
                     {e.baseLegal}
                     {e.retenidaHasta ? ` · ${t('habeas.plan.hasta', { fecha: formatearDiaCivil(e.retenidaHasta) })}` : ''}
                   </Typography>
@@ -51,7 +51,7 @@ function Detalle({ plan }: { plan: PlanDeSupresionDto }) {
             );
           })}
           {restantes > 0 && (
-            <Box component="li" sx={{ fontSize: 12, color: 'text.secondary' }}>
+            <Box component="li" sx={{ typography: 'caption', color: 'text.secondary' }}>
               {t('habeas.plan.yMas', { count: restantes })}
             </Box>
           )}
@@ -72,7 +72,7 @@ export function PlanDeSupresion({ solicitudId }: { solicitudId: string }) {
   if (plan.isError) return <Alert severity="error">{mensajeDeError(plan.error, t)}</Alert>;
   return (
     <Box>
-      <Typography component="h3" sx={{ fontWeight: 600, fontSize: 14, mb: 0.75 }}>
+      <Typography variant="subtitle1" component="h3" sx={{ mb: 0.75 }}>
         {t('habeas.plan.titulo')}
       </Typography>
       <Detalle plan={plan.data} />

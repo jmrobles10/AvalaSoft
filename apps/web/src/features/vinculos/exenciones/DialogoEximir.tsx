@@ -85,7 +85,7 @@ export function DialogoEximir({ empresaId, vinculoId, tercero, documentoInicial,
         <DialogTitle id="titulo-eximir">
           {t('exenciones.dialogo.titulo')}
           {tercero && (
-            <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+            <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
               {tercero}
             </Typography>
           )}
@@ -198,10 +198,10 @@ function OpcionDeAlcance({ valor, titulo, ayuda }: { valor: string; titulo: stri
       sx={{ alignItems: 'flex-start', mx: 0, py: 0.25 }}
       label={
         <Box sx={{ pt: '5px' }}>
-          <Typography component="span" sx={{ display: 'block', fontWeight: 600, fontSize: 14 }}>
+          <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
             {titulo}
           </Typography>
-          <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 13 }}>
+          <Typography component="span" sx={{ color: 'text.secondary', display: 'block' }}>
             {ayuda}
           </Typography>
         </Box>

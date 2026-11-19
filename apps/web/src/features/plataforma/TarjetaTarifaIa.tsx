@@ -100,7 +100,7 @@ export function TarjetaTarifaIa() {
       {consulta.isPending && <Skeleton variant="rounded" height={48} role="status" aria-busy aria-label={t('comun.cargando')} />}
       {tarifa && (
         <Stack spacing={0.5}>
-          <Typography variant="h3" component="p">
+          <Typography variant="h6" component="p">
             {formatearMoneda(tarifa.precioPorValidacionAdicional, tarifa.moneda)}{' '}
             <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
               {t('consola.tarifa.porValidacion')}

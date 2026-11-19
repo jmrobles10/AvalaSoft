@@ -33,7 +33,7 @@ export function EditorSeleccionFlujo({ borrador, onCambiar, errores, soloLectura
 
   return (
     <Box component="fieldset" disabled={soloLectura} sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 12, mb: 1.5 }}>{t('flujoSeleccion.ayuda')}</Typography>
+      <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mb: 1.5 }}>{t('flujoSeleccion.ayuda')}</Typography>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'minmax(260px,360px) 160px' }, gap: 2, alignItems: 'start' }}>
         <SelectorDeCondicion
           etiqueta={t('flujoSeleccion.seEscogeCuando')}
@@ -75,9 +75,9 @@ export function EditorSeleccionFlujo({ borrador, onCambiar, errores, soloLectura
         />
       )}
       {condicion !== null && atajo === 'personalizada' && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 1 }}>{t('flujoSeleccion.personalizada', { condicion: describirCondicion(condicion, t) })}</Typography>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 1 }}>{t('flujoSeleccion.personalizada', { condicion: describirCondicion(condicion, t) })}</Typography>
       )}
-      {condicion === null && <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 1 }}>{t('flujoSeleccion.sinCondicion')}</Typography>}
+      {condicion === null && <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 1 }}>{t('flujoSeleccion.sinCondicion')}</Typography>}
     </Box>
   );
 }

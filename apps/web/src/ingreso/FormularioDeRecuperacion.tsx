@@ -39,7 +39,7 @@ export function FormularioDeRecuperacion({ desafio, alResultado, alCancelar }: P
     <Box component="form" onSubmit={enviar} noValidate>
       <Stack spacing={2.5}>
         <Box>
-          <Typography variant="h2" component="h1" sx={{ mb: 0.5 }}>
+          <Typography variant="h5" component="h1" sx={{ mb: 0.5 }}>
             {t('ingreso.recuperacion.titulo')}
           </Typography>
           <Typography sx={{ color: 'text.secondary' }}>{t('ingreso.recuperacion.texto')}</Typography>

@@ -39,7 +39,7 @@ export function SeccionSistemas({ tenant }: { tenant: TenantDto }) {
       {sistemas.data?.map((s) => (
         <Box key={s.id} sx={{ py: 1, borderTop: 1, borderColor: 'divider', '&:first-of-type': { borderTop: 0, pt: 0 } }}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-            <Typography component="span" sx={{ fontWeight: 600 }}>
+            <Typography variant="subtitle2" component="span">
               {s.nombre}
             </Typography>
             <Chip size="small" variant="outlined" label={s.codigo} sx={{ fontFamily: (th) => th.typography.mono.fontFamily }} />

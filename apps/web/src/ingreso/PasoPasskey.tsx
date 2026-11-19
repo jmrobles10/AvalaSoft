@@ -20,7 +20,7 @@ function Cabecera({ icono, titulo, texto }: { icono: 'verificar' | 'registrar'; 
         <Icono size={24} strokeWidth={1.75} />
       </Box>
       <Box>
-        <Typography variant="h2" component="h1" sx={{ mb: 0.5 }}>
+        <Typography variant="h5" component="h1" sx={{ mb: 0.5 }}>
           {titulo}
         </Typography>
         <Typography sx={{ color: 'text.secondary' }}>{texto}</Typography>

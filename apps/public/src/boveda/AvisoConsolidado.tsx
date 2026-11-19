@@ -33,10 +33,10 @@ export function AvisoConsolidado({ documentos }: { documentos: readonly Document
         <Box aria-hidden sx={(th) => ({ display: 'inline-flex', flex: 'none', color: th.palette.estado[tono].texto })}>
           <CalendarClock size={20} strokeWidth={1.75} />
         </Box>
-        <Typography id="por-renovar" component="h2" variant="h3" sx={{ fontSize: 15, lineHeight: '22px', whiteSpace: 'nowrap' }}>
+        <Typography id="por-renovar" component="h2" variant="subtitle1" sx={{ whiteSpace: 'nowrap' }}>
           {t('boveda.porRenovar.titulo')}
         </Typography>
-        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontWeight: 400, minWidth: 0, flexBasis: { xs: '100%', sm: 'auto' }, pl: { xs: 4.25, sm: 0 } }}>
+        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', minWidth: 0, flexBasis: { xs: '100%', sm: 'auto' }, pl: { xs: 4.25, sm: 0 } }}>
           {t('boveda.porRenovar.sub')}
         </Typography>
       </Stack>

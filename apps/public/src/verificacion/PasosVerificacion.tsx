@@ -30,13 +30,13 @@ function Paso({ estado, titulo, detalle }: { estado: EstadoPaso; titulo: string;
         <Icono size={20} strokeWidth={1.75} aria-hidden />
       </Box>
       <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ fontWeight: 500, fontSize: 15 }}>
+        <Typography variant="subtitle1" component="p">
           {titulo}
           <Box component="span" sx={visualmenteOculto}>
             {`: ${t(`verificacion.cripto.estadosPaso.${estado}`)}`}
           </Box>
         </Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px', overflowWrap: 'anywhere' }}>
+        <Typography sx={{ color: 'text.secondary', overflowWrap: 'anywhere' }}>
           {detalle}
         </Typography>
       </Box>
@@ -55,10 +55,10 @@ export function PasosVerificacion({ certificado: c, huella }: { certificado: Cer
 
   return (
     <Card component="section" aria-labelledby="autenticidad" sx={{ p: 2.5 }}>
-      <Typography id="autenticidad" variant="h3" component="h2">
+      <Typography id="autenticidad" variant="h6" component="h2">
         {t('verificacion.cripto.titulo')}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', mt: 0.5, mb: 2, fontSize: 14, lineHeight: '20px' }}>
+      <Typography sx={{ color: 'text.secondary', mt: 0.5, mb: 2 }}>
         {t('verificacion.cripto.sub')}
       </Typography>
 

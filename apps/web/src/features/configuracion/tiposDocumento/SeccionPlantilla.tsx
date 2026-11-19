@@ -41,7 +41,7 @@ export function SeccionPlantilla({ tipoId }: { tipoId: string }) {
       {vigente ? (
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', border: 1, borderColor: 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, px: 1.5, py: 1 }}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography sx={{ fontSize: 14, fontWeight: 500, overflowWrap: 'anywhere' }}>{vigente.nombreOriginal}</Typography>
+            <Typography variant="subtitle1" component="p" sx={{ overflowWrap: 'anywhere' }}>{vigente.nombreOriginal}</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               {t('tiposDocumento.plantilla.detalle', { version: String(vigente.version), peso: megas(vigente.tamanoBytes), fecha: formatearFecha(vigente.cargadaEn) })}
             </Typography>

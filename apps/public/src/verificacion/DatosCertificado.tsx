@@ -10,7 +10,7 @@ export function DatosCertificado({ certificado: c }: { certificado: CertificadoP
     <RejillaDatos columnas={2}>
       <Dato etiqueta={t('verificacion.datos.tercero')}>
         {c.titular.nombre}
-        <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 14 }}>
+        <Typography component="span" sx={{ color: 'text.secondary', display: 'block' }}>
           {c.titular.identificacionEnmascarada}
         </Typography>
       </Dato>
@@ -20,10 +20,10 @@ export function DatosCertificado({ certificado: c }: { certificado: CertificadoP
         {c.vigenteHasta ? formatearDiaCivil(c.vigenteHasta) : t('verificacion.datos.sinVencimiento')}
       </Dato>
       <Dato etiqueta={t('verificacion.datos.folio')}>
-        <Typography component="span" variant="mono">
+        <Typography component="span" variant="monoTabla">
           {c.folio}
         </Typography>
-        <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 14 }}>
+        <Typography component="span" sx={{ color: 'text.secondary', display: 'block' }}>
           {t('verificacion.datos.emision', { n: String(c.emision) })}
         </Typography>
       </Dato>

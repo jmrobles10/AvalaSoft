@@ -43,7 +43,7 @@ export function CamposIa({ campos, titulo, limite }: { campos: readonly CampoIa[
       <Box
         component="dl"
         aria-label={titulo}
-        sx={{ m: 0, display: 'grid', gridTemplateColumns: 'minmax(0, max-content) minmax(0, 1fr)', columnGap: 1.5, rowGap: 0.5, fontSize: 13, lineHeight: '18px' }}
+        sx={{ typography: 'body2', m: 0, display: 'grid', gridTemplateColumns: 'minmax(0, max-content) minmax(0, 1fr)', columnGap: 1.5, rowGap: 0.5 }}
       >
         {visibles.map((campo) => (
           <Box key={campo.clave} sx={{ display: 'contents' }}>

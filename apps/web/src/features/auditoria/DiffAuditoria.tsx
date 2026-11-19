@@ -55,7 +55,7 @@ export function DiffAuditoria({ diff }: { diff: readonly DiffCampoDto[] }) {
             sx={{ pl: 1.5, py: 0.75, borderLeft: 3, borderColor: color, minWidth: 0 }}
           >
             <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', mb: 0.25 }}>
-              <Typography component="span" variant="mono" sx={{ fontWeight: 600, overflowWrap: 'anywhere' }}>
+              <Typography component="span" variant="mono" sx={{ overflowWrap: 'anywhere' }}>
                 {d.campo}
               </Typography>
               <Typography component="span" variant="caption" sx={{ color }}>

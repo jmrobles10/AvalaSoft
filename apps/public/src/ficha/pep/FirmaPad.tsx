@@ -180,7 +180,7 @@ function Lienzo({ onCambiar, onError, deshabilitado }: PropsLienzo) {
         <Button variant="outlined" startIcon={<Eraser size={16} aria-hidden />} onClick={limpiar} disabled={deshabilitado || !conTrazos}>
           {t('ficha.pep.firma.limpiar')}
         </Button>
-        <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('ficha.pep.firma.dibujaAyuda')}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{t('ficha.pep.firma.dibujaAyuda')}</Typography>
       </Stack>
     </Stack>
   );
@@ -213,7 +213,7 @@ function SubirImagen({ onCambiar, onError, deshabilitado }: PropsSubir) {
       <Button variant="outlined" startIcon={<FileUp size={16} aria-hidden />} onClick={() => entrada.current?.click()} disabled={deshabilitado}>
         {t('ficha.pep.firma.elegirImagen')}
       </Button>
-      <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('ficha.pep.firma.imagenAyuda')}</Typography>
+      <Typography sx={{ color: 'text.secondary' }}>{t('ficha.pep.firma.imagenAyuda')}</Typography>
       <input ref={entrada} type="file" accept="image/png,image/jpeg" hidden onChange={(e) => void alElegir(e)} data-testid="entrada-firma" />
     </Stack>
   );

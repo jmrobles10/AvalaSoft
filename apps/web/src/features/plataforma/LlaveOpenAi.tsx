@@ -37,7 +37,7 @@ export function LlaveOpenAi({ configurada, ultimosCuatro, cambio, onCambio, onPr
     <Stack spacing={1.5}>
       {configurada && (
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-          <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 14, textDecoration: cambio.tipo === 'quitar' ? 'line-through' : undefined }}>
+          <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75, textDecoration: cambio.tipo === 'quitar' ? 'line-through' : undefined }}>
             <KeyRound size={16} strokeWidth={1.75} aria-hidden />
             {t('plataforma.planIa.llaveConfigurada', { llave: llaveEnmascarada(ultimosCuatro) })}
           </Box>

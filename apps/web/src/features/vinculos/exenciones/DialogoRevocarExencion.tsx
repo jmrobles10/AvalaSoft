@@ -48,7 +48,7 @@ export function DialogoRevocarExencion({ empresaId, vinculoId, exencion, onCerra
       <FormularioDeDialogo onSubmit={enviar}>
         <DialogTitle id="titulo-revocar-exencion">
           {t('exenciones.revocacion.titulo')}
-          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
             {alcanceDe(exencion, t)}
           </Typography>
         </DialogTitle>

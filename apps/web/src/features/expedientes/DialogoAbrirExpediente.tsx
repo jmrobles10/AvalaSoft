@@ -57,7 +57,7 @@ export function DialogoAbrirExpediente({ empresaId, vinculoId, tipoVinculo, terc
         <DialogTitle id="titulo-abrir-expediente">
           {t('expedientes.abrir.titulo')}
           {tercero && (
-            <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+            <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
               {tercero} · {tipoVinculo.nombre}
             </Typography>
           )}

@@ -90,7 +90,7 @@ export function PaginaExpediente() {
         sub={
           <>
             {expediente.tipoVinculo.nombre} ·{' '}
-            <Typography component="span" variant="mono">
+            <Typography component="span" variant="monoTabla">
               {t('expediente.folio', { folio: expediente.folio })}
             </Typography>
           </>
@@ -102,11 +102,11 @@ export function PaginaExpediente() {
           {/* Lo que le toca al tercero es «Aprobado» (no una actualización en revisión): la primera vez que lo ve en la sesión, el éxito de marca; después, el mismo dibujo quieto. */}
           {avance?.tipo === 'aprobado' && <AnimacionExitoUnaVez clave={`expediente-aprobado:${expediente.id}`} tamano={28} decorativa />}
           {avance ? <ChipAvance avance={avance} /> : <ChipEstado estado={expediente.estado} fecha={expediente.actualizadoEn} size="medium" />}
-          <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+          <Typography sx={{ color: 'text.secondary' }}>
             {t('expediente.actualizado', { fecha: formatearFecha(expediente.actualizadoEn) })}
           </Typography>
         </Stack>
-        <Typography sx={{ fontSize: 15, lineHeight: '22px' }}>
+        <Typography>
           {avance
             ? textoAvance(avance, empresa)
             : expediente.estado === 'Abierto' && faltantes > 0
@@ -114,10 +114,10 @@ export function PaginaExpediente() {
               : t(`expediente.estadoTexto.${expediente.estado}`, { empresa })}
         </Typography>
         {expediente.plazoCargueHasta && (expediente.estado === 'Abierto' || expediente.estado === 'Observado') && (
-          <Typography sx={{ color: 'text.secondary', fontSize: 14, mt: 1 }}>{t('expediente.plazo', { fecha: formatearFecha(expediente.plazoCargueHasta) })}</Typography>
+          <Typography sx={{ color: 'text.secondary', mt: 1 }}>{t('expediente.plazo', { fecha: formatearFecha(expediente.plazoCargueHasta) })}</Typography>
         )}
         {expediente.reenvios > 0 && (
-          <Typography sx={{ color: 'text.secondary', fontSize: 14, mt: 1 }}>
+          <Typography sx={{ color: 'text.secondary', mt: 1 }}>
             {t('expediente.reenvios', { count: expediente.reenvios })}
           </Typography>
         )}
@@ -166,7 +166,7 @@ export function PaginaExpediente() {
 
       {observaciones.length > 0 && (
         <Box component="section" aria-labelledby="titulo-observaciones" sx={{ mb: 2 }}>
-          <Typography id="titulo-observaciones" component="h2" sx={{ fontWeight: 600, fontSize: 13, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'text.secondary', mb: 1 }}>
+          <Typography variant="overline" id="titulo-observaciones" component="h2" sx={{ color: 'text.secondary', mb: 1 }}>
             {t('expediente.observaciones')}
           </Typography>
           <Stack spacing={1.5}>

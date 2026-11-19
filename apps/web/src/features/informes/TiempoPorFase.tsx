@@ -38,7 +38,7 @@ export function TiempoPorFase({ resumen }: { resumen: ResumenEstadoExpedientesDt
                     {t(`informes.estado.fases.${f.fase}`)}
                   </Typography>
                 </Box>
-                <Typography variant="h2" component="dd" sx={{ m: 0, mt: 0.25 }}>
+                <Typography variant="h4" component="dd" sx={{ m: 0, mt: 0.25 }}>
                   {t('informes.dias', { dias: formatearDias(f.dias, sinDato) })}
                   <Typography component="span" variant="caption" sx={{ ml: 1, color: 'text.secondary' }}>
                     {t('informes.estado.fases.porcentaje', { valor: String(Math.round(f.porcentaje)) })}

@@ -70,7 +70,7 @@ export function PropuestaDesdeDocumento({ codigo, periodo, soportes, onUsarValor
           );
         })}
       </Stack>
-      {hayValores && <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }}>{t('ficha.propuesta.nadaSeGuarda')}</Typography>}
+      {hayValores && <Typography sx={{ color: 'text.secondary', mt: 1 }}>{t('ficha.propuesta.nadaSeGuarda')}</Typography>}
     </Alert>
   );
 }
@@ -126,7 +126,7 @@ function LineaDeDocumento({ documento, propuesta, aplicada, deshabilitado, onUsa
       }
     >
       {aplicada && (
-        <Typography role="status" sx={{ fontSize: 13, color: 'text.secondary' }}>
+        <Typography role="status" sx={{ color: 'text.secondary' }}>
           {propuesta.disponible ? t('ficha.propuesta.aplicada') : t('ficha.propuesta.soporteAgregado')}
         </Typography>
       )}
@@ -144,7 +144,7 @@ function LineaDeDocumento({ documento, propuesta, aplicada, deshabilitado, onUsa
               <TableBody>
                 {propuesta.campos.map((campo) => (
                   <TableRow key={campo.campo}>
-                    <TableCell sx={{ fontWeight: 500 }}>{campo.etiqueta}</TableCell>
+                    <TableCell sx={{ typography: 'subtitle2' }}>{campo.etiqueta}</TableCell>
                     <TableCell sx={{ color: 'text.secondary' }}>{campo.actual ?? vacio}</TableCell>
                     <TableCell>{campo.propuesto ?? vacio}</TableCell>
                   </TableRow>

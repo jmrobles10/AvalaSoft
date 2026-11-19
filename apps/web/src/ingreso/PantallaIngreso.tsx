@@ -156,7 +156,7 @@ export function PantallaIngreso({ estado }: { estado: EstadoSesion }) {
               <Button variant="text" size="small" onClick={() => cambiarDesarrollo(true)}>
                 {t('ingreso.desarrollo')}
               </Button>
-              <Link href={BANDEJA_DE_DESARROLLO} target="_blank" rel="noreferrer" sx={{ alignSelf: 'center', fontSize: 13 }}>
+              <Link href={BANDEJA_DE_DESARROLLO} target="_blank" rel="noreferrer" sx={{ typography: 'subtitle2', alignSelf: 'center' }}>
                 {t('ingreso.desarrolloCorreos')}
               </Link>
             </Stack>

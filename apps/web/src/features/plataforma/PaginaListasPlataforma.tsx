@@ -97,7 +97,7 @@ function CuentaDeProveedor({ proveedor: p, actualizada, actualizadaPor }: { prov
         }
       >
         {!p.habilitadoEnInstalacion && (
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, mb: 1.5 }}>{t('plataforma.listas.ayudaNoHabilitado')}</Typography>
+          <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>{t('plataforma.listas.ayudaNoHabilitado')}</Typography>
         )}
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5 }}>
           <TextField size="small" label={t('plataforma.listas.usuario')} value={borrador.usuario} onChange={(e) => cambiar({ usuario: e.target.value })} />
@@ -135,7 +135,7 @@ function CuentaDeProveedor({ proveedor: p, actualizada, actualizadaPor }: { prov
           </Alert>
         )}
         <Stack direction="row" spacing={1} sx={{ mt: 1.5, alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }} useFlexGap>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
             {actualizada ? `${t('plataforma.listas.actualizada')}: ${formatearFechaHora(actualizada)}${actualizadaPor ? ` · ${actualizadaPor}` : ''}` : ''}
           </Typography>
           <Stack direction="row" spacing={1}>

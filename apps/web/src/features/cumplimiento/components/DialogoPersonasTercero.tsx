@@ -18,7 +18,7 @@ export function DialogoPersonasTercero({ empresaId, terceroId, tercero, onCerrar
     <Dialog open onClose={onCerrar} maxWidth={false} slotProps={{ paper: { sx: { width: 760, maxWidth: 'calc(100% - 32px)' } } }} aria-labelledby="titulo-personas-tercero">
       <DialogTitle id="titulo-personas-tercero">
         {t('cumplimiento.sagrilaft.personas.titulo', { tercero })}
-        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
           {t('cumplimiento.sagrilaft.personas.ayuda')}
         </Typography>
       </DialogTitle>

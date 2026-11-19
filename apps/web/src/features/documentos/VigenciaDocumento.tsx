@@ -38,10 +38,10 @@ export function VigenciaDocumento({ vigencia }: { vigencia: VigenciaDto }) {
   const aviso = textoAvisoVigencia(vigencia, t);
   if (aviso) {
     return (
-      <Alert severity={severidadAviso(vigencia)} sx={{ py: 0.25, fontSize: 13 }}>
+      <Alert severity={severidadAviso(vigencia)} sx={{ typography: 'body2', py: 0.25 }}>
         {aviso}
         {explicacion && (
-          <Typography component="span" sx={{ display: 'block', color: 'text.secondary', fontSize: 12, mt: 0.25 }}>
+          <Typography variant="caption" component="span" sx={{ display: 'block', color: 'text.secondary', mt: 0.25 }}>
             {explicacion}
           </Typography>
         )}
@@ -51,9 +51,9 @@ export function VigenciaDocumento({ vigencia }: { vigencia: VigenciaDto }) {
   return (
     <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
       <ChipEstado estado={CHIP_VIGENCIA[estado]} etiqueta={t(`expedientes.vigencia.estados.${estado}`)} />
-      {estado !== 'SinVencimiento' && <Typography sx={{ fontSize: 13 }}>{textoVencimiento(vigencia, t)}</Typography>}
+      {estado !== 'SinVencimiento' && <Typography>{textoVencimiento(vigencia, t)}</Typography>}
       {explicacion && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
           {explicacion}
         </Typography>
       )}

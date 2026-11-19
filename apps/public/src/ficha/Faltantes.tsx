@@ -25,7 +25,7 @@ export function Faltantes({ faltantes, senal }: { faltantes: readonly FaltanteSe
           <li key={`${f.campo ?? f.regla ?? ''}-${String(i)}`}>{f.mensaje}</li>
         ))}
       </Box>
-      <Box sx={{ mt: 0.5, color: 'text.secondary', fontSize: 13 }}>{t('ficha.faltantesAyuda')}</Box>
+      <Box sx={{ typography: 'body2', mt: 0.5, color: 'text.secondary' }}>{t('ficha.faltantesAyuda')}</Box>
     </Alert>
   );
 }

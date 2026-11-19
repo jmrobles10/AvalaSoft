@@ -41,7 +41,7 @@ export function VersionesDocumento({ documentoId, onRetirar }: { documentoId: st
             '&:not(:first-of-type)': { borderTop: 1, borderColor: 'divider' },
           }}
         >
-          <Box component="span" sx={{ gridArea: 'ver', fontWeight: 600, fontSize: 13, lineHeight: '20px' }}>
+          <Box component="span" sx={{ typography: 'subtitle2', gridArea: 'ver' }}>
             <span aria-hidden>{t('boveda.versionCorta', { n: String(v.n) })}</span>
             <Box component="span" sx={visualmenteOculto}>
               {t('comun.version', { n: String(v.n) })}
@@ -51,11 +51,11 @@ export function VersionesDocumento({ documentoId, onRetirar }: { documentoId: st
             <ChipDeVersion version={v} />
           </Box>
           <Tooltip title={v.nombreOriginal} placement="top-start" enterDelay={300}>
-            <Box component="span" sx={{ gridArea: 'arch', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, lineHeight: '20px' }}>
+            <Box component="span" sx={{ typography: 'body2', gridArea: 'arch', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {v.nombreOriginal}
             </Box>
           </Tooltip>
-          <Box component="span" sx={{ gridArea: 'meta', display: { xs: 'flex', md: 'contents' }, columnGap: 0.75, color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+          <Box component="span" sx={{ typography: 'caption', gridArea: 'meta', display: { xs: 'flex', md: 'contents' }, columnGap: 0.75, color: 'text.secondary' }}>
             <Box component="span" sx={{ gridArea: 'tam', textAlign: { md: 'right' }, whiteSpace: 'nowrap' }}>
               {formatearTamano(v.tamanoBytes)}
             </Box>
@@ -79,7 +79,7 @@ export function VersionesDocumento({ documentoId, onRetirar }: { documentoId: st
             )}
           </Stack>
           {v.estado === 'Devuelta' && (
-            <Alert severity="error" sx={{ gridColumn: '1 / -1', mt: 0.5, py: 0, fontSize: 13 }}>
+            <Alert severity="error" sx={{ typography: 'body2', gridColumn: '1 / -1', mt: 0.5, py: 0 }}>
               {mensajeDevolucion(v, t)}
             </Alert>
           )}

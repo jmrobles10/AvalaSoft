@@ -28,13 +28,13 @@ export function ResultadoDeFuente({ resultado, puedeDecidir, onResolver, quien }
       <DatosDeLaFuente datos={datos} />
       <Box component="section" aria-label={t('fuentesOficiales.cotejo.titulo')}>
         <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'baseline', flexWrap: 'wrap', mb: 0.5 }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 500 }}>{t('fuentesOficiales.cotejo.titulo')}</Typography>
-          <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Typography variant="subtitle2" component="p">{t('fuentesOficiales.cotejo.titulo')}</Typography>
+          <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
             {t('fuentesOficiales.cotejo.resumen', { coinciden: String(resumen.coinciden), diferencias: String(resumen.diferencias), sinVerificar: String(resumen.sinVerificar) })}
           </Typography>
         </Stack>
         {resumen.diferencias === 0 ? (
-          <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('fuentesOficiales.panel.sinDiferencias')}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{t('fuentesOficiales.panel.sinDiferencias')}</Typography>
         ) : null}
         <Stack component="ul" spacing={1} sx={{ listStyle: 'none', p: 0, m: 0 }}>
           {ordenarCotejo(campos).map((campo) => (
@@ -113,12 +113,12 @@ function CampoDeCotejo({ campo, puedeDecidir, onResolver, quien }: { campo: Camp
       sx={{ border: 1, borderColor: pendiente ? 'error.main' : 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.25 }}
     >
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-        <Typography component="span" sx={{ fontSize: 13, fontWeight: 500 }}>
+        <Typography variant="subtitle2" component="span">
           {campo.etiqueta}
         </Typography>
         <Chip size="small" variant="outlined" color={color} label={t(`fuentesOficiales.cotejo.resultados.${campo.resultado}`)} />
         {campo.critico && campo.resultado === 'Discrepa' && <Chip size="small" variant="outlined" color="warning" label={t('fuentesOficiales.cotejo.critica')} />}
-        <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
           {contra}
         </Typography>
         <Box sx={{ flex: 1 }} />
@@ -134,14 +134,14 @@ function CampoDeCotejo({ campo, puedeDecidir, onResolver, quien }: { campo: Camp
         )}
       </Stack>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1, mt: 0.75 }}>
-        <Typography sx={{ fontSize: 13 }}>
+        <Typography>
           <Box component="span" sx={{ color: 'text.secondary' }}>
             {t('fuentesOficiales.cotejo.columnas.fuente')}:{' '}
           </Box>
           {campo.oficial ?? sinDato}
         </Typography>
         {campo.contra !== 'Fuente' || campo.comparado ? (
-          <Typography sx={{ fontSize: 13 }}>
+          <Typography>
             <Box component="span" sx={{ color: 'text.secondary' }}>
               {t('fuentesOficiales.cotejo.columnas.comparado')}:{' '}
             </Box>
@@ -149,9 +149,9 @@ function CampoDeCotejo({ campo, puedeDecidir, onResolver, quien }: { campo: Camp
           </Typography>
         ) : null}
       </Box>
-      {campo.detalle && <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>{campo.detalle}</Typography>}
+      {campo.detalle && <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5 }}>{campo.detalle}</Typography>}
       {campo.decision && (
-        <Typography sx={{ fontSize: 12, mt: 0.5 }}>
+        <Typography variant="caption" component="p" sx={{ mt: 0.5 }}>
           {campo.heredada && campo.vigenteHasta
             ? t('fuentesOficiales.cotejo.heredada', { fecha: formatearFecha(campo.vigenteHasta) })
             : t('fuentesOficiales.cotejo.decidida', {

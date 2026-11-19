@@ -100,7 +100,7 @@ export function TarjetaSeccionAceptada({ empresaId, terceroId, seccion }: Props)
           >
             <Stack spacing={1.25}>
               <Box>
-                <Typography variant="h5" component="h4" sx={{ color: 'estado.advertencia.texto' }}>
+                <Typography variant="subtitle1" component="h4" sx={{ color: 'estado.advertencia.texto' }}>
                   {t('fichaAceptada.posterior.titulo')}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>

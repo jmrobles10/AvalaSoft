@@ -90,13 +90,13 @@ export function TableroPlataforma() {
 
   return (
     <Box component="section" aria-label={t('plataforma.tablero.etiqueta')} sx={{ mb: 4 }}>
-      <Typography component="p" sx={{ m: 0, fontSize: { xs: 24, sm: 28 }, lineHeight: { xs: '32px', sm: '36px' }, fontWeight: 500, letterSpacing: '-0.02em' }}>
+      <Typography variant="h4" component="p" sx={{ m: 0 }}>
         {t(`plataforma.tablero.saludo.${saludoDeLaHora(new Date())}`, { nombre })}
       </Typography>
       {grupos.isPending ? (
         <Skeleton variant="rounded" width={420} height={16} sx={{ mt: 1, maxWidth: '90%' }} />
       ) : (
-        <Typography component="p" sx={{ m: 0, mt: 0.5, color: 'text.secondary', fontSize: 14, lineHeight: '20px' }}>
+        <Typography component="p" sx={{ m: 0, mt: 0.5, color: 'text.secondary' }}>
           {resumen}
         </Typography>
       )}

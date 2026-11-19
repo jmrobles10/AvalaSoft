@@ -20,7 +20,7 @@ function AvisoDeProblemas({ problemas }: { problemas: readonly ProblemaSso[] }) 
   if (problemas.length === 0) return null;
   return (
     <Alert severity="warning" sx={{ mb: 2 }}>
-      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+      <Typography component="p" variant="subtitle2">
         {t('sso.problemas.titulo')}
       </Typography>
       <Box component="ul" sx={{ m: 0, pl: 2.5 }}>

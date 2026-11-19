@@ -31,7 +31,7 @@ export function PaginaLotes() {
         encabezado: t('lotes.columnas.nombre'),
         celda: (l) => (
           <>
-            <Typography component="span" sx={{ display: 'block', fontWeight: 500 }}>
+            <Typography variant="subtitle2" component="span" sx={{ display: 'block' }}>
               {l.nombre}
             </Typography>
             {l.archivo && l.archivo !== l.nombre && (

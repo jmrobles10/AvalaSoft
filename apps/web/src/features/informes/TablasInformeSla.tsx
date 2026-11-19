@@ -96,7 +96,7 @@ export function VencidosAhora({ empresaId, vencidos }: { empresaId: string; venc
             component={RouterLink}
             to={`/e/${empresaId}/expedientes/${v.expedienteId}`}
             aria-label={t('informes.sla.vencidos.abrir', { folio: v.folio, tercero: v.tercero })}
-            sx={{ fontFamily: (th) => th.typography.monoTabla.fontFamily }}
+            sx={{ typography: 'monoTabla' }}
           >
             {v.folio}
           </Link>

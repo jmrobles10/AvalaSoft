@@ -200,7 +200,7 @@ export function FormularioDeCuestionario({ secciones, respuestas, onCambiar, vis
     <Stack spacing={2}>
       {visibles.map((seccion) => (
         <Box key={seccion.codigo} component="section" aria-labelledby={`seccion-${seccion.codigo}`} sx={{ border: 1, borderColor: 'divider', borderRadius: 1, p: { xs: 1.5, sm: 2 } }}>
-          <Typography id={`seccion-${seccion.codigo}`} variant="h6" component="h2" sx={{ fontSize: 16 }}>
+          <Typography id={`seccion-${seccion.codigo}`} variant="h6" component="h2">
             {seccion.nombre}
           </Typography>
           {seccion.descripcion && (

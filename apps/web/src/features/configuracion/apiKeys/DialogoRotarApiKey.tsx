@@ -33,7 +33,7 @@ export function DialogoRotarApiKey({ llave, onCerrar, onRotada }: DialogoRotarAp
     <Dialog open onClose={rotar.isPending ? undefined : onCerrar} maxWidth={false} slotProps={{ paper: { sx: { width: 480, maxWidth: 'calc(100% - 32px)' } } }} aria-labelledby="titulo-rotar">
       <DialogTitle id="titulo-rotar">
         {t('apiKeys.rotarA', { nombre: llave.nombre })}
-        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
           {claveVisible(llave)}
         </Typography>
       </DialogTitle>
@@ -42,7 +42,7 @@ export function DialogoRotarApiKey({ llave, onCerrar, onRotada }: DialogoRotarAp
           {rotar.isError && <Alert severity="error">{mensajeDeError(rotar.error, t)}</Alert>}
           <Typography variant="body2">{t('apiKeys.rotarAyuda')}</Typography>
           <Box component="fieldset" sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-            <Typography component="legend" sx={{ fontSize: 14, fontWeight: 600 }}>
+            <Typography variant="subtitle1" component="legend">
               {t('apiKeys.rotarSolapamiento')}
             </Typography>
             <RadioGroup value={solapamiento} onChange={(e) => setSolapamiento(e.target.value as Solapamiento)}>

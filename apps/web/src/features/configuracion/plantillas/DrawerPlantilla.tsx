@@ -70,7 +70,7 @@ export function DrawerPlantilla({
       <Box component="form" onSubmit={enviar} noValidate sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: 1, borderColor: 'divider' }}>
           <Box>
-            <Typography id="titulo-plantilla" variant="h4" component="h2">
+            <Typography id="titulo-plantilla" variant="h6" component="h2">
               {titulo}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>

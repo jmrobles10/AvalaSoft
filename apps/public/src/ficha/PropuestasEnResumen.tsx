@@ -23,7 +23,7 @@ export function PropuestasEnResumen() {
   return (
     <Alert severity="info" icon={<FileSearch size={20} aria-hidden />} aria-label={t('ficha.propuesta.resumenTitulo')} sx={{ mb: 2, '& .MuiAlert-message': { minWidth: 0, flex: 1 } }}>
       <AlertTitle>{t('ficha.propuesta.resumenTitulo')}</AlertTitle>
-      <Typography sx={{ fontSize: 14 }}>{t('ficha.propuesta.resumenTexto')}</Typography>
+      <Typography>{t('ficha.propuesta.resumenTexto')}</Typography>
       <Stack component="ul" spacing={1} sx={{ p: 0, m: 0, mt: 1.25, listStyle: 'none' }}>
         {documentos.map((documento) => (
           <FilaDeDocumento key={documento.clave} documento={documento} />

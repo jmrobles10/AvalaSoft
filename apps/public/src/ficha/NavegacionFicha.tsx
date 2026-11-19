@@ -86,12 +86,12 @@ export function NavegacionFicha({ estado, seccion, periodo }: Props) {
           >
             <ArrowLeft size={16} strokeWidth={1.75} />
           </Box>
-          <Typography component="span" sx={{ fontSize: 15, lineHeight: '22px', fontWeight: 500 }}>
+          <Typography variant="subtitle1" component="span">
             {t('ficha.volverResumen')}
           </Typography>
         </ButtonBase>
         <Box sx={{ px: 1.25, pt: 0.75 }}>
-          <Typography sx={{ color: todasCompletas ? 'success.dark' : 'text.secondary', fontSize: 13, lineHeight: '18px', mb: 0.75 }}>{avance}</Typography>
+          <Typography sx={{ color: todasCompletas ? 'success.dark' : 'text.secondary', mb: 0.75 }}>{avance}</Typography>
           <LinearProgress
             variant="determinate"
             color={todasCompletas ? 'success' : 'primary'}
@@ -110,8 +110,8 @@ export function NavegacionFicha({ estado, seccion, periodo }: Props) {
           sx={(th: Theme) => ({ width: '100%', justifyContent: 'space-between', gap: 1, px: 1.5, py: 1, borderRadius: '10px', bgcolor: th.palette.superficie.nivel2, textAlign: 'left' })}
         >
           <Box sx={{ minWidth: 0 }}>
-            {paso > 0 && <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>{t('ficha.paso', { n: String(paso), total: String(estado.orden.length) })}</Typography>}
-            <Typography sx={{ fontWeight: 500, fontSize: 15, lineHeight: '22px' }}>{actual ? nombre(actual) : ''}</Typography>
+            {paso > 0 && <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('ficha.paso', { n: String(paso), total: String(estado.orden.length) })}</Typography>}
+            <Typography variant="subtitle1" component="p">{actual ? nombre(actual) : ''}</Typography>
           </Box>
           <Box component="span" sx={{ display: 'inline-flex', flex: 'none', transition: 'transform 150ms', transform: abierta ? 'rotate(180deg)' : 'none' }}>
             <ChevronDown size={18} strokeWidth={1.75} aria-hidden />
@@ -122,7 +122,7 @@ export function NavegacionFicha({ estado, seccion, periodo }: Props) {
       {escritorio ? (
         <>
           <Divider sx={{ flex: 'none', mb: 1 }} />
-          <Typography id={idTitulo} component="p" sx={{ flex: 'none', m: 0, px: 1.25, pb: 0.5, fontSize: 12, lineHeight: '16px', fontWeight: 500, color: 'text.secondary' }}>
+          <Typography variant="caption" id={idTitulo} component="p" sx={{ flex: 'none', m: 0, px: 1.25, pb: 0.5, color: 'text.secondary' }}>
             {t('ficha.secciones')}
           </Typography>
           <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>{lista}</Box>
@@ -175,9 +175,9 @@ function ItemSeccion({ fila, nombre, actual, onElegir }: { fila: EstadoSeccionFi
           <Icono size={18} strokeWidth={1.75} aria-hidden />
         </Box>
         <Box sx={{ minWidth: 0 }}>
-          <Typography sx={{ fontSize: 14, lineHeight: '20px', fontWeight: actual ? 500 : 400, color: actual ? 'text.primary' : 'text.secondary' }}>{nombre}</Typography>
+          <Typography variant={actual ? 'subtitle2' : 'body2'} component="p" sx={{ color: actual ? 'text.primary' : 'text.secondary' }}>{nombre}</Typography>
           {/* El ícono ya dice «completa» o «sin diligenciar»: el texto solo para lo que pide acción. */}
-          {estado === 'incompleta' && <Typography sx={{ fontSize: 12, lineHeight: '16px', color: 'warning.dark' }}>{detalle}</Typography>}
+          {estado === 'incompleta' && <Typography variant="caption" component="p" sx={{ color: 'warning.dark' }}>{detalle}</Typography>}
         </Box>
       </ButtonBase>
     </Box>

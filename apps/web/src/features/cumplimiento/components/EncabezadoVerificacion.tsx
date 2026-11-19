@@ -10,7 +10,7 @@ export function EncabezadoVerificacion({ verificacion, acciones }: { verificacio
   const { t } = useTranslation();
   return (
     <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mb: 1 }}>
-      <Typography variant="h5" component="h3" sx={{ fontSize: 15 }}>
+      <Typography variant="subtitle1" component="h3">
         {t(`cumplimiento.tipos.${verificacion.tipo}`)}
       </Typography>
       <ChipEstado
@@ -18,7 +18,7 @@ export function EncabezadoVerificacion({ verificacion, acciones }: { verificacio
         etiqueta={esFuenteOficial(verificacion.tipo) ? t(`fuentesOficiales.estados.${verificacion.estado}`) : t(`cumplimiento.estados.${verificacion.estado}`)}
         fecha={verificacion.vigenteHasta ?? null}
       />
-      <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+      <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
         {verificacion.bloqueante ? t('cumplimiento.panel.bloqueante') : t('cumplimiento.panel.noBloqueante')}
       </Typography>
       <Box sx={{ flex: 1 }} />

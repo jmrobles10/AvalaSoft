@@ -21,7 +21,7 @@ export function VistaPreviaCorreo({ empresaId, evento, nombre, borrador }: { emp
     <Stack spacing={1.25} component="section" aria-labelledby="titulo-vista-previa">
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Box>
-          <Typography id="titulo-vista-previa" variant="h5" component="h3">
+          <Typography id="titulo-vista-previa" variant="subtitle1" component="h3">
             {t('plantillas.vistaPrevia')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -41,7 +41,7 @@ export function VistaPreviaCorreo({ empresaId, evento, nombre, borrador }: { emp
       )}
       {datos && (
         <Box aria-busy={previa.isFetching} sx={{ border: 1, borderColor: 'divider', borderRadius: 1, overflow: 'hidden', opacity: previa.isFetching ? 0.6 : 1, transition: 'opacity 120ms' }}>
-          <Typography data-testid="asunto-previa" sx={{ px: 1.5, py: 1, borderBottom: 1, borderColor: 'divider', bgcolor: 'action.hover', fontSize: 13 }}>
+          <Typography data-testid="asunto-previa" sx={{ px: 1.5, py: 1, borderBottom: 1, borderColor: 'divider', bgcolor: 'action.hover' }}>
             {t('plantillas.asuntoPrevia', { asunto: datos.asunto })}
           </Typography>
           {formato === 'html' ? (
@@ -53,7 +53,7 @@ export function VistaPreviaCorreo({ empresaId, evento, nombre, borrador }: { emp
               sx={{ display: 'block', width: '100%', height: 320, border: 0, bgcolor: '#fff' }}
             />
           ) : (
-            <Box component="pre" sx={{ m: 0, p: 1.5, maxHeight: 320, overflow: 'auto', whiteSpace: 'pre-wrap', fontFamily: 'inherit', fontSize: 13 }}>
+            <Box component="pre" sx={{ typography: 'body2', m: 0, p: 1.5, maxHeight: 320, overflow: 'auto', whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
               {datos.texto}
             </Box>
           )}

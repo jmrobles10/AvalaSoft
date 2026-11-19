@@ -33,10 +33,10 @@ function Resumen({ origen }: { origen: OrigenDeSolicitudes }) {
     >
       {cuentas.map(([clave, cantidad, urgente]) => (
         <Box key={clave} component="li" sx={(th) => ({ p: 1.25, border: 1, borderColor: urgente ? 'error.main' : 'divider', borderRadius: `${String(th.radio.md)}px`, bgcolor: 'background.paper' })}>
-          <Typography sx={{ fontSize: 22, lineHeight: '28px', fontWeight: 600, color: urgente ? 'error.main' : 'text.primary', minHeight: 28 }}>
+          <Typography variant="h4" component="p" sx={{ color: urgente ? 'error.main' : 'text.primary', minHeight: 28 }}>
             {cantidad === undefined ? '' : cantidad.toLocaleString('es-CO')}
           </Typography>
-          <Typography sx={{ fontSize: 13, lineHeight: '18px', color: 'text.secondary' }}>{t(`habeas.resumen.${clave}`)}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{t(`habeas.resumen.${clave}`)}</Typography>
         </Box>
       ))}
     </Box>

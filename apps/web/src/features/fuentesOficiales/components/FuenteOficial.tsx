@@ -67,8 +67,8 @@ export function FuenteOficial({ expediente, empresaId, fuente, verificacion: v, 
           {t('cumplimiento.panel.ultimoError', { error: v.ultimoError, cuando: v.reintentarDesde ? formatearFechaHora(v.reintentarDesde) : '' })}
         </Alert>
       )}
-      {!consultada && <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('fuentesOficiales.panel.pendiente')}</Typography>}
-      {v.estado === 'Expirada' && <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('fuentesOficiales.panel.expirada')}</Typography>}
+      {!consultada && <Typography sx={{ color: 'text.secondary' }}>{t('fuentesOficiales.panel.pendiente')}</Typography>}
+      {v.estado === 'Expirada' && <Typography sx={{ color: 'text.secondary' }}>{t('fuentesOficiales.panel.expirada')}</Typography>}
       {v.registradaEn && v.fuenteOficial && (
         <Stack spacing={1.5}>
           <RejillaDatos columnas={3}>
@@ -78,15 +78,15 @@ export function FuenteOficial({ expediente, empresaId, fuente, verificacion: v, 
           </RejillaDatos>
           <ResultadoDeFuente resultado={v.fuenteOficial} puedeDecidir={acciones.decidir} quien={quien} onResolver={(campo, decision) => setResolver({ campo, decision })} />
           {v.anteriores.length > 0 && (
-            <Box component="details" sx={{ '& > summary': { cursor: 'pointer', color: 'text.secondary', fontSize: 12 } }}>
+            <Box component="details" sx={{ '& > summary': { typography: 'caption', cursor: 'pointer', color: 'text.secondary' } }}>
               <summary>{t('fuentesOficiales.panel.anteriores', { count: v.anteriores.length })}</summary>
               <Stack component="ul" spacing={0.75} sx={{ listStyle: 'none', p: 0, m: 0, mt: 1 }}>
                 {v.anteriores.map((a) => (
                   <Stack key={`${a.referenciaExterna}-${a.fecha}`} component="li" direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                    <Typography component="span" sx={{ fontSize: 13 }}>
+                    <Typography component="span">
                       {formatearFecha(a.fecha)}
                     </Typography>
-                    <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+                    <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
                       {t('fuentesOficiales.panel.anteriorDiferencias', { count: a.coincidencias })}
                     </Typography>
                     {acciones.descargar && a.conEvidencia && (

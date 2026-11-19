@@ -74,7 +74,7 @@ function Marco({ titulo, subtitulo, confirmar, ocupado, falta, error, onEnviar, 
         <DialogTitle id="titulo-dialogo-evaluacion">
           {titulo}
           {subtitulo && (
-            <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+            <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
               {subtitulo}
             </Typography>
           )}

@@ -83,7 +83,7 @@ export function PaginaFichaTercero() {
         titulo={tercero.nombre}
         tituloCompleto={tercero.nombre}
         subtitulo={
-          <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', mt: 0.25, fontSize: 13, flexWrap: 'wrap' }}>
+          <Stack direction="row" spacing={1} useFlexGap sx={{ typography: 'body2', alignItems: 'center', mt: 0.25, flexWrap: 'wrap' }}>
             <Mono>{identificacionDe(tercero)}</Mono>
             <span aria-hidden>·</span>
             <span>{textoTipoPersona(tercero.tipoPersona, t)}</span>
@@ -128,7 +128,7 @@ function VinculosDeLaFicha({ empresaId, empresaNombre, vinculos, puedeVer }: Vin
 
   return (
     <Stack component="section" aria-label={titulo} spacing={1.5} sx={{ minWidth: 0 }}>
-      <Typography variant="h4" component="h2">
+      <Typography variant="h6" component="h2">
         {titulo}
       </Typography>
       {vinculos.map((v) => (

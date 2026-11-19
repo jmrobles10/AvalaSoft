@@ -21,11 +21,11 @@ function ValorCopiable({ etiqueta, ayuda, valor }: { etiqueta: string; ayuda: st
 
   return (
     <Stack spacing={0.75}>
-      <Typography variant="h4" component="h3">
+      <Typography variant="subtitle1" component="h3">
         {etiqueta}
       </Typography>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', px: 1.5, py: 1, bgcolor: 'superficie.nivel2', borderRadius: (th) => `${String(th.radio.sm)}px` }}>
-        <Box component="code" aria-label={etiqueta} data-secreto="" sx={{ flex: 1, minWidth: 0, fontFamily: (th) => th.typography.mono.fontFamily, fontSize: 13, overflowWrap: 'anywhere' }}>
+        <Box component="code" aria-label={etiqueta} data-secreto="" sx={{ typography: 'body2', flex: 1, minWidth: 0, fontFamily: (th) => th.typography.mono.fontFamily, overflowWrap: 'anywhere' }}>
           {valor}
         </Box>
         <Tooltip title={copiado ? t('plataforma.alta.listo.copiada') : t('plataforma.alta.listo.copiar')}>

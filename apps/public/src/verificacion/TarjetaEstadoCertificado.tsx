@@ -29,17 +29,17 @@ export function TarjetaEstadoCertificado({ certificado: c, huella }: { certifica
       >
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1.5 }}>
           <LogoEmpresa nombre={c.emisor.empresa} logoUrl={c.emisor.logoUrl} />
-          <Typography sx={{ fontWeight: 500, fontSize: 15, flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}>{c.emisor.empresa}</Typography>
+          <Typography variant="subtitle1" component="p" sx={{ flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}>{c.emisor.empresa}</Typography>
           {estado && <ChipEstado estado={estado} bloqueante={c.bloqueante} size="medium" />}
         </Stack>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
           {/* Un certificado vigente se «confirma» al abrirlo: la animación de éxito de marca (el estado ya está en texto, así que es decorativa). */}
           {tono === 'exito' && <AnimacionExito tamano={44} decorativa />}
           <Box sx={{ minWidth: 0 }}>
-            <Typography id="estado-certificado" variant="h3" component="h2">
+            <Typography id="estado-certificado" variant="h6" component="h2">
               {titulo}
             </Typography>
-            <Typography sx={{ color: 'text.secondary', mt: 0.5, fontSize: 15, lineHeight: '22px' }}>
+            <Typography sx={{ color: 'text.secondary', mt: 0.5 }}>
               {texto}
             </Typography>
           </Box>
@@ -70,7 +70,7 @@ export function TarjetaEstadoCertificado({ certificado: c, huella }: { certifica
               {descargar.isPending ? t('verificacion.descargando') : t('verificacion.descargar')}
             </Button>
           ) : (
-            <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
+            <Typography sx={{ color: 'text.secondary' }}>
               {t('verificacion.soloVigente')}
             </Typography>
           )}

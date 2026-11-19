@@ -80,7 +80,7 @@ export function DialogoEstudio({ expediente, empresaId, vigenciaDias, ocupado, e
     <Dialog open onClose={ocupado ? undefined : onCerrar} maxWidth={false} slotProps={{ paper: { sx: { width: 640, maxWidth: 'calc(100% - 32px)' } } }} aria-labelledby="titulo-estudio">
       <DialogTitle id="titulo-estudio">
         {t('cumplimiento.estudio.titulo')}
-        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
           {vigenciaDias ? t('cumplimiento.estudio.ayuda', { dias: String(vigenciaDias) }) : t('cumplimiento.estudio.ayudaSinDias')}
         </Typography>
       </DialogTitle>

@@ -180,7 +180,7 @@ function FormularioSla({
                     const enError = errorDeHoras(texto) !== null;
                     return (
                       <TableRow key={a.areaId}>
-                        <TableCell sx={{ fontWeight: 500 }}>{nombreDe(a.areaId)}</TableCell>
+                        <TableCell sx={{ typography: 'subtitle2' }}>{nombreDe(a.areaId)}</TableCell>
                         <TableCell>
                           <CampoNumero
                             etiqueta={t('sla.areas.horasDe', { area: nombreDe(a.areaId) })}

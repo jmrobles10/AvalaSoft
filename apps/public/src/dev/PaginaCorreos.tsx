@@ -37,8 +37,8 @@ function Correo({ correo }: { correo: ResumenCorreo }) {
   const { enlace, codigo } = extraerDeCorreo(cuerpo.data ?? '');
   return (
     <Card sx={{ p: 1.5 }}>
-      <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{correo.asunto}</Typography>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+      <Typography variant="subtitle1" component="p">{correo.asunto}</Typography>
+      <Typography sx={{ color: 'text.secondary' }}>
         {correo.para} · {formatearFechaHora(correo.fecha)}
       </Typography>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 1 }}>
@@ -48,7 +48,7 @@ function Correo({ correo }: { correo: ResumenCorreo }) {
           </Button>
         )}
         {codigo && (
-          <Typography variant="mono" sx={{ fontSize: 18 }}>
+          <Typography variant="kpi">
             {t('dev.codigo', { codigo })}
           </Typography>
         )}

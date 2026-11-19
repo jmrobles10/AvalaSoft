@@ -60,18 +60,18 @@ export function TarjetaFactor({ factor: f, porcentaje, errores, deshabilitado, o
           )}
         </Box>
         {delFactor.some((e) => e.codigo === 'peso') && (
-          <Typography role="alert" sx={{ color: 'error.main', fontSize: 12, mt: '-8px' }}>
+          <Typography variant="caption" component="p" role="alert" sx={{ color: 'error.main', mt: '-8px' }}>
             {t('matrizRiesgo.validacion.peso')}
           </Typography>
         )}
         <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
           <Chip size="small" variant="outlined" label={automatico ? t('matrizRiesgo.factores.automatico') : t('matrizRiesgo.factores.manual')} />
-          <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
             {t('matrizRiesgo.factores.pesoRelativo', { porcentaje: String(porcentaje) })}
           </Typography>
         </Stack>
         {automatico ? (
-          <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{f.ayuda || t('matrizRiesgo.factores.automaticoAyuda')}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{f.ayuda || t('matrizRiesgo.factores.automaticoAyuda')}</Typography>
         ) : (
           <TextField
             label={t('matrizRiesgo.factores.ayudaCampo')}
@@ -84,7 +84,7 @@ export function TarjetaFactor({ factor: f, porcentaje, errores, deshabilitado, o
         <Box>
           <Box sx={{ display: { xs: 'none', sm: 'grid' }, gridTemplateColumns: COLUMNAS_OPCION, gap: 1, mb: 0.5 }} aria-hidden>
             {(['opcion', 'puntaje', 'piso'] as const).map((c) => (
-              <Typography key={c} component="span" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+              <Typography variant="caption" key={c} component="span" sx={{ color: 'text.secondary' }}>
                 {t(`matrizRiesgo.factores.columnas.${c}`)}
               </Typography>
             ))}
@@ -104,11 +104,11 @@ export function TarjetaFactor({ factor: f, porcentaje, errores, deshabilitado, o
             ))}
           </Stack>
           {delFactor.some((e) => e.codigo === 'opciones-cantidad') && (
-            <Typography role="alert" sx={{ color: 'error.main', fontSize: 12, mt: 0.5 }}>
+            <Typography variant="caption" component="p" role="alert" sx={{ color: 'error.main', mt: 0.5 }}>
               {t('matrizRiesgo.validacion.opciones-cantidad')}
             </Typography>
           )}
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 1 }}>{t('matrizRiesgo.factores.pisoAyuda')}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 1 }}>{t('matrizRiesgo.factores.pisoAyuda')}</Typography>
           {!automatico && !deshabilitado && (
             <Button size="small" variant="text" startIcon={<Plus size={16} aria-hidden />} onClick={onAgregarOpcion} disabled={f.opciones.length >= MAXIMO_OPCIONES} sx={{ mt: 0.5 }}>
               {t('matrizRiesgo.factores.agregarOpcion')}

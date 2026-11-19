@@ -73,7 +73,7 @@ export function PaginaMotivos() {
               <TableRow key={m.id}>
                 <TableCell>
                   <Stack spacing={0.25}>
-                    <Typography component="span" sx={{ fontWeight: 500 }}>
+                    <Typography variant="subtitle2" component="span">
                       {m.nombre}
                     </Typography>
                     <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
@@ -87,7 +87,7 @@ export function PaginaMotivos() {
                 <TableCell>{t(`motivos.categorias.${m.categoria}`)}</TableCell>
                 <TableCell>{t(`motivos.aplica.${m.aplicaA}`)}</TableCell>
                 <TableCell>
-                  <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+                  <Typography sx={{ color: 'text.secondary' }}>
                     {m.textoAlTercero}
                   </Typography>
                 </TableCell>

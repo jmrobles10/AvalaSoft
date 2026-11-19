@@ -62,10 +62,10 @@ export function PaginaPlantillas() {
               <TableRow key={p.evento}>
                 <TableCell>
                   <Stack spacing={0.25}>
-                    <Typography component="span" sx={{ fontWeight: 500 }}>
+                    <Typography variant="subtitle2" component="span">
                       {p.nombre}
                     </Typography>
-                    <Typography component="span" sx={{ color: 'text.secondary', fontSize: 13 }}>
+                    <Typography component="span" sx={{ color: 'text.secondary' }}>
                       {p.descripcion}
                     </Typography>
                   </Stack>

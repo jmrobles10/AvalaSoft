@@ -96,7 +96,7 @@ export function PaginaInvitacionesPorAprobar() {
         encabezado: t('invitaciones.porAprobar.columnas.tercero'),
         celda: (i) => (
           <>
-            <Typography component="span" sx={{ display: 'block', fontWeight: 500 }}>
+            <Typography variant="subtitle2" component="span" sx={{ display: 'block' }}>
               {i.terceroNombre}
             </Typography>
             <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>
@@ -156,7 +156,7 @@ export function PaginaInvitacionesPorAprobar() {
         id: 'lote',
         encabezado: t('invitaciones.porAprobar.columnasLotes.lote'),
         celda: (l) => (
-          <Typography component="span" sx={{ fontWeight: 500 }}>
+          <Typography variant="subtitle2" component="span">
             {l.nombre}
           </Typography>
         ),
@@ -241,7 +241,7 @@ export function PaginaInvitacionesPorAprobar() {
       />
       <Stack spacing={3}>
         <Box component="section" aria-label={t('invitaciones.porAprobar.vinculos')}>
-          <Typography variant="h4" component="h2" sx={{ mb: 1 }}>
+          <Typography variant="h6" component="h2" sx={{ mb: 1 }}>
             {t('invitaciones.porAprobar.vinculos')}
           </Typography>
           <TablaConCursor
@@ -261,7 +261,7 @@ export function PaginaInvitacionesPorAprobar() {
           />
         </Box>
         <Box component="section" aria-label={t('invitaciones.porAprobar.lotes')}>
-          <Typography variant="h4" component="h2" sx={{ mb: 1 }}>
+          <Typography variant="h6" component="h2" sx={{ mb: 1 }}>
             {t('invitaciones.porAprobar.lotes')}
           </Typography>
           <TablaConCursor

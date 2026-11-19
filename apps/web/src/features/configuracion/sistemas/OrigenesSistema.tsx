@@ -49,7 +49,7 @@ export function OrigenesSistema({ sistema }: { sistema: SistemaIntegradoDto }) {
 
   return (
     <Box component="section" aria-labelledby={`origenes-${sistema.id}`}>
-      <Typography id={`origenes-${sistema.id}`} component="h3" sx={{ fontSize: 14, fontWeight: 600 }}>
+      <Typography variant="subtitle1" id={`origenes-${sistema.id}`} component="h3">
         {t('sistemas.origenes.titulo')}
       </Typography>
       <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, mb: 1.5, maxWidth: 720 }}>

@@ -20,8 +20,8 @@ export function MedidorDeUso({ medicion }: { medicion: MedicionDePlanDto }) {
   return (
     <Box component="li" sx={{ listStyle: 'none', minWidth: 0 }}>
       <Stack direction="row" sx={{ alignItems: 'baseline', justifyContent: 'space-between', gap: 1, mb: 0.5 }}>
-        <Typography sx={{ fontWeight: 600, fontSize: 14, lineHeight: '20px' }}>{t(`plan.metricas.${medicion.metrica}.nombre`)}</Typography>
-        <Typography sx={{ fontSize: 13, color: 'text.secondary', whiteSpace: 'nowrap' }}>
+        <Typography variant="subtitle1" component="p">{t(`plan.metricas.${medicion.metrica}.nombre`)}</Typography>
+        <Typography sx={{ color: 'text.secondary', whiteSpace: 'nowrap' }}>
           {limite === null ? t('plan.usoSinLimite', { usado }) : t('plan.usoDeLimite', { usado, limite })}
         </Typography>
       </Stack>
@@ -34,7 +34,7 @@ export function MedidorDeUso({ medicion }: { medicion: MedicionDePlanDto }) {
           sx={(th) => ({ height: 8, borderRadius: `${String(th.radio.sm)}px` })}
         />
       )}
-      <Typography sx={{ mt: 0.5, fontSize: 12, lineHeight: '16px', color: nivel === 'Agotado' ? 'error.main' : 'text.secondary' }}>
+      <Typography variant="caption" component="p" sx={{ mt: 0.5, color: nivel === 'Agotado' ? 'error.main' : 'text.secondary' }}>
         {limite === null ? t(`plan.metricas.${medicion.metrica}.ayuda`) : t(`plan.niveles.${nivel}`, { porcentaje: String(medicion.porcentaje ?? 0) })}
       </Typography>
     </Box>

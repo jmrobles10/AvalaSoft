@@ -32,7 +32,7 @@ export function LogoEmpresa({ empresa, tamano = 24 }: { empresa: EmpresaOpcion; 
       src={empresa.logoUrl ?? undefined}
       alt=""
       variant="rounded"
-      sx={{ width: tamano, height: tamano, borderRadius: '7px', bgcolor: 'estado.neutro.solido', color: '#FFFFFF', fontSize: Math.round(tamano * 0.38), fontWeight: 700 }}
+      sx={{ width: tamano, height: tamano, borderRadius: '7px', bgcolor: 'estado.neutro.solido', color: '#FFFFFF', fontSize: Math.round(tamano * 0.38) }}
     >
       {iniciales(empresa.nombre)}
     </Avatar>
@@ -42,11 +42,11 @@ export function LogoEmpresa({ empresa, tamano = 24 }: { empresa: EmpresaOpcion; 
 function Textos({ empresa }: { empresa: EmpresaOpcion }) {
   return (
     <Box component="span" sx={{ display: 'flex', flexDirection: 'column', minWidth: 0, textAlign: 'left' }}>
-      <Typography component="span" noWrap sx={{ fontSize: 13, lineHeight: '16px', fontWeight: 600 }}>
+      <Typography variant="subtitle2" component="span" noWrap>
         {empresa.nombre}
       </Typography>
       {empresa.identificacion && (
-        <Typography component="span" noWrap sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '14px' }}>
+        <Typography variant="caption" component="span" noWrap sx={{ color: 'text.secondary' }}>
           NIT {empresa.identificacion}
         </Typography>
       )}
@@ -145,7 +145,7 @@ export function SelectorEmpresa({ empresas, actual, onCambiar, etiqueta = 'Empre
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar empresa"
               inputProps={{ 'aria-label': 'Buscar empresa' }}
-              sx={{ flex: 1, fontSize: 14 }}
+              sx={{ typography: 'body2', flex: 1 }}
             />
           </Box>
         )}
@@ -157,7 +157,7 @@ export function SelectorEmpresa({ empresas, actual, onCambiar, etiqueta = 'Empre
             <ListItemText
               primary={empresa.nombre}
               secondary={[empresa.identificacion ? `NIT ${empresa.identificacion}` : null, empresa.prefijo].filter(Boolean).join(' · ') || null}
-              slotProps={{ primary: { noWrap: true, sx: { fontSize: 14 } }, secondary: { noWrap: true, sx: { fontSize: 12 } } }}
+              slotProps={{ primary: { noWrap: true }, secondary: { noWrap: true } }}
               sx={{ my: 0, minWidth: 0 }}
             />
             {empresa.id === seleccionada.id && (

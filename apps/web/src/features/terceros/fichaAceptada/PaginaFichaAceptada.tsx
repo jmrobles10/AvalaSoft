@@ -77,7 +77,7 @@ export function PaginaFichaAceptada() {
         titulo={tercero.data?.nombre ?? t('fichaAceptada.titulo')}
         tituloCompleto={tercero.data?.nombre}
         subtitulo={
-          <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', mt: 0.25, fontSize: 13, flexWrap: 'wrap' }}>
+          <Stack direction="row" spacing={1} useFlexGap sx={{ typography: 'body2', alignItems: 'center', mt: 0.25, flexWrap: 'wrap' }}>
             {tercero.data && <Mono>{identificacionDe(tercero.data)}</Mono>}
             {tercero.data && <span aria-hidden>·</span>}
             <span>{vinculo.data.tipoVinculo.nombre}</span>

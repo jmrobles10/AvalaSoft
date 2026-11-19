@@ -93,7 +93,7 @@ export function EntregasWebhook({ webhookId }: { webhookId: string }) {
   return (
     <Box component="section" aria-labelledby={`entregas-${webhookId}`}>
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-        <Typography id={`entregas-${webhookId}`} component="h3" sx={{ fontSize: 14, fontWeight: 600 }}>
+        <Typography variant="subtitle1" id={`entregas-${webhookId}`} component="h3">
           {t('webhooks.entregas.titulo')}
         </Typography>
         <TextField select size="small" label={t('webhooks.entregas.filtro')} value={estado} onChange={(e) => setEstado(esEstadoEntrega(e.target.value) ? e.target.value : '')} slotProps={{ select: { displayEmpty: true } }} sx={{ minWidth: 170 }}>

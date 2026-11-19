@@ -17,7 +17,7 @@ export function RatificacionesDeSeccion({ pendientes }: { pendientes: readonly R
         return (
           <Alert key={p.requisitoId} severity="info" aria-label={titulo}>
             <AlertTitle>{titulo}</AlertTitle>
-            <Typography sx={{ fontSize: 14, mb: 1 }}>{t('expediente.ratificar.seccion.enSeccionTexto', { empresa: p.empresa })}</Typography>
+            <Typography sx={{ mb: 1 }}>{t('expediente.ratificar.seccion.enSeccionTexto', { empresa: p.empresa })}</Typography>
             <ConfirmarRatificacion tipo="seccion" compacto expedienteId={p.expedienteId} requisitoId={p.requisitoId} documento={p.nombre} empresa={p.empresa} />
           </Alert>
         );

@@ -63,7 +63,7 @@ function FilaDeSeccion({ respaldada }: { respaldada: SeccionRespaldadaDto }) {
   return (
     <Stack component="li" spacing={0.75} sx={{ minWidth: 0 }}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+        <Typography component="p" variant="subtitle2">
           {nombre}
         </Typography>
         {cruce === null && (respaldada.version !== null || esCuenta) && (

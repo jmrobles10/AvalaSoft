@@ -37,7 +37,7 @@ function FilaAdministrador({
     <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', py: 1.25 }}>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-          <Typography component="span" sx={{ fontWeight: 600 }}>
+          <Typography variant="subtitle2" component="span">
             {usuario.nombre}
           </Typography>
           <EstadoActivo activo={usuario.activo} texto={usuario.activo ? t('comun.activo') : t('comun.inactivo')} />

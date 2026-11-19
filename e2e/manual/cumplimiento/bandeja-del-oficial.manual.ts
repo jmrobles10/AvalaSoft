@@ -46,7 +46,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre la bandeja de Cumplimiento',
       explicacion:
-        'La pestaña «Por atender» lista los expedientes que esperan algo de Cumplimiento. Cada fila muestra el tercero, el folio, el origen, lo que falta («Por atender»), cuántas coincidencias hay y desde cuándo. ' +
+        'La pestaña «Por atender» lista los expedientes que esperan algo de Cumplimiento. Cada fila muestra el tercero, el expediente, el origen, lo que falta («Por atender»), cuántas coincidencias hay y desde cuándo. ' +
         'Si no hay nada, la bandeja dice «No hay nada por atender». La pestaña «Informe SAGRILAFT» reúne la situación de todos los terceros.',
       resaltar: olga.getByRole('table').first(),
       variantes: [

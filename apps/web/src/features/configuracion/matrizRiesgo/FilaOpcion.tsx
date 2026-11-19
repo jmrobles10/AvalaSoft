@@ -73,7 +73,7 @@ export function FilaOpcion({ opcion: o, errores, puedeQuitar, deshabilitado, onC
         )}
       </Box>
       {mensajes.length > 0 && (
-        <Box role="alert" sx={{ color: 'error.main', fontSize: 12, mt: 0.25 }}>
+        <Box role="alert" sx={{ typography: 'caption', color: 'error.main', mt: 0.25 }}>
           {[...new Set(mensajes)].join(' ')}
         </Box>
       )}

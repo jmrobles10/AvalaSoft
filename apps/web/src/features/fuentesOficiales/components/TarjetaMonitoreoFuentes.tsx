@@ -50,8 +50,8 @@ export function TarjetaMonitoreoFuentes({ vinculoId, empresaId }: { vinculoId: s
   return (
     <Tarjeta titulo={t('fuentesOficiales.monitoreo.titulo')} etiqueta={t('fuentesOficiales.monitoreo.titulo')}>
       <Stack spacing={2}>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('fuentesOficiales.monitoreo.ayuda', { dias: String(monitoreo.frecuenciaDias) })}</Typography>
-        <Typography sx={{ fontSize: 13 }}>
+        <Typography sx={{ color: 'text.secondary' }}>{t('fuentesOficiales.monitoreo.ayuda', { dias: String(monitoreo.frecuenciaDias) })}</Typography>
+        <Typography>
           <Box component="span" sx={{ color: 'text.secondary' }}>
             {t('fuentesOficiales.monitoreo.proxima')}:{' '}
           </Box>
@@ -63,7 +63,7 @@ export function TarjetaMonitoreoFuentes({ vinculoId, empresaId }: { vinculoId: s
           return (
             <Box key={f.tipo} component="section" aria-label={t(`cumplimiento.tipos.${fuente}`)}>
               <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mb: 1 }}>
-                <Typography variant="h5" component="h3" sx={{ fontSize: 15 }}>
+                <Typography variant="subtitle1" component="h3">
                   {t(`cumplimiento.tipos.${fuente}`)}
                 </Typography>
                 <ChipEstado estado={f.estado} etiqueta={t(`fuentesOficiales.estados.${f.estado}`)} />

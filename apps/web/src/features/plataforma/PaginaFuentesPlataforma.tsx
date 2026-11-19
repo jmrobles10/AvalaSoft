@@ -45,7 +45,7 @@ function Fuente({ fuente, actualizada, actualizadaPor }: { fuente: FuentePlatafo
   return (
     <Tarjeta titulo={fuente.nombre} etiqueta={fuente.nombre} icono={Database}>
       <Stack spacing={2}>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{fuente.descripcion}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{fuente.descripcion}</Typography>
         <TextField
           select
           size="small"
@@ -103,7 +103,7 @@ function Cuenta({ fuente, proveedor: p, actualizada, actualizadaPor }: { fuente:
   return (
     <Box component="section" aria-label={t('fuentesOficiales.plataforma.cuenta', { proveedor: nombre })} sx={{ border: 1, borderColor: 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5 }}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mb: 1 }}>
-        <Typography component="h3" sx={{ fontSize: 14, fontWeight: 500 }}>
+        <Typography variant="subtitle1" component="h3">
           {t('fuentesOficiales.plataforma.cuenta', { proveedor: nombre })}
         </Typography>
         {!p.habilitadoEnInstalacion && <Chip size="small" variant="outlined" label={t('fuentesOficiales.plataforma.noHabilitado')} />}
@@ -114,7 +114,7 @@ function Cuenta({ fuente, proveedor: p, actualizada, actualizadaPor }: { fuente:
           label={p.configurado ? t('fuentesOficiales.plataforma.configurada', { ultimos: p.ultimosCuatroClave ?? '' }) : t('fuentesOficiales.plataforma.sinConfigurar')}
         />
       </Stack>
-      {!p.habilitadoEnInstalacion && <Typography sx={{ color: 'text.secondary', fontSize: 12, mb: 1 }}>{t('fuentesOficiales.plataforma.ayudaNoHabilitado')}</Typography>}
+      {!p.habilitadoEnInstalacion && <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mb: 1 }}>{t('fuentesOficiales.plataforma.ayudaNoHabilitado')}</Typography>}
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
         <TextField size="small" label={t('fuentesOficiales.plataforma.usuario')} value={borrador.usuario} onChange={(e) => cambiar({ usuario: e.target.value })} />
         <TextField
@@ -135,7 +135,7 @@ function Cuenta({ fuente, proveedor: p, actualizada, actualizadaPor }: { fuente:
         </Alert>
       )}
       <Stack direction="row" spacing={1} sx={{ mt: 1.5, alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }} useFlexGap>
-        <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
           {actualizada && p.actualizadasEn ? `${t('fuentesOficiales.plataforma.actualizada')}: ${formatearFechaHora(p.actualizadasEn)}${actualizadaPor ? ` · ${actualizadaPor}` : ''}` : ''}
         </Typography>
         <Stack direction="row" spacing={1}>

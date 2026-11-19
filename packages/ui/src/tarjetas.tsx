@@ -72,12 +72,12 @@ export function TarjetaBloque({ titulo, ayuda, icono: Icono, acciones, nivel = '
               </Box>
             )}
             {titulo && (
-              <Typography variant="h3" component={nivel} sx={{ minWidth: 0 }}>
+              <Typography variant="h6" component={nivel} sx={{ minWidth: 0 }}>
                 {titulo}
               </Typography>
             )}
             {ayuda && (
-              <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontWeight: 400, minWidth: 0 }}>
+              <Typography component="span" variant="body2" sx={{ color: 'text.secondary', minWidth: 0 }}>
                 {ayuda}
               </Typography>
             )}
@@ -106,10 +106,10 @@ export function TotalDestacado({ etiqueta, valor }: { etiqueta: ReactNode; valor
       direction="row"
       sx={{ alignItems: 'center', justifyContent: 'space-between', gap: 2, px: 1.5, py: 1.25, borderRadius: (t) => `${String(t.radio.sm + 2)}px`, bgcolor: (t) => t.palette.acento.tinte }}
     >
-      <Typography component="span" variant="body2" sx={{ fontWeight: 600 }}>
+      <Typography component="span" variant="subtitle2">
         {etiqueta}
       </Typography>
-      <Typography component="span" sx={{ fontSize: 22, lineHeight: '28px', fontWeight: 500, color: (t) => t.palette.acento.main }}>
+      <Typography component="span" variant="h4" sx={{ color: (t) => t.palette.acento.main }}>
         {valor}
       </Typography>
     </Stack>
@@ -128,9 +128,9 @@ export function AvatarIniciales({ nombre, tamano = 32, solido = false }: { nombr
         width: tamano,
         height: tamano,
         borderRadius: '50%',
+        typography: 'subtitle2',
         fontSize: Math.round(tamano * 0.4),
         lineHeight: 1,
-        fontWeight: 500,
         bgcolor: (t) => (solido ? t.palette.primary.main : t.palette.acento.tinte),
         color: (t) => (solido ? t.palette.primary.contrastText : t.palette.acento.main),
       }}
@@ -209,7 +209,7 @@ export function TarjetaKpi({
         >
           <Icono size={14} strokeWidth={1.75} />
         </Box>
-        <Typography component="span" variant="body2" sx={{ flex: 1, minWidth: 0, color: 'text.secondary', fontWeight: 400 }}>
+        <Typography component="span" variant="body2" sx={{ flex: 1, minWidth: 0, color: 'text.secondary' }}>
           {titulo}
         </Typography>
         {enlazada && (
@@ -222,12 +222,13 @@ export function TarjetaKpi({
         <Box sx={{ minWidth: 0 }}>
           <Typography
             component="p"
-            sx={{ m: 0, fontSize: 24, lineHeight: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: alerta ? (t) => t.palette.estado.error.texto : undefined }}
+            variant="h4"
+            sx={{ m: 0, color: alerta ? (t) => t.palette.estado.error.texto : undefined }}
           >
             {valor}
           </Typography>
           {detalle && (
-            <Typography component="p" variant="caption" sx={{ m: 0, color: 'text.secondary', fontWeight: 400 }}>
+            <Typography component="p" variant="caption" sx={{ m: 0, color: 'text.secondary' }}>
               {detalle}
             </Typography>
           )}
@@ -364,11 +365,11 @@ export function FilaAtencion({
         <Icono size={17} strokeWidth={1.75} />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography component="span" noWrap={truncar} sx={{ display: 'block', fontSize: 14, lineHeight: '20px', fontWeight: 500 }}>
+        <Typography variant="subtitle1" component="span" noWrap={truncar} sx={{ display: 'block' }}>
           {titulo}
         </Typography>
         {subtitulo && (
-          <Typography component="span" noWrap={truncar} variant="body2" sx={{ display: 'block', color: 'text.secondary', fontWeight: 400 }}>
+          <Typography component="span" noWrap={truncar} variant="body2" sx={{ display: 'block', color: 'text.secondary' }}>
             {subtitulo}
           </Typography>
         )}
@@ -423,11 +424,11 @@ export function SeccionPlana({
             <Icono size={18} strokeWidth={1.75} />
           </Box>
         )}
-        <Typography variant="h4" component={nivel} sx={{ minWidth: 0 }}>
+        <Typography variant="subtitle1" component={nivel} sx={{ minWidth: 0 }}>
           {titulo}
         </Typography>
         {ayuda && (
-          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontWeight: 400, fontSize: 13, minWidth: 0 }}>
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', minWidth: 0 }}>
             {ayuda}
           </Typography>
         )}

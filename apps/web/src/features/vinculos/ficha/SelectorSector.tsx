@@ -37,6 +37,7 @@ export function SelectorSector({ actual, indicadores, onElegir }: Props) {
         aria-controls={abierto ? idMenu : undefined}
         aria-label={nombreAccesibleDeSector(t, actual, indicadores[actual])}
         sx={(th: Theme) => ({
+          typography: 'subtitle1',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
@@ -51,9 +52,6 @@ export function SelectorSector({ actual, indicadores, onElegir }: Props) {
           borderRadius: '12px',
           bgcolor: th.palette.superficie.panel,
           boxShadow: th.sombra.suave,
-          fontSize: 14,
-          lineHeight: '20px',
-          fontWeight: 500,
           '&:hover': { bgcolor: th.palette.superficie.nivel2 },
         })}
       >
@@ -86,7 +84,7 @@ export function SelectorSector({ actual, indicadores, onElegir }: Props) {
           <ListSubheader
             key={`${grupo.clave}-titulo`}
             role="presentation"
-            sx={{ lineHeight: '28px', px: 1.25, fontSize: 12, fontWeight: 500, color: 'text.secondary', bgcolor: 'transparent', position: 'static' }}
+            sx={{ typography: 'caption', px: 1.25, color: 'text.secondary', bgcolor: 'transparent', position: 'static' }}
           >
             {t(`vinculos.ficha.grupos.${grupo.clave}`)}
           </ListSubheader>,
@@ -125,15 +123,13 @@ function ContadorPendientes({ indicador }: { indicador: IndicadorSector | undefi
       aria-hidden
       data-testid="contador"
       sx={{
+        typography: 'caption',
         flex: 'none',
         minWidth: 20,
         height: 20,
         px: 0.75,
         borderRadius: '10px',
-        fontSize: 11,
-        lineHeight: '20px',
         textAlign: 'center',
-        fontWeight: 600,
         bgcolor: advertencia ? 'estado.advertencia.fondo' : 'action.hover',
         color: advertencia ? 'estado.advertencia.texto' : 'text.secondary',
       }}

@@ -25,7 +25,7 @@ export function EnlaceVolver({ a, children }: { a: string; children: ReactNode }
       component={RouterLink}
       to={a}
       relative="path"
-      sx={{ display: 'inline-flex', alignItems: 'center', gap: '2px', mb: 0.75, ml: -0.5, fontSize: 13 }}
+      sx={{ typography: 'subtitle2', display: 'inline-flex', alignItems: 'center', gap: '2px', mb: 0.75, ml: -0.5 }}
     >
       <ChevronLeft size={16} strokeWidth={1.75} aria-hidden />
       {children}
@@ -112,7 +112,7 @@ export function DialogoConfirmacion({
       <DialogTitle id="titulo-confirmacion">
         {titulo}
         {subtitulo && (
-          <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+          <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
             {subtitulo}
           </Typography>
         )}

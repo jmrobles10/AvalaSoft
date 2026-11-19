@@ -31,7 +31,7 @@ export function RepartoVinculos({ indicadores }: { indicadores: IndicadoresDto }
                 {t(`inicio.indicadores.reparto.${s.clave}`)}
               </Typography>
             </Box>
-            <Typography component="dd" variant="body2" sx={{ m: 0, fontWeight: 600 }}>
+            <Typography component="dd" variant="subtitle2" sx={{ m: 0 }}>
               {formatearConteo(s.valor)}
               <Typography component="span" variant="caption" sx={{ ml: 0.75, color: 'text.secondary' }}>
                 {t('inicio.indicadores.reparto.porcentaje', { valor: formatearPorcentaje(s.porcentaje) })}

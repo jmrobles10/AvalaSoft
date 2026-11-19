@@ -93,7 +93,7 @@ export function PaginaWebhooks() {
                   sx={{ cursor: 'pointer' }}
                 >
                   <TableCell>
-                    <Typography variant="monoTabla" sx={{ display: 'block', overflowWrap: 'anywhere' }}>
+                    <Typography variant="monoTabla" sx={{ display: 'block', overflowWrap: 'anywhere', whiteSpace: 'normal' }}>
                       {w.url}
                     </Typography>
                     {w.descripcion && (

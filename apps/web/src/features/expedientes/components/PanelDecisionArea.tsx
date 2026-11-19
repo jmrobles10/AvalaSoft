@@ -50,7 +50,7 @@ export function PanelDecisionArea({
         {areas.map((area) => (
           <Box key={area.areaId} component="section" aria-label={area.nombre} sx={{ border: 1, borderColor: 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5 }}>
             <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', mb: 1 }}>
-              <Typography component="h4" sx={{ fontWeight: 600, fontSize: 14 }}>
+              <Typography variant="subtitle1" component="h4">
                 {area.nombre}
               </Typography>
               <Box sx={{ ml: 'auto' }}>
@@ -63,10 +63,10 @@ export function PanelDecisionArea({
                 const documento = documentoEnVisor(requisito);
                 return (
                   <Stack component="li" key={requisito.id} direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                    <Typography sx={{ fontSize: 13, flex: '1 1 auto', minWidth: 0 }} noWrap>
+                    <Typography sx={{ flex: '1 1 auto', minWidth: 0 }} noWrap>
                       {requisito.tipoDocumento.nombre}
                       {version && (
-                        <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+                        <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
                           {` · v${String(version.n)}`}
                         </Typography>
                       )}

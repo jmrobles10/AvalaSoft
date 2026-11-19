@@ -65,7 +65,7 @@ export function EncabezadoFijo({ titulo, subtitulo, acciones, antes, etiquetaAcc
       <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', columnGap: 2, rowGap: 1 }}>
         {/* En el celular las acciones bajan a su propia línea si el título (200 px como mínimo) no cabe con ellas, en vez de cortarlo. */}
         <Box sx={{ flex: { xs: '1 1 200px', sm: '1 1 320px' }, minWidth: 0 }}>
-          <Typography variant="h2" component="h1" noWrap title={tituloCompleto}>
+          <Typography variant="h5" component="h1" noWrap title={tituloCompleto}>
             {titulo}
           </Typography>
           {subtitulo && (

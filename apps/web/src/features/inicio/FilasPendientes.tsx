@@ -22,7 +22,7 @@ const colorDeCifra = (t: Theme, tono: TonoKpi) => (tono === 'cian' ? t.palette.a
 function CifraDeFila({ valor, unidad, tono }: { valor: string; unidad?: string; tono: TonoKpi }) {
   return (
     <Box sx={{ flex: 'none', textAlign: 'right' }}>
-      <Typography variant="h2" component="span" sx={(t) => ({ display: 'block', color: colorDeCifra(t, tono) })}>
+      <Typography variant="h4" component="span" sx={(t) => ({ display: 'block', color: colorDeCifra(t, tono) })}>
         {valor}
       </Typography>
       {unidad && (

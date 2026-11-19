@@ -20,7 +20,7 @@ function FilaSistema({ sistema, alCambiar }: { sistema: SistemaIntegradoDto; alC
     <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', py: 1.25, borderTop: 1, borderColor: 'divider', '&:first-of-type': { borderTop: 0 } }}>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-          <Typography sx={{ fontWeight: 600 }}>{sistema.nombre}</Typography>
+          <Typography variant="subtitle2" component="p">{sistema.nombre}</Typography>
           <Chip size="small" variant="outlined" label={sistema.codigo} sx={{ fontFamily: (th) => th.typography.mono.fontFamily }} />
           <Chip size="small" variant="outlined" color={sistema.activo ? 'success' : 'default'} label={sistema.activo ? t('comun.activo') : t('comun.inactivo')} />
         </Stack>
@@ -70,7 +70,7 @@ export function DialogoSistemasDeGrupo({ tenantId, grupo, onCerrar }: { tenantId
     <Dialog open onClose={onCerrar} maxWidth={false} slotProps={{ paper: { sx: { width: 600, maxWidth: 'calc(100% - 32px)' } } }} aria-labelledby="titulo-sistemas-grupo">
       <DialogTitle id="titulo-sistemas-grupo">
         {t('consola.sistemas.titulo')}
-        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
           {grupo}
         </Typography>
       </DialogTitle>

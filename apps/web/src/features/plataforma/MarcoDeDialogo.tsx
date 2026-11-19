@@ -47,7 +47,7 @@ export function MarcoDeDialogo({ idTitulo, titulo, subtitulo, ancho = 520, ocupa
         <DialogTitle id={idTitulo}>
           {titulo}
           {subtitulo && (
-            <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+            <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
               {subtitulo}
             </Typography>
           )}

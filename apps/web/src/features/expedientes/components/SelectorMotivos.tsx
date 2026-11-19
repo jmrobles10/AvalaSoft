@@ -20,7 +20,7 @@ export function SelectorMotivos({ etiqueta, ayuda, motivos, elegidos, onCambiar,
 
   return (
     <FormControl component="fieldset" error={Boolean(error)} disabled={deshabilitado} aria-describedby={idAyuda}>
-      <FormLabel component="legend" sx={{ fontSize: 13, fontWeight: 600, color: 'text.primary', mb: 0.5 }}>
+      <FormLabel component="legend" sx={{ typography: 'subtitle2', color: 'text.primary', mb: 0.5 }}>
         {etiqueta}
       </FormLabel>
       <Box
@@ -40,10 +40,10 @@ export function SelectorMotivos({ etiqueta, ayuda, motivos, elegidos, onCambiar,
             control={<Checkbox size="small" checked={elegidos.includes(m.codigo)} onChange={() => alternar(m.codigo)} sx={{ mt: '-2px' }} />}
             label={
               <Box sx={{ py: 0.5 }}>
-                <Typography component="span" sx={{ display: 'block', fontSize: 14, lineHeight: '20px' }}>
+                <Typography component="span" sx={{ display: 'block' }}>
                   {m.nombre}
                 </Typography>
-                <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 12, lineHeight: '16px' }}>
+                <Typography variant="caption" component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                   {m.textoAlTercero}
                 </Typography>
               </Box>

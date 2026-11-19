@@ -82,7 +82,7 @@ export function DialogoDeclaracionPep({ basicos, previa, mensajeServidor, onConf
         </DialogTitle>
         <DialogContent ref={contenido}>
           <Stack spacing={3} sx={{ pt: 1 }}>
-            <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('ficha.pep.subtitulo')}</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>{t('ficha.pep.subtitulo')}</Typography>
             {intento > 0 && hayErrores(errores) && <Alert severity="error">{t('ficha.pep.revisar')}</Alert>}
             <SeccionBasicos {...seccion} />
             <SeccionCondicion {...seccion} />
@@ -95,7 +95,7 @@ export function DialogoDeclaracionPep({ basicos, previa, mensajeServidor, onConf
             <FormControlLabel
               control={<Checkbox checked={d.acepta_juramento === true} onChange={(e) => cambiar({ acepta_juramento: e.target.checked })} />}
               label={t('ficha.pep.juramento.texto')}
-              slotProps={{ typography: { sx: { fontSize: { xs: 13, sm: 14 }, lineHeight: 1.4 } } }}
+              slotProps={{ typography: { variant: 'body2', sx: { lineHeight: 1.4 } } }}
               sx={{ alignItems: 'flex-start', m: 0, '& .MuiCheckbox-root': { mt: -0.5 } }}
             />
             {mensaje('acepta_juramento') && (
@@ -103,7 +103,7 @@ export function DialogoDeclaracionPep({ basicos, previa, mensajeServidor, onConf
                 {mensaje('acepta_juramento')}
               </FormHelperText>
             )}
-            <Typography sx={{ display: { xs: 'none', sm: 'block' }, color: 'text.secondary', fontSize: 13, mt: 0.5 }}>{t('ficha.pep.juramento.aviso')}</Typography>
+            <Typography sx={{ display: { xs: 'none', sm: 'block' }, color: 'text.secondary', mt: 0.5 }}>{t('ficha.pep.juramento.aviso')}</Typography>
           </Box>
           <Stack direction="row" spacing={1} useFlexGap sx={{ justifyContent: 'flex-end', '& .MuiButton-root': { ml: '0 !important', flex: { xs: 1, sm: 'none' } } }}>
             <Button variant="text" onClick={pedirSalida} sx={{ color: 'text.primary' }}>

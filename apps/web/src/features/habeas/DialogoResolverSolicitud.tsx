@@ -64,7 +64,7 @@ export function DialogoResolverSolicitud({ solicitud, origen, onCerrar }: { soli
           <Alert severity="info" sx={{ overflowWrap: 'anywhere' }}>{t('habeas.resolver.queOcurre', { correo: solicitud.titular?.correo ?? t('habeas.resolver.alTitular') })}</Alert>
 
           <FormControl>
-            <FormLabel id="decision-habeas" sx={{ fontSize: 13, mb: 0.25 }}>
+            <FormLabel id="decision-habeas" sx={{ typography: 'subtitle2', mb: 0.25 }}>
               {t('habeas.resolver.decision')}
             </FormLabel>
             <RadioGroup row aria-labelledby="decision-habeas" value={b.decision} onChange={(e) => setB((p) => ({ ...p, decision: e.target.value as DecisionDeSolicitud }))}>

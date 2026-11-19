@@ -18,7 +18,7 @@ export function DrawerAperturas({ empresaId, vinculos, onCerrar }: { empresaId: 
   return (
     <Drawer anchor="right" open onClose={onCerrar} slotProps={{ paper: { sx: { width: 440, maxWidth: '100%' } } }} aria-labelledby="titulo-aperturas">
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <Typography id="titulo-aperturas" variant="h4" component="h2">
+        <Typography id="titulo-aperturas" variant="h6" component="h2">
           {t('bandeja.aperturas.titulo')}
         </Typography>
         <IconButton aria-label={t('comun.cerrar')} onClick={onCerrar}>
@@ -41,7 +41,7 @@ export function DrawerAperturas({ empresaId, vinculos, onCerrar }: { empresaId: 
               >
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <NombreTercero terceroId={v.terceroId} />
-                  <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', mt: 0.25 }}>
+                  <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.25 }}>
                     {v.tipoVinculo.nombre}
                     {v.invitacionAceptadaEn ? ` · ${t('bandeja.aperturas.aceptada', { fecha: formatearFecha(v.invitacionAceptadaEn) })}` : ''}
                   </Typography>

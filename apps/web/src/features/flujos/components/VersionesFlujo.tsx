@@ -38,11 +38,11 @@ export function VersionesFlujo({ versiones, actual, onVer }: { versiones: readon
                   '&:hover': { bgcolor: elegida ? 'acento.tinte' : 'superficie.nivel2' },
                 }}
               >
-                <Typography component="span" variant="monoTabla" sx={{ fontWeight: 600, minWidth: 28 }}>
+                <Typography component="span" variant="monoTabla" sx={{ minWidth: 28 }}>
                   v{v.version}
                 </Typography>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 12 }}>
+                  <Typography variant="caption" component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                     {fecha}
                   </Typography>
                 </Box>

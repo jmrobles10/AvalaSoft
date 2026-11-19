@@ -38,7 +38,7 @@ export function CampanaDeNotificaciones({ noLeidas, etiqueta, titulo, ancla, onA
             badgeContent={textoContador(noLeidas)}
             invisible={noLeidas === 0}
             color="error"
-            sx={{ '& .MuiBadge-badge': { fontSize: 11, height: 16, minWidth: 16, px: 0.5 } }}
+            sx={{ '& .MuiBadge-badge': { height: 16, minWidth: 16, px: 0.5 } }}
           >
             <Bell size={tamanoIcono} strokeWidth={1.75} />
           </Badge>

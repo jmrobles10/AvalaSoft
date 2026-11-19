@@ -35,7 +35,7 @@ export function FilaDePasskey({ passkey, acciones }: { passkey: PasskeyDto; acci
     <Box component="li" sx={{ listStyle: 'none' }}>
       <Fila icono={<KeyRound size={16} strokeWidth={1.75} />} deshabilitada={revocada} acciones={acciones}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', minWidth: 0 }}>
-          <Typography noWrap sx={{ fontWeight: 600 }}>
+          <Typography variant="subtitle2" component="p" noWrap>
             {passkey.nombre}
           </Typography>
           {passkey.sincronizada && <Chip size="small" variant="outlined" label={t('cuenta.passkeys.sincronizada')} title={t('cuenta.passkeys.sincronizadaAyuda')} />}
@@ -59,7 +59,7 @@ export function FilaDeSesion({ sesion, acciones }: { sesion: SesionDeUsuarioDto;
     <Box component="li" sx={{ listStyle: 'none' }}>
       <Fila icono={<Laptop size={16} strokeWidth={1.75} />} acciones={acciones}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', minWidth: 0 }}>
-          <Typography noWrap sx={{ fontWeight: 600 }}>
+          <Typography variant="subtitle2" component="p" noWrap>
             {dispositivo}
           </Typography>
           {sesion.actual && <Chip size="small" color="primary" variant="outlined" label={t('cuenta.sesiones.actual')} />}

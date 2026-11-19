@@ -53,7 +53,7 @@ export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, on
 
   return (
     <Stack spacing={1.5}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+      <Typography sx={{ color: 'text.secondary' }}>
         {requisitos.length === 0 ? t('flujos.editor.requisitos.vacio') : t('flujos.editor.requisitos.ayuda')}
       </Typography>
       {requisitos.map((r, k) => {
@@ -193,7 +193,7 @@ export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, on
                   )}
                 </Stack>
                 {r.dePersonaRelacionada !== null && (
-                  <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>
+                  <Typography component="p" variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
                     {t('personasRelacionadas.editor.ayuda')}
                   </Typography>
                 )}
@@ -206,23 +206,23 @@ export function EditorRequisitos({ requisitos, etapas, areas, tiposDocumento, on
                   label={t('cruce.editor.usarComoSoporte')}
                   sx={{ mx: 0 }}
                 />
-                <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12 }}>
+                <Typography component="p" variant="caption" sx={{ color: 'text.secondary' }}>
                   {t('cruce.editor.ayuda', { secciones: seccionesQueRespalda(tipo.tipoCanonico).map((c) => nombreSeccion(c, t)).join(', ') })}
                 </Typography>
               </Box>
             )}
             {tipo && (
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, mt: 0.75 }} data-resumen-tipo="">
+              <Typography component="p" variant="caption" sx={{ color: 'text.secondary', mt: 0.75 }} data-resumen-tipo="">
                 {resumenTipo(tipo, t)}
               </Typography>
             )}
             {r.condicion && atajoDe(r.condicion) === 'personalizada' && (
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>
+              <Typography component="p" variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
                 {t('flujos.editor.requisitos.personalizada', { condicion: describirCondicion(r.condicion, t) })}
               </Typography>
             )}
             {e && (
-              <Typography color="error" sx={{ fontSize: 12, mt: 1 }}>
+              <Typography variant="caption" component="p" color="error" sx={{ mt: 1 }}>
                 {textoError(e, esSeccion)}
               </Typography>
             )}

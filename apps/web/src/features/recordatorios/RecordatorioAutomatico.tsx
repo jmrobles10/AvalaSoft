@@ -18,7 +18,7 @@ export function RecordatorioAutomatico({ empresaId, puedeEscribir }: { empresaId
 
   return (
     <Paper variant="outlined" component="section" aria-labelledby="titulo-recordatorio-automatico" sx={{ p: 2, mb: 2 }}>
-      <Typography id="titulo-recordatorio-automatico" component="h2" sx={{ fontSize: 15, lineHeight: '22px', fontWeight: 600 }}>
+      <Typography variant="subtitle1" id="titulo-recordatorio-automatico" component="h2">
         {t('recordatorios.automatico.titulo')}
       </Typography>
       <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.25 }}>

@@ -25,7 +25,7 @@ export function EmpresasDelDocumento({ resumen, referencia, filtrada, abierto, o
   if (resumen.modo === 'vacio' || resumen.modo === 'ninguna') {
     const texto = filtrada ? t('boveda.filtro.sinEstaEmpresa') : resumen.modo === 'vacio' ? t('boveda.sinEmpresas') : t('boveda.ningunaLaExige');
     return (
-      <Typography variant="caption" component="p" sx={{ m: 0, color: 'text.secondary', fontWeight: 400 }}>
+      <Typography variant="caption" component="p" sx={{ m: 0, color: 'text.secondary' }}>
         {texto}
       </Typography>
     );

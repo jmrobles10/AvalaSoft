@@ -41,7 +41,7 @@ export function PaginaEvaluaciones() {
         encabezado: t('evaluaciones.lista.columnas.tercero'),
         celda: (e) => (
           <>
-            <Typography component="span" sx={{ display: 'block', fontWeight: 500 }}>
+            <Typography variant="subtitle2" component="span" sx={{ display: 'block' }}>
               {e.tercero.nombre}
             </Typography>
             <Typography component="span" variant="caption" sx={{ color: 'text.secondary' }}>

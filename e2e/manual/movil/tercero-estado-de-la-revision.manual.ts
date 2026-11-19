@@ -40,7 +40,7 @@ recorrido(
     await paso(page, {
       titulo: 'Lee la frase de estado',
       explicacion:
-        'Arriba de la revisión, una frase dice en qué va: «Constructora Norte S.A.S. está revisando tu información». Debajo aparece el folio de tu proceso y la fecha de la última actualización.',
+        'Arriba de la revisión, una frase dice en qué va: «Constructora Norte S.A.S. está revisando tu información». Debajo aparece el código del expediente de tu proceso y la fecha de la última actualización.',
       resaltar: fraseDeEstado(page, 'EnRevision'),
       variantes: [
         { cuando: 'Te falta subir documentos', entonces: 'La frase dice cuántos documentos faltan y te invita a subirlos.' },
