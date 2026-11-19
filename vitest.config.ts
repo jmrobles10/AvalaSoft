@@ -4,6 +4,14 @@ import { defineConfig } from 'vitest/config';
 // la réplica local del CI (`infra/ci-local`, que no es un paquete: solo guarda esa prueba y se corre con Node) y las del generador del manual (`e2e/manual`).
 export default defineConfig({
   test: {
-    projects: ['packages/*', 'apps/*', 'marca', 'infra/ci-local', 'e2e/manual'],
+    projects: [
+      'packages/*',
+      // Cada app tiene dos proyectos: las pantallas (jsdom) y la lógica pura (Node), que no necesita DOM ni React (PV-5).
+      'apps/*/vitest.config.ts',
+      'apps/*/vitest.logica.config.ts',
+      'marca',
+      'infra/ci-local',
+      'e2e/manual',
+    ],
   },
 });

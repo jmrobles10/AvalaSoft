@@ -4,6 +4,8 @@ import { reiniciarCliente } from '@avalasoft/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { documento, escribir, estadoFicha, guardada, json, montarFicha, seccion } from './pruebas/montar';
 
+// Los menús y las listas de MUI necesitan el retardo de un macrotask entre acciones: `userEvent.setup()` lo quita por omisión en la preparación de las pruebas (PV-5).
+
 afterEach(() => reiniciarCliente());
 
 /** General ya guardada (con lo que fija la API: tipo, número y DV) y sin teléfono. */
@@ -18,7 +20,7 @@ const ubicacion = () => screen.getByTestId('ubicacion').textContent;
 
 describe('Mi información: Información general', () => {
   it('guardar incompleta muestra los faltantes exactos del servidor, los marca en su campo y no avanza', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const faltantes = [
       { campo: 'telefono', regla: null, mensaje: 'Falta «Teléfono».' },
       { campo: 'direccion', regla: null, mensaje: 'Falta «Dirección».' },
@@ -49,7 +51,7 @@ describe('Mi información: Información general', () => {
   });
 
   it('completa, «Guardar y continuar» lleva a la siguiente sección que dice el servidor', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const guardados = montarFicha('/ficha/general', {
       estado: estadoFicha(),
       secciones: { FICHA_GENERAL: GENERAL },
@@ -65,7 +67,7 @@ describe('Mi información: Información general', () => {
   });
 
   it('«Guardar» se habilita con cambios, deja el borrador y se queda aunque esté completa', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     montarFicha('/ficha/general', { estado: estadoFicha(), secciones: { FICHA_GENERAL: GENERAL }, alGuardar: () => json(200, guardada('FICHA_GENERAL', [], 'FICHA_TRIBUTARIA')) });
     const guardar = await screen.findByRole('button', { name: 'Guardar' });
     // Sin cambios no hay nada que guardar.
@@ -79,7 +81,7 @@ describe('Mi información: Información general', () => {
   });
 
   it('un 422 de formato se muestra en su campo', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     montarFicha('/ficha/general', {
       estado: estadoFicha(),
       secciones: { FICHA_GENERAL: GENERAL },
@@ -107,7 +109,7 @@ describe('Mi información: Información general', () => {
   });
 
   it('el soporte se elige entre los documentos de la bóveda que respaldan la sección y su falta se muestra junto al selector', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const guardados = montarFicha('/ficha/general', {
       estado: estadoFicha(),
       secciones: { FICHA_GENERAL: GENERAL },
@@ -141,7 +143,7 @@ describe('Mi información: Información general', () => {
 
 describe('Mi información: un soporte que el tercero retiró (RT-4)', () => {
   it('avisa que el soporte fue retirado, no lo ofrece ni lo reenvía y conserva los datos', async () => {
-    const usuario = userEvent.setup();
+    const usuario = userEvent.setup({ delay: 0 });
     const retirado = { documentoId: 'd-rut', version: 1, tipoDocumento: 'RUT', nombre: 'Registro Único Tributario', retirado: true };
     const guardados = montarFicha('/ficha/general', {
       estado: estadoFicha(),

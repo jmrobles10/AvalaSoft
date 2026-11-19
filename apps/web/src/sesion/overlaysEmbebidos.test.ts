@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { ALTO_PANEL, anclarOverlays, MARGEN, posicionAnclada, posicionEnRegion, regionVisibleDelIframe, type RegionVisible } from './overlaysEmbebidos';

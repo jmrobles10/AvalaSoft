@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { generateKeyPairSync, createVerify } from 'node:crypto';
 import { afterEach, describe, expect, it } from 'vitest';
 import { firmarAsercion } from '../dev/firmarAsercion';

@@ -5,5 +5,5 @@
     "tsBuildInfoFile": "node_modules/.cache/tsc.tsbuildinfo",
     "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom", "node"]
   },
-  "include": ["src", "vite.config.ts", "vitest.config.ts"]
+  "include": ["src", "vite.config.ts", "vitest.config.ts", "vitest.logica.config.ts"]
 }

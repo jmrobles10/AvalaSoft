@@ -30,7 +30,7 @@ namespace Avalasoft.Integracion.Tests;
 
 /// <summary>
 /// Ayudantes compartidos de las pruebas de requisitos y de todo lo que se apoya en ellas (escenario de Norte, llamadas con llave o con
-/// delegado, sesiones del tercero, PDF de prueba). Las pruebas viven en clases hermanas (una por archivo <c>RequisitosApiTests.*.cs</c>) para que
+/// delegado, sesiones del tercero, PDF de prueba). Las pruebas viven en clases hermanas (una por archivo <c>Requisitos*ApiTests.cs</c>) para que
 /// xUnit las reparta entre colecciones y corran en paralelo, cada colección con su propio host y su propia base (decisión PV-1).
 /// </summary>
 public abstract partial class RequisitosApiBase(ApiFixture fixture, ITestOutputHelper salida)
@@ -63,7 +63,6 @@ public abstract partial class RequisitosApiBase(ApiFixture fixture, ITestOutputH
     protected sealed record Descarga(HttpStatusCode Estado, string? Tipo, string? Nombre, byte[] Contenido);
 
     protected sealed record Escenario(Empresa Norte, AreaDto Compras, AreaDto Cumplimiento, Persona Laura, Persona Carlos, FlujoDto Flujo);
-
 
     protected sealed record Aprobado(Escenario E, VinculoDto Vinculo, SesionTerceroDto Sesion, Guid Expediente, int Emision);
 

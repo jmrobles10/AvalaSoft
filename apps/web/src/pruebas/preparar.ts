@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup, configure } from '@testing-library/react';
 import { afterEach } from 'vitest';
+import '@avalasoft/ui/pruebas';
 import '../i18n';
 
 // `findBy*`/`waitFor` esperan 5 s (1 s por omisión): con los tres proyectos en paralelo el primer render de MUI tarda más.
@@ -10,9 +11,15 @@ configure({ asyncUtilTimeout: 5_000 });
 // (las que miden de verdad, como la barra de navegación, lo reemplazan con vi.stubGlobal).
 if (typeof globalThis.ResizeObserver === 'undefined') {
   globalThis.ResizeObserver = class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe() {
+      /* sin efecto */
+    }
+    unobserve() {
+      /* sin efecto */
+    }
+    disconnect() {
+      /* sin efecto */
+    }
   };
 }
 

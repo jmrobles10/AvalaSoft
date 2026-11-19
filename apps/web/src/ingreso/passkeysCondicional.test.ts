@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest';
 import { simularNavegadorConPasskeys, OPCIONES_DE_FIRMA, type NavegadorSimulado } from '../pruebas/navegadorSimulado';
 import { esErrorDePasskey, firmarConPasskey, soportaPasskeysCondicional } from './passkeys';
