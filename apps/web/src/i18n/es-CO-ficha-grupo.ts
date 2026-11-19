@@ -35,7 +35,7 @@ export const fichaGrupo = {
   },
   empresas: {
     titulo: 'Empresas',
-    ayuda: 'La razón social, la identificación y el prefijo de folio se corrigen aquí. Los folios ya emitidos conservan el prefijo anterior.',
+    ayuda: 'La razón social, la identificación y el prefijo se corrigen aquí. Los códigos ya emitidos conservan el prefijo anterior.',
     vacio: 'Este grupo aún no tiene empresas.',
     agregar: 'Agregar empresa',
     planIa: 'Plan de IA',

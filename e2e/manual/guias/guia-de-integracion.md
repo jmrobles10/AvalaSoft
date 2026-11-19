@@ -169,7 +169,7 @@ El **sandbox** es un entorno de pruebas aislado del grupo, en la misma URL. Una 
 | Aspecto | En el sandbox |
 |---|---|
 | Configuración | Copia la de producción (empresas, tipos, áreas, flujos, motivos, plantillas, sistemas y sus claves públicas) y **ningún dato**. |
-| Empresas | Cada una tiene una copia con **otro id**: el `X-Empresa` de una llave de prueba es el de la copia (`GET /api/v1/sandbox` lo da, con `produccionId` al lado). El nombre termina en «(sandbox)» y el prefijo de folio lleva una `T` por delante. |
+| Empresas | Cada una tiene una copia con **otro id**: el `X-Empresa` de una llave de prueba es el de la copia (`GET /api/v1/sandbox` lo da, con `produccionId` al lado). El nombre termina en «(sandbox)» y el prefijo lleva una `T` por delante. |
 | Terceros | Aislados: el mismo NIT en el sandbox es otro tercero, con su propia bóveda. |
 | Correos | **No salen**: quedan en un buzón que se lee por API (`GET /api/v1/sandbox/correos`), con el enlace de acceso incluido. |
 | IA y listas | **Simuladas**, sin red ni costo: la IA lee marcas del archivo (`[[clave=valor]]`) y un tercero con «coincidencia» en el nombre produce una coincidencia. |

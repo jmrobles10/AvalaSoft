@@ -434,8 +434,8 @@ describe('Ficha del grupo: ingreso, empresas y sistemas reutilizan lo que ya exi
 
     const dialogo = await screen.findByRole('dialog', { name: /^Editar empresa/ });
     expect(within(dialogo).getByText('Para el grupo Grupo Andino')).toBeInTheDocument();
-    expect(within(dialogo).getByRole('textbox', { name: /Prefijo de folio/ })).toHaveValue('NORTE');
-    expect(within(dialogo).getByText(/Los folios ya emitidos conservan el prefijo anterior/)).toBeInTheDocument();
+    expect(within(dialogo).getByRole('textbox', { name: /Prefijo/ })).toHaveValue('NORTE');
+    expect(within(dialogo).getByText(/Los códigos ya emitidos conservan el prefijo anterior/)).toBeInTheDocument();
   });
 
   it('«Gestionar» abre el diálogo de sistemas que ya existe', async () => {

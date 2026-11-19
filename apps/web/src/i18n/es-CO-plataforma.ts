@@ -202,7 +202,7 @@ export const plataforma = {
       'empresa-numero-requerido': 'Falta el número de identificación de la empresa.',
       'empresa-numero-invalido': 'El número no tiene la forma de un {{tipo}}.',
       'empresa-nombre-requerido': 'Falta la razón social de la empresa.',
-      'empresa-prefijo-invalido': 'El prefijo de folio lleva de 2 a 10 letras mayúsculas o números.',
+      'empresa-prefijo-invalido': 'El prefijo lleva de 2 a 10 letras mayúsculas o números.',
       'admin-nombre-requerido': 'Falta el nombre del administrador.',
       'admin-correo-invalido': 'El correo del administrador no es válido.',
       'modos-requeridos': 'Elige al menos una forma de ingreso: desde el sistema integrado o directo a Valídalo.',

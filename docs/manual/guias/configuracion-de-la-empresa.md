@@ -18,7 +18,7 @@ Ruta `/e/{empresa}/datos-marca` · permiso `empresas:administrar`.
 
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
-| Razón social, identificación y prefijo de folio | Solo lectura: se fijan al crear la empresa y el prefijo ya está en los folios emitidos. | Los de la creación | — |
+| Razón social, identificación y prefijo | Solo lectura: se fijan al crear la empresa y el prefijo ya está en los folios emitidos. | Los de la creación | — |
 | Contacto de soporte para terceros | Enlace `mailto:` al pie del portal del tercero. No se usa como `Reply-To` de los correos. | Sin valor (opcional) | Correo válido de hasta 254 caracteres; vacío lo quita (`contacto-soporte-invalido`). |
 | Logo | Se ve en el portal del tercero y en los datos públicos del certificado, el PDF de la declaración PEP y la exportación del expediente. Los correos llevan siempre el logotipo de Valídalo. | Sin logo (se usa el de Valídalo) | Desde la pantalla: SVG o PNG de hasta 200 KB; la API acepta además una URL `https` de hasta 2048 caracteres. «Quitar logo». Errores `logo-invalido` y `logo-demasiado-grande`. |
 | Color de marca | Deriva la paleta del portal del tercero (botones y enlaces) con contraste garantizado. | Sin color: tema de Valídalo | `#RRGGBB`, se guarda en mayúsculas; vacío lo quita (`color-marca-invalido`). |

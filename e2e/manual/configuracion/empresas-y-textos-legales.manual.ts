@@ -31,7 +31,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre Configuración › Empresas del grupo',
       explicacion:
-        'La tabla lista las razones sociales del grupo con su identificación, su prefijo de folio y si están activas. Cada empresa decide por su cuenta: no ve las decisiones de las otras, aunque compartan usuarios y configuración del grupo. ' +
+        'La tabla lista las razones sociales del grupo con su identificación, su prefijo y si están activas. Cada empresa decide por su cuenta: no ve las decisiones de las otras, aunque compartan usuarios y configuración del grupo. ' +
         'Al elegir una fila se abre debajo el detalle de esa empresa, con sus textos legales.',
       resaltar: app.getByRole('table', { name: 'Empresas del grupo' }),
       configuracion: {
@@ -48,13 +48,13 @@ recorrido(
     await expect(dialogo).toBeVisible();
     await dialogo.getByRole('textbox', { name: 'Número de identificación' }).fill(nitAleatorio().numero);
     await dialogo.getByRole('textbox', { name: 'Razón social' }).fill(RAZON_SOCIAL);
-    await dialogo.getByRole('textbox', { name: 'Prefijo de folio' }).fill(PREFIJO);
+    await dialogo.getByRole('textbox', { name: 'Prefijo' }).fill(PREFIJO);
     await paso(page, {
       titulo: 'Escribe los datos de la empresa',
       explicacion:
-        'Elige el tipo y el número de identificación (con o sin dígito de verificación: Valídalo lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior. ' +
-        'El campo de ejemplo muestra cómo se verán sus folios.',
-      resaltar: [dialogo.getByRole('textbox', { name: 'Razón social' }), dialogo.getByRole('textbox', { name: 'Prefijo de folio' })],
+        'Elige el tipo y el número de identificación (con o sin dígito de verificación: Valídalo lo calcula y lo compara), la razón social y el prefijo. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en los códigos de los expedientes y certificados de la empresa: después solo Plataforma puede corregirlo, y los códigos ya emitidos conservan el anterior. ' +
+        'El campo de ejemplo muestra cómo se verán sus códigos.',
+      resaltar: [dialogo.getByRole('textbox', { name: 'Razón social' }), dialogo.getByRole('textbox', { name: 'Prefijo' })],
       variantes: [
         { cuando: 'El prefijo tiene menos de 2 o más de 10 caracteres, o minúsculas', entonces: 'El campo dice que debe tener entre 2 y 10 letras mayúsculas o números y no se puede agregar.' },
         { cuando: 'El número no tiene el formato del tipo elegido', entonces: 'El campo dice que el número no tiene el formato de ese tipo de identificación.' },

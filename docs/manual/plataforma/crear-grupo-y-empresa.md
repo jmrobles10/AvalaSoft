@@ -55,7 +55,7 @@ Escribe el nombre del grupo. El identificador se propone solo a partir del nombr
 
 ## Paso 3. Da de alta la primera empresa del grupo
 
-La primera empresa es la razón social que valida a sus terceros. Eliges el país y el tipo de identificación, escribes el número y la razón social, y defines el prefijo de folio: las letras con que empiezan los números de sus expedientes. Si hace falta corregirlo después, se edita desde la fila de la empresa en el grupo (los folios ya emitidos conservan el prefijo anterior); aun así, elige uno corto y fácil de reconocer. Más empresas se agregan después desde el mismo grupo.
+La primera empresa es la razón social que valida a sus terceros. Eliges el país y el tipo de identificación, escribes el número y la razón social, y defines el prefijo: las letras con que empiezan los números de sus expedientes. Si hace falta corregirlo después, se edita desde la fila de la empresa en el grupo (los códigos ya emitidos conservan el prefijo anterior); aun así, elige uno corto y fácil de reconocer. Más empresas se agregan después desde el mismo grupo.
 
 > **Pantalla:** `/plataforma/grupos/nuevo`
 
@@ -67,7 +67,7 @@ La primera empresa es la razón social que valida a sus terceros. Eliges el paí
 
 **Configuración que lo afecta**
 
-- **Prefijo de folio**: Aparece al inicio de los números de expediente de la empresa; Plataforma puede corregirlo después y los folios ya emitidos conservan el anterior.
+- **Prefijo**: Aparece al inicio de los números de expediente de la empresa; Plataforma puede corregirlo después y los códigos ya emitidos conservan el anterior.
 
 ## Paso 4. Nombra al administrador del grupo
 

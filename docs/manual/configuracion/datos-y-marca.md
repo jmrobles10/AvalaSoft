@@ -27,7 +27,7 @@ La administradora actualiza el contacto de soporte, el logo y el color de marca 
 
 ## Paso 1. Abre Configuración › Datos y marca
 
-La pantalla tiene dos partes. «Datos de la empresa» muestra la razón social, la identificación y el prefijo de folio: se ven, pero no se cambian aquí: los corrige Plataforma desde su consola, y los folios ya emitidos conservan el prefijo anterior. La tarjeta «Marca en el portal del tercero» es lo que sí puedes editar: el contacto de soporte, el logo y el color.
+La pantalla tiene dos partes. «Datos de la empresa» muestra la razón social, la identificación y el prefijo: se ven, pero no se cambian aquí: los corrige Plataforma desde su consola, y los códigos ya emitidos conservan el prefijo anterior. La tarjeta «Marca en el portal del tercero» es lo que sí puedes editar: el contacto de soporte, el logo y el color.
 
 > **Pantalla:** `/e/{empresa}/datos-marca`
 

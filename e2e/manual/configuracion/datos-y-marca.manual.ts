@@ -29,7 +29,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre Configuración › Datos y marca',
       explicacion:
-        'La pantalla tiene dos partes. «Datos de la empresa» muestra la razón social, la identificación y el prefijo de folio: se ven, pero no se cambian aquí: los corrige Plataforma desde su consola, y los folios ya emitidos conservan el prefijo anterior. ' +
+        'La pantalla tiene dos partes. «Datos de la empresa» muestra la razón social, la identificación y el prefijo: se ven, pero no se cambian aquí: los corrige Plataforma desde su consola, y los códigos ya emitidos conservan el prefijo anterior. ' +
         'La tarjeta «Marca en el portal del tercero» es lo que sí puedes editar: el contacto de soporte, el logo y el color.',
       resaltar: app.getByRole('heading', { name: 'Datos de la empresa', exact: true }),
       configuracion: {

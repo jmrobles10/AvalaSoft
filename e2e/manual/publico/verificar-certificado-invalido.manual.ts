@@ -9,7 +9,7 @@ recorrido(
     resumen:
       'Si el folio o la huella no corresponden a ningún certificado de Valídalo, la página no lo da por bueno: explica qué revisar en el PDF o en el código QR y no muestra datos de ninguna empresa ni de ningún titular.',
     precondiciones: [
-      'Un grupo empresarial registrado en Valídalo, cuyo prefijo de folio se usa para armar un folio que no existe.',
+      'Un grupo empresarial registrado en Valídalo, cuyo prefijo se usa para armar un folio que no existe.',
       'La consulta se hace sin sesión, desde una ventana nueva del navegador.',
     ],
     relacionados: ['publico/verificar-certificado-autentico'],

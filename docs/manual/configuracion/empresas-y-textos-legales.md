@@ -29,7 +29,7 @@ La administradora agrega una razón social nueva al grupo y publica la autorizac
 
 ## Paso 1. Abre Configuración › Empresas del grupo
 
-La tabla lista las razones sociales del grupo con su identificación, su prefijo de folio y si están activas. Cada empresa decide por su cuenta: no ve las decisiones de las otras, aunque compartan usuarios y configuración del grupo. Al elegir una fila se abre debajo el detalle de esa empresa, con sus textos legales.
+La tabla lista las razones sociales del grupo con su identificación, su prefijo y si están activas. Cada empresa decide por su cuenta: no ve las decisiones de las otras, aunque compartan usuarios y configuración del grupo. Al elegir una fila se abre debajo el detalle de esa empresa, con sus textos legales.
 
 > **Pantalla:** `/e/{empresa}/empresas`
 
@@ -45,7 +45,7 @@ La tabla lista las razones sociales del grupo con su identificación, su prefijo
 
 ## Paso 2. Escribe los datos de la empresa
 
-Elige el tipo y el número de identificación (con o sin dígito de verificación: Valídalo lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior. El campo de ejemplo muestra cómo se verán sus folios.
+Elige el tipo y el número de identificación (con o sin dígito de verificación: Valídalo lo calcula y lo compara), la razón social y el prefijo. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en los códigos de los expedientes y certificados de la empresa: después solo Plataforma puede corregirlo, y los códigos ya emitidos conservan el anterior. El campo de ejemplo muestra cómo se verán sus códigos.
 
 > **Pantalla:** `/e/{empresa}/empresas`
 

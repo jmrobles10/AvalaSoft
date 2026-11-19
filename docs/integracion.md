@@ -168,7 +168,7 @@ El sandbox es un **entorno de pruebas aislado de tu grupo**, en la misma URL. Un
 
 | Aspecto | En el sandbox |
 |---|---|
-| **Empresas** | Cada empresa tiene una **copia de pruebas con otro id**: el `X-Empresa` de una llave de prueba es el id de la copia (`GET /api/v1/sandbox` lo da: `empresas[].id`, con `produccionId` al lado). Su nombre termina en «(sandbox)» y su prefijo de folio lleva una `T` por delante (`TNORTE-C-…`). El id de la empresa real no existe para una llave de prueba (`404`), ni al revés. |
+| **Empresas** | Cada empresa tiene una **copia de pruebas con otro id**: el `X-Empresa` de una llave de prueba es el id de la copia (`GET /api/v1/sandbox` lo da: `empresas[].id`, con `produccionId` al lado). Su nombre termina en «(sandbox)» y su prefijo lleva una `T` por delante (`TNORTE-C-…`). El id de la empresa real no existe para una llave de prueba (`404`), ni al revés. |
 | **Terceros** | Aislados: el mismo NIT en el sandbox es **otro tercero** distinto del real (con su propia bóveda). Un tercero de producción nunca ve un vínculo de pruebas. |
 | **Correos** | **No salen.** Cada correo que Valídalo habría enviado (invitación, código OTP, avisos…) queda en el **buzón del sandbox**, que lees por API con el enlace de acceso incluido. |
 | **IA y listas restrictivas** | **Simuladas**, sin red ni costo. La IA lee marcas del propio archivo (`[[clave=valor]]` dentro del PDF o imagen); un tercero cuyo nombre contenga «coincidencia» produce una coincidencia en listas. |

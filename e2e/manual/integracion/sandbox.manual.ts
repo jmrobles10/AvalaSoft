@@ -92,7 +92,7 @@ recorrido(
       titulo: 'Revisa qué copió el sandbox',
       explicacion:
         'La respuesta dice si el sandbox existe, su entorno («sandbox», distinto de «produccion»), los sistemas que lo usan y las empresas copiadas. ' +
-        'Cada empresa trae el id de su copia de pruebas (ese id es el que usas en X-Empresa), el id de producción del que sale y su prefijo de folio, que empieza por T para distinguirla.',
+        'Cada empresa trae el id de su copia de pruebas (ese id es el que usas en X-Empresa), el id de producción del que sale y su prefijo, que empieza por T para distinguirla.',
       resaltar: page.locator('#respuesta'),
       variantes: [{ cuando: 'Consultas el mismo estado con una llave de producción', entonces: 'Responde que el entorno es «produccion» y no ve el sandbox.' }],
     });

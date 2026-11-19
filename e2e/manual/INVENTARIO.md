@@ -175,7 +175,7 @@ Todos en la app de la empresa como administradora (Ana) salvo donde se indica. C
 | `configuracion/flujo-por-reglas` ✅ | Administrador de empresa | Flujo por defecto de Sur (`publicarFlujoPorDefecto`); jurídica invitada y expediente abierto a mano | Selección automática: condición y prioridad del flujo nuevo, publicar la regla, el expediente dice «Se escogió por regla» |
 | `configuracion/areas-y-miembros` ☑ | Administrador de empresa | Personas con rol en la empresa | Crear área, asignar miembros, desactivar, efecto en la bandeja |
 | `configuracion/usuarios-y-roles` ☑ | Administrador de empresa | Sistema integrado con identidades | Crear una persona, roles por empresa o de todo el grupo (Administrador, Revisor, Oficial, Auditor), identidad en el sistema, desactivar |
-| `configuracion/empresas-y-textos-legales` ☑ | Administrador de empresa | Grupo base | Crear una empresa (prefijo de folio), publicar autorización y términos, versión nueva, qué ve el tercero |
+| `configuracion/empresas-y-textos-legales` ☑ | Administrador de empresa | Grupo base | Crear una empresa (prefijo), publicar autorización y términos, versión nueva, qué ve el tercero |
 | `configuracion/datos-y-marca` ☑ | Administrador de empresa | Grupo base | Logo, nombre comercial, `reply-to`, dónde se ve (correos, PDF del certificado, declaración) |
 | `configuracion/plantillas-de-correo` ☑ | Administrador de empresa | Grupo base (spec `plantillas`) | Lista de plantillas, editar asunto y cuerpo, variables, vista previa, restablecer |
 | `configuracion/dominio-de-correo` ☑ | Administrador de empresa | Grupo base (spec `derechos-plan-correo`) | Fijar un dominio, registros DNS (SPF, DKIM), verificar, quitar |
@@ -246,7 +246,7 @@ Siembra común: llave de Plataforma (`CLAVE_PLATAFORMA`) y `abrirEmbebidoCon` si
 | `plataforma/ingreso-del-operador` ☑ | Plataforma | Operador con passkey y clave de arranque (spec `plataforma-identidad`) | Entrar a la consola, passkey, qué puede ver cada rol de operador |
 | `plataforma/crear-grupo-y-empresa` ☑ | Plataforma | — (spec `alta-empresa-certificacion`) | Nuevo grupo: datos, primera empresa, administrador, sistema y llaves; el resultado se ve una sola vez |
 | `plataforma/lista-de-grupos` ☑ | Plataforma | Varios grupos | Grupos con sus empresas, buscar, abrir la tarjeta |
-| `plataforma/agregar-empresa-a-un-grupo` ☑ | Plataforma | Grupo existente | Agregar una empresa, prefijo de folio, la empresa aparece en el grupo |
+| `plataforma/agregar-empresa-a-un-grupo` ☑ | Plataforma | Grupo existente | Agregar una empresa, prefijo, la empresa aparece en el grupo |
 | `plataforma/sistemas-de-un-grupo` ☑ | Plataforma | Grupo con un sistema integrado | Ver, desactivar y reactivar un sistema, efecto sobre sus llaves y sesiones |
 | `plataforma/plan-del-grupo` ☑ | Plataforma | Grupo con límites (spec `derechos-plan-correo`) | Plan, límites y uso, cambiar, aviso al grupo |
 | `plataforma/plan-de-ia-y-llave-openai` ☑ | Plataforma | Empresa sin plan (spec `ia-cupo-y-escalamiento`) | Plan de IA, validaciones incluidas, llave de OpenAI (nunca visible), «Probar llave» |

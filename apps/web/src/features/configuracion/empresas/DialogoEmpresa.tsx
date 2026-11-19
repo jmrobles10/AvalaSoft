@@ -25,7 +25,7 @@ interface Props {
 }
 
 /**
- * Agregar una razón social al grupo —identificación, razón social y prefijo de folio— o, con `inicial`, corregirlas (solo Plataforma; los
+ * Agregar una razón social al grupo —identificación, razón social y prefijo— o, con `inicial`, corregirlas (solo Plataforma; los
  * folios ya emitidos conservan el prefijo anterior).
  */
 export function DialogoEmpresa({ claveIdempotencia = '', onCerrar, onGuardada, mutacion, subtitulo, inicial }: Props) {

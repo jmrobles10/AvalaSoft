@@ -146,7 +146,7 @@ test('Plataforma: agregar una empresa a un grupo y desactivar y reactivar uno de
   await expect(dialogo.getByText(`Para el grupo ${g.nombre}`)).toBeVisible();
   await dialogo.getByRole('textbox', { name: /Número de identificación/ }).fill(nit.numero);
   await dialogo.getByRole('textbox', { name: /Razón social/ }).fill('Obras del Sur S.A.S.');
-  await dialogo.getByRole('textbox', { name: /Prefijo de folio/ }).fill(`S${randomUUID().replace(/-/g, '').slice(0, 5).toUpperCase()}`);
+  await dialogo.getByRole('textbox', { name: /Prefijo/ }).fill(`S${randomUUID().replace(/-/g, '').slice(0, 5).toUpperCase()}`);
   await capturar(page, 'plataforma-agregar-empresa');
   await dialogo.getByRole('button', { name: 'Agregar empresa' }).click();
   await expect(dialogo).toBeHidden();

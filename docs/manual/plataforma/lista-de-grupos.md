@@ -50,7 +50,7 @@ Escribe parte del nombre del grupo, de una empresa o un NIT. La lista se filtra 
 
 ## Paso 3. Revisa las empresas del grupo
 
-La tabla de cada grupo muestra sus empresas con la identificación (NIT), el prefijo de folio (el que aparece en los números de expediente) y el plan de IA de cada una. Desde la fila, «Plan de IA» abre la configuración del nivel de IA de esa empresa.
+La tabla de cada grupo muestra sus empresas con la identificación (NIT), el prefijo (el que aparece en los números de expediente) y el plan de IA de cada una. Desde la fila, «Plan de IA» abre la configuración del nivel de IA de esa empresa.
 
 > **Pantalla:** `/plataforma/grupos`
 

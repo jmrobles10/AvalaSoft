@@ -37,7 +37,7 @@ test('una empresa creada desde la consola certifica a su primer proveedor: invit
   await consola.getByRole('textbox', { name: 'Nombre del grupo' }).fill(grupo);
   await consola.getByRole('textbox', { name: 'Número de identificación' }).fill(nit.numero);
   await consola.getByRole('textbox', { name: 'Razón social' }).fill(empresa);
-  await consola.getByRole('textbox', { name: 'Prefijo de folio' }).fill(prefijo);
+  await consola.getByRole('textbox', { name: 'Prefijo' }).fill(prefijo);
   await consola.getByRole('textbox', { name: 'Nombre', exact: true }).fill(admin.nombre);
   await consola.getByRole('textbox', { name: 'Correo' }).fill(admin.correo);
   await consola.getByRole('textbox', { name: 'Su usuario en el sistema (opcional)' }).fill(admin.sub);
