@@ -1,4 +1,6 @@
-import { Box, Paper } from '@mui/material';
+import { Box } from '@mui/material';
+import { SeccionPlana } from '@avalasoft/ui';
+import { HardHat } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CampoSiNo } from '../campos';
 import { PREGUNTAS_SST, type DatosSst, type PropsFormulario } from '../tipos';
@@ -10,9 +12,9 @@ import { PREGUNTAS_SST, type DatosSst, type PropsFormulario } from '../tipos';
 export function FormularioSst({ datos, onCambiar, mensaje, deshabilitado }: PropsFormulario<DatosSst>) {
   const { t } = useTranslation();
   return (
-    <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
+    <SeccionPlana titulo={t('ficha.bloques.sst.titulo')} ayuda={t('ficha.bloques.sst.ayuda')} etiqueta={t('ficha.bloques.sst.titulo')} icono={HardHat}>
       {PREGUNTAS_SST.map((pregunta) => (
-        <Box key={pregunta} sx={{ px: 2, py: 0.75, borderTop: 1, borderColor: 'divider', '&:first-of-type': { borderTop: 0 } }}>
+        <Box key={pregunta} sx={{ py: 0.5, borderTop: 1, borderColor: 'divider', '&:first-of-type': { borderTop: 0, pt: 0 } }}>
           <CampoSiNo
             enLinea
             etiqueta={t(`ficha.sst.preguntas.${pregunta}`)}
@@ -23,6 +25,6 @@ export function FormularioSst({ datos, onCambiar, mensaje, deshabilitado }: Prop
           />
         </Box>
       ))}
-    </Paper>
+    </SeccionPlana>
   );
 }

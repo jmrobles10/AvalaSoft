@@ -1,4 +1,4 @@
-import { Box, Button, Card, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import type { CuentaBancariaPublicaDto, VinculoPublicoDto } from '@avalasoft/api-client';
 import { ChipEstado } from '@avalasoft/ui';
 import { useState } from 'react';
@@ -34,7 +34,7 @@ export function CuentasPorEmpresa({ vinculos, cuentas }: { vinculos: readonly Vi
 
   return (
     <Box component="section" aria-labelledby="titulo-por-empresa" sx={{ mt: 3 }}>
-      <Typography id="titulo-por-empresa" component="h2" sx={{ fontWeight: 600, fontSize: 15, lineHeight: '20px', mb: 1 }}>
+      <Typography id="titulo-por-empresa" component="h2" variant="h4" sx={{ mb: 0.5 }}>
         {t('cuentas.porEmpresa.titulo')}
       </Typography>
       {elegibles.length === 0 ? (
@@ -42,9 +42,8 @@ export function CuentasPorEmpresa({ vinculos, cuentas }: { vinculos: readonly Vi
           {t('cuentas.porEmpresa.sinVinculos')}
         </Typography>
       ) : (
-        <Card sx={{ p: 0, overflow: 'hidden' }}>
-          {/* La primera fila no lleva divisor: el borde de la tarjeta ya separa. */}
-          <Box component="ul" aria-labelledby="titulo-por-empresa" sx={{ p: 0, m: 0, '& > li:first-of-type': { borderTop: 0 } }}>
+        <>
+          <Box component="ul" aria-labelledby="titulo-por-empresa" sx={{ p: 0, m: 0, borderTop: 1, borderColor: 'divider', '& > li': { py: 1, borderBottom: 1, borderColor: 'divider' } }}>
             {elegibles.map((v) => {
               const { texto, estado, tieneCuenta } = detalle(v.id);
               return (
@@ -68,7 +67,7 @@ export function CuentasPorEmpresa({ vinculos, cuentas }: { vinculos: readonly Vi
               );
             })}
           </Box>
-        </Card>
+        </>
       )}
       {designando && <DialogoDesignar vinculo={designando} cuentas={cuentas} onCerrar={() => setDesignando(null)} />}
     </Box>

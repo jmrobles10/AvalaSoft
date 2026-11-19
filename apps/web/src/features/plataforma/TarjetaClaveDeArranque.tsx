@@ -31,10 +31,7 @@ export function TarjetaClaveDeArranque() {
   };
 
   return (
-    <Tarjeta titulo={t('consola.claveArranque.titulo')}>
-      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-        {t('consola.claveArranque.ayuda')}
-      </Typography>
+    <Tarjeta titulo={t('consola.claveArranque.titulo')} ayuda={t('consola.claveArranque.ayuda')} icono={KeyRound}>
       {consulta.isError && <ErrorRecuperable mensaje={mensajeDeError(consulta.error, t)} onReintentar={() => void consulta.refetch()} />}
       {consulta.isPending && <Skeleton variant="rounded" height={72} role="status" aria-busy aria-label={t('comun.cargando')} />}
       {clave && (

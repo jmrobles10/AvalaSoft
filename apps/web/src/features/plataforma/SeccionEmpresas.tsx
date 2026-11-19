@@ -1,7 +1,7 @@
 import { Box, Button, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import type { EmpresaDeGrupoDto, GrupoDto } from '@avalasoft/api-client';
 import { MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
-import { Pencil, Plus, Sparkles } from 'lucide-react';
+import { Factory, Pencil, Plus, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
@@ -22,6 +22,7 @@ export function SeccionEmpresas({ grupo }: { grupo: GrupoDto }) {
   return (
     <Tarjeta
       titulo={titulo}
+      icono={Factory}
       etiqueta={titulo}
       acciones={
         <Button size="small" variant="outlined" startIcon={<Plus size={14} aria-hidden />} onClick={() => setAgregando(true)} aria-label={t('consola.empresa.agregarA', { grupo: grupo.tenant.nombre })}>

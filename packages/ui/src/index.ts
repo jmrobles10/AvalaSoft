@@ -1,5 +1,5 @@
 // Design system de AvalaSoft, dirección "Registro" (docs/06 §2): tokens, tema MUI, estados canónicos y componentes.
-// Fuente: artifact "Design System" de AvalaSoft (tokens.json → tokens.ts generado; tema, estados y marca por empresa).
+// Fuente: `tokens.ts` (única fuente de los tokens), tema MUI, estados canónicos y marca por empresa. Rework visual 2026-11: lienzo + paneles flotantes.
 export * from './tokens';
 export * from './tema';
 export * from './estados';
@@ -24,8 +24,11 @@ export * from './TablaConCursor';
 export * from './usePaginacionCursor';
 export * from './esqueletos';
 export * from './disposicion';
+export * from './tarjetas';
+export * from './marco';
 export * from './AvisoCambiosNuevos';
 export * from './EditorDeContactos';
 export * from './descargas';
 export * from './archivos';
 export * from './notificaciones';
+export * from './sx';

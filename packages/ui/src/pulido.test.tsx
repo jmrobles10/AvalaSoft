@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { DosColumnas } from './disposicion';
 import { EsqueletoDetalle, EsqueletoFormulario, EsqueletoHistorial, EsqueletoTabla, EsqueletoTarjeta, EsqueletoTarjetas, OpcionesEnCarga } from './esqueletos';
 import { createAvalasoftTheme, type App } from './tema';
+import { RADIO } from './tokens';
 
 /** Reglas visuales de toda la aplicación (UI-1…UI-6): lo que el tema y los esqueletos garantizan, y lo que ningún código debe volver a hacer. */
 const conTema = (nodo: ReactNode, app: App = 'web') => render(<ThemeProvider theme={createAvalasoftTheme('light', { app })}>{nodo}</ThemeProvider>);
@@ -64,12 +65,12 @@ describe('UI-2 · botones compactos', () => {
     expect(tema.components?.MuiButton?.defaultProps?.size).toBe('medium');
   });
 
-  it('en web el botón mide lo que el campo (32 px), el pequeño 28 y el grande 36', () => {
+  it('en web el botón mide lo que el campo (36 px), el pequeño 30 y el grande 40', () => {
     const estilos = createAvalasoftTheme('light', { app: 'web' }).components?.MuiButton?.styleOverrides as Record<string, Record<string, unknown>>;
-    expect([estilos.sizeSmall?.minHeight, estilos.sizeMedium?.minHeight, estilos.sizeLarge?.minHeight]).toEqual([28, 32, 36]);
+    expect([estilos.sizeSmall?.minHeight, estilos.sizeMedium?.minHeight, estilos.sizeLarge?.minHeight]).toEqual([30, 36, 40]);
   });
 
-  it('en el tercero el botón mide 36 px en escritorio y 40 en el celular, y el área táctil de 44 se completa sin inflarlo', () => {
+  it('en el tercero el botón mide 36 px (como su campo) en escritorio y 40 en el celular, y el área táctil de 44 se completa sin inflarlo', () => {
     const estilos = createAvalasoftTheme('light', { app: 'public' }).components?.MuiButton?.styleOverrides as Record<string, Record<string, unknown>>;
     const medio = estilos.sizeMedium as { minHeight: number; '@media (min-width:600px)': { minHeight: number } };
     expect(medio.minHeight).toBe(40);
@@ -127,11 +128,11 @@ describe('UI-3 · autocompletar y selects', () => {
 });
 
 describe('UI-4 · nada cuadrado suelto', () => {
-  it.each(['web', 'public'] as const)('el acordeón tiene el radio de las tarjetas (12 px) en cualquier posición y sin la línea superior en %s', (app) => {
+  it.each(['web', 'public'] as const)('el acordeón tiene el radio de las tarjetas (14 px) en cualquier posición y sin la línea superior en %s', (app) => {
     const raiz = createAvalasoftTheme('light', { app }).components?.MuiAccordion?.styleOverrides?.root as Record<string, unknown>;
-    expect(raiz['&, &:first-of-type, &:last-of-type']).toEqual({ borderRadius: 12 });
+    expect(raiz['&, &:first-of-type, &:last-of-type']).toEqual({ borderRadius: RADIO.md });
     expect(raiz['&::before']).toEqual({ display: 'none' });
-    expect(createAvalasoftTheme('light', { app }).components?.MuiPaper?.styleOverrides?.rounded).toEqual({ borderRadius: 12 });
+    expect(createAvalasoftTheme('light', { app }).components?.MuiPaper?.styleOverrides?.rounded).toEqual({ borderRadius: RADIO.md });
   });
 
   it('un acordeón con hermanos antes y después se pinta redondeado', () => {

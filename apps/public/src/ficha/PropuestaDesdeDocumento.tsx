@@ -41,9 +41,9 @@ export function PropuestaDesdeDocumento({ codigo, periodo, soportes, onUsarValor
   const hayValores = documentos.some((d) => d.propuestas.some((p) => p.disponible && !aplicadas.has(clavePropuesta(p))));
 
   return (
-    <Alert severity="info" icon={<FileSearch size={20} aria-hidden />} aria-label={t('ficha.propuesta.titulo')} sx={{ '& .MuiAlert-message': { minWidth: 0, flex: 1 } }}>
+    <Alert severity="info" icon={<FileSearch size={20} aria-hidden />} aria-label={t('ficha.propuesta.titulo')} sx={{ alignItems: 'center', '& .MuiAlert-message': { minWidth: 0, flex: 1 } }}>
       <AlertTitle>{t('ficha.propuesta.titulo')}</AlertTitle>
-      <Stack component="ul" spacing={1} sx={{ p: 0, m: 0, mt: 0.5, listStyle: 'none' }}>
+      <Stack component="ul" spacing={0.5} sx={{ p: 0, m: 0, mt: 0.25, listStyle: 'none' }}>
         {documentos.map((documento) => {
           const propuesta = documento.propuestas[0];
           if (!propuesta) return null;
@@ -95,6 +95,7 @@ function LineaDeDocumento({ documento, propuesta, aplicada, deshabilitado, onUsa
 
   return (
     <TarjetaDeDocumento
+      plana
       documento={nombre}
       version={documento.version}
       datosDistintos={propuesta.disponible ? propuesta.campos.length : 0}

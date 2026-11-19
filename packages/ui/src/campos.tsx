@@ -1,18 +1,18 @@
-import { Box, Typography, useTheme, type Breakpoint, type Theme } from '@mui/material';
+import { Box, Typography, type Breakpoint } from '@mui/material';
 import type { SubmitEvent, ReactNode } from 'react';
 import { DENSIDAD } from './tokens';
 
 /**
- * Medidas de un campo con etiqueta fija encima (`MuiInputLabel` estático del tema): la etiqueta ocupa su línea más
- * 4 px de separación, y debajo va el control (32 px en web, 44 px en public).
+ * Medidas de un campo: la etiqueta va encogida sobre el borde (no ocupa una línea propia encima: `etiqueta` es 0) y el control mide
+ * 36 px en las dos apps (40 en el celular del tercero, donde el área táctil manda).
  */
-export function medidasDeCampo(app: Theme['app']): { etiqueta: number; control: number } {
-  return app === 'web' ? { etiqueta: 18 + 4, control: DENSIDAD.controlCompacto } : { etiqueta: 20 + 4, control: DENSIDAD.controlComodo };
+export function medidasDeCampo(): { etiqueta: number; control: number } {
+  return { etiqueta: 0, control: DENSIDAD.controlMedio };
 }
 
 /**
- * Coloca switches, casillas y botones de icono de una fila de formulario a la altura de los **campos**, no de sus
- * etiquetas: deja arriba el espacio de la etiqueta y centra el contenido en el alto del control. El texto de ayuda
+ * Coloca switches, casillas y botones de icono de una fila de formulario a la altura de los **campos**: centra el contenido en el
+ * alto del control (la etiqueta del campo va sobre su borde y no desplaza nada). El texto de ayuda
  * bajo un campo (p. ej. «1 miembro») no los desplaza porque la fila se alinea arriba. `desde`: el punto de quiebre en
  * que la fila deja de apilarse (antes no hace falta el espacio de la etiqueta).
  */
@@ -29,8 +29,7 @@ export function AlineadoConCampo({
   /** `grid-column` de la celda (p. ej. `{ xs: '1 / -1', lg: 'auto' }`). */
   columna?: string | Partial<Record<Breakpoint, string>>;
 }) {
-  const { app } = useTheme();
-  const { etiqueta, control } = medidasDeCampo(app);
+  const { etiqueta, control } = medidasDeCampo();
   return (
     <Box
       sx={{

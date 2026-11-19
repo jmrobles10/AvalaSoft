@@ -1,6 +1,7 @@
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import type { PlanIaEmpresaDto } from '@avalasoft/api-client';
 import { AlineadoConCampo, CabeceraEsqueleto, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar } from '@avalasoft/ui';
+import { Cpu, Gauge, KeyRound } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -85,7 +86,7 @@ function FormularioPlan({ tenantId, empresaId, plan, empresa, grupo }: { tenantI
       <DosColumnas
         izquierda={
           <>
-            <Tarjeta titulo={t('plataforma.planIa.cupo')}>
+            <Tarjeta titulo={t('plataforma.planIa.cupo')} icono={Gauge}>
               <Stack spacing={2}>
                 <Box sx={{ maxWidth: { sm: 'calc(50% - 6px)' } }}>
                   {numero('incluidas', t('plataforma.planIa.incluidas'), b.incluidas, (v) => cambiar({ incluidas: v }), 'incluidas-invalidas', t('plataforma.planIa.incluidasAyuda'))}
@@ -104,7 +105,7 @@ function FormularioPlan({ tenantId, empresaId, plan, empresa, grupo }: { tenantI
                 )}
               </Stack>
             </Tarjeta>
-            <Tarjeta titulo={t('plataforma.planIa.modelos')}>
+            <Tarjeta titulo={t('plataforma.planIa.modelos')} icono={Cpu}>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5}>
                 {numero('modelos', t('plataforma.planIa.modeloPorDefecto'), b.modeloPorDefecto, (v) => cambiar({ modeloPorDefecto: v }), 'modelo-invalido')}
                 {numero('modelos', t('plataforma.planIa.modeloEscalamiento'), b.modeloEscalamiento, (v) => cambiar({ modeloEscalamiento: v }), 'modelo-invalido')}
@@ -123,10 +124,7 @@ function FormularioPlan({ tenantId, empresaId, plan, empresa, grupo }: { tenantI
         }
         derecha={
           <>
-            <Tarjeta titulo={t('plataforma.planIa.llave')}>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-                {t('plataforma.planIa.llaveAyuda')}
-              </Typography>
+            <Tarjeta titulo={t('plataforma.planIa.llave')} ayuda={t('plataforma.planIa.llaveAyuda')} icono={KeyRound}>
               <LlaveOpenAi
                 configurada={plan.llaveConfigurada}
                 ultimosCuatro={plan.ultimosCuatro ?? null}

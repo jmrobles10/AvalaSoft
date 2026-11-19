@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Chip, MenuItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import type { ProveedorDePlataformaDto } from '@avalasoft/api-client';
 import { CampoNumero, formatearFechaHora } from '@avalasoft/ui';
-import { DatabaseZap, Trash2 } from 'lucide-react';
+import { DatabaseZap, ListChecks, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogoConfirmacion, EncabezadoPagina, ErrorRecuperable, IconoCarga, Tarjeta } from '../../shared/componentes';
@@ -80,6 +80,7 @@ function CuentaDeProveedor({ proveedor: p, actualizada, actualizadaPor }: { prov
         </Alert>
       )}
       <Tarjeta
+        icono={ListChecks}
         titulo={
           <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
             {t('plataforma.listas.cuenta', { proveedor: p.nombre })}

@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { EstadoVacio } from '@avalasoft/ui';
 import { FolderOpen, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -6,9 +6,14 @@ import { Link as RouterLink } from 'react-router';
 import { useBoveda } from '../shared/api';
 import { CabeceraPagina, ErrorRecuperable, EsqueletoTarjetas } from '../shared/componentes';
 import { AvisoConsolidado } from './AvisoConsolidado';
+import { COLUMNAS_DOCUMENTO } from './columnas';
 import { TarjetaDocumento } from './TarjetaDocumento';
 
-/** Mi bóveda: cada documento con su versión vigente y con qué empresas está compartido. */
+/**
+ * Mi bóveda: cada documento con su versión vigente y con qué empresas está compartido. Jerarquía en un solo nivel (la página ya es el panel,
+ * sin otra tarjeta dentro): lo que hay que renovar es un bloque destacado arriba y los documentos son filas alineadas en columnas, con un
+ * encabezado de rótulos y divisores finos.
+ */
 export function PaginaBoveda() {
   const { t } = useTranslation();
   const consulta = useBoveda();
@@ -31,12 +36,29 @@ export function PaginaBoveda() {
         <>
           {/* Lo que hay que renovar, primero lo que vence antes, consolidado entre todas las empresas. */}
           <AvisoConsolidado documentos={consulta.data.documentos} />
-            <Stack spacing={1.5}>
-            {/* Una tarjeta compacta por documento: la versión es una para todas las empresas y cada fila es una empresa. */}
+          {/* Rótulos de las columnas (decorativos: la lista ya tiene sus nombres accesibles). */}
+          <Box
+            aria-hidden
+            sx={{
+              display: { xs: 'none', md: 'grid' },
+              gridTemplateColumns: COLUMNAS_DOCUMENTO,
+              columnGap: 2,
+              pb: 0.75,
+              borderBottom: 1,
+              borderColor: 'divider',
+              color: 'text.secondary',
+            }}
+          >
+            <Typography variant="overline">{t('boveda.columnas.documento')}</Typography>
+            <Typography variant="overline">{t('boveda.columnas.estado')}</Typography>
+            <Typography variant="overline">{t('boveda.columnas.empresas')}</Typography>
+            <Box />
+          </Box>
+          <Box>
             {consulta.data.documentos.map((d) => (
               <TarjetaDocumento key={d.id} documento={d} />
             ))}
-          </Stack>
+          </Box>
         </>
       )}
     </>

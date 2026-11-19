@@ -2,7 +2,7 @@ import type { ComparticionPublicaDto, VigenciaDto } from '@avalasoft/api-client'
 import { describe, expect, it } from 'vitest';
 import i18n from '../i18n';
 import { extraerDeCorreo } from '../dev/correos';
-import { detalleComparticion, empresaConLaFechaMasProxima, mensajeDevolucion, sePuedeDescargar, sePuedeRetirar, venceEnCabecera } from './versiones';
+import { detalleComparticion, empresaConLaFechaMasProxima, mensajeDevolucion, resumenCorto, sePuedeDescargar, sePuedeRetirar, venceEnCabecera } from './versiones';
 
 const t = i18n.t.bind(i18n);
 const empresa = { id: 'e1', nombre: 'Constructora Norte S.A.S.', logoUrl: null };
@@ -27,6 +27,29 @@ const fila = (cambios: Partial<ComparticionPublicaDto>): ComparticionPublicaDto 
   situacion: 'TieneVigente',
   otraVersion: null,
   ...cambios,
+});
+
+describe('resumen corto de cada empresa (el chip de la fila)', () => {
+  it('dice en pocas palabras qué tiene cada empresa, con el tono que le toca', () => {
+    expect(resumenCorto(fila({ situacion: 'AproboVigente' }), t)).toEqual({ texto: 'aprobada v7', tono: 'exito', pideAccion: false });
+    expect(resumenCorto(fila({ situacion: 'Revisando' }), t)).toEqual({ texto: 'revisa v7', tono: 'advertencia', pideAccion: false });
+    expect(resumenCorto(fila({}), t)).toEqual({ texto: 'tiene v7', tono: 'neutro', pideAccion: false });
+    expect(resumenCorto(fila({ situacion: 'NoRecibe', compartido: false, version: null, versionActualCompartida: false }), t)).toEqual({ texto: 'no la exige', tono: 'neutro', pideAccion: false });
+  });
+
+  it('solo pide acción (y se explica en una línea) cuando hay algo que corregir, revalidar o subir', () => {
+    for (const situacion of ['Observada', 'Revalida', 'RevalidaRetirada', 'PorRevalidar', 'SinVigente']) {
+      expect(resumenCorto(fila({ situacion, otraVersion: 6 }), t).pideAccion).toBe(true);
+    }
+    for (const situacion of ['TieneVigente', 'AproboVigente', 'Revisando', 'NoRecibe', 'TieneOtra']) {
+      expect(resumenCorto(fila({ situacion }), t).pideAccion).toBe(false);
+    }
+  });
+
+  it('una situación que la API agregue después se lee como «tiene» o «no la exige»', () => {
+    expect(resumenCorto(fila({ situacion: 'Nueva' }), t).texto).toBe('tiene v7');
+    expect(resumenCorto(fila({ situacion: 'Nueva', compartido: false, version: null }), t).texto).toBe('no la exige');
+  });
 });
 
 describe('versiones de la bóveda', () => {

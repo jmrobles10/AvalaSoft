@@ -1,4 +1,4 @@
-import { Box, Button, Card, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import type { VinculoPublicoDto } from '@avalasoft/api-client';
 import { ChipEstado, EstadoVacio, formatearFecha } from '@avalasoft/ui';
 import { Building2, ChevronRight, Contact, Upload } from 'lucide-react';
@@ -32,11 +32,11 @@ export function PaginaEmpresas() {
       ) : consulta.data.length === 0 ? (
         <EstadoVacio icono={Building2} titulo={t('empresas.vacio')} texto={t('empresas.vacioTexto')} />
       ) : (
-        <Stack component="ul" spacing={1.5} sx={{ p: 0, m: 0, listStyle: 'none' }}>
+        <Box component="ul" sx={{ p: 0, m: 0, listStyle: 'none', borderTop: 1, borderColor: 'divider' }}>
           {consulta.data.map((v) => (
             <TarjetaEmpresa key={v.id} vinculo={v} />
           ))}
-        </Stack>
+        </Box>
       )}
     </>
   );
@@ -75,45 +75,47 @@ function TarjetaEmpresa({ vinculo: v }: { vinculo: VinculoPublicoDto }) {
     }
   };
 
+  const textoDeAvance =
+    situacion !== 'vigente'
+      ? t(`vinculoSituacion.${situacion}.corto`)
+      : avance
+        ? textoAvance(avance, v.empresa.nombre)
+        : v.invitacionAceptada && v.invitacionAceptadaEn
+          ? t('empresas.aceptada', { fecha: formatearFecha(v.invitacionAceptadaEn) })
+          : t('empresas.pendienteAceptar');
+  const conAviso = Boolean(v.reintento) || (Boolean(v.actualizacionNoAprobada) && situacion === 'vigente');
+
+  // Una fila alineada en columnas, como una tabla: empresa y tipo · estado · lo que toca · acciones (en el celular se apilan).
   return (
-    <Card component="li" sx={{ p: 2 }}>
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-        <LogoEmpresa nombre={v.empresa.nombre} logoUrl={v.empresa.logoUrl} />
-        <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography component="h2" sx={{ fontWeight: 600, fontSize: 16, lineHeight: '22px' }}>
+    <Box
+      component="li"
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'minmax(0, 1.1fr) 150px minmax(0, 1.4fr) auto' },
+        columnGap: 2,
+        rowGap: 1,
+        alignItems: 'center',
+        py: 1.5,
+        borderBottom: 1,
+        borderColor: 'divider',
+      }}
+    >
+      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minWidth: 0 }}>
+        <LogoEmpresa nombre={v.empresa.nombre} logoUrl={v.empresa.logoUrl} tamano={32} />
+        <Box sx={{ minWidth: 0 }}>
+          <Typography component="h2" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>
             {v.empresa.nombre}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
-            {v.tipoVinculo.nombre}
-          </Typography>
+          <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>{v.tipoVinculo.nombre}</Typography>
         </Box>
-        {avance ? (
-          <ChipAvance avance={avance} />
-        ) : v.reintento ? (
-          <ChipEstado estado="Rechazado" size="medium" />
-        ) : (
-          !esperando && <ChipEstado estado={v.estado} size="medium" />
-        )}
       </Stack>
-      {v.reintento ? (
-        <AvisoRechazo vinculo={v} />
-      ) : v.actualizacionNoAprobada && situacion === 'vigente' ? (
-        <AvisoActualizacionNoAprobada vinculo={v} />
-      ) : (
-        <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px', mt: 1.5 }}>
-          {situacion !== 'vigente'
-            ? t(`vinculoSituacion.${situacion}.corto`)
-            : avance
-              ? textoAvance(avance, v.empresa.nombre)
-              : v.invitacionAceptada && v.invitacionAceptadaEn
-                ? t('empresas.aceptada', { fecha: formatearFecha(v.invitacionAceptadaEn) })
-                : t('empresas.pendienteAceptar')}
-        </Typography>
-      )}
-      {evaluaciones.data && <AvisoEvaluacionesPendientes evaluaciones={evaluaciones.data} vinculoId={v.id} empresa={v.empresa.nombre} />}
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mt: 1.5 }}>
+      <Box sx={{ justifySelf: 'start' }}>
+        {avance ? <ChipAvance avance={avance} /> : v.reintento ? <ChipEstado estado="Rechazado" /> : !esperando && <ChipEstado estado={v.estado} />}
+      </Box>
+      <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', display: conAviso ? 'none' : 'block' }}>{textoDeAvance}</Typography>
+      <Stack direction="row" useFlexGap sx={{ flexWrap: 'wrap', gap: 1, justifyContent: { md: 'flex-end' } }}>
         {situacion === 'vigente' && !v.invitacionAceptada && (
-          <Button component={RouterLink} to={`/empresas/${v.id}`} variant="contained" endIcon={<ChevronRight size={18} aria-hidden />}>
+          <Button component={RouterLink} to={`/empresas/${v.id}`} variant="contained" size="small" endIcon={<ChevronRight size={18} aria-hidden />}>
             {t('empresas.aceptar')}
           </Button>
         )}
@@ -122,18 +124,26 @@ function TarjetaEmpresa({ vinculo: v }: { vinculo: VinculoPublicoDto }) {
             component={RouterLink}
             to={`/expediente/${v.expedienteId}`}
             variant={v.invitacionAceptada ? 'contained' : 'outlined'}
-            startIcon={avance?.tipo === 'faltan' ? <Upload size={18} aria-hidden /> : undefined}
+            size="small"
+            startIcon={avance?.tipo === 'faltan' ? <Upload size={16} aria-hidden /> : undefined}
           >
             {textoDelBoton(avance?.tipo)}
           </Button>
         )}
         {v.invitacionAceptada && situacion !== 'terminada' && (
-          <Button variant="outlined" startIcon={<Contact size={18} aria-hidden />} onClick={() => setEditandoContactos(true)} aria-label={t('contactos.abrirCon', { empresa: v.empresa.nombre })}>
-            {t('contactos.abrir')} · {t('contactos.resumen', { count: v.contactos?.length ?? 0 })}
+          <Button variant="text" size="small" startIcon={<Contact size={16} aria-hidden />} onClick={() => setEditandoContactos(true)} aria-label={t('contactos.abrirCon', { empresa: v.empresa.nombre })}>
+            {t('contactos.abrir')}
+            {(v.contactos?.length ?? 0) > 0 && ` · ${t('contactos.resumen', { count: v.contactos?.length ?? 0 })}`}
           </Button>
         )}
       </Stack>
+      {(conAviso || evaluaciones.data) && (
+        <Box sx={{ gridColumn: '1 / -1', minWidth: 0 }}>
+          {v.reintento ? <AvisoRechazo vinculo={v} /> : v.actualizacionNoAprobada && situacion === 'vigente' ? <AvisoActualizacionNoAprobada vinculo={v} /> : null}
+          {evaluaciones.data && <AvisoEvaluacionesPendientes evaluaciones={evaluaciones.data} vinculoId={v.id} empresa={v.empresa.nombre} />}
+        </Box>
+      )}
       {editandoContactos && <DialogoContactos vinculo={v} onCerrar={() => setEditandoContactos(false)} />}
-    </Card>
+    </Box>
   );
 }

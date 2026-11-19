@@ -2,7 +2,7 @@ import { Box, ButtonBase, InputBase, ListItemText, Menu, MenuItem } from '@mui/m
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { useId, useState, type SubmitEvent, type ReactNode } from 'react';
 
-const ALTO_CONTROL = 32;
+const ALTO_CONTROL = 36;
 
 export interface CampoBusquedaProps {
   valor: string;

@@ -5,9 +5,10 @@ import { useSesion } from '../../sesion/sesionStore';
 
 /**
  * Tras entrar solo con el código (un factor), invita a registrar una passkey: un aviso compacto y descartable bajo la barra, con la acción a Mi cuenta.
- * No aparece si la cuenta ya la exigió (no pudo entrar sin ella) ni con la identidad delegada.
+ * No aparece si la cuenta ya la exigió (no pudo entrar sin ella) ni con la identidad delegada. `flotante`: con esquinas redondeadas y margen,
+ * para ir sobre el lienzo de la consola de Plataforma.
  */
-export function AvisoDePasskey({ rutaMiCuenta }: { rutaMiCuenta: string }) {
+export function AvisoDePasskey({ rutaMiCuenta, flotante = false }: { rutaMiCuenta: string; flotante?: boolean }) {
   const { t } = useTranslation();
   const navegar = useNavigate();
   const sugerir = useSesion((s) => s.sugerirPasskey);
@@ -17,7 +18,7 @@ export function AvisoDePasskey({ rutaMiCuenta }: { rutaMiCuenta: string }) {
   return (
     <Alert
       severity="info"
-      sx={{ borderRadius: 0, py: 0, alignItems: 'center' }}
+      sx={flotante ? { mx: { xs: 1, md: 2 }, mb: 1, py: 0, alignItems: 'center' } : { borderRadius: 0, py: 0, alignItems: 'center' }}
       action={
         <>
           <Button

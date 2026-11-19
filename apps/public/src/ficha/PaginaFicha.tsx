@@ -1,7 +1,7 @@
-import { Alert, AlertTitle, Box, Button, Chip, LinearProgress, Paper, Stack, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, Chip, LinearProgress, Stack, Typography } from '@mui/material';
 import type { EstadoSeccionFichaDto } from '@avalasoft/api-client';
 import { AnimacionExitoUnaVez, formatearFecha } from '@avalasoft/ui';
-import { ArrowRight, ChevronRight, TriangleAlert } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronRight, CircleAlert, Circle, TriangleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { CabeceraPagina, ErrorRecuperable, EsqueletoTarjetas } from '../shared/componentes';
@@ -59,36 +59,42 @@ export function PaginaFicha() {
       <CabeceraPagina titulo={t('ficha.titulo')} sub={t('ficha.sub')} accion={continuar} />
       {estado.completa && (
         // La primera vez que la persona ve su información completa en la sesión, el ícono hace la animación de éxito de marca.
-        <Alert severity="success" icon={<AnimacionExitoUnaVez clave="ficha-completa" tamano={22} decorativa />} sx={{ mb: 2 }}>
-          <AlertTitle>{t('ficha.completaTitulo')}</AlertTitle>
+        <Alert severity="success" icon={<AnimacionExitoUnaVez clave="ficha-completa" tamano={20} decorativa />} sx={{ mb: 2, alignItems: 'center' }}>
+          <AlertTitle sx={{ display: 'inline', mr: 0.75 }}>{t('ficha.completaTitulo')}</AlertTitle>
           {t('ficha.completaTexto')}
         </Alert>
       )}
       <PropuestasEnResumen />
       <AvisoDeRatificaciones pendientes={ratificaciones} />
-      <Box sx={{ mb: 2 }}>
-        <Typography sx={{ color: 'text.secondary', fontSize: 14, mb: 0.5 }}>{t('ficha.avance', { completas: String(completas), total: String(filas.length) })}</Typography>
-        <LinearProgress variant="determinate" value={filas.length > 0 ? (completas / filas.length) * 100 : 0} aria-label={t('ficha.avance', { completas: String(completas), total: String(filas.length) })} />
-      </Box>
-      <Paper variant="outlined" component="ol" aria-label={t('ficha.titulo')} sx={{ p: 0, m: 0, listStyle: 'none', overflow: 'hidden' }}>
+      {/* La lista, en un solo nivel: el avance en una línea con su barra delgada y cada sección como una fila con divisores finos. */}
+      <Stack direction="row" sx={{ alignItems: 'baseline', justifyContent: 'space-between', mb: 0.75 }}>
+        <Typography component="h2" variant="h4">
+          {t('ficha.secciones')}
+        </Typography>
+        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('ficha.avance', { completas: String(completas), total: String(filas.length) })}</Typography>
+      </Stack>
+      <LinearProgress variant="determinate" value={filas.length > 0 ? (completas / filas.length) * 100 : 0} aria-label={t('ficha.avance', { completas: String(completas), total: String(filas.length) })} sx={{ height: 3 }} />
+      <Box component="ol" aria-label={t('ficha.titulo')} sx={{ p: 0, m: 0, listStyle: 'none' }}>
         {filas.map((fila) => (
           <FilaSeccion key={`${fila.seccion}-${String(fila.periodo)}`} fila={fila} porRatificar={deLaSeccion(ratificaciones, fila.seccion, fila.periodo ?? null)} />
         ))}
-      </Paper>
+      </Box>
       {/* Los representantes, socios y beneficiarios finales son personas con su propia bóveda (ADR-0010): su cédula y antecedentes se suben ahí. */}
-      <Paper variant="outlined" sx={{ mt: 2, p: { xs: 1.5, sm: 2 } }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: { sm: 'center' } }}>
-          <Box sx={{ flex: 1 }}>
-            <Typography component="h2" variant="h4">
-              {t('personas.enlaceDesdeFicha')}
-            </Typography>
-            <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('personas.enlaceDesdeFichaTexto')}</Typography>
-          </Box>
-          <Button component={RouterLink} to="/personas" variant="outlined" endIcon={<ChevronRight size={18} aria-hidden />}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={1.5}
+        sx={(th) => ({ mt: 2, px: { xs: 1.5, sm: 2.5 }, py: 1.5, alignItems: { sm: 'center' }, borderRadius: `${String(th.radio.md)}px`, bgcolor: th.palette.superficie.nivel2 })}
+      >
+        <Box sx={{ flex: 1 }}>
+          <Typography component="h2" variant="h4">
             {t('personas.enlaceDesdeFicha')}
-          </Button>
-        </Stack>
-      </Paper>
+          </Typography>
+          <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>{t('personas.enlaceDesdeFichaTexto')}</Typography>
+        </Box>
+        <Button component={RouterLink} to="/personas" variant="outlined" endIcon={<ChevronRight size={18} aria-hidden />}>
+          {t('personas.enlaceDesdeFicha')}
+        </Button>
+      </Stack>
     </>
   );
 }
@@ -109,7 +115,10 @@ function AvisoDeRatificaciones({ pendientes }: { pendientes: readonly Ratificaci
   );
 }
 
-/** Una sección del resumen: nombre (y periodo), estado del servidor, el botón para abrirla y, si alguna empresa lo pide, para ratificarla. */
+/**
+ * Una sección del resumen como **una fila** alineada en columnas: estado (ícono), nombre, el chip de estado con «Actualizada el …» y el
+ * botón para abrirla; debajo, si hace falta, el soporte que retiró o lo que alguna empresa pide ratificar. En el celular se apila.
+ */
 function FilaSeccion({ fila, porRatificar }: { fila: EstadoSeccionFichaDto; porRatificar: readonly RatificacionPendiente[] }) {
   const { t } = useTranslation();
   const estado = estadoDeSeccion(fila);
@@ -122,58 +131,76 @@ function FilaSeccion({ fila, porRatificar }: { fila: EstadoSeccionFichaDto; porR
     ) : (
       <Chip size="small" variant="outlined" label={t('ficha.estados.sin-diligenciar')} />
     );
+  const retirados = fila.soportesRetirados ?? [];
 
   return (
-    <Box component="li" aria-label={nombre} sx={{ borderTop: 1, borderColor: 'divider', '&:first-of-type': { borderTop: 0 } }}>
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', px: { xs: 1.5, sm: 2 }, py: 1.5, minHeight: 64 }}>
-        <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography sx={{ fontWeight: 500, fontSize: 15, lineHeight: '22px' }}>{nombre}</Typography>
-          <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 0.5 }}>
-            {chip}
-            {fila.actualizada && (
-              <Typography component="span" sx={{ color: 'text.secondary', fontSize: 13 }}>
-                {t('ficha.actualizada', { fecha: formatearFecha(fila.actualizada) })}
-              </Typography>
-            )}
-          </Stack>
-          {/* El tercero retiró un documento que respaldaba la sección: sus datos siguen guardados; se le dice que elija otro soporte. */}
-          {(fila.soportesRetirados ?? []).map((s) => (
-            <Stack key={`${s.documentoId}-${String(s.version)}`} direction="row" spacing={0.75} sx={{ alignItems: 'center', mt: 0.75, color: 'warning.main' }}>
+    <Box
+      component="li"
+      aria-label={nombre}
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: '20px minmax(0, 1fr) auto', sm: '20px minmax(0, 1.2fr) minmax(0, 1.4fr) auto' },
+        columnGap: 1.5,
+        rowGap: 0.5,
+        alignItems: 'center',
+        py: 1,
+        minHeight: 52,
+        borderBottom: 1,
+        borderColor: 'divider',
+      }}
+    >
+      <Box aria-hidden sx={{ display: 'inline-flex', color: estado === 'completa' ? 'success.main' : estado === 'incompleta' ? 'warning.main' : 'text.disabled' }}>
+        {estado === 'completa' ? <CheckCircle2 size={20} strokeWidth={1.75} /> : estado === 'incompleta' ? <CircleAlert size={20} strokeWidth={1.75} /> : <Circle size={20} strokeWidth={1.75} />}
+      </Box>
+      <Typography sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px', minWidth: 0 }}>{nombre}</Typography>
+      <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', gridColumn: { xs: '2 / 3', sm: 'auto' }, gridRow: { xs: 2, sm: 'auto' }, minWidth: 0 }}>
+        {chip}
+        {fila.actualizada && (
+          <Typography component="span" sx={{ color: 'text.secondary', fontSize: 13 }}>
+            {t('ficha.actualizada', { fecha: formatearFecha(fila.actualizada) })}
+          </Typography>
+        )}
+      </Stack>
+      <Button
+        component={RouterLink}
+        to={enlaceSeccion(fila.seccion, fila.periodo)}
+        variant="text"
+        size="small"
+        endIcon={<ChevronRight size={18} aria-hidden />}
+        aria-label={t('ficha.abrirSeccion', { seccion: nombre })}
+        sx={{ flex: 'none', gridColumn: { xs: 3, sm: 4 }, gridRow: { xs: '1 / span 2', sm: 'auto' } }}
+      >
+        {estado === 'sin-diligenciar' ? t('ficha.diligenciar') : t('ficha.abrir')}
+      </Button>
+      {/* El tercero retiró un documento que respaldaba la sección: sus datos siguen guardados; se le dice que elija otro soporte. */}
+      {retirados.length > 0 && (
+        <Box sx={{ gridColumn: '2 / -1' }}>
+          {retirados.map((r) => (
+            <Stack key={`${r.documentoId}-${String(r.version)}`} direction="row" spacing={0.75} sx={{ alignItems: 'center', color: 'warning.main' }}>
               <TriangleAlert size={16} aria-hidden />
               <Typography component="span" sx={{ fontSize: 13, color: 'text.primary' }}>
-                {t('ficha.soporte.retirado', { tipo: s.nombre ?? s.tipoDocumento ?? '', n: String(s.version) })}
+                {t('ficha.soporte.retirado', { tipo: r.nombre ?? r.tipoDocumento ?? '', n: String(r.version) })}
               </Typography>
             </Stack>
           ))}
-          {porRatificar.length > 0 && (
-            <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 1 }}>
-              {porRatificar.map((p) => (
-                <ConfirmarRatificacion
-                  key={p.requisitoId}
-                  tipo="seccion"
-                  compacto
-                  expedienteId={p.expedienteId}
-                  requisitoId={p.requisitoId}
-                  documento={p.nombre}
-                  empresa={p.empresa}
-                  etiqueta={t('expediente.ratificar.seccion.paraEmpresa', { empresa: p.empresa })}
-                />
-              ))}
-            </Stack>
-          )}
         </Box>
-        <Button
-          component={RouterLink}
-          to={enlaceSeccion(fila.seccion, fila.periodo)}
-          variant={estado === 'completa' ? 'text' : 'outlined'}
-          size="small"
-          endIcon={<ChevronRight size={18} aria-hidden />}
-          aria-label={t('ficha.abrirSeccion', { seccion: nombre })}
-          sx={{ flex: 'none' }}
-        >
-          {estado === 'sin-diligenciar' ? t('ficha.diligenciar') : t('ficha.abrir')}
-        </Button>
-      </Stack>
+      )}
+      {porRatificar.length > 0 && (
+        <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', gridColumn: '2 / -1' }}>
+          {porRatificar.map((p) => (
+            <ConfirmarRatificacion
+              key={p.requisitoId}
+              tipo="seccion"
+              compacto
+              expedienteId={p.expedienteId}
+              requisitoId={p.requisitoId}
+              documento={p.nombre}
+              empresa={p.empresa}
+              etiqueta={t('expediente.ratificar.seccion.paraEmpresa', { empresa: p.empresa })}
+            />
+          ))}
+        </Stack>
+      )}
     </Box>
   );
 }

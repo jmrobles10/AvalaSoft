@@ -13,7 +13,7 @@ import { textoDeConteo } from '../features/revisionAutomatica/modelo';
 import { useAlturaFija } from '../sesion/alturaFija';
 import { BotonConfiguracion } from './BotonConfiguracion';
 import { NavegacionPrincipal, type Pestana } from './NavegacionPrincipal';
-import { RELLENO_CONTENIDO } from './rellenoContenido';
+import { ANCHO_LIMITADO, RELLENO_CONTENIDO, rellenoAlineadoAlMarco } from './rellenoContenido';
 import { useSesion } from '../sesion/sesionStore';
 import { useYo } from '../sesion/useYo';
 import { usePreferencias } from '../shared/preferencias';
@@ -98,8 +98,9 @@ export function AppShell() {
           alignItems: 'center',
           gap: 1.5,
           height: (t) => t.densidad.cabeceraEmbebida,
-          pl: 2,
-          pr: 1.5,
+          // La barra va a todo el ancho (fondo y borde), pero su contenido se alinea con el marco limitado en pantallas muy anchas.
+          pl: rellenoAlineadoAlMarco(16),
+          pr: rellenoAlineadoAlMarco(12),
           borderBottom: 1,
           borderColor: 'divider',
           bgcolor: 'background.paper',
@@ -143,7 +144,9 @@ export function AppShell() {
       </Box>
       <AvisoDePasskey rutaMiCuenta={`/e/${empresa.id}/mi-cuenta`} />
       <Box component="main" sx={{ flex: 1, py: RELLENO_CONTENIDO.y, px: RELLENO_CONTENIDO.x, minWidth: 0, ...(alturaFija !== null && { minHeight: 0, overflowY: 'auto', scrollbarGutter: 'stable' }) }}>
-        <Outlet context={contexto satisfies ContextoEmpresa} />
+        <Box sx={ANCHO_LIMITADO}>
+          <Outlet context={contexto satisfies ContextoEmpresa} />
+        </Box>
       </Box>
     </Box>
   );

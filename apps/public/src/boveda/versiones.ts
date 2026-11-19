@@ -51,6 +51,38 @@ export function detalleComparticion(c: ComparticionPublicaDto, t: TFunction, ven
   return vence ? `${texto} ${vence}` : texto;
 }
 
+/** Cómo se pinta lo que tiene una empresa de un documento: el tono del chip y si hay algo que hacer (entonces se explica en una línea). */
+export type TonoDeComparticion = 'exito' | 'advertencia' | 'neutro';
+
+const TONO_DE_SITUACION: Record<Situacion, TonoDeComparticion> = {
+  NoRecibe: 'neutro',
+  SinVigente: 'advertencia',
+  TieneVigente: 'neutro',
+  AproboVigente: 'exito',
+  Revisando: 'advertencia',
+  Observada: 'advertencia',
+  RevalidaRetirada: 'advertencia',
+  Revalida: 'advertencia',
+  PorRevalidar: 'advertencia',
+  TieneOtra: 'neutro',
+};
+
+/** Situaciones que piden algo del tercero (subir, corregir o esperar una revalidación): solo ahí se muestra la frase larga bajo el chip. */
+const PIDEN_ACCION: readonly Situacion[] = ['SinVigente', 'Observada', 'RevalidaRetirada', 'Revalida', 'PorRevalidar'];
+
+/**
+ * Lo que tiene una empresa de este documento en pocas palabras para su chip («aprobada v1», «revisa v2», «no la exige»), con el tono que
+ * le toca, y si hay algo que hacer. La frase completa sigue siendo {@link detalleComparticion}.
+ */
+export function resumenCorto(c: ComparticionPublicaDto, t: TFunction): { texto: string; tono: TonoDeComparticion; pideAccion: boolean } {
+  const situacion = situacionDe(c);
+  return {
+    texto: t(`boveda.corto.${situacion}`, { version: String(c.version ?? ''), otra: String(c.otraVersion ?? '') }),
+    tono: TONO_DE_SITUACION[situacion],
+    pideAccion: PIDEN_ACCION.includes(situacion),
+  };
+}
+
 /** El vencimiento propio de la empresa para la versión vigente, solo si ya pasó o difiere del de la cabecera. */
 function venceAparte(c: ComparticionPublicaDto, venceEnCabecera: string | null, t: TFunction): string | null {
   const vigencia = c.vigencia;

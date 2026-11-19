@@ -1,6 +1,7 @@
 import { Chip, Typography } from '@mui/material';
 import type { PlanIaEmpresaDto } from '@avalasoft/api-client';
 import { Dato, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
+import { ListChecks } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';
 import { llaveEnmascarada, type BorradorPlanIa } from './modelo';
@@ -27,7 +28,7 @@ export function ResumenPlanIa({ plan, borrador }: { plan: PlanIaEmpresaDto; borr
       : t('plataforma.planIa.resumen.adicionalesSinTope');
 
   return (
-    <Tarjeta titulo={t('plataforma.planIa.resumen.titulo')} etiqueta={t('plataforma.planIa.resumen.titulo')}>
+    <Tarjeta titulo={t('plataforma.planIa.resumen.titulo')} etiqueta={t('plataforma.planIa.resumen.titulo')} icono={ListChecks} filete>
       <RejillaDatos columnas={2}>
         <Dato etiqueta={t('plataforma.planIa.resumen.estado')}>
           <Chip size="small" color={borrador.activo ? 'success' : 'default'} variant="outlined" label={borrador.activo ? t('plataforma.planIa.resumen.activo') : t('plataforma.planIa.resumen.inactivo')} />

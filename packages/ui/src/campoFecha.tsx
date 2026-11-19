@@ -1,4 +1,4 @@
-import { useTheme, type SxProps, type Theme } from '@mui/material';
+import { type SxProps, type Theme } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -84,7 +84,6 @@ export interface CampoFechaProps {
 
 /** Selector de fecha con el estilo de la aplicación: `dd/mm/aaaa`, calendario en español y valor ISO. */
 export function CampoFecha({ etiqueta, valor, onCambiar, requerido = false, deshabilitado = false, error = false, ayuda, minimo, maximo, onBlur, fullWidth = false, id, name, sx }: CampoFechaProps) {
-  const { app } = useTheme();
   const ISOEntrante = valor ?? '';
   // Lo que se ve (el valor de MUI X, que mientras se escribe puede estar incompleto) y el ISO que lo originó: solo cuando
   // el padre cambia el valor por su cuenta (limpiar filtros, otra fila) se vuelve a leer; lo que el propio campo emitió no.
@@ -131,8 +130,8 @@ export function CampoFecha({ etiqueta, valor, onCambiar, requerido = false, desh
               onBlur?.();
             },
             fullWidth,
-            size: app === 'web' ? 'small' : 'medium',
-            // Etiqueta fija encima del campo (como el `TextField` del tema): el formato se ve siempre, no solo al enfocar.
+            size: 'small',
+            // Etiqueta encogida sobre el borde (como el `TextField` del tema): el formato se ve siempre, no solo al enfocar.
             slotProps: { inputLabel: { shrink: true } },
             sx,
           },

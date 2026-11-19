@@ -1,7 +1,7 @@
 import { Box, Button, Skeleton, Stack, Typography } from '@mui/material';
 import type { SistemaIntegradoDto, TenantDto, UsuarioDto } from '@avalasoft/api-client';
 import { formatearFecha, formatearFechaHora } from '@avalasoft/ui';
-import { Mail } from 'lucide-react';
+import { Mail, UserRoundCog } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogoConfirmacion, ErrorRecuperable, Tarjeta } from '../../shared/componentes';
@@ -102,10 +102,7 @@ export function SeccionAdministradores({ tenant }: { tenant: TenantDto }) {
   };
 
   return (
-    <Tarjeta titulo={titulo} etiqueta={titulo}>
-      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-        {t('plataforma.ficha.administradores.ayuda')}
-      </Typography>
+    <Tarjeta titulo={titulo} etiqueta={titulo} icono={UserRoundCog} ayuda={t('plataforma.ficha.administradores.ayuda')}>
       {administradores.isError && <ErrorRecuperable mensaje={mensajeDeError(administradores.error, t)} onReintentar={() => void administradores.refetch()} />}
       {administradores.isPending && <Skeleton variant="rounded" height={88} role="status" aria-busy aria-label={t('comun.cargando')} />}
       {administradores.data?.length === 0 && (
