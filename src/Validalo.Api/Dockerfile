@@ -22,7 +22,7 @@ COPY apps/ apps/
 RUN pnpm --filter @validalo/web --filter @validalo/public build
 
 # 2. API.
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS compilacion
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS compilacion
 WORKDIR /src
 COPY Directory.Build.props Directory.Packages.props Validalo.slnx ./
 COPY src/ src/
