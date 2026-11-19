@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Alba;
+using JasperFx.CommandLine;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -78,6 +79,12 @@ public sealed class ApiFixture : IAsyncLifetime
         _cadenaDeConexion = await _servicios.CrearBaseAsync();
         Idp = await IdpSimulado.IniciarAsync();
         CrearApps();
+        // Program termina con `app.RunJasperFxCommands(args)`: sin esto JasperFx corre su comando `run`, que también vigila el host y lo detiene
+        // cuando empieza el cierre. Al cerrar el fixture el host tenía entonces DOS dueños llamando a Host.StopAsync a la vez (Alba y el comando
+        // run); el que llegaba segundo encontraba los servicios ya liberados y el cierre fallaba con un AggregateException («Test Collection
+        // Cleanup Failure») con 568 de 568 verdes pero exit 1, casi siempre con pocos núcleos. Con AutoStartHost JasperFx solo arranca el host y
+        // vuelve: el cierre queda en manos de Alba. Es lo que JasperFx documenta para las pruebas con WebApplicationFactory.
+        JasperFxEnvironment.AutoStartHost = true;
         Host = await AlbaHost.For<Program>(b =>
         {
             b.UseEnvironment("Development");

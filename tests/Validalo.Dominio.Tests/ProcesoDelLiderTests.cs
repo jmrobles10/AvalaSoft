@@ -77,6 +77,21 @@ public class ProcesoDelLiderTests
     }
 
     [Fact]
+    public async Task Parar_dos_veces_o_a_la_vez_no_falla_y_detiene_el_proceso_una_sola_vez()
+    {
+        // Un host que se detiene dos veces (p. ej. dos dueños del cierre en una prueba) no debe fallar con ObjectDisposedException ni parar el proceso de nuevo.
+        var proceso = new ProcesoDePrueba();
+        var envoltura = Envolver(proceso, new LiderManual(esLider: true));
+        await envoltura.StartAsync(CancellationToken.None);
+
+        await Task.WhenAll(envoltura.StopAsync(CancellationToken.None), envoltura.StopAsync(CancellationToken.None));
+        await envoltura.StopAsync(CancellationToken.None);
+
+        proceso.Detenciones.ShouldBe(1);
+        envoltura.Corriendo.ShouldBeFalse();
+    }
+
+    [Fact]
     public async Task El_proceso_se_arranca_sin_el_token_del_arranque_del_host()
     {
         var proceso = new ProcesoDePrueba();

@@ -35,8 +35,14 @@ public sealed class LiderUnico : ILiderDeProcesos
 /// nodo). El proceso es el <see cref="BackgroundService"/> de siempre; la decisión de quién lo corre vive aquí, en un solo lugar, y no en el bucle
 /// de cada proceso. Se registra con <see cref="LiderDeProcesosExtensiones.AgregarProcesoDelLider{T}"/>.
 /// </summary>
-public sealed class ProcesoDelLider(IHostedService proceso, ILiderDeProcesos lider, ILogger<ProcesoDelLider> logger) : IHostedService, IDisposable
+public sealed class ProcesoDelLider(IHostedService proceso, ILiderDeProcesos lider, ILogger<ProcesoDelLider> logger) : IHostedService
 {
+    /// <remarks>
+    /// Nunca se libera (<c>Dispose</c>) a propósito: un <see cref="SemaphoreSlim"/> que no expone su <c>AvailableWaitHandle</c> no tiene recursos nativos que
+    /// soltar, y liberarlo hacía que un segundo <see cref="StopAsync"/> (o el <c>Task.Run</c> de un cambio de liderazgo que llega tarde) lanzara
+    /// <see cref="ObjectDisposedException"/> si el contenedor del host ya se había liberado: un apagado repetido o en carrera no debe fallar. Parar dos veces
+    /// es inofensivo: la segunda espera su turno y <see cref="DetenerAsync"/> no hace nada porque el proceso ya no está corriendo.
+    /// </remarks>
     private readonly SemaphoreSlim _turno = new(1, 1);
     private bool _corriendo;
     private bool _detenido;
@@ -63,8 +69,6 @@ public sealed class ProcesoDelLider(IHostedService proceso, ILiderDeProcesos lid
             _turno.Release();
         }
     }
-
-    public void Dispose() => _turno.Dispose();
 
     private void AlCambiarElLiderazgo(bool esLider) =>
         // Sin bloquear a quien notifica (el hilo que vigila el liderazgo): se reconcilia con el liderazgo de ese momento, en segundo plano.
