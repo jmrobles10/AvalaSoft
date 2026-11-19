@@ -13,7 +13,7 @@ export function DialogoNuevaEmpresa({ grupo, onCerrar }: { grupo: GrupoDto; onCe
   return <DialogoEmpresa claveIdempotencia={clave} mutacion={mutacion} subtitulo={t('consola.empresa.paraElGrupo', { grupo: grupo.tenant.nombre })} onCerrar={onCerrar} onGuardada={onCerrar} />;
 }
 
-/** Corregir la identificación, la razón social y el prefijo de folio de una empresa del grupo, siempre: el mismo formulario del alta, precargado. */
+/** Corregir la identificación, la razón social y el prefijo de una empresa del grupo, siempre: el mismo formulario del alta, precargado. */
 export function DialogoCorregirEmpresa({ grupo, empresa, onCerrar }: { grupo: GrupoDto; empresa: EmpresaDeGrupoDto; onCerrar: () => void }) {
   const { t } = useTranslation();
   const mutacion = useCorregirEmpresaDeGrupo(grupo.tenant.id, empresa.id);

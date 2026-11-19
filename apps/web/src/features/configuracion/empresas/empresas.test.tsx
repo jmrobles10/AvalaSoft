@@ -135,8 +135,8 @@ describe('agregar una empresa', () => {
     await usuario.clear(numero);
     await usuario.type(numero, '900123456-8');
     await usuario.type(screen.getByRole('textbox', { name: /Razón social/ }), 'Constructora Norte');
-    await usuario.type(screen.getByRole('textbox', { name: /Prefijo de folio/ }), 'norte-1');
-    expect(screen.getByRole('textbox', { name: /Prefijo de folio/ })).toHaveValue('NORTE1');
+    await usuario.type(screen.getByRole('textbox', { name: /Prefijo/ }), 'norte-1');
+    expect(screen.getByRole('textbox', { name: /Prefijo/ })).toHaveValue('NORTE1');
     expect(screen.getByText(/NORTE1-E-\d{4}-000123/)).toBeInTheDocument();
 
     await waitFor(() => expect(agregar).toBeEnabled());

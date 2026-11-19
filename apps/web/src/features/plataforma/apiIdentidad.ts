@@ -115,8 +115,8 @@ export function useCrearEmpresaDeGrupo(tenantId: string, claveIdempotencia: stri
 }
 
 /**
- * Corrige la identificación, la razón social y el prefijo de folio de una empresa del grupo, siempre (PUT; repetirlo no hace daño).
- * Los folios ya emitidos conservan el prefijo anterior.
+ * Corrige la identificación, la razón social y el prefijo de una empresa del grupo, siempre (PUT; repetirlo no hace daño).
+ * Los códigos ya emitidos conservan el prefijo anterior.
  */
 export function useCorregirEmpresaDeGrupo(tenantId: string, empresaId: string) {
   const cliente = useQueryClient();

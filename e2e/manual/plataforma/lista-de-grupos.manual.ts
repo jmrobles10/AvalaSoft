@@ -51,7 +51,7 @@ recorrido(
     await paso(page, {
       titulo: 'Revisa las empresas del grupo',
       explicacion:
-        'La tabla de cada grupo muestra sus empresas con la identificación (NIT), el prefijo de folio (el que aparece en los números de expediente) y el plan de IA de cada una. ' +
+        'La tabla de cada grupo muestra sus empresas con la identificación (NIT), el prefijo (el que aparece en los números de expediente) y el plan de IA de cada una. ' +
         'Desde la fila, «Plan de IA» abre la configuración del nivel de IA de esa empresa.',
       resaltar: consola.getByRole('table').first(),
       configuracion: {

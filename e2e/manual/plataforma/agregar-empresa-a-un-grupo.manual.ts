@@ -42,16 +42,16 @@ recorrido(
     await expect(dialogo.getByText(`Para el grupo ${grupo}`)).toBeVisible();
     await dialogo.getByRole('textbox', { name: /Número de identificación/ }).fill(nitAleatorio().numero);
     await dialogo.getByRole('textbox', { name: /Razón social/ }).fill(nueva);
-    await dialogo.getByRole('textbox', { name: /Prefijo de folio/ }).fill(prefijo);
+    await dialogo.getByRole('textbox', { name: /Prefijo/ }).fill(prefijo);
 
     await paso(page, {
       titulo: 'Escribe los datos de la nueva empresa',
       explicacion:
-        'El diálogo usa el mismo formulario de la primera empresa del alta: país y tipo de identificación, número, razón social y prefijo de folio. El prefijo es el que aparece en los números de sus expedientes y se puede corregir después con «Editar» en la fila de la empresa (los folios ya emitidos conservan el prefijo anterior); aun así, elige uno corto y reconocible. ',
+        'El diálogo usa el mismo formulario de la primera empresa del alta: país y tipo de identificación, número, razón social y prefijo. El prefijo es el que aparece en los números de sus expedientes y se puede corregir después con «Editar» en la fila de la empresa (los códigos ya emitidos conservan el prefijo anterior); aun así, elige uno corto y reconocible. ',
       resaltar: [
         dialogo.getByRole('textbox', { name: /Número de identificación/ }),
         dialogo.getByRole('textbox', { name: /Razón social/ }),
-        dialogo.getByRole('textbox', { name: /Prefijo de folio/ }),
+        dialogo.getByRole('textbox', { name: /Prefijo/ }),
       ],
       variantes: [
         { cuando: 'El número no tiene la forma del tipo elegido', entonces: 'El campo lo indica debajo y no deja agregar la empresa.' },

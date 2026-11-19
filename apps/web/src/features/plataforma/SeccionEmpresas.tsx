@@ -12,7 +12,7 @@ import { DialogoCorregirEmpresa, DialogoNuevaEmpresa } from './DialogosDeEmpresa
 
 /**
  * Las empresas del grupo en una lista corta, en solo lectura. «Editar» abre el mismo formulario de corrección de la lista de grupos (razón social,
- * identificación y prefijo de folio; no se duplica) y «Agregar empresa», el del alta.
+ * identificación y prefijo; no se duplica) y «Agregar empresa», el del alta.
  */
 export function SeccionEmpresas({ grupo }: { grupo: GrupoDto }) {
   const { t } = useTranslation();

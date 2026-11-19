@@ -58,23 +58,23 @@ recorrido(
 
     await consola.getByRole('textbox', { name: 'Número de identificación' }).fill(nit.numero);
     await consola.getByRole('textbox', { name: 'Razón social' }).fill(empresa);
-    await consola.getByRole('textbox', { name: 'Prefijo de folio' }).fill(prefijo);
+    await consola.getByRole('textbox', { name: 'Prefijo' }).fill(prefijo);
     await paso(page, {
       titulo: 'Da de alta la primera empresa del grupo',
       explicacion:
-        'La primera empresa es la razón social que valida a sus terceros. Eliges el país y el tipo de identificación, escribes el número y la razón social, y defines el prefijo de folio: las letras con que empiezan los números de sus expedientes. ' +
-        'Si hace falta corregirlo después, se edita desde la fila de la empresa en el grupo (los folios ya emitidos conservan el prefijo anterior); aun así, elige uno corto y fácil de reconocer. Más empresas se agregan después desde el mismo grupo.',
+        'La primera empresa es la razón social que valida a sus terceros. Eliges el país y el tipo de identificación, escribes el número y la razón social, y defines el prefijo: las letras con que empiezan los números de sus expedientes. ' +
+        'Si hace falta corregirlo después, se edita desde la fila de la empresa en el grupo (los códigos ya emitidos conservan el prefijo anterior); aun así, elige uno corto y fácil de reconocer. Más empresas se agregan después desde el mismo grupo.',
       resaltar: [
         consola.getByRole('textbox', { name: 'Número de identificación' }),
         consola.getByRole('textbox', { name: 'Razón social' }),
-        consola.getByRole('textbox', { name: 'Prefijo de folio' }),
+        consola.getByRole('textbox', { name: 'Prefijo' }),
       ],
       variantes: [
         { cuando: 'El número no tiene la forma del tipo elegido', entonces: 'El campo lo indica debajo y no deja crear el grupo.' },
       ],
       configuracion: {
-        ajuste: 'Prefijo de folio',
-        efecto: 'Aparece al inicio de los números de expediente de la empresa; Plataforma puede corregirlo después y los folios ya emitidos conservan el anterior.',
+        ajuste: 'Prefijo',
+        efecto: 'Aparece al inicio de los números de expediente de la empresa; Plataforma puede corregirlo después y los códigos ya emitidos conservan el anterior.',
       },
     });
 

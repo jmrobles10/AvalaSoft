@@ -43,7 +43,7 @@ Un solo `DocumentStore`, con los eventos en estilo *conjoined* para todos los st
 | `eventos` | El event store. |
 | `wolverine` | Outbox, inbox y mensajes programados de Wolverine. |
 
-Hay índices únicos que hacen cumplir las reglas del negocio: un tercero por identificación, un vínculo por empresa, tercero y tipo, un folio de expediente por grupo y un prefijo de folio distinto por empresa.
+Hay índices únicos que hacen cumplir las reglas del negocio: un tercero por identificación, un vínculo por empresa, tercero y tipo, un folio de expediente por grupo y un prefijo distinto por empresa.
 
 ## Event sourcing: agregados y eventos
 

@@ -15,7 +15,7 @@ Si el folio o la huella no corresponden a ningún certificado de Valídalo, la p
 
 **Antes de empezar**
 
-- Un grupo empresarial registrado en Valídalo, cuyo prefijo de folio se usa para armar un folio que no existe.
+- Un grupo empresarial registrado en Valídalo, cuyo prefijo se usa para armar un folio que no existe.
 - La consulta se hace sin sesión, desde una ventana nueva del navegador.
 
 **Pasos**

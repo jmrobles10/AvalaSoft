@@ -1264,7 +1264,7 @@ Respuesta `200`:
 
 ### `PUT /api/v1/empresas/{id}`
 
-**Actualizar empresa.** Datos y marca (contacto de soporte, color y logo). La identificación, la razón social y el prefijo de folio no se cambian aquí: los corrige Plataforma desde su consola.
+**Actualizar empresa.** Datos y marca (contacto de soporte, color y logo). La identificación, la razón social y el prefijo no se cambian aquí: los corrige Plataforma desde su consola.
 
 **Permiso empresas:administrar · API (`/api/v1`) · SDK: `actualizarEmpresa`**
 

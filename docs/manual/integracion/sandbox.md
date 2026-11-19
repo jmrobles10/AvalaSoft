@@ -38,7 +38,7 @@ Una llave marcada como «sandbox» es la que usa tu sistema para probar. Su clav
 
 ## Paso 2. Revisa qué copió el sandbox
 
-La respuesta dice si el sandbox existe, su entorno («sandbox», distinto de «produccion»), los sistemas que lo usan y las empresas copiadas. Cada empresa trae el id de su copia de pruebas (ese id es el que usas en X-Empresa), el id de producción del que sale y su prefijo de folio, que empieza por T para distinguirla.
+La respuesta dice si el sandbox existe, su entorno («sandbox», distinto de «produccion»), los sistemas que lo usan y las empresas copiadas. Cada empresa trae el id de su copia de pruebas (ese id es el que usas en X-Empresa), el id de producción del que sale y su prefijo, que empieza por T para distinguirla.
 
 ![Paso 2: Revisa qué copió el sandbox (escritorio)](../../../salida/manual/img/integracion/sandbox/02-revisa-que-copio-el-sandbox-claro.webp)
 

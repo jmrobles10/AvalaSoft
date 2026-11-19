@@ -275,7 +275,7 @@ describe('Agregar una empresa a un grupo desde la consola (PI-9)', () => {
 
     await usuario.type(within(dialogo).getByRole('textbox', { name: /Número de identificación/ }), '900123456-8');
     await usuario.type(within(dialogo).getByRole('textbox', { name: /Razón social/ }), 'Constructora Norte');
-    await usuario.type(within(dialogo).getByRole('textbox', { name: /Prefijo de folio/ }), 'norte');
+    await usuario.type(within(dialogo).getByRole('textbox', { name: /Prefijo/ }), 'norte');
     const crear = within(dialogo).getByRole('button', { name: 'Agregar empresa' });
     await waitFor(() => expect(crear).toBeEnabled());
     await usuario.click(crear);
@@ -336,8 +336,8 @@ describe('Corregir una empresa de un grupo desde la consola', () => {
     expect(within(dialogo).getByText('Para el grupo Grupo Andino')).toBeInTheDocument();
     expect(within(dialogo).getByRole('textbox', { name: /Número de identificación/ })).toHaveValue('800197268-4');
     expect(within(dialogo).getByRole('textbox', { name: /Razón social/ })).toHaveValue('Constructora Norte S.A.S.');
-    expect(within(dialogo).getByRole('textbox', { name: /Prefijo de folio/ })).toHaveValue('NORTE');
-    expect(within(dialogo).getByText(/Los folios ya emitidos conservan el prefijo anterior/)).toBeInTheDocument();
+    expect(within(dialogo).getByRole('textbox', { name: /Prefijo/ })).toHaveValue('NORTE');
+    expect(within(dialogo).getByText(/Los códigos ya emitidos conservan el prefijo anterior/)).toBeInTheDocument();
     expect(within(dialogo).queryByText(/no se puede cambiar/)).not.toBeInTheDocument();
     expect(within(dialogo).getByRole('button', { name: 'Guardar' })).toBeEnabled();
     expect(within(dialogo).queryByRole('button', { name: 'Agregar empresa' })).not.toBeInTheDocument();
@@ -360,7 +360,7 @@ describe('Corregir una empresa de un grupo desde la consola', () => {
     const razon = within(dialogo).getByRole('textbox', { name: /Razón social/ });
     await usuario.clear(razon);
     await usuario.type(razon, 'Constructora Sur S.A.S.');
-    const prefijo = within(dialogo).getByRole('textbox', { name: /Prefijo de folio/ });
+    const prefijo = within(dialogo).getByRole('textbox', { name: /Prefijo/ });
     await usuario.clear(prefijo);
     await usuario.type(prefijo, 'sur2');
     const guardar = within(dialogo).getByRole('button', { name: 'Guardar' });
@@ -390,7 +390,7 @@ describe('Corregir una empresa de un grupo desde la consola', () => {
 
     await usuario.click(within(dialogo).getByRole('button', { name: 'Guardar' }));
 
-    expect(await within(dialogo).findByText('Otra empresa del grupo ya usa ese prefijo de folio. Elige uno distinto.')).toBeInTheDocument();
+    expect(await within(dialogo).findByText('Otra empresa del grupo ya usa ese prefijo. Elige uno distinto.')).toBeInTheDocument();
     expect(screen.getByRole('dialog', { name: /^Editar empresa/ })).toBeInTheDocument();
   });
 
