@@ -27,13 +27,27 @@ export function ChipVigencia({ vigencia }: { vigencia: VigenciaDto }) {
 
 /**
  * Vigencia completa de un documento: el estado, «Vence el …» y, como texto secundario, de dónde sale la fecha (desde la
- * expedición declarada, la carga o el vencimiento propio) y los días de gracia.
+ * expedición declarada, la carga o el vencimiento propio) y los días de gracia. Si está por vencer, en gracia o vencido, todo va
+ * en un solo aviso (el texto del aviso ya dice el estado y la fecha: no se repiten en un chip ni en otra línea).
  */
 export function VigenciaDocumento({ vigencia }: { vigencia: VigenciaDto }) {
   const { t } = useTranslation();
   const estado = estadoVigencia(vigencia);
   if (!estado) return null;
   const explicacion = explicacionVigencia(vigencia, t);
+  const aviso = textoAvisoVigencia(vigencia, t);
+  if (aviso) {
+    return (
+      <Alert severity={severidadAviso(vigencia)} sx={{ py: 0.25, fontSize: 13 }}>
+        {aviso}
+        {explicacion && (
+          <Typography component="span" sx={{ display: 'block', color: 'text.secondary', fontSize: 12, mt: 0.25 }}>
+            {explicacion}
+          </Typography>
+        )}
+      </Alert>
+    );
+  }
   return (
     <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
       <ChipEstado estado={CHIP_VIGENCIA[estado]} etiqueta={t(`expedientes.vigencia.estados.${estado}`)} />
@@ -44,17 +58,5 @@ export function VigenciaDocumento({ vigencia }: { vigencia: VigenciaDto }) {
         </Typography>
       )}
     </Stack>
-  );
-}
-
-/** Aviso visible si el documento está por vencer, en gracia (hasta cuándo) o vencido. */
-export function AvisoVigencia({ vigencia }: { vigencia: VigenciaDto }) {
-  const { t } = useTranslation();
-  const texto = textoAvisoVigencia(vigencia, t);
-  if (!texto) return null;
-  return (
-    <Alert severity={severidadAviso(vigencia)} sx={{ py: 0, fontSize: 13 }}>
-      {texto}
-    </Alert>
   );
 }

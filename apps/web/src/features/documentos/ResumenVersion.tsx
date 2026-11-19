@@ -3,7 +3,7 @@ import type { DatoDeclaradoDto, HechosDto, VigenciaDto } from '@validalo/api-cli
 import { estadoRevision } from './revisionIa';
 import { DatosDeclarados } from './DatosDeclarados';
 import { RevisionAutomatica, type TipoEsperado } from './RevisionAutomatica';
-import { AvisoVigencia, VigenciaDocumento } from './VigenciaDocumento';
+import { VigenciaDocumento } from './VigenciaDocumento';
 
 export interface ResumenVersionProps {
   datos: readonly DatoDeclaradoDto[];
@@ -29,7 +29,6 @@ export function ResumenVersion({ datos, vigencia, limite, conTitulo, hechos, tip
   if (datos.length === 0 && !conVigencia && !conRevision) return null;
   return (
     <Stack spacing={1}>
-      {conVigencia && vigencia && <AvisoVigencia vigencia={vigencia} />}
       {conVigencia && vigencia && <VigenciaDocumento vigencia={vigencia} />}
       <DatosDeclarados datos={datos} limite={limite} conTitulo={conTitulo} />
       {conRevision && <RevisionAutomatica hechos={hechos} tipoEsperado={tipoEsperado} limite={limite} />}
