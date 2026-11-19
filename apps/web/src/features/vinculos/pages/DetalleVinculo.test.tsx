@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { configurarCliente, reiniciarCliente, SCOPES, type EventoHistorialDto, type VinculoDto } from '@avalasoft/api-client';
 import { createAvalasoftTheme } from '@avalasoft/ui';
@@ -138,7 +138,9 @@ describe('Detalle del vínculo: el historial y las acciones', () => {
       ],
     );
 
-    await usuario.click(await screen.findByRole('button', { name: 'Historial' }));
+    // En jsdom la ficha es angosta: los sectores van en un menú desplegable.
+    await usuario.click(within(await screen.findByRole('navigation', { name: 'Sectores de la ficha' })).getByRole('button'));
+    await usuario.click(await screen.findByRole('menuitem', { name: 'Historial' }));
     expect(await screen.findByText('Vínculo desbloqueado')).toBeInTheDocument();
     expect(screen.getByText('Vínculo en pre-vencimiento')).toBeInTheDocument();
     expect(screen.getByText(/El bloqueo temporal terminó el 13\/11\/2026\./)).toBeInTheDocument();
