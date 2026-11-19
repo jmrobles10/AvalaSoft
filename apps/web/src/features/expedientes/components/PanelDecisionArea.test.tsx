@@ -106,7 +106,7 @@ describe('Lo que te toca decidir', () => {
     expect(screen.queryByRole('button', { name: /^Aprobar área/ })).not.toBeInTheDocument();
   });
 
-  it('un área que ya decidió todo lo suyo sale del panel; la que sigue pendiente se queda', () => {
+  it('un área que ya decidió todo lo suyo sale del panel, y la que sigue pendiente se queda', () => {
     const { region } = montar(conAreas(conDocumentos('EnRevision'), [compras({ estado: 'Aprobada', documentosPorDecidir: [] }), cumplimiento()]), ['COMPRAS', 'CUMPLIMIENTO']);
 
     expect(screen.queryByRole('region', { name: 'Compras' })).not.toBeInTheDocument();

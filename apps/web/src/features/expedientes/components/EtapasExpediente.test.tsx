@@ -239,7 +239,7 @@ describe('Etapas y áreas: un flujo con documentos', () => {
     expect(onAccion).toHaveBeenLastCalledWith({ tipo: 'rechazar', area: cumple });
   });
 
-  it('quien no es del área lee que no es miembro y no puede aprobarla ni observarla (ni rechazar); la suya sí', () => {
+  it('quien no es del área lee que no es miembro y no puede aprobarla ni observarla (ni rechazar), pero la suya sí', () => {
     montar(conDocumentos('EnRevision'), { scopes: ADMINISTRADOR, miembroDe: ['COMPRAS'] });
 
     expect(tarjeta('Cumplimiento').getByText('No eres miembro de esta área.')).toBeInTheDocument();
