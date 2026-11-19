@@ -58,23 +58,28 @@ export function Encabezado({
           <Box component="span" aria-hidden sx={{ flex: 'none', color: 'text.disabled', fontWeight: 400 }}>
             /
           </Box>
-          <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', fontSize: 18 }}>
             {tercero.data?.nombre ?? (tercero.isPending ? <Skeleton width={280} sx={{ display: 'inline-block' }} /> : t('vinculos.terceroDesconocido'))}
           </Box>
+          {/* NIT, tipo y estado en la misma línea del nombre: el encabezado fijo ocupa una sola fila y deja el alto a la ficha. */}
+          <Stack
+            component="span"
+            direction="row"
+            spacing={1}
+            useFlexGap
+            sx={{ flex: 'none', alignSelf: 'center', alignItems: 'center', ml: 1, fontSize: 13, fontWeight: 400, color: 'text.secondary', whiteSpace: 'nowrap' }}
+          >
+            {tercero.data && <Mono>{identificacionDe(tercero.data)}</Mono>}
+            {tercero.data && <span aria-hidden>·</span>}
+            <span>{vinculo.tipoVinculo.nombre}</span>
+            <span aria-hidden>·</span>
+            <ChipEstado estado={estadoVisibleDelVinculo(vinculo)} fecha={vinculo.bloqueo?.desde ?? vinculo.actualizadoEn} />
+            <ChipExento exenciones={vinculo.exenciones} />
+          </Stack>
         </Box>
       }
       tituloCompleto={tercero.data?.nombre}
       etiquetaAcciones={t('vinculos.detalle.acciones')}
-      subtitulo={
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 0.25, fontSize: 13, flexWrap: 'wrap' }} useFlexGap>
-          {tercero.data && <Mono>{identificacionDe(tercero.data)}</Mono>}
-          {tercero.data && <span aria-hidden>·</span>}
-          <span>{vinculo.tipoVinculo.nombre}</span>
-          <span aria-hidden>·</span>
-          <ChipEstado estado={estadoVisibleDelVinculo(vinculo)} fecha={vinculo.bloqueo?.desde ?? vinculo.actualizadoEn} />
-          <ChipExento exenciones={vinculo.exenciones} />
-        </Stack>
-      }
       acciones={
         acciones.length > 0 || extra ? (
           <>
