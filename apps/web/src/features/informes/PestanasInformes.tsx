@@ -1,5 +1,6 @@
 import { Box, Tab, Tabs, type Theme } from '@mui/material';
 import { SCOPES } from '@validalo/api-client';
+import { sxPildora } from '@validalo/ui';
 import { ChartNoAxesColumn, ClipboardCheck, Timer, Users, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
@@ -46,15 +47,7 @@ export function PestanasInformes({ empresaId, actual }: { empresaId: string; act
               iconPosition="start"
               component={RouterLink}
               to={`/e/${empresaId}/informes/${p.valor}`}
-              sx={(t2: Theme) => ({
-                minHeight: 36,
-                px: 1.5,
-                gap: 0.75,
-                borderRadius: '10px',
-                '& .MuiTab-icon': { m: 0 },
-                '&:hover': { bgcolor: t2.palette.superficie.nivel2, color: t2.palette.text.primary },
-                '&.Mui-selected': { bgcolor: t2.palette.background.paper, color: t2.palette.text.primary, boxShadow: t2.sombra.pildora, '& .MuiTab-icon': { color: t2.palette.acento.main } },
-              })}
+              sx={(t2: Theme) => sxPildora(t2, '.MuiTab-icon')}
             />
           );
         })}

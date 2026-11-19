@@ -1,11 +1,12 @@
 import { SCOPES } from '@validalo/api-client';
-import { EstadoVacio, FiltroMenu, MiniBarra, SeccionPlana, TablaConCursor, usePaginacionCursor } from '@validalo/ui';
+import { EstadoVacio, FiltroMenu, MiniBarra, SeccionPlana, TablaConCursor, tonoDeAlerta, usePaginacionCursor } from '@validalo/ui';
 import { CalendarX, ClipboardList, Clock, ShieldCheck, Users } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
 import { SinPermiso } from '../../shared/componentes';
 import { mensajeDeError } from '../../shared/errores';
+import { ResumenKpis, type KpiResumen } from '../../shared/ResumenKpis';
 import { usePermisos } from '../../shared/usePermisos';
 import { useEmpresaActiva } from '../empresas/useEmpresas';
 import { useTiposVinculo } from '../vinculos/api';
@@ -14,8 +15,7 @@ import { useInformeVinculos } from './api';
 import { BarraFiltrosInforme } from './BarraFiltrosInforme';
 import { useColumnasVinculos } from './columnas';
 import { MarcoInforme } from './MarcoInforme';
-import { ESTADOS_VINCULO, leerFiltrosVinculos, parametrosVinculos, RUTAS, tonoDeAlerta } from './modelo';
-import { ResumenKpis, type KpiInforme } from './ResumenKpis';
+import { ESTADOS_VINCULO, leerFiltrosVinculos, parametrosVinculos, RUTAS } from './modelo';
 import { useFiltrosEnUrl } from './useFiltrosEnUrl';
 
 const TAMANO_PAGINA = 50;
@@ -48,7 +48,7 @@ export function PaginaInformeVinculos() {
   if (!puede) return <SinPermiso seccion={t('nav.informes')} />;
 
   const resumen = consulta.data?.resumen;
-  const kpis: KpiInforme[] | undefined = resumen && [
+  const kpis: KpiResumen[] | undefined = resumen && [
     { clave: 'total', icono: Users, tono: 'cian', titulo: t('informes.vinculos.kpi.total'), valor: String(resumen.total), detalle: t('informes.vinculos.kpi.totalDetalle') },
     {
       clave: 'certificado',

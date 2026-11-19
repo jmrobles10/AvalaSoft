@@ -1,11 +1,12 @@
 import { SCOPES } from '@validalo/api-client';
-import { EstadoVacio, FiltroMenu, MiniBarra, SeccionPlana, TablaConCursor, usePaginacionCursor } from '@validalo/ui';
+import { EstadoVacio, FiltroMenu, MiniBarra, SeccionPlana, TablaConCursor, tonoDeAlerta, usePaginacionCursor } from '@validalo/ui';
 import { CircleCheck, CircleX, ClipboardCheck, Gauge, Hourglass } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
 import { SinPermiso } from '../../shared/componentes';
 import { mensajeDeError } from '../../shared/errores';
+import { ResumenKpis, type KpiResumen } from '../../shared/ResumenKpis';
 import { usePermisos } from '../../shared/usePermisos';
 import { useCuestionarios, useInformeEvaluaciones } from '../evaluaciones/api';
 import { formatearPuntaje } from '../evaluaciones/modelo';
@@ -14,8 +15,7 @@ import { AccionesDescarga } from './AccionesDescarga';
 import { BarraFiltrosInforme } from './BarraFiltrosInforme';
 import { useColumnasEvaluaciones } from './columnas';
 import { MarcoInforme } from './MarcoInforme';
-import { RUTAS, tonoDeAlerta } from './modelo';
-import { ResumenKpis, type KpiInforme } from './ResumenKpis';
+import { RUTAS } from './modelo';
 import { useFiltrosEnUrl } from './useFiltrosEnUrl';
 
 const TAMANO_PAGINA = 50;
@@ -51,7 +51,7 @@ export function PaginaInformeEvaluaciones() {
 
   const resumen = consulta.data?.resumen;
   const calificadas = resumen ? resumen.aprobadas + resumen.reprobadas : 0;
-  const kpis: KpiInforme[] | undefined = resumen && [
+  const kpis: KpiResumen[] | undefined = resumen && [
     { clave: 'total', icono: ClipboardCheck, tono: 'cian', titulo: t('evaluaciones.informe.resumen.total'), valor: String(resumen.total), detalle: t('informes.evaluaciones.kpi.totalDetalle') },
     { clave: 'pendientes', icono: Hourglass, tono: 'ambar', titulo: t('evaluaciones.informe.resumen.pendientes'), valor: String(resumen.pendientes), detalle: t('informes.evaluaciones.kpi.pendientesDetalle') },
     {

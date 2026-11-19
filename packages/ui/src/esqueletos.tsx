@@ -1,6 +1,6 @@
 import { Box, Skeleton, Stack, Table, TableBody, TableCell, TableHead, TableRow, useTheme, type SxProps, type Theme } from '@mui/material';
 import type { ReactNode } from 'react';
-import { GrillaKpi } from './tarjetas';
+import { columnasKpi, GrillaKpi } from './tarjetas';
 
 /**
  * Esqueletos de carga con la forma real del contenido (UI-1): mientras algo carga, la pantalla muestra bloques grises con
@@ -81,15 +81,41 @@ export function EsqueletoTarjetas({ cantidad = 2, lineas = 2, alto, etiqueta, sx
   );
 }
 
-/** Las tarjetas de cifras de un tablero (`TarjetaKpi`) con su forma: el mismo alto y la misma rejilla que las reales. */
-export function EsqueletoKpis({ cantidad = 5, etiqueta, sx }: Comun & { cantidad?: 4 | 5 }) {
+/**
+ * Las tarjetas de cifras de un tablero (`TarjetaKpi`) con su forma: el mismo alto y la misma rejilla que las reales. `columnas` por omisión
+ * sale de `cantidad` (`columnasKpi`), como en la rejilla real.
+ */
+export function EsqueletoKpis({ cantidad = 5, columnas, etiqueta, sx }: Comun & { cantidad?: number; columnas?: 3 | 4 | 5 }) {
   return (
     <Region etiqueta={etiqueta} sx={sx}>
-      <GrillaKpi columnas={cantidad}>
+      <GrillaKpi columnas={columnas ?? columnasKpi(cantidad)}>
         {Array.from({ length: cantidad }, (_, i) => (
           <Skeleton key={i} variant="rounded" height={136} sx={{ borderRadius: radioMarco }} />
         ))}
       </GrillaKpi>
+    </Region>
+  );
+}
+
+/**
+ * Las filas de una lista de atención (`FilaAtencion`) con su forma: círculo del ícono, dos líneas de texto y, a la derecha, la cifra. El
+ * ancho de las líneas varía con la posición, sin azar.
+ */
+export function EsqueletoFilas({ cantidad = 3, etiqueta, sx }: Comun & { cantidad?: number }) {
+  return (
+    <Region etiqueta={etiqueta} sx={sx}>
+      <Stack spacing={0.25}>
+        {Array.from({ length: cantidad }, (_, i) => (
+          <Stack key={i} direction="row" sx={{ alignItems: 'center', gap: 1.5, px: 1.5, py: 1.25 }}>
+            <Skeleton variant="circular" width={36} height={36} sx={{ flex: 'none' }} />
+            <Stack spacing={0.75} sx={{ flex: 1, minWidth: 0 }}>
+              <Skeleton variant="rounded" height={14} width={anchoDeLinea(i, 35, 10)} />
+              <Skeleton variant="rounded" height={12} width={anchoDeLinea(i + 2, 25, 8)} />
+            </Stack>
+            <Skeleton variant="rounded" width={28} height={22} sx={{ flex: 'none' }} />
+          </Stack>
+        ))}
+      </Stack>
     </Region>
   );
 }

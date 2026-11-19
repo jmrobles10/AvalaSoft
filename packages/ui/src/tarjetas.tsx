@@ -150,10 +150,18 @@ export function coloresDeKpi(t: Theme, tono: TonoKpi) {
   return tono === 'violeta' ? t.palette.violeta : t.palette.estado[PALETA_KPI[tono]];
 }
 
+/** El tono de una cifra que es una alerta cuando es mayor que cero (lo vencido, lo incumplido, lo bloqueado): rojo si hay, verde si no. */
+export function tonoDeAlerta(cantidad: number): TonoKpi {
+  return cantidad > 0 ? 'rojo' : 'verde';
+}
+
 /**
  * Tarjeta del tablero: ícono dentro de un cuadrado redondeado de color suave (cian, violeta, verde, ámbar o rojo), el rótulo, la cifra grande,
  * un detalle opcional y, si hay datos que dibujar, una mini gráfica (`grafica`). Es un grupo con el nombre del rótulo (`etiqueta`, o el
  * `titulo` si es texto): el lector de pantalla lee el rótulo con su cifra. En `rojo` el borde y la cifra también se pintan de alerta.
+ *
+ * Con `to` la tarjeta entera es un enlace (`componente`, p. ej. el `Link` del enrutador; sin él, un `<a href>`): lleva un chevron junto al
+ * rótulo, el borde se marca al pasar el cursor y su nombre accesible es su contenido (o `etiqueta`, si se da).
  */
 export function TarjetaKpi({
   icono: Icono,
@@ -163,6 +171,8 @@ export function TarjetaKpi({
   detalle,
   grafica,
   etiqueta,
+  componente,
+  to,
 }: {
   icono: LucideIcon;
   tono: TonoKpi;
@@ -171,22 +181,26 @@ export function TarjetaKpi({
   detalle?: ReactNode;
   grafica?: ReactNode;
   etiqueta?: string;
+  componente?: ElementType;
+  to?: string;
 }) {
   const alerta = tono === 'rojo';
-  return (
-    <Box
-      role="group"
-      aria-label={etiqueta ?? (typeof titulo === 'string' ? titulo : undefined)}
-      sx={(t) => ({
-        minWidth: 0,
-        p: 2.25,
-        border: 1,
-        borderColor: alerta ? t.palette.estado.error.borde : 'divider',
-        borderRadius: `${String(t.radio.md)}px`,
-        bgcolor: 'background.paper',
-        boxShadow: t.sombra.suave,
-      })}
-    >
+  const enlazada = to !== undefined;
+  const estilo: SxProps<Theme> = (t) => ({
+    display: 'block',
+    width: '100%',
+    minWidth: 0,
+    p: 2.25,
+    textAlign: 'left',
+    border: 1,
+    borderColor: alerta ? t.palette.estado.error.borde : 'divider',
+    borderRadius: `${String(t.radio.md)}px`,
+    bgcolor: 'background.paper',
+    boxShadow: t.sombra.suave,
+    ...(enlazada && { '&:hover': { borderColor: alerta ? t.palette.estado.error.texto : t.palette.acento.borde } }),
+  });
+  const cuerpo = (
+    <>
       <Stack direction="row" sx={{ alignItems: 'center', gap: 1.5, mb: 1.5 }}>
         <Box
           aria-hidden
@@ -194,9 +208,14 @@ export function TarjetaKpi({
         >
           <Icono size={18} strokeWidth={1.75} />
         </Box>
-        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontWeight: 400 }}>
+        <Typography component="span" variant="body2" sx={{ flex: 1, minWidth: 0, color: 'text.secondary', fontWeight: 400 }}>
           {titulo}
         </Typography>
+        {enlazada && (
+          <Box aria-hidden sx={{ display: 'inline-flex', flex: 'none', color: 'text.secondary' }}>
+            <ChevronRight size={16} strokeWidth={1.75} />
+          </Box>
+        )}
       </Stack>
       <Stack direction="row" sx={{ alignItems: 'flex-end', justifyContent: 'space-between', gap: 2 }}>
         <Box sx={{ minWidth: 0 }}>
@@ -214,17 +233,41 @@ export function TarjetaKpi({
         </Box>
         {grafica && <Box sx={{ flex: 'none' }}>{grafica}</Box>}
       </Stack>
+    </>
+  );
+
+  if (enlazada) {
+    return (
+      <ButtonBase component={componente ?? 'a'} {...(componente ? { to } : { href: to })} aria-label={etiqueta} sx={estilo}>
+        {cuerpo}
+      </ButtonBase>
+    );
+  }
+  return (
+    <Box role="group" aria-label={etiqueta ?? (typeof titulo === 'string' ? titulo : undefined)} sx={estilo}>
+      {cuerpo}
     </Box>
   );
 }
 
 /**
- * Rejilla de las tarjetas del tablero: 1 columna en el celular, 2 desde `sm` y, en pantallas anchas, 4 o 5 columnas (las tarjetas no se
- * angostan hasta partir sus rótulos). Con 5 tarjetas nunca queda una suelta en una fila a medias: en `sm` la quinta ocupa la fila entera y en
- * `md` se reparten 3 y 2 (las de la segunda fila, a medio ancho cada una). Con `etiqueta` es una región con nombre; `ocupada` la marca como
- * actualizándose.
+ * Cuántas columnas da en pantallas anchas la rejilla a un grupo de `cantidad` tarjetas, para no dejar filas a medias donde se pueda evitar:
+ * 3 o menos en una fila de 3; 4 y 5 en una fila; 6 en dos filas de 3; 7 o más en filas de 4.
  */
-export function GrillaKpi({ columnas = 4, etiqueta, ocupada = false, children, sx }: { columnas?: 4 | 5; etiqueta?: string; ocupada?: boolean; children: ReactNode; sx?: SxProps<Theme> }) {
+export function columnasKpi(cantidad: number): 3 | 4 | 5 {
+  if (cantidad <= 3) return 3;
+  if (cantidad === 4) return 4;
+  if (cantidad === 5) return 5;
+  return cantidad === 6 ? 3 : 4;
+}
+
+/**
+ * Rejilla de las tarjetas del tablero: 1 columna en el celular, 2 desde `sm` y, en pantallas anchas, 3, 4 o 5 columnas (las tarjetas no se
+ * angostan hasta partir sus rótulos; `columnasKpi` elige según cuántas hay). Nunca queda una tarjeta suelta en una fila a medias de dos columnas:
+ * la última ocupa la fila entera (con 5, la quinta en `sm`, y en `md` se reparten 3 y 2, las de la segunda fila a medio ancho cada una).
+ * Con `etiqueta` es una región con nombre; `ocupada` la marca como actualizándose.
+ */
+export function GrillaKpi({ columnas = 4, etiqueta, ocupada = false, children, sx }: { columnas?: 3 | 4 | 5; etiqueta?: string; ocupada?: boolean; children: ReactNode; sx?: SxProps<Theme> }) {
   const n = (cantidad: number) => `repeat(${String(cantidad)}, minmax(0, 1fr))`;
   return (
     <Box
@@ -236,10 +279,13 @@ export function GrillaKpi({ columnas = 4, etiqueta, ocupada = false, children, s
           display: 'grid',
           gap: 2,
           gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: n(2), lg: n(columnas) },
-          ...(columnas === 5 && {
-            [t.breakpoints.only('sm')]: { '& > :nth-child(5)': { gridColumn: '1 / -1' } },
-            [t.breakpoints.between('md', 'lg')]: { gridTemplateColumns: n(6), '& > :nth-child(-n+3)': { gridColumn: 'span 2' }, '& > :nth-child(n+4)': { gridColumn: 'span 3' } },
-          }),
+          ...(columnas === 5
+            ? {
+                [t.breakpoints.only('sm')]: { '& > :nth-child(5)': { gridColumn: '1 / -1' } },
+                [t.breakpoints.between('md', 'lg')]: { gridTemplateColumns: n(6), '& > :nth-child(-n+3)': { gridColumn: 'span 2' }, '& > :nth-child(n+4)': { gridColumn: 'span 3' } },
+              }
+            : // En dos columnas, una última tarjeta que quedaría sola en su fila ocupa la fila entera.
+              { [t.breakpoints.between('sm', 'lg')]: { '& > :last-child:nth-child(odd)': { gridColumn: '1 / -1' } } }),
         }),
         ...sxComoLista(sx),
       ]}
@@ -264,44 +310,50 @@ export function MiniBarra({ valor, total, tono = 'cian', etiqueta }: { valor: nu
 }
 
 /**
- * Fila de la lista «Necesita atención»: ícono en círculo suave, título y subtítulo, un chip (el estado o el conteo) y un chevron. Es un
- * enlace (`componente` + `to`, p. ej. el `Link` del enrutador) o un botón.
+ * Fila de una lista de atención («Necesita atención», «Lo que te toca»): ícono en círculo suave, título y subtítulo, un chip (el estado, el
+ * conteo o la cifra) y un chevron. Es un enlace (`componente` + `to`, p. ej. el `Link` del enrutador) o un botón (`onClick`); sin ninguno de
+ * los dos es una fila informativa, sin chevron ni efecto al pasar el cursor.
+ *
+ * El título y el subtítulo se truncan en una línea (`truncar`); con `truncar={false}` se envuelven, para frases que no deben cortarse. `notas`
+ * añade debajo líneas de apoyo (un aviso en rojo, una ayuda).
  */
 export function FilaAtencion({
   icono: Icono,
   titulo,
   subtitulo,
+  notas,
   chip,
   tono = 'cian',
+  truncar = true,
   componente,
   ...resto
 }: {
   icono: LucideIcon;
   titulo: ReactNode;
   subtitulo?: ReactNode;
+  notas?: ReactNode;
   chip?: ReactNode;
   tono?: TonoKpi;
+  truncar?: boolean;
   componente?: ElementType;
   to?: string;
   onClick?: () => void;
   'aria-label'?: string;
 }) {
-  return (
-    <ButtonBase
-      component={componente ?? 'button'}
-      {...resto}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1.5,
-        width: '100%',
-        px: 1.5,
-        py: 1.25,
-        textAlign: 'left',
-        borderRadius: (t) => `${String(t.radio.sm + 2)}px`,
-        '&:hover': { bgcolor: 'superficie.nivel2' },
-      }}
-    >
+  const interactiva = resto.to !== undefined || resto.onClick !== undefined;
+  const estilo: SxProps<Theme> = (t) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1.5,
+    width: '100%',
+    px: 1.5,
+    py: 1.25,
+    textAlign: 'left',
+    borderRadius: `${String(t.radio.sm + 2)}px`,
+    ...(interactiva && { '&:hover': { bgcolor: 'superficie.nivel2' } }),
+  });
+  const contenido = (
+    <>
       <Box
         aria-hidden
         sx={(t) => ({ display: 'grid', placeItems: 'center', flex: 'none', width: 36, height: 36, borderRadius: '50%', bgcolor: coloresDeKpi(t, tono).fondo, color: coloresDeKpi(t, tono).texto })}
@@ -309,19 +361,28 @@ export function FilaAtencion({
         <Icono size={17} strokeWidth={1.75} />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography component="span" noWrap sx={{ display: 'block', fontSize: 14, lineHeight: '20px', fontWeight: 500 }}>
+        <Typography component="span" noWrap={truncar} sx={{ display: 'block', fontSize: 14, lineHeight: '20px', fontWeight: 500 }}>
           {titulo}
         </Typography>
         {subtitulo && (
-          <Typography component="span" noWrap variant="body2" sx={{ display: 'block', color: 'text.secondary', fontWeight: 400 }}>
+          <Typography component="span" noWrap={truncar} variant="body2" sx={{ display: 'block', color: 'text.secondary', fontWeight: 400 }}>
             {subtitulo}
           </Typography>
         )}
+        {notas && <Box component="span" sx={{ display: 'block' }}>{notas}</Box>}
       </Box>
       {chip}
-      <Box aria-hidden sx={{ display: 'inline-flex', flex: 'none', color: 'text.secondary' }}>
-        <ChevronRight size={18} strokeWidth={1.75} />
-      </Box>
+      {interactiva && (
+        <Box aria-hidden sx={{ display: 'inline-flex', flex: 'none', color: 'text.secondary' }}>
+          <ChevronRight size={18} strokeWidth={1.75} />
+        </Box>
+      )}
+    </>
+  );
+  if (!interactiva) return <Box sx={estilo}>{contenido}</Box>;
+  return (
+    <ButtonBase component={componente ?? 'button'} {...resto} sx={estilo}>
+      {contenido}
     </ButtonBase>
   );
 }

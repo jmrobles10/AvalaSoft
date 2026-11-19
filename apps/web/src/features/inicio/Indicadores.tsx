@@ -1,17 +1,48 @@
-import { Box, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import { EsqueletoTarjeta } from '@validalo/ui';
+import { Box, Skeleton, Stack, Typography } from '@mui/material';
+import { EsqueletoKpis, SeccionPlana } from '@validalo/ui';
+import { FolderOpen, ShieldCheck, Users } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { ErrorRecuperable } from '../../shared/componentes';
-import { rutaInformeDeVentana } from '../informes/modelo';
 import { mensajeDeError } from '../../shared/errores';
+import { ResumenKpis } from '../../shared/ResumenKpis';
+import { rutaInformeDeVentana } from '../informes/modelo';
 import { useIndicadores } from './api';
-import { Cifra, GrupoCifras } from './Cifras';
-import { aNumero, formatearConteo, formatearDias, leerVentana, VENTANA_POR_DEFECTO, VENTANAS, type Ventana } from './modelo';
+import { kpisCertificados, kpisExpedientes, kpisVinculos } from './kpisIndicadores';
+import { leerVentana, VENTANA_POR_DEFECTO, type Ventana } from './modelo';
+import { RepartoVinculos } from './RepartoVinculos';
+import { SelectorVentana } from './SelectorVentana';
+
+/** Un grupo de indicadores: su título con ícono en el acento y, debajo, lo que lo compone (las tarjetas de cifras y, si hay, más). */
+function Grupo({ titulo, icono, children }: { titulo: string; icono: typeof Users; children: ReactNode }) {
+  return (
+    <Box>
+      <SeccionPlana titulo={titulo} icono={icono} nivel="h3">
+        {children}
+      </SeccionPlana>
+    </Box>
+  );
+}
+
+/** Los tres grupos con la forma de lo que llega: el rótulo del grupo y sus tarjetas grises (5 de vínculos, 6 de expedientes y 3 de certificados como mínimo). */
+function EsqueletoIndicadores({ etiqueta }: { etiqueta: string }) {
+  return (
+    <Stack spacing={3} role="status" aria-busy aria-label={etiqueta}>
+      {[5, 6, 3].map((cantidad) => (
+        <Box key={cantidad}>
+          <Skeleton variant="rounded" width={140} height={18} sx={{ mb: 2 }} />
+          <EsqueletoKpis cantidad={cantidad} />
+        </Box>
+      ))}
+    </Stack>
+  );
+}
 
 /**
- * Indicadores de la empresa (INI-2): vínculos y certificados al momento; expedientes en curso al momento y, en la ventana
- * elegida (7, 30 o 90 días, en la URL), los aprobados, rechazados y el tiempo de la apertura a la aprobación.
+ * Indicadores de la empresa (INI-2) como tarjetas de cifras del tablero: vínculos y certificados al momento; expedientes en curso al momento y,
+ * en la ventana elegida (7, 30 o 90 días, en la URL), los aprobados, rechazados y el tiempo de la apertura a la aprobación. Las cifras de alerta
+ * (vencidos, bloqueados, observados, rechazados, con pendientes, no válidos) van en rojo si hay alguna.
  */
 export function Indicadores({ empresaId, puedeVerVinculos, puedeVerCertificados = false }: { empresaId: string; puedeVerVinculos: boolean; puedeVerCertificados?: boolean }) {
   const { t } = useTranslation();
@@ -19,7 +50,6 @@ export function Indicadores({ empresaId, puedeVerVinculos, puedeVerCertificados 
   const dias = leerVentana(parametros);
   const consulta = useIndicadores(empresaId, dias);
   const datos = consulta.data;
-  const sinDato = t('inicio.indicadores.sinDato');
 
   // La ventana por defecto no se escribe en la URL.
   const cambiarVentana = (valor: Ventana) =>
@@ -38,77 +68,35 @@ export function Indicadores({ empresaId, puedeVerVinculos, puedeVerCertificados 
   const aInforme = rutaInformeDeVentana(empresaId, dias);
 
   return (
-    <Box component="section" aria-labelledby="titulo-indicadores" sx={{ mt: 3 }}>
-      <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', mb: 1.5 }}>
+    <Box component="section" aria-labelledby="titulo-indicadores">
+      <Stack direction="row" useFlexGap sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, mb: 2 }}>
         <Typography variant="h3" component="h2" id="titulo-indicadores">
           {t('inicio.indicadores.titulo')}
         </Typography>
-        <ToggleButtonGroup
-          exclusive
-          size="small"
-          value={dias}
-          onChange={(_evento, valor: Ventana | null) => {
-            if (valor !== null) cambiarVentana(valor);
-          }}
-          aria-label={t('inicio.indicadores.ventana')}
-          sx={{ '& .MuiToggleButton-root': { height: 32, px: 1.25, '&.Mui-selected': { bgcolor: 'acento.tinte', color: 'acento.main' } } }}
-        >
-          {VENTANAS.map((v) => (
-            <ToggleButton key={v} value={v}>
-              {t(`inicio.indicadores.ventanas.${v}`)}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
+        <SelectorVentana valor={dias} onCambiar={cambiarVentana} />
       </Stack>
 
       {consulta.isError && !datos ? (
         <ErrorRecuperable mensaje={`${t('inicio.indicadores.error')} ${mensajeDeError(consulta.error, t)}`} onReintentar={() => void consulta.refetch()} />
       ) : !datos ? (
-        <Stack spacing={1.5} aria-busy>
-          {[0, 1, 2].map((i) => (
-            <EsqueletoTarjeta key={i} alto={112} lineas={2} />
-          ))}
-        </Stack>
+        <EsqueletoIndicadores etiqueta={t('inicio.indicadores.cargando')} />
       ) : (
-        <Stack spacing={1.5} sx={{ opacity: consulta.isPlaceholderData ? 0.6 : 1, transition: 'opacity 120ms' }} aria-busy={consulta.isPlaceholderData || undefined}>
-          <GrupoCifras titulo={t('inicio.indicadores.vinculos')}>
-            <Cifra etiqueta={t('inicio.indicadores.activos')} valor={formatearConteo(datos.vinculosActivos)} />
-            {datos.vinculosPorVencer ? (
-              <Cifra etiqueta={t('inicio.indicadores.porVencer')} valor={formatearConteo(datos.vinculosPorVencer)} a={aVinculos('PorVencer')} />
-            ) : null}
-            <Cifra etiqueta={t('inicio.indicadores.enValidacion')} valor={formatearConteo(datos.vinculosEnValidacion)} a={aVinculos('EnValidacion')} />
-            {datos.vinculosEnRevision ? (
-              <Cifra etiqueta={t('inicio.indicadores.enRevision')} valor={formatearConteo(datos.vinculosEnRevision)} a={aVinculos('EnRevision')} />
-            ) : null}
-            <Cifra etiqueta={t('inicio.indicadores.invitados')} valor={formatearConteo(datos.vinculosInvitados)} a={aVinculos('Invitado')} />
-            <Cifra etiqueta={t('inicio.indicadores.vencidos')} valor={formatearConteo(datos.vinculosVencidos)} a={aVinculos('Vencido')} />
-            <Cifra etiqueta={t('inicio.indicadores.bloqueados')} valor={formatearConteo(datos.vinculosBloqueados)} a={aVinculos('Bloqueado')} />
-          </GrupoCifras>
-          <GrupoCifras titulo={t('inicio.indicadores.expedientes')} nota={t('inicio.indicadores.enLaVentana', { count: datos.dias })}>
-            <Cifra etiqueta={t('inicio.indicadores.enCurso')} valor={formatearConteo(datos.expedientesEnCurso)} />
-            <Cifra etiqueta={t('inicio.indicadores.observados')} valor={formatearConteo(datos.expedientesObservados)} />
-            <Cifra etiqueta={t('inicio.indicadores.aprobados')} valor={formatearConteo(datos.expedientesAprobados)} a={aInforme} />
-            <Cifra etiqueta={t('inicio.indicadores.rechazados')} valor={formatearConteo(datos.expedientesRechazados)} />
-            <Cifra
-              etiqueta={t('inicio.indicadores.tiempoPromedio')}
-              a={aInforme}
-              valor={formatearDias(datos.tiempoPromedioDias, sinDato)}
-              nota={aNumero(datos.tiempoPromedioDias) === null ? t('inicio.indicadores.sinDatoAyuda') : undefined}
-            />
-            <Cifra
-              etiqueta={t('inicio.indicadores.tiempoMediana')}
-              valor={formatearDias(datos.tiempoMedianaDias, sinDato)}
-              nota={aNumero(datos.tiempoMedianaDias) === null ? t('inicio.indicadores.sinDatoAyuda') : undefined}
-            />
-          </GrupoCifras>
-          <GrupoCifras titulo={t('inicio.indicadores.certificados')}>
-            <Cifra etiqueta={t('inicio.indicadores.vigentes')} valor={formatearConteo(datos.certificadosVigentes)} />
-            {datos.certificadosEnVerificacion ? (
-              <Cifra etiqueta={t('inicio.indicadores.enVerificacion')} valor={formatearConteo(datos.certificadosEnVerificacion)} a={aCertificados('EnVerificacion')} />
-            ) : null}
-            <Cifra etiqueta={t('inicio.indicadores.conPendientes')} valor={formatearConteo(datos.certificadosConPendientes)} />
-            <Cifra etiqueta={t('inicio.indicadores.noValidos')} valor={formatearConteo(datos.certificadosNoValidos)} />
-          </GrupoCifras>
+        <Stack spacing={3} sx={{ opacity: consulta.isPlaceholderData ? 0.6 : 1, transition: 'opacity 120ms' }} aria-busy={consulta.isPlaceholderData || undefined}>
+          <Grupo titulo={t('inicio.indicadores.vinculos')} icono={Users}>
+            <ResumenKpis kpis={kpisVinculos(datos, t, aVinculos)} />
+            <Box sx={{ mt: 2 }}>
+              <RepartoVinculos indicadores={datos} />
+            </Box>
+          </Grupo>
+          <Grupo titulo={t('inicio.indicadores.expedientes')} icono={FolderOpen}>
+            <ResumenKpis kpis={kpisExpedientes(datos, t, aInforme)} />
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1.5 }}>
+              {t('inicio.indicadores.enLaVentana', { count: datos.dias })}
+            </Typography>
+          </Grupo>
+          <Grupo titulo={t('inicio.indicadores.certificados')} icono={ShieldCheck}>
+            <ResumenKpis kpis={kpisCertificados(datos, t, aCertificados)} />
+          </Grupo>
         </Stack>
       )}
     </Box>
