@@ -1,11 +1,11 @@
 import { Box, Chip, Typography } from '@mui/material';
-import type { RevisionAutomaticaConfigDto } from '@avalasoft/api-client';
+import type { RevisionAutomaticaConfigDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { MOTIVOS_QUE_LLEVAN_A_UNA_PERSONA } from '../../revisionAutomatica/modelo';
 import { MAXIMO_ESPERA, MAXIMO_TOPE, type BorradorRevision, type ErroresDeRevision } from './modelo';
 import { SelectorMultiple } from './SelectorMultiple';
-import { CampoNumero } from '@avalasoft/ui';
+import { CampoNumero } from '@validalo/ui';
 
 export interface TarjetaAlcanceProps {
   borrador: BorradorRevision;

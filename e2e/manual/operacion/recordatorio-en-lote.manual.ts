@@ -59,7 +59,7 @@ recorrido(
       resaltar: [ruben.getByRole('button', { name: 'Recordar (2)' }), dialogo],
       variantes: [
         { cuando: 'Un expediente ya se recordó hoy', entonces: 'Se omite y el resultado lo dice: «1 omitido: ya se les recordó hoy».' },
-        { cuando: 'Eliges más de 200 expedientes a la vez', entonces: 'AvalaSoft no envía: usa «Recordar a los observados».' },
+        { cuando: 'Eliges más de 200 expedientes a la vez', entonces: 'Valídalo no envía: usa «Recordar a los observados».' },
       ],
     });
 
@@ -81,7 +81,7 @@ recorrido(
     await paso(paginaRuben, {
       titulo: 'Intenta recordar de nuevo el mismo día',
       explicacion:
-        'Como ya se les recordó hoy, un segundo envío no hace nada: AvalaSoft lo indica sin enviar correos. El recordatorio se puede repetir al día siguiente.',
+        'Como ya se les recordó hoy, un segundo envío no hace nada: Valídalo lo indica sin enviar correos. El recordatorio se puede repetir al día siguiente.',
       resaltar: ruben.getByText('No hay terceros por recordar: nadie tiene observaciones pendientes o ya se les recordó hoy.'),
     });
   },

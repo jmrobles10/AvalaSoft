@@ -1,6 +1,6 @@
 import { Box, Button, Chip, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Tooltip, Typography } from '@mui/material';
-import type { ComparticionPublicaDto, DocumentoBovedaDto, VersionDocumentoDto } from '@avalasoft/api-client';
-import { formatearFecha, visualmenteOculto } from '@avalasoft/ui';
+import type { ComparticionPublicaDto, DocumentoBovedaDto, VersionDocumentoDto } from '@validalo/api-client';
+import { formatearFecha, visualmenteOculto } from '@validalo/ui';
 import { Archive, Download, EllipsisVertical, FileText, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

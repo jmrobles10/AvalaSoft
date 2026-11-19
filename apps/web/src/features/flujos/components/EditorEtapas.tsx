@@ -1,7 +1,7 @@
 import { Box, Button, FormControlLabel, IconButton, MenuItem, Stack, Switch, TextField, Tooltip, Typography } from '@mui/material';
-import type { AreaDto } from '@avalasoft/api-client';
+import type { AreaDto } from '@validalo/api-client';
 import { ArrowDown, ArrowUp, Plus, Trash2, X } from 'lucide-react';
-import { AlineadoConCampo, CampoNumero } from '@avalasoft/ui';
+import { AlineadoConCampo, CampoNumero } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { areaNueva, areasElegibles, moverEtapa, nuevaClave, type AreaEnEditor, type ErrorFlujo, type EtapaEnEditor } from '../editor';
 

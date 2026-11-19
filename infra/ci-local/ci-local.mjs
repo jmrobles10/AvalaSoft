@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Réplica local del CI de AvalaSoft: corre en contenedores Linux lo mismo que `.github/workflows/ci.yml` (backend, frontend, imagen) y,
+// Réplica local del CI de Valídalo: corre en contenedores Linux lo mismo que `.github/workflows/ci.yml` (backend, frontend, imagen) y,
 // con `--solo e2e`, lo de `.github/workflows/e2e.yml` (la e2e corre bajo demanda en GitHub, decisión E2E-1).
 // Se usa desde `ci-local.sh` (Git Bash) o `ci-local.ps1` (PowerShell); el detalle está en infra/ci-local/README.md.
 //
@@ -22,14 +22,14 @@ import { aSegundos, detalleDePaso, detalleDePlaywright, resumenDeFalla } from '.
 const execFileP = promisify(execFile);
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ_DEL_SCRIPT = resolve(AQUI, '..', '..');
-const VOLUMEN_CACHE = 'avalasoft-cilocal-cache';
-const PREFIJO = 'avalasoft-ci';
+const VOLUMEN_CACHE = 'validalo-cilocal-cache';
+const PREFIJO = 'validalo-ci';
 const NOMBRE_DEL_ANFITRION = 'host.docker.internal';
 const RUTA_CI = '.github/workflows/ci.yml';
 const RUTA_E2E = '.github/workflows/e2e.yml';
 const RUTA_COMPOSE = 'infra/compose/compose.yaml';
 
-const AYUDA = `Réplica local del CI de AvalaSoft (ci.yml y e2e.yml) en contenedores Linux.
+const AYUDA = `Réplica local del CI de Valídalo (ci.yml y e2e.yml) en contenedores Linux.
 
 Uso: ci-local.sh [opciones]            (Git Bash)
      ci-local.ps1 [opciones]           (PowerShell)
@@ -37,7 +37,7 @@ Uso: ci-local.sh [opciones]            (Git Bash)
   --solo <trabajo>[,<trabajo>]   backend, frontend, pruebas-web, e2e o imagen (por omisión: backend, frontend y pruebas-web, como ci.yml; la e2e es bajo demanda: --solo e2e)
   --directorio <ruta>            carpeta (worktree) a probar, con sus cambios sin confirmar (por omisión: la del propio script)
   --rama <rama|commit>           prueba lo confirmado en esa rama o commit, sin tocar ninguna carpeta (p. ej. origin/main)
-  --salida <ruta>                dónde dejar logs y reportes (por omisión: <temp>/avalasoft-ci-local/<id>)
+  --salida <ruta>                dónde dejar logs y reportes (por omisión: <temp>/validalo-ci-local/<id>)
   --paralelo                     corre los trabajos a la vez, como el CI (por omisión: uno tras otro)
   --e2e-args "<args>"            argumentos extra para «playwright test» (p. ej. pruebas/x.spec.ts o --grep texto), con --solo e2e
   --cpus <n>                     CPU de cada contenedor de trabajo (por omisión 4, lo del runner de GitHub; 0 = sin límite)
@@ -219,7 +219,7 @@ async function imagenDelTrabajo(t) {
     await asegurarImagen(t.imagen.nombre);
     return t.imagen.nombre;
   }
-  const etiqueta = `avalasoft-cilocal/dotnet-node:${slug(t.imagen.dotnet.split(':')[1])}-${slug(t.imagen.node.split(':')[1])}`;
+  const etiqueta = `validalo-cilocal/dotnet-node:${slug(t.imagen.dotnet.split(':')[1])}-${slug(t.imagen.node.split(':')[1])}`;
   if (!(await existeImagen(etiqueta))) {
     await asegurarImagen(t.imagen.dotnet);
     await asegurarImagen(t.imagen.node);
@@ -238,7 +238,7 @@ class Corrida {
     this.plan = plan;
     this.archivos = archivos;
     this.id = `ci${Date.now().toString(36)}${randomBytes(2).toString('hex')}`;
-    this.salida = resolve(op.salida ?? join(tmpdir(), 'avalasoft-ci-local', this.id));
+    this.salida = resolve(op.salida ?? join(tmpdir(), 'validalo-ci-local', this.id));
     this.tar = join(this.salida, 'fuente.tar');
     this.contenedores = new Set();
     this.proyectosCompose = new Set();
@@ -321,7 +321,7 @@ class Trabajo {
     for (const [k, v] of Object.entries(this.variablesDeEntorno())) args.push('-e', `${k}=${v}`);
     for (const ruta of this.t.caches) {
       const destino = ruta.replace(/^~/, '/root').replace(/\/$/, '');
-      args.push('-v', `avalasoft-cilocal-${slug(destino)}:${destino}`);
+      args.push('-v', `validalo-cilocal-${slug(destino)}:${destino}`);
     }
     // Testcontainers (las pruebas de integración) levanta PostgreSQL y MinIO en el Docker de la máquina: DooD, mismo socket que en el
     // runner. Sus contenedores hermanos publican puertos en el anfitrión, no en este contenedor: se llegan por `host.docker.internal`.
@@ -452,7 +452,7 @@ async function ejecutarPaso(tr, paso, indice) {
 }
 
 async function pasoConstruir(tr, paso, log) {
-  const etiqueta = (paso.etiquetas[0] ?? 'avalasoft/app:ci').replace('${{ github.sha }}', `local-${tr.c.id}`);
+  const etiqueta = (paso.etiquetas[0] ?? 'validalo/app:ci').replace('${{ github.sha }}', `local-${tr.c.id}`);
   const r = await docker(['build', '-f', paso.archivo, '-t', etiqueta, paso.contexto === '.' ? '-' : paso.contexto], { entradaDesde: tr.c.tar, log, eco: tr.eco(), limiteMs: restante(tr) });
   if (r.codigo !== 0) throw Object.assign(new Error(`docker build salió con código ${String(r.codigo)}`), { log, salida: r.salida });
   await docker(['image', 'rm', '-f', etiqueta]);

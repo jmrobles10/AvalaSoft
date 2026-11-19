@@ -5,7 +5,7 @@
 | Aceptado | 2026-10-28 | — |
 
 ## Contexto
-AvalaSoft debe instalarse on-premise en clientes con equipos de operación pequeños y también en nube; el dominio todavía está madurando (límites entre módulos pueden moverse en los primeros hitos); el flujo de validación requiere transacciones que combinan eventos, proyecciones y mensajes salientes.
+Valídalo debe instalarse on-premise en clientes con equipos de operación pequeños y también en nube; el dominio todavía está madurando (límites entre módulos pueden moverse en los primeros hitos); el flujo de validación requiere transacciones que combinan eventos, proyecciones y mensajes salientes.
 
 ## Decisión
 Un solo código base organizado en **módulos aislados** (`Tenancy, Identidad, Catalogo, Terceros, Expedientes, Documentos, Verificacion, Certificados, Vencimientos, Notificaciones, Webhooks, Auditoria, Integracion`) desplegado con **dos roles** de la misma imagen: `Api` (HTTP) y `Worker` (colas, scheduled messages, sagas, previews, IA). Los módulos solo se comunican por mensajes (Wolverine) o por consultas de lectura explícitas; un test arquitectónico (NetArchTest) impide referencias cruzadas y consultas sin tenant.

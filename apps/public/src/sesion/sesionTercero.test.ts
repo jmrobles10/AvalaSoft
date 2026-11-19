@@ -1,4 +1,4 @@
-import { ErrorApi, ErrorDeRed, type SesionTerceroDto } from '@avalasoft/api-client';
+import { ErrorApi, ErrorDeRed, type SesionTerceroDto } from '@validalo/api-client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { envolverConRenovacion } from './renovacion';
 import { conCandado, renovarUnaVez, unNoAutenticadoTerminaLaSesion } from './sesionApi';

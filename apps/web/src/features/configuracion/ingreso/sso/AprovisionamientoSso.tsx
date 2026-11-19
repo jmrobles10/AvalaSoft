@@ -1,5 +1,5 @@
 import { Box, FormControlLabel, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
-import type { EmpresaDto } from '@avalasoft/api-client';
+import type { EmpresaDto } from '@validalo/api-client';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../../shared/componentes';

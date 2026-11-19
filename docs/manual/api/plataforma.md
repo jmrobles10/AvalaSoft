@@ -1013,7 +1013,7 @@ Respuesta `200`:
 
 ### `POST /api/v1/plataforma/operadores`
 
-**Crear operador plataforma.** Da de alta un operador de ingreso directo y le envía el correo para entrar. 409 `operador-duplicado`; 422 `correo-invalido`, `nombre-requerido`. La primera vez se hace con la credencial de arranque (`Avalasoft:Plataforma:ClaveBootstrap`); después, con la sesión de un operador, y la clave de arranque se desactiva (docs/07 §2.4).
+**Crear operador plataforma.** Da de alta un operador de ingreso directo y le envía el correo para entrar. 409 `operador-duplicado`; 422 `correo-invalido`, `nombre-requerido`. La primera vez se hace con la credencial de arranque (`Validalo:Plataforma:ClaveBootstrap`); después, con la sesión de un operador, y la clave de arranque se desactiva (docs/07 §2.4).
 
 **Operador de Plataforma · API (`/api/v1`) · SDK: `crearOperadorPlataforma`**
 

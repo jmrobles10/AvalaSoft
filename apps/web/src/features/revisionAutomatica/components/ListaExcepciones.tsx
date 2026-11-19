@@ -1,5 +1,5 @@
 import { Box, Stack } from '@mui/material';
-import type { ExcepcionDeRevisionDto } from '@avalasoft/api-client';
+import type { ExcepcionDeRevisionDto } from '@validalo/api-client';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ListaVirtual } from '../../../shared/ListaVirtual';

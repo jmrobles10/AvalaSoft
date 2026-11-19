@@ -7,7 +7,7 @@ import type {
   SeccionDeRequisitoDto,
   VeredictoEmitidoDto,
   VigenciaDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 
 /** Datos de prueba de expedientes (solo para las pruebas). */
 export function veredicto(cambios: Partial<VeredictoEmitidoDto> = {}): VeredictoEmitidoDto {

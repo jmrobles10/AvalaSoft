@@ -4,11 +4,11 @@
 |---|---|---|
 | Borrador | 2026-10-28 | Arquitectura |
 
-**Propósito.** Definir cómo SRM, Portal de Proveedores y Marco (SincoERP) consumen AvalaSoft (SDKs, flags, webhooks, embed, consulta rápida), cómo se migran los datos históricos sin perder qué versión aprobó cada empresa, y cómo se hace el corte por empresa (T-18) con sincronización inversa y rollback.
+**Propósito.** Definir cómo SRM, Portal de Proveedores y Marco (SincoERP) consumen Valídalo (SDKs, flags, webhooks, embed, consulta rápida), cómo se migran los datos históricos sin perder qué versión aprobó cada empresa, y cómo se hace el corte por empresa (T-18) con sincronización inversa y rollback.
 
 **Relacionados:** [01-analisis-legado-srm-portal.md](01-analisis-legado-srm-portal.md) · [02-modelo-documental-compartido.md](02-modelo-documental-compartido.md) · [03-dominio-y-eventos.md](03-dominio-y-eventos.md) · [05-api-contratos-y-webhooks.md](05-api-contratos-y-webhooks.md) · [07-seguridad-identidad-y-tenancy.md](07-seguridad-identidad-y-tenancy.md) · [09-plan-de-hitos-y-responsabilidades.md](09-plan-de-hitos-y-responsabilidades.md) · [decisiones/registro.md](decisiones/registro.md) · ADR-0007, ADR-0008
 
-> Actualizado el 2026-10-28 con las decisiones del registro: tenant = grupo con **empresas internas** (P-11-2, ADR-0008: una instancia del SRM = una empresa; `empresaId` en todos los eventos), identidad multipaís (P-1-1), reconciliación de identidad por clave única (P-12-1), webhooks + pull desde el MVP (P-12-2), SDK .NET y TS (P-12-3), revisión solo en AvalaSoft durante la coexistencia (P-12-4), sandbox por API key (P-11-4), cuenta designada por el tercero (P-3-3), alcance de la migración (P-13-x), modo de respaldo en Marco (adición 9).
+> Actualizado el 2026-10-28 con las decisiones del registro: tenant = grupo con **empresas internas** (P-11-2, ADR-0008: una instancia del SRM = una empresa; `empresaId` en todos los eventos), identidad multipaís (P-1-1), reconciliación de identidad por clave única (P-12-1), webhooks + pull desde el MVP (P-12-2), SDK .NET y TS (P-12-3), revisión solo en Valídalo durante la coexistencia (P-12-4), sandbox por API key (P-11-4), cuenta designada por el tercero (P-3-3), alcance de la migración (P-13-x), modo de respaldo en Marco (adición 9).
 
 > Actualizado el 2026-11-11 (integración abierta, IO-1…IO-10): el núcleo no nombra ni asume el SRM, el Portal ni AyF; todo es mecanismo genérico (API, webhooks, SDK, embebido, referencias externas por sistema, adaptadores de origen). la guía «integrar un sistema nuevo en 5 pasos» ([integracion.md §1.1](integracion.md#11-integrar-un-sistema-nuevo-en-5-pasos)) y el embebido del tercero ([§8.1](integracion.md#81-el-tercero-embebido-bóveda-expediente-y-ficha); aquí, §2.3), §3.4 contrato del sistema legado («el interruptor»), §6.6 importador genérico y §9 auditoría de acoplamiento. Donde abajo se lee SRM, Portal o Marco, es **un ejemplo de sistema integrador**: lo mismo vale para cualquier ERP, portal o CRM.
 
@@ -18,18 +18,18 @@
 
 ## 1. Principios de integración
 
-1. **Un solo punto de verdad.** AvalaSoft es dueño de documentos, versiones, decisiones y certificados. Los sistemas cliente guardan referencias (`expedienteId`, `folio`) y una copia de respaldo del estado recibida por webhook, nunca binarios.
-2. **Sin doble escritura desde los clientes.** Durante la coexistencia, es AvalaSoft quien escribe hacia el legado (sincronización inversa), no al revés.
-3. **Contratos públicos versionados.** Todo lo que un cliente consume está en `Avalasoft.Contratos` / `@avalasoft/sdk`, generado desde OpenAPI; cambiar un contrato rompe el build.
+1. **Un solo punto de verdad.** Valídalo es dueño de documentos, versiones, decisiones y certificados. Los sistemas cliente guardan referencias (`expedienteId`, `folio`) y una copia de respaldo del estado recibida por webhook, nunca binarios.
+2. **Sin doble escritura desde los clientes.** Durante la coexistencia, es Valídalo quien escribe hacia el legado (sincronización inversa), no al revés.
+3. **Contratos públicos versionados.** Todo lo que un cliente consume está en `Validalo.Contratos` / `@validalo/sdk`, generado desde OpenAPI; cambiar un contrato rompe el build.
 4. **Webhooks firmados e idempotentes y modo pull, ambos desde el MVP** (P-12-2); webhooks por defecto, pull de respaldo para redes cerradas.
 5. **Corte por empresa, reversible.** Cada empresa interna (razón social) migra cuando está lista; el flag vuelve atrás sin pérdida.
 6. **Una instancia del SRM = una empresa interna de un tenant.** El SRM de cada razón social usa una API key del tenant con alcance a **su** empresa; todo evento público lleva `tenantId` y `empresaId` (ADR-0008).
-7. **Identidad del tercero reconciliada por clave única** `(país, tipo, número normalizado)` entre el ERP y AvalaSoft (P-12-1): los datos maestros validados contra documento prevalecen; cada sistema guarda el id externo del otro (`avalasoftTerceroId` en el ERP; `referenciaExterna{sistema,id}` en AvalaSoft).
-8. **La revisión ocurre solo en AvalaSoft** (P-12-4): el SRM no mantiene UI de revisión; recibe estados y aplica en AyF.
+7. **Identidad del tercero reconciliada por clave única** `(país, tipo, número normalizado)` entre el ERP y Valídalo (P-12-1): los datos maestros validados contra documento prevalecen; cada sistema guarda el id externo del otro (`validaloTerceroId` en el ERP; `referenciaExterna{sistema,id}` en Valídalo).
+8. **La revisión ocurre solo en Valídalo** (P-12-4): el SRM no mantiene UI de revisión; recibe estados y aplica en AyF.
 
 ```mermaid
 flowchart LR
-  SRM[SRM por empresa interna] -- SDK .NET<br/>X-Api-Key tenant con alcance empresa --> V[AvalaSoft API]
+  SRM[SRM por empresa interna] -- SDK .NET<br/>X-Api-Key tenant con alcance empresa --> V[Valídalo API]
   V -- webhooks HMAC --> SRM
   P[Portal de Proveedores] -- sesiones-tercero + embed --> V
   V -- webhooks --> P
@@ -46,14 +46,14 @@ flowchart LR
 
 ## 2. SDKs
 
-| | `Avalasoft.Sdk` (.NET) | `@avalasoft/sdk` (TypeScript) |
+| | `Validalo.Sdk` (.NET) | `@validalo/sdk` (TypeScript) |
 |---|---|---|
-| Dónde | `src/Avalasoft.Sdk` (pruebas en `tests/Avalasoft.Sdk.Tests`) | `packages/sdk` (pruebas Vitest en `src/*.test.ts`) |
-| Target | Multi-target **`net7.0;net8.0;net10.0`** (T-16; `net7.0` mientras exista el SRM); `Avalasoft.Contratos` también (CN-5) | ESM (`tsc`), Node 20+ y navegador; sin dependencias (fetch + Web Crypto) (CN-6) |
-| Generación | Escrito a mano sobre los DTO de `Avalasoft.Contratos` (sin Kiota, Refit ni Polly: el SRM .NET 7 no arrastra dependencias) | Tipos escritos a mano con los nombres de `Avalasoft.Contratos` (sin `openapi-typescript`/`openapi-fetch`) |
-| Incluye | `ClienteAvalasoft` (`IClienteAvalasoft`): `Vinculos`, `Invitaciones`, `Expedientes`, `Certificados`, `Consultas`, `Eventos` (con `RecorrerAsync`), `Sesiones`; `ParaEmpresa(id)` y `ComoUsuario(usuario)`; `Idempotency-Key` automática en todo POST (la misma en los reintentos); reintentos solo de lo idempotente (GET, PUT y POST con clave explícita); errores como `ExcepcionAvalasoft { Estado, Codigo, Detalle, Correlacion }`; `FirmanteDeAsercionesDelegadas` (RS256/ES256); `VerificadorDeWebhooks` (tolerancia 5 min, varios secretos durante la rotación) | `ClienteAvalasoft` con los mismos grupos (`vinculos.crear`, `consultas.certificacion`, `eventos.recorrer`…), `crearFirmanteDeAserciones()` (PKCS#8), `verificarWebhook()` / `validarWebhook()` / `leerCabecera()` (cabeceras de `fetch` o de Node), `ErrorAvalasoft` |
-| Versionado | SemVer alineado con la API (`1.x`); `dotnet pack` produce `Avalasoft.Contratos` y `Avalasoft.Sdk` (la documentación XML solo se genera al empaquetar) | `pnpm --filter @avalasoft/sdk build` deja `dist/`; `publishConfig` publica `dist` (en el workspace se consume `src`) |
-| Publicación | **Listo para publicar** (SB-7): workflow `sdk-publicar.yml` al crear un tag `sdk-v<versión>`, versión única, README y CHANGELOG por paquete (§2.4). No se ha publicado nada | Igual: `@avalasoft/sdk` sale con el mismo tag, en **ESM y CommonJS** |
+| Dónde | `src/Validalo.Sdk` (pruebas en `tests/Validalo.Sdk.Tests`) | `packages/sdk` (pruebas Vitest en `src/*.test.ts`) |
+| Target | Multi-target **`net7.0;net8.0;net10.0`** (T-16; `net7.0` mientras exista el SRM); `Validalo.Contratos` también (CN-5) | ESM (`tsc`), Node 20+ y navegador; sin dependencias (fetch + Web Crypto) (CN-6) |
+| Generación | Escrito a mano sobre los DTO de `Validalo.Contratos` (sin Kiota, Refit ni Polly: el SRM .NET 7 no arrastra dependencias) | Tipos escritos a mano con los nombres de `Validalo.Contratos` (sin `openapi-typescript`/`openapi-fetch`) |
+| Incluye | `ClienteValidalo` (`IClienteValidalo`): `Vinculos`, `Invitaciones`, `Expedientes`, `Certificados`, `Consultas`, `Eventos` (con `RecorrerAsync`), `Sesiones`; `ParaEmpresa(id)` y `ComoUsuario(usuario)`; `Idempotency-Key` automática en todo POST (la misma en los reintentos); reintentos solo de lo idempotente (GET, PUT y POST con clave explícita); errores como `ExcepcionValidalo { Estado, Codigo, Detalle, Correlacion }`; `FirmanteDeAsercionesDelegadas` (RS256/ES256); `VerificadorDeWebhooks` (tolerancia 5 min, varios secretos durante la rotación) | `ClienteValidalo` con los mismos grupos (`vinculos.crear`, `consultas.certificacion`, `eventos.recorrer`…), `crearFirmanteDeAserciones()` (PKCS#8), `verificarWebhook()` / `validarWebhook()` / `leerCabecera()` (cabeceras de `fetch` o de Node), `ErrorValidalo` |
+| Versionado | SemVer alineado con la API (`1.x`); `dotnet pack` produce `Validalo.Contratos` y `Validalo.Sdk` (la documentación XML solo se genera al empaquetar) | `pnpm --filter @validalo/sdk build` deja `dist/`; `publishConfig` publica `dist` (en el workspace se consume `src`) |
+| Publicación | **Listo para publicar** (SB-7): workflow `sdk-publicar.yml` al crear un tag `sdk-v<versión>`, versión única, README y CHANGELOG por paquete (§2.4). No se ha publicado nada | Igual: `@validalo/sdk` sale con el mismo tag, en **ESM y CommonJS** |
 | Sandbox | **Implementado** (SB-1…SB-6, §2.2): una llave `vsk_test_…` opera en un tenant hermano con la configuración del grupo y ningún dato; correos al buzón, IA y listas simuladas; `Sandbox` en el cliente (`ObtenerAsync`, `ReiniciarAsync`, `CorreosAsync`, `EsperarCorreoAsync`) | Igual (`sandbox.obtener()`, `reiniciar()`, `correos()`, `esperarCorreo()`) |
 | Idiomas oficiales | Solo .NET y TypeScript (P-12-3); otros lenguajes consumen OpenAPI directamente | — |
 | Prohibido | Lógica de negocio en el SDK; reintento de POST creadores sin clave de idempotencia | igual |
@@ -64,7 +64,7 @@ Toda llamada del SDK opera en el contexto `tenant + empresa`: el cliente se cons
 
 ### 2.1 Guía de integración paso a paso (H9, implementado)
 
-Lo mismo para el SRM, el Portal, Marco u otro ERP. Ejemplo compilable completo: [`docs/ejemplos/IntegradorSrm`](ejemplos/IntegradorSrm/Program.cs) (minimal API en `net7.0`, la versión del SRM; se compila con la solución). Las pruebas que lo ejercitan de punta a punta: `tests/Avalasoft.Integracion.Tests/IntegracionSdkApiTests.cs` (SDK .NET contra la API en memoria) y `e2e/pruebas/integracion.spec.ts` (SDK TypeScript contra la API real).
+Lo mismo para el SRM, el Portal, Marco u otro ERP. Ejemplo compilable completo: [`docs/ejemplos/IntegradorSrm`](ejemplos/IntegradorSrm/Program.cs) (minimal API en `net7.0`, la versión del SRM; se compila con la solución). Las pruebas que lo ejercitan de punta a punta: `tests/Validalo.Integracion.Tests/IntegracionSdkApiTests.cs` (SDK .NET contra la API en memoria) y `e2e/pruebas/integracion.spec.ts` (SDK TypeScript contra la API real).
 
 **1. Registrar el sistema.** Un administrador del grupo crea el sistema con su **clave pública** (RSA ≥ 2048 o EC P-256; la privada nunca sale del sistema) y, si va a embeber pantallas, los orígenes desde los que lo hará (Configuración › Sistemas, o `POST /api/v1/sistemas { codigo: "SRM", nombre, clavePublicaPem, origenesPermitidos: ["https://srm.cliente.co"] }`).
 
@@ -82,54 +82,54 @@ La clave completa se muestra **una sola vez**; va al gestor de secretos del sist
 
 ```csharp
 // .NET (SRM): un cliente tipado por IHttpClientFactory.
-services.AddSingleton(new OpcionesAvalasoft
+services.AddSingleton(new OpcionesValidalo
 {
-    UrlBase = new Uri(config["Avalasoft:UrlBase"]!), ApiKey = config["Avalasoft:ApiKey"]!,
-    EmpresaId = Guid.Parse(config["Avalasoft:EmpresaId"]!),
-    Firmante = new FirmanteDeAsercionesDelegadas("SRM", File.ReadAllText(config["Avalasoft:ClavePrivadaPemArchivo"]!))
+    UrlBase = new Uri(config["Validalo:UrlBase"]!), ApiKey = config["Validalo:ApiKey"]!,
+    EmpresaId = Guid.Parse(config["Validalo:EmpresaId"]!),
+    Firmante = new FirmanteDeAsercionesDelegadas("SRM", File.ReadAllText(config["Validalo:ClavePrivadaPemArchivo"]!))
 });
-services.AddHttpClient<IClienteAvalasoft, ClienteAvalasoft>(http => http.Timeout = TimeSpan.FromSeconds(5));
+services.AddHttpClient<IClienteValidalo, ClienteValidalo>(http => http.Timeout = TimeSpan.FromSeconds(5));
 ```
 
 ```ts
 // TypeScript (backend Node 20+; nunca en el navegador: la API key es secreta).
-const avalasoft = new ClienteAvalasoft({ urlBase: process.env.AVALASOFT_URL!, apiKey: process.env.AVALASOFT_API_KEY!, empresaId,
+const validalo = new ClienteValidalo({ urlBase: process.env.VALIDALO_URL!, apiKey: process.env.VALIDALO_API_KEY!, empresaId,
   firmante: crearFirmanteDeAserciones('SRM', clavePrivadaPkcs8) });
 ```
 
-**4. Invitar al tercero.** El SRM crea el vínculo con su referencia y una clave de idempotencia estable (un reintento no duplica); AvalaSoft reconcilia el tercero por identificación (P-12-1) y envía la invitación:
+**4. Invitar al tercero.** El SRM crea el vínculo con su referencia y una clave de idempotencia estable (un reintento no duplica); Valídalo reconcilia el tercero por identificación (P-12-1) y envía la invitación:
 
 ```csharp
-var vinculo = await avalasoft.Vinculos.CrearAsync(new CrearVinculoDto(null,
+var vinculo = await validalo.Vinculos.CrearAsync(new CrearVinculoDto(null,
     new CrearTerceroDto(new IdentificacionDto("CO", "NIT", "900123456"), "Juridica", "Aceros S.A.S.", null, [contacto]),
     "PROVEEDOR", null, correoProveedor, new ReferenciaExternaDto("SRM", "ADP-00123")), claveIdempotencia: "srm-sol-00123");
-// Reenviar: avalasoft.Invitaciones.EnviarAsync(vinculo.Id, new InvitacionDto(null));
-// Buscar después por la referencia: avalasoft.Vinculos.PorReferenciaAsync("SRM", "ADP-00123");
+// Reenviar: validalo.Invitaciones.EnviarAsync(vinculo.Id, new InvitacionDto(null));
+// Buscar después por la referencia: validalo.Vinculos.PorReferenciaAsync("SRM", "ADP-00123");
 ```
 
 **5. Actuar en nombre de una persona y embeber pantallas.** Cada petición en nombre de un usuario lleva una aserción `X-Usuario-Delegado` nueva (JWT de ≤ 5 min con `jti` de un solo uso; el SDK la firma en cada intento). El permiso efectivo es la intersección de la llave y los roles de la persona (ADR-0011). Para la pantalla embebida, el **backend** del sistema canjea la identidad por una sesión de 30 minutos y la pasa al iframe por `postMessage` (contrato de [05 §2.9.4](05-api-contratos-y-webhooks.md) y docs/06 §3.2):
 
 ```csharp
-var laura = avalasoft.ComoUsuario(new UsuarioDelegado(usuarioSrm.Id, usuarioSrm.Nombre, usuarioSrm.Correo));
+var laura = validalo.ComoUsuario(new UsuarioDelegado(usuarioSrm.Id, usuarioSrm.Nombre, usuarioSrm.Correo));
 var sesion = await laura.Sesiones.CrearAsync();   // { token, expira } → iframe {UrlBase}/app/#/e/{empresa}/bandeja
 ```
 
-**6. Recibir webhooks.** Suscripción en Configuración › Webhooks (o `POST /api/v1/webhooks { url, tipos, empresas, sistemaId }`); el secreto `whsec_…` se ve una vez. El receptor (en el SRM, `POST /api/integracion/avalasoft/webhook`, §3.2): lee el cuerpo **tal cual**, lo valida, deduplica por id del evento, responde 200 en menos de 5 s y procesa en cola:
+**6. Recibir webhooks.** Suscripción en Configuración › Webhooks (o `POST /api/v1/webhooks { url, tipos, empresas, sistemaId }`); el secreto `whsec_…` se ve una vez. El receptor (en el SRM, `POST /api/integracion/validalo/webhook`, §3.2): lee el cuerpo **tal cual**, lo valida, deduplica por id del evento, responde 200 en menos de 5 s y procesa en cola:
 
 ```csharp
 var verificador = new VerificadorDeWebhooks(new[] { secretoActual, secretoAnterior }); // el anterior solo durante una rotación
 var evento = verificador.Validar(n => request.Headers[n].FirstOrDefault(), cuerpo);      // 401 si lanza WebhookInvalidoException
-if (await entregas.RegistrarAsync(evento.Id)) cola.Encolar(evento);                    // dedupe por Avalasoft-Event-Id (T-6)
+if (await entregas.RegistrarAsync(evento.Id)) cola.Encolar(evento);                    // dedupe por Validalo-Event-Id (T-6)
 ```
 
 ```ts
-const evento = await validarWebhook({ secretos: [secreto], firma: leerCabecera(req.headers, 'avalasoft-signature'), cuerpo: cuerpoCrudo });
+const evento = await validarWebhook({ secretos: [secreto], firma: leerCabecera(req.headers, 'validalo-signature'), cuerpo: cuerpoCrudo });
 ```
 
 **7. Pull en lugar de webhooks** (redes que no aceptan conexiones entrantes): los mismos sobres, en orden de cursor. Se guarda el `cursor` del último evento procesado y se retoma desde ahí cada minuto:
 
 ```csharp
-await foreach (var evento in avalasoft.Eventos.RecorrerAsync(desde: cursorGuardado, tipos: ["certificado.emitido", "vinculo.bloqueado"]))
+await foreach (var evento in validalo.Eventos.RecorrerAsync(desde: cursorGuardado, tipos: ["certificado.emitido", "vinculo.bloqueado"]))
 {
     Procesar(evento);              // mismo mapa evento → acción que el webhook; dedupe por evento.Id
     cursorGuardado = evento.Cursor; // persistirlo
@@ -139,7 +139,7 @@ await foreach (var evento in avalasoft.Eventos.RecorrerAsync(desde: cursorGuarda
 **8. Consulta de certificación (Marco).** Antes de pagar o contratar: `GET /api/v1/consultas/certificacion?pais=CO&tipoIdentificacion=NIT&numero=900123456&tipoVinculo=PROVEEDOR` (o `?vinculoId=`) con `X-Empresa`; scope `consultas:leer`. La respuesta (`ConsultaCertificacionDto`, 05 §5.6) trae `ETag` y `Cache-Control: private, max-age=300`: dentro de los 5 minutos se usa la copia; después se pregunta con `If-None-Match` y un **304** confirma que sigue igual.
 
 ```csharp
-var r = await avalasoft.Consultas.CertificacionAsync(new ConsultaDeCertificacion("NIT", nit, "PROVEEDOR"), etag: copia?.ETag);
+var r = await validalo.Consultas.CertificacionAsync(new ConsultaDeCertificacion("NIT", nit, "PROVEEDOR"), etag: copia?.ETag);
 var datos = r.NoModificado ? copia!.Datos : r.Datos!;   // datos.Bloqueado ⇒ no pagar; datos.MotivoBloqueo dice por qué
 ```
 
@@ -150,7 +150,7 @@ var datos = r.NoModificado ? copia!.Datos : r.Datos!;   // datos.Bloqueado ⇒ n
 | `Vencido` | Vínculo o certificado vencido |
 | `PlazoRevalidacion` | Certificado «con pendientes» cuyo plazo de revalidación venció (A-2) |
 
-Sin vínculo con la empresa (o tercero desconocido): `200 { certificado: false, estadoVinculo: "SinVinculo" }`. Si AvalaSoft no responde en 2 s o devuelve 5xx, Marco responde el mismo contrato desde su copia con `fuenteRespaldo: true` y `antiguedadSegundos` (§5; el ejemplo lo hace).
+Sin vínculo con la empresa (o tercero desconocido): `200 { certificado: false, estadoVinculo: "SinVinculo" }`. Si Valídalo no responde en 2 s o devuelve 5xx, Marco responde el mismo contrato desde su copia con `fuenteRespaldo: true` y `antiguedadSegundos` (§5; el ejemplo lo hace).
 
 **9. Rotar la API key sin cortar el servicio.** Configuración › API keys › «Rotar» (o `POST /api/v1/api-keys/{id}/rotar { anteriorValidaHasta }`): sale una clave nueva con los mismos permisos, alcance y sistema, y la actual sigue valiendo el tiempo elegido (24 h por defecto, hasta 30 días; «ahora» corta de inmediato). Procedimiento: rotar → poner la nueva en el gestor de secretos y desplegar → verificar que el sistema la usa → la anterior deja de valer sola a su hora (401). Revocar sigue siendo inmediato.
 
@@ -164,7 +164,7 @@ Sin vínculo con la empresa (o tercero desconocido): `200 { certificado: false, 
 
 **Reinicio (SB-5).** `POST /api/v1/sandbox/reiniciar` borra la partición del tenant sandbox, los terceros de pruebas con su bóveda, archivos, enlaces de acceso, sesiones y eventos públicos, y siembra de nuevo con la configuración de ese momento. Conserva los **ids de las empresas**, las **llaves** y el **cursor** de los eventos: el integrador no cambia su configuración.
 
-**Contrato.** Rutas, DTO y códigos en [05 §2.6.3](05-api-contratos-y-webhooks.md); permiso `sandbox:administrar`; toda respuesta de una credencial de prueba lleva `Avalasoft-Entorno: sandbox`. Paso a paso con ejemplos en [integracion.md §5](integracion.md#5-sandbox-probar-sin-riesgo).
+**Contrato.** Rutas, DTO y códigos en [05 §2.6.3](05-api-contratos-y-webhooks.md); permiso `sandbox:administrar`; toda respuesta de una credencial de prueba lleva `Validalo-Entorno: sandbox`. Paso a paso con ejemplos en [integracion.md §5](integracion.md#5-sandbox-probar-sin-riesgo).
 
 ### 2.3 Integrar un sistema nuevo y embeber al tercero (IO-1…IO-6)
 
@@ -172,18 +172,18 @@ Está en la [guía de integración](integracion.md): los **cinco pasos para inte
 
 ### 2.4 Publicación de los SDK (SB-7)
 
-Los tres paquetes —`Avalasoft.Contratos` y `Avalasoft.Sdk` (NuGet), `@avalasoft/sdk` (npm)— salen **juntos con la misma versión semántica**:
+Los tres paquetes —`Validalo.Contratos` y `Validalo.Sdk` (NuGet), `@validalo/sdk` (npm)— salen **juntos con la misma versión semántica**:
 
 | Pieza | Dónde |
 |---|---|
 | Versión única | `src/Empaquetado.props` (`VersionSdk`) y `packages/sdk/package.json`; `node infra/sdk/version.mjs <versión>` cambia las dos y `--verificar sdk-v<versión>` falla si el tag, los manifiestos o el CHANGELOG no coinciden |
 | Metadatos NuGet | `src/Empaquetado.props`: autor, repositorio, licencia (`LICENCIA-SDK.md`), README y CHANGELOG dentro del paquete, símbolos `.snupkg`, Source Link, build determinista en CI |
-| npm | `packages/sdk/package.json`: `exports` ESM y CJS con tipos (`publishConfig`), `files`, repositorio, licencia y procedencia (`provenance`); `pnpm --filter @avalasoft/sdk verificar` construye y comprueba que las dos salidas cargan y validan un webhook firmado |
-| README y CHANGELOG | `src/Avalasoft.Sdk`, `src/Avalasoft.Contratos` y `packages/sdk` (instalación, configuración, invitación, consulta, webhooks y sandbox) |
+| npm | `packages/sdk/package.json`: `exports` ESM y CJS con tipos (`publishConfig`), `files`, repositorio, licencia y procedencia (`provenance`); `pnpm --filter @validalo/sdk verificar` construye y comprueba que las dos salidas cargan y validan un webhook firmado |
+| README y CHANGELOG | `src/Validalo.Sdk`, `src/Validalo.Contratos` y `packages/sdk` (instalación, configuración, invitación, consulta, webhooks y sandbox) |
 | CI | `ci.yml` empaqueta los NuGet y construye el paquete npm **sin publicar** en cada cambio |
 | Publicación | `.github/workflows/sdk-publicar.yml`, al crear un tag `sdk-v<versión>`: verifica (tag = manifiestos = CHANGELOG), prueba, empaqueta, espera la aprobación del entorno `publicacion-sdk`, publica en NuGet (`NUGET_API_KEY`) y en npm (`NPM_TOKEN`, con procedencia) y crea el release con las notas del CHANGELOG |
 
-**Cómo configurar los secretos** (lo hace un administrador del repositorio; nunca se escriben en el repositorio): *Settings › Secrets and variables › Actions › New repository secret*: `NUGET_API_KEY` (API key de nuget.org con permiso «Push new packages and package versions» sobre `Avalasoft.*`) y `NPM_TOKEN` (token «Automation» de npm con escritura sobre `@avalasoft/sdk`); opcionalmente *Settings › Environments › publicacion-sdk › Required reviewers* para que una persona apruebe cada publicación.
+**Cómo configurar los secretos** (lo hace un administrador del repositorio; nunca se escriben en el repositorio): *Settings › Secrets and variables › Actions › New repository secret*: `NUGET_API_KEY` (API key de nuget.org con permiso «Push new packages and package versions» sobre `Validalo.*`) y `NPM_TOKEN` (token «Automation» de npm con escritura sobre `@validalo/sdk`); opcionalmente *Settings › Environments › publicacion-sdk › Required reviewers* para que una persona apruebe cada publicación.
 
 **Para publicar una versión:** `node infra/sdk/version.mjs 1.2.0` → escribir la entrada `## [1.2.0]` en los dos CHANGELOG → merge a `main` → crear y empujar el tag `sdk-v1.2.0`. **Pendiente antes del primer tag:** que Legal confirme la licencia (hoy `LICENCIA-SDK.md` es un texto provisional de uso para integrarse) y crear el entorno y los secretos.
 
@@ -192,23 +192,23 @@ Los tres paquetes —`Avalasoft.Contratos` y `Avalasoft.Sdk` (NuGet), `@avalasof
 ## 3. SRM
 
 ### 3.1 Flag por empresa
-`adp_srm.ADPConfig` código `ValidacionDocumental` = `Legacy` | `Avalasoft` (hoy el SRM lee su configuración de esa tabla, p. ej. `Base_URL_Portal`; ver `C:\Fuentes_Git\SRM\BackEnd\SRM.Repository\Portal\StorePortal.cs:22-48`), más `Avalasoft_TenantId`, `Avalasoft_EmpresaId` y la API key cifrada (`IDataProtector`, nunca en claro como `Token_Zuppla`). Una instancia del SRM corresponde a **una empresa interna**; si un grupo tiene cinco instancias del SRM, las cinco apuntan al mismo tenant con cinco `empresaId` distintos. Con `Legacy` nada cambia. Con `Avalasoft`:
+`adp_srm.ADPConfig` código `ValidacionDocumental` = `Legacy` | `Validalo` (hoy el SRM lee su configuración de esa tabla, p. ej. `Base_URL_Portal`; ver `C:\Fuentes_Git\SRM\BackEnd\SRM.Repository\Portal\StorePortal.cs:22-48`), más `Validalo_TenantId`, `Validalo_EmpresaId` y la API key cifrada (`IDataProtector`, nunca en claro como `Token_Zuppla`). Una instancia del SRM corresponde a **una empresa interna**; si un grupo tiene cinco instancias del SRM, las cinco apuntan al mismo tenant con cinco `empresaId` distintos. Con `Legacy` nada cambia. Con `Validalo`:
 
 | Acción del SRM | Antes (legado) | Después |
 |---|---|---|
-| Invitar proveedor (`POST /GestionProveedor/asignacion/portal`, `SolicitudesProvRoutes.cs:33`) | `Account/invitarproveedor` al Portal, contraseña por correo | `POST /api/v1/expedientes` (cabecera `X-Empresa`) con `tercero{identificacion{pais,tipo,numero}}` normalizado por el SDK, `referenciaExterna {sistema:"SRM", id:"ADP-00123"}` e `invitacion:{canal:"Correo"}`; `flujo` puede omitirse (se aplican las reglas de selección y el flujo por defecto, I-12). AvalaSoft reconcilia el tercero por clave única (P-12-1) y devuelve `terceroId` (nuevo o existente) y `requisitosCubribles`; **nada de la bóveda se comparte con la empresa hasta que el proveedor acepte la invitación** (B-1). El SRM guarda `AvalasoftTerceroId`, `AvalasoftExpedienteId`, `VinculoId`, `folio` (`-E-`) y `enlaceTercero` en `adp_srm.Solicitudes` (columnas nuevas) |
+| Invitar proveedor (`POST /GestionProveedor/asignacion/portal`, `SolicitudesProvRoutes.cs:33`) | `Account/invitarproveedor` al Portal, contraseña por correo | `POST /api/v1/expedientes` (cabecera `X-Empresa`) con `tercero{identificacion{pais,tipo,numero}}` normalizado por el SDK, `referenciaExterna {sistema:"SRM", id:"ADP-00123"}` e `invitacion:{canal:"Correo"}`; `flujo` puede omitirse (se aplican las reglas de selección y el flujo por defecto, I-12). Valídalo reconcilia el tercero por clave única (P-12-1) y devuelve `terceroId` (nuevo o existente) y `requisitosCubribles`; **nada de la bóveda se comparte con la empresa hasta que el proveedor acepte la invitación** (B-1). El SRM guarda `ValidaloTerceroId`, `ValidaloExpedienteId`, `VinculoId`, `folio` (`-E-`) y `enlaceTercero` en `adp_srm.Solicitudes` (columnas nuevas) |
 | Consultar/cambiar cuenta bancaria del proveedor (`TercerosGI/informacionbancaria`, `BancosConstructora`) | El Portal guardaba la cuenta por constructora | La cuenta que viaja a AyF es la **`CuentaDesignada`** del vínculo, elegida por el tercero y aprobada por dos usuarios de la empresa (P-3-3, P-4-7); el SRM la recibe en `vinculo.cuenta_designada` y en `certificado.emitido.datos.cuentaDesignada` |
 | Recalcular estado al subir documentos (`/PortalProveedorERP/novedades/requeridos`, `NovedadesRoutes.cs:34`) | El Portal llamaba al SRM | Webhooks `expediente.documento_cargado`, `expediente.enviado_a_revision`, `expediente.con_observaciones`, `expediente.aprobado` |
-| Aprobar/rechazar por perfil (`AprobacionBL.cs:327`) | Pantallas legacy + `TercerosERP/estado` | La revisión ocurre en AvalaSoft; el SRM recibe `expediente.requisito_veredicto`, `expediente.area_aprobada`, `expediente.rechazado` y `certificado.emitido` |
+| Aprobar/rechazar por perfil (`AprobacionBL.cs:327`) | Pantallas legacy + `TercerosERP/estado` | La revisión ocurre en Valídalo; el SRM recibe `expediente.requisito_veredicto`, `expediente.area_aprobada`, `expediente.rechazado` y `certificado.emitido` |
 | Vencimiento (`background/vencimiento-proveedor/procesar`, `ProcesarVencimientosEndpoint.cs:12`) | Job disparado por el Portal a las 22:00 | Se apaga; llegan `documento.por_vencer`, `documento.vencido` y `vinculo.estado_cambiado { causa: "Vigencia" }` |
 | Actualización post-aprobación (`actualizacion-proveedor/crear`, `actualizar-estado-portal`) | Portal → SRM → Portal | Se apaga; llegan `documento.version_nueva` y `vinculo.revalidacion_pendiente` / `vinculo.revalidado` / `vinculo.cambio_menor` |
 | Aplicar en AyF (`IAplicadorCambioAyF`) | Al aprobar detalle | Al recibir `certificado.emitido` o `vinculo.revalidado`, aplicando solo las entradas de `cambios[]` con `aplicaEnErp = true` |
 
 ### 3.2 Receptor de webhooks en el SRM
-`POST /api/integracion/avalasoft/webhook` (nuevo módulo Carter en `SRM.API/Features/IntegracionAvalasoft/`):
-1. Verifica `Avalasoft-Signature` con el secreto de la empresa (cifrado con `IDataProtector`, no en claro).
+`POST /api/integracion/validalo/webhook` (nuevo módulo Carter en `SRM.API/Features/IntegracionValidalo/`):
+1. Verifica `Validalo-Signature` con el secreto de la empresa (cifrado con `IDataProtector`, no en claro).
 2. **Descarta** (200 sin acción, con log) todo evento cuyo `empresaId` no sea el de esta instancia: la suscripción de webhook se crea con filtro por empresa, pero el receptor vuelve a comprobarlo.
-3. Dedupe por **`Avalasoft-Event-Id`** (T-6; `Avalasoft-Delivery` cambia en cada reintento y solo sirve para trazar el intento) en la tabla `adp_srm.AvalasoftEntregas` con clave primaria `evento_id` (columnas: `evento_id`, `delivery_id`, `tipo`, `empresa_id`, `recibido`, `procesado`, `error`).
+3. Dedupe por **`Validalo-Event-Id`** (T-6; `Validalo-Delivery` cambia en cada reintento y solo sirve para trazar el intento) en la tabla `adp_srm.ValidaloEntregas` con clave primaria `evento_id` (columnas: `evento_id`, `delivery_id`, `tipo`, `empresa_id`, `recibido`, `procesado`, `error`).
 4. Responde 200 en < 1 s y procesa en cola propia (Wolverine no está en el SRM; usar `Channel` + `BackgroundService` existente `QueuedHostedService`, `SRM.BackgroundServices\Core\Infrastructure\QueuedHostedService.cs:12`, que hoy no recibe trabajo).
 5. Si la red no permite webhooks entrantes, el mismo módulo corre en modo **pull** (`GET /api/v1/eventos?desde=cursor&empresaId=`) cada minuto con el mismo mapa de acciones (P-12-2).
 6. Mapa evento → acción:
@@ -230,34 +230,34 @@ Los tres paquetes —`Avalasoft.Contratos` y `Avalasoft.Sdk` (NuGet), `@avalasof
 | `documento.version_nueva` | Marcar proveedor "revalidación pendiente" si `efectoEnEmpresa.requiereRevalidacion` (nuevo subestado informativo) | `actualizacion-proveedor/crear` |
 | `vinculo.revalidacion_pendiente` / `vinculo.revalidado` / `vinculo.cambio_menor` | Subestado; al revalidar, aplicar `cambios[]` en AyF si `aplicaEnErp` | `AprobarDetalleHandler` |
 | `vinculo.cuenta_designada` | Actualizar la cuenta bancaria del tercero en AyF (ya viene aprobada por dos usuarios de la empresa) | `AsignarBancoConstructora` + aprobación bancaria |
-| `vinculo.bloqueado` / `vinculo.desbloqueado` | Marcar proveedor bloqueado/desbloqueado en el SRM (solo informativo; la decisión vive en AvalaSoft) | — (no existía) |
-| `documento.por_vencer` / `documento.vencido` | `SolEstadoVencimiento`, `SolFechaVencimiento`; correo lo envía AvalaSoft | `JobVencimientoProveedor` |
+| `vinculo.bloqueado` / `vinculo.desbloqueado` | Marcar proveedor bloqueado/desbloqueado en el SRM (solo informativo; la decisión vive en Valídalo) | — (no existía) |
+| `documento.por_vencer` / `documento.vencido` | `SolEstadoVencimiento`, `SolFechaVencimiento`; correo lo envía Valídalo | `JobVencimientoProveedor` |
 | `vinculo.desvinculado` / `vinculo.reintegrado` / `vinculo.anulado` | `SolEstado` ← −8 / −3 / −2 | `DesvincularProvPortal` |
 
 Todos los nombres anteriores son los del catálogo [05 §7](05-api-contratos-y-webhooks.md); la CI de trazabilidad (documento 11) comprueba que cada evento citado aquí exista allí.
 
 Mientras el SRM mantenga sus enums, cada evento trae `legacy.estadoTercero` (tabla de mapeo en doc 03 §mapeo) además de `tenant` (slug) y `empresaId` en el sobre común de 05 §6.2.
 
-### 3.3 Lo que se apaga en el SRM (por empresa con flag `Avalasoft`)
+### 3.3 Lo que se apaga en el SRM (por empresa con flag `Validalo`)
 `/PortalProveedorERP/*` (`NovedadesRoutes.cs:18-140`, `DocumentosRoutes.cs:144,168`), `background/GestionProveedor` (`MapBackGroundProveedor.cs:14`), `background/vencimiento-proveedor/procesar`, `actualizacion-proveedor/*` de escritura, `Documentos/proximosvencer` hacia el Portal (`DocumentosRequericosBL.cs:347,865,963`), `GET /TokenAdproveedor` (`MapConfigroutes.cs:52`, expone la API key; se elimina para todas), pantallas legacy `menuProveedor.html`/`AprobacionProveedor.html` (se reemplazan por enlace profundo a `web` con token exchange, doc 07).
 
 ### 3.4 El interruptor: contrato que un sistema legado debe cumplir para dejar de escribir en sus tablas (IO-7)
 
-No se toca el repositorio del SRM ni el del Portal: este es el contrato, válido para **cualquier** sistema que hoy valide terceros por su cuenta. Por empresa (instancia), cuando el flag del sistema pasa a «usar AvalaSoft» (§3.1), el sistema deja de escribir la validación documental en sus propias tablas y se comporta así:
+No se toca el repositorio del SRM ni el del Portal: este es el contrato, válido para **cualquier** sistema que hoy valide terceros por su cuenta. Por empresa (instancia), cuando el flag del sistema pasa a «usar Valídalo» (§3.1), el sistema deja de escribir la validación documental en sus propias tablas y se comporta así:
 
 | El sistema… | Cómo, con qué mecanismo genérico |
 |---|---|
-| **Se identifica** | Guarda la clave de su tercero y de su vínculo en AvalaSoft (`referenciaExterna`, [integracion.md §1.1](integracion.md#11-integrar-un-sistema-nuevo-en-5-pasos) paso 2) y el id de AvalaSoft (`terceroId`, `vinculoId`) en sus tablas. Busca por clave, no por identificación. |
-| **Invita y pide** | `POST /terceros` + `POST /vinculos` (con clave de idempotencia estable: el id de su solicitud), `POST /vinculos/{id}/invitaciones`, `POST /expedientes`. No sube documentos ni decide aprobaciones: eso vive en AvalaSoft. |
-| **Escucha** | `vinculo.creado`, `vinculo.invitacion_aceptada`, `vinculo.activado`, `vinculo.bloqueado` / `desbloqueado` / `desvinculado` / `reintegrado` / `anulado`, `expediente.observado` / `aprobado` / `rechazado` / `caducado` / `desaprobado`, `certificado.emitido` / `suspendido` / `revocado` / `vencido`, `vinculo.cuenta_designada`, `vinculo.contactos_actualizados`, `seccion.aceptada`, `documento.por_vencer` / `vencido`. Mismo sobre por webhook y por pull; deduplica por `Avalasoft-Event-Id`; responde 200 en menos de 5 s y procesa en cola. |
+| **Se identifica** | Guarda la clave de su tercero y de su vínculo en Valídalo (`referenciaExterna`, [integracion.md §1.1](integracion.md#11-integrar-un-sistema-nuevo-en-5-pasos) paso 2) y el id de Valídalo (`terceroId`, `vinculoId`) en sus tablas. Busca por clave, no por identificación. |
+| **Invita y pide** | `POST /terceros` + `POST /vinculos` (con clave de idempotencia estable: el id de su solicitud), `POST /vinculos/{id}/invitaciones`, `POST /expedientes`. No sube documentos ni decide aprobaciones: eso vive en Valídalo. |
+| **Escucha** | `vinculo.creado`, `vinculo.invitacion_aceptada`, `vinculo.activado`, `vinculo.bloqueado` / `desbloqueado` / `desvinculado` / `reintegrado` / `anulado`, `expediente.observado` / `aprobado` / `rechazado` / `caducado` / `desaprobado`, `certificado.emitido` / `suspendido` / `revocado` / `vencido`, `vinculo.cuenta_designada`, `vinculo.contactos_actualizados`, `seccion.aceptada`, `documento.por_vencer` / `vencido`. Mismo sobre por webhook y por pull; deduplica por `Validalo-Event-Id`; responde 200 en menos de 5 s y procesa en cola. |
 | **Consulta** | `GET /vinculos/{id}/ficha` (lo aceptado, representante, cuenta, contactos, referencias), `GET /vinculos/{id}/cuenta-designada` (con `cuentas:aprobar`, el número completo), `GET /consultas/certificacion` antes de pagar o contratar, `GET /vinculos/{id}/certificado`. |
 | **Muestra** | Enlaza o embebe las pantallas ([integracion.md §8.1](integracion.md#81-el-tercero-embebido-bóveda-expediente-y-ficha) para el tercero; §2.1 paso 5 para las personas de la empresa). Retira sus pantallas de revisión y de carga de documentos. |
-| **Aplica en su ERP** | Con un **adaptador propio** (en el sistema legado o en un servicio aparte, nunca en el núcleo de AvalaSoft) que traduce los eventos y la ficha a las operaciones de su ERP, de forma idempotente por `terceroId`/`vinculoId`, y solo lo que `aplicaEnErp` indica. |
+| **Aplica en su ERP** | Con un **adaptador propio** (en el sistema legado o en un servicio aparte, nunca en el núcleo de Valídalo) que traduce los eventos y la ficha a las operaciones de su ERP, de forma idempotente por `terceroId`/`vinculoId`, y solo lo que `aplicaEnErp` indica. |
 | **Deja de hacer** | Escribir adjuntos, estados de validación, vencimientos y actualizaciones en sus tablas; los jobs de vencimiento y de recordatorios; los endpoints que el portal le llamaba (§3.3). Si vuelve a `Legacy`, la sincronización inversa de §7 deja sus tablas al día. |
 
 **Ejemplo de adaptador: el SRM hacia AyF.** El núcleo entrega las **calidades tributarias de Colombia** (`responsableIva`, `autorretenedor`, `declaranteRenta`, `granContribuyente`, `autorretenedorIca`, `regimenSimple`, `granContribuyenteBogota`, `regimenEspecial`, `autorretenedorRft`, `descuentoSenaFic`, `profesionalIndependiente`, `exentoRetencion`, `agenteRetenedorIva`, `obligadoAFacturar` y `exentoReteCree`) y cada ERP las mapea a **sus** campos; el del SRM hacia el PUT de terceros de AyF es:
 
-| Calidad (AvalaSoft) | Campo de AyF | Nota |
+| Calidad (Valídalo) | Campo de AyF | Nota |
 |---|---|---|
 | `responsableIva` · `autorretenedor` · `declaranteRenta` · `granContribuyente` · `autorretenedorIca` · `regimenSimple` · `regimenEspecial` · `descuentoSenaFic` · `profesionalIndependiente` | `RegimenIva` · `AutoRetenedor` · `DeclaranteRenta` · `GranContribuyente` · `AutoRetenedorICA` · `RegimenSimple` · `RegimenEspecial` · `DescuentoSenaFic` · `ProfesionalIndependiente` | S/N directos |
 | `granContribuyenteBogota` · `exentoRetencion` · `agenteRetenedorIva` | `GranContribuyenteBta` · `ExentoRetefuente` · `AgenteRetenedorIVA` | S/N directos |
@@ -274,27 +274,27 @@ Banco: `bancoCodigo` (código de compensación) → `BcoCod` de AyF; `bancoSwift
 | Fase | Qué cambia | Qué deja de hacer |
 |---|---|---|
 | **P1 — Embed** (H9) | En "Documentos" y en los sectores con soporte, el Portal pide `POST /api/v1/sesiones-tercero {vinculoId | expedienteId}` con la API key del tenant/empresa correspondiente a la constructora activa → recibe `token` corto → abre `<iframe src="…/embed/expediente/{token}">` (o `/embed/boveda/{token}` para la vista multi-empresa) y escucha `postMessage`. La cuenta bancaria del sector "Información bancaria" se lee desde `GET /vinculos/{id}` (`cuentaDesignada`) y su cambio se hace en el embed de `/cuentas`. Los informes y licitaciones siguen igual | Escribir en `Adjuntos`, `AdjuntoTercero`, `AdjuntosConstructora`, `SoportesProveedor`, `BancosConstructora`, disco `/Archivos/*` (`AdjuntoService.cs:447-540`); llamar `DocumentosERP/requeridos` al SRM; `ServiceBackgroudVencimiento` (`BackService\ServiceBackgroudVencimiento.cs`) |
-| **P2 — Redirección** (H11) | El menú "Documentos" y los avisos llevan a `public` de AvalaSoft con el mismo magic link; el Portal queda como directorio multi-constructora, licitaciones e informes, y lista expedientes vía `GET /vinculos?tercero=` | Usuario fijo `provportal` y las 4 llamadas al marco por constructora (`IERPSinco`/`ManagerToken`); `ActualizacionTerceroConstructora`; `VencimientosProveedor` |
+| **P2 — Redirección** (H11) | El menú "Documentos" y los avisos llevan a `public` de Valídalo con el mismo magic link; el Portal queda como directorio multi-constructora, licitaciones e informes, y lista expedientes vía `GET /vinculos?tercero=` | Usuario fijo `provportal` y las 4 llamadas al marco por constructora (`IERPSinco`/`ManagerToken`); `ActualizacionTerceroConstructora`; `VencimientosProveedor` |
 
 Webhooks que el Portal consume (opcional en P1, necesario en P2): `vinculo.estado_cambiado`, `expediente.aprobado`, `expediente.rechazado`, `vinculo.revalidacion_pendiente`, `certificado.emitido`, `certificado.con_pendientes` → para pintar campana y estado por constructora con `legacy.estadoTercero`.
 
-Autorregistro: el formulario del Portal (`MapLoginRoutes.cs:296`) deja de llamar a su propio `ValidacionDocumentalService` y usa `POST /public/v1/autorregistro` de AvalaSoft (identificación multipaís, consentimiento de plataforma, RUT/cédula/cámara en dos pasos); el tercero queda **invisible** hasta que una empresa lo vincule (P-1-9) y la lectura IA la hace la plataforma una sola vez cuando el tercero acepta el aviso (B-2), de modo que los hechos quedan para todas las empresas que luego lo vinculen. Cada constructora del Portal se mapea a `(tenantId, empresaId)`: la tabla `Constructoras` recibe dos columnas nuevas y la API key del Portal tiene alcance a todas las empresas que administra.
+Autorregistro: el formulario del Portal (`MapLoginRoutes.cs:296`) deja de llamar a su propio `ValidacionDocumentalService` y usa `POST /public/v1/autorregistro` de Valídalo (identificación multipaís, consentimiento de plataforma, RUT/cédula/cámara en dos pasos); el tercero queda **invisible** hasta que una empresa lo vincule (P-1-9) y la lectura IA la hace la plataforma una sola vez cuando el tercero acepta el aviso (B-2), de modo que los hechos quedan para todas las empresas que luego lo vinculen. Cada constructora del Portal se mapea a `(tenantId, empresaId)`: la tabla `Constructoras` recibe dos columnas nuevas y la API key del Portal tiene alcance a todas las empresas que administra.
 
-**Tercero compartido entre constructoras migradas y no migradas (I-18).** El disco y las tablas `Adjuntos*` del Portal son por tercero, no por constructora, así que durante la coexistencia un proveedor puede tener una constructora en AvalaSoft y otra en legado. Regla: desde que la **primera** empresa que lo vincula migra, la carga documental de ese tercero se hace **solo** en AvalaSoft (el Portal redirige su sección "Documentos" al embed aunque la constructora activa siga en legado); las constructoras no migradas leen el estado y los documentos del tercero vía `GET /vinculos` y `GET /terceros/{id}/documentos` con una API key de **lectura** por constructora legado (scope `documentos:leer`, `vinculos:leer`), y la sincronización inversa escribe para ellas `AdjuntosConstructora` y `TercerosConstructora` con `legacy.estadoTercero`. Así no hay dos lugares donde subir el mismo RUT.
+**Tercero compartido entre constructoras migradas y no migradas (I-18).** El disco y las tablas `Adjuntos*` del Portal son por tercero, no por constructora, así que durante la coexistencia un proveedor puede tener una constructora en Valídalo y otra en legado. Regla: desde que la **primera** empresa que lo vincula migra, la carga documental de ese tercero se hace **solo** en Valídalo (el Portal redirige su sección "Documentos" al embed aunque la constructora activa siga en legado); las constructoras no migradas leen el estado y los documentos del tercero vía `GET /vinculos` y `GET /terceros/{id}/documentos` con una API key de **lectura** por constructora legado (scope `documentos:leer`, `vinculos:leer`), y la sincronización inversa escribe para ellas `AdjuntosConstructora` y `TercerosConstructora` con `legacy.estadoTercero`. Así no hay dos lugares donde subir el mismo RUT.
 
 ---
 
 ## 5. Marco (SincoERP)
 
 - **Consulta rápida:** `GET /api/v1/consultas/certificacion?pais=CO&tipoIdentificacion=NIT&numero=900123456&tipoVinculo=proveedor` con cabecera `X-Empresa` (número **normalizado sin DV**, P-1-1) → `ConsultaCertificacionDto` **exactamente como lo define [05 §4](05-api-contratos-y-webhooks.md)**: `certificado`, `folio` (`-C-`), `estado: EstadoCertificado`, `estadoVinculo: EstadoVinculo | "SinVinculo"`, `vinculoId`, `terceroId`, `vigenteHasta`, `revalidacionPendiente[]{tipo, plazo, bloqueante}`, `documentosVencidos[]`, `bloqueado`, `motivoBloqueo: Bloqueo | PlazoRevalidacion | Vencido | Revocado` (CN-2), `cuentaDesignada{numeroEnmascarado, banco}`, `urlVerificacion`, `legacy.estadoTercero`, `fuenteRespaldo`, `antiguedadSegundos`; `ETag` + `Cache-Control: private, max-age=300`, `If-None-Match` ⇒ 304; objetivo p99 < 100 ms en H9 y < 50 ms en H11. **Implementado (CN-1)** sin la proyección `EstadoCertificacionTercero`: tres viajes por índice único o llave primaria (tercero + tipo de vínculo, vínculo, certificado + expediente de actualización); la proyección queda para H11 si la medición con k6 no alcanza.
-- **Tabla de respaldo y modo solo lectura de emergencia (adición 9):** Marco se suscribe a `certificado.emitido`, `certificado.con_pendientes`, `certificado.suspendido`, `certificado.restablecido`, `certificado.reemplazado`, `certificado.revocado`, `certificado.vencido`, `vinculo.estado_cambiado`, `vinculo.revalidacion_pendiente`, `vinculo.revalidado`, `vinculo.cuenta_designada`, `vinculo.bloqueado`, `vinculo.desbloqueado`, `documento.vencido` y mantiene la tabla local `adp_cs.avalasoft_certificacion_local`:
+- **Tabla de respaldo y modo solo lectura de emergencia (adición 9):** Marco se suscribe a `certificado.emitido`, `certificado.con_pendientes`, `certificado.suspendido`, `certificado.restablecido`, `certificado.reemplazado`, `certificado.revocado`, `certificado.vencido`, `vinculo.estado_cambiado`, `vinculo.revalidacion_pendiente`, `vinculo.revalidado`, `vinculo.cuenta_designada`, `vinculo.bloqueado`, `vinculo.desbloqueado`, `documento.vencido` y mantiene la tabla local `adp_cs.validalo_certificacion_local`:
 
   | Columna | Tipo | Origen |
   |---|---|---|
   | `tercero_pais`, `tercero_tipo_identificacion`, `tercero_numero` | `char(2)`, `varchar(10)`, `varchar(32)` (clave única junto con `empresa_id` y `tipo_vinculo`) | `datos.tercero` del evento |
   | `empresa_id` | `uuid` | `empresaId` del sobre |
   | `tipo_vinculo` | `varchar(40)` | `datos.tipoVinculo` |
-  | `vinculo_id`, `avalasoft_tercero_id` | `uuid` | ids externos (P-12-1) |
+  | `vinculo_id`, `validalo_tercero_id` | `uuid` | ids externos (P-12-1) |
   | `estado_vinculo` | `varchar(20)` (`EstadoVinculo`) | `vinculo.estado_cambiado` |
   | `certificado_folio`, `certificado_emision` | `varchar(40)`, `int` | `certificado.*` |
   | `estado_certificado` | `varchar(20)` (`EstadoCertificado`) | `certificado.*` |
@@ -307,16 +307,16 @@ Autorregistro: el formulario del Portal (`MapLoginRoutes.cs:296`) deja de llamar
   | `ultimo_evento_id`, `ultimo_evento_en`, `actualizado_en` | `uuid`, `datetime2`, `datetime2` | sobre del evento (dedupe: se ignora un evento con `ocurridoEn` anterior al guardado) |
   | `fuente` | `varchar(10)` (`webhook` \| `pull` \| `manual`) | cómo llegó la última actualización |
 
-  Alimentación: receptor de webhooks de Marco (misma firma HMAC y dedupe por `Avalasoft-Event-Id` que el SRM, T-6) o `GET /eventos?desde=` en redes cerradas; cada noche un *reconciliador* compara una muestra del 5 % contra `GET /consultas/certificacion` y corrige diferencias. Degradación: si AvalaSoft no responde en 2 s o devuelve 5xx, Marco responde el mismo contrato de `ConsultaCertificacionDto` desde la tabla local con `fuenteRespaldo: true` y `antiguedadSegundos = ahora − actualizado_en`; las pantallas del ERP lo muestran como aviso ("estado de hace 3 h"), nunca lo ocultan; si `antiguedadSegundos > 86 400` el ERP exige confirmación humana para operaciones de pago.
-- **SSO:** desde pantallas del marco se abre `web` en la empresa correspondiente (`/t/{tenant}/e/{empresa}/…`) con token exchange `urn:avalasoft:erp-token` (doc 07), sin segundo login.
-- **AyF:** los cambios aprobados que afectan al tercero del ERP (razón social, representante legal principal, **cuenta designada**) viajan en `cambios[]` del evento; el aplicador vive en el SRM (hoy `IAplicadorCambioAyF`) y, a futuro, en Marco directamente. La identidad del tercero en AyF se reconcilia por clave única (P-12-1); AyF guarda `avalasoftTerceroId`.
+  Alimentación: receptor de webhooks de Marco (misma firma HMAC y dedupe por `Validalo-Event-Id` que el SRM, T-6) o `GET /eventos?desde=` en redes cerradas; cada noche un *reconciliador* compara una muestra del 5 % contra `GET /consultas/certificacion` y corrige diferencias. Degradación: si Valídalo no responde en 2 s o devuelve 5xx, Marco responde el mismo contrato de `ConsultaCertificacionDto` desde la tabla local con `fuenteRespaldo: true` y `antiguedadSegundos = ahora − actualizado_en`; las pantallas del ERP lo muestran como aviso ("estado de hace 3 h"), nunca lo ocultan; si `antiguedadSegundos > 86 400` el ERP exige confirmación humana para operaciones de pago.
+- **SSO:** desde pantallas del marco se abre `web` en la empresa correspondiente (`/t/{tenant}/e/{empresa}/…`) con token exchange `urn:validalo:erp-token` (doc 07), sin segundo login.
+- **AyF:** los cambios aprobados que afectan al tercero del ERP (razón social, representante legal principal, **cuenta designada**) viajan en `cambios[]` del evento; el aplicador vive en el SRM (hoy `IAplicadorCambioAyF`) y, a futuro, en Marco directamente. La identidad del tercero en AyF se reconcilia por clave única (P-12-1); AyF guarda `validaloTerceroId`.
 
 ---
 
 ## 6. Importación de históricos
 
 ### 6.1 Herramienta
-`Avalasoft.Herramientas.Importacion` (CLI .NET):
+`Validalo.Herramientas.Importacion` (CLI .NET):
 ```
 importar --tenant acme --fuente portal --conexion "<cs Azure SQL>" --archivos \\srv\Archivos --desde 2019-01-01 --dry-run
 importar --tenant acme --fuente srm    --conexion "<cs Sinco>" --reanudar --informe rechazos-acme.csv
@@ -329,12 +329,12 @@ Escribe **solo** por la API `/api/v1/importacion/*` (scope `importacion:escribir
 
 ### 6.2 Identidad e idempotencia
 - `ClaveLegado = {origen}:{tabla}:{id}` (p. ej. `portal:AdjuntoTercero:48112`, `srm:Solicitudes:7731`).
-- Id en AvalaSoft = **UUID v5** (namespace fijo de AvalaSoft, nombre = `ClaveLegado`) → reejecutar es idempotente y las referencias cruzadas se resuelven sin tabla de equivalencias.
+- Id en Valídalo = **UUID v5** (namespace fijo de Valídalo, nombre = `ClaveLegado`) → reejecutar es idempotente y las referencias cruzadas se resuelven sin tabla de equivalencias.
 - Cada entidad importada guarda `ClaveLegado` en metadatos; los eventos llevan `ActorTipo = Integracion` con `Origen = Migracion` (los valores de `ActorTipo` son los de 03 §3) y la fecha original del legado en `OcurridoEn`.
 
 ### 6.3 Orden de carga y mapeo
 
-| Paso | Origen (legado) | Destino (AvalaSoft) | Reglas |
+| Paso | Origen (legado) | Destino (Valídalo) | Reglas |
 |---|---|---|---|
 | 1 | `Constructoras` (Portal) + `ADPConfig` (SRM) | `Tenant` (uno por **cliente/grupo**) + `Empresa` (una por **constructora/NIT**, ADR-0008), API key con alcance a la empresa, prefijo de folio por empresa, región y clave KMS del tenant | Las constructoras de un mismo grupo (mismo cliente comercial) caen en un tenant; Producto confirma el agrupamiento antes del dry-run |
 | 2 | `usuariosERP`, perfiles de aprobación (`adp_srm_apr.PerfilAprobacion`) | Usuarios (correo como identidad; un usuario presente en varias constructoras del grupo se crea una vez con roles **por empresa**), roles, áreas | `PerfilAprobacion.OrdenApr` → etapas secuenciales; flag `Sarlaft` → verificación `ListasRestrictivas` |
@@ -361,7 +361,7 @@ CSV por fila: `ClaveLegado, tenant, empresa, paso, motivo, dato, accionSugerida`
 ### 6.6 Importador de la ficha maestra y sincronizador de coexistencia (F4, FM-39…FM-45; genérico: IO-1)
 La ficha (docs/14) se importa **dentro de la API**, no por la CLI de §6.1: necesita la misma regla única de las secciones, el outbox de Wolverine (para la revalidación de F2) y la bóveda. Rol Plataforma (`plataforma:tenants`).
 
-**Importador genérico + adaptadores de origen.** El importador y el sincronizador no conocen ningún sistema: leen y traducen los terceros de un **adaptador** (`IAdaptadorDeOrigen`: `Codigo`, `ValidarArchivo`, `DesdeArchivo`, `Conectado`, `Configurado`; cada tercero llega como `TerceroDeOrigen { Clave, UnidadesAceptadas, Traducir }`) y hacen lo común: crear o encontrar el tercero (id UUID v5 de `{sistema}:{clave}`), registrar cada sección como versión (la misma regla del wizard), anotar la **referencia externa** del tercero en ese sistema y aceptar por empresa según el mapa de **unidades**. El Portal es el primer adaptador (`Avalasoft.Adaptadores.Portal`, opcional: `Avalasoft.Api` lo registra y el núcleo no lo referencia); el código del origen (`portal`) va en la ruta. Para otro sistema se escribe otro adaptador de la misma forma y se registra con `AddSingleton<IAdaptadorDeOrigen, …>()`; sin adaptadores, 404 `origen-no-registrado`. Las filas de abajo usan `portal` como ejemplo del `{origen}`.
+**Importador genérico + adaptadores de origen.** El importador y el sincronizador no conocen ningún sistema: leen y traducen los terceros de un **adaptador** (`IAdaptadorDeOrigen`: `Codigo`, `ValidarArchivo`, `DesdeArchivo`, `Conectado`, `Configurado`; cada tercero llega como `TerceroDeOrigen { Clave, UnidadesAceptadas, Traducir }`) y hacen lo común: crear o encontrar el tercero (id UUID v5 de `{sistema}:{clave}`), registrar cada sección como versión (la misma regla del wizard), anotar la **referencia externa** del tercero en ese sistema y aceptar por empresa según el mapa de **unidades**. El Portal es el primer adaptador (`Validalo.Adaptadores.Portal`, opcional: `Validalo.Api` lo registra y el núcleo no lo referencia); el código del origen (`portal`) va en la ruta. Para otro sistema se escribe otro adaptador de la misma forma y se registra con `AddSingleton<IAdaptadorDeOrigen, …>()`; sin adaptadores, 404 `origen-no-registrado`. Las filas de abajo usan `portal` como ejemplo del `{origen}`.
 
 | Entrada | Qué hace |
 |---|---|
@@ -371,7 +371,7 @@ La ficha (docs/14) se importa **dentro de la API**, no por la CLI de §6.1: nece
 | `POST …/{id}/reanudar` | Vuelve a encolar una corrida fallida; sigue desde su cursor (409 `corrida-completada`). |
 | `POST /api/v1/plataforma/importacion/{origen}/terceros/{clave}/sincronizar` | Sincronizador: reimporta un tercero desde el origen configurado con origen `SistemaExterno` (antes `Portal`; lo ya guardado se lee igual). |
 
-**Origen del Portal (el adaptador de ejemplo).** `IOrigenPortal` lee los catálogos y, por lotes de `Terid`, cada tercero con sus filas (`Terceros`, `TerInformacionGeneral`, `TerDireccionEstructurada`, `TerInfoTributaria`, `TerRetencionICA`, `TerInfoFinanciera`, `TerTransaccionMonedaExtranjera*`, `TerCamaraComercio`, `TerSISO`, `TerEspecialidad`, `TercerosConstructora`; catálogos `Ciudades`, `ActividadEconomica`, `Bancos`, `GruposTercero` → `CategoriasTercero` → `EspecialidadesTercero`, `Paises`). `OrigenPortalSqlServer` hace solo `SELECT` parametrizados con `Microsoft.Data.SqlClient` (cadena en `Avalasoft:Importacion:Portal:CadenaDeConexion`, sin valor por omisión; se recomienda usuario de solo lectura y `ApplicationIntent=ReadOnly`). `OrigenPortalArchivo` lee un JSON con la misma forma (`{ catalogos, terceros[] }`, nombres de tabla y columna del Portal): lo usan las pruebas, un dry-run sin red y, con `Avalasoft:Importacion:Portal:Archivo`, el sincronizador en desarrollo. La imagen de la firma de las declaraciones PEP (HU 49093) está en el disco del Portal, no en su base: `IOrigenDeArchivosDelPortal` la lee de una carpeta (`Avalasoft:Importacion:Portal:Firmas:RutaBase`, con el contenido de `DeclaracionesPEP`), de una URL (`Firmas:UrlBase` y `Firmas:Token`, del entorno) o de una simulada en memoria (pruebas); solo se importa si su SHA-256 es la huella que el Portal guardó y, si no, la declaración se importa sin imagen y con un aviso (DP-20).
+**Origen del Portal (el adaptador de ejemplo).** `IOrigenPortal` lee los catálogos y, por lotes de `Terid`, cada tercero con sus filas (`Terceros`, `TerInformacionGeneral`, `TerDireccionEstructurada`, `TerInfoTributaria`, `TerRetencionICA`, `TerInfoFinanciera`, `TerTransaccionMonedaExtranjera*`, `TerCamaraComercio`, `TerSISO`, `TerEspecialidad`, `TercerosConstructora`; catálogos `Ciudades`, `ActividadEconomica`, `Bancos`, `GruposTercero` → `CategoriasTercero` → `EspecialidadesTercero`, `Paises`). `OrigenPortalSqlServer` hace solo `SELECT` parametrizados con `Microsoft.Data.SqlClient` (cadena en `Validalo:Importacion:Portal:CadenaDeConexion`, sin valor por omisión; se recomienda usuario de solo lectura y `ApplicationIntent=ReadOnly`). `OrigenPortalArchivo` lee un JSON con la misma forma (`{ catalogos, terceros[] }`, nombres de tabla y columna del Portal): lo usan las pruebas, un dry-run sin red y, con `Validalo:Importacion:Portal:Archivo`, el sincronizador en desarrollo. La imagen de la firma de las declaraciones PEP (HU 49093) está en el disco del Portal, no en su base: `IOrigenDeArchivosDelPortal` la lee de una carpeta (`Validalo:Importacion:Portal:Firmas:RutaBase`, con el contenido de `DeclaracionesPEP`), de una URL (`Firmas:UrlBase` y `Firmas:Token`, del entorno) o de una simulada en memoria (pruebas); solo se importa si su SHA-256 es la huella que el Portal guardó y, si no, la declaración se importa sin imagen y con un aviso (DP-20).
 
 **Traductor del adaptador del Portal (puro, `TraductorDelPortal`).** Correcciones de FM-10/FM-11; detalle en FM-40:
 
@@ -395,7 +395,7 @@ Después, cada sección pasa por la regla única de la ficha (FM-16): un error d
 
 **Aceptación importada.** Con el mapa de constructoras, si el tercero estaba `Completada` (3) o `Actualizacion` (4) en una constructora mapeada, cada vínculo suyo con esa empresa recibe `SeccionAceptada` con origen `Importacion` (sin expediente ni folio) para la versión vigente de cada sección. No publica `seccion.aceptada` y no se mueve en corridas posteriores. Si el vínculo aún no existe se cuenta en `sinVinculo` y se acepta al volver a correr.
 
-**Sincronizador (coexistencia, un solo sentido).** Mientras la empresa no haga el corte, **el Portal** llama `POST …/terceros/{terid}/sincronizar` después de cada guardado de una sección `Ter*` (o un job lo llama por lotes de terceros modificados), con una API key de Plataforma. Un cambio crea una versión con origen `SistemaExterno` y, en la misma transacción, pide `SincronizarRequisitosDelVinculo` a cada vínculo aceptado: la empresa que ya la tenía aceptada abre su revalidación de F2. El Portal no necesita leer la respuesta (idempotente: repetir la llamada no crea nada). Qué tiene que hacer el Portal: (1) guardar la URL y la API key cifradas; (2) llamar al endpoint tras `SaveChanges` de cualquier `Ter*` del tercero, sin bloquear al usuario (cola con reintentos); (3) dejar de hacerlo cuando la empresa haga el corte (§7). AvalaSoft nunca escribe en las tablas del Portal.
+**Sincronizador (coexistencia, un solo sentido).** Mientras la empresa no haga el corte, **el Portal** llama `POST …/terceros/{terid}/sincronizar` después de cada guardado de una sección `Ter*` (o un job lo llama por lotes de terceros modificados), con una API key de Plataforma. Un cambio crea una versión con origen `SistemaExterno` y, en la misma transacción, pide `SincronizarRequisitosDelVinculo` a cada vínculo aceptado: la empresa que ya la tenía aceptada abre su revalidación de F2. El Portal no necesita leer la respuesta (idempotente: repetir la llamada no crea nada). Qué tiene que hacer el Portal: (1) guardar la URL y la API key cifradas; (2) llamar al endpoint tras `SaveChanges` de cualquier `Ter*` del tercero, sin bloquear al usuario (cola con reintentos); (3) dejar de hacerlo cuando la empresa haga el corte (§7). Valídalo nunca escribe en las tablas del Portal.
 
 ---
 
@@ -406,12 +406,12 @@ La unidad de corte es la **empresa interna** (una constructora / una instancia d
 ```mermaid
 sequenceDiagram
   participant O as Operación
-  participant V as AvalaSoft
+  participant V as Valídalo
   participant L as Legado (SRM+Portal de esa constructora)
   O->>V: 1. Importación completa (dry-run → real) con legado activo (--tenant --empresa)
   O->>L: 2. Flag Legacy-SoloLectura (bloquea escritura documental en Portal y SRM para la constructora)
   O->>V: 3. Importación delta (desde la marca de agua)
-  O->>L: 4. Flag ValidacionDocumental = AvalaSoft (+ TenantId, EmpresaId, API key)
+  O->>L: 4. Flag ValidacionDocumental = Valídalo (+ TenantId, EmpresaId, API key)
   V-->>L: 5. Sincronización inversa 90 días (estado, aceptaciones, legacy.estadoTercero, cuenta designada)
   O->>O: 6. Validación funcional (checklist) y comunicación a proveedores
   O->>L: 7. Al cierre de los 90 días: apagar endpoints legado de la constructora
@@ -419,15 +419,15 @@ sequenceDiagram
 
 | Paso | Detalle | Rollback |
 |---|---|---|
-| 1 | Importación con informe sin críticos; usuarios de la empresa prueban en AvalaSoft con datos reales en entorno de pruebas | — |
+| 1 | Importación con informe sin críticos; usuarios de la empresa prueban en Valídalo con datos reales en entorno de pruebas | — |
 | 2 | `Legacy-SoloLectura`: el Portal muestra aviso "estamos migrando tus documentos; vuelve en X horas"; el SRM bloquea invitaciones | Quitar flag |
 | 3 | Delta por `FechaCreacion > marca` en `Adjuntos`, `ActualizacionTerceroConstructora`, `LogAprobaciones` | — |
-| 4 | Activar `Avalasoft`; Portal pasa a P1 (embed) para ese tenant; correos a proveedores con el nuevo enlace | Volver a `Legacy`: las tablas legado están al día por la sincronización inversa; binarios nuevos se exportan con `mc mirror` al disco del Portal |
-| 5 | Suscriptor interno de AvalaSoft (filtrado por `empresaId`) escribe en `adp_srm.Solicitudes`, `SolicitudesAuditoriaEstado`, `TercerosConstructora`, `AdjuntosConstructora` (solo la aceptada actual), `BancosConstructora` (cuenta designada) **y, para que el rollback sea completo, `Adjuntos` + `AdjuntoTercero` con el binario copiado al disco del Portal** (`mc mirror` nocturno a `/Archivos/{tercero}/`); sin esas filas el Portal no "vería" los archivos nuevos al volver a `Legacy` | — |
+| 4 | Activar `Validalo`; Portal pasa a P1 (embed) para ese tenant; correos a proveedores con el nuevo enlace | Volver a `Legacy`: las tablas legado están al día por la sincronización inversa; binarios nuevos se exportan con `mc mirror` al disco del Portal |
+| 5 | Suscriptor interno de Valídalo (filtrado por `empresaId`) escribe en `adp_srm.Solicitudes`, `SolicitudesAuditoriaEstado`, `TercerosConstructora`, `AdjuntosConstructora` (solo la aceptada actual), `BancosConstructora` (cuenta designada) **y, para que el rollback sea completo, `Adjuntos` + `AdjuntoTercero` con el binario copiado al disco del Portal** (`mc mirror` nocturno a `/Archivos/{tercero}/`); sin esas filas el Portal no "vería" los archivos nuevos al volver a `Legacy` | — |
 | 6 | Checklist: bandejas coinciden en conteo; 10 proveedores de muestra verificados; certificados verificables; un tercero compartido con otra empresa del grupo muestra decisiones distintas en cada una | — |
 | 7 | Apagar rutas de §3.3 y jobs del Portal para la constructora; retirar la sincronización inversa | Reactivar sincronización si otra empresa del tenant sigue en legado (es por empresa) |
 
-**Comunicación a proveedores:** correo desde AvalaSoft (plantilla `MigracionBienvenida`, remitente de plataforma con el nombre de la empresa y `Reply-To` de la empresa, P-10-4) con el magic link a `/boveda`, explicando que sus documentos ya están cargados, cuáles están vigentes para cada empresa y cuáles requieren renovación; sin contraseña nueva (regla 8 del legado, P-13-3). Si varias empresas del mismo grupo migran en fechas distintas, el proveedor recibe **un solo** correo por hecho y día (P-10-3) que lista las empresas incorporadas. El Portal muestra el mismo mensaje en su campana. En el primer ingreso el proveedor acepta la autorización de tratamiento de la plataforma (incluida la IA externa, P-6-5); hasta entonces sus versiones se procesan sin IA.
+**Comunicación a proveedores:** correo desde Valídalo (plantilla `MigracionBienvenida`, remitente de plataforma con el nombre de la empresa y `Reply-To` de la empresa, P-10-4) con el magic link a `/boveda`, explicando que sus documentos ya están cargados, cuáles están vigentes para cada empresa y cuáles requieren renovación; sin contraseña nueva (regla 8 del legado, P-13-3). Si varias empresas del mismo grupo migran en fechas distintas, el proveedor recibe **un solo** correo por hecho y día (P-10-3) que lista las empresas incorporadas. El Portal muestra el mismo mensaje en su campana. En el primer ingreso el proveedor acepta la autorización de tratamiento de la plataforma (incluida la IA externa, P-6-5); hasta entonces sus versiones se procesan sin IA.
 
 ---
 
@@ -440,10 +440,10 @@ sequenceDiagram
 | IA sobre documentos de terceros que no han consentido | La re-verificación histórica se difiere al primer ingreso de cada tercero (B-8); hasta entonces solo hechos sin IA |
 | Archivos ausentes o corruptos en el disco del Portal | Informe; versión `BinarioNoDisponible`; se pide al tercero re-subir vía aviso consolidado |
 | Webhooks hacia un SRM detrás de firewall | Modo pull `GET /eventos?desde=cursor` con el mismo contrato |
-| Reintentos de webhook duplican acciones en el SRM | Dedupe por `Avalasoft-Event-Id` (T-6) + acciones idempotentes por `expedienteId` |
+| Reintentos de webhook duplican acciones en el SRM | Dedupe por `Validalo-Event-Id` (T-6) + acciones idempotentes por `expedienteId` |
 | El SRM no puede desplegar el receptor a tiempo | Modo pull desde un job del SRM cada minuto como puente temporal |
 | Coste de re-verificación histórica | Batches API solo sobre versiones actuales; priorización por nivel contratado |
-| Doble fuente durante los 90 días | La inversa es unidireccional (AvalaSoft → legado) y el legado está en solo lectura documental |
+| Doble fuente durante los 90 días | La inversa es unidireccional (Valídalo → legado) y el legado está en solo lectura documental |
 | Proveedor confundido por dos portales | P1 embed mantiene el Portal como puerta de entrada; comunicación única; mismo magic link |
 | Agrupar constructoras en el tenant equivocado | El agrupamiento tenant↔constructoras lo confirma Producto por escrito antes del dry-run; mover una empresa de tenant después exige exportarla (ADR-0008 "cómo se revierte") |
 | Cuenta bancaria distinta por constructora en el legado | Se preserva como `cuenta_designada` por vínculo; el tercero ve todas sus cuentas en `/cuentas` y puede unificarlas cuando quiera (cada cambio pasa por la aprobación de la empresa) |
@@ -456,7 +456,7 @@ Búsqueda de todo lo que nombra o asume SRM, Portal, AyF, Marco, Sinco o constru
 
 | Dónde | Qué nombraba o asumía | Qué quedó |
 |---|---|---|
-| `Dominio/Ficha/Portal/*` (traductor, modelo, códigos y calidades inversas) | las tablas y columnas del Portal (`Terid`, `TerInfoTributaria`…) | **Movido** a `Avalasoft.Adaptadores.Portal` (proyecto opcional); el dominio ya no tiene la carpeta |
+| `Dominio/Ficha/Portal/*` (traductor, modelo, códigos y calidades inversas) | las tablas y columnas del Portal (`Terid`, `TerInfoTributaria`…) | **Movido** a `Validalo.Adaptadores.Portal` (proyecto opcional); el dominio ya no tiene la carpeta |
 | `Aplicacion/Ficha/ImportacionDePortal*`, `OrigenesDelPortal` y rutas `…/importacion/portal` | importador atado al Portal: `Terid` entero, constructoras, fuente `SqlServer` | **Generalizado**: `Aplicacion/Importacion` (`IAdaptadorDeOrigen`), rutas `…/importacion/{origen}`, clave y cursor de texto, `unidades`, fuente `Conectado` |
 | `Infraestructura/Portal/OrigenPortalSqlServer` y el paquete `Microsoft.Data.SqlClient` | lector de SQL Server del Portal en la infraestructura | **Movido** al adaptador; la infraestructura ya no depende de SqlClient |
 | `OrigenDeSeccion.Portal` (persistido en `VersionDeSeccionRegistrada`) | origen de una versión | `SistemaExterno`; un convertidor lee el `Portal` ya guardado (upcasting, IO-2) y el sistema va en el autor |
@@ -477,7 +477,7 @@ Lo que **no** cambió por ser genérico desde el inicio: sistemas integrados (`S
 1. **Dónde vive el aplicador de AyF** a largo plazo (SRM vs Marco). *Propuesta:* SRM en H9, Marco cuando exponga API de terceros. *Quién decide:* Arquitectura + equipo Marco.
 2. ~~Duración de la sincronización inversa~~ **Cerrada** (registro P-13-4): 90 días por empresa.
 3. **Folio de certificados retroactivos** (emitir o no para vínculos ya Completados). *Propuesta:* emitir con sufijo `-M` y fecha original. *Quién decide:* Producto.
-4. **Autorregistro del Portal** en P1: ¿crea el tercero en AvalaSoft desde el día 1 o solo en P2? *Propuesta:* desde P1 para que la verificación IA no se duplique. *Quién decide:* equipo Portal.
+4. **Autorregistro del Portal** en P1: ¿crea el tercero en Valídalo desde el día 1 o solo en P2? *Propuesta:* desde P1 para que la verificación IA no se duplique. *Quién decide:* equipo Portal.
 5. ~~Pull vs webhooks~~ **Cerrada** (registro P-12-2): ambos desde el MVP; webhooks por defecto, pull de respaldo.
 6. **Agrupamiento de constructoras en tenants** para la migración (qué constructoras del Portal pertenecen al mismo cliente/grupo). *Propuesta:* lista elaborada por Comercial y confirmada por Producto antes del primer dry-run. *Quién decide:* Producto.
 

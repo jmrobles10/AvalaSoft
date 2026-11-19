@@ -1,7 +1,7 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { actualizarEmpresa, SCOPES } from '@avalasoft/api-client';
-import { Dato, derivarPaletaEmpresa, RejillaDatos } from '@avalasoft/ui';
+import { actualizarEmpresa, SCOPES } from '@validalo/api-client';
+import { Dato, derivarPaletaEmpresa, RejillaDatos } from '@validalo/ui';
 import { ImageUp, Trash2 } from 'lucide-react';
 import { useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';

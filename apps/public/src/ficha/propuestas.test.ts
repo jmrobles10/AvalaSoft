@@ -1,4 +1,4 @@
-import type { PropuestaDeSeccionDto } from '@avalasoft/api-client';
+import type { PropuestaDeSeccionDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { agruparPorDocumento } from './propuestas';
 

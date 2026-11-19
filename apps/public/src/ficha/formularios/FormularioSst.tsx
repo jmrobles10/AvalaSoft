@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { SeccionPlana } from '@avalasoft/ui';
+import { SeccionPlana } from '@validalo/ui';
 import { HardHat } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CampoSiNo } from '../campos';

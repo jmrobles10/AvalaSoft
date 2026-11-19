@@ -8,7 +8,7 @@ recorrido(
     actor: 'Plataforma',
     titulo: 'Busca un grupo y revisa sus empresas',
     resumen:
-      'El operador de Plataforma abre la lista de grupos (clientes de AvalaSoft), la busca por nombre, NIT o empresa y revisa en su tarjeta las empresas del grupo, con su identificación, su prefijo y su plan de IA.',
+      'El operador de Plataforma abre la lista de grupos (clientes de Valídalo), la busca por nombre, NIT o empresa y revisa en su tarjeta las empresas del grupo, con su identificación, su prefijo y su plan de IA.',
     precondiciones: [
       'Varios grupos creados, cada uno con sus empresas.',
       'Un operador de Plataforma con la consola abierta.',
@@ -25,7 +25,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre Grupos y empresas',
       explicacion:
-        'Es la pantalla de inicio de la consola de Plataforma. Cada grupo es un cliente de AvalaSoft y aparece como una tarjeta con su número de empresas, su fecha de creación y sus acciones: «Ver ficha» (también desde el nombre del grupo), «Plan y límites», «Sistemas» y «Agregar empresa». ' +
+        'Es la pantalla de inicio de la consola de Plataforma. Cada grupo es un cliente de Valídalo y aparece como una tarjeta con su número de empresas, su fecha de creación y sus acciones: «Ver ficha» (también desde el nombre del grupo), «Plan y límites», «Sistemas» y «Agregar empresa». ' +
         'Con el buscador encuentras un grupo por su nombre, por el nombre o NIT de una de sus empresas.',
       resaltar: consola.getByRole('searchbox', { name: 'Buscar por grupo, empresa o NIT' }),
       configuracion: {

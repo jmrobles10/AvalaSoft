@@ -1,12 +1,12 @@
 /**
- * Página de demostración: hace de sistema integrado que aloja AvalaSoft en un iframe (ID-3). Muestra el contrato
+ * Página de demostración: hace de sistema integrado que aloja Valídalo en un iframe (ID-3). Muestra el contrato
  * postMessage de `sesion/puenteEmbed.ts` desde el lado del contenedor: responde a `sesion-requerida` emitiendo una
  * sesión, ajusta la altura con `resize`, hace scroll hasta la región de `visible` y envía el tema.
  */
 import { abrirSesionDelegada } from '../dev/firmarAsercion';
 import { cargarSemilla, type SemillaDemo } from '../dev/semilla';
 
-interface MensajeDeAvalasoft {
+interface MensajeDeValidalo {
   tipo: string;
   motivo?: string;
   height?: number;
@@ -15,7 +15,7 @@ interface MensajeDeAvalasoft {
 }
 
 /**
- * `avalasoft:visible`: la región `top..top+height` del iframe (un diálogo o panel recién abierto) debe verse. Solo
+ * `validalo:visible`: la región `top..top+height` del iframe (un diálogo o panel recién abierto) debe verse. Solo
  * desplaza si hace falta y lo mínimo; si la región es más alta que la ventana, muestra su borde superior.
  */
 function mostrarRegion(marcoIframe: HTMLIFrameElement, top: number, alto: number) {
@@ -93,8 +93,8 @@ async function canjear() {
       limite,
     ]);
     enviar(
-      { tipo: 'avalasoft:sesion', token: sesion.token, empresaId: empresa.value || null },
-      `avalasoft:sesion (${elegida.nombre}, vence ${new Date(sesion.expira).toLocaleTimeString('es-CO')})`,
+      { tipo: 'validalo:sesion', token: sesion.token, empresaId: empresa.value || null },
+      `validalo:sesion (${elegida.nombre}, vence ${new Date(sesion.expira).toLocaleTimeString('es-CO')})`,
     );
   } catch (error) {
     const mensaje = error instanceof Error ? error.message : 'No se pudo abrir la sesión.';
@@ -104,14 +104,14 @@ async function canjear() {
 }
 
 function enviarTema() {
-  enviar({ tipo: 'avalasoft:tema', mode: tema.value }, `avalasoft:tema ${tema.value}`);
+  enviar({ tipo: 'validalo:tema', mode: tema.value }, `validalo:tema ${tema.value}`);
 }
 
 function abrir() {
   if (!marco) return;
   marco.replaceChildren();
   iframe = document.createElement('iframe');
-  iframe.title = 'AvalaSoft';
+  iframe.title = 'Valídalo';
   iframe.src = `${import.meta.env.BASE_URL}index.html#/`;
   marco.append(iframe);
   botonRenovar.disabled = false;
@@ -119,27 +119,27 @@ function abrir() {
   registrar('saliente', 'iframe creado');
 }
 
-window.addEventListener('message', (evento: MessageEvent<MensajeDeAvalasoft>) => {
+window.addEventListener('message', (evento: MessageEvent<MensajeDeValidalo>) => {
   // Solo el iframe propio y su origen: cualquier otro mensaje se ignora.
   if (!iframe) return;
   if (evento.source !== iframe.contentWindow || evento.origin !== ORIGEN) return;
   const { tipo } = evento.data;
 
   switch (tipo) {
-    case 'avalasoft:ready':
-      registrar('entrante', `avalasoft:ready (protocolo v${String(evento.data.version ?? '?')})`);
+    case 'validalo:ready':
+      registrar('entrante', `validalo:ready (protocolo v${String(evento.data.version ?? '?')})`);
       enviarTema();
       break;
-    case 'avalasoft:sesion-requerida':
-      registrar('entrante', `avalasoft:sesion-requerida (${evento.data.motivo ?? '—'})`);
+    case 'validalo:sesion-requerida':
+      registrar('entrante', `validalo:sesion-requerida (${evento.data.motivo ?? '—'})`);
       void entregarSesion();
       break;
-    case 'avalasoft:resize':
+    case 'validalo:resize':
       if (typeof evento.data.height === 'number') iframe.style.height = `${String(Math.max(640, evento.data.height))}px`;
       break;
-    case 'avalasoft:visible':
+    case 'validalo:visible':
       if (typeof evento.data.top === 'number' && typeof evento.data.height === 'number') {
-        registrar('entrante', `avalasoft:visible (top ${String(evento.data.top)}, alto ${String(evento.data.height)})`);
+        registrar('entrante', `validalo:visible (top ${String(evento.data.top)}, alto ${String(evento.data.height)})`);
         mostrarRegion(iframe, evento.data.top, evento.data.height);
       }
       break;
@@ -150,7 +150,7 @@ window.addEventListener('message', (evento: MessageEvent<MensajeDeAvalasoft>) =>
 
 botonAbrir.addEventListener('click', abrir);
 botonRenovar.addEventListener('click', () => void entregarSesion());
-botonCerrar.addEventListener('click', () => enviar({ tipo: 'avalasoft:cerrar-sesion' }, 'avalasoft:cerrar-sesion'));
+botonCerrar.addEventListener('click', () => enviar({ tipo: 'validalo:cerrar-sesion' }, 'validalo:cerrar-sesion'));
 tema.addEventListener('change', enviarTema);
 persona.addEventListener('change', () => {
   if (iframe) void entregarSesion();

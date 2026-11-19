@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Box } from '@mui/material';
-import type { FaltanteSeccionDto } from '@avalasoft/api-client';
+import type { FaltanteSeccionDto } from '@validalo/api-client';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 

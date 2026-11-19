@@ -1,7 +1,7 @@
 import { createPublicKey, generateKeyPairSync, verify } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { crearFirmanteDeAserciones } from './asercion';
-import { ClienteAvalasoft, ErrorAvalasoft, invitacionRetenida } from './cliente';
+import { ClienteValidalo, ErrorValidalo, invitacionRetenida } from './cliente';
 
 const LLAVE = `vsk_test_acme_${'0123456789abcdef'.repeat(4)}`;
 const EMPRESA = '0195f1c2-7d3e-7a00-8000-0000000000e1';
@@ -50,9 +50,9 @@ const consulta = {
   fuenteRespaldo: false,
 };
 
-function cliente(respuestas: (() => Response)[], extra: Partial<ConstructorParameters<typeof ClienteAvalasoft>[0]> = {}) {
+function cliente(respuestas: (() => Response)[], extra: Partial<ConstructorParameters<typeof ClienteValidalo>[0]> = {}) {
   const { falso, recibidas } = servidorFalso(respuestas);
-  return { cliente: new ClienteAvalasoft({ urlBase: 'https://valida.acme.co/', apiKey: LLAVE, empresaId: EMPRESA, fetch: falso, esperaMs: 1, ...extra }), recibidas };
+  return { cliente: new ClienteValidalo({ urlBase: 'https://valida.acme.co/', apiKey: LLAVE, empresaId: EMPRESA, fetch: falso, esperaMs: 1, ...extra }), recibidas };
 }
 
 describe('cliente de la API', () => {
@@ -92,12 +92,12 @@ describe('cliente de la API', () => {
     expect(recibidas[1]?.cabeceras['If-None-Match']).toBe('"c-1"');
   });
 
-  it('un error llega como ErrorAvalasoft con su código y correlación', async () => {
+  it('un error llega como ErrorValidalo con su código y correlación', async () => {
     const { cliente: c } = cliente([
       json({ title: 'No encontrado', detail: 'No existe ese vínculo en la empresa.', codigo: 'vinculo-no-encontrado' }, 404, { 'X-Correlation-Id': 'corr-1' }),
     ]);
     const error = await c.vinculos.obtener('v9').catch((e: unknown) => e);
-    expect(error).toBeInstanceOf(ErrorAvalasoft);
+    expect(error).toBeInstanceOf(ErrorValidalo);
     expect(error).toMatchObject({ estado: 404, codigo: 'vinculo-no-encontrado', detalle: 'No existe ese vínculo en la empresa.', correlacion: 'corr-1' });
   });
 
@@ -168,9 +168,9 @@ describe('cliente de la API', () => {
   });
 
   it('paraEmpresa cambia X-Empresa y la URL base puede tener ruta', async () => {
-    const { cliente: c, recibidas } = cliente([json({ id: 'v1' })], { urlBase: 'https://erp.acme.co/avalasoft' });
+    const { cliente: c, recibidas } = cliente([json({ id: 'v1' })], { urlBase: 'https://erp.acme.co/validalo' });
     await c.paraEmpresa('otra').vinculos.porReferencia('SRM', 'ADP 00123');
-    expect(recibidas[0]?.url).toBe('https://erp.acme.co/avalasoft/api/v1/vinculos/por-referencia?sistema=SRM&clave=ADP%2000123');
+    expect(recibidas[0]?.url).toBe('https://erp.acme.co/validalo/api/v1/vinculos/por-referencia?sistema=SRM&clave=ADP%2000123');
     expect(recibidas[0]?.cabeceras['X-Empresa']).toBe('otra');
   });
 
@@ -218,8 +218,8 @@ describe('cliente de la API', () => {
   });
 
   it('sin API key o sin URL no se construye', () => {
-    expect(() => new ClienteAvalasoft({ urlBase: 'https://x.co', apiKey: '' })).toThrow(/API key/);
-    expect(() => new ClienteAvalasoft({ urlBase: '', apiKey: LLAVE })).toThrow(/URL/);
+    expect(() => new ClienteValidalo({ urlBase: 'https://x.co', apiKey: '' })).toThrow(/API key/);
+    expect(() => new ClienteValidalo({ urlBase: '', apiKey: LLAVE })).toThrow(/URL/);
   });
 });
 

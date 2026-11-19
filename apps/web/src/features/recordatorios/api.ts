@@ -6,7 +6,7 @@ import {
   recordarObservacionesEnLote,
   type ActualizarRecordatorioAutomaticoDto,
   type RecordarObservacionesDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 
 /** Tras recordar cambian el expediente (último recordatorio) y la bandeja. */

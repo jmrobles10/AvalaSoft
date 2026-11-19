@@ -1,4 +1,4 @@
-import { ChipEstado } from '@avalasoft/ui';
+import { ChipEstado } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { ESTADO_DEL_AVANCE, type AvanceTercero } from './avance';
 

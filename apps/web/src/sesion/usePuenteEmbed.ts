@@ -1,4 +1,4 @@
-import { configuracionCliente, msRestantes } from '@avalasoft/api-client';
+import { configuracionCliente, msRestantes } from '@validalo/api-client';
 import { useEffect, useMemo, useState } from 'react';
 import { usePreferencias } from '../shared/preferencias';
 import { alturaDisponible, useAlturaFija, ventanaDelContenedor, vigiarMarco } from './alturaFija';
@@ -86,20 +86,20 @@ export function usePuenteEmbed(): PuenteEmbed {
       if (!mensaje) return;
 
       switch (mensaje.tipo) {
-        case 'avalasoft:sesion':
+        case 'validalo:sesion':
           useSesion.getState().establecer(mensaje.token, mensaje.empresaId);
           break;
-        case 'avalasoft:tema':
+        case 'validalo:tema':
           usePreferencias.getState().fijarModo(mensaje.mode, true);
           break;
-        case 'avalasoft:cerrar-sesion':
+        case 'validalo:cerrar-sesion':
           useSesion.getState().marcar('cerrada');
           break;
       }
     };
 
     window.addEventListener('message', alRecibir);
-    enviar({ tipo: 'avalasoft:ready', version: VERSION_PROTOCOLO });
+    enviar({ tipo: 'validalo:ready', version: VERSION_PROTOCOLO });
     return () => window.removeEventListener('message', alRecibir);
   }, [embebida, permitidos, enviar]);
 
@@ -108,8 +108,8 @@ export function usePuenteEmbed(): PuenteEmbed {
   useEffect(() => {
     const motivo = MOTIVO_POR_ESTADO[estado];
     if (!motivo) return undefined;
-    enviar({ tipo: 'avalasoft:sesion-requerida', motivo });
-    const reintento = window.setInterval(() => enviar({ tipo: 'avalasoft:sesion-requerida', motivo }), REINTENTO_SESION_MS);
+    enviar({ tipo: 'validalo:sesion-requerida', motivo });
+    const reintento = window.setInterval(() => enviar({ tipo: 'validalo:sesion-requerida', motivo }), REINTENTO_SESION_MS);
     return () => window.clearInterval(reintento);
   }, [estado, enviar]);
 
@@ -118,7 +118,7 @@ export function usePuenteEmbed(): PuenteEmbed {
     if (!sesion) return undefined;
     const restante = msRestantes(sesion);
     const aviso = window.setTimeout(
-      () => enviar({ tipo: 'avalasoft:sesion-requerida', motivo: 'por-vencer' }),
+      () => enviar({ tipo: 'validalo:sesion-requerida', motivo: 'por-vencer' }),
       Math.max(0, restante - AVISO_RENOVACION_MS),
     );
     const vencimiento = window.setTimeout(() => {
@@ -142,7 +142,7 @@ export function usePuenteEmbed(): PuenteEmbed {
       const altura = useAlturaFija.getState().altura ?? Math.ceil(document.documentElement.scrollHeight);
       if (altura !== ultima) {
         ultima = altura;
-        enviar({ tipo: 'avalasoft:resize', height: altura });
+        enviar({ tipo: 'validalo:resize', height: altura });
         vigia?.pedido(altura);
       }
     });
@@ -163,7 +163,7 @@ export function usePuenteEmbed(): PuenteEmbed {
     }
     const altura = alturaDisponible(window, marco);
     useAlturaFija.getState().fijarAltura(altura);
-    enviar({ tipo: 'avalasoft:visible', top: 0, height: altura });
+    enviar({ tipo: 'validalo:visible', top: 0, height: altura });
     // Del mismo origen se sigue el tamaño de la ventana del contenedor; de otro, solo el del propio iframe cuando el
     // contenedor lo tiene de un alto suyo (si no, no hay cómo enterarse de qué tanto se ve del contenedor).
     const contenedor = ventanaDelContenedor();
@@ -179,7 +179,7 @@ export function usePuenteEmbed(): PuenteEmbed {
     if (!embebida || typeof MutationObserver === 'undefined') return undefined;
     const regionVisible = () =>
       regionVisibleDelIframe() ?? (useAlturaFija.getState().altura === null ? null : { top: 0, height: window.innerHeight });
-    return anclarOverlays((region) => enviar({ tipo: 'avalasoft:visible', ...region }), regionVisible);
+    return anclarOverlays((region) => enviar({ tipo: 'validalo:visible', ...region }), regionVisible);
   }, [embebida, enviar]);
 
   return { embebida, origenContenedor };

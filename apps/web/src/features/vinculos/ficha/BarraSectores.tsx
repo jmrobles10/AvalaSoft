@@ -1,4 +1,4 @@
-import { NavegacionLateral } from '@avalasoft/ui';
+import { NavegacionLateral } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { gruposDeNavegacion, type IndicadoresSector } from './gruposSectores';
 import type { Sector } from './sectores';

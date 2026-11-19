@@ -38,7 +38,7 @@ recorrido(
     });
 
     // 2. La autenticidad.
-    await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló AvalaSoft.' })).toBeVisible();
+    await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló Valídalo.' })).toBeVisible();
     await paso(publica, {
       titulo: 'Comprueba la autenticidad en tu teléfono',
       explicacion:

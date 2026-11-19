@@ -1,6 +1,6 @@
 import { Chip, Typography } from '@mui/material';
-import type { PlanIaEmpresaDto } from '@avalasoft/api-client';
-import { Dato, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
+import type { PlanIaEmpresaDto } from '@validalo/api-client';
+import { Dato, formatearFechaHora, RejillaDatos } from '@validalo/ui';
 import { ListChecks } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';

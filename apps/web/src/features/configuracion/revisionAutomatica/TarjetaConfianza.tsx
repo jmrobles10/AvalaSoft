@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { AlineadoConCampo, CampoNumero } from '@avalasoft/ui';
+import { AlineadoConCampo, CampoNumero } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { UMBRAL_MINIMO } from './modelo';

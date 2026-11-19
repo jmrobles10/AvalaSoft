@@ -1,4 +1,4 @@
-import type { EmpresaAfectadaPorRetiroDto, ImpactoDeRetiroDto, SeccionAfectadaPorRetiroDto } from '@avalasoft/api-client';
+import type { EmpresaAfectadaPorRetiroDto, ImpactoDeRetiroDto, SeccionAfectadaPorRetiroDto } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 
 /** Qué le pasa a una empresa cuando el tercero retira la versión (el servidor lo decide; aquí solo se cuenta en lenguaje llano). */

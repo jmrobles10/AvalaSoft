@@ -11,7 +11,7 @@ recorrido(
       'La administradora de Constructora Norte arma un flujo de proveedores con una etapa en la que Compras y Cumplimiento revisan al mismo tiempo. Define los aprobadores y el plazo de Compras, deja Cumplimiento como automática y guarda el flujo como borrador.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Norte S.A.S.» y sus áreas Compras (con Rubén) y Cumplimiento (con Olga).',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/tipo-de-documento-y-flujo', 'configuracion/areas-y-miembros'],
   },

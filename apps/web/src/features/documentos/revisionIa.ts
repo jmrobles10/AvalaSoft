@@ -1,5 +1,5 @@
-import type { HechosDto, HechosIaDto } from '@avalasoft/api-client';
-import { LOCALE } from '@avalasoft/ui';
+import type { HechosDto, HechosIaDto } from '@validalo/api-client';
+import { LOCALE } from '@validalo/ui';
 import { formatearFechaDeclarada } from './formatoDatos';
 
 /**

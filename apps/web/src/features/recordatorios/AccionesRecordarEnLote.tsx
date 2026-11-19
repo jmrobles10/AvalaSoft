@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { esErrorApi } from '@avalasoft/api-client';
+import { esErrorApi } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 import { BellRing } from 'lucide-react';
 import { useState } from 'react';

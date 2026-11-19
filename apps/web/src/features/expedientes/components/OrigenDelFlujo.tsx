@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import type { FlujoDeExpedienteDto } from '@avalasoft/api-client';
+import type { FlujoDeExpedienteDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { explicarOrigenDelFlujo } from '../origenFlujo';
 

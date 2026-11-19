@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
-import type { PerfilDeFichaDto } from '@avalasoft/api-client';
+import type { PerfilDeFichaDto } from '@validalo/api-client';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

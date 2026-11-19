@@ -11,7 +11,7 @@ recorrido(
       'La administradora define en un flujo de proveedores cuántos días tiene el tercero para completar su expediente, cuándo se le recuerda, y si un tercero rechazado puede volver a postularse y tras cuántos días.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y su área «Revisión» con miembros.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/flujo-vigencia-del-vinculo', 'operacion/plazo-de-cargue-y-caducidad'],
   },

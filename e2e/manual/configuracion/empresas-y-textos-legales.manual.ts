@@ -17,7 +17,7 @@ recorrido(
       'La administradora agrega una razón social nueva al grupo y publica la autorización de datos y los términos que los terceros deben aceptar antes de vincularse. Sin ambos textos, la empresa no puede recibir aceptaciones.',
     precondiciones: [
       'Un grupo empresarial con las empresas «Constructora Norte S.A.S.» y «Constructora Sur S.A.S.».',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/tipo-de-documento-y-flujo'],
   },
@@ -52,7 +52,7 @@ recorrido(
     await paso(page, {
       titulo: 'Escribe los datos de la empresa',
       explicacion:
-        'Elige el tipo y el número de identificación (con o sin dígito de verificación: AvalaSoft lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior. ' +
+        'Elige el tipo y el número de identificación (con o sin dígito de verificación: Valídalo lo calcula y lo compara), la razón social y el prefijo de folio. El prefijo son de 2 a 10 letras mayúsculas o números, y aparece en todos los folios de la empresa: después solo Plataforma puede corregirlo, y los folios ya emitidos conservan el anterior. ' +
         'El campo de ejemplo muestra cómo se verán sus folios.',
       resaltar: [dialogo.getByRole('textbox', { name: 'Razón social' }), dialogo.getByRole('textbox', { name: 'Prefijo de folio' })],
       variantes: [
@@ -93,7 +93,7 @@ recorrido(
       titulo: 'Escribe el texto de la autorización',
       explicacion:
         'Escribe el texto completo de la autorización de tratamiento de datos. Se publica como versión 1: el botón «Publicar versión 1» solo se activa cuando hay texto y cambió algo respecto de la versión vigente. ' +
-        'Al pulsarlo, AvalaSoft pide confirmación, porque el texto queda vigente de inmediato y los terceros lo aceptan al vincularse.',
+        'Al pulsarlo, Valídalo pide confirmación, porque el texto queda vigente de inmediato y los terceros lo aceptan al vincularse.',
       resaltar: autorizacion.getByRole('textbox', { name: 'Texto de la versión 1' }),
       variantes: [
         { cuando: 'El texto está vacío', entonces: 'El botón de publicar está desactivado y dice que falta escribir el texto.' },

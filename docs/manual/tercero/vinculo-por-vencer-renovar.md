@@ -46,7 +46,7 @@ En «Mi información» aparece el pedido de ratificar. Si la sección sigue igua
 
 ## Paso 3. Confirma que la renovación quedó hecha
 
-AvalaSoft confirma que ratificaste la sección y que la empresa la dio por renovada. El vínculo vuelve a «Activo» y su vigencia se cuenta de nuevo desde esa aprobación, con los días que fije el flujo.
+Valídalo confirma que ratificaste la sección y que la empresa la dio por renovada. El vínculo vuelve a «Activo» y su vigencia se cuenta de nuevo desde esa aprobación, con los días que fije el flujo.
 
 > **Pantalla:** `/ficha`
 

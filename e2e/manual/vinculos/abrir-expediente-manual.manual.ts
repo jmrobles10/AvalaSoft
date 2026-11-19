@@ -64,7 +64,7 @@ recorrido(
     await paso(page, {
       titulo: 'Comprueba que el expediente quedó abierto',
       explicacion:
-        'AvalaSoft confirma con el folio del expediente y te lleva a su pantalla, con «Datos del expediente» y el estado de cada área. ' +
+        'Valídalo confirma con el folio del expediente y te lleva a su pantalla, con «Datos del expediente» y el estado de cada área. ' +
         'La invitación sigue pendiente: cuando el tercero acepte, el mismo expediente continúa y no se vuelve a empezar.',
       resaltar: app.getByRole('heading', { name: 'Datos del expediente' }),
       avisos: true,

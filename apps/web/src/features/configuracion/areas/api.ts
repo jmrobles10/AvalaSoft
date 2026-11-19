@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getListarAreasQueryOptions } from '@avalasoft/api-client';
+import { getListarAreasQueryOptions } from '@validalo/api-client';
 import { conEmpresa } from '../../../shared/consultas';
 
 /** Áreas de la empresa activa con sus miembros (`configuracion:leer`). */

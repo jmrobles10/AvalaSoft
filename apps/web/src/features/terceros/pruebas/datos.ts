@@ -1,4 +1,4 @@
-import type { CertificadoDelVinculoDto, CertificadoDto, CuentaDesignadaDelVinculoDto, DocumentoVistaEmpresaDto } from '@avalasoft/api-client';
+import type { CertificadoDelVinculoDto, CertificadoDto, CuentaDesignadaDelVinculoDto, DocumentoVistaEmpresaDto } from '@validalo/api-client';
 
 /** Datos de prueba de la ficha del tercero: un vínculo con certificado vigente, cuenta designada y un documento. */
 

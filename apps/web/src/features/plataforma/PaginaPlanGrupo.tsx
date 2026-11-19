@@ -1,6 +1,6 @@
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
-import type { UsoDelGrupoDto } from '@avalasoft/api-client';
-import { CabeceraEsqueleto, CampoNumero, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar } from '@avalasoft/ui';
+import type { UsoDelGrupoDto } from '@validalo/api-client';
+import { CabeceraEsqueleto, CampoNumero, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar } from '@validalo/ui';
 import { Activity, Gauge, SlidersHorizontal } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

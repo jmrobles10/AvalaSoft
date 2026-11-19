@@ -28,7 +28,7 @@ Una solicitud de habeas data se acerca a su fecha límite: la administradora rec
 
 ## Paso 1. Mira la fecha límite de la solicitud
 
-Cada solicitud dice hasta cuándo debe responderse (1) y cuántos días hábiles quedan: la ley da 10 o 15 días hábiles según el derecho que ejerce el titular. Nadie tiene que acordarse: AvalaSoft revisa los plazos de las solicitudes abiertas y avisa a quienes deben responder cuando la fecha se acerca y cuando pasa.
+Cada solicitud dice hasta cuándo debe responderse (1) y cuántos días hábiles quedan: la ley da 10 o 15 días hábiles según el derecho que ejerce el titular. Nadie tiene que acordarse: Valídalo revisa los plazos de las solicitudes abiertas y avisa a quienes deben responder cuando la fecha se acerca y cuando pasa.
 
 > **Pantalla:** `/e/{empresa}/habeas-data`
 
@@ -36,7 +36,7 @@ Cada solicitud dice hasta cuándo debe responderse (1) y cuántos días hábiles
 
 **Variantes**
 
-- **La solicitud se dirige a AvalaSoft y no a una empresa:** El aviso va a los correos de la plataforma que se configuran en el servidor, no a la campana de ninguna empresa.
+- **La solicitud se dirige a Valídalo y no a una empresa:** El aviso va a los correos de la plataforma que se configuran en el servidor, no a la campana de ninguna empresa.
 
 **Configuración que lo afecta**
 

@@ -33,7 +33,7 @@ Con el certificado vigente, la página muestra su «Huella», los 12 caracteres 
 
 ## Paso 2. Compara la huella con la impresa en el PDF
 
-Abre el PDF del certificado y busca la huella impresa; debe ser igual a la que muestra la página, carácter por carácter. Si coincide, el documento que tienes es el que AvalaSoft emitió. Si no coincide, o si el PDF no trae huella, no confíes en el documento: pide a la empresa que te envíe el certificado actual.
+Abre el PDF del certificado y busca la huella impresa; debe ser igual a la que muestra la página, carácter por carácter. Si coincide, el documento que tienes es el que Valídalo emitió. Si no coincide, o si el PDF no trae huella, no confíes en el documento: pide a la empresa que te envíe el certificado actual.
 
 > **Pantalla:** `/verificar/SF00BF-C-2026-000001-1`
 

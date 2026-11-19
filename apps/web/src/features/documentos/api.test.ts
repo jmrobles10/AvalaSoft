@@ -1,4 +1,4 @@
-import type { DocumentoVistaEmpresaDto, VersionDocumentoDto } from '@avalasoft/api-client';
+import type { DocumentoVistaEmpresaDto, VersionDocumentoDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { hashCorto, tipoDeVisor, versionVisible } from './api';
 

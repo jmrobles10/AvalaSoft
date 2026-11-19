@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from '@mui/material';
-import type { ExencionDeVinculoDto } from '@avalasoft/api-client';
-import { FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
+import type { ExencionDeVinculoDto } from '@validalo/api-client';
+import { FaltaParaEnviar, FormularioDeDialogo } from '@validalo/ui';
 import { Undo2 } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

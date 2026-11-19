@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { EsqueletoTarjetas } from '@avalasoft/ui';
+import { EsqueletoTarjetas } from '@validalo/ui';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router';

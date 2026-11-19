@@ -1,4 +1,4 @@
-/* AvalaSoft: tokens del design system. No existe `tokens.json` en el repositorio: este archivo es la única fuente (antes se generaba desde un
+/* Valídalo: tokens del design system. No existe `tokens.json` en el repositorio: este archivo es la única fuente (antes se generaba desde un
  * `tokens.json` del artifact de diseño, ya retirado). Los de marca (`marcaAzul`, `marcaVerde`, `marcaProfundo`, `marcaSoft`, `marcaTexto`) son
  * los del logo «Anillo» y no cambian con la paleta de la interfaz (MA-1, docs/marca.md).
  *

@@ -1,4 +1,4 @@
-import type { AsignacionDeGrupoDto, GrupoDeAccesoDto, RolAsignadoDto } from '@avalasoft/api-client';
+import type { AsignacionDeGrupoDto, GrupoDeAccesoDto, RolAsignadoDto } from '@validalo/api-client';
 import { ALCANCE_TENANT } from './roles';
 
 /** Una fila del formulario de grupos propios: el grupo y dónde vale (id de empresa o `TENANT`). */

@@ -1,6 +1,6 @@
 # Inventario de recorridos del manual
 
-Lista **completa** de los recorridos que hacen falta para documentar todo AvalaSoft (todas las pantallas de `apps/web` y `apps/public`, la consola de
+Lista **completa** de los recorridos que hacen falta para documentar todo Valídalo (todas las pantallas de `apps/web` y `apps/public`, la consola de
 Plataforma, cada configuración con sus variantes, la integración por API, webhooks, sandbox y SSO, el cumplimiento, la operación masiva, los informes, la
 verificación pública, lo embebido y lo móvil). Cada fila es **un archivo** `e2e/manual/<dominio>/<flujo>.manual.ts`. La plantilla y las reglas están en [`README.md`](README.md).
 
@@ -12,7 +12,7 @@ verificación pública, lo embebido y lo móvil). Cada fila es **un archivo** `e
 - Estado: ✅ hecho · ☐ pendiente. Los pasos de los dos recorridos hechos son el modelo.
 - **Variantes obligatorias** en todo recorrido: tipo de persona (natural/jurídica), configuración que cambia el resultado, rol (administrador, revisor, oficial, auditor) y plan o nivel de IA
   cuando aplique; van en `variantes` y `configuracion` del paso donde se nota.
-- Los recorridos del **Sistema integrador** (API) muestran lo que esa persona ve en AvalaSoft (Configuración › Sistemas, API keys, Webhooks, Sandbox…) y la llamada real con `mostrarCodigo`.
+- Los recorridos del **Sistema integrador** (API) muestran lo que esa persona ve en Valídalo (Configuración › Sistemas, API keys, Webhooks, Sandbox…) y la llamada real con `mostrarCodigo`.
 
 Total: **187 recorridos** (2 hechos) en cuatro lotes: 1 → 49, 2 → 46, 3 → 44, 4 → 48.
 
@@ -46,7 +46,7 @@ Usa `soporte/proveedor.ts`, `soporte/ficha.ts`, `soporte/correo.ts`. Los del ter
 | `tercero/ficha-cambio-tras-aprobar` ☑ | Tercero | Ficha aceptada por una empresa (spec `revalidaciones-y-exencion`) | Cambiar dirección, la empresa ve el cambio posterior y debe volver a aceptar, qué ve el tercero |
 | `tercero/declaracion-pep-persona-natural` ☑ | Tercero | Persona natural en la ficha (spec `declaracion-pep`) | «Sí» a PEP abre el diálogo, datos, condición, vínculo con otra PEP, juramento y firma dibujada o subida, guardar |
 | `tercero/declaracion-pep-personas-relacionadas` ☑ | Tercero | Jurídica con representante y socios (spec `declaracion-pep`) | PEP por persona en Legal, varias PEP relacionadas (hasta 30), firma por apoderado |
-| `tercero/descargar-mi-declaracion-pep` ☑ | Tercero | Declaración ya firmada (spec `declaracion-pep-descarga`) | Descargar PDF propio, qué incluye (logo de la empresa o de AvalaSoft), solo lo guardado |
+| `tercero/descargar-mi-declaracion-pep` ☑ | Tercero | Declaración ya firmada (spec `declaracion-pep-descarga`) | Descargar PDF propio, qué incluye (logo de la empresa o de Valídalo), solo lo guardado |
 | `tercero/cuentas-bancarias` ☑ | Tercero | Empresa cuyo tipo de vínculo exige cuenta designada (spec `cuentas`) | Mis cuentas: agregar, designar para una empresa, retirar, estado de aprobación (cuatro ojos) |
 | `tercero/campana-y-avisos` ☑ | Tercero | Observación y avisos de la empresa (specs `novedades-tercero`, `tiempo-real`) | Campana con la marca de la empresa, abrir desde ahí, preferencias (apagar un tipo), avisos en vivo sin recargar |
 | `tercero/contactos-por-empresa` ☑ | Tercero | Vínculo con dos contactos (spec `contactos-por-empresa`) | Editar los contactos de una empresa sin tocar los de otra |
@@ -266,7 +266,7 @@ Siembra común: llave de Plataforma (`CLAVE_PLATAFORMA`) y `abrirEmbebidoCon` si
 | `integracion/api-keys` ☑ | Sistema integrador | Sistema registrado | Crear una llave con sus permisos (scopes) y empresas, verla una sola vez, rotar y revocar |
 | `integracion/webhooks` ☑ | Sistema integrador | Receptor de la prueba (`soporte/receptor.ts`, spec `eventos`) | Crear la suscripción, eventos, secreto, firma verificada, entregas en orden |
 | `integracion/webhook-entrega-fallida-y-reenvio` ☑ | Sistema integrador | Receptor que falla (spec `eventos`) | Entrega fallida, reintentos, reenviar desde la pantalla |
-| `integracion/webhook-ingreso-directo` ☑ | Administrador de empresa | Grupo con ingreso directo y dos sistemas integrados; receptor local | Crear un webhook entrando directo a AvalaSoft: el panel pide el sistema integrado dueño; con un solo sistema lo toma; sin ninguno explica cómo crear uno |
+| `integracion/webhook-ingreso-directo` ☑ | Administrador de empresa | Grupo con ingreso directo y dos sistemas integrados; receptor local | Crear un webhook entrando directo a Valídalo: el panel pide el sistema integrado dueño; con un solo sistema lo toma; sin ninguno explica cómo crear uno |
 | `integracion/invitar-por-api` ☑ | Sistema integrador | Llave del sistema (spec `integracion`) | `POST /vinculos` con `mostrarCodigo`, el correo, el vínculo en la lista de la empresa, referencia externa |
 | `integracion/consulta-de-certificacion` ☑ | Sistema integrador | Tercero aprobado (spec `integracion`) | `GET /consultas/certificacion`, respuesta resumida, `If-None-Match` y 304 |
 | `integracion/eventos-pull-y-en-vivo` ☑ | Sistema integrador | Eventos de un vínculo | `GET /eventos` con cursor, SSE, tipos de evento |
@@ -289,7 +289,7 @@ Siembra común: llave de Plataforma (`CLAVE_PLATAFORMA`) y `abrirEmbebidoCon` si
 | `acceso/mi-cuenta-sesiones-y-codigos` ☑ | Revisor/área | Persona con sesiones | Mi cuenta: sesiones abiertas y cerrarlas, passkeys, códigos de recuperación |
 | `acceso/ingreso-configuracion-del-grupo` ☑ | Administrador de empresa | Grupo base | Modos de ingreso, duración e inactividad de la sesión, passkey para todos |
 | `acceso/sso-configurar` ☑ | Administrador de empresa | Proveedor OIDC simulado (spec `plataforma-identidad`) | Proveedor, dominios verificados, creación de personas, roles por grupo, modo exclusivo |
-| `acceso/sso-ingresar` ☐ | Revisor/área | SSO configurado | Entrar con el proveedor del cliente, persona creada al vuelo con su rol. **Pendiente**: el dominio del correo solo se verifica leyendo `https://{dominio}/.well-known/avalasoft-verificacion.txt` (HTTPS con certificado público, sin redes internas) y el proveedor OIDC local exige `Avalasoft:Sso:PermitirHttpLocal`; el API del e2e no lo permite y el dominio no se puede verificar sin tocar el producto o la base. Hace falta un IdP simulado en Node y un comprobador de dominios de prueba |
+| `acceso/sso-ingresar` ☐ | Revisor/área | SSO configurado | Entrar con el proveedor del cliente, persona creada al vuelo con su rol. **Pendiente**: el dominio del correo solo se verifica leyendo `https://{dominio}/.well-known/validalo-verificacion.txt` (HTTPS con certificado público, sin redes internas) y el proveedor OIDC local exige `Validalo:Sso:PermitirHttpLocal`; el API del e2e no lo permite y el dominio no se puede verificar sin tocar el producto o la base. Hace falta un IdP simulado en Node y un comprobador de dominios de prueba |
 | `acceso/codigos-de-recuperacion` ☑ | Administrador de empresa | Persona con passkey | Generar y usar un código de recuperación |
 
 ---

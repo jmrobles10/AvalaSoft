@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
-import { configurarCliente, reiniciarCliente, SCOPES, type PersonaDelRequisitoDto, type PersonaDelVinculoDto, type RequisitoExpedienteDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type PersonaDelRequisitoDto, type PersonaDelVinculoDto, type RequisitoExpedienteDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { expediente, requisito } from '../datosPrueba';
 import type { ContextoRevisor } from '../reglas';
@@ -49,7 +49,7 @@ function montar(requisitos: RequisitoExpedienteDto[]) {
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <PanelRequisitos expediente={{ ...expediente('EnRevision'), requisitos }} contexto={() => CONTEXTO} nombres={new Map()} onAccion={() => undefined} />
       </QueryClientProvider>

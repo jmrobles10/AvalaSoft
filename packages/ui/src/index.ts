@@ -1,4 +1,4 @@
-// Design system de AvalaSoft, dirección "Registro" (docs/06 §2): tokens, tema MUI, estados canónicos y componentes.
+// Design system de Valídalo, dirección "Registro" (docs/06 §2): tokens, tema MUI, estados canónicos y componentes.
 // Fuente: `tokens.ts` (única fuente de los tokens), tema MUI, estados canónicos y marca por empresa. Rework visual 2026-11: lienzo + paneles flotantes.
 export * from './tokens';
 export * from './tema';

@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import type { CertificadoPublicoDto } from '@avalasoft/api-client';
-import { Dato, RejillaDatos } from '@avalasoft/ui';
+import type { CertificadoPublicoDto } from '@validalo/api-client';
+import { Dato, RejillaDatos } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 
 /** Para quien quiera repetir la verificación por su cuenta: los dos hashes, el algoritmo y la clave usada. */

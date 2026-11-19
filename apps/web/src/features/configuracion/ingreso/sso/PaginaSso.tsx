@@ -1,6 +1,6 @@
 import { Skeleton, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { getObtenerConfiguracionSsoQueryOptions, SCOPES } from '@avalasoft/api-client';
+import { getObtenerConfiguracionSsoQueryOptions, SCOPES } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { ErrorRecuperable, SinPermiso } from '../../../../shared/componentes';
 import { mensajeDeError } from '../../../../shared/errores';

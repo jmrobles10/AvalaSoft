@@ -21,7 +21,7 @@ import {
   type ExpedienteDto,
   type ListarBandejaParams,
   type Veredicto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 import type { DecisionDeArea } from './decisionArea';
 

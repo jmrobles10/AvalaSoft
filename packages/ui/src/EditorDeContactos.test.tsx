@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event';
 import { useState, type ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { aEditables, contactoVacio, desdeEditables, EditorDeContactos, MAXIMO_DE_CONTACTOS, ROLES_DE_CONTACTO, validarContactos, type ContactoEditable } from './EditorDeContactos';
-import { createAvalasoftTheme } from './tema';
+import { createValidaloTheme } from './tema';
 
-const conTema = (nodo: ReactNode) => render(<ThemeProvider theme={createAvalasoftTheme('light')}>{nodo}</ThemeProvider>);
+const conTema = (nodo: ReactNode) => render(<ThemeProvider theme={createValidaloTheme('light')}>{nodo}</ThemeProvider>);
 
 const MENSAJES = { nombre: 'Falta el nombre', correo: 'Correo inválido', repetido: 'Repetido' };
 const ETIQUETAS = {

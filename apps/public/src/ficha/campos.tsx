@@ -1,5 +1,5 @@
 import { Box, FormControl, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, TextField, Typography } from '@mui/material';
-import { CampoFecha } from '@avalasoft/ui';
+import { CampoFecha } from '@validalo/ui';
 import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { escribirCifra, leerCifra } from './cifras';

@@ -17,7 +17,7 @@ const CAPTURAS = process.env.E2E_CAPTURAS ?? join('test-results', 'ingreso');
 mkdirSync(CAPTURAS, { recursive: true });
 const captura = (nombre: string) => join(CAPTURAS, `${nombre}.png`);
 
-const TEXTO_ASUNTO_CODIGO = 'Tu código para ingresar a AvalaSoft';
+const TEXTO_ASUNTO_CODIGO = 'Tu código para ingresar a Valídalo';
 const ASUNTO_CODIGO = new RegExp(TEXTO_ASUNTO_CODIGO);
 
 interface Grupo {
@@ -29,7 +29,7 @@ interface Grupo {
 /** Un grupo con ingreso directo, su primera empresa y un administrador de todo el grupo (sin passkey aún). */
 async function crearGrupoDirecto(opciones: { passkeyParaTodos?: boolean } = {}): Promise<Grupo> {
   const sufijo = `${Date.now().toString(36)}${randomUUID().slice(0, 4)}`;
-  const correoAdmin = `ana.${sufijo}@e2e.avalasoft.co`;
+  const correoAdmin = `ana.${sufijo}@e2e.validalo.co`;
   const creado = await llamar<{ tenant: { id: string }; apiKeyAdministrador: { valor: string } }>('POST', '/api/v1/plataforma/tenants', {
     llave: CLAVE_PLATAFORMA,
     cuerpo: {
@@ -79,11 +79,11 @@ const barraDeSecciones = (page: Page) => page.getByRole('navigation', { name: 'S
 
 test('una persona entra con el código del correo, recarga sin volver a pedirlo y cierra la sesión', async ({ page }) => {
   const g = await crearGrupoDirecto();
-  const correo = `rita.${Date.now().toString(36)}@e2e.avalasoft.co`;
+  const correo = `rita.${Date.now().toString(36)}@e2e.validalo.co`;
   await crearUsuario(g, 'Rita Revisora', 'Revisor', correo);
 
   await page.goto('/app/');
-  await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ingresa a Valídalo' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Entrar con una passkey' })).toBeVisible();
   await page.screenshot({ path: captura('ingreso-correo'), fullPage: true });
 
@@ -95,23 +95,23 @@ test('una persona entra con el código del correo, recarga sin volver a pedirlo 
   // La cookie de refresco restaura la sesión al recargar, sin pedir otro código.
   await page.reload();
   await expect(barraDeSecciones(page)).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Ingresa a Valídalo' })).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Menú de tu cuenta' }).click();
   await expect(page.getByText(correo)).toBeVisible();
   await page.getByRole('menuitem', { name: 'Cerrar sesión' }).click();
   await expect(page.getByText('Cerraste la sesión')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ingresa a Valídalo' })).toBeVisible();
 
   // Cerrada la sesión, recargar tampoco la recupera.
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ingresa a Valídalo' })).toBeVisible();
   await expect(barraDeSecciones(page)).toHaveCount(0);
 });
 
 test('un código incorrecto dice cuántos intentos quedan y un correo sin cuenta no revela nada', async ({ page }) => {
   const g = await crearGrupoDirecto();
-  const correo = `rita.${Date.now().toString(36)}@e2e.avalasoft.co`;
+  const correo = `rita.${Date.now().toString(36)}@e2e.validalo.co`;
   await crearUsuario(g, 'Rita Revisora', 'Revisor', correo);
 
   await page.goto('/app/');
@@ -126,7 +126,7 @@ test('un código incorrecto dice cuántos intentos quedan y un correo sin cuenta
 
   // Un correo inventado llega a la misma pantalla de código y recibe el mismo mensaje.
   await page.getByRole('button', { name: 'Usar otro correo' }).click();
-  await page.getByLabel('Correo').fill(`nadie.${Date.now().toString(36)}@e2e.avalasoft.co`);
+  await page.getByLabel('Correo').fill(`nadie.${Date.now().toString(36)}@e2e.validalo.co`);
   await page.getByRole('button', { name: 'Continuar' }).click();
   await expect(page.getByRole('heading', { name: 'Revisa tu correo' })).toBeVisible();
   await page.keyboard.type('123456');
@@ -153,7 +153,7 @@ test('un administrador registra su passkey en el primer ingreso y después entra
   // Cierra la sesión y vuelve a entrar solo con la passkey, sin correo ni código.
   await page.getByRole('button', { name: 'Menú de tu cuenta' }).click();
   await page.getByRole('menuitem', { name: 'Cerrar sesión' }).click();
-  await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ingresa a Valídalo' })).toBeVisible();
   const codigosAntes = (await mensajesDe(g.correoAdmin)).filter((m) => m.Subject.includes(TEXTO_ASUNTO_CODIGO)).length;
   await page.getByRole('button', { name: 'Entrar con una passkey' }).click();
   await expect(barraDeSecciones(page)).toBeVisible();
@@ -201,7 +201,7 @@ test('Mi cuenta: ver y cerrar sesiones, agregar, renombrar y eliminar passkeys',
 
   // Cerrar esta sesión desde Mi cuenta.
   await page.getByRole('button', { name: 'Cerrar esta sesión' }).click();
-  await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ingresa a Valídalo' })).toBeVisible();
 });
 
 test('un administrador invita por correo, ve el acceso de la persona y revoca su passkey', async ({ page, browser }) => {
@@ -214,7 +214,7 @@ test('un administrador invita por correo, ve el acceso de la persona y revoca su
   expect(await credenciales(virtual)).toBe(1);
 
   // Configuración › Usuarios: agrega a una auditora con la invitación por correo.
-  const correoAuditora = `carla.${Date.now().toString(36)}@e2e.avalasoft.co`;
+  const correoAuditora = `carla.${Date.now().toString(36)}@e2e.validalo.co`;
   await page.goto(`/app/#/e/${g.empresaId}/usuarios`);
   await page.getByRole('button', { name: 'Agregar persona' }).click();
   const panel = page.locator('[aria-labelledby="titulo-roles"]');
@@ -225,7 +225,7 @@ test('un administrador invita por correo, ve el acceso de la persona y revoca su
   await page.getByRole('option', { name: 'Auditor' }).click();
   await expect(panel.getByLabel('Enviar una invitación por correo')).toBeChecked();
   await panel.getByRole('button', { name: 'Agregar persona' }).click();
-  const invitacion = await esperarCorreo(correoAuditora, /te invitó a AvalaSoft/);
+  const invitacion = await esperarCorreo(correoAuditora, /te invitó a Valídalo/);
   expect(invitacion.texto).toContain('Auditor');
   await expect(page.getByText('Carla Auditora')).toBeVisible();
 
@@ -257,7 +257,7 @@ test('un administrador invita por correo, ve el acceso de la persona y revoca su
 
   // La sesión de Carla ya no sirve (su token cayó) y la auditoría de identidad lo registra.
   await otra.reload();
-  await expect(otra.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
+  await expect(otra.getByRole('heading', { name: 'Ingresa a Valídalo' })).toBeVisible();
   await page.goto(`/app/#/e/${g.empresaId}/auditoria?tipo=Identidad`);
   await expect(page.getByText('Passkey revocada').first()).toBeVisible();
   await expect(page.getByText('Ingreso exitoso').first()).toBeVisible();
@@ -266,7 +266,7 @@ test('un administrador invita por correo, ve el acceso de la persona y revoca su
 });
 
 test('un operador de Plataforma entra con correo, código y passkey a la consola', async ({ page }) => {
-  const correo = `paula.${Date.now().toString(36)}@e2e.avalasoft.co`;
+  const correo = `paula.${Date.now().toString(36)}@e2e.validalo.co`;
   await llamar('POST', '/api/v1/plataforma/operadores', { llave: CLAVE_PLATAFORMA, cuerpo: { nombre: 'Paula Plataforma', correo } });
   const virtual = await autenticadorVirtual(page);
 
@@ -286,7 +286,7 @@ test('un operador de Plataforma entra con correo, código y passkey a la consola
   await page.getByRole('button', { name: 'Menú de tu cuenta' }).click();
   await page.getByRole('menuitem', { name: 'Mi cuenta' }).click();
   await expect(page.getByRole('heading', { name: 'Paula Plataforma' })).toBeVisible();
-  await expect(page.getByText('Plataforma de AvalaSoft').first()).toBeVisible();
+  await expect(page.getByText('Plataforma de Valídalo').first()).toBeVisible();
   await page.getByRole('button', { name: 'Menú de tu cuenta' }).click();
   await page.getByRole('menuitem', { name: 'Cerrar sesión' }).click();
   await page.getByRole('button', { name: 'Entrar con una passkey' }).click();

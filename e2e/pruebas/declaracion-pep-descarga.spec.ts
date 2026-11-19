@@ -13,7 +13,7 @@ import { crearEscenario, invitar, nuevaPersonaNatural, nuevoTercero, type Empres
 /**
  * Lo que quedó fuera de la primera entrega de la declaración jurada PEP (DP-16, DP-18): el tercero baja el PDF de su propia declaración
  * desde «Mi información» (la general y cada persona de la legal, solo con «Sí» y la declaración ya guardada) y el PDF de la empresa lleva
- * su logo (PNG o SVG) o, si no tiene o no se puede dibujar, el de AvalaSoft.
+ * su logo (PNG o SVG) o, si no tiene o no se puede dibujar, el de Valídalo.
  */
 
 test.setTimeout(240_000);
@@ -47,7 +47,7 @@ async function descargar(page: Page, boton: Locator, nombre: string): Promise<{ 
   return { nombre: archivo.suggestedFilename(), pdf: (await readFile(await archivo.path())).toString('latin1') };
 }
 
-test('persona natural: el botón «Descargar PDF» aparece solo con la declaración guardada, el PDF del tercero lleva el logo de AvalaSoft y el de la empresa, el suyo', async ({ page, browser }) => {
+test('persona natural: el botón «Descargar PDF» aparece solo con la declaración guardada, el PDF del tercero lleva el logo de Valídalo y el de la empresa, el suyo', async ({ page, browser }) => {
   const e = await escenarioDeFicha('FICHA_GENERAL');
   const tercero = nuevaPersonaNatural('Ana María Pérez Gómez');
   const invitacion = await invitar(e, e.sur, tercero, 'CLIENTE');
@@ -85,12 +85,12 @@ test('persona natural: el botón «Descargar PDF» aparece solo con la declaraci
   await guardarSeccionCompleta(page, 'Guardaste Información general: está completa.');
   await expect(botonDelTercero).toBeVisible();
 
-  // El tercero descarga su propia declaración: a nombre de AvalaSoft y con su logo; la firma, el cargo y la dirección de lo guardado.
+  // El tercero descarga su propia declaración: a nombre de Valídalo y con su logo; la firma, el cargo y la dirección de lo guardado.
   const propio = await descargar(page, botonDelTercero, 'declaracion-pep-del-tercero');
   expect(propio.nombre).toMatch(/^declaracion-pep-ana-maria-perez-gomez-[a-z0-9]+-\d{8}\.pdf$/);
   expect(propio.pdf.startsWith('%PDF-1.7')).toBe(true);
-  expect(propio.pdf).toContain('(AvalaSoft)');
-  expect(propio.pdf).toContain('0.054902 0.54902 0.603922 rg'); // el logotipo de AvalaSoft: el círculo verde y «avala» en contornos (verde azulado)
+  expect(propio.pdf).toContain('(Valídalo)');
+  expect(propio.pdf).toContain('0.054902 0.54902 0.603922 rg'); // el logotipo de Valídalo: el círculo verde y «avala» en contornos (verde azulado)
   expect(propio.pdf).toContain('0.133333 0.827451 0.541176 rg');
   expect(propio.pdf).toContain('/Subtype /Image'); // la firma
   expect(propio.pdf).toContain('(Alcalde encargado)');
@@ -98,7 +98,7 @@ test('persona natural: el botón «Descargar PDF» aparece solo con la declaraci
   expect(propio.pdf).toContain('Luis Ruiz');
   expect(propio.pdf).not.toContain('/Width 360 /Height 120');
 
-  // La empresa, con un logo PNG configurado, recibe el suyo en el PDF (y ya no el de AvalaSoft).
+  // La empresa, con un logo PNG configurado, recibe el suyo en el PDF (y ya no el de Valídalo).
   await fijarLogo(e, e.sur, `data:image/png;base64,${pngDeFirma(360, 120).buffer.toString('base64')}`);
   await esperarEstadoDelTercero(page, 'EnRevision').catch(() => undefined);
   const paginaSofia = await (await browser.newContext({ acceptDownloads: true })).newPage();
@@ -157,12 +157,12 @@ test('persona jurídica: cada persona PEP con declaración guardada tiene su bot
 
   const propio = await descargar(page, botonDelSocio, 'declaracion-pep-persona-del-tercero');
   expect(propio.nombre).toMatch(/^declaracion-pep-jorge-ivan-castro-pinto-79555111-\d{8}\.pdf$/);
-  expect(propio.pdf).toContain('(AvalaSoft)');
+  expect(propio.pdf).toContain('(Valídalo)');
   expect(propio.pdf).toContain('Calle 80 # 12-34');
   expect(propio.pdf).toContain('(Representante legal)');
   expect(propio.pdf).toContain('Socio o accionista de Ferreter');
 
-  // El PDF de la empresa con un logo SVG: vectores con el color del logo, sin imagen nueva ni el degradado de AvalaSoft.
+  // El PDF de la empresa con un logo SVG: vectores con el color del logo, sin imagen nueva ni el degradado de Valídalo.
   const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="8" fill="#E07A1F"/><circle cx="20" cy="20" r="11" fill="#FFFFFF"/><path d="M42 12h22l-11 18z" fill="#FFFFFF"/></svg>';
   await fijarLogo(e, e.sur, `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`);
   const paginaSofia = await (await browser.newContext({ acceptDownloads: true })).newPage();

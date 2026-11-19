@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { configurarCliente, reiniciarCliente } from './configuracion';
 import { ErrorApi, ErrorDeRed } from './errores';
-import { clienteAvalasoft, construirUrl, descargarArchivo, nombreDeArchivo } from './fetcher';
+import { clienteValidalo, construirUrl, descargarArchivo, nombreDeArchivo } from './fetcher';
 import { bloquearVinculo, crearVinculo, listarVinculos } from './generado/endpoints/vinculos/vinculos';
 import { revocarApiKey } from './generado/endpoints/api-keys/api-keys';
 import { invitarTercero } from './generado/endpoints/invitaciones/invitaciones';
@@ -59,7 +59,7 @@ describe('construirUrl', () => {
   });
 });
 
-describe('clienteAvalasoft', () => {
+describe('clienteValidalo', () => {
   it('envía Bearer, X-Empresa y X-Correlation-Id y devuelve el JSON', async () => {
     const llamadas = prepararFetch(() => json(200, { datos: [], siguienteCursor: null }));
 
@@ -126,7 +126,7 @@ describe('clienteAvalasoft', () => {
   it('permite omitir la empresa y el token por llamada', async () => {
     const llamadas = prepararFetch(() => json(200, {}));
 
-    await clienteAvalasoft({ url: '/api/v1/sesiones-usuario', method: 'POST' }, { token: null, empresa: null, headers: { 'X-Api-Key': 'vsk' } });
+    await clienteValidalo({ url: '/api/v1/sesiones-usuario', method: 'POST' }, { token: null, empresa: null, headers: { 'X-Api-Key': 'vsk' } });
 
     expect(llamadas[0]?.cabeceras.has('Authorization')).toBe(false);
     expect(llamadas[0]?.cabeceras.has('X-Empresa')).toBe(false);
@@ -243,7 +243,7 @@ describe('reautenticación con passkey (PI-13)', () => {
     const alRequerir = vi.fn<(error: ErrorApi) => Promise<boolean>>(() => Promise.resolve(true));
     configurarCliente({ alRequerirReautenticacion: alRequerir });
 
-    const resultado = await clienteAvalasoft<{ id: string }>({ url: '/api/v1/api-keys/k1', method: 'DELETE' });
+    const resultado = await clienteValidalo<{ id: string }>({ url: '/api/v1/api-keys/k1', method: 'DELETE' });
 
     expect(alRequerir).toHaveBeenCalledTimes(1);
     expect(alRequerir.mock.calls[0]?.[0]).toMatchObject({ codigo: 'reautenticacion-requerida', extensiones: { accion: 'rotar-api-key', minutos: 5 } });

@@ -1,5 +1,5 @@
-import type { DatoDeclaradoDto } from '@avalasoft/api-client';
-import { formatearDiaCivil, formatearFecha, LOCALE } from '@avalasoft/ui';
+import type { DatoDeclaradoDto } from '@validalo/api-client';
+import { formatearDiaCivil, formatearFecha, LOCALE } from '@validalo/ui';
 
 /** Textos que el formato necesita y dependen del idioma. */
 export interface TextosDatoDeclarado {

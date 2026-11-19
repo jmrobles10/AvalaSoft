@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import type { EstadoDeSla } from '@avalasoft/api-client';
-import { ChipEstado, formatearFecha, formatearFechaHora } from '@avalasoft/ui';
+import type { EstadoDeSla } from '@validalo/api-client';
+import { ChipEstado, formatearFecha, formatearFechaHora } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { ESTADO_CANONICO_SLA } from '../sla';
 

@@ -1,5 +1,5 @@
 import { Button, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import type { EmpresaDto } from '@avalasoft/api-client';
+import type { EmpresaDto } from '@validalo/api-client';
 import { Plus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { aRolSso, ROLES_SSO, type FilaDeRegla, type FilaDeRol } from './modeloSso';
@@ -11,7 +11,7 @@ interface SelectoresProps {
   etiquetaRol: string;
 }
 
-/** Rol de AvalaSoft y dónde vale (todo el grupo o una empresa). */
+/** Rol de Valídalo y dónde vale (todo el grupo o una empresa). */
 function SelectoresDeRol({ fila, empresas, alCambiar, etiquetaRol }: SelectoresProps) {
   const { t } = useTranslation();
   return (

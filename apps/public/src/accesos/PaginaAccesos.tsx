@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, TextField, Typography } from '@mui/material';
-import { esErrorApi, type AccesoSolicitadoDto } from '@avalasoft/api-client';
-import { ChipEstado, EsqueletoTarjetas, EstadoVacio, formatearFecha } from '@avalasoft/ui';
+import { esErrorApi, type AccesoSolicitadoDto } from '@validalo/api-client';
+import { ChipEstado, EsqueletoTarjetas, EstadoVacio, formatearFecha } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 import { MailCheck } from 'lucide-react';
 import { useState } from 'react';

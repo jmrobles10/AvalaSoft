@@ -1,6 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, reiniciarEdiciones, SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@avalasoft/api-client';
+import { reiniciarCliente, reiniciarEdiciones, SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@validalo/api-client';
 import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { useSesion } from '../../../sesion/sesionStore';

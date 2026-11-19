@@ -18,7 +18,7 @@ export type VarianteLogo = 'logotipo' | 'icono' | 'favicon';
 
 export interface LogoProps {
   /**
-   * `logotipo` (por omisión): el círculo con el check y la palabra «avalasoft» (en minúsculas, redondeada e inclinada), toda en contornos; va en barras, ingreso, correos y documentos.
+   * `logotipo` (por omisión): el círculo con el check y la palabra «validalo» (en minúsculas, redondeada e inclinada), toda en contornos; va en barras, ingreso, correos y documentos.
    * `icono`: el aro abierto con el check; va donde solo cabe un símbolo (app instalada, avatar de la marca, notificaciones).
    * `favicon`: el círculo verde lleno con el check blanco, que se lee bien a 16 px.
    */
@@ -29,7 +29,7 @@ export interface LogoProps {
   tamano?: number;
   /** Fuerza los colores de un modo (sobre un fondo que no sigue al tema). Por omisión, el del tema. */
   modo?: Modo;
-  /** Nombre accesible. Por omisión «AvalaSoft». */
+  /** Nombre accesible. Por omisión «Valídalo». */
   titulo?: string;
   /** Solo decorativo: lo oculta a los lectores de pantalla (cuando el nombre ya está en texto al lado). */
   decorativo?: boolean;
@@ -67,7 +67,7 @@ function Favicon({ lado, colores, titulo, decorativo }: { lado: number; colores:
   );
 }
 
-/** El logotipo: el círculo verde con el check blanco y la palabra «avalasoft» en dos tonos. Todo son trazados: no depende de fuentes. */
+/** El logotipo: el círculo verde con el check blanco y la palabra «validalo» en dos tonos. Todo son trazados: no depende de fuentes. */
 function Logotipo({ letra, colores, titulo, decorativo }: { letra: number; colores: ReturnType<typeof coloresDeLogo>; titulo: string; decorativo: boolean }) {
   const escala = letra / PALABRA.tamano;
   return (
@@ -92,10 +92,10 @@ function Logotipo({ letra, colores, titulo, decorativo }: { letra: number; color
 }
 
 /**
- * Logo de AvalaSoft (MA-1, docs/marca.md). Cambia solo con el modo del tema (o con `modo`) y no toma el color de la empresa.
+ * Logo de Valídalo (MA-1, docs/marca.md). Cambia solo con el modo del tema (o con `modo`) y no toma el color de la empresa.
  * El nombre accesible va en el `svg`; la palabra es un dibujo, no texto, así que un lector de pantalla lee el nombre una sola vez.
  */
-export function Logo({ variante = 'logotipo', tamano, modo, titulo = 'AvalaSoft', decorativo = false }: LogoProps) {
+export function Logo({ variante = 'logotipo', tamano, modo, titulo = 'Valídalo', decorativo = false }: LogoProps) {
   const tema = useTheme();
   const colores = coloresDeLogo(modo ?? (tema.palette.mode === 'dark' ? 'dark' : 'light'));
 

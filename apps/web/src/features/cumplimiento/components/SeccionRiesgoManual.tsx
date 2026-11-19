@@ -1,5 +1,5 @@
 import { Box, FormHelperText, FormLabel, MenuItem, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import type { DebidaDiligencia } from '@avalasoft/api-client';
+import type { DebidaDiligencia } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { claveRiesgo, DEBIDAS_EN_ORDEN, type BorradorEstudio, type ErrorEstudio } from '../modelo';
 

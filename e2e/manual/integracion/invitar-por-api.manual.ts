@@ -11,7 +11,7 @@ recorrido(
     actor: 'Sistema integrador',
     titulo: 'Invita a un proveedor desde tu sistema con la API',
     resumen:
-      'El ERP del cliente crea el vínculo con un POST a la API, con el tercero, su correo y su propia referencia. AvalaSoft envía la invitación y el vínculo aparece en la lista de la empresa, con esa referencia para buscarlo después.',
+      'El ERP del cliente crea el vínculo con un POST a la API, con el tercero, su correo y su propia referencia. Valídalo envía la invitación y el vínculo aparece en la lista de la empresa, con esa referencia para buscarlo después.',
     precondiciones: [
       'Un grupo con Constructora Norte, su flujo de proveedor publicado y la llave del sistema integrado con permiso para crear vínculos.',
     ],
@@ -45,10 +45,10 @@ recorrido(
       titulo: 'Envía la invitación con un POST',
       explicacion:
         'Tu sistema llama a POST /api/v1/vinculos con la llave de la API y la empresa en la cabecera X-Empresa. El cuerpo trae los datos del tercero, su tipo de vínculo, el correo al que va la invitación y tu referencia (sistema e identificador). ' +
-        'La cabecera Idempotency-Key identifica la invitación: si tu sistema repite la misma llamada por un fallo de red, AvalaSoft no crea un segundo vínculo.',
+        'La cabecera Idempotency-Key identifica la invitación: si tu sistema repite la misma llamada por un fallo de red, Valídalo no crea un segundo vínculo.',
       resaltar: peticion,
       variantes: [
-        { cuando: 'Mandas «enviarInvitacion» en verdadero', entonces: 'AvalaSoft envía de inmediato el correo de invitación al contacto indicado.' },
+        { cuando: 'Mandas «enviarInvitacion» en verdadero', entonces: 'Valídalo envía de inmediato el correo de invitación al contacto indicado.' },
         { cuando: 'Mandas «enviarInvitacion» en falso', entonces: 'El vínculo se crea sin correo: la invitación se envía después desde la pantalla.' },
       ],
     });

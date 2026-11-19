@@ -55,7 +55,7 @@ recorrido(
     await paso(page, {
       titulo: 'Aprueba tu área: el sistema lo impide',
       explicacion:
-        'Al aprobar el área de Cumplimiento, AvalaSoft comprueba las verificaciones bloqueantes del expediente. Como la coincidencia sigue por analizar, el área queda aprobada pero el aviso dice que falta cumplimiento para aprobar el vínculo: «Listas restrictivas (coincidencia por analizar)». ' +
+        'Al aprobar el área de Cumplimiento, Valídalo comprueba las verificaciones bloqueantes del expediente. Como la coincidencia sigue por analizar, el área queda aprobada pero el aviso dice que falta cumplimiento para aprobar el vínculo: «Listas restrictivas (coincidencia por analizar)». ' +
         'El expediente sigue en revisión hasta que decidas la coincidencia.',
       resaltar: olga.getByRole('alert').filter({ hasText: 'Falta cumplimiento para aprobar' }),
     });

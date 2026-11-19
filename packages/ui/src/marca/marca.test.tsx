@@ -2,7 +2,7 @@ import { ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createAvalasoftTheme } from '../tema';
+import { createValidaloTheme } from '../tema';
 import { COLOR } from '../tokens';
 import { AnimacionExito, AnimacionExitoUnaVez } from './AnimacionExito';
 import { Cargando } from './Cargando';
@@ -31,7 +31,7 @@ import { Logo } from './Logo';
 import { usePrimeraVez } from './movimiento';
 
 const conTema = (nodo: ReactNode, modo: 'light' | 'dark' = 'light', colorEmpresa?: string) =>
-  render(<ThemeProvider theme={createAvalasoftTheme(modo, { app: 'public', ...(colorEmpresa ? { colorEmpresa } : {}) })}>{nodo}</ThemeProvider>);
+  render(<ThemeProvider theme={createValidaloTheme(modo, { app: 'public', ...(colorEmpresa ? { colorEmpresa } : {}) })}>{nodo}</ThemeProvider>);
 
 /** Simula `prefers-reduced-motion` (jsdom no trae matchMedia). */
 function menosMovimiento(reducido: boolean) {
@@ -75,7 +75,7 @@ describe('colores del logo (MA-1)', () => {
     for (const modo of ['light', 'dark'] as const) {
       const c = COLOR[modo];
       expect(coloresDeLogo(modo)).toMatchObject({ aro: c.marcaAzul, check: c.marcaVerde });
-      const { marca } = createAvalasoftTheme(modo).palette;
+      const { marca } = createValidaloTheme(modo).palette;
       expect([marca.azul, marca.verde, marca.texto, marca.soft]).toEqual([c.marcaAzul, c.marcaVerde, c.marcaTexto, c.marcaSoft]);
     }
   });
@@ -124,17 +124,17 @@ describe('geometría del logo', () => {
 });
 
 describe('Logo', () => {
-  it('el logotipo se anuncia como «AvalaSoft» y es un dibujo: no hay texto que se lea suelto', () => {
+  it('el logotipo se anuncia como «Valídalo» y es un dibujo: no hay texto que se lea suelto', () => {
     const { container } = conTema(<Logo />);
-    const logo = screen.getByRole('img', { name: 'AvalaSoft' });
+    const logo = screen.getByRole('img', { name: 'Valídalo' });
     expect(logo.tagName.toLowerCase()).toBe('svg');
     expect(logo).toHaveTextContent('');
     expect(container.querySelector('text')).toBeNull();
   });
 
-  it('es el círculo verde con el check blanco y la palabra «avalasoft» en contornos, en dos tonos (claro)', () => {
+  it('es el círculo verde con el check blanco y la palabra «validalo» en contornos, en dos tonos (claro)', () => {
     const { container } = conTema(<Logo tamano={40} />);
-    const svg = screen.getByRole('img', { name: 'AvalaSoft' });
+    const svg = screen.getByRole('img', { name: 'Valídalo' });
     expect(svg).toHaveAttribute('viewBox', `0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}`);
     expect(svg).toHaveAttribute('height', String(CAJA_LOGOTIPO.alto * 0.4));
     const simbolo = container.querySelector('[data-parte="simbolo"]');
@@ -171,7 +171,7 @@ describe('Logo', () => {
     expect(CAJA_LOGOTIPO.inicioPalabra + PALABRA.limites.x1).toBeLessThanOrEqual(CAJA_LOGOTIPO.ancho + 0.01);
   });
 
-  it('la palabra va inclinada 10° y toda en minúsculas: su dibujo no trae más letras que «avalasoft»', () => {
+  it('la palabra va inclinada 10° y toda en minúsculas: su dibujo no trae más letras que «validalo»', () => {
     expect(PALABRA.inclinacion).toBe(10);
     expect(PALABRA.fuente).toContain('Quicksand Bold');
     // Nueve letras en dos trazados: «avala» (a, v, a, l, a) y «soft» (s, o, f, t); cada contorno empieza con una «M» (la «a» y la «o» traen uno más, el de su hueco).
@@ -200,7 +200,7 @@ describe('Logo', () => {
 
   it('el ícono es el aro abierto y el check escalado desde su vértice, en los colores del modo', () => {
     const { container, rerender } = conTema(<Logo variante="icono" tamano={48} />);
-    const svg = screen.getByRole('img', { name: 'AvalaSoft' });
+    const svg = screen.getByRole('img', { name: 'Valídalo' });
     expect(svg).toHaveAttribute('viewBox', '-3 -6 110 110');
     expect(svg).toHaveAttribute('width', '48');
     const [aro, check] = Array.from(container.querySelectorAll('path'));
@@ -211,7 +211,7 @@ describe('Logo', () => {
     expect(check).toHaveAttribute('fill', '#22D38A');
     expect(check).toHaveAttribute('transform', TRANSFORMACION_CHECK_ICONO);
     rerender(
-      <ThemeProvider theme={createAvalasoftTheme('dark')}>
+      <ThemeProvider theme={createValidaloTheme('dark')}>
         <Logo variante="icono" tamano={48} />
       </ThemeProvider>,
     );
@@ -239,8 +239,8 @@ describe('Logo', () => {
   });
 
   it('el nombre accesible se puede cambiar', () => {
-    conTema(<Logo titulo="AvalaSoft, inicio" />);
-    expect(screen.getByRole('img', { name: 'AvalaSoft, inicio' })).toBeInTheDocument();
+    conTema(<Logo titulo="Valídalo, inicio" />);
+    expect(screen.getByRole('img', { name: 'Valídalo, inicio' })).toBeInTheDocument();
   });
 });
 

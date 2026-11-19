@@ -1,4 +1,4 @@
-import type { FilaBandejaDto, RecordatoriosEnviadosDto } from '@avalasoft/api-client';
+import type { FilaBandejaDto, RecordatoriosEnviadosDto } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 
 /** Cuántos expedientes admite un recordatorio con lista (`RecordatoriosDeObservaciones.MaximoPorLote`). */

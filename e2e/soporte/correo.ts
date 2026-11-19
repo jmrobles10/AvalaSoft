@@ -1,4 +1,4 @@
-/** Bandeja de Mailpit (infra/compose): las invitaciones, códigos y avisos que envía AvalaSoft llegan aquí. */
+/** Bandeja de Mailpit (infra/compose): las invitaciones, códigos y avisos que envía Valídalo llegan aquí. */
 const MAILPIT = process.env.E2E_MAILPIT ?? 'http://localhost:8025';
 
 export interface Correo {

@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type FuentesDePlataformaDto } from '@avalasoft/api-client';
+import { reiniciarCliente, type FuentesDePlataformaDto } from '@validalo/api-client';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';

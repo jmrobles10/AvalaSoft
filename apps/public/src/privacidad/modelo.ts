@@ -1,4 +1,4 @@
-import type { CrearSolicitudHabeasDto, ExportacionBovedaDto, SolicitudHabeasDto } from '@avalasoft/api-client';
+import type { CrearSolicitudHabeasDto, ExportacionBovedaDto, SolicitudHabeasDto } from '@validalo/api-client';
 
 /** Derechos que el tercero puede ejercer (Ley 1581 de 2012): conocer sus datos, corregirlos o pedir que se supriman. */
 export const TIPOS_DE_SOLICITUD = ['Consulta', 'Correccion', 'Supresion'] as const;

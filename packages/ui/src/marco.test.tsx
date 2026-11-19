@@ -7,10 +7,10 @@ import { describe, expect, it, vi } from 'vitest';
 import { contraste } from './marcaEmpresa';
 import { ChipUsuario, NavegacionLateral, PanelFlotante, PildoraContexto, type GrupoNavegacion } from './marco';
 import { AvatarIniciales, FilaAtencion, MiniBarra, TarjetaBloque, TarjetaKpi, TotalDestacado } from './tarjetas';
-import { createAvalasoftTheme } from './tema';
+import { createValidaloTheme } from './tema';
 import { COLOR, RADIO } from './tokens';
 
-const conTema = (nodo: ReactNode, modo: 'light' | 'dark' = 'light') => render(<ThemeProvider theme={createAvalasoftTheme(modo)}>{nodo}</ThemeProvider>);
+const conTema = (nodo: ReactNode, modo: 'light' | 'dark' = 'light') => render(<ThemeProvider theme={createValidaloTheme(modo)}>{nodo}</ThemeProvider>);
 
 describe('paleta del rework: acento verde azulado y lienzo gris', () => {
   it.each(['light', 'dark'] as const)('el acento, el rótulo gris y los bordes de los controles pequeños pasan su contraste en %s', (modo) => {
@@ -33,7 +33,7 @@ describe('paleta del rework: acento verde azulado y lienzo gris', () => {
     expect(contraste(COLOR.light.superficiePanel, COLOR.light.fondo)).toBeLessThan(1.2);
     expect(COLOR.light.superficieNivel1).toBe('#FFFFFF');
     expect([RADIO.lg, RADIO.md, RADIO.sm]).toEqual([16, 14, 8]);
-    const tema = createAvalasoftTheme('light');
+    const tema = createValidaloTheme('light');
     expect(tema.palette.superficie.panel).toBe(COLOR.light.superficiePanel);
     expect(tema.palette.acento.main).toBe(COLOR.light.acento);
   });
@@ -172,7 +172,7 @@ describe('marco de la app', () => {
     expect(alAlternar).toHaveBeenCalledOnce();
 
     rerender(
-      <ThemeProvider theme={createAvalasoftTheme('light')}>
+      <ThemeProvider theme={createValidaloTheme('light')}>
         <NavegacionLateral etiqueta="Secciones" rotulo="Navegación" grupos={GRUPOS} colapsada onAlternarColapso={alAlternar} textoColapsar="Colapsar" textoExpandir="Expandir" />
       </ThemeProvider>,
     );

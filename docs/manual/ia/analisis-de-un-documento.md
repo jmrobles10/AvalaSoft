@@ -3,7 +3,7 @@ id: "ia/analisis-de-un-documento"
 titulo: "Lee el análisis automático de un documento"
 actor: "Revisor/área"
 dominio: "ia"
-resumen: "Cada documento que sube el tercero se lee con IA: AvalaSoft muestra si es legible, qué tipo de documento detectó, los datos que extrajo y su confianza. Sofía, de Revisión, usa ese análisis para decidir, sin que la IA decida por ella."
+resumen: "Cada documento que sube el tercero se lee con IA: Valídalo muestra si es legible, qué tipo de documento detectó, los datos que extrajo y su confianza. Sofía, de Revisión, usa ese análisis para decidir, sin que la IA decida por ella."
 pasos: 2
 ---
 
@@ -11,7 +11,7 @@ pasos: 2
 
 **Actor:** Revisor/área · **Dominio:** IA y revisión automática
 
-Cada documento que sube el tercero se lee con IA: AvalaSoft muestra si es legible, qué tipo de documento detectó, los datos que extrajo y su confianza. Sofía, de Revisión, usa ese análisis para decidir, sin que la IA decida por ella.
+Cada documento que sube el tercero se lee con IA: Valídalo muestra si es legible, qué tipo de documento detectó, los datos que extrajo y su confianza. Sofía, de Revisión, usa ese análisis para decidir, sin que la IA decida por ella.
 
 **Antes de empezar**
 

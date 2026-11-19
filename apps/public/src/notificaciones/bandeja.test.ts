@@ -1,4 +1,4 @@
-import type { NotificacionTerceroDto } from '@avalasoft/api-client';
+import type { NotificacionTerceroDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { claveDeTipo, destinoDeNotificacion, interpretarEvento, tiposConCorreo } from './bandeja';
 

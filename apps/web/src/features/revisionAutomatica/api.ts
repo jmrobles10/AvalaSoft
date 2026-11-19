@@ -4,7 +4,7 @@ import {
   getObtenerExpedienteQueryKey,
   resolverRevisionAutomatica,
   type ExcepcionDeRevisionDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 import { invalidarExpedientes } from '../expedientes/api';
 import type { EstadoDeExcepciones } from './modelo';

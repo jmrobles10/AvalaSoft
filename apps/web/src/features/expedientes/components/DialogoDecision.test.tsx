@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, getObtenerExpedienteQueryKey, reiniciarCliente, SCOPES, type ExpedienteDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, getObtenerExpedienteQueryKey, reiniciarCliente, SCOPES, type ExpedienteDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { conEmpresa } from '../../../shared/consultas';
@@ -60,7 +60,7 @@ function preparar({ inicial, dialogo, respuesta, recarga, cerrarDesmonta = true,
   cliente.setQueryData(CLAVE, inicial);
   const onCerrar = vi.fn();
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={cliente}>
         <Detalle dialogo={dialogo} cerrarDesmonta={cerrarDesmonta} onCerrar={onCerrar} />
       </QueryClientProvider>

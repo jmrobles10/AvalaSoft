@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type ConsumoDeIaDto } from '@avalasoft/api-client';
+import { reiniciarCliente, type ConsumoDeIaDto } from '@validalo/api-client';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';
@@ -74,7 +74,7 @@ const CONSUMO: ConsumoDeIaDto = {
   siguienteCursor: null,
 };
 
-const TARIFA = { precioPorValidacionAdicional: 1500, moneda: 'COP', actualizadaEn: '2026-11-05T15:00:00Z', actualizadaPor: 'camila@avalasoft.co' };
+const TARIFA = { precioPorValidacionAdicional: 1500, moneda: 'COP', actualizadaEn: '2026-11-05T15:00:00Z', actualizadaPor: 'camila@validalo.co' };
 
 function montar(rutas: Parameters<typeof simularApi>[0] = {}, ruta = '/plataforma/uso-ia') {
   const peticiones = simularApi({

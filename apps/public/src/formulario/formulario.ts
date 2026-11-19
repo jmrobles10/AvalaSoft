@@ -1,4 +1,4 @@
-import { esErrorApi, type CampoFormularioDto, type DatoDeclaradoDto, type EnviarFormularioDto, type TipoDocumentoRequisitoDto } from '@avalasoft/api-client';
+import { esErrorApi, type CampoFormularioDto, type DatoDeclaradoDto, type EnviarFormularioDto, type TipoDocumentoRequisitoDto } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 import type { DestinoCarga } from '../boveda/subida';
 

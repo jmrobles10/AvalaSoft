@@ -9,7 +9,7 @@ import {
   Cargando,
   CHECK_RELLENO,
   coloresDeLogo,
-  createAvalasoftTheme,
+  createValidaloTheme,
   FAVICON,
   GROSOR_GUIA,
   GUIA_CHECK,
@@ -25,11 +25,11 @@ import {
   TRANSFORMACION_PALABRA,
   TRANSFORMACION_SIMBOLO,
   type Modo,
-} from '@avalasoft/ui';
+} from '@validalo/ui';
 import { createRoot } from 'react-dom/client';
 
 /**
- * Arnés del generador de recursos de marca (`marca/generar.mjs`): pinta una escena con los componentes reales de `@avalasoft/ui` y
+ * Arnés del generador de recursos de marca (`marca/generar.mjs`): pinta una escena con los componentes reales de `@validalo/ui` y
  * deja su geometría y colores en `window.marca` para que el generador escriba los SVG con los mismos números. Se controla por la URL:
  * `?escena=logotipo|icono|favicon|exito|carga|app&modo=light|dark&tamano=<px>&fondo=<css>`.
  */
@@ -145,7 +145,7 @@ function Escena() {
 const raiz = document.getElementById('raiz');
 if (!raiz) throw new Error('Falta #raiz.');
 createRoot(raiz).render(
-  <ThemeProvider theme={createAvalasoftTheme(modo)}>
+  <ThemeProvider theme={createValidaloTheme(modo)}>
     <div id="escena" style={{ display: 'inline-flex', background: escena === 'app' ? 'transparent' : fondo, padding: Number(parametros.get('margen') ?? '0') }}>
       <Escena />
     </div>

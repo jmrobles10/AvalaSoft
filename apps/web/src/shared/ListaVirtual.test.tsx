@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CONTENEDOR_CON_SCROLL, desplazarVentana, simularDisenoDeLista } from '../pruebas/listaVirtual';
 import { useAlturaFija } from '../sesion/alturaFija';
@@ -40,7 +40,7 @@ function Lista({ total = 100, hayMas = false, cargandoMas = false, errorAlCargar
   );
 }
 
-const montar = (ui: React.ReactElement) => render(<ThemeProvider theme={createAvalasoftTheme('light')}>{ui}</ThemeProvider>);
+const montar = (ui: React.ReactElement) => render(<ThemeProvider theme={createValidaloTheme('light')}>{ui}</ThemeProvider>);
 
 describe('ListaVirtual', () => {
   beforeEach(() => {
@@ -91,7 +91,7 @@ describe('ListaVirtual', () => {
     desplazarVentana(5000);
     expect(sinMas).not.toHaveBeenCalled();
     rerender(
-      <ThemeProvider theme={createAvalasoftTheme('light')}>
+      <ThemeProvider theme={createValidaloTheme('light')}>
         <Lista total={20} hayMas cargandoMas alCargarMas={pidiendo} />
       </ThemeProvider>,
     );

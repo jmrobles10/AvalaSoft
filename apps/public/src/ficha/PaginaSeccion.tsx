@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
-import type { EstadoFichaDto } from '@avalasoft/api-client';
-import { PaginaEstado } from '@avalasoft/ui';
+import type { EstadoFichaDto } from '@validalo/api-client';
+import { PaginaEstado } from '@validalo/ui';
 import { ClipboardX } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

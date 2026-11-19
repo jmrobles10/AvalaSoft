@@ -35,8 +35,8 @@ import {
   type RegistrarConsultaManualDto,
   type RegistrarEstudioCumplimientoDto,
   type RespuestaDeMatrizDto,
-} from '@avalasoft/api-client';
-import { abrirDescarga } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { abrirDescarga } from '@validalo/ui';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 import { invalidarExpedientes } from '../expedientes/api';
 

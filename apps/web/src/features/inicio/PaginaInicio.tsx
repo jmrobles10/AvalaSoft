@@ -1,4 +1,4 @@
-import { SCOPES } from '@avalasoft/api-client';
+import { SCOPES } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { EncabezadoPagina, SinPermiso } from '../../shared/componentes';
 import { usePermisos } from '../../shared/usePermisos';

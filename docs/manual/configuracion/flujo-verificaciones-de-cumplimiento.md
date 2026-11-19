@@ -16,7 +16,7 @@ La administradora agrega al flujo de proveedores dos verificaciones de cumplimie
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con miembros, y el proveedor de listas de la plataforma disponible.
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 

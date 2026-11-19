@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Box, Typography } from '@mui/material';
-import type { VinculoPublicoDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import type { VinculoPublicoDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 
 /**

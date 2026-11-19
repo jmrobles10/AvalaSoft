@@ -3,7 +3,7 @@ id: "tercero/subir-documento-con-formulario"
 titulo: "Sube un documento que pide una fecha de expedición"
 actor: "Tercero"
 dominio: "tercero"
-resumen: "La empresa pide el certificado de seguridad y salud en el trabajo. Como tiene fecha de expedición y vigencia, el tercero sube el archivo y escribe la fecha; AvalaSoft calcula cuándo vence y avisa antes de que pase."
+resumen: "La empresa pide el certificado de seguridad y salud en el trabajo. Como tiene fecha de expedición y vigencia, el tercero sube el archivo y escribe la fecha; Valídalo calcula cuándo vence y avisa antes de que pase."
 pasos: 4
 ---
 
@@ -11,7 +11,7 @@ pasos: 4
 
 **Actor:** Tercero · **Dominio:** Portal del tercero
 
-La empresa pide el certificado de seguridad y salud en el trabajo. Como tiene fecha de expedición y vigencia, el tercero sube el archivo y escribe la fecha; AvalaSoft calcula cuándo vence y avisa antes de que pase.
+La empresa pide el certificado de seguridad y salud en el trabajo. Como tiene fecha de expedición y vigencia, el tercero sube el archivo y escribe la fecha; Valídalo calcula cuándo vence y avisa antes de que pase.
 
 **Antes de empezar**
 
@@ -46,7 +46,7 @@ En «Lo que te pide» aparece el certificado de seguridad y salud en el trabajo,
 
 ## Paso 2. Escribe la fecha de expedición y elige el archivo
 
-Escribe la fecha de expedición del certificado en el selector de fecha (día, mes y año) y luego pulsa «Elegir archivo». AvalaSoft usa esa fecha para calcular cuándo vence: el certificado vale 30 días desde su expedición. Si el archivo no cumple el formato o el tamaño, la pantalla te lo dice y no guarda nada.
+Escribe la fecha de expedición del certificado en el selector de fecha (día, mes y año) y luego pulsa «Elegir archivo». Valídalo usa esa fecha para calcular cuándo vence: el certificado vale 30 días desde su expedición. Si el archivo no cumple el formato o el tamaño, la pantalla te lo dice y no guarda nada.
 
 > **Pantalla:** `/boveda/subir`
 
@@ -56,7 +56,7 @@ Escribe la fecha de expedición del certificado en el selector de fecha (día, m
 
 ## Paso 3. Confirma la versión y su vigencia
 
-AvalaSoft confirma «Es tu versión 1» del certificado y dice qué empresa ya lo tiene. El documento guarda su fecha de expedición y la fecha en que vence; cuando falten 10 días te avisamos por correo. Si el documento vence, tienes 5 días de gracia para subir uno nuevo antes de que la empresa lo marque como vencido.
+Valídalo confirma «Es tu versión 1» del certificado y dice qué empresa ya lo tiene. El documento guarda su fecha de expedición y la fecha en que vence; cuando falten 10 días te avisamos por correo. Si el documento vence, tienes 5 días de gracia para subir uno nuevo antes de que la empresa lo marque como vencido.
 
 > **Pantalla:** `/boveda/subir`
 

@@ -6,8 +6,8 @@ import {
   getListarSesionesUsuarioQueryOptions,
   revocarPasskeyUsuario,
   type UsuarioDto,
-} from '@avalasoft/api-client';
-import { AvatarActor } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { AvatarActor } from '@validalo/ui';
 import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { invalidarRuta } from '../../../shared/consultas';

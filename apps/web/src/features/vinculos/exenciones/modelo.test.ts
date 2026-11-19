@@ -1,4 +1,4 @@
-import { ErrorApi, type ExencionDeVinculoDto } from '@avalasoft/api-client';
+import { ErrorApi, type ExencionDeVinculoDto } from '@validalo/api-client';
 import i18n from 'i18next';
 import { describe, expect, it } from 'vitest';
 import { admiteExencion, alcanceDe, aPeticion, cierreDe, errorDeExencion, exencionesVigentes, faltaAlEximir, formularioInicial, nombreDeObjetivo, resumenDeInsignia, vigenciaDe } from './modelo';

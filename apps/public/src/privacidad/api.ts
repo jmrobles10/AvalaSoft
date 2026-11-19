@@ -9,8 +9,8 @@ import {
   getListarSolicitudesHabeasQueryOptions,
   getObtenerConstanciaHabeasQueryOptions,
   type CrearSolicitudHabeasDto,
-} from '@avalasoft/api-client';
-import { abrirDescarga } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { abrirDescarga } from '@validalo/ui';
 import { intervaloDeRefresco } from './modelo';
 
 /** Las exportaciones del tercero, la más reciente primero: se refrescan solas mientras una se prepara. */

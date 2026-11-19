@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
-import type { CuentaDesignadaDto } from '@avalasoft/api-client';
-import { ChipEstado, Dato, RejillaDatos } from '@avalasoft/ui';
+import type { CuentaDesignadaDto } from '@validalo/api-client';
+import { ChipEstado, Dato, RejillaDatos } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { esEstadoCuenta, numeroVisible, textoTipoCuenta } from './modelo';

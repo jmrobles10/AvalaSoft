@@ -1,4 +1,4 @@
-import type { ConfiguracionDeIngresoDto } from '@avalasoft/api-client';
+import type { ConfiguracionDeIngresoDto } from '@validalo/api-client';
 
 /** Duraciones máximas de la sesión directa que se ofrecen (la API admite de 1 a 24 horas). */
 export const HORAS_DE_SESION: readonly number[] = [1, 2, 4, 8, 12, 24];

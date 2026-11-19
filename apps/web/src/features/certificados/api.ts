@@ -6,8 +6,8 @@ import {
   getObtenerCertificadoVinculoQueryOptions,
   revocarCertificado,
   type ListarCertificadosParams,
-} from '@avalasoft/api-client';
-import { abrirDescarga, type Estado } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { abrirDescarga, type Estado } from '@validalo/ui';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 
 /** Estados de una emisión (CE-5): el chip usa el estado canónico del mismo nombre. */

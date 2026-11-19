@@ -9,9 +9,9 @@ recorrido(
   {
     dominio: 'integracion',
     actor: 'Administrador de empresa',
-    titulo: 'Crea un webhook entrando directo a AvalaSoft y elige su sistema',
+    titulo: 'Crea un webhook entrando directo a Valídalo y elige su sistema',
     resumen:
-      'La administradora entra directo a AvalaSoft, con su correo y un código, y crea un webhook. Como no viene de un sistema integrado, el panel le pide elegir cuál de los sistemas del grupo es el dueño del webhook: a ese sistema se le avisan sus eventos.',
+      'La administradora entra directo a Valídalo, con su correo y un código, y crea un webhook. Como no viene de un sistema integrado, el panel le pide elegir cuál de los sistemas del grupo es el dueño del webhook: a ese sistema se le avisan sus eventos.',
     precondiciones: [
       'Un grupo con ingreso directo, una administradora que ya registró su passkey y dos sistemas integrados activos: «ERP de compras» y «Portal de proveedores».',
       'Una dirección local que recibe las entregas del webhook.',
@@ -49,7 +49,7 @@ recorrido(
       await paso(page, {
         titulo: 'Elige el sistema integrado dueño del webhook',
         explicacion:
-          'Entraste directo a AvalaSoft, no desde un sistema integrado, así que el panel pregunta de qué sistema es el webhook: sus eventos se le avisan a ese sistema. ' +
+          'Entraste directo a Valídalo, no desde un sistema integrado, así que el panel pregunta de qué sistema es el webhook: sus eventos se le avisan a ese sistema. ' +
           'La lista trae los sistemas integrados activos del grupo, con su nombre y su código. Sin elegir uno no puedes guardar. ' +
           'Si entras desde un sistema integrado, el panel no pregunta: el webhook queda a nombre del sistema desde el que entraste.',
         // Con la lista abierta, el resto de la página queda oculto para el árbol accesible: se resalta la lista misma.
@@ -82,7 +82,7 @@ recorrido(
       await paso(page, {
         titulo: 'Revisa el webhook creado',
         explicacion:
-          'Al guardar, AvalaSoft muestra el secreto de firma una sola vez (como en [[integracion/webhooks]]) y el webhook aparece en la tabla, activo y con su dirección. ' +
+          'Al guardar, Valídalo muestra el secreto de firma una sola vez (como en [[integracion/webhooks]]) y el webhook aparece en la tabla, activo y con su dirección. ' +
           'El detalle del webhook muestra el «Sistema integrado» dueño; desde ahora los eventos que elegiste se envían a esa dirección y se le avisan a ese sistema.',
         resaltar: fila,
         avisos: true,

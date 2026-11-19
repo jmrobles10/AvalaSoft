@@ -46,7 +46,7 @@ function archivoDePrueba(): Record<string, unknown> {
     TELEFONO_J: '6015551234',
     DIRECCION_J: 'Calle 45 # 12-08',
   };
-  const plantilla = readFileSync(resolve(import.meta.dirname, '../../../tests/Avalasoft.Integracion.Tests/Fixtures/portal-terceros.json'), 'utf8');
+  const plantilla = readFileSync(resolve(import.meta.dirname, '../../../tests/Validalo.Integracion.Tests/Fixtures/portal-terceros.json'), 'utf8');
   return JSON.parse(plantilla.replace(/\{\{(\w+)\}\}/g, (_, clave: string) => valores[clave] ?? '')) as Record<string, unknown>;
 }
 

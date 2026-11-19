@@ -1,7 +1,7 @@
 import { Alert, Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, Stack, Switch, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { actualizarArea, crearArea, definirMiembrosArea, SCOPES, type AreaDto, type UsuarioDto } from '@avalasoft/api-client';
-import { AvatarActor, EsqueletoTarjeta, EstadoVacio, MarcoTabla } from '@avalasoft/ui';
+import { actualizarArea, crearArea, definirMiembrosArea, SCOPES, type AreaDto, type UsuarioDto } from '@validalo/api-client';
+import { AvatarActor, EsqueletoTarjeta, EstadoVacio, MarcoTabla } from '@validalo/ui';
 import { ChevronRight, Pencil, Plus, Users, X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-import type { TipoVinculoDto, VinculoDto } from '@avalasoft/api-client';
-import { FormularioDeDialogo } from '@avalasoft/ui';
+import type { TipoVinculoDto, VinculoDto } from '@validalo/api-client';
+import { FormularioDeDialogo } from '@validalo/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../../shared/componentes';

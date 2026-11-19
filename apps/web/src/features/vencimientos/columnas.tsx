@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, Tooltip, Typography } from '@mui/material';
-import type { VencimientoDto } from '@avalasoft/api-client';
-import { ChipEstado, formatearFecha, type ColumnaTabla } from '@avalasoft/ui';
+import type { VencimientoDto } from '@validalo/api-client';
+import { ChipEstado, formatearFecha, type ColumnaTabla } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 import { RefreshCw, ShieldOff, Undo2 } from 'lucide-react';
 import { useMemo } from 'react';

@@ -1,16 +1,16 @@
-# AvalaSoft
+# Valídalo
 
 Sistema de validación documental para cualquier vínculo comercial (proveedor, cliente, empleado, arrendatario, paciente…), multi-tenant, independiente del ERP y consumible por API. Reemplaza la validación documental repartida hoy entre el SRM y el Portal de Proveedores.
 
-> **Estado:** en desarrollo activo, con código en `main`: API .NET, app de la empresa (embebible), portal del tercero, consola de Plataforma, SDK .NET y TypeScript, certificados verificables, IA de revisión, listas restrictivas y manual. Qué está hecho, qué falta y cómo continuar: [docs/16](docs/16-estado-y-pendientes.md). El producto se llama «AvalaSoft»; en proyectos, paquetes, configuración y variables de entorno el identificador es `Avalasoft` / `avalasoft` (la historia del cambio de nombre y de los datos locales está en [docs/17](docs/17-renombre-a-avalasoft.md)).
+> **Estado:** en desarrollo activo, con código en `main`: API .NET, app de la empresa (embebible), portal del tercero, consola de Plataforma, SDK .NET y TypeScript, certificados verificables, IA de revisión, listas restrictivas y manual. Qué está hecho, qué falta y cómo continuar: [docs/16](docs/16-estado-y-pendientes.md). El producto se llama «Valídalo»; en proyectos, paquetes, configuración y variables de entorno el identificador es `Validalo` / `validalo` (la historia del cambio de nombre y de los datos locales está en [docs/17](docs/17-renombre-a-validalo.md)).
 
 ## Qué hay aquí
 
 | Ruta | Qué es |
 |---|---|
-| `src/Avalasoft.Api` | Host de la API (.NET 10, Wolverine HTTP). Sirve las dos apps estáticas (`/app/` y `/`) y corre los procesos de fondo. |
-| `src/Avalasoft.Dominio`, `Aplicacion`, `Infraestructura`, `Contratos` | Dominio (agregados event-sourced con Marten), casos de uso y endpoints, adaptadores (PostgreSQL, S3/MinIO, correo, IA, verificadores) y DTO públicos. |
-| `src/Avalasoft.Sdk`, `src/Avalasoft.Adaptadores.Portal` | SDK .NET para integradores y adaptador de origen del importador (Portal de Proveedores). |
+| `src/Validalo.Api` | Host de la API (.NET 10, Wolverine HTTP). Sirve las dos apps estáticas (`/app/` y `/`) y corre los procesos de fondo. |
+| `src/Validalo.Dominio`, `Aplicacion`, `Infraestructura`, `Contratos` | Dominio (agregados event-sourced con Marten), casos de uso y endpoints, adaptadores (PostgreSQL, S3/MinIO, correo, IA, verificadores) y DTO públicos. |
+| `src/Validalo.Sdk`, `src/Validalo.Adaptadores.Portal` | SDK .NET para integradores y adaptador de origen del importador (Portal de Proveedores). |
 | `apps/web`, `apps/public` | App de la empresa (React 19, se embebe en el sistema integrado) y portal del tercero (móvil primero). |
 | `packages/api-client`, `packages/ui`, `packages/sdk` | Cliente generado desde OpenAPI, design system (marca «Anillo») y SDK TypeScript. |
 | `tests/` | Pruebas de dominio, de integración (Testcontainers), del SDK y del adaptador; `tests/carga` (k6). |
@@ -27,7 +27,7 @@ Requisitos: .NET SDK 10, Node ≥ 22, pnpm 10 y Docker.
 ```bash
 pnpm install
 docker compose -f infra/compose/compose.yaml up -d      # PostgreSQL (:5432), Mailpit (:8025) y MinIO (:9000, consola :9001)
-ASPNETCORE_ENVIRONMENT=Development Avalasoft__Correo__UrlPublica=http://localhost:5181 dotnet run --project src/Avalasoft.Api   # API en :5080
+ASPNETCORE_ENVIRONMENT=Development Validalo__Correo__UrlPublica=http://localhost:5181 dotnet run --project src/Validalo.Api   # API en :5080
 pnpm semilla:dev                                         # datos de ejemplo: grupo, empresas, sistema DEMO, usuarios y flujo
 pnpm semilla:plataforma                                  # alternativa, base limpia: solo el operador de la consola de Plataforma (#/plataforma)
 pnpm dev                                                 # app de la empresa en :5173 (demo embebida en /embed-demo.html)
@@ -43,9 +43,9 @@ Para correr la API en un contenedor en vez de con `dotnet run`: `docker compose 
 ## Pruebas
 
 ```bash
-dotnet build Avalasoft.slnx                    # TreatWarningsAsErrors: 0 advertencias
-dotnet test Avalasoft.slnx                     # dominio + integración (necesita Docker: levanta PostgreSQL y MinIO con Testcontainers)
-dotnet test tests/Avalasoft.Dominio.Tests --filter "FullyQualifiedName~CertificadoTests"   # solo lo que tocaste
+dotnet build Validalo.slnx                    # TreatWarningsAsErrors: 0 advertencias
+dotnet test Validalo.slnx                     # dominio + integración (necesita Docker: levanta PostgreSQL y MinIO con Testcontainers)
+dotnet test tests/Validalo.Dominio.Tests --filter "FullyQualifiedName~CertificadoTests"   # solo lo que tocaste
 pnpm lint && pnpm typecheck && pnpm test        # frontend: ESLint estricto, tsc y Vitest
 pnpm e2e                                        # Playwright contra la API real; bajo demanda, no corre en cada push (decisión E2E-1, e2e/README.md)
 infra/ci-local/ci-local.sh                      # réplica local del CI (backend y frontend en contenedores Linux; infra/ci-local/README.md)
@@ -57,7 +57,7 @@ El CI de GitHub (`.github/workflows/ci.yml`) corre backend, frontend y la imagen
 
 Empieza por [docs/MAPA.md](docs/MAPA.md): orden de lectura por rol y mapa del desarrollo hito a hito.
 
-- **Diseño** (`docs/00`–`docs/17`): [visión y alcance](docs/00-vision-y-alcance.md), [análisis del legado](docs/01-analisis-legado-srm-portal.md), [modelo documental compartido](docs/02-modelo-documental-compartido.md) (el corazón), [dominio y eventos](docs/03-dominio-y-eventos.md), [arquitectura](docs/04-arquitectura-plataforma.md), [API y webhooks](docs/05-api-contratos-y-webhooks.md), [frontend y UX](docs/06-frontend-y-ux.md), [seguridad y tenancy](docs/07-seguridad-identidad-y-tenancy.md), [integración y migración](docs/08-integracion-y-migracion.md), [plan de hitos](docs/09-plan-de-hitos-y-responsabilidades.md), [glosario](docs/10-glosario.md), [trazabilidad](docs/11-trazabilidad-por-hito.md), [plan de ejecución](docs/12-plan-de-ejecucion-con-claude.md), [flujo de trabajo con Claude Code](docs/13-flujo-de-trabajo-con-claude-code.md), [ficha maestra](docs/14-ficha-maestra-del-tercero.md), [Infolaft](docs/15-infolaft.md), [estado y pendientes](docs/16-estado-y-pendientes.md) y [renombre a AvalaSoft y migración de datos locales](docs/17-renombre-a-avalasoft.md).
+- **Diseño** (`docs/00`–`docs/17`): [visión y alcance](docs/00-vision-y-alcance.md), [análisis del legado](docs/01-analisis-legado-srm-portal.md), [modelo documental compartido](docs/02-modelo-documental-compartido.md) (el corazón), [dominio y eventos](docs/03-dominio-y-eventos.md), [arquitectura](docs/04-arquitectura-plataforma.md), [API y webhooks](docs/05-api-contratos-y-webhooks.md), [frontend y UX](docs/06-frontend-y-ux.md), [seguridad y tenancy](docs/07-seguridad-identidad-y-tenancy.md), [integración y migración](docs/08-integracion-y-migracion.md), [plan de hitos](docs/09-plan-de-hitos-y-responsabilidades.md), [glosario](docs/10-glosario.md), [trazabilidad](docs/11-trazabilidad-por-hito.md), [plan de ejecución](docs/12-plan-de-ejecucion-con-claude.md), [flujo de trabajo con Claude Code](docs/13-flujo-de-trabajo-con-claude-code.md), [ficha maestra](docs/14-ficha-maestra-del-tercero.md), [Infolaft](docs/15-infolaft.md), [estado y pendientes](docs/16-estado-y-pendientes.md) y [renombre a Valídalo y migración de datos locales](docs/17-renombre-a-validalo.md).
 - **Para integradores:** [guía de integración](docs/integracion.md) (alta del sistema, llaves, identidad delegada, embebido, webhooks, consulta de certificación, SDK) y el ejemplo `docs/ejemplos/IntegradorSrm`.
 - **ADR:** [decisiones de arquitectura](docs/adr/) (monolito modular, Marten/Wolverine, bóveda global, versión única, consentimiento antes de compartir…).
 - **Decisiones:** [registro de decisiones](docs/decisiones/registro.md) (la verdad sobre cada decisión, por sección e id) y [cuestionario](docs/decisiones/cuestionario.md) con las 97 preguntas del experto.

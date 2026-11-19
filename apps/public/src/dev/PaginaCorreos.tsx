@@ -1,6 +1,6 @@
 import { Alert, Button, Card, Stack, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { formatearFechaHora } from '@avalasoft/ui';
+import { formatearFechaHora } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { CabeceraPagina, EsqueletoTarjetas } from '../shared/componentes';

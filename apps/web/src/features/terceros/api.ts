@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getObtenerFichaTerceroQueryOptions } from '@avalasoft/api-client';
+import { getObtenerFichaTerceroQueryOptions } from '@validalo/api-client';
 import { conEmpresa } from '../../shared/consultas';
 
 /** Ficha 360 del tercero para la empresa activa: la clave lleva la empresa porque lo que se ve depende de ella. */

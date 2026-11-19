@@ -1,6 +1,6 @@
 import { Alert } from '@mui/material';
-import { accedeAEmpresa, configurarCliente } from '@avalasoft/api-client';
-import { EsqueletoDetalle } from '@avalasoft/ui';
+import { accedeAEmpresa, configurarCliente } from '@validalo/api-client';
+import { EsqueletoDetalle } from '@validalo/ui';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Outlet, useParams } from 'react-router';

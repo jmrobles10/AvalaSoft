@@ -13,8 +13,8 @@ import {
   type DecisionCoincidencia,
   type DescargaEvidenciaDto,
   type ExpedienteDto,
-} from '@avalasoft/api-client';
-import { abrirDescarga } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { abrirDescarga } from '@validalo/ui';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 import { invalidarExpedientes } from '../expedientes/api';
 import type { FuenteDeVerificacion } from './modelo';

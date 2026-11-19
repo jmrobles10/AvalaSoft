@@ -27,7 +27,7 @@ El oficial de cumplimiento abre Cumplimiento y encuentra el expediente de un pro
 
 ## Paso 1. Abre el expediente desde Cumplimiento
 
-La pestaña Cumplimiento lista los expedientes de la empresa que tienen verificaciones pendientes o por decidir. Abre el de «Aceros del Norte S.A.S.» para ver sus listas restrictivas. La consulta no la pediste tú: AvalaSoft la hizo sola cuando el expediente pasó a revisión.
+La pestaña Cumplimiento lista los expedientes de la empresa que tienen verificaciones pendientes o por decidir. Abre el de «Aceros del Norte S.A.S.» para ver sus listas restrictivas. La consulta no la pediste tú: Valídalo la hizo sola cuando el expediente pasó a revisión.
 
 > **Pantalla:** `/e/{empresa}/expedientes/{id}`
 

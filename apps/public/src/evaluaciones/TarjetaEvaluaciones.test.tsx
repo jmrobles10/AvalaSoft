@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import type { EvaluacionPublicaResumenDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import type { EvaluacionPublicaResumenDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
@@ -19,7 +19,7 @@ const evaluacion = (cambios: Partial<EvaluacionPublicaResumenDto> = {}): Evaluac
 
 const montar = (pantalla: ReactNode) =>
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <MemoryRouter>{pantalla}</MemoryRouter>
     </ThemeProvider>,
   );
@@ -71,7 +71,7 @@ describe('AvisoEvaluacionesPendientes', () => {
     expect(screen.getByRole('link', { name: 'Responder la evaluación Dos' })).toHaveAttribute('href', '/empresas/v1/evaluaciones/b');
 
     rerender(
-      <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+      <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
         <MemoryRouter>
           <AvisoEvaluacionesPendientes vinculoId="v1" empresa="Aceros del Norte" evaluaciones={[evaluacion({ estado: 'Calificada' })]} />
         </MemoryRouter>

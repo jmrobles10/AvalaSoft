@@ -1,4 +1,4 @@
-import type { AreaDto, DelegacionDto } from '@avalasoft/api-client';
+import type { AreaDto, DelegacionDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import {
   aCrearDto,

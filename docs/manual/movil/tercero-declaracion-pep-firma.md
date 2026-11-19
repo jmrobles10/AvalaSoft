@@ -38,7 +38,7 @@ Si eres una persona expuesta políticamente, responde «Sí» y se abre la «Dec
 **Variantes**
 
 - **Respondes «No»:** No se abre la declaración y la sección se guarda sin ella.
-- **Cierras sin declarar:** AvalaSoft pregunta si sigues diligenciando o si quieres salir sin declarar; al salir, la respuesta vuelve a «No».
+- **Cierras sin declarar:** Valídalo pregunta si sigues diligenciando o si quieres salir sin declarar; al salir, la respuesta vuelve a «No».
 
 ## Paso 2. Firma dibujando con el dedo
 

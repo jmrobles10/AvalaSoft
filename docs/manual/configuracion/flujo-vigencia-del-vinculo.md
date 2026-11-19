@@ -16,7 +16,7 @@ La administradora hace que la validación de los proveedores venza cada 365 día
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con miembros y la sección «Información general» disponible.
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 

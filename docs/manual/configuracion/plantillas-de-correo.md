@@ -3,7 +3,7 @@ id: "configuracion/plantillas-de-correo"
 titulo: "Personaliza el correo de invitación y restablécelo"
 actor: "Administrador de empresa"
 dominio: "configuracion"
-resumen: "La administradora abre Plantillas de correo, cambia el asunto, la cabecera y el pie del correo de invitación y lo guarda. Después restablece el texto predeterminado de AvalaSoft."
+resumen: "La administradora abre Plantillas de correo, cambia el asunto, la cabecera y el pie del correo de invitación y lo guarda. Después restablece el texto predeterminado de Valídalo."
 pasos: 4
 ---
 
@@ -11,12 +11,12 @@ pasos: 4
 
 **Actor:** Administrador de empresa · **Dominio:** Configuración
 
-La administradora abre Plantillas de correo, cambia el asunto, la cabecera y el pie del correo de invitación y lo guarda. Después restablece el texto predeterminado de AvalaSoft.
+La administradora abre Plantillas de correo, cambia el asunto, la cabecera y el pie del correo de invitación y lo guarda. Después restablece el texto predeterminado de Valídalo.
 
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y sus plantillas de correo sin personalizar.
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 
@@ -27,7 +27,7 @@ La administradora abre Plantillas de correo, cambia el asunto, la cabecera y el 
 
 ## Paso 1. Abre Configuración › Plantillas de correo
 
-La tabla lista los correos que AvalaSoft le envía al tercero en nombre de la empresa, por ejemplo la invitación. Cada fila muestra si el correo es «Predeterminada» (sale con el texto de AvalaSoft) o «Personalizada» (tiene un asunto, una cabecera o un pie propios) y su versión. AvalaSoft arma el cuerpo del correo (enlaces, documentos, plazos); tú solo agregas un texto antes y otro después.
+La tabla lista los correos que Valídalo le envía al tercero en nombre de la empresa, por ejemplo la invitación. Cada fila muestra si el correo es «Predeterminada» (sale con el texto de Valídalo) o «Personalizada» (tiene un asunto, una cabecera o un pie propios) y su versión. Valídalo arma el cuerpo del correo (enlaces, documentos, plazos); tú solo agregas un texto antes y otro después.
 
 > **Pantalla:** `/e/{empresa}/plantillas`
 
@@ -43,7 +43,7 @@ La tabla lista los correos que AvalaSoft le envía al tercero en nombre de la em
 
 ## Paso 2. Elige el correo que quieres cambiar
 
-Haz clic en «Editar» en la fila del correo (aquí, la invitación). Se abre un panel lateral con el asunto, la cabecera y el pie del correo. Los campos vacíos usan el texto de AvalaSoft, así que puedes cambiar solo el que necesites.
+Haz clic en «Editar» en la fila del correo (aquí, la invitación). Se abre un panel lateral con el asunto, la cabecera y el pie del correo. Los campos vacíos usan el texto de Valídalo, así que puedes cambiar solo el que necesites.
 
 > **Pantalla:** `/e/{empresa}/plantillas`
 
@@ -63,7 +63,7 @@ Al guardar, el panel se cierra y la fila pasa a «Personalizada». Mientras escr
 
 **Variantes**
 
-- **Dejas un campo vacío y guardas:** Ese campo vuelve al texto de AvalaSoft y el correo sigue «Personalizada» si otro campo tiene texto.
+- **Dejas un campo vacío y guardas:** Ese campo vuelve al texto de Valídalo y el correo sigue «Personalizada» si otro campo tiene texto.
 
 **Configuración que lo afecta**
 
@@ -71,7 +71,7 @@ Al guardar, el panel se cierra y la fila pasa a «Personalizada». Mientras escr
 
 ## Paso 4. Restablece el texto predeterminado
 
-«Restaurar predeterminado» abre una confirmación que quita el asunto, la cabecera y el pie de la plantilla; el texto vuelve al de AvalaSoft. Al confirmar, la fila vuelve a «Predeterminada» y el aviso confirma el cambio. Si cierras el panel con «Cancelar» o la «X», no se guarda ningún cambio pendiente.
+«Restaurar predeterminado» abre una confirmación que quita el asunto, la cabecera y el pie de la plantilla; el texto vuelve al de Valídalo. Al confirmar, la fila vuelve a «Predeterminada» y el aviso confirma el cambio. Si cierras el panel con «Cancelar» o la «X», no se guarda ningún cambio pendiente.
 
 > **Pantalla:** `/e/{empresa}/plantillas`
 

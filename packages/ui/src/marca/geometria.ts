@@ -2,12 +2,12 @@ import { COLOR, type Modo } from '../tokens';
 import { PALABRA } from './palabra';
 
 /**
- * Geometría y colores del logo «Anillo» de AvalaSoft (MA-1, docs/marca.md). Es la única fuente: el componente `Logo`, las
+ * Geometría y colores del logo «Anillo» de Valídalo (MA-1, docs/marca.md). Es la única fuente: el componente `Logo`, las
  * animaciones y el generador de recursos (`marca/generar.mjs`) la leen de aquí; el PDF (`LogosDePdf.cs`) la repite con los mismos
  * trazados y números y una prueba los compara.
  *
  * - **Check**: una forma caligráfica rellena, de brazo derecho más largo: se lee como V y como check.
- * - **Logotipo**: el símbolo (círculo verde con el check blanco, sin inclinar) seguido de la palabra «avalasoft», toda en minúsculas, en
+ * - **Logotipo**: el símbolo (círculo verde con el check blanco, sin inclinar) seguido de la palabra «validalo», toda en minúsculas, en
  *   Quicksand Bold (SIL OFL) convertida a contornos (`palabra.ts`, generado por `marca/contornos.mjs`), con seguimiento −0,04 em y
  *   espaciado parejo, e inclinada 10° a la derecha; el círculo mide lo que las ascendentes y se centra entre la línea base y lo alto de la «l» y la «f»;
  *   «avala» en verde azulado y «soft» en azul muy oscuro. Es solo geometría: no depende de ninguna fuente.

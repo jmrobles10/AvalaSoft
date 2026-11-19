@@ -1,4 +1,4 @@
-import { LOCALE } from '@avalasoft/ui';
+import { LOCALE } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 import { fichaMaestra } from '../../../i18n/es-CO-ficha';
 import { formatearFechaDeclarada } from '../../documentos/formatoDatos';

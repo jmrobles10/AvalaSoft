@@ -1378,7 +1378,7 @@ curl -X POST "https://{host}/api/v1/ingreso/sesion/cerrar" \
 
 ### `POST /api/v1/ingreso/sesion/renovar`
 
-**Renovar sesión ingreso.** Renueva el token de acceso con la cookie `vs_usuario` y la rota. Exige `X-Avalasoft-Cliente: web` (defensa CSRF además de `SameSite=Strict`). 401 `sin-sesion` (no hay cookie), `sesion-expirada`, `sesion-revocada` (también por reuso de una cookie ya rotada) o `sesion-inactiva`; 409 `renovacion-concurrente`.
+**Renovar sesión ingreso.** Renueva el token de acceso con la cookie `vs_usuario` y la rota. Exige `X-Validalo-Cliente: web` (defensa CSRF además de `SameSite=Strict`). 401 `sin-sesion` (no hay cookie), `sesion-expirada`, `sesion-revocada` (también por reuso de una cookie ya rotada) o `sesion-inactiva`; 409 `renovacion-concurrente`.
 
 **Pública (sin sesión) · API (`/api/v1`) · SDK: `renovarSesionIngreso`**
 
@@ -2120,7 +2120,7 @@ Respuesta `200`:
 
 ### `GET /api/v1/yo`
 
-**Obtener yo.** Actor de la petición, su usuario (si es una persona: identidad delegada o sesión de AvalaSoft), sus roles en las empresas a su alcance, los permisos efectivos en la empresa activa (`X-Empresa`), el sistema integrado de la credencial y las empresas que puede usar. Cualquier credencial de un tenant.
+**Obtener yo.** Actor de la petición, su usuario (si es una persona: identidad delegada o sesión de Valídalo), sus roles en las empresas a su alcance, los permisos efectivos en la empresa activa (`X-Empresa`), el sistema integrado de la credencial y las empresas que puede usar. Cualquier credencial de un tenant.
 
 **Cualquier sesión autenticada · API (`/api/v1`) · SDK: `obtenerYo`**
 
@@ -2316,7 +2316,7 @@ Sesiones cortas para las pantallas embebidas en los sistemas integrados (ID-3).
 
 ### `POST /api/v1/sesiones-usuario`
 
-**Crear sesión usuario.** Canjea la identidad delegada (API key + `X-Usuario-Delegado`) por un token de AvalaSoft de 30 minutos con el permiso efectivo de esa persona; el iframe o Web Component lo envía como `Authorization: Bearer`.
+**Crear sesión usuario.** Canjea la identidad delegada (API key + `X-Usuario-Delegado`) por un token de Valídalo de 30 minutos con el permiso efectivo de esa persona; el iframe o Web Component lo envía como `Authorization: Bearer`.
 
 **Cualquier sesión autenticada · API (`/api/v1`) · SDK: `crearSesionUsuario`**
 
@@ -3057,7 +3057,7 @@ curl -X DELETE "https://{host}/api/v1/configuracion/sso/dominios/texto" \
 
 ### `POST /api/v1/configuracion/sso/dominios/{dominio}/verificar`
 
-**Verificar dominio SSO.** Comprueba que el grupo controla el dominio (busca el token en `https://{dominio}/.well-known/avalasoft-verificacion.txt`) y lo da por verificado. Un dominio verificado es de un solo grupo. 409 `dominio-no-verificado` (aún no se ve el token), `dominio-en-uso` (otro grupo ya lo verificó); 404 `dominio-no-encontrado`.
+**Verificar dominio SSO.** Comprueba que el grupo controla el dominio (busca el token en `https://{dominio}/.well-known/validalo-verificacion.txt`) y lo da por verificado. Un dominio verificado es de un solo grupo. 409 `dominio-no-verificado` (aún no se ve el token), `dominio-en-uso` (otro grupo ya lo verificó); 404 `dominio-no-encontrado`.
 
 **Permiso usuarios:administrar · API (`/api/v1`) · SDK: `verificarDominioSso`**
 

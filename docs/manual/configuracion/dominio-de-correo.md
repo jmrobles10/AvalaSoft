@@ -3,7 +3,7 @@ id: "configuracion/dominio-de-correo"
 titulo: "Registra el dominio de correo y verifícalo"
 actor: "Administrador de empresa"
 dominio: "configuracion"
-resumen: "La administradora registra un dominio propio para que los correos de la empresa salgan desde él, crea los registros DNS que pide AvalaSoft y lo verifica. Después quita el dominio y el correo vuelve al remitente de la plataforma."
+resumen: "La administradora registra un dominio propio para que los correos de la empresa salgan desde él, crea los registros DNS que pide Valídalo y lo verifica. Después quita el dominio y el correo vuelve al remitente de la plataforma."
 pasos: 5
 ---
 
@@ -11,12 +11,12 @@ pasos: 5
 
 **Actor:** Administrador de empresa · **Dominio:** Configuración
 
-La administradora registra un dominio propio para que los correos de la empresa salgan desde él, crea los registros DNS que pide AvalaSoft y lo verifica. Después quita el dominio y el correo vuelve al remitente de la plataforma.
+La administradora registra un dominio propio para que los correos de la empresa salgan desde él, crea los registros DNS que pide Valídalo y lo verifica. Después quita el dominio y el correo vuelve al remitente de la plataforma.
 
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.», sin dominio de correo registrado.
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 
@@ -40,7 +40,7 @@ Por omisión, los correos de la empresa salen desde el remitente de la plataform
 
 **Configuración que lo afecta**
 
-- **Dominio de correo** (`Configuración › Dominio de correo (/dominio-correo)`): Define desde qué dirección de correo le escribe AvalaSoft a los terceros de la empresa.
+- **Dominio de correo** (`Configuración › Dominio de correo (/dominio-correo)`): Define desde qué dirección de correo le escribe Valídalo a los terceros de la empresa.
 
 ## Paso 2. Escribe el dominio y el nombre del remitente
 

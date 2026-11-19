@@ -3,7 +3,7 @@ id: "plataforma/sistemas-de-un-grupo"
 titulo: "Desactiva y reactiva un sistema integrado de un grupo"
 actor: "Plataforma"
 dominio: "plataforma"
-resumen: "El operador de Plataforma abre los sistemas integrados de un grupo y desactiva uno que ya no debe entrar a AvalaSoft. Desactivarlo corta de inmediato sus llaves y sus sesiones; reactivarlo no revive lo que ya se revocó."
+resumen: "El operador de Plataforma abre los sistemas integrados de un grupo y desactiva uno que ya no debe entrar a Valídalo. Desactivarlo corta de inmediato sus llaves y sus sesiones; reactivarlo no revive lo que ya se revocó."
 pasos: 5
 ---
 
@@ -11,7 +11,7 @@ pasos: 5
 
 **Actor:** Plataforma · **Dominio:** Consola de Plataforma
 
-El operador de Plataforma abre los sistemas integrados de un grupo y desactiva uno que ya no debe entrar a AvalaSoft. Desactivarlo corta de inmediato sus llaves y sus sesiones; reactivarlo no revive lo que ya se revocó.
+El operador de Plataforma abre los sistemas integrados de un grupo y desactiva uno que ya no debe entrar a Valídalo. Desactivarlo corta de inmediato sus llaves y sus sesiones; reactivarlo no revive lo que ya se revocó.
 
 **Antes de empezar**
 
@@ -28,7 +28,7 @@ El operador de Plataforma abre los sistemas integrados de un grupo y desactiva u
 
 ## Paso 1. Abre los sistemas integrados del grupo
 
-Cada grupo tiene el botón «Sistemas» en su tarjeta. Desde allí ves los sistemas que el grupo integró con AvalaSoft: el sistema es el ERP o portal del cliente que autentica a sus personas y firma sus aserciones. El botón abre la lista para ese grupo; no afecta a los otros grupos.
+Cada grupo tiene el botón «Sistemas» en su tarjeta. Desde allí ves los sistemas que el grupo integró con Valídalo: el sistema es el ERP o portal del cliente que autentica a sus personas y firma sus aserciones. El botón abre la lista para ese grupo; no afecta a los otros grupos.
 
 > **Pantalla:** `/plataforma/grupos`
 
@@ -40,7 +40,7 @@ Cada grupo tiene el botón «Sistemas» en su tarjeta. Desde allí ves los siste
 
 ## Paso 2. Revisa los sistemas del grupo
 
-La lista muestra cada sistema con su nombre, su fecha de creación y cuántos sitios pueden incrustar AvalaSoft. Desactivar un sistema cierra de inmediato el acceso de sus llaves y de las sesiones que emitió. Su historial se conserva, así que siempre se puede reactivar después.
+La lista muestra cada sistema con su nombre, su fecha de creación y cuántos sitios pueden incrustar Valídalo. Desactivar un sistema cierra de inmediato el acceso de sus llaves y de las sesiones que emitió. Su historial se conserva, así que siempre se puede reactivar después.
 
 > **Pantalla:** `/plataforma/grupos`
 
@@ -57,7 +57,7 @@ La lista muestra cada sistema con su nombre, su fecha de creación y cuántos si
 
 ## Paso 3. Confirma la desactivación
 
-Antes de desactivar, AvalaSoft pide confirmación: el sistema deja de poder pedir sesiones y sus llaves dejan de servir en ese momento. Su historial no se borra. Si la desactivación es un error, puedes reactivarlo en la misma lista, aunque las sesiones anteriores no se recuperan.
+Antes de desactivar, Valídalo pide confirmación: el sistema deja de poder pedir sesiones y sus llaves dejan de servir en ese momento. Su historial no se borra. Si la desactivación es un error, puedes reactivarlo en la misma lista, aunque las sesiones anteriores no se recuperan.
 
 > **Pantalla:** `/plataforma/grupos`
 
@@ -69,7 +69,7 @@ Antes de desactivar, AvalaSoft pide confirmación: el sistema deja de poder pedi
 
 ## Paso 4. Verifica que el sistema quedó desactivado
 
-AvalaSoft confirma con un aviso que el sistema quedó desactivado. En la lista, su botón ahora dice «Reactivar» y el sistema ya no puede abrir sesiones para las personas del grupo. Las llaves revocadas siguen revocadas, aunque el sistema se reactive.
+Valídalo confirma con un aviso que el sistema quedó desactivado. En la lista, su botón ahora dice «Reactivar» y el sistema ya no puede abrir sesiones para las personas del grupo. Las llaves revocadas siguen revocadas, aunque el sistema se reactive.
 
 > **Pantalla:** `/plataforma/grupos`
 
@@ -77,7 +77,7 @@ AvalaSoft confirma con un aviso que el sistema quedó desactivado. En la lista, 
 
 ## Paso 5. Reactiva el sistema
 
-Al reactivarlo, el sistema vuelve a ser válido: sus aserciones se aceptan otra vez y sus orígenes pueden volver a embeber AvalaSoft. Las sesiones y los tokens de antes no se recuperan, y las API keys no vuelven: se revocaron todas al desactivarlo, así que hay que emitir otras desde el grupo para que su backend vuelva a pedir sesiones.
+Al reactivarlo, el sistema vuelve a ser válido: sus aserciones se aceptan otra vez y sus orígenes pueden volver a embeber Valídalo. Las sesiones y los tokens de antes no se recuperan, y las API keys no vuelven: se revocaron todas al desactivarlo, así que hay que emitir otras desde el grupo para que su backend vuelva a pedir sesiones.
 
 > **Pantalla:** `/plataforma/grupos`
 

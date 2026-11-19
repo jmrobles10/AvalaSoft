@@ -1,6 +1,6 @@
 import { Box, Link, Stack, ThemeProvider, Typography } from '@mui/material';
-import type { EmpresaPublicaDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import type { EmpresaPublicaDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LogoEmpresa } from './componentes';
@@ -8,12 +8,12 @@ import { LogoEmpresa } from './componentes';
 /**
  * La marca de la empresa en lo que el tercero hace con ella (CF-1): su logo arriba, su paleta (derivada del color de
  * marca con contraste garantizado, `marcaEmpresa`) en botones y enlaces, y su correo de soporte al pie. Sin color, el
- * tema de AvalaSoft; la bóveda y la navegación siguen siendo de AvalaSoft porque el tercero tiene varias empresas.
+ * tema de Valídalo; la bóveda y la navegación siguen siendo de Valídalo porque el tercero tiene varias empresas.
  */
 export function MarcaDeEmpresa({ empresa, children }: { empresa: EmpresaPublicaDto; children: ReactNode }) {
   const { t } = useTranslation();
   const color = empresa.colorMarca ?? null;
-  const tema = useMemo(() => (color ? createAvalasoftTheme('light', { app: 'public', colorEmpresa: color }) : null), [color]);
+  const tema = useMemo(() => (color ? createValidaloTheme('light', { app: 'public', colorEmpresa: color }) : null), [color]);
   const contenido = (
     <>
       <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', mb: 1.5 }}>

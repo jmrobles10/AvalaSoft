@@ -1,5 +1,5 @@
-import type { AreaDto, CrearDelegacionDto, DelegacionDto, EstadoDeDelegacion } from '@avalasoft/api-client';
-import { formatearDiaCivil, type Estado } from '@avalasoft/ui';
+import type { AreaDto, CrearDelegacionDto, DelegacionDto, EstadoDeDelegacion } from '@validalo/api-client';
+import { formatearDiaCivil, type Estado } from '@validalo/ui';
 
 /** Igual que `DelegacionDeRevision.MaximoDias` y `LongitudMaximaMotivo` del dominio. */
 export const MAXIMO_DIAS_DELEGACION = 366;

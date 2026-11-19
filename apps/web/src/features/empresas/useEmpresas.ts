@@ -1,5 +1,5 @@
-import { getListarEmpresasQueryKey, useListarEmpresas, type EmpresaDto } from '@avalasoft/api-client';
-import type { EmpresaOpcion } from '@avalasoft/ui';
+import { getListarEmpresasQueryKey, useListarEmpresas, type EmpresaDto } from '@validalo/api-client';
+import type { EmpresaOpcion } from '@validalo/ui';
 import { useOutletContext } from 'react-router';
 import { useSesion } from '../../sesion/sesionStore';
 

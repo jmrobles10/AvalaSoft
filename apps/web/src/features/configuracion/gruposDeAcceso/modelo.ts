@@ -1,4 +1,4 @@
-import { NivelDeSector, type GrupoDeAccesoDto, type SectorDeGrupoDto } from '@avalasoft/api-client';
+import { NivelDeSector, type GrupoDeAccesoDto, type SectorDeGrupoDto } from '@validalo/api-client';
 import { SECCIONES_FICHA, type CodigoSeccionFicha } from '../../terceros/ficha/secciones';
 
 /**

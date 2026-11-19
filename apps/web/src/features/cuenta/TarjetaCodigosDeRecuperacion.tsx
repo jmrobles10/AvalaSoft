@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Skeleton, Stack, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { generarCodigosRecuperacion, getObtenerEstadoCodigosRecuperacionQueryOptions, type CodigosDeRecuperacionDto } from '@avalasoft/api-client';
-import { formatearFechaHora } from '@avalasoft/ui';
+import { generarCodigosRecuperacion, getObtenerEstadoCodigosRecuperacionQueryOptions, type CodigosDeRecuperacionDto } from '@validalo/api-client';
+import { formatearFechaHora } from '@validalo/ui';
 import { Copy, LifeBuoy, Printer } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

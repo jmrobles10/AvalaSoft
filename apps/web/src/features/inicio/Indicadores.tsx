@@ -1,5 +1,5 @@
 import { Box, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import { EsqueletoTarjeta } from '@avalasoft/ui';
+import { EsqueletoTarjeta } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { ErrorRecuperable } from '../../shared/componentes';

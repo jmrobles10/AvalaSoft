@@ -1,5 +1,5 @@
-import type { NotificacionDto } from '@avalasoft/api-client';
-import { CampanaDeNotificaciones } from '@avalasoft/ui';
+import type { NotificacionDto } from '@validalo/api-client';
+import { CampanaDeNotificaciones } from '@validalo/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

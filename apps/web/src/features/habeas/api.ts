@@ -8,7 +8,7 @@ import {
   resolverSolicitudHabeasDeLaEmpresa,
   resolverSolicitudHabeasDePlataforma,
   type ResolverSolicitudHabeasDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 import { TAMANO_PAGINA_SOLICITUDES, type FiltroDeSolicitudes } from './modelo';
 

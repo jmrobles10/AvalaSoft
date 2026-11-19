@@ -1,4 +1,4 @@
-import type { CredencialesListasDto, ModoBusquedaListas, ProveedorDePlataformaDto, ProveedorListasDto } from '@avalasoft/api-client';
+import type { CredencialesListasDto, ModoBusquedaListas, ProveedorDePlataformaDto, ProveedorListasDto } from '@validalo/api-client';
 
 /** Formulario de credenciales de un proveedor real (la clave nunca llega del servidor: vacío = conservar la actual). */
 export interface BorradorCredenciales {

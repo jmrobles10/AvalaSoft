@@ -1,6 +1,6 @@
 import { Alert, Button, Chip, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import type { SecretosPorTipoDto } from '@avalasoft/api-client';
-import { Dato, MarcoTabla, RejillaDatos } from '@avalasoft/ui';
+import type { SecretosPorTipoDto } from '@validalo/api-client';
+import { Dato, MarcoTabla, RejillaDatos } from '@validalo/ui';
 import { Lock, RefreshCw, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

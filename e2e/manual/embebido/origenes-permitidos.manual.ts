@@ -36,9 +36,9 @@ recorrido(
   {
     dominio: 'embebido',
     actor: 'Sistema integrador',
-    titulo: 'Declara qué páginas pueden mostrar AvalaSoft',
+    titulo: 'Declara qué páginas pueden mostrar Valídalo',
     resumen:
-      'Tu sistema declara los orígenes (dirección y puerto) desde los que se muestran sus pantallas de AvalaSoft. Solo esos orígenes pueden embeber la app y pedir sesiones para ella: ' +
+      'Tu sistema declara los orígenes (dirección y puerto) desde los que se muestran sus pantallas de Valídalo. Solo esos orígenes pueden embeber la app y pedir sesiones para ella: ' +
       'un origen que no declaraste recibe un rechazo y su página no muestra nada del tercero.',
     precondiciones: [
       'Un grupo con Constructora Norte, un tercero que aceptó su invitación de cliente y el sistema integrado E2E con la llave de administración.',
@@ -64,7 +64,7 @@ recorrido(
       titulo: 'Declara los orígenes permitidos',
       explicacion:
         'Con PUT /api/v1/sistemas/{id}/origenes reemplazas la lista de orígenes de tu sistema. Cada origen es esquema, dominio y puerto, como «https://portal.tuempresa.co», sin ruta ni comodines: ' +
-        'AvalaSoft rechaza una página o un asterisco. Esa misma lista decide qué páginas pueden embeber la app y qué orígenes pueden pedir sesiones para ella.',
+        'Valídalo rechaza una página o un asterisco. Esa misma lista decide qué páginas pueden embeber la app y qué orígenes pueden pedir sesiones para ella.',
       resaltar: page.locator('#peticion'),
       variantes: [
         { cuando: 'Escribes una ruta o un comodín', entonces: 'La llamada se rechaza: el origen es el sitio, no una página.' },
@@ -105,7 +105,7 @@ recorrido(
       titulo: 'Un origen ajeno no obtiene sesión',
       explicacion:
         'Cuando una página pide una sesión para un origen que no está en la lista, la API responde 403 «origen-no-permitido» y no emite ningún token. ' +
-        'Sin token, la página no puede mostrar la bóveda ni la ficha del tercero, aunque cargue el marco de AvalaSoft.',
+        'Sin token, la página no puede mostrar la bóveda ni la ficha del tercero, aunque cargue el marco de Valídalo.',
       resaltar: page.locator('#respuesta'),
     });
 

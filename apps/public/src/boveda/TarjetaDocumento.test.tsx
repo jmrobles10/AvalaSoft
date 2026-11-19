@@ -10,8 +10,8 @@ import {
   type DocumentoDto,
   type VersionDocumentoDto,
   type VigenciaDto,
-} from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TarjetaDocumento } from './TarjetaDocumento';
@@ -91,7 +91,7 @@ const COMPLETO: DocumentoDto = {
 function montar(documento: DocumentoBovedaDto = DOCUMENTO) {
   configurarCliente({ fetch: vi.fn(() => Promise.resolve(json(COMPLETO))) });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter>
           <TarjetaDocumento documento={documento} />

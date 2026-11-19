@@ -50,9 +50,9 @@ recorrido(
     await paso(page, {
       titulo: 'Abre la invitación que llega a tu correo',
       explicacion:
-        'La empresa te escribe desde AvalaSoft con el asunto «Constructora Sur S.A.S. te invita a validar tu vínculo como cliente». El correo dice quién te invita y trae el enlace «Abrir AvalaSoft». ' +
+        'La empresa te escribe desde Valídalo con el asunto «Constructora Sur S.A.S. te invita a validar tu vínculo como cliente». El correo dice quién te invita y trae el enlace «Abrir Valídalo». ' +
         'El enlace es personal, de un solo uso y tiene fecha de vencimiento; si se vence, la empresa puede enviarte otra invitación.',
-      resaltar: page.getByRole('link', { name: 'Abrir AvalaSoft' }),
+      resaltar: page.getByRole('link', { name: 'Abrir Valídalo' }),
       variantes: [
         { cuando: 'El tipo de vínculo es Proveedor', entonces: 'Antes de abrir la invitación debes escribir un código de 6 dígitos que llega a este mismo correo.' },
         { cuando: 'El tipo de vínculo es Cliente', entonces: 'El enlace abre la invitación directamente, sin código.' },
@@ -70,8 +70,8 @@ recorrido(
     await paso(page, {
       titulo: 'Lee y acepta los textos legales',
       explicacion:
-        'Como cliente, el enlace te lleva directo a la invitación: no escribes ningún código. Ves quién te invita y los textos que debes aceptar, el aviso de tratamiento de datos de AvalaSoft y los que la empresa publicó. ' +
-        'Marca «Leí y acepto este texto» en cada uno y pulsa «Aceptar». Al aceptar, AvalaSoft guarda la versión de cada texto y la fecha como constancia.',
+        'Como cliente, el enlace te lleva directo a la invitación: no escribes ningún código. Ves quién te invita y los textos que debes aceptar, el aviso de tratamiento de datos de Valídalo y los que la empresa publicó. ' +
+        'Marca «Leí y acepto este texto» en cada uno y pulsa «Aceptar». Al aceptar, Valídalo guarda la versión de cada texto y la fecha como constancia.',
       resaltar: [page.getByRole('checkbox', { name: 'Leí y acepto este texto' }).first(), page.getByRole('button', { name: 'Aceptar' })],
       completa: true,
       variantes: [
@@ -141,7 +141,7 @@ recorrido(
       titulo: 'Diligencia tu información general',
       explicacion:
         'Tus nombres y apellidos llegan prellenados con lo que la empresa registró al invitarte; revísalos. En lugar de la razón social, pide la fecha y el lugar de expedición de tu documento. ' +
-        'Completa también el teléfono, el domicilio y tu actividad económica, y responde las preguntas de persona expuesta políticamente (PEP): si lo eres, o si tienes vínculo con una, AvalaSoft te pedirá los datos. Mientras falte un dato, «Guardar y continuar» queda deshabilitado.',
+        'Completa también el teléfono, el domicilio y tu actividad económica, y responde las preguntas de persona expuesta políticamente (PEP): si lo eres, o si tienes vínculo con una, Valídalo te pedirá los datos. Mientras falte un dato, «Guardar y continuar» queda deshabilitado.',
       resaltar: [nombres, page.getByRole('radiogroup', { name: '¿Eres una persona expuesta políticamente (PEP)?' })],
       variantes: [
         { cuando: 'Eres persona jurídica', entonces: 'En vez de nombres y apellidos ves la razón social, y no hay preguntas de PEP propias.' },
@@ -190,7 +190,7 @@ recorrido(
     await paso(page, {
       titulo: 'Sube tu cédula de ciudadanía',
       explicacion:
-        'Cada documento tiene su pantalla de carga con sus reglas: formatos permitidos, tamaño máximo y, si aplica, los datos que debes escribir. Pulsa «Elegir archivo» y selecciona el PDF de tu cédula; AvalaSoft lo guarda en tu bóveda y te confirma la versión.',
+        'Cada documento tiene su pantalla de carga con sus reglas: formatos permitidos, tamaño máximo y, si aplica, los datos que debes escribir. Pulsa «Elegir archivo» y selecciona el PDF de tu cédula; Valídalo lo guarda en tu bóveda y te confirma la versión.',
       resaltar: page.getByRole('button', { name: 'Elegir archivo' }),
       configuracion: { ajuste: 'Formatos, tamaño, campos y vigencia del tipo de documento', ruta: 'Configuración › Tipos de documento (/tipos-documento)' },
     });

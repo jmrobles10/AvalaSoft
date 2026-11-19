@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { CondicionDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import type { CondicionDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../../pruebas/montar';
 import { simularApi } from '../../../pruebas/simularApi';
@@ -16,7 +16,7 @@ function montar(cambios: Partial<ReturnType<typeof borradorVacio>> = {}, errores
   const onCambiar = vi.fn();
   const borrador = { ...borradorVacio(), ...cambios };
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <EditorSeleccionFlujo borrador={borrador} onCambiar={onCambiar} errores={errores} soloLectura={soloLectura} />
     </ThemeProvider>,
   );

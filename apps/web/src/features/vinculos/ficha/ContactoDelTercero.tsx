@@ -1,5 +1,5 @@
-import type { FichaTerceroDto, VinculoDto } from '@avalasoft/api-client';
-import { Dato, RejillaDatos, ValorLargo } from '@avalasoft/ui';
+import type { FichaTerceroDto, VinculoDto } from '@validalo/api-client';
+import { Dato, RejillaDatos, ValorLargo } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 import { ChipVerificacionDelCorreo } from '../components/ChipVerificacionDelCorreo';

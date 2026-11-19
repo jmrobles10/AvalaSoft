@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Link, Stack } from '@mui/material';
-import { EsqueletoFormulario } from '@avalasoft/ui';
+import { EsqueletoFormulario } from '@validalo/ui';
 import type { TFunction } from 'i18next';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,11 +13,11 @@ import { PasoRegistrarPasskey, PasoVerificarPasskey } from './PasoPasskey';
 import { PasoCompletarSso } from './PasoSso';
 import { leerRetornoDeSso, resolverPaso, type PasoIngreso } from './estado';
 import { mensajeDeCodigoDeSso, mensajeDeIngreso } from './mensajes';
-import type { PasoDeIngresoDto } from '@avalasoft/api-client';
+import type { PasoDeIngresoDto } from '@validalo/api-client';
 
 // En el build de producción esta rama se elimina y el formulario (con la firma de aserciones) no se empaqueta.
 const FormularioSesionDev = import.meta.env.DEV ? lazy(() => import('../sesion/FormularioSesionDev').then((m) => ({ default: m.FormularioSesionDev }))) : null;
-const LLAVE_DESARROLLO = 'avalasoft.dev.sesion';
+const LLAVE_DESARROLLO = 'validalo.dev.sesion';
 const BANDEJA_DE_DESARROLLO = 'http://localhost:8025';
 
 /** Por qué falló el ingreso con el proveedor de la empresa: un código que dejó el servidor en la dirección, o el error de canjear el retorno. */
@@ -57,7 +57,7 @@ function avisoDeSalida(estado: EstadoSesion, t: TFunction): { severidad: 'info' 
 }
 
 /**
- * Ingreso directo a AvalaSoft sin contraseñas (ING-1…ING-3): correo → código → (cuenta) → passkey cuando la cuenta la tiene o la exige, o solo
+ * Ingreso directo a Valídalo sin contraseñas (ING-1…ING-3): correo → código → (cuenta) → passkey cuando la cuenta la tiene o la exige, o solo
  * la passkey. Es lo que se ve fuera de un sistema integrado; dentro de uno, la sesión llega por `postMessage`. En desarrollo ofrece además la
  * sesión simulada de siempre.
  */

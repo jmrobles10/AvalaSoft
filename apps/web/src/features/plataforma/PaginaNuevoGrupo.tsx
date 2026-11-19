@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Checkbox, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import type { TenantCreadoDto } from '@avalasoft/api-client';
-import { DosColumnas, FaltaParaEnviar } from '@avalasoft/ui';
+import type { TenantCreadoDto } from '@validalo/api-client';
+import { DosColumnas, FaltaParaEnviar } from '@validalo/ui';
 import { Building2, Factory, LogIn, Plug, UserRoundCog, type LucideIcon } from 'lucide-react';
 import { useState, type ReactNode, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

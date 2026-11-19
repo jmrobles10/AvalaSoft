@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 720" class="diagrama" role="img" aria-labelledby="titulo descripcion">
-<title id="titulo">Contenedores de AvalaSoft</title>
+<title id="titulo">Contenedores de Valídalo</title>
 <desc id="descripcion">Dos aplicaciones React en el navegador y los sistemas integradores llaman a un único proceso .NET que sirve la API y las dos apps y corre las colas y los procesos periódicos. Ese proceso usa PostgreSQL con Marten, un almacén S3, SMTP y proveedores externos detrás de interfaces.</desc>
 <defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca" d="M0 0L10 5L0 10z"/></marker><marker id="f-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-a" d="M0 0L10 5L0 10z"/></marker><marker id="f-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-ok" d="M0 0L10 5L0 10z"/></marker><marker id="f-peligro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="d-marca-peligro" d="M0 0L10 5L0 10z"/></marker></defs>
 <rect class="d-grupo" x="20" y="50" width="250" height="430" rx="14"/>

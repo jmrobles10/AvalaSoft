@@ -48,7 +48,7 @@ recorrido(
       resaltar: dialogo,
       variantes: [
         { cuando: 'Respondes «No»', entonces: 'No se abre la declaración y la sección se guarda sin ella.' },
-        { cuando: 'Cierras sin declarar', entonces: 'AvalaSoft pregunta si sigues diligenciando o si quieres salir sin declarar; al salir, la respuesta vuelve a «No».' },
+        { cuando: 'Cierras sin declarar', entonces: 'Valídalo pregunta si sigues diligenciando o si quieres salir sin declarar; al salir, la respuesta vuelve a «No».' },
       ],
     });
 

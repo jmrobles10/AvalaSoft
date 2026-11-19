@@ -18,7 +18,7 @@
 
 ## 2. Preparación, una sola vez (medio día)
 
-Antes de H1, en una sesión **Fable 5.1 · high** sobre `C:\Fuentes_Git\Avalasoft`:
+Antes de H1, en una sesión **Fable 5.1 · high** sobre `C:\Fuentes_Git\Validalo`:
 
 ```
 Prepara el repositorio para trabajar por hitos con Claude Code, siguiendo docs/13-flujo-de-trabajo-con-claude-code.md:
@@ -95,7 +95,7 @@ Los `<…>` son parámetros. Cada prompt está escrito para que la sesión **lea
 ### 5.1 `/abrir-hito <Hn>` — Fable · high · modo plan
 
 ```
-Vas a abrir el hito <Hn> de AvalaSoft.
+Vas a abrir el hito <Hn> de Valídalo.
 Lee, en este orden: docs/09 (sección del hito y §1 gobierno), docs/11 (bloque 2.<n> completo y matrices §3 del hito), docs/12 (tabla del hito), docs/decisiones/registro.md (todo) y el documento dueño de cada entregable (03, 05, 06, 07, 08 según corresponda).
 Entrega, sin escribir código:
 1. La lista de issues del hito: uno por entregable del 11, con título "<Hn>-<nn> <entregable>", descripción con el contrato exacto (endpoints/DTOs/eventos/pantallas copiados del 11), criterios de aceptación verificables, pruebas que lo demuestran, documento dueño, modelo y esfuerzo sugeridos (del 12), estimación y dependencias.
@@ -108,7 +108,7 @@ Cuando yo apruebe, crea los issues en GitHub con gh (etiquetas: hito/<Hn>, model
 ### 5.2 `/implementar-issue <número>` — modelo y esfuerzo del issue · worktree
 
 ```
-Implementa el issue #<número> de AvalaSoft en este worktree.
+Implementa el issue #<número> de Valídalo en este worktree.
 Antes de tocar nada: lee CLAUDE.md, el issue completo (gh issue view <número>), docs/decisiones/registro.md y SOLO el documento dueño que el issue indica (y el bloque del hito en docs/11). Si el issue contradice un documento, para y pregúntame; el documento manda y, si hay que cambiarlo, se hace en el mismo PR con una fila en el registro.
 Reglas:
 - Español en código de dominio, rutas, eventos y docs; vertical slice (Endpoint/Comando/Validador/Handler); sin servicios genéricos; nombres exactamente como en 03 y 05.
@@ -126,7 +126,7 @@ Variantes del mismo chat (no abras otro):
 ### 5.3 `/revisar-pr <número>` — Fable · high
 
 ```
-Revisa el PR #<número> de AvalaSoft como revisor externo. No edites código: solo comenta en el PR.
+Revisa el PR #<número> de Valídalo como revisor externo. No edites código: solo comenta en el PR.
 1. Corre /code-review con nivel high sobre el PR.
 2. Cruza el diff contra docs/03 (enums, eventos, invariantes), docs/05 (endpoints, DTOs, eventos públicos), docs/07 (permisos, tenant+empresa en toda consulta) y el bloque del hito en docs/11: cualquier nombre, campo o estado que no coincida es un hallazgo bloqueante.
 3. Verifica que las pruebas demuestran cada criterio de aceptación del issue (no solo que pasan).
@@ -137,7 +137,7 @@ Publica los hallazgos como comentarios en el PR con gh (bloqueante / recomendado
 ### 5.4 `/cerrar-hito <Hn>` — Fable · high
 
 ```
-Cierra el hito <Hn> de AvalaSoft.
+Cierra el hito <Hn> de Valídalo.
 1. Verifica en main cada criterio de aceptación de docs/09 para el hito, ejecutando lo que haga falta (make up, dotnet test, pnpm test, e2e). Marca cumplido / no cumplido con evidencia.
 2. Actualiza docs/11: lo entregado tal cual quedó (endpoints, DTOs, eventos, pantallas), y marca diferencias frente a lo planeado.
 3. Lista decisiones tomadas durante el hito que no están en docs/decisiones/registro.md; añádelas con fecha; si alguna es estructural, redacta el ADR.
@@ -149,7 +149,7 @@ Abre un PR "docs: cierre <Hn>" con todo lo anterior. No cierres el hito si queda
 ### 5.5 `/siguiente [modelo]` — cuando no quieres elegir tú el issue
 
 ```
-Busca en el Project del hito en curso de AvalaSoft el primer issue en "Pendiente" que no tenga dependencias abiertas y cuya etiqueta modelo/… coincida con el modelo de esta sesión (si no indico modelo, cualquiera). Asígnamelo, muévelo a "En sesión", crea la rama feature/H<n>-<tema> y ejecuta /implementar-issue con ese número. Si no hay ninguno elegible, dime cuáles están bloqueados y por qué, y no empieces nada.
+Busca en el Project del hito en curso de Valídalo el primer issue en "Pendiente" que no tenga dependencias abiertas y cuya etiqueta modelo/… coincida con el modelo de esta sesión (si no indico modelo, cualquiera). Asígnamelo, muévelo a "En sesión", crea la rama feature/H<n>-<tema> y ejecuta /implementar-issue con ese número. Si no hay ninguno elegible, dime cuáles están bloqueados y por qué, y no empieces nada.
 ```
 
 Qué ganas y qué pierdes sin pasar el item a mano: ganas no tener que mirar el tablero; conservas todo el valor del issue (alcance, criterios, contexto mínimo, trazabilidad) porque la sesión lo lee igual. Lo único que debes garantizar tú es abrir la sesión con el **modelo** correcto, porque `/siguiente` filtra por él. Lo que **no** debes hacer es abrir una sesión sin issue y decirle "sigue con H1": eso la obliga a reconstruir el alcance desde los documentos, mezcla trabajo de varios issues en un PR y rompe la trazabilidad del 11.
@@ -228,7 +228,7 @@ infra/ci-local/ci-local.sh --directorio <worktree> --salida <carpeta>
 | Qué corre | **backend** (SDK .NET 10 de Linux): `restore`, `build` en Release con advertencias como error, `test` de dominio, SDK, adaptador e integración (Testcontainers con el socket de Docker de la máquina), `pack` de los SDK. **frontend** (Node 22 y pnpm de `packageManager`): `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`. **e2e** (solo con `--solo e2e`, bajo demanda): PostgreSQL, Mailpit y MinIO en una red Docker propia sin puertos del host, la API en un contenedor con .NET + Node, y Playwright en `mcr.microsoft.com/playwright:v<versión de e2e/package.json>-noble` |
 | De dónde salen los comandos | De los propios flujos: `ci.yml` (backend, frontend, imagen) y `e2e.yml` (la e2e): comandos, versiones, rutas de reportes, condiciones. Si un flujo cambia de forma, la corrida termina con `SINCRONÍA con los flujos (ci.yml, e2e.yml)` y `pnpm test` falla (`infra/ci-local/sincronia.test.mjs`) hasta actualizar `infra/ci-local/lib/plan.mjs` |
 | Qué prueba | Los archivos de la carpeta tal como están (incluye cambios sin confirmar) o, con `--rama`, lo confirmado. Para subir se corre sobre lo confirmado y rebasado |
-| Qué imprime | Una línea por paso y un resumen: verde o rojo por trabajo, conteos de pruebas y, si algo falla, qué pruebas fallaron y el final del log. Logs completos y reportes (`.trx`, `playwright-report`, `test-results`) en la carpeta de salida (`--salida`; por omisión `<temp>/avalasoft-ci-local/<id>`) |
+| Qué imprime | Una línea por paso y un resumen: verde o rojo por trabajo, conteos de pruebas y, si algo falla, qué pruebas fallaron y el final del log. Logs completos y reportes (`.trx`, `playwright-report`, `test-results`) en la carpeta de salida (`--salida`; por omisión `<temp>/validalo-ci-local/<id>`) |
 | Varios agentes a la vez | Cada corrida tiene identificador propio (contenedores, proyecto de compose y carpeta de trabajo); ningún puerto del host. No toca la API del usuario (:5080), Mailpit (:8025), MinIO ni las bases que ya corren. Si una corrida murió sin limpiar: `ci-local.sh --limpiar` |
 | Recursos | Cada contenedor de trabajo ve 4 CPU (lo del runner de GitHub, `--cpus`); sin ese tope el paralelismo de vitest o dotnet usa las 14 de la máquina y los demás agentes se quedan sin CPU |
 | Cuándo se corre la e2e | **Solo cuando hace falta** (E2E-1, Producto 2026-11-12: «el CI no necesita la e2e; córrela solo cuando sea estrictamente necesario»): cuando un cambio toca la conexión entre las piezas (arranque, autenticación, configuración del stack) o antes de una entrega. En local: `ci-local.sh --solo e2e` (filtro: `--e2e-args "--grep texto"`); en GitHub: Actions → `e2e` → *Run workflow* (`workflow_dispatch`). Las reglas se prueban con pruebas de dominio, de integración y de Vitest, no con la e2e |

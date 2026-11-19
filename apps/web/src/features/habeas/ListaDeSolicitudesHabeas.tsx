@@ -1,6 +1,6 @@
 import { Alert, Box, Stack, Typography } from '@mui/material';
-import type { SolicitudHabeasDto } from '@avalasoft/api-client';
-import { BarraFiltros, EsqueletoTarjetas, EstadoVacio, FiltroMenu, PaginacionCursor, usePaginacionCursor } from '@avalasoft/ui';
+import type { SolicitudHabeasDto } from '@validalo/api-client';
+import { BarraFiltros, EsqueletoTarjetas, EstadoVacio, FiltroMenu, PaginacionCursor, usePaginacionCursor } from '@validalo/ui';
 import { ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

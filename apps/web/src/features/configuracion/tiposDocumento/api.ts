@@ -9,8 +9,8 @@ import {
   iniciarPlantillaTipoDocumento,
   retirarPlantillaTipoDocumento,
   type TipoDocumentoTenantDto,
-} from '@avalasoft/api-client';
-import { abrirDescarga, sha256Hex } from '@avalasoft/ui';
+} from '@validalo/api-client';
+import { abrirDescarga, sha256Hex } from '@validalo/ui';
 import { invalidarRuta } from '../../../shared/consultas';
 import { cuerpoActualizar, cuerpoCrear, type BorradorTipo } from './modelo';
 

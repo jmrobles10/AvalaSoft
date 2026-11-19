@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ChipNivelRiesgo } from '../../cumplimiento/components/ChipNivelRiesgo';
 import { tonoDeRiesgo } from '../../cumplimiento/modelo';
 import { tramos } from './modelo';
-import { CampoNumero } from '@avalasoft/ui';
+import { CampoNumero } from '@validalo/ui';
 
 export interface TarjetaLimitesProps {
   limiteBajo: string;

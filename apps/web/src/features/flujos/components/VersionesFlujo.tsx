@@ -1,6 +1,6 @@
 import { Box, ButtonBase, Chip, Stack, Typography } from '@mui/material';
-import type { FlujoVersionDto } from '@avalasoft/api-client';
-import { EsqueletoTarjeta, formatearFecha } from '@avalasoft/ui';
+import type { FlujoVersionDto } from '@validalo/api-client';
+import { EsqueletoTarjeta, formatearFecha } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
 

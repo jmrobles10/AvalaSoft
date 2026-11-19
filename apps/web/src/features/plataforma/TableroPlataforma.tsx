@@ -1,6 +1,6 @@
 import { Box, Chip, Skeleton, Stack, Typography } from '@mui/material';
-import type { EmpresaDeGrupoDto, GrupoDto } from '@avalasoft/api-client';
-import { FilaAtencion, formatearFecha, MiniBarra, TarjetaBloque, TarjetaKpi } from '@avalasoft/ui';
+import type { EmpresaDeGrupoDto, GrupoDto } from '@validalo/api-client';
+import { FilaAtencion, formatearFecha, MiniBarra, TarjetaBloque, TarjetaKpi } from '@validalo/ui';
 import { Bell, Building2, Factory, KeyRound, ShieldQuestion, Sparkles, type LucideIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

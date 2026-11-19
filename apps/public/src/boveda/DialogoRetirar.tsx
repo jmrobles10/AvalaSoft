@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Skeleton, Stack, TextField, Typography } from '@mui/material';
-import type { ImpactoDeRetiroDto, VersionDocumentoDto } from '@avalasoft/api-client';
+import type { ImpactoDeRetiroDto, VersionDocumentoDto } from '@validalo/api-client';
 import { Upload } from 'lucide-react';
 import { useState, type ReactNode, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

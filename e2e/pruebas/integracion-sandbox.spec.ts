@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ClienteAvalasoft, validarWebhook } from '@avalasoft/sdk';
+import { ClienteValidalo, validarWebhook } from '@validalo/sdk';
 import { API, llamar, nitAleatorio } from '../soporte/api';
 import { mensajesDe } from '../soporte/correo';
 import { abrirEmbebidoCon, sesionDeUsuario } from '../soporte/embebido';
@@ -55,7 +55,7 @@ test('el integrador prueba todo en el sandbox con el SDK: invitación, webhooks,
   expect(prueba.valor).toMatch(/^vsk_test_/);
 
   // 2. El SDK pregunta por el sandbox: otro tenant, con una copia de pruebas de cada empresa (y el id para X-Empresa).
-  const base = new ClienteAvalasoft({ urlBase: API, apiKey: prueba.valor ?? '', reintentos: 0 });
+  const base = new ClienteValidalo({ urlBase: API, apiKey: prueba.valor ?? '', reintentos: 0 });
   const estado = await base.sandbox.obtener();
   expect(estado).toMatchObject({ existe: true, entorno: 'sandbox', sistemas: ['E2E'] });
   expect(estado.tenantId).not.toBe(e.tenantId);
@@ -75,7 +75,7 @@ test('el integrador prueba todo en el sandbox con el SDK: invitación, webhooks,
 
     // 4. Invitación: el sistema crea el vínculo; el correo no sale, queda en el buzón con el enlace del tercero.
     const identificacion = nitAleatorio();
-    const correo = `empleado.${identificacion.numero}@e2e.avalasoft.co`;
+    const correo = `empleado.${identificacion.numero}@e2e.validalo.co`;
     const vinculo = await sandbox.vinculos.crear(
       {
         tercero: { identificacion, tipoPersona: 'Juridica', nombre: `Servicios ${identificacion.numero} S.A.S.`, contactos: [{ nombre: 'Ana', correo, rol: 'Comercial' }] },
@@ -127,7 +127,7 @@ test('el integrador prueba todo en el sandbox con el SDK: invitación, webhooks,
     await expect(app.getByRole('row').filter({ hasText: `Servicios ${identificacion.numero} S.A.S.` })).toContainText(certificado?.folio ?? '');
 
     // 9. Nada de esto existe en producción: ni el vínculo, ni el certificado verificable, ni el correo, ni la persona.
-    const enProduccion = new ClienteAvalasoft({ urlBase: API, apiKey: e.admin, empresaId: e.norte.id, reintentos: 0 });
+    const enProduccion = new ClienteValidalo({ urlBase: API, apiKey: e.admin, empresaId: e.norte.id, reintentos: 0 });
     expect((await enProduccion.consultas.certificacion(consulta)).datos).toMatchObject({ certificado: false, estadoVinculo: 'SinVinculo', terceroId: null });
     expect((await fetch(`${API}/public/v1/verificar/${certificado?.folio ?? ''}`)).status).toBe(404);
     const usuarios = await llamar<{ correo: string }[]>('GET', '/api/v1/usuarios', { llave: e.admin });

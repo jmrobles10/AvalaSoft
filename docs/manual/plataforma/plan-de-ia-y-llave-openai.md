@@ -90,7 +90,7 @@ Al guardar, el plan queda activo y la llave aparece como «Configurada» con sus
 
 ## Paso 5. Prueba la llave guardada
 
-Puedes probar la llave que ya está guardada sin volver a escribirla. AvalaSoft la prueba contra OpenAI y muestra el resultado con sus últimos cuatro caracteres. La prueba no consume tokens y solo se hace cuando la pides.
+Puedes probar la llave que ya está guardada sin volver a escribirla. Valídalo la prueba contra OpenAI y muestra el resultado con sus últimos cuatro caracteres. La prueba no consume tokens y solo se hace cuando la pides.
 
 > **Pantalla:** `/plataforma/grupos/{id}/empresas/{id}/plan-ia`
 

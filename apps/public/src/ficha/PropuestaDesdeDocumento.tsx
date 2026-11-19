@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Button, Collapse, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import type { PropuestaDeSeccionDto, SoporteSeccionDto } from '@avalasoft/api-client';
+import type { PropuestaDeSeccionDto, SoporteSeccionDto } from '@validalo/api-client';
 import { FileSearch } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -68,7 +68,7 @@ export const auditoria = {
     Tercero: 'Tercero',
     Integracion: 'Integración',
     Sistema: 'Sistema',
-    Plataforma: 'Plataforma AvalaSoft',
+    Plataforma: 'Plataforma Valídalo',
     Migracion: 'Migración',
     desdeSistema: 'desde {{sistema}}',
   },

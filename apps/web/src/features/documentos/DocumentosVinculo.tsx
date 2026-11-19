@@ -1,6 +1,6 @@
 import { Button, Divider, Skeleton, Stack, Typography } from '@mui/material';
-import { SCOPES, type VinculoDto } from '@avalasoft/api-client';
-import { ChipEstado, EstadoVacio, formatearFecha } from '@avalasoft/ui';
+import { SCOPES, type VinculoDto } from '@validalo/api-client';
+import { ChipEstado, EstadoVacio, formatearFecha } from '@validalo/ui';
 import { ClipboardList, Eye, FileText, FolderOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

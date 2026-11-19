@@ -9,7 +9,7 @@ infra/ci-local/ci-local.sh --solo frontend          # un trabajo (backend, front
 infra/ci-local/ci-local.sh --solo e2e                # la e2e, bajo demanda (lee e2e.yml)
 infra/ci-local/ci-local.sh --solo backend,frontend --paralelo
 infra/ci-local/ci-local.sh --rama origin/main       # lo confirmado en una rama o commit, sin tocar ninguna carpeta
-infra/ci-local/ci-local.sh --directorio C:/Fuentes_Git/Avalasoft/.claude/worktrees/otro --salida <carpeta>
+infra/ci-local/ci-local.sh --directorio C:/Fuentes_Git/Validalo/.claude/worktrees/otro --salida <carpeta>
 infra/ci-local/ci-local.sh --plan                   # qué haría, leído de ci.yml y e2e.yml
 infra/ci-local/ci-local.sh --limpiar                # restos de corridas muertas
 infra/ci-local/ci-local.sh --ayuda
@@ -22,7 +22,7 @@ Requisitos: Docker Desktop encendido, Node ≥ 22 y Git en el `PATH`. La primera
 | `--solo a,b` | Trabajos a correr: `backend`, `frontend`, `pruebas-web`, `e2e`, `imagen`. Por omisión `backend`, `frontend` y `pruebas-web`: lo que corre `ci.yml` en cada push y pull request menos la imagen. **La e2e no corre por omisión** (decisión E2E-1: solo se corre cuando hace falta): `--solo e2e` |
 | `--directorio <ruta>` | Carpeta (worktree) a probar, **con sus cambios sin confirmar**. Por omisión, la del propio script |
 | `--rama <rama o commit>` | Prueba lo confirmado (`git archive`), sin tocar ninguna carpeta. Sirve para `origin/main` o una rama rebasada |
-| `--salida <ruta>` | Logs y reportes. Por omisión `<temp>/avalasoft-ci-local/<id>` (se imprime al final) |
+| `--salida <ruta>` | Logs y reportes. Por omisión `<temp>/validalo-ci-local/<id>` (se imprime al final) |
 | `--paralelo` | Los trabajos a la vez, como el CI. Por omisión uno tras otro (la máquina se comparte; en paralelo las pruebas de interfaz y de integración dan más falsos rojos por tiempos) |
 | `--cpus <n>` | CPU de cada contenedor de trabajo. Por omisión 4, lo del runner de GitHub (0 = sin límite) |
 | `--e2e-args "<args>"` | Argumentos extra para `playwright test` (p. ej. `pruebas/x.spec.ts` o `--grep <texto>`, el equivalente de la entrada `grep` de `e2e.yml`). Con `--solo e2e` |
@@ -45,7 +45,7 @@ ROJO   backend   …
          - Probar (…): FALLA · Salió con código 1 · 1233 pruebas en 4 proyectos: 1232 pasan, 1 fallan, 0 omitidas
 --- backend › Probar (…)
 1 falla(s):
-  - Avalasoft.Dominio.Tests.AlgoTests.Hace_algo
+  - Validalo.Dominio.Tests.AlgoTests.Hace_algo
   …(el final del log)
 RESULTADO: ROJO
 ```
@@ -80,7 +80,7 @@ Los flujos se **leen** (`lib/plan.mjs`): los comandos de cada paso son los de `c
 | `setup-dotnet` `10.0.x` | `mcr.microsoft.com/dotnet/sdk:10.0-noble` (Ubuntu 24.04, como el runner) |
 | `setup-node` `22` | `node:22-bookworm` |
 | `pnpm/action-setup` | `npm install -g pnpm@<packageManager de package.json>` |
-| `actions/cache` y `cache: pnpm` | Volúmenes de Docker (`avalasoft-cilocal-*`) con NuGet y la tienda de pnpm, compartidos entre corridas |
+| `actions/cache` y `cache: pnpm` | Volúmenes de Docker (`validalo-cilocal-*`) con NuGet y la tienda de pnpm, compartidos entre corridas |
 | `upload-artifact` | Se copia a la carpeta de salida |
 | `docker compose up postgres mailpit minio` | El mismo comando con un proyecto de compose único por corrida y **sin puertos del host** |
 | Playwright en `mcr.microsoft.com/playwright:v<versión de e2e/package.json>-noble` | El mismo `docker run` del flujo, con `--network host` reemplazado por la red de la API |
@@ -88,12 +88,12 @@ Los flujos se **leen** (`lib/plan.mjs`): los comandos de cada paso son los de `c
 - **backend** (SDK .NET 10): `dotnet restore`, `build` en Release con advertencias como error, `test` de dominio, SDK, adaptador e integración, `pack` de los SDK y el informe de vulnerabilidades, igual que el flujo. Testcontainers dentro del contenedor usa el socket de Docker de la máquina (*Docker outside of Docker*): se monta `/var/run/docker.sock`; PostgreSQL, MinIO y Ryuk de las pruebas de integración corren como contenedores hermanos con puertos aleatorios del anfitrión y se alcanzan por `host.docker.internal` (`TESTCONTAINERS_HOST_OVERRIDE`; sin eso Ryuk no conecta y todas las pruebas de integración fallan con «Initialization has been cancelled»).
 - **frontend** (Node 22): `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `build` y el paquete npm del SDK.
 - **pruebas-web** (Node 22): `pnpm install --frozen-lockfile` y `pnpm test` (Vitest de todos los paquetes, incluido `sincronia.test.mjs`). Va en su propio trabajo, en paralelo con `frontend`, para que cada uno tenga sus CPU (PV-6).
-- **e2e** (`e2e.yml`, bajo demanda): PostgreSQL, Mailpit y MinIO van en una **red Docker propia** (`avalasoft-ci-<id>_default`), con nombres de servicio (`postgres`, `mailpit`, `minio`) y sin publicar puertos: no chocan con la API del usuario en :5080, Mailpit :8025, MinIO :9000 ni las bases que ya corren. La API (`node e2e/soporte/api.mjs`, tal cual) corre en un contenedor con el SDK de .NET 10 y Node 22 juntos (`Dockerfile.dotnet-node`, dos imágenes oficiales) y ve los servicios por nombre con cuatro variables de entorno (`ConnectionStrings__Avalasoft`, `Avalasoft__Correo__Host`/`Puerto`, `Avalasoft__Almacen__Endpoint`). Playwright corre en **su imagen oficial de la versión exacta de `e2e/package.json`**, compartiendo la red del contenedor de la API (el equivalente de `--network host` del runner: `localhost:5090` es la API y los webhooks de las pruebas la alcanzan), con `CI=true` (2 trabajadores, 1 reintento, como en GitHub) y `E2E_MAILPIT` apuntando al Mailpit de la red.
-- **imagen** (solo con `--solo imagen`): construye `src/Avalasoft.Api/Dockerfile` sin publicarlo y descarta el resultado.
+- **e2e** (`e2e.yml`, bajo demanda): PostgreSQL, Mailpit y MinIO van en una **red Docker propia** (`validalo-ci-<id>_default`), con nombres de servicio (`postgres`, `mailpit`, `minio`) y sin publicar puertos: no chocan con la API del usuario en :5080, Mailpit :8025, MinIO :9000 ni las bases que ya corren. La API (`node e2e/soporte/api.mjs`, tal cual) corre en un contenedor con el SDK de .NET 10 y Node 22 juntos (`Dockerfile.dotnet-node`, dos imágenes oficiales) y ve los servicios por nombre con cuatro variables de entorno (`ConnectionStrings__Validalo`, `Validalo__Correo__Host`/`Puerto`, `Validalo__Almacen__Endpoint`). Playwright corre en **su imagen oficial de la versión exacta de `e2e/package.json`**, compartiendo la red del contenedor de la API (el equivalente de `--network host` del runner: `localhost:5090` es la API y los webhooks de las pruebas la alcanzan), con `CI=true` (2 trabajadores, 1 reintento, como en GitHub) y `E2E_MAILPIT` apuntando al Mailpit de la red.
+- **imagen** (solo con `--solo imagen`): construye `src/Validalo.Api/Dockerfile` sin publicarlo y descarta el resultado.
 
 ## Varios agentes a la vez
 
-Cada corrida tiene un identificador propio (`ci<hora><azar>`): contenedores `avalasoft-ci-<id>-*` con etiquetas `ci-local.*`, proyecto de compose `avalasoft-ci-<id>`, carpeta de trabajo `/cache/runs/<id>` dentro del volumen compartido y carpeta de salida propia. Nada usa puertos del host. Los volúmenes de caché (NuGet y pnpm) se comparten: es seguro, solo acelera. Al terminar, o al interrumpir con Ctrl+C, se borra todo lo de la corrida. Si una corrida murió sin limpiar (se cerró la terminal, se cayó la máquina), `ci-local.sh --limpiar` quita los restos de las corridas cuyo proceso ya no existe y respeta las vivas.
+Cada corrida tiene un identificador propio (`ci<hora><azar>`): contenedores `validalo-ci-<id>-*` con etiquetas `ci-local.*`, proyecto de compose `validalo-ci-<id>`, carpeta de trabajo `/cache/runs/<id>` dentro del volumen compartido y carpeta de salida propia. Nada usa puertos del host. Los volúmenes de caché (NuGet y pnpm) se comparten: es seguro, solo acelera. Al terminar, o al interrumpir con Ctrl+C, se borra todo lo de la corrida. Si una corrida murió sin limpiar (se cerró la terminal, se cayó la máquina), `ci-local.sh --limpiar` quita los restos de las corridas cuyo proceso ya no existe y respeta las vivas.
 
 Cada contenedor ve 4 CPU (`--cpus`): sin ese tope vitest y dotnet usan las 14 de la máquina, dejan sin CPU a los demás agentes y las pruebas de interfaz (que esperan 20 s) fallan por tiempo agotado.
 
@@ -120,7 +120,7 @@ Medido el 2026-11-11 sobre `origin/main` (`7413fbf`), un trabajo tras otro, con 
 | frontend | 16 min 02 s | instalar 4 s · lint 5 min 10 s · tipos 1 min 01 s · pruebas 7 min 39 s (1096 pruebas en 158 archivos) · build 1 min 58 s · paquete npm 1 s |
 | backend | 9 min 52 s | restore 19 s · build 1 min 17 s · pruebas 7 min 46 s (1232 pruebas en 4 proyectos) · pack 7 s · vulnerables 19 s |
 | e2e (bajo demanda) | 16 min 40 s | servicios 6 s · instalar 3 s · compilar las apps y publicar la API 1 min 36 s · Playwright 14 min 47 s (106 pruebas) |
-| imagen (opcional, `--solo imagen`) | 3 min 20 s | construir `src/Avalasoft.Api/Dockerfile` sin publicarlo (medido aparte) |
+| imagen (opcional, `--solo imagen`) | 3 min 20 s | construir `src/Validalo.Api/Dockerfile` sin publicarlo (medido aparte) |
 | **Todo seguido (frontend, backend y e2e)** | **42 min 47 s** | |
 | **Lo que corre por omisión (frontend y backend, sin e2e)** | **≈ 26 min** | 16 min 02 s + 9 min 52 s de la medición de arriba |
 

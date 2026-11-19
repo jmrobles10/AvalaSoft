@@ -1,6 +1,6 @@
 import { Stack, TextField, Typography } from '@mui/material';
-import type { PerfilDeFichaDto } from '@avalasoft/api-client';
-import { SeccionPlana } from '@avalasoft/ui';
+import type { PerfilDeFichaDto } from '@validalo/api-client';
+import { SeccionPlana } from '@validalo/ui';
 import { Briefcase, IdCard, MapPin, UserRoundCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CampoCifra, CampoFechaFicha, CampoSiNo, CampoTexto, Rejilla } from '../campos';

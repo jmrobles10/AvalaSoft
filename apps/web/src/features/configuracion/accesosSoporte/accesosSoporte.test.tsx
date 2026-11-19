@@ -1,8 +1,8 @@
 import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen } from '@testing-library/react';
-import type { EmpresaDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import type { EmpresaDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { describe, expect, it, vi } from 'vitest';
 import '../../../i18n';
 import { DialogoConcederAcceso } from './DialogoConcederAcceso';
@@ -27,7 +27,7 @@ describe('Accesos de soporte (CF-2)', () => {
     const empresa = { id: 'e1', nombre: 'Constructora Norte S.A.S.', activa: true } as EmpresaDto;
     render(
       <QueryClientProvider client={new QueryClient()}>
-        <ThemeProvider theme={createAvalasoftTheme('light')}>
+        <ThemeProvider theme={createValidaloTheme('light')}>
           <DialogoConcederAcceso empresas={[empresa]} empresaInicial="e1" onCerrar={vi.fn()} />
         </ThemeProvider>
       </QueryClientProvider>,

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { actualizarMatrizDeRiesgo, getObtenerMatrizDeRiesgoQueryKey, getObtenerMatrizDeRiesgoQueryOptions, type ActualizarMatrizDeRiesgoDto } from '@avalasoft/api-client';
+import { actualizarMatrizDeRiesgo, getObtenerMatrizDeRiesgoQueryKey, getObtenerMatrizDeRiesgoQueryOptions, type ActualizarMatrizDeRiesgoDto } from '@validalo/api-client';
 import { conEmpresa } from '../../../shared/consultas';
 
 /** La matriz guardada de la empresa o, si aún no tiene, la plantilla sugerida (`esPorDefecto`). La leen la configuración y el estudio. */

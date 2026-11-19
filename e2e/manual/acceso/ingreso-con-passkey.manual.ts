@@ -18,7 +18,7 @@ recorrido(
   },
   async ({ page }) => {
     const g = await crearGrupoDirecto();
-    const correo = `rita.${Date.now().toString(36)}@e2e.avalasoft.co`;
+    const correo = `rita.${Date.now().toString(36)}@e2e.validalo.co`;
     await crearUsuario(g, 'Rita Revisora', 'Revisor', correo);
     await autenticadorVirtual(page);
     await page.goto('/app/');
@@ -36,7 +36,7 @@ recorrido(
         'Desde el menú de tu cuenta, abre «Mi cuenta». La sección «Passkeys» lista las que tienes registradas; hoy está vacía. ' +
         'Una passkey usa la huella, el rostro o el PIN de tu dispositivo (o una llave de seguridad), así que no necesitas recordar nada.',
       resaltar: page.getByRole('heading', { name: 'Passkeys' }),
-      variantes: [{ cuando: 'Tu grupo exige passkey para todos', entonces: 'AvalaSoft te pide registrar una la próxima vez que ingreses.' }],
+      variantes: [{ cuando: 'Tu grupo exige passkey para todos', entonces: 'Valídalo te pide registrar una la próxima vez que ingreses.' }],
     });
 
     await page.getByRole('button', { name: 'Agregar passkey' }).click();
@@ -46,7 +46,7 @@ recorrido(
       titulo: 'Agrega una passkey y ponle un nombre',
       explicacion:
         'Al agregar una passkey, escribe un nombre para reconocerla (por ejemplo, «Mi teléfono») y pulsa «Registrar passkey». El navegador te pedirá confirmar con tu huella, tu rostro o el PIN del dispositivo. ' +
-        'AvalaSoft te avisa por correo cada vez que se registra una passkey en tu cuenta.',
+        'Valídalo te avisa por correo cada vez que se registra una passkey en tu cuenta.',
       resaltar: dialogo,
     });
     await dialogo.getByRole('button', { name: 'Registrar passkey' }).click();

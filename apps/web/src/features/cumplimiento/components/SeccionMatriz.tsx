@@ -1,5 +1,5 @@
 import { Alert, Box, FormControlLabel, FormHelperText, FormLabel, MenuItem, Skeleton, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import type { DebidaDiligencia, FactorDeRiesgoDto, MatrizDeRiesgoDto, ResultadoDeMatrizDto } from '@avalasoft/api-client';
+import type { DebidaDiligencia, FactorDeRiesgoDto, MatrizDeRiesgoDto, ResultadoDeMatrizDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../../shared/errores';
 import {

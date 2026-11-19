@@ -1,6 +1,6 @@
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
-import type { PlanIaEmpresaDto } from '@avalasoft/api-client';
-import { AlineadoConCampo, CabeceraEsqueleto, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar } from '@avalasoft/ui';
+import type { PlanIaEmpresaDto } from '@validalo/api-client';
+import { AlineadoConCampo, CabeceraEsqueleto, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar } from '@validalo/ui';
 import { Cpu, Gauge, KeyRound } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -5,7 +5,7 @@ import {
   quitarDominioDeCorreo,
   verificarDominioDeCorreo,
   type ActualizarDominioDeCorreoDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../../shared/consultas';
 
 /** El dominio de correo propio de la empresa (OD-18): registros DNS, estado de la verificación y remitente en uso. */

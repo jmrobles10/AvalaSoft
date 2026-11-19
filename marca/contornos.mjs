@@ -1,10 +1,10 @@
-// Contornos de la palabra «avalasoft» del logotipo (MA-1, docs/marca.md). Lee la fuente Quicksand Bold (SIL OFL 1.1, paquete
+// Contornos de la palabra «validalo» del logotipo (MA-1, docs/marca.md). Lee la fuente Quicksand Bold (SIL OFL 1.1, paquete
 // `@fontsource/quicksand`, solo dependencia de desarrollo de la marca), compone la palabra glifo a glifo con un seguimiento negativo y un
 // ajuste óptico por pares (mide el espacio real entre cada par de letras y lo parejo), la inclina y escribe los trazados en
 // `packages/ui/src/marca/palabra.ts`. A partir de ahí el logotipo es geometría: `Logo`, los SVG, los PNG y el PDF dibujan esos trazados y
 // no dependen de ninguna fuente instalada ni cargada.
 //
-//   pnpm --filter @avalasoft/marca contornos
+//   pnpm --filter @validalo/marca contornos
 //
 // Solo hace falta correrlo para cambiar la fuente, el peso, el seguimiento o la inclinación; el resultado se versiona.
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -28,7 +28,7 @@ const HUECO_MAXIMO = 24;
 /** Decimales de los trazados: a 1 décima de unidad (0,1 % de la letra) no se ve a ningún tamaño del producto. */
 const DECIMALES = 1;
 /** Letras que forman «avala» (color de marca); el resto es «soft». */
-const TEXTO = 'avalasoft';
+const TEXTO = 'validalo';
 const CUANTAS_AVALA = 5;
 
 const archivo = readFileSync(join(aqui, FUENTE.archivo));
@@ -162,7 +162,7 @@ const limites = {
 };
 const redondear = (n) => Math.round(n * 10 ** DECIMALES) / 10 ** DECIMALES;
 
-const salida = `/* Contornos de la palabra «avalasoft» del logotipo. GENERADO por marca/contornos.mjs (pnpm --filter @avalasoft/marca contornos); no editar a mano.
+const salida = `/* Contornos de la palabra «validalo» del logotipo. GENERADO por marca/contornos.mjs (pnpm --filter @validalo/marca contornos); no editar a mano.
  * Fuente: ${FUENTE.nombre}, convertida a trazados, con seguimiento de ${String(SEGUIMIENTO / 100).replace('.', ',')} em y espaciado parejo por pares, e inclinada ${String(INCLINACION)}°.
  * Tamaño de la letra: ${String(TAMANO)} unidades; línea base en y = 0 y hacia arriba, negativo. */
 

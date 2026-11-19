@@ -1,6 +1,6 @@
 import { Box, Button, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
-import type { CompletitudSeccionDto } from '@avalasoft/api-client';
-import { fondoDelContenedor } from '@avalasoft/ui';
+import type { CompletitudSeccionDto } from '@validalo/api-client';
+import { fondoDelContenedor } from '@validalo/ui';
 import { CheckCircle2, CircleAlert } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

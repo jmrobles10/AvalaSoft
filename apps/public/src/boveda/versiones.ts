@@ -1,6 +1,6 @@
-import type { ComparticionPublicaDto, DocumentoBovedaDto, VersionDocumentoDto } from '@avalasoft/api-client';
+import type { ComparticionPublicaDto, DocumentoBovedaDto, VersionDocumentoDto } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
-import { formatearDiaCivil } from '@avalasoft/ui';
+import { formatearDiaCivil } from '@validalo/ui';
 import { estadoDeVigencia, textoVigencia } from '../vigencia/vigencia';
 import { MAXIMO_PAGINAS } from './subida';
 

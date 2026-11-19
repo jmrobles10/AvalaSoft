@@ -1,6 +1,6 @@
 import { Button, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { SCOPES, type AyudaDeDocumentoDto } from '@avalasoft/api-client';
-import { BarraFiltros, EsqueletoTabla, EstadoVacio, FiltroMenu, MarcoTabla, visualmenteOculto } from '@avalasoft/ui';
+import { SCOPES, type AyudaDeDocumentoDto } from '@validalo/api-client';
+import { BarraFiltros, EsqueletoTabla, EstadoVacio, FiltroMenu, MarcoTabla, visualmenteOculto } from '@validalo/ui';
 import { BookOpenText } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

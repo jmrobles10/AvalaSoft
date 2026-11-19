@@ -1,15 +1,15 @@
-# Guía de integración con AvalaSoft
+# Guía de integración con Valídalo
 
 | Estado | Fecha | Responsable |
 |---|---|---|
 | Vigente (implementado: H9, sandbox SB-1…SB-12 e integración abierta IO-1…IO-10) | 2026-11-11 | Arquitectura |
 
-**Para quién es.** Para el equipo de un sistema que se integra con AvalaSoft (un ERP, un portal de proveedores, un sistema de compras o de
+**Para quién es.** Para el equipo de un sistema que se integra con Valídalo (un ERP, un portal de proveedores, un sistema de compras o de
 pagos). Está escrita para que una persona externa se integre leyendo **solo este documento**: cada paso trae el ejemplo con `curl`, con el
 SDK de .NET y con el de TypeScript. El detalle de cada endpoint y DTO está en [05 — API, contratos y webhooks](05-api-contratos-y-webhooks.md);
 las decisiones de fondo, en el [registro](decisiones/registro.md).
 
-**Qué hace AvalaSoft por ti.** Valida a terceros (proveedores, clientes, empleados…) para tus empresas: les pide los documentos, los revisa
+**Qué hace Valídalo por ti.** Valida a terceros (proveedores, clientes, empleados…) para tus empresas: les pide los documentos, los revisa
 con IA y con tus áreas, y emite un **certificado verificable** que tu sistema consulta antes de pagar o contratar. Tu sistema invita, escucha
 (webhooks) o pregunta (pull, consulta de certificación) y, si quieres, embebe las pantallas de revisión en tu propia aplicación.
 
@@ -37,7 +37,7 @@ con IA y con tus áreas, y emite un **certificado verificable** que tu sistema c
 
 | Concepto | Qué es |
 |---|---|
-| **Grupo** (tenant) | Tu cliente de AvalaSoft: un grupo empresarial. Toda credencial pertenece a un grupo. |
+| **Grupo** (tenant) | Tu cliente de Valídalo: un grupo empresarial. Toda credencial pertenece a un grupo. |
 | **Empresa** | Una razón social del grupo. Cada empresa decide en privado (sus flujos, sus áreas, sus aprobaciones). Casi toda llamada es **de una empresa** y lo dice la cabecera `X-Empresa`. |
 | **Sistema integrado** | Tu sistema (código `SRM`, `MARCO`…) registrado en el grupo con su **clave pública**. Fija quién eres en las referencias y permite actuar en nombre de personas. |
 | **API key** | La credencial de tu backend: `X-Api-Key: vsk_{entorno}_{grupo}_{secreto}`. Lleva **permisos** (scopes) y **alcance** (empresas). |
@@ -51,12 +51,12 @@ Hay **dos entornos**: **producción** (llaves `vsk_live_…`) y **sandbox** (lla
 URL. Tu código es el mismo en los dos; cambia la llave (y el `X-Empresa`, ver §5).
 
 ```
-Tu backend ── X-Api-Key + X-Empresa ──▶ AvalaSoft API ──▶ invita al tercero (correo con enlace)
+Tu backend ── X-Api-Key + X-Empresa ──▶ Valídalo API ──▶ invita al tercero (correo con enlace)
      ▲                                        │
      ├──── webhook firmado (certificado.emitido, vinculo.bloqueado…) ◀──┤
      ├──── pull GET /eventos?desde=cursor  ◀────────────────────────────┤
      └──── GET /consultas/certificacion (ETag/304) ─────────────────────┘
-Tu aplicación ── <iframe> con la sesión que canjea tu backend ──▶ pantallas de revisión de AvalaSoft
+Tu aplicación ── <iframe> con la sesión que canjea tu backend ──▶ pantallas de revisión de Valídalo
 ```
 
 ### 1.1 Integrar un sistema nuevo en 5 pasos
@@ -65,7 +65,7 @@ Para un ERP, un portal o un CRM cualquiera (el SRM, el Portal y Marco son los pr
 
 1. **Registrar el sistema y su llave.** Un administrador del grupo crea el sistema (`POST /api/v1/sistemas { codigo, nombre, clavePublicaPem, origenesPermitidos }`) y su API key con los permisos mínimos y solo las empresas que integra (§2 y §3 de esta guía). El `codigo` es el que identifica a ese sistema en todas las referencias externas.
 2. **Identificar sus terceros y vínculos (referencias externas).** Crear el tercero con su clave (`POST /api/v1/terceros { …, referenciaExterna: { id: "C-77" } }`: idempotente, 201 la primera vez y 200 el mismo tercero después) o agregarla (`POST /terceros/{id}/referencias`); crear el vínculo con la suya (`POST /api/v1/vinculos { …, referenciaExterna }` o `POST /vinculos/{id}/referencias`) y buscar después por clave (`GET /terceros/por-referencia?sistema=&clave=`, `GET /vinculos/por-referencia?sistema=&clave=`). El sistema lo fija la API key y las claves son **privadas del tenant**: otro tenant con un sistema del mismo código no las ve ni choca con ellas.
-3. **Escuchar lo que pasa.** Webhooks firmados (`POST /api/v1/webhooks`) o pull (`GET /api/v1/eventos?desde=`), con el mismo sobre; deduplicar por `Avalasoft-Event-Id` (§9 y §10). Los eventos que importan están en [docs/08 §3.4](08-integracion-y-migracion.md).
+3. **Escuchar lo que pasa.** Webhooks firmados (`POST /api/v1/webhooks`) o pull (`GET /api/v1/eventos?desde=`), con el mismo sobre; deduplicar por `Validalo-Event-Id` (§9 y §10). Los eventos que importan están en [docs/08 §3.4](08-integracion-y-migracion.md).
 4. **Consultar lo aceptado.** `GET /api/v1/vinculos/{id}/ficha` entrega, para que cualquier ERP cree o actualice al tercero: las secciones aceptadas normalizadas (con las calidades tributarias de Colombia, el lugar de expedición del representante y el representante principal), la **cuenta designada** (banco con su código de compensación y SWIFT, contacto de pagos), los **contactos por empresa** y las **referencias** del vínculo y del tercero. `GET /consultas/certificacion` responde si se le puede pagar o contratar (§11).
 5. **Mostrar las pantallas.** Embebido del tercero (§8.1) o de las personas de la empresa (§8), con orígenes validados; y, si hay históricos, un **adaptador de origen** para el importador ([docs/08 §6.6](08-integracion-y-migracion.md)): la misma forma que el del Portal (`IAdaptadorDeOrigen`), sin tocar el núcleo.
 
@@ -73,7 +73,7 @@ Sin SRM y sin Portal todo esto funciona igual: son clientes de la API como cualq
 
 ## 2. Alta del sistema integrador desde la consola
 
-La hace un **administrador del grupo** en la aplicación web de AvalaSoft (`{host}/app/`), sección **Configuración** (el engranaje).
+La hace un **administrador del grupo** en la aplicación web de Valídalo (`{host}/app/`), sección **Configuración** (el engranaje).
 
 1. **Registra tu sistema.** Configuración › **Sistemas** › «Registrar sistema»:
    - **Código**: mayúsculas, único en el grupo (`SRM`, `MARCO`, `PORTAL`).
@@ -122,43 +122,43 @@ Todo llamado lleva:
 |---|---|
 | `X-Api-Key` | Tu credencial. |
 | `X-Empresa` | La empresa sobre la que actúas (obligatoria salvo que tu llave tenga una sola empresa). |
-| `Idempotency-Key` | **Obligatoria en todo `POST` que crea algo**: una cadena que identifica la operación (`srm-sol-00123`). Repetir la misma clave con el mismo cuerpo devuelve la misma respuesta (`Idempotent-Replayed: true`), así un reintento nunca duplica; la misma clave con otro cuerpo da `422 clave-idempotencia-reutilizada`. Vale 24 horas. **Si la respuesta original traía un secreto** (el `valor` de una API key, el `secreto` de un webhook, un `token` de sesión), la repetida lo devuelve **sin él** y lo dice (`Avalasoft-Secretos-Omitidos`, `secretosOmitidos`): guárdalo al recibirlo, porque no se vuelve a mostrar. |
+| `Idempotency-Key` | **Obligatoria en todo `POST` que crea algo**: una cadena que identifica la operación (`srm-sol-00123`). Repetir la misma clave con el mismo cuerpo devuelve la misma respuesta (`Idempotent-Replayed: true`), así un reintento nunca duplica; la misma clave con otro cuerpo da `422 clave-idempotencia-reutilizada`. Vale 24 horas. **Si la respuesta original traía un secreto** (el `valor` de una API key, el `secreto` de un webhook, un `token` de sesión), la repetida lo devuelve **sin él** y lo dice (`Validalo-Secretos-Omitidos`, `secretosOmitidos`): guárdalo al recibirlo, porque no se vuelve a mostrar. |
 | `X-Correlation-Id` | Opcional: un id tuyo que vuelve en la respuesta y en los registros; cítalo al pedir soporte. |
 | `If-None-Match` | En la consulta de certificación, con el `ETag` que ya tienes (§11). |
 
 Prueba que tu llave funciona (lista las empresas que ve):
 
 ```bash
-curl -s https://valida.cliente.co/api/v1/empresas -H "X-Api-Key: $AVALASOFT_API_KEY"
+curl -s https://valida.cliente.co/api/v1/empresas -H "X-Api-Key: $VALIDALO_API_KEY"
 ```
 
 ```csharp
 // .NET: un cliente tipado por IHttpClientFactory (net7.0, net8.0 o net10.0).
-services.AddSingleton(new OpcionesAvalasoft
+services.AddSingleton(new OpcionesValidalo
 {
-    UrlBase = new Uri(config["Avalasoft:UrlBase"]!),
-    ApiKey = config["Avalasoft:ApiKey"]!,
-    EmpresaId = Guid.Parse(config["Avalasoft:EmpresaId"]!),
-    Firmante = new FirmanteDeAsercionesDelegadas("SRM", File.ReadAllText(config["Avalasoft:ClavePrivadaPemArchivo"]!)) // solo para §7 y §8
+    UrlBase = new Uri(config["Validalo:UrlBase"]!),
+    ApiKey = config["Validalo:ApiKey"]!,
+    EmpresaId = Guid.Parse(config["Validalo:EmpresaId"]!),
+    Firmante = new FirmanteDeAsercionesDelegadas("SRM", File.ReadAllText(config["Validalo:ClavePrivadaPemArchivo"]!)) // solo para §7 y §8
 });
-services.AddHttpClient<IClienteAvalasoft, ClienteAvalasoft>(http => http.Timeout = TimeSpan.FromSeconds(5));
+services.AddHttpClient<IClienteValidalo, ClienteValidalo>(http => http.Timeout = TimeSpan.FromSeconds(5));
 ```
 
 ```ts
 // TypeScript (backend con Node 20+; nunca en el navegador).
-import { ClienteAvalasoft, crearFirmanteDeAserciones } from '@avalasoft/sdk';
+import { ClienteValidalo, crearFirmanteDeAserciones } from '@validalo/sdk';
 
-const avalasoft = new ClienteAvalasoft({
-  urlBase: process.env.AVALASOFT_URL!,
-  apiKey: process.env.AVALASOFT_API_KEY!,
-  empresaId: process.env.AVALASOFT_EMPRESA_ID,
-  firmante: crearFirmanteDeAserciones('SRM', process.env.AVALASOFT_CLAVE_PRIVADA_PKCS8!), // solo para §7 y §8
+const validalo = new ClienteValidalo({
+  urlBase: process.env.VALIDALO_URL!,
+  apiKey: process.env.VALIDALO_API_KEY!,
+  empresaId: process.env.VALIDALO_EMPRESA_ID,
+  firmante: crearFirmanteDeAserciones('SRM', process.env.VALIDALO_CLAVE_PRIVADA_PKCS8!), // solo para §7 y §8
 });
 ```
 
 Los SDK ponen solas las cabeceras, el `Idempotency-Key` de cada `POST` (el mismo en los reintentos) y reintentan solo lo idempotente
-(`GET`, `PUT` y los `POST` con clave explícita) ante `5xx`, `408`, `429` o error de red. Se instalan con `dotnet add package Avalasoft.Sdk` y
-`npm install @avalasoft/sdk`; sus README y CHANGELOG viven en `src/Avalasoft.Sdk` y `packages/sdk`.
+(`GET`, `PUT` y los `POST` con clave explícita) ante `5xx`, `408`, `429` o error de red. Se instalan con `dotnet add package Validalo.Sdk` y
+`npm install @validalo/sdk`; sus README y CHANGELOG viven en `src/Validalo.Sdk` y `packages/sdk`.
 
 ## 5. Sandbox: probar sin riesgo
 
@@ -170,12 +170,12 @@ El sandbox es un **entorno de pruebas aislado de tu grupo**, en la misma URL. Un
 |---|---|
 | **Empresas** | Cada empresa tiene una **copia de pruebas con otro id**: el `X-Empresa` de una llave de prueba es el id de la copia (`GET /api/v1/sandbox` lo da: `empresas[].id`, con `produccionId` al lado). Su nombre termina en «(sandbox)» y su prefijo de folio lleva una `T` por delante (`TNORTE-C-…`). El id de la empresa real no existe para una llave de prueba (`404`), ni al revés. |
 | **Terceros** | Aislados: el mismo NIT en el sandbox es **otro tercero** distinto del real (con su propia bóveda). Un tercero de producción nunca ve un vínculo de pruebas. |
-| **Correos** | **No salen.** Cada correo que AvalaSoft habría enviado (invitación, código OTP, avisos…) queda en el **buzón del sandbox**, que lees por API con el enlace de acceso incluido. |
+| **Correos** | **No salen.** Cada correo que Valídalo habría enviado (invitación, código OTP, avisos…) queda en el **buzón del sandbox**, que lees por API con el enlace de acceso incluido. |
 | **IA y listas restrictivas** | **Simuladas**, sin red ni costo. La IA lee marcas del propio archivo (`[[clave=valor]]` dentro del PDF o imagen); un tercero cuyo nombre contenga «coincidencia» produce una coincidencia en listas. |
 | **Personas** | Quien llega por identidad delegada nace **administrador** del sandbox (acotado por los permisos de tu llave): no hay a quién pedirle los roles. |
 | **Certificados** | **No son verificables** públicamente (`GET /public/v1/verificar/{folio}` responde 404) y no aparecen en la consola de Plataforma ni en sus cuentas. |
 | **Webhooks y eventos** | Los del sandbox: crea las suscripciones **con tu llave de prueba**; sus eventos son del tenant del sandbox. |
-| **Respuestas** | Todas llevan la cabecera `Avalasoft-Entorno: sandbox`. |
+| **Respuestas** | Todas llevan la cabecera `Validalo-Entorno: sandbox`. |
 | **Llaves** | Se administran en producción (también las de prueba): una credencial del sandbox no crea ni rota llaves (`422 no-disponible-en-sandbox`). |
 
 **Operarlo** (permiso `sandbox:administrar`; funciona con la llave de producción y con la de prueba, siempre sobre el sandbox):
@@ -208,7 +208,7 @@ curl -s "https://valida.cliente.co/api/v1/sandbox/correos?para=ana@aceros.co" -H
 ```
 
 ```csharp
-var sandbox = new ClienteAvalasoft(http, new OpcionesAvalasoft { UrlBase = url, ApiKey = llaveDePrueba });
+var sandbox = new ClienteValidalo(http, new OpcionesValidalo { UrlBase = url, ApiKey = llaveDePrueba });
 var estado = await sandbox.Sandbox.ObtenerAsync();
 var empresa = estado.Empresas.Single(e => e.ProduccionId == empresaReal).Id;          // el X-Empresa del sandbox
 var cliente = sandbox.ParaEmpresa(empresa);
@@ -219,7 +219,7 @@ await cliente.Sandbox.ReiniciarAsync();                                         
 ```
 
 ```ts
-const sandbox = new ClienteAvalasoft({ urlBase, apiKey: llaveDePrueba });
+const sandbox = new ClienteValidalo({ urlBase, apiKey: llaveDePrueba });
 const { empresas } = await sandbox.sandbox.obtener();
 const cliente = sandbox.paraEmpresa(empresas.find((e) => e.produccionId === empresaReal)!.id);
 await cliente.vinculos.crear(nuevoVinculo, 'prueba-1');
@@ -234,12 +234,12 @@ de la guía:** reinicia y repite; todo lo demás es idéntico a producción.
 
 ## 6. Invitar a un tercero
 
-Tu sistema crea el **vínculo** con su referencia y AvalaSoft **reconcilia al tercero por su identificación** (si ya existe en la
+Tu sistema crea el **vínculo** con su referencia y Valídalo **reconcilia al tercero por su identificación** (si ya existe en la
 plataforma lo reutiliza sin tocar sus datos) y le envía la invitación por correo. Usa una clave de idempotencia estable (el id de la solicitud en tu sistema).
 
 ```bash
 curl -s https://valida.cliente.co/api/v1/vinculos \
-  -H "X-Api-Key: $AVALASOFT_API_KEY" -H "X-Empresa: $EMPRESA" -H "Idempotency-Key: srm-sol-00123" -H "Content-Type: application/json" \
+  -H "X-Api-Key: $VALIDALO_API_KEY" -H "X-Empresa: $EMPRESA" -H "Idempotency-Key: srm-sol-00123" -H "Content-Type: application/json" \
   -d '{
     "tercero": { "identificacion": { "pais": "CO", "tipo": "NIT", "numero": "900123456" }, "tipoPersona": "Juridica", "nombre": "Aceros S.A.S.",
                  "contactos": [ { "nombre": "Ana Gómez", "correo": "ana@aceros.co", "rol": "Comercial" } ] },
@@ -249,16 +249,16 @@ curl -s https://valida.cliente.co/api/v1/vinculos \
 ```
 
 ```csharp
-var vinculo = await avalasoft.Vinculos.CrearAsync(new CrearVinculoDto(null,
+var vinculo = await validalo.Vinculos.CrearAsync(new CrearVinculoDto(null,
     new CrearTerceroDto(new IdentificacionDto("CO", "NIT", "900123456"), "Juridica", "Aceros S.A.S.", null,
         [new ContactoDto("Ana Gómez", "ana@aceros.co", null, "Comercial")]),
     "PROVEEDOR", null, "ana@aceros.co", new ReferenciaExternaDto("SRM", "ADP-00123")), claveIdempotencia: "srm-sol-00123");
-// Reenviar: await avalasoft.Invitaciones.EnviarAsync(vinculo.Id, new InvitacionDto(null));
-// Buscar después por tu referencia: await avalasoft.Vinculos.PorReferenciaAsync("SRM", "ADP-00123");
+// Reenviar: await validalo.Invitaciones.EnviarAsync(vinculo.Id, new InvitacionDto(null));
+// Buscar después por tu referencia: await validalo.Vinculos.PorReferenciaAsync("SRM", "ADP-00123");
 ```
 
 ```ts
-const vinculo = await avalasoft.vinculos.crear(
+const vinculo = await validalo.vinculos.crear(
   { tercero: { identificacion: { pais: 'CO', tipo: 'NIT', numero: '900123456' }, tipoPersona: 'Juridica', nombre: 'Aceros S.A.S.',
       contactos: [{ nombre: 'Ana Gómez', correo: 'ana@aceros.co', rol: 'Comercial' }] },
     tipoVinculo: 'PROVEEDOR', correoInvitacion: 'ana@aceros.co', referenciaExterna: { sistema: 'SRM', id: 'ADP-00123' } },
@@ -290,26 +290,26 @@ con la **clave privada de tu sistema**.
 |---|---|
 | Algoritmo | `RS256` (clave RSA ≥ 2048) o `ES256` (EC P-256) |
 | `iss` | El **código** de tu sistema (`SRM`) |
-| `aud` | `avalasoft` |
+| `aud` | `validalo` |
 | `sub` | El id de la persona **en tu sistema** |
 | `name` · `email` | Su nombre y su correo |
 | `jti` | Un identificador **nuevo por aserción** (un UUID): cada una vale **una sola vez** |
 | `iat` · `exp` | `exp` a **5 minutos o menos** de ahora |
 
-El **permiso efectivo** es la **intersección** de lo que permite tu llave y lo que permiten los roles de la persona en AvalaSoft (y las
+El **permiso efectivo** es la **intersección** de lo que permite tu llave y lo que permiten los roles de la persona en Valídalo (y las
 empresas, igual). La primera vez que llega alguien que no existe, se crea (o se enlaza con quien ya tiene ese correo); un administrador le asigna roles.
 Los SDK firman **una aserción nueva en cada intento**:
 
 ```csharp
 using var firmante = new FirmanteDeAsercionesDelegadas("SRM", File.ReadAllText("srm-privada.pem"));
-var laura = new ClienteAvalasoft(http, new OpcionesAvalasoft { UrlBase = url, ApiKey = llave, EmpresaId = empresa, Firmante = firmante })
+var laura = new ClienteValidalo(http, new OpcionesValidalo { UrlBase = url, ApiKey = llave, EmpresaId = empresa, Firmante = firmante })
     .ComoUsuario(new UsuarioDelegado("srm-laura", "Laura Pérez", "laura@cliente.co"));
 await laura.Vinculos.ObtenerAsync(vinculoId);          // como Laura
 ```
 
 ```ts
 const firmante = crearFirmanteDeAserciones('SRM', clavePrivadaPkcs8);   // PEM PKCS#8
-const laura = new ClienteAvalasoft({ urlBase, apiKey, empresaId, firmante }).comoUsuario({ sub: 'srm-laura', nombre: 'Laura Pérez', correo: 'laura@cliente.co' });
+const laura = new ClienteValidalo({ urlBase, apiKey, empresaId, firmante }).comoUsuario({ sub: 'srm-laura', nombre: 'Laura Pérez', correo: 'laura@cliente.co' });
 await laura.vinculos.obtener(vinculoId);
 ```
 
@@ -319,7 +319,7 @@ Sin SDK (Bash + OpenSSL, RS256):
 b64() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
 AHORA=$(date +%s)
 CABECERA=$(printf '{"alg":"RS256","typ":"JWT"}' | b64)
-CARGA=$(printf '{"iss":"SRM","aud":"avalasoft","sub":"srm-laura","name":"Laura Pérez","email":"laura@cliente.co","jti":"%s","iat":%s,"exp":%s}' \
+CARGA=$(printf '{"iss":"SRM","aud":"validalo","sub":"srm-laura","name":"Laura Pérez","email":"laura@cliente.co","jti":"%s","iat":%s,"exp":%s}' \
   "$(uuidgen)" "$AHORA" "$((AHORA+300))" | b64)
 FIRMA=$(printf '%s.%s' "$CABECERA" "$CARGA" | openssl dgst -sha256 -sign srm-privada.pem | b64)
 curl -s https://valida.cliente.co/api/v1/vinculos/$VINCULO -H "X-Api-Key: $LLAVE_DEL_SISTEMA" -H "X-Empresa: $EMPRESA" -H "X-Usuario-Delegado: $CABECERA.$CARGA.$FIRMA"
@@ -332,7 +332,7 @@ Fallos: `401` con `codigo` `llave-sin-sistema` (la llave no es de un sistema), `
 
 ## 8. Pantallas embebidas
 
-Puedes mostrar dentro de tu aplicación las pantallas de AvalaSoft (la bandeja de revisión, los certificados, la configuración) en un `<iframe>`.
+Puedes mostrar dentro de tu aplicación las pantallas de Valídalo (la bandeja de revisión, los certificados, la configuración) en un `<iframe>`.
 Las dos piezas: **tu backend** canjea la identidad de la persona por una **sesión de 30 minutos**, y **tu página** se la pasa al iframe por `postMessage`.
 Hay dos embebidos: el de las **personas de tu empresa** (esta sección) y el del **tercero** —su bóveda, su expediente o su ficha— en [§8.1](#81-el-tercero-embebido-bóveda-expediente-y-ficha).
 
@@ -345,73 +345,73 @@ Hay dos embebidos: el de las **personas de tu empresa** (esta sección) y el del
    ```
 
    ```csharp
-   var sesion = await avalasoft.ComoUsuario(laura).Sesiones.CrearAsync();      // { Token, Expira }
+   var sesion = await validalo.ComoUsuario(laura).Sesiones.CrearAsync();      // { Token, Expira }
    ```
 
    ```ts
-   const sesion = await avalasoft.comoUsuario(laura).sesiones.crear();         // { token, expira }
+   const sesion = await validalo.comoUsuario(laura).sesiones.crear();         // { token, expira }
    ```
 
 3. **La página aloja el iframe y le pasa el token:**
 
    ```html
-   <iframe id="avalasoft" title="AvalaSoft" style="width:100%;height:80vh;border:0"
+   <iframe id="validalo" title="Valídalo" style="width:100%;height:80vh;border:0"
            src="https://valida.cliente.co/app/#/e/EMPRESA_ID/bandeja"></iframe>
    <script>
-     const marco = document.getElementById('avalasoft');
+     const marco = document.getElementById('validalo');
      window.addEventListener('message', async (evento) => {
        if (evento.origin !== 'https://valida.cliente.co') return;
-       if (evento.data?.tipo === 'avalasoft:sesion-requerida') {          // al abrir, y cuando la sesión está por vencer
-         const { token } = await fetch('/mi-backend/avalasoft/sesion', { method: 'POST' }).then((r) => r.json());   // tu backend canjea
-         marco.contentWindow.postMessage({ tipo: 'avalasoft:sesion', token, empresaId: 'EMPRESA_ID' }, 'https://valida.cliente.co');
+       if (evento.data?.tipo === 'validalo:sesion-requerida') {          // al abrir, y cuando la sesión está por vencer
+         const { token } = await fetch('/mi-backend/validalo/sesion', { method: 'POST' }).then((r) => r.json());   // tu backend canjea
+         marco.contentWindow.postMessage({ tipo: 'validalo:sesion', token, empresaId: 'EMPRESA_ID' }, 'https://valida.cliente.co');
        }
      });
    </script>
    ```
 
-   | AvalaSoft → tu página | Contenido |
+   | Valídalo → tu página | Contenido |
    |---|---|
-   | `avalasoft:ready` | `{ version: 1 }`: el iframe cargó |
-   | `avalasoft:sesion-requerida` | `{ motivo: 'inicial' \| 'por-vencer' \| 'vencida' \| 'rechazada' }`: manda un token nuevo |
-   | `avalasoft:resize` · `avalasoft:visible` | `{ height }` · `{ top, height }`: para ajustar el alto del iframe |
+   | `validalo:ready` | `{ version: 1 }`: el iframe cargó |
+   | `validalo:sesion-requerida` | `{ motivo: 'inicial' \| 'por-vencer' \| 'vencida' \| 'rechazada' }`: manda un token nuevo |
+   | `validalo:resize` · `validalo:visible` | `{ height }` · `{ top, height }`: para ajustar el alto del iframe |
 
-   | Tu página → AvalaSoft | Contenido |
+   | Tu página → Valídalo | Contenido |
    |---|---|
-   | `avalasoft:sesion` | `{ token, empresaId? }` |
-   | `avalasoft:tema` | `{ mode: 'light' \| 'dark' }` |
-   | `avalasoft:cerrar-sesion` | — |
+   | `validalo:sesion` | `{ token, empresaId? }` |
+   | `validalo:tema` | `{ mode: 'light' \| 'dark' }` |
+   | `validalo:cerrar-sesion` | — |
 
-   **Alto del iframe.** Tienes dos formas, y la pantalla se adapta a la que uses sin que se lo digas: (a) dejar que `avalasoft:resize` estire el iframe al alto del contenido (lo que hace el SDK); o (b) darle tú un alto fijo (p. ej. la ventana menos tu cabecera). En las pantallas de edición con encabezado fijo (Configuración, expediente, ficha) la app mantiene un alto propio con su propio scroll: si pide un alto y el iframe no cambia de tamaño, entiende que el alto es tuyo y llena el que tiene; si lo estiras, se queda del alto que pidió. De ninguna forma el contenido queda cortado afuera: lo que no cabe se desplaza dentro del iframe.
+   **Alto del iframe.** Tienes dos formas, y la pantalla se adapta a la que uses sin que se lo digas: (a) dejar que `validalo:resize` estire el iframe al alto del contenido (lo que hace el SDK); o (b) darle tú un alto fijo (p. ej. la ventana menos tu cabecera). En las pantallas de edición con encabezado fijo (Configuración, expediente, ficha) la app mantiene un alto propio con su propio scroll: si pide un alto y el iframe no cambia de tamaño, entiende que el alto es tuyo y llena el que tiene; si lo estiras, se queda del alto que pidió. De ninguna forma el contenido queda cortado afuera: lo que no cabe se desplaza dentro del iframe.
 
    La ruta del iframe (`#/e/{empresa}/{pantalla}`): `bandeja`, `certificados`, `vinculos`, `invitaciones`, `configuracion/…`. En el sandbox, la empresa es la copia de pruebas (§5) y el token se canjea con la llave de prueba.
 
 ### 8.1 El tercero embebido (bóveda, expediente y ficha)
 
-Lo anterior es el embebido de las **personas de tu empresa**. El del **tercero** (IO-6) es distinto: cualquier sistema integrador con permiso puede montar la **bóveda**, el **expediente** o la **ficha** de un tercero en un iframe de su página, sin que AvalaSoft sepa quién es. Ejemplo ejecutable sin librerías: [`docs/ejemplos/anfitrion-tercero`](ejemplos/anfitrion-tercero/index.html) (la página anfitriona) y [`servidor.mjs`](ejemplos/anfitrion-tercero/servidor.mjs) (su backend); lo prueba `e2e/pruebas/embebido-tercero.spec.ts` con un anfitrión ficticio.
+Lo anterior es el embebido de las **personas de tu empresa**. El del **tercero** (IO-6) es distinto: cualquier sistema integrador con permiso puede montar la **bóveda**, el **expediente** o la **ficha** de un tercero en un iframe de su página, sin que Valídalo sepa quién es. Ejemplo ejecutable sin librerías: [`docs/ejemplos/anfitrion-tercero`](ejemplos/anfitrion-tercero/index.html) (la página anfitriona) y [`servidor.mjs`](ejemplos/anfitrion-tercero/servidor.mjs) (su backend); lo prueba `e2e/pruebas/embebido-tercero.spec.ts` con un anfitrión ficticio.
 
 ```mermaid
 sequenceDiagram
   participant P as Página del sistema (origen A)
   participant B as Backend del sistema
-  participant V as AvalaSoft API
+  participant V as Valídalo API
   participant I as iframe /embed/boveda
   P->>B: el tercero abre «Mi bóveda»
   B->>V: POST /api/v1/sesiones-tercero {vinculoId, componente, origen A} + API key + X-Empresa
   V-->>B: 201 {token (≤15 min), url, expira}
   B-->>P: {token, url}
   P->>I: iframe src = url (sin token)
-  I-->>P: postMessage avalasoft:ready
-  P->>I: postMessage avalasoft:sesion {token} → solo al origen de AvalaSoft
+  I-->>P: postMessage validalo:ready
+  P->>I: postMessage validalo:sesion {token} → solo al origen de Valídalo
   I->>V: GET /public/v1/sesion/actual (Bearer token)
-  I-->>P: avalasoft:resize {height} · avalasoft:sesion-requerida {por-vencer}
+  I-->>P: validalo:resize {height} · validalo:sesion-requerida {por-vencer}
   P->>B: pedir otra sesión
 ```
 
-**Quién puede y qué liga el token.** Solo la API key de un **sistema integrador** con `sesiones-tercero:crear`, para un vínculo de la empresa (`X-Empresa`) que **lleve la referencia de ese sistema** (403 `vinculo-ajeno`: un sistema embebe lo que integra) y con la invitación aceptada (409 `invitacion-no-aceptada`). El `origen` pedido debe estar entre los del sistema (`origenesPermitidos`, SE-1; 403 `origen-no-permitido`). El JWT (HS256, 1 a 15 minutos, 10 por omisión) trae el tercero, **un** vínculo, `sistema`, `origen`, `componente` y un `jti`; no hay cookie de refresco: el sistema pide otra sesión a su backend (la app avisa con `avalasoft:sesion-requerida` un minuto antes de vencer). La respuesta no se guarda en el registro de idempotencia.
+**Quién puede y qué liga el token.** Solo la API key de un **sistema integrador** con `sesiones-tercero:crear`, para un vínculo de la empresa (`X-Empresa`) que **lleve la referencia de ese sistema** (403 `vinculo-ajeno`: un sistema embebe lo que integra) y con la invitación aceptada (409 `invitacion-no-aceptada`). El `origen` pedido debe estar entre los del sistema (`origenesPermitidos`, SE-1; 403 `origen-no-permitido`). El JWT (HS256, 1 a 15 minutos, 10 por omisión) trae el tercero, **un** vínculo, `sistema`, `origen`, `componente` y un `jti`; no hay cookie de refresco: el sistema pide otra sesión a su backend (la app avisa con `validalo:sesion-requerida` un minuto antes de vencer). La respuesta no se guarda en el registro de idempotencia.
 
 **Qué valida el iframe** (defensa en profundidad, además de `frame-ancestors` con la unión de orígenes de los sistemas, SE-1/SE-2): lee los orígenes permitidos de `GET /public/v1/embed/origenes-permitidos`; solo anuncia `ready` al contenedor si su origen es uno de ellos; acepta el token **solo** de la ventana padre con ese origen y solo si el token fue emitido para **ese mismo origen**, es embebido, de un componente conocido y no venció; si no, muestra un aviso y ningún dato. Dentro del iframe no hay marca, navegación ni pie y **nunca** se pide el correo.
 
-**Protocolo** (versión 1; el mismo de ID-3 para la web de empresa, ahora en `@avalasoft/sdk`): iframe → página `avalasoft:ready`, `avalasoft:sesion-requerida {motivo: inicial|por-vencer|vencida|rechazada}`, `avalasoft:resize {height}`; página → iframe `avalasoft:sesion {token}` y `avalasoft:tema {mode}`. Quien usa un empaquetador monta todo con `montarEmbebido({ contenedor, sesion, renovarSesion })` del SDK de TypeScript (el embebido de **usuarios** de la empresa, §8 arriba, sigue usando `sesiones-usuario`).
+**Protocolo** (versión 1; el mismo de ID-3 para la web de empresa, ahora en `@validalo/sdk`): iframe → página `validalo:ready`, `validalo:sesion-requerida {motivo: inicial|por-vencer|vencida|rechazada}`, `validalo:resize {height}`; página → iframe `validalo:sesion {token}` y `validalo:tema {mode}`. Quien usa un empaquetador monta todo con `montarEmbebido({ contenedor, sesion, renovarSesion })` del SDK de TypeScript (el embebido de **usuarios** de la empresa, §8 arriba, sigue usando `sesiones-usuario`).
 
 ```ts
 // Backend del sistema (Node): la API key nunca llega al navegador.
@@ -421,13 +421,13 @@ const sesion = await cliente.sesiones.crearDelTercero({ vinculoId, componente: '
 
 ## 9. Webhooks
 
-AvalaSoft avisa a tu sistema de cada evento con un `POST` firmado a tu URL.
+Valídalo avisa a tu sistema de cada evento con un `POST` firmado a tu URL.
 
 **Crear la suscripción** (Configuración › Webhooks › «Nuevo webhook», o por API con `webhooks:administrar`):
 
 ```bash
 curl -s https://valida.cliente.co/api/v1/webhooks -H "X-Api-Key: $LLAVE_DEL_SISTEMA" -H "Content-Type: application/json" \
-  -d '{ "url":"https://srm.cliente.co/api/integracion/avalasoft/webhook", "tipos":["certificado.emitido","vinculo.bloqueado"], "empresas":["<empresaId>"], "descripcion":"SRM" }'
+  -d '{ "url":"https://srm.cliente.co/api/integracion/validalo/webhook", "tipos":["certificado.emitido","vinculo.bloqueado"], "empresas":["<empresaId>"], "descripcion":"SRM" }'
 # → 201 { …, "secreto": "whsec_…" }   (el secreto se muestra UNA sola vez)
 ```
 
@@ -437,11 +437,11 @@ La URL debe ser `https` y pública (no se aceptan IP privadas, `localhost` ni re
 
 | Cabecera | Valor |
 |---|---|
-| `Avalasoft-Event-Id` | `id` del evento: **la clave para deduplicar** (un reintento repite el mismo). |
-| `Avalasoft-Event-Type` | El tipo (`certificado.emitido`). |
-| `Avalasoft-Delivery` | Id del **intento** (cambia en cada reintento). |
-| `Avalasoft-Timestamp` | Segundos Unix del envío. |
-| `Avalasoft-Signature` | `t={timestamp},v1={hex(HMAC-SHA256(secreto, "{timestamp}.{cuerpo}"))}`; durante una rotación trae un `v1=` por cada secreto vigente. |
+| `Validalo-Event-Id` | `id` del evento: **la clave para deduplicar** (un reintento repite el mismo). |
+| `Validalo-Event-Type` | El tipo (`certificado.emitido`). |
+| `Validalo-Delivery` | Id del **intento** (cambia en cada reintento). |
+| `Validalo-Timestamp` | Segundos Unix del envío. |
+| `Validalo-Signature` | `t={timestamp},v1={hex(HMAC-SHA256(secreto, "{timestamp}.{cuerpo}"))}`; durante una rotación trae un `v1=` por cada secreto vigente. |
 
 ```json
 { "id": "0196…", "tipo": "certificado.emitido", "version": 1, "ocurridoEn": "2026-11-11T14:03:11Z", "tenantId": "0196…", "empresaId": "0196…", "cursor": "4211",
@@ -454,7 +454,7 @@ La URL debe ser `https` y pública (no se aceptan IP privadas, `localhost` ni re
 ```csharp
 // ASP.NET Core minimal API (net7.0+).
 var verificador = new VerificadorDeWebhooks(new[] { secretoActual, secretoAnterior });   // el anterior solo mientras dura una rotación
-app.MapPost("/api/integracion/avalasoft/webhook", async (HttpRequest request) =>
+app.MapPost("/api/integracion/validalo/webhook", async (HttpRequest request) =>
 {
     var cuerpo = await new StreamReader(request.Body).ReadToEndAsync();
     EventoPublicoDto evento;
@@ -467,9 +467,9 @@ app.MapPost("/api/integracion/avalasoft/webhook", async (HttpRequest request) =>
 
 ```ts
 // Express (Node 20+): express.raw para tener el cuerpo tal cual.
-app.post('/api/integracion/avalasoft/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+app.post('/api/integracion/validalo/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
-    const evento = await validarWebhook({ secretos: [secretoActual, secretoAnterior], firma: leerCabecera(req.headers, 'avalasoft-signature'), cuerpo: req.body });
+    const evento = await validarWebhook({ secretos: [secretoActual, secretoAnterior], firma: leerCabecera(req.headers, 'validalo-signature'), cuerpo: req.body });
     if (await entregas.registrar(evento.id)) cola.encolar(evento);
     res.sendStatus(200);
   } catch {
@@ -484,9 +484,9 @@ T=$(echo "$FIRMA" | sed -E 's/^t=([0-9]+),.*/\1/')
 printf '%s.%s' "$T" "$(cat cuerpo.json)" | openssl dgst -sha256 -hmac "$SECRETO" -hex | sed 's/^.* //'      # debe ser igual al v1=… de la cabecera
 ```
 
-**Reglas del receptor:** responde `2xx` en **menos de 5 segundos** y procesa después; sin redirecciones; idempotente (deduplica por `Avalasoft-Event-Id`, porque cada evento puede llegar más de una vez); no asumas orden entre agregados distintos (el `cursor` ordena dentro del grupo).
+**Reglas del receptor:** responde `2xx` en **menos de 5 segundos** y procesa después; sin redirecciones; idempotente (deduplica por `Validalo-Event-Id`, porque cada evento puede llegar más de una vez); no asumas orden entre agregados distintos (el `cursor` ordena dentro del grupo).
 
-**Reintentos.** Si no responde `2xx` a tiempo, AvalaSoft reintenta con espera creciente: **1 min, 5 min, 30 min, 2 h y 6 h** (seis intentos). Luego la entrega queda `Fallida` y puedes **reenviarla a mano**
+**Reintentos.** Si no responde `2xx` a tiempo, Valídalo reintenta con espera creciente: **1 min, 5 min, 30 min, 2 h y 6 h** (seis intentos). Luego la entrega queda `Fallida` y puedes **reenviarla a mano**
 (`POST /api/v1/webhooks/{id}/entregas/{entregaId}/reenviar`; la lista en `GET …/entregas`). Tras **20 fallos seguidos** la suscripción se **deshabilita** y los administradores reciben un aviso; al
 arreglar el receptor, actívala (`POST /api/v1/webhooks/{id}/activar`) y reenvía lo perdido (o léelo por pull, §10).
 
@@ -502,7 +502,7 @@ curl -s "https://valida.cliente.co/api/v1/eventos?desde=4211&tipos=certificado.e
 ```
 
 ```csharp
-await foreach (var evento in avalasoft.Eventos.RecorrerAsync(desde: cursorGuardado, tipos: ["certificado.emitido", "vinculo.bloqueado"]))
+await foreach (var evento in validalo.Eventos.RecorrerAsync(desde: cursorGuardado, tipos: ["certificado.emitido", "vinculo.bloqueado"]))
 {
     Procesar(evento);               // el mismo mapa evento → acción que el webhook; deduplica por evento.Id
     cursorGuardado = evento.Cursor; // persístelo después de procesar
@@ -510,7 +510,7 @@ await foreach (var evento in avalasoft.Eventos.RecorrerAsync(desde: cursorGuarda
 ```
 
 ```ts
-for await (const evento of avalasoft.eventos.recorrer({ desde: cursorGuardado, tipos: ['certificado.emitido', 'vinculo.bloqueado'] })) {
+for await (const evento of validalo.eventos.recorrer({ desde: cursorGuardado, tipos: ['certificado.emitido', 'vinculo.bloqueado'] })) {
   await procesar(evento);
   cursorGuardado = evento.cursor;
 }
@@ -548,28 +548,28 @@ El número se normaliza (puntos, guiones y dígito de verificación se aceptan).
 **Caché con `ETag`.** Dentro de los 5 minutos (`max-age=300`) usa tu copia; después pregunta con `If-None-Match: "c-9f2a…"` y un **`304`** (sin cuerpo) confirma que sigue igual; si cambió, `200` con el `ETag` nuevo (que cambia **exactamente** cuando cambia la respuesta). La caché es **privada** (depende de tu credencial).
 
 ```csharp
-var r = await avalasoft.Consultas.CertificacionAsync(new ConsultaDeCertificacion("NIT", "900123456", "PROVEEDOR"), etag: copia?.ETag);
+var r = await validalo.Consultas.CertificacionAsync(new ConsultaDeCertificacion("NIT", "900123456", "PROVEEDOR"), etag: copia?.ETag);
 var datos = r.NoModificado ? copia!.Datos : r.Datos!;        // 304: sigue tu copia
 if (datos.Bloqueado || !datos.Certificado) { /* no pagar */ }
 ```
 
 ```ts
-const r = await avalasoft.consultas.certificacion({ tipoIdentificacion: 'NIT', numero: '900123456', tipoVinculo: 'PROVEEDOR' }, copia?.etag);
+const r = await validalo.consultas.certificacion({ tipoIdentificacion: 'NIT', numero: '900123456', tipoVinculo: 'PROVEEDOR' }, copia?.etag);
 const datos = r.noModificado ? copia!.datos : r.datos!;
 ```
 
-**Si AvalaSoft no responde** (más de 2 s o `5xx`), tu sistema responde el mismo contrato desde su **copia local**, marcando `fuenteRespaldo: true` y `antiguedadSegundos`, y alimenta esa copia con los eventos (§9, §10). Nunca pagues con una copia vencida sin avisar de su antigüedad.
+**Si Valídalo no responde** (más de 2 s o `5xx`), tu sistema responde el mismo contrato desde su **copia local**, marcando `fuenteRespaldo: true` y `antiguedadSegundos`, y alimenta esa copia con los eventos (§9, §10). Nunca pagues con una copia vencida sin avisar de su antigüedad.
 
 ## 12. Errores
 
 Toda respuesta de error es **RFC 9457** (`application/problem+json`):
 
 ```json
-{ "type": "https://docs.avalasoft.co/errores/vinculo-bloqueado", "title": "…", "status": 409, "detail": "El vínculo está bloqueado.",
+{ "type": "https://docs.validalo.co/errores/vinculo-bloqueado", "title": "…", "status": 409, "detail": "El vínculo está bloqueado.",
   "instance": "/api/v1/vinculos/0196…/expedientes", "codigo": "vinculo-bloqueado", "traceId": "00-4bf9…-01" }
 ```
 
-**Decide con `codigo` (estable), no con el texto.** El SDK lo expone (`ExcepcionAvalasoft.Codigo`, `ErrorAvalasoft.codigo`) junto con `Estado`, `Detalle` y `Correlacion`. Cita el `traceId` o tu `X-Correlation-Id` al pedir soporte.
+**Decide con `codigo` (estable), no con el texto.** El SDK lo expone (`ExcepcionValidalo.Codigo`, `ErrorValidalo.codigo`) junto con `Estado`, `Detalle` y `Correlacion`. Cita el `traceId` o tu `X-Correlation-Id` al pedir soporte.
 
 | HTTP | Significa | Qué hacer | Códigos frecuentes |
 |---|---|---|---|
@@ -582,7 +582,7 @@ Toda respuesta de error es **RFC 9457** (`application/problem+json`):
 | `412` | `If-Match` desactualizado | Relee y reintenta | `version-desactualizada` |
 | `422` | Regla de negocio o dato inválido | Corrige el dato | `clave-idempotencia-reutilizada`, `tipo-vinculo-requerido`, `numero-identificacion-invalido`, `usuario-delegado-requerido`, `no-disponible-en-sandbox` |
 | `429` | Demasiadas peticiones | Espera `Retry-After` | `demasiadas-peticiones`, `otp-bloqueado` |
-| `5xx` | Falla de AvalaSoft | Reintenta con espera (el SDK lo hace con lo idempotente) | — |
+| `5xx` | Falla de Valídalo | Reintenta con espera (el SDK lo hace con lo idempotente) | — |
 
 El catálogo completo de códigos está en [05 §3.3](05-api-contratos-y-webhooks.md#33-errores-problemdetails).
 
@@ -590,7 +590,7 @@ El catálogo completo de códigos está en [05 §3.3](05-api-contratos-y-webhook
 
 | Qué | Límite |
 |---|---|
-| Idempotencia | `Idempotency-Key` de hasta 100 caracteres; se recuerda 24 horas; las respuestas con un secreto (webhook, llave creada o rotada, alta de grupo, tokens de sesión) se guardan **sin el secreto**: repetir la petición con la misma clave devuelve los mismos datos sin él, con `Avalasoft-Secretos-Omitidos` y `secretosOmitidos` (el secreto se ve una sola vez) |
+| Idempotencia | `Idempotency-Key` de hasta 100 caracteres; se recuerda 24 horas; las respuestas con un secreto (webhook, llave creada o rotada, alta de grupo, tokens de sesión) se guardan **sin el secreto**: repetir la petición con la misma clave devuelve los mismos datos sin él, con `Validalo-Secretos-Omitidos` y `secretosOmitidos` (el secreto se ve una sola vez) |
 | Aserción delegada | Vale 5 minutos y **una sola vez** (`jti`) |
 | Sesión embebida | 30 minutos |
 | Caché de verificación de la API key | Hasta 5 minutos: una llave revocada o rotada deja de valer de inmediato en el nodo que lo hizo y, como mucho, 5 minutos después en los demás |
@@ -607,7 +607,7 @@ El catálogo completo de códigos está en [05 §3.3](05-api-contratos-y-webhook
 - **La API se versiona por URL** (`/api/v1`). Dentro de `v1` los cambios son **aditivos** (campos, endpoints, tipos de evento, valores nuevos): **tolera campos desconocidos y valores de enum desconocidos** (trátalos como «otro»). Un cambio incompatible llega como `v2` y **`v1` sigue 12 meses**.
 - **Deprecación**: lo que se va a retirar se anuncia con **12 meses** de antelación en las notas de cambios y, en las respuestas del endpoint afectado, con las cabeceras `Deprecation` y `Sunset` (fecha de retiro). Un integrador no debería enterarse de un retiro por un error.
 - **Eventos**: cada tipo lleva `version`; un cambio incompatible sube la versión y la suscripción elige cuál recibe, con 12 meses de convivencia.
-- **SDK**: [versionado semántico](https://semver.org/lang/es/) alineado con la API (`1.x`): las menores y de parche no rompen nada; la mayor llega con una API nueva. Los tres paquetes (`Avalasoft.Contratos`, `Avalasoft.Sdk`, `@avalasoft/sdk`) salen juntos con la misma versión, y su `CHANGELOG.md` dice qué cambió. Fija la versión menor en tu proyecto y actualiza con calma.
+- **SDK**: [versionado semántico](https://semver.org/lang/es/) alineado con la API (`1.x`): las menores y de parche no rompen nada; la mayor llega con una API nueva. Los tres paquetes (`Validalo.Contratos`, `Validalo.Sdk`, `@validalo/sdk`) salen juntos con la misma versión, y su `CHANGELOG.md` dice qué cambió. Fija la versión menor en tu proyecto y actualiza con calma.
 - **OpenAPI 3.1** en `{host}/openapi/v1.json`: la fuente para generar un cliente en otro lenguaje (los oficiales son .NET y TypeScript).
 
 ## 15. Lista de verificación para pasar a producción
@@ -615,7 +615,7 @@ El catálogo completo de códigos está en [05 §3.3](05-api-contratos-y-webhook
 - [ ] Flujo completo probado en el sandbox con tu llave de prueba: invitación → carga → aprobación → `certificado.emitido` → consulta → bloqueo → consulta.
 - [ ] La llave de producción emitida **por sistema**, con los permisos mínimos y solo las empresas del sistema; guardada en el gestor de secretos.
 - [ ] `X-Empresa` de producción en la configuración (no el de la copia del sandbox).
-- [ ] Webhook de producción creado, con `https` válido; verificación de la firma sobre el cuerpo crudo, deduplicación por `Avalasoft-Event-Id` y respuesta en < 5 s; secreto en el gestor de secretos.
+- [ ] Webhook de producción creado, con `https` válido; verificación de la firma sobre el cuerpo crudo, deduplicación por `Validalo-Event-Id` y respuesta en < 5 s; secreto en el gestor de secretos.
 - [ ] Cursor de pull (si lo usas) persistido **después** de procesar cada evento.
 - [ ] Consulta de certificación con `ETag`, caché de 5 minutos y respaldo local (`fuenteRespaldo`).
 - [ ] Manejo de `404`/`422`/`429`/`5xx` por `codigo`, con reintentos solo de lo idempotente y `Idempotency-Key` estable por operación.

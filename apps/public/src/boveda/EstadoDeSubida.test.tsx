@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import { type VersionDocumentoDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { type VersionDocumentoDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { EstadoDeSubida } from './EstadoDeSubida';
@@ -29,7 +29,7 @@ const version = (n: number): VersionDocumentoDto => ({
 
 function montar(n: number, volver: string | null) {
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <MemoryRouter>
         <EstadoDeSubida
           estado={{ fase: 'resultado', archivo: new File(['%PDF-1.4'], 'rut.pdf', { type: 'application/pdf' }), resultado: { tipo: 'lista', version: version(n), compartidos: [] } }}

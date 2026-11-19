@@ -6,37 +6,37 @@ import { estaEmbebida, interpretarMensaje, origenDelContenedor, origenesPermitid
 import { useSesion } from './sesionStore';
 
 const tokenFalso = (exp: number) =>
-  `e30.${Buffer.from(JSON.stringify({ sub: 'u1', exp, 'avalasoft:tenant': 't1' })).toString('base64url')}.firma`;
+  `e30.${Buffer.from(JSON.stringify({ sub: 'u1', exp, 'validalo:tenant': 't1' })).toString('base64url')}.firma`;
 
 describe('interpretarMensaje', () => {
   it('acepta la sesión con o sin empresa sugerida', () => {
-    expect(interpretarMensaje({ tipo: 'avalasoft:sesion', token: 'a.b.c', empresaId: 'e1' })).toEqual({
-      tipo: 'avalasoft:sesion',
+    expect(interpretarMensaje({ tipo: 'validalo:sesion', token: 'a.b.c', empresaId: 'e1' })).toEqual({
+      tipo: 'validalo:sesion',
       token: 'a.b.c',
       empresaId: 'e1',
     });
-    expect(interpretarMensaje({ tipo: 'avalasoft:sesion', token: 'a.b.c' })).toMatchObject({ empresaId: null });
+    expect(interpretarMensaje({ tipo: 'validalo:sesion', token: 'a.b.c' })).toMatchObject({ empresaId: null });
   });
 
   it('valida el tema y el cierre', () => {
-    expect(interpretarMensaje({ tipo: 'avalasoft:tema', mode: 'light' })).toEqual({ tipo: 'avalasoft:tema', mode: 'light' });
-    expect(interpretarMensaje({ tipo: 'avalasoft:tema', mode: 'sepia' })).toBeNull();
-    expect(interpretarMensaje({ tipo: 'avalasoft:cerrar-sesion' })).toEqual({ tipo: 'avalasoft:cerrar-sesion' });
+    expect(interpretarMensaje({ tipo: 'validalo:tema', mode: 'light' })).toEqual({ tipo: 'validalo:tema', mode: 'light' });
+    expect(interpretarMensaje({ tipo: 'validalo:tema', mode: 'sepia' })).toBeNull();
+    expect(interpretarMensaje({ tipo: 'validalo:cerrar-sesion' })).toEqual({ tipo: 'validalo:cerrar-sesion' });
   });
 
   it('ignora mensajes ajenos o mal formados', () => {
-    expect(interpretarMensaje('avalasoft:sesion')).toBeNull();
-    expect(interpretarMensaje({ tipo: 'avalasoft:sesion', token: 'no-es-jwt' })).toBeNull();
+    expect(interpretarMensaje('validalo:sesion')).toBeNull();
+    expect(interpretarMensaje({ tipo: 'validalo:sesion', token: 'no-es-jwt' })).toBeNull();
     expect(interpretarMensaje({ tipo: 'otro:evento' })).toBeNull();
     expect(interpretarMensaje(null)).toBeNull();
   });
 });
 
 describe('orígenes del contenedor', () => {
-  const permitidos = origenesPermitidos(' https://srm.cliente.co/ , https://marco.cliente.co', 'https://avalasoft.co');
+  const permitidos = origenesPermitidos(' https://srm.cliente.co/ , https://marco.cliente.co', 'https://validalo.co');
 
   it('combina el origen propio con los configurados, sin barras finales', () => {
-    expect(permitidos).toEqual(['https://avalasoft.co', 'https://srm.cliente.co', 'https://marco.cliente.co']);
+    expect(permitidos).toEqual(['https://validalo.co', 'https://srm.cliente.co', 'https://marco.cliente.co']);
     expect(origenesPermitidos(undefined, 'http://localhost:5173')).toEqual(['http://localhost:5173']);
   });
 
@@ -93,7 +93,7 @@ describe('firmarAsercion (solo demo)', () => {
     expect(jti).toMatch(/^[0-9a-f-]{36}$/);
     expect(reclamos).toEqual({
       iss: 'SRM',
-      aud: 'avalasoft',
+      aud: 'validalo',
       sub: 'u-7',
       name: 'Marta Ruiz',
       email: 'marta@cliente.co',

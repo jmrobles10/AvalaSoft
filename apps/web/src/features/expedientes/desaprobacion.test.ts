@@ -1,4 +1,4 @@
-import { SCOPES, type EtapaExpedienteDto } from '@avalasoft/api-client';
+import { SCOPES, type EtapaExpedienteDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import i18n from '../../i18n';
 import { area, areaDeRequisito, expediente, requisito, veredicto } from './datosPrueba';

@@ -9,7 +9,7 @@ recorrido(
     actor: 'Tercero',
     titulo: 'Descarga una copia firmada de tu bóveda',
     resumen:
-      'El tercero pide una exportación de su bóveda: AvalaSoft la prepara en segundo plano, avisa por correo cuando está lista y el tercero la descarga como un ZIP con sus archivos, sus datos y un manifiesto firmado para comprobar que nada cambió.',
+      'El tercero pide una exportación de su bóveda: Valídalo la prepara en segundo plano, avisa por correo cuando está lista y el tercero la descarga como un ZIP con sus archivos, sus datos y un manifiesto firmado para comprobar que nada cambió.',
     precondiciones: [
       'Un grupo con Constructora Norte, que invitó a un tercero que aceptó la invitación y subió el RUT y el certificado de existencia y representación legal.',
       'El tercero entra al portal con su sesión abierta.',
@@ -32,7 +32,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre la exportación de tu bóveda',
       explicacion:
-        'En la parte de arriba de «Privacidad y mis datos» está «Exportar mi bóveda». La copia incluye todos tus archivos, tus datos y un manifiesto firmado por AvalaSoft, con el que se puede comprobar que el contenido no cambió después de la exportación. ' +
+        'En la parte de arriba de «Privacidad y mis datos» está «Exportar mi bóveda». La copia incluye todos tus archivos, tus datos y un manifiesto firmado por Valídalo, con el que se puede comprobar que el contenido no cambió después de la exportación. ' +
         'No tienes que esperar en esta pantalla: se prepara sola y te avisamos por correo cuando esté lista.',
       resaltar: page.getByRole('button', { name: 'Pedir exportación' }),
     });
@@ -50,7 +50,7 @@ recorrido(
       variantes: [
         { cuando: 'La exportación falla', entonces: 'El detalle dice que no pudimos prepararla; pide otra, y si se repite, escríbenos.' },
         { cuando: 'Pasó el plazo de descarga', entonces: 'El detalle dice que venció y se eliminó: pide una nueva si la necesitas.' },
-        { cuando: 'Ya pediste varias exportaciones hoy', entonces: 'AvalaSoft no prepara otra ese día y te pide intentarlo al día siguiente.' },
+        { cuando: 'Ya pediste varias exportaciones hoy', entonces: 'Valídalo no prepara otra ese día y te pide intentarlo al día siguiente.' },
       ],
     });
 
@@ -63,8 +63,8 @@ recorrido(
     await paso(page, {
       titulo: 'Descarga el ZIP',
       explicacion:
-        'Con «Descargar» baja un archivo ZIP. Dentro encuentras tus archivos, manifiesto.json con la huella SHA-256 de cada uno, manifiesto.firma.json con la firma de AvalaSoft y LEEME.txt con los pasos para verificarla. ' +
-        'Descárgalo antes de la fecha «disponible hasta», porque después AvalaSoft lo elimina.',
+        'Con «Descargar» baja un archivo ZIP. Dentro encuentras tus archivos, manifiesto.json con la huella SHA-256 de cada uno, manifiesto.firma.json con la firma de Valídalo y LEEME.txt con los pasos para verificarla. ' +
+        'Descárgalo antes de la fecha «disponible hasta», porque después Valídalo lo elimina.',
       resaltar: page.getByRole('button', { name: 'Descargar' }),
       avisos: true,
     });
@@ -76,8 +76,8 @@ recorrido(
     await paso(page, {
       titulo: 'Entiende cómo verificar la copia',
       explicacion:
-        'Debajo de la exportación, «Cómo verificarla» explica el proceso: manifiesto.json lista la huella SHA-256 de cada archivo y manifiesto.firma.json trae la firma de AvalaSoft. ' +
-        'La firma se comprueba con la clave pública que AvalaSoft publica en /.well-known/avalasoft-certificados.json; si todo coincide, el contenido no cambió desde la exportación.',
+        'Debajo de la exportación, «Cómo verificarla» explica el proceso: manifiesto.json lista la huella SHA-256 de cada archivo y manifiesto.firma.json trae la firma de Valídalo. ' +
+        'La firma se comprueba con la clave pública que Valídalo publica en /.well-known/validalo-certificados.json; si todo coincide, el contenido no cambió desde la exportación.',
       resaltar: page.getByText(/manifiesto\.json lista el SHA-256/),
     });
   },

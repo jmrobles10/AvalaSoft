@@ -1,4 +1,4 @@
-import { ErrorApi, type CondicionDto, type FlujoVersionDto } from '@avalasoft/api-client';
+import { ErrorApi, type CondicionDto, type FlujoVersionDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { borradorDesdeVersion, borradorVacio, erroresBloqueantes, firmaBorrador, validarFlujo } from './editor';
 import { errorDeApiEnSeleccion, PRIORIDAD_MAXIMA, seleccionADto, seleccionDesdeVersion, seSeleccionaSolo, validarSeleccion } from './seleccion';

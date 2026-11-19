@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Button, Card } from '@mui/material';
-import { esErrorApi } from '@avalasoft/api-client';
-import { formatearFecha, PaginaEstado } from '@avalasoft/ui';
+import { esErrorApi } from '@validalo/api-client';
+import { formatearFecha, PaginaEstado } from '@validalo/ui';
 import { SearchX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useParams } from 'react-router';

@@ -1,5 +1,5 @@
 import { Box, Button, Stack } from '@mui/material';
-import { CampoFecha, EsqueletoTabla, EsqueletoTarjeta } from '@avalasoft/ui';
+import { CampoFecha, EsqueletoTabla, EsqueletoTarjeta } from '@validalo/ui';
 import { Download } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

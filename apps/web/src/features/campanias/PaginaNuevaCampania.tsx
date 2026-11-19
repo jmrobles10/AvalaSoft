@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
-import { SCOPES, type VistaPreviaCampaniaDto } from '@avalasoft/api-client';
-import { EsqueletoTarjeta } from '@avalasoft/ui';
+import { SCOPES, type VistaPreviaCampaniaDto } from '@validalo/api-client';
+import { EsqueletoTarjeta } from '@validalo/ui';
 import { Megaphone, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

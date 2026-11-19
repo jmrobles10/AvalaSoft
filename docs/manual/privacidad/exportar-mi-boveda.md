@@ -3,7 +3,7 @@ id: "privacidad/exportar-mi-boveda"
 titulo: "Descarga una copia firmada de tu bóveda"
 actor: "Tercero"
 dominio: "privacidad"
-resumen: "El tercero pide una exportación de su bóveda: AvalaSoft la prepara en segundo plano, avisa por correo cuando está lista y el tercero la descarga como un ZIP con sus archivos, sus datos y un manifiesto firmado para comprobar que nada cambió."
+resumen: "El tercero pide una exportación de su bóveda: Valídalo la prepara en segundo plano, avisa por correo cuando está lista y el tercero la descarga como un ZIP con sus archivos, sus datos y un manifiesto firmado para comprobar que nada cambió."
 pasos: 4
 ---
 
@@ -11,7 +11,7 @@ pasos: 4
 
 **Actor:** Tercero · **Dominio:** Datos personales
 
-El tercero pide una exportación de su bóveda: AvalaSoft la prepara en segundo plano, avisa por correo cuando está lista y el tercero la descarga como un ZIP con sus archivos, sus datos y un manifiesto firmado para comprobar que nada cambió.
+El tercero pide una exportación de su bóveda: Valídalo la prepara en segundo plano, avisa por correo cuando está lista y el tercero la descarga como un ZIP con sus archivos, sus datos y un manifiesto firmado para comprobar que nada cambió.
 
 **Antes de empezar**
 
@@ -27,7 +27,7 @@ El tercero pide una exportación de su bóveda: AvalaSoft la prepara en segundo 
 
 ## Paso 1. Abre la exportación de tu bóveda
 
-En la parte de arriba de «Privacidad y mis datos» está «Exportar mi bóveda». La copia incluye todos tus archivos, tus datos y un manifiesto firmado por AvalaSoft, con el que se puede comprobar que el contenido no cambió después de la exportación. No tienes que esperar en esta pantalla: se prepara sola y te avisamos por correo cuando esté lista.
+En la parte de arriba de «Privacidad y mis datos» está «Exportar mi bóveda». La copia incluye todos tus archivos, tus datos y un manifiesto firmado por Valídalo, con el que se puede comprobar que el contenido no cambió después de la exportación. No tienes que esperar en esta pantalla: se prepara sola y te avisamos por correo cuando esté lista.
 
 > **Pantalla:** `/privacidad`
 
@@ -49,11 +49,11 @@ Al pedirla aparece el aviso de que la estamos preparando y queda en «Mis export
 
 - **La exportación falla:** El detalle dice que no pudimos prepararla; pide otra, y si se repite, escríbenos.
 - **Pasó el plazo de descarga:** El detalle dice que venció y se eliminó: pide una nueva si la necesitas.
-- **Ya pediste varias exportaciones hoy:** AvalaSoft no prepara otra ese día y te pide intentarlo al día siguiente.
+- **Ya pediste varias exportaciones hoy:** Valídalo no prepara otra ese día y te pide intentarlo al día siguiente.
 
 ## Paso 3. Descarga el ZIP
 
-Con «Descargar» baja un archivo ZIP. Dentro encuentras tus archivos, manifiesto.json con la huella SHA-256 de cada uno, manifiesto.firma.json con la firma de AvalaSoft y LEEME.txt con los pasos para verificarla. Descárgalo antes de la fecha «disponible hasta», porque después AvalaSoft lo elimina.
+Con «Descargar» baja un archivo ZIP. Dentro encuentras tus archivos, manifiesto.json con la huella SHA-256 de cada uno, manifiesto.firma.json con la firma de Valídalo y LEEME.txt con los pasos para verificarla. Descárgalo antes de la fecha «disponible hasta», porque después Valídalo lo elimina.
 
 > **Pantalla:** `/privacidad`
 
@@ -63,7 +63,7 @@ Con «Descargar» baja un archivo ZIP. Dentro encuentras tus archivos, manifiest
 
 ## Paso 4. Entiende cómo verificar la copia
 
-Debajo de la exportación, «Cómo verificarla» explica el proceso: manifiesto.json lista la huella SHA-256 de cada archivo y manifiesto.firma.json trae la firma de AvalaSoft. La firma se comprueba con la clave pública que AvalaSoft publica en /.well-known/avalasoft-certificados.json; si todo coincide, el contenido no cambió desde la exportación.
+Debajo de la exportación, «Cómo verificarla» explica el proceso: manifiesto.json lista la huella SHA-256 de cada archivo y manifiesto.firma.json trae la firma de Valídalo. La firma se comprueba con la clave pública que Valídalo publica en /.well-known/validalo-certificados.json; si todo coincide, el contenido no cambió desde la exportación.
 
 > **Pantalla:** `/privacidad`
 

@@ -4,7 +4,7 @@
 |---|---|---|
 | Borrador | 2026-10-28 | Arquitectura |
 
-**Propósito.** Fijar por qué se construye AvalaSoft, para quién, qué resuelve, qué entra y qué no en cada hito, con qué restricciones y cómo se mide el éxito. Es el documento que Producto aprueba primero; los demás lo desarrollan.
+**Propósito.** Fijar por qué se construye Valídalo, para quién, qué resuelve, qué entra y qué no en cada hito, con qué restricciones y cómo se mide el éxito. Es el documento que Producto aprueba primero; los demás lo desarrollan.
 
 **Relacionados**
 - [01 Análisis del legado SRM ↔ Portal](01-analisis-legado-srm-portal.md)
@@ -39,7 +39,7 @@ Ninguno es dueño completo del dato. El detalle verificado está en [01](01-anal
 
 El resultado es lento para el proveedor, caro para la constructora, imposible de auditar de punta a punta y no sirve para otros vínculos (clientes, empleados, arrendatarios) que tienen exactamente la misma necesidad.
 
-## 2. La solución: AvalaSoft
+## 2. La solución: Valídalo
 
 Un producto **independiente del ERP**, consumible por API por cualquier sistema (Marco, SRM, Portal, terceros), que lleva cualquier vínculo comercial **de la solicitud al certificado** en cinco pasos:
 
@@ -66,7 +66,7 @@ flowchart LR
 
 ### 2.2 Actores
 
-| Actor | Quién es | Qué hace en AvalaSoft |
+| Actor | Quién es | Qué hace en Valídalo |
 |---|---|---|
 | **Tenant (grupo)** | El cliente del SaaS: una organización o grupo empresarial con una o varias razones sociales | Comparte usuarios, catálogo, flujos, plantillas, API keys y facturación entre sus empresas |
 | **Empresa (interna)** | Cada razón social del tenant: constructora, comercializadora, clínica, colegio… la que exige, revisa y certifica | Tiene sus vínculos y sus decisiones, aisladas de las demás empresas del grupo (P-11-2) |
@@ -83,7 +83,7 @@ flowchart LR
 2. **Un documento nuevo alerta a todas las empresas que lo exigen.** Si el tercero sube un RUT nuevo, nadie sigue trabajando con el viejo sin saberlo.
 3. **Los hechos se calculan una vez; los juicios, por empresa.** Legibilidad, tipo, fechas, comparación con la versión anterior: una vez por versión. Si cumple mi regla de frescura y mi área lo aprueba: por empresa.
 4. **Todo cambio es un evento.** No hay borrar-y-recrear, no hay estados que se infieren de otros estados.
-5. **Nada depende de que otro sistema dispare un proceso.** Vencimientos, recordatorios y SLAs los programa AvalaSoft.
+5. **Nada depende de que otro sistema dispare un proceso.** Vencimientos, recordatorios y SLAs los programa Valídalo.
 6. **Sin contraseñas para el tercero, sin secretos en el navegador, sin endpoints abiertos.**
 7. **Tono de voz:** claro, breve, con el siguiente paso. "La póliza venció el 28/09. Sube la renovación para continuar." Nunca "¡Ups! Algo pasó" ni códigos de error.
 8. **Cada pantalla se alimenta de una proyección real.** Nunca datos de muestra en producción; nunca un documento sin versión, fecha de carga y vigencia visibles.
@@ -129,7 +129,7 @@ El trabajo se divide en hitos pequeños y verificables (detalle, responsables y 
 
 - Firma electrónica de documentos (se integra, no se construye).
 - Facturación electrónica, pagos, informes de compras y contratos del Portal (siguen en el Portal/ERP).
-- Licitaciones y cotizaciones (siguen en el SRM; AvalaSoft solo responde "¿este tercero está certificado?").
+- Licitaciones y cotizaciones (siguen en el SRM; Valídalo solo responde "¿este tercero está certificado?").
 - Consulta directa a fuentes oficiales (RUES, DIAN) como verificación automática: se deja como verificador enchufable futuro.
 - Despliegue multi-región activo: la región es atributo del tenant desde H1 (P-14-2), pero el MVP opera en una sola región más on-premise; regiones adicionales en H11.
 - WhatsApp/SMS como canal, dominio de correo propio por empresa y firma electrónica acreditada: fases posteriores (H8+).
@@ -188,7 +188,7 @@ El trabajo se divide en hitos pequeños y verificables (detalle, responsables y 
 | Decisión | Elección |
 |---|---|
 | Stack backend | .NET 10 + PostgreSQL 17 + Marten + Wolverine + MinIO/S3 + Docker |
-| Dueño de la UI del tercero | AvalaSoft (enlace/magic link); Portal/SRM/Marco integran por API y webhooks |
+| Dueño de la UI del tercero | Valídalo (enlace/magic link); Portal/SRM/Marco integran por API y webhooks |
 | Tenancy | Multi-tenant SaaS; **un tenant por grupo empresarial con empresas internas aisladas**; vínculo = (tenant, empresa, tercero, tipo de vínculo) |
 | Identidad del tercero | Clave `(país, tipo, número normalizado sin DV)`, **multipaís** con catálogo de tipos de identificación |
 | Datos maestros del tercero | El tercero propone; la IA (si está disponible) contrasta con el documento; las empresas revalidan según su nivel; nunca se bloquea al tercero |
@@ -213,11 +213,11 @@ El trabajo se divide en hitos pequeños y verificables (detalle, responsables y 
 | Veredictos (B-7) | Sobre una versión: Aprobado u Observado (con "no admitir esta versión"); Rechazado solo para el expediente |
 | Migración (B-8) | Aceptaciones importadas divergentes con 90 días para revalidar; IA solo tras consentimiento; H9 depende de H7 |
 | Entregable inicial | Documentación por hitos (este conjunto), no un plan único |
-| Nombre | "AvalaSoft" (decidido el 2026-11-18; reemplazó al nombre de trabajo anterior en todo el repositorio) |
+| Nombre | "Valídalo" (decidido el 2026-11-18; reemplazó al nombre de trabajo anterior en todo el repositorio) |
 
 ## Decisiones abiertas
 
-1. ~~**Nombre definitivo del producto.**~~ — **cerrada** (2026-11-18): el producto se llama AvalaSoft y el nombre de trabajo anterior desapareció del repositorio (ver [17](17-renombre-a-avalasoft.md)).
+1. ~~**Nombre definitivo del producto.**~~ — **cerrada** (2026-11-18): el producto se llama Valídalo y el nombre de trabajo anterior desapareció del repositorio (ver [17](17-renombre-a-validalo.md)).
 2. ~~**Plazo de revalidación y si bloquea**~~ — **cerrada** (A-2, registro §5-bis): 15 días de aviso y luego el certificado `ConPendientes` pasa a bloqueante hasta revalidar; 90 días para aceptaciones importadas (B-8).
 3. **Empresa piloto y fecha de corte** — se decide en [09](09-plan-de-hitos-y-responsabilidades.md) (decisión abierta 2, A-3); aquí solo se referencia.
 4. ~~Umbral para que una versión se vuelva `Actual`~~ — **cerrada** (D-3 en [02](02-modelo-documental-compartido.md) §5 y [03](03-dominio-y-eventos.md) §4.3: sin IA hash+antivirus+MIME; con IA además tipo, legibilidad e identidad).
@@ -226,7 +226,7 @@ Cerradas por el registro: modelo comercial de la revisión automática (P-6-7: p
 
 ## Fuentes verificadas
 
-- Presentación de marca "AvalaSoft 2026" (artifact `P2qmmcKm4B1RaC9BoeSc7r`): flujo de 5 pasos, navegación, estados visuales, tono de voz.
+- Presentación de marca "Valídalo 2026" (artifact `P2qmmcKm4B1RaC9BoeSc7r`): flujo de 5 pasos, navegación, estados visuales, tono de voz.
 - Lógica de exigencia triplicada: `C:\Fuentes_Git\SRM\BackEnd\SRM.Services\SRM.Services.Proveedores\DocumentosRequeridos\DocumentosRequericosBL.cs:354-522`, `...\Solicitudes\Validaciones\ValidarEstadoTercero.cs:834-1014`, `...\SRM.Services.Features\JobVencimientoProveedor\Queries\ObtenerProveedoresVencidos\Handler.cs:212-349`.
 - Tres enums de estado: `C:\Fuentes_Git\SRM\BackEnd\SRM.Modelos\SRM.Models.Proveedores\Enums\EnumsProveedores.cs:12-29`; `C:\Fuentes_Git\SRM\BackEnd\SRM.BackgroundServices\Features\EnvioCorreo\Enums\EstadoTerceroEnum.cs:6-18`; `C:\Fuentes_Git\PortalProveedores\backend\librerias\Code.Model\Entity\dbo\Terceros.cs:8-24`.
 - Copia espejo por constructora: `C:\Fuentes_Git\PortalProveedores\backend\librerias\Code.Model\Entity\dbo\AdjuntosConstructora.cs`; `...\Code.Services\Documents\Service\AdjuntoService.cs:619-770`.

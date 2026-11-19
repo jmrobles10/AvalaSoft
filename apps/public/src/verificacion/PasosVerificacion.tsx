@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Card, Skeleton, Stack, Typography } from '@mui/material';
-import type { CertificadoPublicoDto } from '@avalasoft/api-client';
-import { visualmenteOculto } from '@avalasoft/ui';
+import type { CertificadoPublicoDto } from '@validalo/api-client';
+import { visualmenteOculto } from '@validalo/ui';
 import { CircleAlert, CircleCheck, CircleHelp, CircleX, RotateCcw, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { DetallesTecnicos } from './DetallesTecnicos';

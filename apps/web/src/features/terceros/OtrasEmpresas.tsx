@@ -1,6 +1,6 @@
 import { Divider, Stack, Typography } from '@mui/material';
-import type { EmpresaDto, VinculoEnOtraEmpresaDto } from '@avalasoft/api-client';
-import { ChipEstado } from '@avalasoft/ui';
+import type { EmpresaDto, VinculoEnOtraEmpresaDto } from '@validalo/api-client';
+import { ChipEstado } from '@validalo/ui';
 import { Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';

@@ -5,7 +5,7 @@
 | Aceptado | 2026-11-09 (decisiones IA-1 a IA-7) | Cambia el proveedor de M-4 (Claude) y precisa docs/04 §IA |
 
 ## Contexto
-La revisión automática (docs/02 §2.4, H7) necesita leer los documentos del tercero (RUT, Cámara de comercio, cédula, certificaciones…) y extraer sus datos con precisión. Producto decidió usar **OpenAI** por costo, con un modelo lo bastante barato para que el servicio sea rentable pero capaz de leer y analizar documentos con precisión. El servicio se vende por empresa: cada una tiene un número de validaciones incluidas al mes (del orden de US$20 de consumo de IA) y paga un adicional si quiere más. AvalaSoft debe controlar el uso de cada empresa por separado.
+La revisión automática (docs/02 §2.4, H7) necesita leer los documentos del tercero (RUT, Cámara de comercio, cédula, certificaciones…) y extraer sus datos con precisión. Producto decidió usar **OpenAI** por costo, con un modelo lo bastante barato para que el servicio sea rentable pero capaz de leer y analizar documentos con precisión. El servicio se vende por empresa: cada una tiene un número de validaciones incluidas al mes (del orden de US$20 de consumo de IA) y paga un adicional si quiere más. Valídalo debe controlar el uso de cada empresa por separado.
 
 ## Decisión
 - **Proveedor y modelos.** OpenAI, API Responses con *structured outputs* (esquema JSON por tipo de documento) y el PDF como archivo de entrada (texto extraído más imágenes de página). Modelo por defecto `gpt-6-luna`; escalamiento a `gpt-6.1-terra` solo si la confianza queda bajo el umbral, si cambia un campo crítico o si el documento parece ilegible o alterado. Los modelos son configuración, no código.
@@ -18,7 +18,7 @@ La revisión automática (docs/02 §2.4, H7) necesita leer los documentos del te
 
 ## Alternativas descartadas
 - **Claude** (M-4 original): mejor precisión en algunos casos, pero más costoso para el volumen previsto.
-- **Una llave de AvalaSoft para todos**: no permite aislar el costo de cada cliente ni cortar el gasto de uno sin afectar a los demás.
+- **Una llave de Valídalo para todos**: no permite aislar el costo de cada cliente ni cortar el gasto de uno sin afectar a los demás.
 - **Cobrar solo a la empresa que provocó el análisis**: Producto prefiere que cada empresa que se beneficia de la validación la pague, como si fuera la única.
 
 ## Consecuencias

@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
-import { Dato, RejillaDatos } from '@avalasoft/ui';
+import { Dato, RejillaDatos } from '@validalo/ui';
 import { FileDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';

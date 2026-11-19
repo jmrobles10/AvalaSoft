@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, SCOPES, type FuentesOficialesConfigDto } from '@avalasoft/api-client';
+import { reiniciarCliente, SCOPES, type FuentesOficialesConfigDto } from '@validalo/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { problema, renderizar, simularApi, type LlamadaApi } from '../../cumplimiento/pruebasApi';
 import { configDeFuentes } from '../../fuentesOficiales/datosPrueba';

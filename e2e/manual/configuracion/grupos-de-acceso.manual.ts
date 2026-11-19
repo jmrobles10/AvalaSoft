@@ -14,7 +14,7 @@ recorrido(
       'Así Rubén revisa la tributaria de los terceros y no puede decidir sobre el resto de la ficha.',
     precondiciones: [
       'Un grupo empresarial con Constructora Sur S.A.S., su área «Revisión» y las personas Ana (administradora), Rubén y Sofía.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/usuarios-y-roles', 'configuracion/responsable-por-sector'],
   },

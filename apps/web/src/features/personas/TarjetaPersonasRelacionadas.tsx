@@ -1,6 +1,6 @@
 import { Box, Chip, Stack, Typography } from '@mui/material';
-import { SCOPES, type PersonaDelVinculoDto, type VinculoDto } from '@avalasoft/api-client';
-import { EstadoVacio, formatearFecha, MarcoTabla } from '@avalasoft/ui';
+import { SCOPES, type PersonaDelVinculoDto, type VinculoDto } from '@validalo/api-client';
+import { EstadoVacio, formatearFecha, MarcoTabla } from '@validalo/ui';
 import { UsersRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../shared/componentes';

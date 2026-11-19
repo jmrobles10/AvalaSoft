@@ -1,6 +1,6 @@
 import { Box, Button, Chip, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Tooltip, Typography } from '@mui/material';
-import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type VeredictoEmitidoDto } from '@avalasoft/api-client';
-import { AvatarActor, formatearFecha, formatearFechaHora } from '@avalasoft/ui';
+import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type VeredictoEmitidoDto } from '@validalo/api-client';
+import { AvatarActor, formatearFecha, formatearFechaHora } from '@validalo/ui';
 import { BadgeCheck, Ellipsis, Gavel, RotateCcw, ShieldX, Sparkles, Timer, Undo2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

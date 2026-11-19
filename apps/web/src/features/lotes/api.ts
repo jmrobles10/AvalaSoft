@@ -15,7 +15,7 @@ import {
   type ListarFilasLoteParams,
   type ListarLotesParams,
   type LoteDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { conEmpresa, invalidarRuta } from '../../shared/consultas';
 import { enCurso } from './modelo';
 

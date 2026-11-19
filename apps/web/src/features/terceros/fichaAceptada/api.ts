@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getObtenerFichaAceptadaDelVinculoQueryOptions } from '@avalasoft/api-client';
+import { getObtenerFichaAceptadaDelVinculoQueryOptions } from '@validalo/api-client';
 import { conEmpresa } from '../../../shared/consultas';
 
 /**

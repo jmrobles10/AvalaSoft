@@ -53,7 +53,7 @@ recorrido(
     await paso(page, {
       titulo: 'Avisa que la sesión venció',
       explicacion:
-        'Si la sesión vence y el sistema aún no entrega una nueva, la app muestra «Tu sesión venció». La explicación indica que ya se pidió una sesión nueva al sistema y que, si no llega, hay que volver a abrir AvalaSoft desde allí. ' +
+        'Si la sesión vence y el sistema aún no entrega una nueva, la app muestra «Tu sesión venció». La explicación indica que ya se pidió una sesión nueva al sistema y que, si no llega, hay que volver a abrir Valídalo desde allí. ' +
         'No se pierde lo que se guardó: al entregar una sesión nueva, la app continúa donde estaba.',
       resaltar: aviso,
       variantes: [

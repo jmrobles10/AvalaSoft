@@ -9,7 +9,7 @@ recorrido(
     actor: 'Tercero',
     titulo: 'Pide conocer, corregir o suprimir tus datos personales',
     resumen:
-      'El tercero abre «Privacidad y mis datos», crea una solicitud sobre sus datos (consulta, corrección o supresión), elige a quién se la dirige (AvalaSoft o una empresa con la que tiene vínculo) y recibe su radicado con la fecha límite de respuesta.',
+      'El tercero abre «Privacidad y mis datos», crea una solicitud sobre sus datos (consulta, corrección o supresión), elige a quién se la dirige (Valídalo o una empresa con la que tiene vínculo) y recibe su radicado con la fecha límite de respuesta.',
     precondiciones: [
       'Un grupo con Constructora Norte, que invitó a un tercero que ya aceptó la invitación y entregó sus documentos.',
       'El tercero entra al portal con su sesión abierta.',
@@ -65,11 +65,11 @@ recorrido(
     await paso(page, {
       titulo: 'Elige a quién se la pides',
       explicacion:
-        'En «Se la pides a» eliges AvalaSoft, que responde por lo que guarda en tu bóveda (documentos, información y cuentas), o una empresa con la que tienes un vínculo, que responde por los datos de esa relación. ' +
+        'En «Se la pides a» eliges Valídalo, que responde por lo que guarda en tu bóveda (documentos, información y cuentas), o una empresa con la que tienes un vínculo, que responde por los datos de esa relación. ' +
         'El aviso de abajo dice quién recibe la solicitud ahora, en cuántos días hábiles te responde y que te llegará un correo con el radicado.',
       resaltar: dialogo.getByRole('combobox', { name: 'Se la pides a' }),
       variantes: [
-        { cuando: 'Eliges «AvalaSoft (mi bóveda)»', entonces: 'AvalaSoft responde por tu bóveda y la solicitud no pasa por ninguna empresa.' },
+        { cuando: 'Eliges «Valídalo (mi bóveda)»', entonces: 'Valídalo responde por tu bóveda y la solicitud no pasa por ninguna empresa.' },
         { cuando: 'Eliges una empresa', entonces: 'Solo aparecen las empresas con las que tienes una invitación aceptada.' },
       ],
     });

@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel, FormGroup, FormHelperText, FormLabel, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
-import type { TipoDocumentoCanonicoDto } from '@avalasoft/api-client';
+import type { TipoDocumentoCanonicoDto } from '@validalo/api-client';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AMBITOS, etiquetaDelCanonico, FORMATOS, REGLAS_FRESCURA, techoDelCanonico, type BorradorTipo, type FormatoCorto, type ReglaFrescura } from './modelo';

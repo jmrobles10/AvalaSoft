@@ -1,9 +1,9 @@
 import { Box, IconButton, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import type { PersonaConsultadaDto } from '@avalasoft/api-client';
+import type { PersonaConsultadaDto } from '@validalo/api-client';
 import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { BorradorCoincidenciaManual } from '../consultaManual';
-import { CampoNumero } from '@avalasoft/ui';
+import { CampoNumero } from '@validalo/ui';
 
 export interface FilaCoincidenciaManualProps {
   numero: number;

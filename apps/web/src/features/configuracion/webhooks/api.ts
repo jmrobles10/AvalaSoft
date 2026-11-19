@@ -10,7 +10,7 @@ import {
   reenviarEntregaWebhook,
   rotarSecretoWebhook,
   type WebhookDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { invalidarRuta } from '../../../shared/consultas';
 import { cuerpoCrearWebhook, cuerpoEditarWebhook, type BorradorWebhook } from './modelo';
 

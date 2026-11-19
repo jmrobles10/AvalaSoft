@@ -15,7 +15,7 @@ recorrido(
       'La administradora arma un flujo de proveedores en el que el RUT se pide a todos, la Cámara de comercio solo a personas jurídicas y la cédula solo a personas naturales. Así el tercero entrega lo que le corresponde y nada más.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», su área «Revisión» con miembros y los tipos de documento RUT, Cámara de comercio y Cédula.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/tipo-de-documento-y-flujo'],
   },

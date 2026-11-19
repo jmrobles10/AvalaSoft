@@ -7,11 +7,11 @@ import type { ReactNode } from 'react';
 import { describe, expect, it } from 'vitest';
 import { DosColumnas } from './disposicion';
 import { EsqueletoDetalle, EsqueletoFormulario, EsqueletoHistorial, EsqueletoTabla, EsqueletoTarjeta, EsqueletoTarjetas, OpcionesEnCarga } from './esqueletos';
-import { createAvalasoftTheme, type App } from './tema';
+import { createValidaloTheme, type App } from './tema';
 import { RADIO } from './tokens';
 
 /** Reglas visuales de toda la aplicación (UI-1…UI-6): lo que el tema y los esqueletos garantizan, y lo que ningún código debe volver a hacer. */
-const conTema = (nodo: ReactNode, app: App = 'web') => render(<ThemeProvider theme={createAvalasoftTheme('light', { app })}>{nodo}</ThemeProvider>);
+const conTema = (nodo: ReactNode, app: App = 'web') => render(<ThemeProvider theme={createValidaloTheme('light', { app })}>{nodo}</ThemeProvider>);
 
 describe('UI-1 · cargando = esqueleto', () => {
   it.each([
@@ -61,17 +61,17 @@ describe('UI-1 · cargando = esqueleto', () => {
 
 describe('UI-2 · botones compactos', () => {
   it.each(['web', 'public'] as const)('el tamaño por omisión es medium en %s y large queda para la acción principal', (app) => {
-    const tema = createAvalasoftTheme('light', { app });
+    const tema = createValidaloTheme('light', { app });
     expect(tema.components?.MuiButton?.defaultProps?.size).toBe('medium');
   });
 
   it('en web el botón mide lo que el campo (36 px), el pequeño 30 y el grande 40', () => {
-    const estilos = createAvalasoftTheme('light', { app: 'web' }).components?.MuiButton?.styleOverrides as Record<string, Record<string, unknown>>;
+    const estilos = createValidaloTheme('light', { app: 'web' }).components?.MuiButton?.styleOverrides as Record<string, Record<string, unknown>>;
     expect([estilos.sizeSmall?.minHeight, estilos.sizeMedium?.minHeight, estilos.sizeLarge?.minHeight]).toEqual([30, 36, 40]);
   });
 
   it('en el tercero el botón mide 36 px (como su campo) en escritorio y 40 en el celular, y el área táctil de 44 se completa sin inflarlo', () => {
-    const estilos = createAvalasoftTheme('light', { app: 'public' }).components?.MuiButton?.styleOverrides as Record<string, Record<string, unknown>>;
+    const estilos = createValidaloTheme('light', { app: 'public' }).components?.MuiButton?.styleOverrides as Record<string, Record<string, unknown>>;
     const medio = estilos.sizeMedium as { minHeight: number; '@media (min-width:600px)': { minHeight: number } };
     expect(medio.minHeight).toBe(40);
     expect(medio['@media (min-width:600px)'].minHeight).toBe(36);
@@ -92,7 +92,7 @@ describe('UI-2 · botones compactos', () => {
 
 describe('UI-3 · autocompletar y selects', () => {
   it.each(['web', 'public'] as const)('el ícono de abrir queda en su sitio (centrado por MUI) y no se corre hacia arriba en %s', (app) => {
-    const sobrescritos = createAvalasoftTheme('light', { app }).components?.MuiAutocomplete?.styleOverrides as Record<string, Record<string, unknown>>;
+    const sobrescritos = createValidaloTheme('light', { app }).components?.MuiAutocomplete?.styleOverrides as Record<string, Record<string, unknown>>;
     expect(sobrescritos.endAdornment).not.toHaveProperty('top');
     expect(sobrescritos.endAdornment).not.toHaveProperty('transform');
   });
@@ -107,7 +107,7 @@ describe('UI-3 · autocompletar y selects', () => {
   });
 
   it('los demás componentes de MUI con texto propio también salen en español', () => {
-    const c = createAvalasoftTheme('light').components;
+    const c = createValidaloTheme('light').components;
     expect(c?.MuiAutocomplete?.defaultProps).toMatchObject({ openText: 'Abrir', closeText: 'Cerrar', clearText: 'Limpiar', noOptionsText: 'Sin resultados' });
     expect(c?.MuiAlert?.defaultProps).toMatchObject({ closeText: 'Cerrar' });
     expect(c?.MuiTablePagination?.defaultProps).toMatchObject({ labelRowsPerPage: 'Filas por página:' });
@@ -122,17 +122,17 @@ describe('UI-3 · autocompletar y selects', () => {
     );
     await usuario.click(screen.getByRole('combobox', { name: 'Tipo de vía' }));
     expect(screen.getByRole('option', { name: 'Calle' })).toBeInTheDocument();
-    const icono = createAvalasoftTheme('light').components?.MuiSelect?.styleOverrides as { icon: Record<string, unknown> };
+    const icono = createValidaloTheme('light').components?.MuiSelect?.styleOverrides as { icon: Record<string, unknown> };
     expect(icono.icon).not.toHaveProperty('top');
   });
 });
 
 describe('UI-4 · nada cuadrado suelto', () => {
   it.each(['web', 'public'] as const)('el acordeón tiene el radio de las tarjetas (14 px) en cualquier posición y sin la línea superior en %s', (app) => {
-    const raiz = createAvalasoftTheme('light', { app }).components?.MuiAccordion?.styleOverrides?.root as Record<string, unknown>;
+    const raiz = createValidaloTheme('light', { app }).components?.MuiAccordion?.styleOverrides?.root as Record<string, unknown>;
     expect(raiz['&, &:first-of-type, &:last-of-type']).toEqual({ borderRadius: RADIO.md });
     expect(raiz['&::before']).toEqual({ display: 'none' });
-    expect(createAvalasoftTheme('light', { app }).components?.MuiPaper?.styleOverrides?.rounded).toEqual({ borderRadius: RADIO.md });
+    expect(createValidaloTheme('light', { app }).components?.MuiPaper?.styleOverrides?.rounded).toEqual({ borderRadius: RADIO.md });
   });
 
   it('un acordeón con hermanos antes y después se pinta redondeado', () => {
@@ -222,7 +222,7 @@ describe('UI-7 · ningún control nativo del navegador', () => {
   });
 
   it('el tema esconde los adornos del navegador: la «x» del type="search" y el ojo de Edge en las claves', () => {
-    const entrada = createAvalasoftTheme('light').components?.MuiInputBase?.styleOverrides as { input: Record<string, Record<string, unknown>> };
+    const entrada = createValidaloTheme('light').components?.MuiInputBase?.styleOverrides as { input: Record<string, Record<string, unknown>> };
     expect(Object.keys(entrada.input).join(' ')).toContain('::-webkit-search-cancel-button');
     expect(Object.keys(entrada.input).join(' ')).toContain('::-ms-reveal');
   });

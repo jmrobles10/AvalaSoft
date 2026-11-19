@@ -1,6 +1,6 @@
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
-import { SCOPES, type ExencionDeVinculoDto, type VinculoDto } from '@avalasoft/api-client';
-import { EstadoVacio, formatearFecha, MarcoTabla } from '@avalasoft/ui';
+import { SCOPES, type ExencionDeVinculoDto, type VinculoDto } from '@validalo/api-client';
+import { EstadoVacio, formatearFecha, MarcoTabla } from '@validalo/ui';
 import { ShieldOff, Undo2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

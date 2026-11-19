@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import type { DocumentoBovedaDto } from '@avalasoft/api-client';
+import type { DocumentoBovedaDto } from '@validalo/api-client';
 import { CalendarClock, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

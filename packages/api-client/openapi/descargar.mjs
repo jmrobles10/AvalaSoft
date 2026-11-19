@@ -1,9 +1,9 @@
 // Actualiza el snapshot del contrato desde una API levantada (por defecto http://localhost:5080).
-//   pnpm --filter @avalasoft/api-client openapi:actualizar
+//   pnpm --filter @validalo/api-client openapi:actualizar
 // Después: `pnpm generar:api` y revisar el diff del cliente generado.
 import { writeFile } from 'node:fs/promises';
 
-const base = process.env.AVALASOFT_API_URL ?? 'http://localhost:5080';
+const base = process.env.VALIDALO_API_URL ?? 'http://localhost:5080';
 const respuesta = await fetch(`${base}/openapi/v1.json`);
 if (!respuesta.ok) {
   console.error(`No se pudo leer ${base}/openapi/v1.json (${respuesta.status}).`);

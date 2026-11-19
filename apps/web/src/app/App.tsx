@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { configurarCliente } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { RouterProvider } from 'react-router';
 import { PantallaSesion } from '../sesion/PantallaSesion';
@@ -26,7 +26,7 @@ configurarCliente({
 
 export function App() {
   const modo = usePreferencias((s) => s.modo);
-  const tema = useMemo(() => createAvalasoftTheme(modo, { app: 'web' }), [modo]);
+  const tema = useMemo(() => createValidaloTheme(modo, { app: 'web' }), [modo]);
   const [clienteConsultas] = useState(crearClienteConsultas);
   const [router] = useState(crearRouter);
   const { embebida } = usePuenteEmbed();

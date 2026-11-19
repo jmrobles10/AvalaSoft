@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Checkbox, Drawer, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
-import type { EmpresaDto, SistemaIntegradoDto, TipoEventoPublicoDto, WebhookDto } from '@avalasoft/api-client';
-import { FaltaParaEnviar } from '@avalasoft/ui';
+import type { EmpresaDto, SistemaIntegradoDto, TipoEventoPublicoDto, WebhookDto } from '@validalo/api-client';
+import { FaltaParaEnviar } from '@validalo/ui';
 import { X } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,7 @@ export function DrawerWebhook({
   empresas: readonly EmpresaDto[];
   /** Los sistemas integrados del grupo (`sistemas:administrar`); `undefined` mientras cargan o si no se pueden listar. */
   sistemas: readonly SistemaIntegradoDto[] | undefined;
-  /** Código del sistema desde el que se abrió la sesión, o `null` si se entró directo a AvalaSoft. */
+  /** Código del sistema desde el que se abrió la sesión, o `null` si se entró directo a Valídalo. */
   sistemaDeLaSesion: string | null;
   onCerrar: () => void;
   onCreado: (creado: WebhookDto) => void;
@@ -91,7 +91,7 @@ export function DrawerWebhook({
           <TextField
             required
             label={t('webhooks.campos.url')}
-            placeholder="https://srm.cliente.co/avalasoft/webhook"
+            placeholder="https://srm.cliente.co/validalo/webhook"
             value={b.url}
             onChange={(e) => setB({ ...b, url: e.target.value })}
             onBlur={() => setUrlTocada(true)}

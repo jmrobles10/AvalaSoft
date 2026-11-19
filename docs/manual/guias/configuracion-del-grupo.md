@@ -8,7 +8,7 @@ resumen: "Cada ajuste de alcance grupo en la app de la empresa: dónde está, qu
 
 Cada ajuste de alcance grupo en la app de la empresa: dónde está, qué cambia, su valor por defecto y sus variantes. Comprobado contra el código.
 
-El **grupo** (el tenant) es el cliente de AvalaSoft: una o varias empresas (razones sociales) con una administración común. Estas secciones de **Configuración** valen para todas las empresas del grupo. Las de alcance empresa están en [Configuración de la empresa](configuracion-de-la-empresa.md) y las de la consola de Plataforma en [Configuración de Plataforma](configuracion-de-plataforma.md).
+El **grupo** (el tenant) es el cliente de Valídalo: una o varias empresas (razones sociales) con una administración común. Estas secciones de **Configuración** valen para todas las empresas del grupo. Las de alcance empresa están en [Configuración de la empresa](configuracion-de-la-empresa.md) y las de la consola de Plataforma en [Configuración de Plataforma](configuracion-de-plataforma.md).
 
 > **Nota:** las rutas de la app son `/e/{empresa}/{sección}` dentro del hash de la app web (por ejemplo `/app/#/e/{empresa}/usuarios`); no existe el segmento `/configuracion/`. Una sección no aparece en la barra lateral si la persona no tiene su permiso. Los permisos de administración del grupo (`empresas:administrar`, `usuarios:administrar`, `api-keys:administrar`, `sistemas:administrar`, `sandbox:administrar`) solo los da un rol asignado a **todo el grupo**: un administrador de una sola empresa no los tiene.
 
@@ -29,7 +29,7 @@ Ruta `/e/{empresa}/empresas` · permiso `empresas:administrar`. Los textos legal
 | Límite de empresas del plan | Con el bloqueo suave activo y el tope alcanzado, el alta responde 409 `limite-del-plan-alcanzado`. | Sin límite si no hay plan | Cuentan solo las empresas activas. |
 | Textos legales: autorización de tratamiento de datos y términos y condiciones | Es lo que acepta el tercero al vincularse. Cada publicación es una versión nueva, vigente de inmediato, y los terceros vinculados deben aceptarla de nuevo. | Sin valor: sin publicar, los terceros no pueden aceptar invitaciones. | De 1 a 100 000 caracteres. La pantalla impide publicar un texto igual al vigente. |
 
-Fuente: `apps/web/src/features/configuracion/empresas/modelo.ts`, `src/Avalasoft.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`, `src/Avalasoft.Dominio/Plataforma/Plataforma.cs`.
+Fuente: `apps/web/src/features/configuracion/empresas/modelo.ts`, `src/Validalo.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`, `src/Validalo.Dominio/Plataforma/Plataforma.cs`.
 
 ## Usuarios y roles
 
@@ -53,7 +53,7 @@ Ruta `/e/{empresa}/usuarios` · permiso `usuarios:administrar`.
 | Oficial de cumplimiento | Lecturas más `vinculos:escribir`, `vinculos:bloquear`, `cuentas:aprobar`, `expedientes:revisar`, `expedientes:exportar`, `verificaciones:escribir`, `cumplimiento:decidir`, `auditoria:leer` y `supresiones:resolver`. | Sí |
 | Auditor | Lecturas más `auditoria:leer`, `auditoria:exportar` y `expedientes:exportar`. | Sí |
 
-Fuente: `src/Avalasoft.Dominio/Identidad/Usuario.cs`, `src/Avalasoft.Aplicacion/Comun/Permisos.cs`, `src/Avalasoft.Aplicacion/Identidad/IdentidadEndpoints.cs`.
+Fuente: `src/Validalo.Dominio/Identidad/Usuario.cs`, `src/Validalo.Aplicacion/Comun/Permisos.cs`, `src/Validalo.Aplicacion/Identidad/IdentidadEndpoints.cs`.
 
 ## Ingreso
 
@@ -62,14 +62,14 @@ Ruta `/e/{empresa}/ingreso` · permiso `usuarios:administrar`. Define cómo entr
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
 | Desde el sistema integrado (modo Delegado) | El sistema integrado (SRM, Marco, Portal) autentica a la persona con una identidad firmada; es lo que usan las pantallas embebidas. | Marcado | Apagado, las sesiones delegadas responden 403 `modo-de-ingreso-no-admitido`. Esas sesiones duran 30 minutos fijos. |
-| Directo a AvalaSoft (modo Directo) | La persona entra con correo y código de 6 dígitos, y con passkey si aplica. | Desmarcado | Encenderlo completa el grupo de los usuarios antiguos; apagarlo cierra las sesiones directas abiertas. Debe haber al menos un modo (422 `modos-de-ingreso-invalidos`). Activar el SSO exige este modo. |
+| Directo a Valídalo (modo Directo) | La persona entra con correo y código de 6 dígitos, y con passkey si aplica. | Desmarcado | Encenderlo completa el grupo de los usuarios antiguos; apagarlo cierra las sesiones directas abiertas. Debe haber al menos un modo (422 `modos-de-ingreso-invalidos`). Activar el SSO exige este modo. |
 | Duración máxima de la sesión | Pasado ese tiempo hay que ingresar de nuevo; no se extiende al renovar. Solo vale para ingreso directo. | 8 horas | La pantalla ofrece 1, 2, 4, 8, 12 y 24 horas; la API acepta de 1 a 24 (422 `sesion-invalida`). |
 | Cerrar por inactividad | Cierra la sesión si no hay actividad en ese tiempo. | 30 minutos | La pantalla ofrece 5, 10, 15, 30, 60, 120, 240 y 480; la API acepta de 5 a 480 y no más que la sesión (422 `inactividad-invalida`). |
 | Exigir passkey a todas las personas del grupo | Todas deben registrar passkey en su próximo ingreso. | Apagado | Apagado: la exigen solo Administrador, Oficial y Auditor. Un ingreso por SSO con varios factores declarados no pide passkey. |
 
 Parámetros fijos, no configurables: el código del correo vence a los 5 minutos y admite 5 intentos; la ceremonia dura 10 minutos; un correo sin cuenta recibe un desafío señuelo para no revelar quién existe.
 
-Fuente: `src/Avalasoft.Dominio/Plataforma/Plataforma.cs`, `src/Avalasoft.Dominio/Identidad/Ingreso.cs`, `src/Avalasoft.Aplicacion/Identidad/Ingreso/GestionEndpoints.cs`.
+Fuente: `src/Validalo.Dominio/Plataforma/Plataforma.cs`, `src/Validalo.Dominio/Identidad/Ingreso.cs`, `src/Validalo.Aplicacion/Identidad/Ingreso/GestionEndpoints.cs`.
 
 ## Inicio de sesión único (SSO)
 
@@ -80,17 +80,17 @@ Ruta `/e/{empresa}/sso` · permiso `usuarios:administrar`; guardar pide reautent
 | Activar el inicio de sesión único | Las personas de los dominios verificados ven «Entrar con {nombre}». | Apagado | Pide un dominio verificado (422 `sso-sin-dominios`) y que el grupo admita ingreso directo (409 `ingreso-directo-apagado`). |
 | Proveedor | Con qué proveedor se entra. | `oidc` | `oidc` (Entra ID, Google Workspace u otro OpenID Connect) o `workos` (deshabilitado si la instalación no lo tiene: 409 `workos-no-configurado`). |
 | Nombre del botón | Texto «Entrar con {nombre}». | Sin valor: debe configurarse | De 1 a 60 caracteres. |
-| Emisor (issuer), Client ID y secreto del cliente (OIDC) | Dónde publica el proveedor su configuración y cómo se identifica AvalaSoft. El secreto se guarda cifrado y nunca vuelve a mostrarse. | Sin valor; secreto vacío (cliente público con PKCE) | Emisor `https` (http solo a localhost y en desarrollo) de hasta 500 caracteres; Client ID hasta 300; secreto de 8 a 2000 caracteres. |
+| Emisor (issuer), Client ID y secreto del cliente (OIDC) | Dónde publica el proveedor su configuración y cómo se identifica Valídalo. El secreto se guarda cifrado y nunca vuelve a mostrarse. | Sin valor; secreto vacío (cliente público con PKCE) | Emisor `https` (http solo a localhost y en desarrollo) de hasta 500 caracteres; Client ID hasta 300; secreto de 8 a 2000 caracteres. |
 | Organización o Conexión (WorkOS) | Identifican a la empresa en WorkOS. | Vacío | Al menos una de las dos (422 `conexion-workos-requerida`); hasta 100 caracteres cada una. |
 | URL de retorno | Es el URI de redirección que se registra en el proveedor. | La de la instalación | Solo lectura. |
-| Dominios de correo | Solo valen los correos de dominios verificados; un dominio verificado pertenece a un solo grupo. | Ninguno | Hasta 20. Se verifica publicando `avalasoft-verificacion=…` en `https://{dominio}/.well-known/avalasoft-verificacion.txt`. Rechaza dominios públicos (gmail, hotmail, outlook, yahoo, icloud, proton…: 409 `dominio-publico`). No se puede quitar el último verificado con el SSO activo. |
+| Dominios de correo | Solo valen los correos de dominios verificados; un dominio verificado pertenece a un solo grupo. | Ninguno | Hasta 20. Se verifica publicando `validalo-verificacion=…` en `https://{dominio}/.well-known/validalo-verificacion.txt`. Rechaza dominios públicos (gmail, hotmail, outlook, yahoo, icloud, proton…: 409 `dominio-publico`). No se puede quitar el último verificado con el SSO activo. |
 | Convivencia con el código del correo | Define si el SSO acompaña o reemplaza al código. | `Complementario` | `Complementario`: SSO o código. `Exclusivo`: las personas de los dominios verificados solo entran por SSO; el código y la passkey sola responden 403 `sso-obligatorio`. No afecta al ingreso delegado. |
 | Crear a las personas en su primer ingreso (JIT) | Crea la cuenta al entrar por primera vez. | Apagado | Apagado y sin cuenta: 403 `sso-sin-cuenta`. Encendido exige un rol por omisión o una regla (422 `rol-por-omision-requerido`). |
 | Roles por omisión, reglas por grupo del proveedor y reclamo de grupos | Qué roles recibe quien llega, según los grupos que declara el proveedor (se unen los de las reglas que coinciden). | Sin roles ni reglas; reclamo `groups` | Hasta 20 roles por omisión y 100 reglas. «El proveedor manda sobre los roles» reemplaza en cada ingreso los roles de la persona por los de sus grupos (apagado por defecto). |
 | Alcances OIDC | Solo por API. | `openid`, `email`, `profile` | Debe incluir `openid`; hasta 20. |
 | Probar la conexión | Comprueba el descubrimiento y el emisor con lo guardado; no inicia sesión. | — | Solo si hay algo guardado y sin cambios pendientes. |
 
-Fuente: `src/Avalasoft.Dominio/Identidad/Sso.cs`, `src/Avalasoft.Aplicacion/Identidad/Sso/SsoEndpoints.cs`, `src/Avalasoft.Aplicacion/Identidad/Ingreso/ServicioDeIngreso.Sso.cs`.
+Fuente: `src/Validalo.Dominio/Identidad/Sso.cs`, `src/Validalo.Aplicacion/Identidad/Sso/SsoEndpoints.cs`, `src/Validalo.Aplicacion/Identidad/Ingreso/ServicioDeIngreso.Sso.cs`.
 
 ## Tipos de vínculo
 
@@ -106,7 +106,7 @@ Ruta `/e/{empresa}/tipos-vinculo` · se ve con `configuracion:leer` y se escribe
 | Estado | Un tipo inactivo no se usa en flujos ni vínculos nuevos (422 `tipo-vinculo-invalido`); lo ya creado no cambia. | Activo | Activar o desactivar. |
 | Tipos sembrados al crear el grupo | — | PROVEEDOR, CLIENTE, EMPLEADO, USUARIO | — |
 
-Fuente: `src/Avalasoft.Dominio/Configuracion/TipoVinculo.cs`, `src/Avalasoft.Dominio/Configuracion/ValidadorDeAtributos.cs`.
+Fuente: `src/Validalo.Dominio/Configuracion/TipoVinculo.cs`, `src/Validalo.Dominio/Configuracion/ValidadorDeAtributos.cs`.
 
 ## Tipos de documento
 
@@ -132,7 +132,7 @@ Ruta `/e/{empresa}/tipos-documento` · se ve con `configuracion:leer` y se crea 
 
 > **Ojo:** con la regla `Ninguna`, un documento que declara `fecha_vencimiento` sí vence y sí genera avisos, aunque la pantalla diga «no pierde vigencia». No existen ajustes del tipo por empresa (los «overrides» de empresa que mencionan docs/02 y docs/03 no están construidos): lo único por empresa es la ayuda del documento y los ajustes del requisito dentro del flujo.
 
-Fuente: `src/Avalasoft.Dominio/Documentos/TipoDocumentoTenant.cs`, `src/Avalasoft.Dominio/Documentos/CatalogoCanonico.cs`, `src/Avalasoft.Dominio/Documentos/Vigencia.cs`, `src/Avalasoft.Dominio/Documentos/Formularios.cs`.
+Fuente: `src/Validalo.Dominio/Documentos/TipoDocumentoTenant.cs`, `src/Validalo.Dominio/Documentos/CatalogoCanonico.cs`, `src/Validalo.Dominio/Documentos/Vigencia.cs`, `src/Validalo.Dominio/Documentos/Formularios.cs`.
 
 ## Motivos
 
@@ -148,7 +148,7 @@ Ruta `/e/{empresa}/motivos` · se ve con `configuracion:leer` y se escribe con `
 | Disponible para los revisores | Si está inactivo, ya no se resuelve en veredictos nuevos. | Activo | Activo o inactivo. |
 | Motivos de la plataforma | Ocho fijos que no se editan (409 `motivo-base`): ilegible, incompleto, vencido, no corresponde al tercero, datos no coinciden, formato no vigente, firma faltante, frescura incumplida. | Siempre activos | Todos sirven para observar y para rechazar. |
 
-Fuente: `src/Avalasoft.Dominio/Configuracion/Motivo.cs`, `src/Avalasoft.Aplicacion/Configuracion/MotivosEndpoints.cs`.
+Fuente: `src/Validalo.Dominio/Configuracion/Motivo.cs`, `src/Validalo.Aplicacion/Configuracion/MotivosEndpoints.cs`.
 
 ## Webhooks
 
@@ -156,13 +156,13 @@ Ruta `/e/{empresa}/webhooks` · permiso `webhooks:administrar`. El detalle del m
 
 | Ajuste | Qué afecta | Por defecto | Variantes y límites |
 |---|---|---|---|
-| Dirección (URL) | Destino del POST firmado de cada evento. | Sin valor: debe configurarse | Absoluta, hasta 2000 caracteres, `https` (http solo a localhost con `Avalasoft:Webhooks:PermitirHttpLocal`); sin IP privadas ni locales (`PermitirDestinosPrivados`). 422 `url-invalida` o `url-no-permitida`. |
+| Dirección (URL) | Destino del POST firmado de cada evento. | Sin valor: debe configurarse | Absoluta, hasta 2000 caracteres, `https` (http solo a localhost con `Validalo:Webhooks:PermitirHttpLocal`); sin IP privadas ni locales (`PermitirDestinosPrivados`). 422 `url-invalida` o `url-no-permitida`. |
 | Descripción | Para reconocer la suscripción. | Vacío | Hasta 200 caracteres. |
 | Qué eventos recibe | Solo recibe los tipos marcados. | `*` (todos, también los futuros) | `*` o hasta 100 tipos del catálogo de 42 (abajo). Vacío: 422 `tipos-requeridos`; desconocido: 422 `tipos-invalidos`. |
 | De qué empresas | Un evento sin empresa (de grupo) solo llega con `*`. | `*` (las del alcance de quien lo crea) | `*` o ids de empresas del grupo (422 `empresas-fuera-de-alcance`). |
-| Secreto de firma y rotación | Cada entrega lleva `Avalasoft-Signature: t={ts},v1={HMAC-SHA256}`; el secreto (`whsec_…`) se muestra una sola vez. | Se genera al crear | Al rotar, el anterior sigue firmando 24 horas por omisión (`HorasSolapamientoRotacion`, de 0 a 168); la cabecera lleva dos `v1` durante ese tiempo. |
+| Secreto de firma y rotación | Cada entrega lleva `Validalo-Signature: t={ts},v1={HMAC-SHA256}`; el secreto (`whsec_…`) se muestra una sola vez. | Se genera al crear | Al rotar, el anterior sigue firmando 24 horas por omisión (`HorasSolapamientoRotacion`, de 0 a 168); la cabecera lleva dos `v1` durante ese tiempo. |
 | Tiempo de espera por intento | Éxito = respuesta 2xx dentro del plazo. | 5 s (`TimeoutSegundos`, de 1 a 30) | No editable en la pantalla. |
-| Reintentos | Espera creciente tras cada fallo, con los eventos en orden de cursor. | 1 min, 5 min, 30 min, 2 h y 6 h (seis intentos) | `Avalasoft:Webhooks:Reintentos`. Estados de entrega: Pendiente, Entregada, Reintentando, Fallida, Cancelada. |
+| Reintentos | Espera creciente tras cada fallo, con los eventos en orden de cursor. | 1 min, 5 min, 30 min, 2 h y 6 h (seis intentos) | `Validalo:Webhooks:Reintentos`. Estados de entrega: Pendiente, Entregada, Reintentando, Fallida, Cancelada. |
 | Deshabilitación automática | Al llegar al umbral de intentos fallidos seguidos la suscripción se deshabilita (causa `fallos-consecutivos`), se audita y se avisa a los administradores por campana y correo; sus reintentos pendientes quedan Cancelada. | 20 (`FallosParaDeshabilitar`) | Un éxito reinicia la cuenta. Activar de nuevo reinicia los fallos. |
 | Reenviar entrega | Un intento manual ahora, aunque esté entregada, fallida o cancelada o la suscripción esté desactivada. | — | Si falla, no programa reintentos. |
 
@@ -170,7 +170,7 @@ Ruta `/e/{empresa}/webhooks` · permiso `webhooks:administrar`. El detalle del m
 
 > **Ojo:** el formulario de alta de la pantalla no envía `sistemaId`, y la API lo exige cuando la credencial no es de un sistema integrado (422 `sistema-requerido`); con una sesión de ingreso directo esa alta puede fallar. Se diagnosticó leyendo el código, no ejecutándolo.
 
-Fuente: `src/Avalasoft.Dominio/Integraciones/SuscripcionWebhook.cs`, `src/Avalasoft.Aplicacion/Notificaciones/Webhooks.cs`, `src/Avalasoft.Aplicacion/Notificaciones/EventosPublicos.cs`.
+Fuente: `src/Validalo.Dominio/Integraciones/SuscripcionWebhook.cs`, `src/Validalo.Aplicacion/Notificaciones/Webhooks.cs`, `src/Validalo.Aplicacion/Notificaciones/EventosPublicos.cs`.
 
 ## Sistemas integrados
 
@@ -180,12 +180,12 @@ Ruta `/e/{empresa}/sistemas` · permiso `sistemas:administrar`.
 |---|---|---|---|
 | Código (iss) | Es el emisor de las aserciones del sistema y su código en las referencias externas. | Sin valor: debe configurarse | Empieza con letra; `A-Z`, `0-9` y `_`; hasta 20; inmutable (409 `sistema-duplicado`). |
 | Nombre | Nombre visible. | Sin valor: debe configurarse | Obligatorio. |
-| Clave pública (PEM) | AvalaSoft verifica con ella las identidades firmadas; solo se guarda la pública. | Sin valor: debe configurarse | RSA de 2048 bits o más, o EC P-256 (422 `clave-publica-invalida`). |
-| Sitios que pueden incrustar AvalaSoft (orígenes) | Alimenta `frame-ancestors` y la lista de `postMessage` para las pantallas embebidas; se aplica en menos de un minuto. | Ninguno: nadie puede incrustar | Hasta 20, `https://host[:puerto]`, sin ruta, consulta, comodines ni usuario (422 `origen-invalido`, `origenes-excesivos`). |
+| Clave pública (PEM) | Valídalo verifica con ella las identidades firmadas; solo se guarda la pública. | Sin valor: debe configurarse | RSA de 2048 bits o más, o EC P-256 (422 `clave-publica-invalida`). |
+| Sitios que pueden incrustar Valídalo (orígenes) | Alimenta `frame-ancestors` y la lista de `postMessage` para las pantallas embebidas; se aplica en menos de un minuto. | Ninguno: nadie puede incrustar | Hasta 20, `https://host[:puerto]`, sin ruta, consulta, comodines ni usuario (422 `origen-invalido`, `origenes-excesivos`). |
 | Rotar clave | Desde ya solo valen las aserciones firmadas con la clave nueva. | — | Solo si el sistema está activo; pide reautenticación. |
 | Desactivar sistema | Revoca todas sus API keys (también las de prueba), corta sus sesiones y aserciones y quita sus orígenes; reactivarlo no restaura las llaves. | Activo | Desde Plataforma («Sistemas» de cada grupo) o por API; la acción pide reautenticación. |
 
-Fuente: `src/Avalasoft.Dominio/Identidad/SistemaIntegrado.cs`, `src/Avalasoft.Aplicacion/Identidad/IdentidadEndpoints.cs`.
+Fuente: `src/Validalo.Dominio/Identidad/SistemaIntegrado.cs`, `src/Validalo.Aplicacion/Identidad/IdentidadEndpoints.cs`.
 
 ## API keys
 
@@ -202,7 +202,7 @@ Ruta `/e/{empresa}/api-keys` · permiso `api-keys:administrar`; crear, rotar y r
 | Rotar | Emite una llave nueva con los mismos permisos, alcance, sistema y expiración; la anterior sigue valiendo el solapamiento elegido y la nueva se muestra una sola vez. | Solapamiento de 24 horas | La pantalla ofrece ahora, 1 hora, 24 horas y 7 días; la API acepta hasta 30 días y nunca más allá de la expiración. 409 `api-key-ya-rotada` o `api-key-vencida`. |
 | Revocar | Deja de autenticar; se aplica en segundos (con la caché de verificación de 5 minutos como tope). | — | No se deshace. |
 
-Fuente: `src/Avalasoft.Dominio/Identidad/ApiKey.cs`, `src/Avalasoft.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`, `src/Avalasoft.Infraestructura/Seguridad/Seguridad.cs`.
+Fuente: `src/Validalo.Dominio/Identidad/ApiKey.cs`, `src/Validalo.Aplicacion/Configuracion/ConfiguracionEndpoints.cs`, `src/Validalo.Infraestructura/Seguridad/Seguridad.cs`.
 
 ## Accesos de soporte
 
@@ -217,7 +217,7 @@ Ruta `/e/{empresa}/accesos-soporte` · permiso `empresas:administrar`.
 
 Mientras está vigente, el soporte solo lee (`configuracion:leer`, `flujos:leer`, `vinculos:leer`, `terceros:leer`, `expedientes:leer`, `certificados:leer`, `auditoria:leer`) y nunca ve documentos. Entra con la cabecera `X-Acceso-Soporte`.
 
-Fuente: `src/Avalasoft.Dominio/Identidad/AccesoSoporte.cs`, `src/Avalasoft.Aplicacion/Configuracion/AccesosSoporteEndpoints.cs`.
+Fuente: `src/Validalo.Dominio/Identidad/AccesoSoporte.cs`, `src/Validalo.Aplicacion/Configuracion/AccesosSoporteEndpoints.cs`.
 
 ## Plan del grupo
 
@@ -230,6 +230,6 @@ Ruta `/e/{empresa}/plan-grupo` · permiso `configuracion:leer`. Es de solo lectu
 | Usuarios, empresas y vínculos activos | Máximos por grupo. «Vínculos activos» cuenta los que no están anulados ni desvinculados. | Sin límite | Entero o vacío (sin límite); 0 es un límite real. |
 | Almacenamiento (MB) | Suma los documentos de la bóveda compartidos con el grupo (cada objeto cuenta una vez; sin suprimidos); la medición puede tener hasta 5 minutos. | Sin límite | Entero o vacío. |
 | Llamadas a la API por mes | Cuenta las peticiones del mes (calendario en la zona del grupo) con API key de producción; no cuentan sandbox ni las sesiones de las pantallas. | Sin límite | Entero o vacío. |
-| Niveles de uso y avisos | Normal por debajo del 80 %; por agotar del 80 % al 100 %; agotado desde el 100 %. Cada umbral se avisa una vez por periodo a los administradores (campana y correo). | Evaluación cada 15 minutos | `Avalasoft:Plan:Intervalo` (`00:00:00` la apaga). |
+| Niveles de uso y avisos | Normal por debajo del 80 %; por agotar del 80 % al 100 %; agotado desde el 100 %. Cada umbral se avisa una vez por periodo a los administradores (campana y correo). | Evaluación cada 15 minutos | `Validalo:Plan:Intervalo` (`00:00:00` la apaga). |
 
-Fuente: `src/Avalasoft.Dominio/Plataforma/PlanDelGrupo.cs`, `src/Avalasoft.Aplicacion/Plataforma/PlanDelGrupoEndpoints.cs`.
+Fuente: `src/Validalo.Dominio/Plataforma/PlanDelGrupo.cs`, `src/Validalo.Aplicacion/Plataforma/PlanDelGrupoEndpoints.cs`.

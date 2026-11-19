@@ -244,7 +244,7 @@ flowchart LR
 | Qué se corrigió en la relectura | decisiones/relectura-2026-10-28.md |
 | Cómo aprovechar la suscripción de Infolaft (listas restrictivas) | 15 |
 | Qué se quiere lograr, qué está hecho y qué falta (corte 2026-11-10) | 16 |
-| Qué cambió con el renombre a AvalaSoft y cómo se migran los datos locales (PostgreSQL, MinIO, Docker) | 17 |
+| Qué cambió con el renombre a Valídalo y cómo se migran los datos locales (PostgreSQL, MinIO, Docker) | 17 |
 
 ## Decisiones abiertas
 Ninguna propia; ver `decisiones/relectura-2026-10-28.md` para la lista consolidada.

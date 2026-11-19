@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
-import { SCOPES, type DominioDeCorreoDto } from '@avalasoft/api-client';
-import { CabeceraEsqueleto, ChipEstado, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar, formatearFechaHora } from '@avalasoft/ui';
+import { SCOPES, type DominioDeCorreoDto } from '@validalo/api-client';
+import { CabeceraEsqueleto, ChipEstado, DosColumnas, EsqueletoFormulario, EsqueletoTarjeta, FaltaParaEnviar, formatearFechaHora } from '@validalo/ui';
 import { MailCheck, RefreshCw, Trash2 } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

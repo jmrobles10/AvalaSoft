@@ -60,12 +60,12 @@ function backendDelSistema(e: Escenario, invitacion: Invitacion, origen = ORIGEN
 /** Abre la página anfitriona en `origen` (la sirve `page.route`) con la sesión que le dé el «backend» dado. */
 async function abrirAnfitrion(page: Page, origen: string, sesion: (componente: string, motivo: string) => Promise<SesionEmbebida>): Promise<void> {
   await page.route(`${origen}/**`, (ruta) => ruta.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: PAGINA_ANFITRIONA }));
-  await page.exposeFunction('obtenerSesionDeAvalasoft', sesion);
+  await page.exposeFunction('obtenerSesionDeValidalo', sesion);
   await page.goto(`${origen}/`);
 }
 
 async function mensajes(page: Page): Promise<string[]> {
-  return page.evaluate(() => (window as unknown as { mensajesDeAvalasoft: { tipo: string }[] }).mensajesDeAvalasoft.map((m) => m.tipo));
+  return page.evaluate(() => (window as unknown as { mensajesDeValidalo: { tipo: string }[] }).mensajesDeValidalo.map((m) => m.tipo));
 }
 
 async function terceroConInvitacionAceptada(): Promise<{ e: Escenario; invitacion: Invitacion }> {
@@ -90,13 +90,13 @@ test('un sistema ficticio embebe la bóveda y la ficha del tercero con una sesi�
 
   await anfitrion.getByLabel('Pantalla del tercero').selectOption('boveda');
   await anfitrion.getByRole('button', { name: 'Abrir' }).click();
-  const marco = anfitrion.frameLocator('#avalasoft');
+  const marco = anfitrion.frameLocator('#validalo');
   await expect(marco.getByRole('heading', { level: 1, name: 'Mi bóveda' })).toBeVisible();
   // Dentro del iframe no hay marca, navegación ni pie (el sistema pone su propio marco) y nunca se pide el correo.
   await expect(marco.getByRole('navigation')).toHaveCount(0);
   await expect(marco.getByRole('button', { name: 'Salir' })).toHaveCount(0);
   await expect(marco.getByRole('textbox', { name: 'Correo de la invitación' })).toHaveCount(0);
-  expect(await mensajes(anfitrion)).toEqual(expect.arrayContaining(['avalasoft:ready', 'avalasoft:resize']));
+  expect(await mensajes(anfitrion)).toEqual(expect.arrayContaining(['validalo:ready', 'validalo:resize']));
   await expect(marco.getByText('Aún no tienes documentos')).toBeVisible(); // ya cargó la lista (la captura no muestra el esqueleto)
   await capturar(anfitrion, 'embebido-boveda');
   expect(backend.pedidas).toEqual([{ componente: 'boveda', motivo: 'inicial' }]);
@@ -104,7 +104,7 @@ test('un sistema ficticio embebe la bóveda y la ficha del tercero con una sesi�
   // La ficha del mismo tercero, con otra sesión (otro componente = otro token).
   await anfitrion.getByLabel('Pantalla del tercero').selectOption('ficha');
   await anfitrion.getByRole('button', { name: 'Abrir' }).click();
-  await expect(anfitrion.frameLocator('#avalasoft').getByRole('heading', { level: 1, name: 'Mi información' })).toBeVisible();
+  await expect(anfitrion.frameLocator('#validalo').getByRole('heading', { level: 1, name: 'Mi información' })).toBeVisible();
   expect(backend.pedidas.map((p) => p.componente)).toEqual(['boveda', 'ficha']);
 });
 
@@ -126,8 +126,8 @@ test('el backend solo emite sesiones para orígenes del sistema y un origen no p
   const intruso = await (await browser.newContext()).newPage();
   await abrirAnfitrion(intruso, ORIGEN_NO_PERMITIDO, () => Promise.resolve(sesionValida));
   await intruso.getByRole('button', { name: 'Abrir' }).click();
-  await expect(intruso.locator('#avalasoft')).toBeAttached();
-  await expect(intruso.frameLocator('#avalasoft').getByRole('heading', { name: 'Mi bóveda' })).toHaveCount(0, { timeout: 5000 });
+  await expect(intruso.locator('#validalo')).toBeAttached();
+  await expect(intruso.frameLocator('#validalo').getByRole('heading', { name: 'Mi bóveda' })).toHaveCount(0, { timeout: 5000 });
 });
 
 test('un token emitido para un origen no se acepta en otro origen del mismo sistema', async ({ browser }) => {
@@ -138,11 +138,11 @@ test('un token emitido para un origen no se acepta en otro origen del mismo sist
   await abrirAnfitrion(pagina, OTRO_ORIGEN_PERMITIDO, () => Promise.resolve(paraOtroOrigen));
   await pagina.getByRole('button', { name: 'Abrir' }).click();
 
-  const marco = pagina.frameLocator('#avalasoft');
+  const marco = pagina.frameLocator('#validalo');
   await expect(marco.getByRole('heading', { level: 1, name: 'Esta pantalla solo se muestra dentro de tu sistema' })).toBeVisible();
   await expect(marco.getByText('No pudimos validar tu sesión. Vuelve a abrir esta pantalla desde tu sistema.')).toBeVisible();
   await capturar(pagina, 'embebido-rechazado');
   await expect(marco.getByRole('heading', { name: 'Mi bóveda' })).toHaveCount(0);
   // El iframe pidió otra sesión al anfitrión: «rechazada».
-  await expect.poll(() => mensajes(pagina)).toContain('avalasoft:sesion-requerida');
+  await expect.poll(() => mensajes(pagina)).toContain('validalo:sesion-requerida');
 });

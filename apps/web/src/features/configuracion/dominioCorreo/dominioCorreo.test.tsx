@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, SCOPES, type DominioDeCorreoDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, SCOPES, type DominioDeCorreoDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import '../../../i18n';
 import {
@@ -24,7 +24,7 @@ const permisos = vi.hoisted(() => ({ scopes: new Set<string>() }));
 vi.mock('../../empresas/useEmpresas', () => ({ useEmpresaActiva: () => ({ empresa: { id: 'emp', nombre: 'Constructora Norte' }, empresas: [] }) }));
 vi.mock('../../../shared/usePermisos', () => ({ usePermisos: () => ({ scopes: permisos.scopes, puede: (s: string) => permisos.scopes.has(s) }) }));
 
-const PLATAFORMA = 'AvalaSoft <no-responder@avalasoft.co>';
+const PLATAFORMA = 'Valídalo <no-responder@validalo.co>';
 
 const SIN_DOMINIO: DominioDeCorreoDto = {
   empresaId: 'emp',
@@ -48,9 +48,9 @@ const PENDIENTE: DominioDeCorreoDto = {
   dominio: 'proveedores.norte.co',
   estado: 'Pendiente',
   registros: [
-    { finalidad: 'Spf', tipo: 'TXT', nombre: 'proveedores.norte.co', valor: 'v=spf1 include:_spf.avalasoft.co ~all' },
-    { finalidad: 'Dkim', tipo: 'CNAME', nombre: 'vs1._domainkey.proveedores.norte.co', valor: 'vs1.dkim.avalasoft.co' },
-    { finalidad: 'Dmarc', tipo: 'TXT', nombre: '_dmarc.proveedores.norte.co', valor: 'v=DMARC1; p=none; rua=mailto:dmarc@avalasoft.co' },
+    { finalidad: 'Spf', tipo: 'TXT', nombre: 'proveedores.norte.co', valor: 'v=spf1 include:_spf.validalo.co ~all' },
+    { finalidad: 'Dkim', tipo: 'CNAME', nombre: 'vs1._domainkey.proveedores.norte.co', valor: 'vs1.dkim.validalo.co' },
+    { finalidad: 'Dmarc', tipo: 'TXT', nombre: '_dmarc.proveedores.norte.co', valor: 'v=DMARC1; p=none; rua=mailto:dmarc@validalo.co' },
   ],
 };
 
@@ -58,7 +58,7 @@ const FALLIDO: DominioDeCorreoDto = {
   ...PENDIENTE,
   estado: 'Fallido',
   verificacion: [
-    { finalidad: 'Spf', correcto: true, encontrado: 'v=spf1 include:_spf.avalasoft.co ~all' },
+    { finalidad: 'Spf', correcto: true, encontrado: 'v=spf1 include:_spf.validalo.co ~all' },
     { finalidad: 'Dkim', correcto: false, encontrado: null },
     { finalidad: 'Dmarc', correcto: false, encontrado: 'v=DMARC1; p=reject' },
   ],
@@ -94,7 +94,7 @@ function montar(inicial: DominioDeCorreoDto, alEscribir: (metodo: string) => Dom
     }),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <PaginaDominioCorreo />
       </QueryClientProvider>
@@ -165,7 +165,7 @@ describe('Dominio de correo de la empresa', () => {
     permisos.scopes = new Set([SCOPES.empresasAdministrar]);
     const peticiones = montar(SIN_DOMINIO, () => PENDIENTE);
 
-    expect(await screen.findByText(/sigue saliendo desde AvalaSoft <no-responder@avalasoft.co>/)).toBeInTheDocument();
+    expect(await screen.findByText(/sigue saliendo desde Valídalo <no-responder@validalo.co>/)).toBeInTheDocument();
     expect(screen.getByText(/Verificación simulada/)).toBeInTheDocument();
     const registrar = screen.getByRole('button', { name: 'Registrar el dominio' });
     expect(registrar).toBeDisabled();
@@ -205,7 +205,7 @@ describe('Dominio de correo de la empresa', () => {
     expect(registros).toHaveLength(3);
     expect(within(registros[0]!).getByText('SPF')).toBeInTheDocument();
     expect(within(registros[0]!).getByText('Correcto')).toBeInTheDocument();
-    expect(within(registros[1]!).getByText('vs1.dkim.avalasoft.co')).toBeInTheDocument();
+    expect(within(registros[1]!).getByText('vs1.dkim.validalo.co')).toBeInTheDocument();
     expect(within(registros[1]!).getByText('No encontrado')).toBeInTheDocument();
     expect(within(registros[1]!).getByText('No encontramos este registro en el DNS.')).toBeInTheDocument();
     expect(within(registros[2]!).getByText('Distinto')).toBeInTheDocument();
@@ -238,7 +238,7 @@ describe('Dominio de correo de la empresa', () => {
 
     await usuario.click(screen.getByRole('button', { name: 'Quitar el dominio' }));
     const dialogo = await screen.findByRole('dialog', { name: /Quitar proveedores.norte.co/ });
-    expect(within(dialogo).getByText(/vuelve a salir desde AvalaSoft <no-responder@avalasoft.co>/)).toBeInTheDocument();
+    expect(within(dialogo).getByText(/vuelve a salir desde Valídalo <no-responder@validalo.co>/)).toBeInTheDocument();
     await usuario.click(within(dialogo).getByRole('button', { name: 'Quitar el dominio' }));
 
     await waitFor(() => expect(peticiones.some((p) => p.metodo === 'DELETE')).toBe(true));

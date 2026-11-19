@@ -4,7 +4,7 @@
 |---|---|---|
 | Aprobado por Producto | 2026-11-09 | Arquitectura |
 
-**Propósito.** AvalaSoft se vuelve el **dueño de la información del tercero**: la que hoy vive en las tablas del Portal de Proveedores y que el SRM usa para validar, aprobar y crear el proveedor en el ERP. Este documento cuenta lo que hay hoy (§1–§2), cómo lo modela AvalaSoft (§3–§7), cómo se migra (§8) y en qué orden se construye (§9). Las decisiones están en el [registro](decisiones/registro.md) (FM-1 a FM-16) y en [ADR-0013](adr/0013-ficha-maestra-del-tercero.md).
+**Propósito.** Valídalo se vuelve el **dueño de la información del tercero**: la que hoy vive en las tablas del Portal de Proveedores y que el SRM usa para validar, aprobar y crear el proveedor en el ERP. Este documento cuenta lo que hay hoy (§1–§2), cómo lo modela Valídalo (§3–§7), cómo se migra (§8) y en qué orden se construye (§9). Las decisiones están en el [registro](decisiones/registro.md) (FM-1 a FM-16) y en [ADR-0013](adr/0013-ficha-maestra-del-tercero.md).
 
 **Relacionados.** [01](01-analisis-legado-srm-portal.md) · [02](02-modelo-documental-compartido.md) · [03](03-dominio-y-eventos.md) · [08](08-integracion-y-migracion.md) · [ADR-0004](adr/0004-boveda-global-y-tenancy-conjoined.md) · [ADR-0005](adr/0005-version-unica-y-revalidacion.md) · [ADR-0010](adr/0010-personas-relacionadas-con-boveda-propia.md) · [ADR-0012](adr/0012-ia-openai-con-cupo-por-empresa.md).
 
@@ -60,7 +60,7 @@ Casi todo es **global del tercero**: una sola verdad compartida por todas las co
   - hoja de vida en PDF.
 - **Sin cruce automático entre lo declarado y el documento.** La IA del autorregistro del Portal, que lo hacía, está desactivada.
 
-## 3. Modelo en AvalaSoft
+## 3. Modelo en Valídalo
 - **Sección = formulario canónico global** (FM-2). Cada sección es un tipo canónico de clase `Formulario` con ámbito `Global` y esquema versionado de plataforma (P-3-1). Sus versiones viven en la bóveda del tercero (stream `Documento`, como un documento):
   - el tercero propone una versión nueva y la anterior queda superada;
   - la versión guarda los datos normalizados y la huella SHA-256 de los datos (TD-4).
@@ -103,7 +103,7 @@ El wizard pasa solo al siguiente sector cuando el actual está **completo**. Ese
 - **Reglas duplicadas.** La completitud se calculaba distinto en el SRM (`ValidarEstadoTercero`), en el wizard nuevo del Portal (`RegistroEstadoService`) y en el front.
 - **Estado inferido.** Los motivos se recalculaban borrando y recreando `DocumentacionPendiente`, y había estados que nadie sabía de dónde salían.
 
-**Cómo se hace en AvalaSoft:**
+**Cómo se hace en Valídalo:**
 - **Una regla por sección, versionada.** Cada esquema canónico trae sus reglas de completitud:
   - obligatorios por tipo de persona;
   - mínimos de filas: legal con al menos un representante legal y, si es jurídica, un socio; especialidades con al menos una; ICA cuando hay responsabilidad de ICA;
@@ -127,8 +127,8 @@ Quien responde «Sí» a «¿Es PEP?» firma su **declaración jurada**: la de l
 - **Firma y sello.** La imagen (dibujada o subida; PNG de 600×200 normalizado por el navegador) viaja en base64 dentro de la declaración y el servidor la decodifica entera. Fija `firma_huella` (SHA-256), `fecha_firma` (día del negocio) y `firma_ip`: son la evidencia de la aceptación y se conservan mientras el contenido no cambie; una declaración reactivada (de «No» a «Sí») se firma de nuevo.
 - **Lo que ve la empresa.** El bloque «Declaración jurada PEP» de la persona en la revisión de la sección, la ficha aceptada y Tercero 360, con **Descargar PDF** (`GET /api/v1/terceros/{id}/declaraciones-pep/pdf`), solo si `pep = true` y hay declaración; el detalle de personas del informe SAGRILAFT (con «Sin declaración» si falta) y el ZIP del expediente (`declaraciones-pep/`). El contenido para el ERP lleva un resumen (`declaracionPep`: fecha, calidad y huella de la firma).
 - **Importación.** Del Portal se importa la declaración activa de un contacto con «Sí»; un «Sí» sin declaración queda como faltante y el tercero la completa. La **imagen de la firma** (en el disco del Portal) se lee por `IOrigenDeArchivosDelPortal` (carpeta, URL o simulada, DP-20) y **solo se importa si su SHA-256 es la huella que el Portal guardó**; si falta, no coincide o no sirve, la declaración llega sin imagen (con la huella del Portal) y con un aviso en la corrida, sin rechazarla. Las PEP relacionadas (todas) y la firma por apoderado de la versión nueva del Portal se importan tal cual (DP-22).
-- **Logo del PDF.** El encabezado lleva el logo de la empresa (PNG o SVG embebido, dibujado sin librerías) o, si no tiene o no se puede dibujar, el de AvalaSoft (DP-18). Una URL `https` no se descarga.
-- **El tercero descarga la suya.** «Descargar PDF» en «Mi información» (la General y cada persona de la legal) pide `GET /public/v1/ficha/{seccion}/declaracion-pep/pdf`: solo la suya, la versión vigente, con «Sí» y declaración activa, a nombre de AvalaSoft, y cada descarga queda registrada (DP-19).
+- **Logo del PDF.** El encabezado lleva el logo de la empresa (PNG o SVG embebido, dibujado sin librerías) o, si no tiene o no se puede dibujar, el de Valídalo (DP-18). Una URL `https` no se descarga.
+- **El tercero descarga la suya.** «Descargar PDF» en «Mi información» (la General y cada persona de la legal) pide `GET /public/v1/ficha/{seccion}/declaracion-pep/pdf`: solo la suya, la versión vigente, con «Sí» y declaración activa, a nombre de Valídalo, y cada descarga queda registrada (DP-19).
 - **Actualizar desde el RUT.** El RUT no trae PEP: la propuesta parte de lo vigente y no toca la respuesta ni la declaración. Y guardar un cambio ajeno a la declaración (la dirección que propone el RUT, la corrección de un nombre) **no la vuelve a sellar**: los datos básicos no son lo declarado y la declaración sigue siendo la que se firmó hasta que se declare de nuevo (DP-21).
 - **Sin soporte del cambio.** Declarar o cambiar la declaración, o la respuesta a PEP, no exige un documento nuevo (DP-17): la declaración es su propia evidencia.
 - **Versiones.** General y Legal pasan a esquema 3 y reglas 3 (FM-16; el 2 fue el de la declaración con un solo vínculo, DP-22): al recalcular, una ficha con «Sí» y sin declaración queda incompleta con su faltante exacto. El canónico `DECLARACION_PEP` se retira (DP-13): lo reemplaza este formulario.
@@ -141,7 +141,7 @@ La brecha frente al SRM decía que faltaban Panamá y República Dominicana y qu
 
 | País | Tipos | Formato (sin guiones) | Dígito de verificación |
 |---|---|---|---|
-| CO | `NIT`, `CC`, `CE`, `TI`, `PPT`, `PA` | como siempre | NIT: lo calcula AvalaSoft (DIAN módulo 11) |
+| CO | `NIT`, `CC`, `CE`, `TI`, `PPT`, `PA` | como siempre | NIT: lo calcula Valídalo (DIAN módulo 11) |
 | PA | `RUC` (natural o jurídica), `CIP` (cédula, natural) | cédula `[PE\|PI\|E\|N]` + 1–2 dígitos + `AV`? + 3–9 dígitos; RUC jurídico de 12 a 20 dígitos | RUC: **lo declara el tercero** (2 dígitos, `dv` de la General; obligatorio) |
 | DO | `RNC` (natural o jurídica), `CED` (cédula, natural) | RNC de 9 dígitos (sociedad) u 11 (cédula como RNC); CED de 11 | **Dentro del número**: RNC con el algoritmo de la DGII, cédula con Luhn; uno equivocado no se registra |
 | Otros | `PASAPORTE`, `ID_FISCAL` (y los propios de CL, AR, MX, PE, EC, US) | como siempre | como siempre |
@@ -165,7 +165,7 @@ El catálogo canónico declara, por tipo de documento, **qué campos de qué sec
 | Cédula | La identificación de la persona natural (`FICHA_GENERAL`) o del representante (la persona de `FICHA_LEGAL`, FD-6) |
 
 ### 5.2 Requerido como documento **y** usado como soporte (FM-13)
-Hoy la constructora exige el RUT, pero el RUT no sirve para validar lo que el proveedor diligenció en el wizard. En AvalaSoft, cada requisito de documento del flujo tiene la opción **«Usar como soporte de las secciones»**, activa por omisión cuando el tipo canónico respalda alguna sección. Con la opción activa:
+Hoy la constructora exige el RUT, pero el RUT no sirve para validar lo que el proveedor diligenció en el wizard. En Valídalo, cada requisito de documento del flujo tiene la opción **«Usar como soporte de las secciones»**, activa por omisión cuando el tipo canónico respalda alguna sección. Con la opción activa:
 - **Al revisar el requisito**, el revisor ve el documento junto con los campos de las secciones que respalda y el cruce campo por campo (§6). Aprobar el documento aprueba también su papel de soporte.
 - **Si hay discrepancias en campos críticos** (identificación, razón social, representante legal, cuenta), el requisito no se aprueba en lote ni automáticamente (H7). El revisor decide entre:
   - observar el documento (el tercero sube otro);
@@ -178,7 +178,7 @@ Hoy la constructora exige el RUT, pero el RUT no sirve para validar lo que el pr
 **Si el tercero retira el documento que respalda una sección (RT-4, [registro](decisiones/registro.md)).** FM-20 solo admite como soporte una versión `Actual`, `Superada` o `Vencida`; una `Retirada` ya no sirve. La sección **no se recalcula ni pierde datos** (una versión de sección es inmutable y su completitud ya se evaluó con el soporte que tenía) y no se reabre nada en las empresas que la aceptaron: es una **advertencia**, no un faltante. El tercero la ve en la sección («Tu soporte (Registro Único Tributario, versión 8) fue retirado»; el editor lo saca de lo que se reenvía) y en su resumen de Mi información; el diálogo de retiro (RT-1) nombra de antemano las secciones que la usan. Al guardar la sección de nuevo rige la regla de siempre: si los datos cambiaron y no hay un soporte válido, vuelve el faltante «Falta el soporte del cambio».
 
 ### 5.3 Actualizar desde el documento (FM-14)
-Simplifica lo que hoy es la feature de **Actualizaciones** del SRM (`ActualizacionProveedor`). Hoy son un detalle por sector, la comparación del valor anterior con el nuevo y un soporte genérico. Con AvalaSoft la actualización nace del documento:
+Simplifica lo que hoy es la feature de **Actualizaciones** del SRM (`ActualizacionProveedor`). Hoy son un detalle por sector, la comparación del valor anterior con el nuevo y un soporte genérico. Con Valídalo la actualización nace del documento:
 1. El tercero sube la versión nueva del RUT (o de la Cámara, los estados financieros o la certificación).
 2. La IA extrae los campos (ADR-0012) y la plataforma **propone** los cambios a las secciones que ese documento respalda, campo por campo: valor actual, valor del documento y si cambió. Por ejemplo: «dirección: Cra 10 # 20-30 → Cl 45 # 12-08» o «Gran contribuyente: No → Sí».
 3. El tercero **confirma** la propuesta, corrige lo que la IA leyó mal o deja algún campo como está. Sin IA, el tercero diligencia las secciones afectadas con el documento a la vista. Lo que confirma son versiones nuevas de esas secciones, respaldadas por el documento.
@@ -211,7 +211,7 @@ Cuando hay hechos de IA del documento de respaldo (ADR-0012), la plataforma comp
 
 ## 7. Eventos e integración
 - **Eventos de dominio:** los del documento (versión cargada, compartida, aceptada…), más `CruceDeSeccionRegistrado(numero, resultados[])` (en el stream de la sección) y `RequisitosAgregados(requisitos[])` (en el expediente de actualización, FM-49).
-- **Evento público** `seccion.aceptada { terceroId, vinculoId, empresaId, seccion, periodo?, version, aceptadaEn, contenido }`, emitido cuando una empresa acepta una versión (FM-9, FM-32). `contenido` es lo aceptado normalizado para el ERP, con las 13 calidades derivadas de los códigos DIAN (FM-33) y el representante legal que usa AyF (FM-34); el detalle está en [05 §6.6](05-api-contratos-y-webhooks.md). El SRM lo aplica en AyF con el mapeo de hoy: General, Tributaria, el representante legal y la cuenta designada. Si AyF falla, el SRM lo reintenta y lo deja en su bandeja; la aceptación en AvalaSoft no se revierte, porque es una decisión de negocio, no una transacción distribuida.
+- **Evento público** `seccion.aceptada { terceroId, vinculoId, empresaId, seccion, periodo?, version, aceptadaEn, contenido }`, emitido cuando una empresa acepta una versión (FM-9, FM-32). `contenido` es lo aceptado normalizado para el ERP, con las 13 calidades derivadas de los códigos DIAN (FM-33) y el representante legal que usa AyF (FM-34); el detalle está en [05 §6.6](05-api-contratos-y-webhooks.md). El SRM lo aplica en AyF con el mapeo de hoy: General, Tributaria, el representante legal y la cuenta designada. Si AyF falla, el SRM lo reintenta y lo deja en su bandeja; la aceptación en Valídalo no se revierte, porque es una decisión de negocio, no una transacción distribuida.
 - **API para el Portal, el SRM y Marco:**
   - `GET /api/v1/vinculos/{id}/ficha`: lo **aceptado** por esa empresa, sección por sección.
   - `GET /api/v1/terceros/{id}/ficha`: se amplía Tercero 360 con las secciones.
@@ -229,7 +229,7 @@ Cuando hay hechos de IA del documento de respaldo (ADR-0012), la plataforma comp
   Lo que no se pueda convertir va al CSV de rechazos.
 
   Construido en F4: endpoints, tablas del traductor, idempotencia y aceptación importada en [08 §6.6](08-integracion-y-migracion.md) y FM-39…FM-45. Las versiones que llegan del legado (origen `Importada` o `Portal`) no exigen el soporte del cambio. **Terceros de otro país (RG-9):** el traductor del Portal produce la tributaria genérica (§4.3) para un tercero cuyo documento es extranjero (`ID_FISCAL` o `PASAPORTE`) y no la casilla 53; el ICA no se importa y el régimen y el certificado de una exención quedan por diligenciar con su aviso.
-- **Coexistencia por empresa** (FM-11). Mientras una empresa no haya hecho el corte, el Portal sigue siendo su UI. Un sincronizador de un solo sentido, del Portal a AvalaSoft, lleva cada guardado de sección como una versión nueva, con origen `Portal`. Después del corte, el Portal lee la ficha de AvalaSoft o embebe su UI, y ya no escribe en `Ter*`. El sincronizador es `POST /api/v1/plataforma/importacion/portal/terceros/{terid}/sincronizar`, que el Portal llama tras cada guardado (FM-43, FM-44).
+- **Coexistencia por empresa** (FM-11). Mientras una empresa no haya hecho el corte, el Portal sigue siendo su UI. Un sincronizador de un solo sentido, del Portal a Valídalo, lleva cada guardado de sección como una versión nueva, con origen `Portal`. Después del corte, el Portal lee la ficha de Valídalo o embebe su UI, y ya no escribe en `Ter*`. El sincronizador es `POST /api/v1/plataforma/importacion/portal/terceros/{terid}/sincronizar`, que el Portal llama tras cada guardado (FM-43, FM-44).
 
 ## 9. Orden de construcción
 Producto pidió (2026-11-09) **primero la paridad con el SRM, sin IA**: los sectores de información con sus soportes, más la sección de documentos que ya existe. La parte de la información es global del tercero, y cada empresa hace su propia validación. La IA entra al final, sobre una base que ya funciona como hoy.

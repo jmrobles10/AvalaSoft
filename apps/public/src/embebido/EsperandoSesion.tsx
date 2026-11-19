@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { EsqueletoFormulario, PaginaEstado } from '@avalasoft/ui';
+import { EsqueletoFormulario, PaginaEstado } from '@validalo/ui';
 import { ShieldAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useEstadoPuente } from './estadoPuente';

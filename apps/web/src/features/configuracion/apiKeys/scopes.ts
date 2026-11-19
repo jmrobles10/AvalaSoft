@@ -1,7 +1,7 @@
-import { SCOPES } from '@avalasoft/api-client';
+import { SCOPES } from '@validalo/api-client';
 
 /**
- * Permisos que puede llevar una API key: exactamente `Permisos.DelTenant` (src/Avalasoft.Aplicacion/Comun/Permisos.cs;
+ * Permisos que puede llevar una API key: exactamente `Permisos.DelTenant` (src/Validalo.Aplicacion/Comun/Permisos.cs;
  * la de Plataforma no entra). La API rechaza cualquier otro con 422 `scopes-invalidos`. Se agrupan por lo que tocan para
  * elegirlos y para resumirlos en la tabla.
  */

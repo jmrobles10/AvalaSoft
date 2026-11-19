@@ -1,4 +1,4 @@
-import type { SesionTerceroDto } from '@avalasoft/api-client';
+import type { SesionTerceroDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { esComponente, evaluarSesion, reclamosEmbebidos, rutaDelComponente } from './embebido';
 

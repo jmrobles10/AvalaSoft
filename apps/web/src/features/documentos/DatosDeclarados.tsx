@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import type { DatoDeclaradoDto } from '@avalasoft/api-client';
+import type { DatoDeclaradoDto } from '@validalo/api-client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatearDatoDeclarado } from './formatoDatos';

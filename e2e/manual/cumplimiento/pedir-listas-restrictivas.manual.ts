@@ -36,7 +36,7 @@ recorrido(
       titulo: 'Abre el expediente desde Cumplimiento',
       explicacion:
         'La pestaña Cumplimiento lista los expedientes de la empresa que tienen verificaciones pendientes o por decidir. Abre el de «Aceros del Norte S.A.S.» para ver sus listas restrictivas. ' +
-        'La consulta no la pediste tú: AvalaSoft la hizo sola cuando el expediente pasó a revisión.',
+        'La consulta no la pediste tú: Valídalo la hizo sola cuando el expediente pasó a revisión.',
       resaltar: olga.getByRole('heading', { level: 1, name: NOMBRE }),
       configuracion: { ajuste: 'Flujo de proveedores con verificación de listas', ruta: 'Configuración › Flujos aprobatorios (/flujos)', efecto: 'Solo se consultan las listas que el flujo pide como verificación.' },
     });

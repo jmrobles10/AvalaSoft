@@ -1,4 +1,4 @@
-import { cerrarSesionIngreso, esErrorApi, msRestantes, renovarSesionIngreso, type SesionDirectaDto } from '@avalasoft/api-client';
+import { cerrarSesionIngreso, esErrorApi, msRestantes, renovarSesionIngreso, type SesionDirectaDto } from '@validalo/api-client';
 import { useEffect, useRef, useState } from 'react';
 import { useSesion, type EstadoSesion } from './sesionStore';
 
@@ -9,7 +9,7 @@ import { useSesion, type EstadoSesion } from './sesionStore';
  */
 
 /** Defensa CSRF adicional a `SameSite=Strict`: sin esta cabecera la API no renueva ni cierra (403 `cliente-invalido`). */
-export const CABECERAS_DE_CLIENTE = { 'X-Avalasoft-Cliente': 'web' } as const;
+export const CABECERAS_DE_CLIENTE = { 'X-Validalo-Cliente': 'web' } as const;
 
 const OPCIONES = { token: null, empresa: null, headers: CABECERAS_DE_CLIENTE } as const;
 
@@ -52,7 +52,7 @@ export function renovarSesionDirecta(): Promise<ResultadoDeRenovacion> {
   enCurso ??= (async () => {
     try {
       if (typeof navigator !== 'undefined' && 'locks' in navigator) {
-        return await navigator.locks.request('avalasoft-renovar-sesion', () => renovar());
+        return await navigator.locks.request('validalo-renovar-sesion', () => renovar());
       }
       return await renovar();
     } finally {

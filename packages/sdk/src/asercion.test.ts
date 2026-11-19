@@ -12,7 +12,7 @@ function partes(jwt: string) {
 }
 
 describe('aserciones de identidad delegada', () => {
-  it('con RSA firma RS256 con los reclamos que exige AvalaSoft y un jti por aserción', async () => {
+  it('con RSA firma RS256 con los reclamos que exige Valídalo y un jti por aserción', async () => {
     const { privateKey, publicKey } = generateKeyPairSync('rsa', {
       modulusLength: 2048,
       privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
@@ -23,7 +23,7 @@ describe('aserciones de identidad delegada', () => {
     const otra = partes(await firmante.firmar(LAURA));
 
     expect(una.cabecera).toEqual({ alg: 'RS256', typ: 'JWT' });
-    expect(una.carga).toMatchObject({ iss: 'SRM', aud: 'avalasoft', sub: 'srm-laura', name: 'Laura Revisora', email: 'laura@constructora.co' });
+    expect(una.carga).toMatchObject({ iss: 'SRM', aud: 'validalo', sub: 'srm-laura', name: 'Laura Revisora', email: 'laura@constructora.co' });
     const exp = una.carga.exp as number;
     const iat = una.carga.iat as number;
     expect(exp - iat).toBeLessThanOrEqual(300);

@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { CuestionarioDto } from '@avalasoft/api-client';
+import type { CuestionarioDto } from '@validalo/api-client';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { montarPantalla } from '../../../pruebas/montar';

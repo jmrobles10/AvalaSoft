@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type PreferenciasNotificacionDto } from '@avalasoft/api-client';
+import { reiniciarCliente, type PreferenciasNotificacionDto } from '@validalo/api-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAvisos } from '../../shared/useAvisos';
 import { DialogoPreferencias } from './DialogoPreferencias';

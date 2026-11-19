@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Stack, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import { verificarOtpEnlace, type SesionTerceroDto } from '@avalasoft/api-client';
-import { EsqueletoFormulario, formatearHora, PaginaEstado } from '@avalasoft/ui';
+import { verificarOtpEnlace, type SesionTerceroDto } from '@validalo/api-client';
+import { EsqueletoFormulario, formatearHora, PaginaEstado } from '@validalo/ui';
 import { CircleAlert, Clock, Link2Off, WifiOff } from 'lucide-react';
 import { useEffect, useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -57,7 +57,7 @@ En «Preferencias de correo» marcas los tipos de aviso que también quieres rec
 
 ## Paso 4. Confirma que tus preferencias quedaron guardadas
 
-Al guardar, AvalaSoft confirma con un aviso breve que tus preferencias quedaron guardadas.
+Al guardar, Valídalo confirma con un aviso breve que tus preferencias quedaron guardadas.
 
 > **Pantalla:** `/expediente/{id}`
 

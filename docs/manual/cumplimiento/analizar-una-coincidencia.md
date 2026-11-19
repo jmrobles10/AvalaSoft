@@ -40,7 +40,7 @@ La lista de la coincidencia muestra la persona consultada (tercero, representant
 
 ## Paso 2. Aprueba tu área: el sistema lo impide
 
-Al aprobar el área de Cumplimiento, AvalaSoft comprueba las verificaciones bloqueantes del expediente. Como la coincidencia sigue por analizar, el área queda aprobada pero el aviso dice que falta cumplimiento para aprobar el vínculo: «Listas restrictivas (coincidencia por analizar)». El expediente sigue en revisión hasta que decidas la coincidencia.
+Al aprobar el área de Cumplimiento, Valídalo comprueba las verificaciones bloqueantes del expediente. Como la coincidencia sigue por analizar, el área queda aprobada pero el aviso dice que falta cumplimiento para aprobar el vínculo: «Listas restrictivas (coincidencia por analizar)». El expediente sigue en revisión hasta que decidas la coincidencia.
 
 > **Pantalla:** `/e/{empresa}/expedientes/{id}`
 

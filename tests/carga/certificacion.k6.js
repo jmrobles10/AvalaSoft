@@ -137,9 +137,9 @@ function sembrar() {
         'POST',
         '/api/v1/vinculos',
         {
-          tercero: { identificacion: { pais: 'CO', tipo: 'NIT', numero: nit }, tipoPersona: 'Juridica', nombre: `Proveedor ${nit} S.A.S.`, contactos: [{ nombre: 'Ana', correo: `p${nit}@carga.avalasoft.co`, rol: 'Comercial' }] },
+          tercero: { identificacion: { pais: 'CO', tipo: 'NIT', numero: nit }, tipoPersona: 'Juridica', nombre: `Proveedor ${nit} S.A.S.`, contactos: [{ nombre: 'Ana', correo: `p${nit}@carga.validalo.co`, rol: 'Comercial' }] },
           tipoVinculo: 'EMPLEADO',
-          correoInvitacion: `p${nit}@carga.avalasoft.co`,
+          correoInvitacion: `p${nit}@carga.validalo.co`,
           enviarInvitacion: false,
         },
       ]),

@@ -3,7 +3,7 @@ id: "operacion/recordatorio-automatico-por-flujo"
 titulo: "Activa el recordatorio automático de observaciones"
 actor: "Administrador de empresa"
 dominio: "operacion"
-resumen: "La administradora activa el recordatorio automático: mientras un expediente siga devuelto al tercero, AvalaSoft le recuerda sus observaciones cada cierto número de días. Cada flujo puede seguir lo de la empresa, apagarlo o fijar sus propios días."
+resumen: "La administradora activa el recordatorio automático: mientras un expediente siga devuelto al tercero, Valídalo le recuerda sus observaciones cada cierto número de días. Cada flujo puede seguir lo de la empresa, apagarlo o fijar sus propios días."
 pasos: 3
 ---
 
@@ -11,7 +11,7 @@ pasos: 3
 
 **Actor:** Administrador de empresa · **Dominio:** Operación masiva y continua
 
-La administradora activa el recordatorio automático: mientras un expediente siga devuelto al tercero, AvalaSoft le recuerda sus observaciones cada cierto número de días. Cada flujo puede seguir lo de la empresa, apagarlo o fijar sus propios días.
+La administradora activa el recordatorio automático: mientras un expediente siga devuelto al tercero, Valídalo le recuerda sus observaciones cada cierto número de días. Cada flujo puede seguir lo de la empresa, apagarlo o fijar sus propios días.
 
 **Antes de empezar**
 
@@ -25,7 +25,7 @@ La administradora activa el recordatorio automático: mientras un expediente sig
 
 ## Paso 1. Abre el recordatorio automático en Plantillas de correo
 
-En «Plantillas de correo» aparece el bloque «Recordatorio automático de observaciones». Mientras un expediente siga devuelto al tercero, AvalaSoft le recuerda sus observaciones por correo y en su portal cada cierto número de días, a lo sumo una vez al día. Se detiene cuando el tercero responde.
+En «Plantillas de correo» aparece el bloque «Recordatorio automático de observaciones». Mientras un expediente siga devuelto al tercero, Valídalo le recuerda sus observaciones por correo y en su portal cada cierto número de días, a lo sumo una vez al día. Se detiene cuando el tercero responde.
 
 > **Pantalla:** `/e/{empresa}/plantillas`
 
@@ -54,7 +54,7 @@ Enciende «Enviar recordatorios automáticos» y escribe en «Cada (días)» un 
 
 ## Paso 3. Guarda el recordatorio automático
 
-Al guardar, AvalaSoft confirma el cambio. El envío automático empieza a aplicarse a los expedientes devueltos desde ese momento, sin que nadie tenga que hacerlo.
+Al guardar, Valídalo confirma el cambio. El envío automático empieza a aplicarse a los expedientes devueltos desde ese momento, sin que nadie tenga que hacerlo.
 
 > **Pantalla:** `/e/{empresa}/plantillas`
 

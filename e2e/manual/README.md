@@ -1,4 +1,4 @@
-# Manual de AvalaSoft generado por recorridos
+# Manual de Valídalo generado por recorridos
 
 El manual **no se escribe a mano**. Cada flujo es un **recorrido**: una prueba de Playwright (`e2e/manual/<dominio>/<flujo>.manual.ts`) que ejecuta
 el flujo real en la interfaz y, en cada momento que merece explicación, llama a `await paso(page, {…})`. `paso` toma el pantallazo (claro 1280 × 800
@@ -27,7 +27,7 @@ Arquitectura, el flujo completo del vínculo a la validación, el glosario, la c
 
 ```bash
 # Una vez por máquina: navegador, y los servicios de apoyo (PostgreSQL, Mailpit y MinIO)
-pnpm --filter @avalasoft/e2e navegadores
+pnpm --filter @validalo/e2e navegadores
 docker compose -f infra/compose/compose.yaml up -d postgres minio          # el Mailpit de los recorridos lo levanta el propio arranque
 
 # Correr recorridos (deja manifiestos e imágenes en salida/manual-recorridos/)
@@ -42,7 +42,7 @@ pnpm manual --incrustar --salida salida/manual-publicable   # sitio para publica
 ```
 
 - **Tu puerto y tu base** (`E2E_PUERTO`, `E2E_BASE_DATOS`, letras minúsculas y guion bajo) son obligatorios si hay otras personas corriendo pruebas: no uses la
-  base `avalasoft`, el puerto 5080 ni el Mailpit 8025. La primera corrida compila y publica la API (varios minutos); `E2E_SIN_COMPILAR=1` salta la compilación
+  base `validalo`, el puerto 5080 ni el Mailpit 8025. La primera corrida compila y publica la API (varios minutos); `E2E_SIN_COMPILAR=1` salta la compilación
   si no cambiaste código del producto.
 - **Para iterar rápido**, deja la API corriendo aparte y corre los recorridos con las mismas variables (Playwright la reutiliza):
   `cd e2e && E2E_AISLADO=1 E2E_PUERTO=<p> E2E_BASE_DATOS=<b> node soporte/api.mjs` (en otra terminal).
@@ -161,7 +161,7 @@ no se ve, si la explicación es muy corta/larga o si el dominio, actor o nombre 
    cuando el comportamiento cambia (tipo de persona, configuración, rol, plan, nivel de IA) y `configuracion` cuando un ajuste lo controla.
 5. **Pantallazos**: claro y 1280 × 800; celular (390 × 844) en lo del tercero (automático). En la app de la empresa el celular es opcional (`celular: true`).
 6. **Un archivo, un recorrido**; de 6 a 18 pasos suele ser lo justo. Si pasa de 20, pártelo en dos recorridos y enlázalos con `relacionados`.
-7. **Commits pequeños por recorrido** (mensaje en español) y lint al día: `pnpm exec eslint e2e` y `pnpm --filter @avalasoft/e2e typecheck`.
+7. **Commits pequeños por recorrido** (mensaje en español) y lint al día: `pnpm exec eslint e2e` y `pnpm --filter @validalo/e2e typecheck`.
 8. **Si un recorrido falla dos veces seguidas por algo que no entiendes, detente** y repórtalo (lo diagnostica otra persona). No toques código del producto.
 
 - Los índices `docs/manual/README.md` y `docs/manual/<dominio>/README.md` los escribe el generador a partir de lo que hay en `docs/manual/`: si dos ramas chocan en ellos, vuelve a correr `pnpm manual` y quédate con el resultado.
@@ -199,7 +199,7 @@ Dominios (carpeta del archivo): `acceso`, `tercero`, `vinculos`, `revision`, `do
 - **Correo**: cada recorrido crea su tercero con correo único; no vacíes Mailpit. Para mostrar un correo: `page.setContent(...)` con su `html`, como en `tercero/aceptar-invitacion-persona-juridica.manual.ts`.
 - **Celular que pierde lo escrito**: el pantallazo celular cambia el tamaño de la ventana de la misma página; si una pantalla se reconstruye con otro ancho y pierde lo escrito, pon `celular: false`
   en ese paso y dilo en la explicación.
-- **Fechas**: usa `escribirFecha` (`soporte/fechas.ts`); los controles son de `@avalasoft/ui`, no `<input type="date">`.
+- **Fechas**: usa `escribirFecha` (`soporte/fechas.ts`); los controles son de `@validalo/ui`, no `<input type="date">`.
 
 ## Modelos para copiar
 

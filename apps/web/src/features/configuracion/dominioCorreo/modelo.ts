@@ -1,5 +1,5 @@
-import type { ActualizarDominioDeCorreoDto, ComprobacionDeRegistroDnsDto, DominioDeCorreoDto } from '@avalasoft/api-client';
-import type { Estado } from '@avalasoft/ui';
+import type { ActualizarDominioDeCorreoDto, ComprobacionDeRegistroDnsDto, DominioDeCorreoDto } from '@validalo/api-client';
+import type { Estado } from '@validalo/ui';
 
 export const LONGITUD_MAXIMA_DOMINIO = 253;
 export const LONGITUD_MAXIMA_NOMBRE = 80;

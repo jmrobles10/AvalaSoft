@@ -22,7 +22,7 @@ import { decodificarPng } from './png.ts';
 
 /**
  * Sincronía de la marca (MA-1): los recursos que el generador deja en `marca/` y las copias que usan las apps, los correos y el PDF no se
- * pueden separar de la geometría de `@avalasoft/ui` ni entre sí. El generador necesita un navegador; estas pruebas solo leen archivos.
+ * pueden separar de la geometría de `@validalo/ui` ni entre sí. El generador necesita un navegador; estas pruebas solo leen archivos.
  */
 const repo = resolve(import.meta.dirname, '..');
 const leer = (...ruta: string[]) => readFileSync(join(repo, ...ruta));
@@ -124,13 +124,13 @@ describe('copias que usan el producto', () => {
   });
 
   it('los correos incrustan el logotipo claro y el GIF de éxito claro que genera la marca', () => {
-    const recursos = ['src', 'Avalasoft.Aplicacion', 'Comun', 'RecursosDeMarca'];
+    const recursos = ['src', 'Validalo.Aplicacion', 'Comun', 'RecursosDeMarca'];
     expect(leer(...recursos, 'logotipo.png').equals(leer('marca', 'png', 'logotipo-claro@2x.png'))).toBe(true);
     expect(leer(...recursos, 'exito.gif').equals(leer('marca', 'gif', 'exito-claro.gif'))).toBe(true);
   });
 
   it('el PDF dibuja el mismo logotipo: los mismos trazados, transformaciones, caja y colores del modo claro', () => {
-    const pdf = texto('src', 'Avalasoft.Infraestructura', 'Ficha', 'LogosDePdf.cs');
+    const pdf = texto('src', 'Validalo.Infraestructura', 'Ficha', 'LogosDePdf.cs');
     const c = coloresDeLogo('light');
     expect(pdf).toContain(`viewBox="0 0 ${String(CAJA_LOGOTIPO.ancho)} ${String(CAJA_LOGOTIPO.alto)}"`);
     expect(pdf).toContain(CHECK_RELLENO);

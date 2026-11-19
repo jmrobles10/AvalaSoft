@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { VisorDocumento, type DocumentoEnVisor } from './VisorDocumento';
 
@@ -27,7 +27,7 @@ function montar(documento: DocumentoEnVisor = DOCUMENTO) {
     ),
   });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light')}>
+    <ThemeProvider theme={createValidaloTheme('light')}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <VisorDocumento empresaId="e1" vinculoId="v1" documento={documento} onCerrar={vi.fn()} />
       </QueryClientProvider>

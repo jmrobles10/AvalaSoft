@@ -1,4 +1,4 @@
-import { ErrorApi } from '@avalasoft/api-client';
+import { ErrorApi } from '@validalo/api-client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { resultadoDeFallo } from './sesionDirecta';
 import { useSesion } from './sesionStore';
@@ -6,7 +6,7 @@ import { useSesion } from './sesionStore';
 const error = (codigo: string, estado = 401) => new ErrorApi(estado, codigo, 'detalle', null, null);
 
 const token = (exp: number, extra: Record<string, unknown> = {}) =>
-  `e30.${Buffer.from(JSON.stringify({ sub: 'u1', exp, 'avalasoft:tenant': 't1', ...extra })).toString('base64url')}.firma`;
+  `e30.${Buffer.from(JSON.stringify({ sub: 'u1', exp, 'validalo:tenant': 't1', ...extra })).toString('base64url')}.firma`;
 
 afterEach(() => useSesion.setState({ sesion: null, estado: 'sin-sesion', empresaSugerida: null, sugerirPasskey: false }));
 
@@ -30,7 +30,7 @@ describe('sesión directa en el store', () => {
   const futuro = Math.floor(Date.now() / 1000) + 600;
 
   it('guarda la familia y el método de la sesión directa y recuerda sugerir una passkey', () => {
-    expect(useSesion.getState().establecer(token(futuro, { 'avalasoft:sesion-id': 's1', 'avalasoft:metodo': 'Codigo' }), null, { sugerirPasskey: true })).toBe(true);
+    expect(useSesion.getState().establecer(token(futuro, { 'validalo:sesion-id': 's1', 'validalo:metodo': 'Codigo' }), null, { sugerirPasskey: true })).toBe(true);
     const { sesion, sugerirPasskey, estado } = useSesion.getState();
     expect(estado).toBe('activa');
     expect(sesion?.sesionId).toBe('s1');
@@ -40,12 +40,12 @@ describe('sesión directa en el store', () => {
 
   it('renovar el token no vuelve a sugerir lo que la persona ya descartó', () => {
     const { establecer, descartarSugerenciaDePasskey } = useSesion.getState();
-    establecer(token(futuro, { 'avalasoft:sesion-id': 's1' }), null, { sugerirPasskey: true });
+    establecer(token(futuro, { 'validalo:sesion-id': 's1' }), null, { sugerirPasskey: true });
     descartarSugerenciaDePasskey();
-    establecer(token(futuro + 60, { 'avalasoft:sesion-id': 's1' }), null, { sugerirPasskey: false });
+    establecer(token(futuro + 60, { 'validalo:sesion-id': 's1' }), null, { sugerirPasskey: false });
     expect(useSesion.getState().sugerirPasskey).toBe(false);
     // Un token renovado sin la opción conserva lo que había.
-    establecer(token(futuro + 120, { 'avalasoft:sesion-id': 's1' }));
+    establecer(token(futuro + 120, { 'validalo:sesion-id': 's1' }));
     expect(useSesion.getState().sugerirPasskey).toBe(false);
   });
 

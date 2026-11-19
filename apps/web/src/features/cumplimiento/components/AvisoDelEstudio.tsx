@@ -1,5 +1,5 @@
 import { Alert, AlertTitle } from '@mui/material';
-import type { ConceptoCumplimiento, ExpedienteDto } from '@avalasoft/api-client';
+import type { ConceptoCumplimiento, ExpedienteDto } from '@validalo/api-client';
 import { useTranslation } from 'react-i18next';
 import { efectoDelEstudio } from '../modelo';
 

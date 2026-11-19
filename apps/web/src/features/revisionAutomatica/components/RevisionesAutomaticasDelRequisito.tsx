@@ -1,5 +1,5 @@
 import { Box, Chip, Stack, Typography } from '@mui/material';
-import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type RequisitoExpedienteDto, type RevisionAutomaticaDto } from '@avalasoft/api-client';
+import { SCOPES, type AreaExpedienteDto, type ExpedienteDto, type RequisitoExpedienteDto, type RevisionAutomaticaDto } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 import { Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

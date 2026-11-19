@@ -1,4 +1,4 @@
-import { ErrorApi, type CampoFormularioDto } from '@avalasoft/api-client';
+import { ErrorApi, type CampoFormularioDto } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import i18n from '../i18n';
 import { campoDelError, cuerpoFormulario, datosParaEnviar, errorDeCampo, erroresDelFormulario, faltaParaEnviar, tipoDeCampo, valoresIniciales } from './formulario';

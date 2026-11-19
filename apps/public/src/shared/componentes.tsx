@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, type SxProps, type Theme } from '@mui/material';
-import { ErrorEnLinea, PanelFlotante, sxComoLista, VARIABLE_FONDO } from '@avalasoft/ui';
+import { ErrorEnLinea, PanelFlotante, sxComoLista, VARIABLE_FONDO } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from './errores';
@@ -46,8 +46,8 @@ export function CabeceraPagina({ titulo, sub, accion }: { titulo: string; sub?: 
   );
 }
 
-/** Esqueleto de tarjetas mientras carga (ver `esqueletos.tsx` de `@avalasoft/ui`). */
-export { EsqueletoTarjetas } from '@avalasoft/ui';
+/** Esqueleto de tarjetas mientras carga (ver `esqueletos.tsx` de `@validalo/ui`). */
+export { EsqueletoTarjetas } from '@validalo/ui';
 
 export function ErrorRecuperable({ error, onReintentar }: { error: unknown; onReintentar: () => void }) {
   const { t } = useTranslation();

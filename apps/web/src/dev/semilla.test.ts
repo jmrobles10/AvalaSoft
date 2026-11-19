@@ -13,7 +13,7 @@ const PLATAFORMA = {
   clavePlataforma: 'clave-de-plataforma',
   sistema: 'CONSOLA_DEV',
   clavePrivadaPem: '-----BEGIN PRIVATE KEY-----\nxyz\n-----END PRIVATE KEY-----',
-  persona: { sub: 'op-paula', nombre: 'Paula Plataforma', correo: 'paula@avalasoft.local' },
+  persona: { sub: 'op-paula', nombre: 'Paula Plataforma', correo: 'paula@validalo.local' },
 };
 
 afterEach(() => {

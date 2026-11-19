@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Stack, Typography } from '@mui/material';
-import type { CampoCotejadoDto, DecisionCoincidencia, ExpedienteDto, VerificacionDto } from '@avalasoft/api-client';
-import { Dato, formatearFecha, formatearFechaHora, RejillaDatos } from '@avalasoft/ui';
+import type { CampoCotejadoDto, DecisionCoincidencia, ExpedienteDto, VerificacionDto } from '@validalo/api-client';
+import { Dato, formatearFecha, formatearFechaHora, RejillaDatos } from '@validalo/ui';
 import { FileDown, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

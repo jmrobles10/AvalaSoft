@@ -389,7 +389,7 @@ export const cumplimiento = {
     configurada: 'Clave configurada · …{{ultimos}}',
     sinCredenciales: 'Sin credenciales',
     cuentaDeLaPlataforma: 'Cuenta de la plataforma',
-    cuentaDeLaPlataformaAyuda: 'AvalaSoft contrata Infolaft para todas las empresas: no necesitas usuario ni clave propios.',
+    cuentaDeLaPlataformaAyuda: 'Valídalo contrata Infolaft para todas las empresas: no necesitas usuario ni clave propios.',
     disponible: 'Disponible',
     noDisponible: 'No disponible',
     noDisponibleAyuda: 'La plataforma aún no configuró la cuenta de Infolaft: hasta entonces no se puede consultar con él.',

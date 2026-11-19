@@ -1,4 +1,4 @@
-import type { TerceroDto } from '@avalasoft/api-client';
+import type { TerceroDto } from '@validalo/api-client';
 
 /** "NIT 900123456-8" (tipo, número y dígito de verificación). */
 export function identificacionDe(tercero: Pick<TerceroDto, 'identificacion'>): string {

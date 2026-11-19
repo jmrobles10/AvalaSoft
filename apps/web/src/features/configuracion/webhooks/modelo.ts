@@ -1,4 +1,4 @@
-import type { CrearWebhookDto, EditarWebhookDto, TipoEventoPublicoDto, WebhookDto } from '@avalasoft/api-client';
+import type { CrearWebhookDto, EditarWebhookDto, TipoEventoPublicoDto, WebhookDto } from '@validalo/api-client';
 
 /**
  * Suscripciones a webhooks (docs/05 §6, NW-1…NW-8): a qué URL se envía cada evento público, de qué tipos y de qué

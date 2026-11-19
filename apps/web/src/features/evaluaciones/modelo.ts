@@ -10,7 +10,7 @@ import {
   type RespuestaDto,
   type SeccionDeCuestionarioDto,
   type TipoDePregunta,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 import { esCO } from '../../i18n/es-CO';
 

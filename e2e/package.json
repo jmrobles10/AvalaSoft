@@ -1,5 +1,5 @@
 {
-  "name": "@avalasoft/e2e",
+  "name": "@validalo/e2e",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
     "navegadores": "playwright install chromium"
   },
   "devDependencies": {
-    "@avalasoft/sdk": "workspace:*",
+    "@validalo/sdk": "workspace:*",
     "@playwright/test": "1.65.0"
   }
 }

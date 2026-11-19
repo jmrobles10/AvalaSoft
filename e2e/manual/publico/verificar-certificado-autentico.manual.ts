@@ -13,7 +13,7 @@ recorrido(
     actor: 'Público',
     titulo: 'Verifica que un certificado es auténtico',
     resumen:
-      'Cualquier persona con el enlace del código QR o el folio de un certificado vigente lo consulta sin iniciar sesión: ve quién lo emite, a quién certifica y si la firma de AvalaSoft corresponde a su contenido, y descarga el PDF.',
+      'Cualquier persona con el enlace del código QR o el folio de un certificado vigente lo consulta sin iniciar sesión: ve quién lo emite, a quién certifica y si la firma de Valídalo corresponde a su contenido, y descarga el PDF.',
     precondiciones: [
       'Un proveedor aprobado por Constructora Sur (una sola área) que queda con su certificado vigente.',
       'La consulta se hace sin sesión, desde una ventana nueva del navegador.',
@@ -59,13 +59,13 @@ recorrido(
     });
 
     // 2. Autenticidad en el navegador.
-    await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló AvalaSoft.' })).toBeVisible();
+    await expect(publica.getByRole('status').filter({ hasText: 'Auténtico: el contenido está íntegro y lo selló Valídalo.' })).toBeVisible();
     for (const comprobacion of ['Contenido íntegro', 'Huella del enlace', 'Clave de la plataforma', 'Sello válido'])
       await expect(publica.getByRole('listitem').filter({ hasText: comprobacion })).toContainText('Correcto');
     await paso(publica, {
       titulo: 'Comprueba la autenticidad',
       explicacion:
-        'La sección «Autenticidad» la comprueba tu propio navegador: recalcula el contenido sellado, compara su huella con la del enlace y valida la firma con la clave pública de AvalaSoft. ' +
+        'La sección «Autenticidad» la comprueba tu propio navegador: recalcula el contenido sellado, compara su huella con la del enlace y valida la firma con la clave pública de Valídalo. ' +
         'Si las cuatro comprobaciones salen en «Correcto», el mensaje dice «Auténtico»; si alguna falla, el certificado no debe aceptarse.',
       resaltar: [publica.getByRole('status').filter({ hasText: 'Auténtico' }), publica.getByRole('list').filter({ hasText: 'Sello válido' })],
       variantes: [

@@ -1,6 +1,6 @@
 import { Box, Button, Skeleton, Stack, Typography } from '@mui/material';
-import type { SistemaIntegradoDto, TenantDto, UsuarioDto } from '@avalasoft/api-client';
-import { formatearFecha, formatearFechaHora } from '@avalasoft/ui';
+import type { SistemaIntegradoDto, TenantDto, UsuarioDto } from '@validalo/api-client';
+import { formatearFecha, formatearFechaHora } from '@validalo/ui';
 import { Mail, UserRoundCog } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

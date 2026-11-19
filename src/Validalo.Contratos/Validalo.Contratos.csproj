@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Empaquetado.props" />
+  <!--
+    DTOs públicos de la API v1 (docs/05 §4). Además de la API (net10.0) los usan los integradores a través del SDK
+    (Validalo.Sdk): por eso se compila también para net7.0 (el SRM) y net8.0 (T-16, CN-5).
+  -->
+  <PropertyGroup>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net7.0;net8.0;net10.0</TargetFrameworks>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <IsPackable>true</IsPackable>
+    <PackageId>Validalo.Contratos</PackageId>
+    <Description>Contratos (DTO) de la API v1 de Valídalo: los tipos que intercambian la API, los webhooks y el SDK .NET.</Description>
+    <PackageTags>validalo;contratos;dto;api</PackageTags>
+    <!--
+      La documentación XML solo al empaquetar (dotnet pack): si la API la encontrara al compilar, el OpenAPI de .NET 10 la
+      copiaría como descripción de cada esquema y cambiaría el contrato publicado.
+    -->
+    <GenerateDocumentationFile Condition="'$(_IsPacking)' == 'true'">true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+  </PropertyGroup>
+</Project>

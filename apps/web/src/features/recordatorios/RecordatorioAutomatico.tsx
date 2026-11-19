@@ -1,6 +1,6 @@
 import { Alert, Box, Button, FormControlLabel, Paper, Skeleton, Stack, Switch, TextField, Typography } from '@mui/material';
-import type { RecordatorioAutomaticoDto } from '@avalasoft/api-client';
-import { ErrorEnLinea } from '@avalasoft/ui';
+import type { RecordatorioAutomaticoDto } from '@validalo/api-client';
+import { ErrorEnLinea } from '@validalo/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../shared/errores';
@@ -9,7 +9,7 @@ import { useGuardarRecordatorioAutomatico, useRecordatorioAutomatico } from './a
 import { diasValidos } from './automatico';
 
 /**
- * Recordatorio automático de observaciones pendientes de la empresa activa (NT-3): apagado por omisión; encendido, AvalaSoft le
+ * Recordatorio automático de observaciones pendientes de la empresa activa (NT-3): apagado por omisión; encendido, Valídalo le
  * recuerda al tercero sus observaciones cada N días mientras siga devuelto. Va en Plantillas, junto al correo que se envía.
  */
 export function RecordatorioAutomatico({ empresaId, puedeEscribir }: { empresaId: string; puedeEscribir: boolean }) {

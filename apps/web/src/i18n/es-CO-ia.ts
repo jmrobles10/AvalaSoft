@@ -11,7 +11,7 @@ export const ia = {
     error: 'No pudimos cargar el uso de IA.',
     sinPlanTitulo: 'La revisión automática no está contratada',
     sinPlan:
-      'Esta empresa no tiene un plan de IA activo: sus documentos se revisan manualmente. El plan lo configura AvalaSoft desde Plataforma; pídeselo a tu contacto de AvalaSoft.',
+      'Esta empresa no tiene un plan de IA activo: sus documentos se revisan manualmente. El plan lo configura Valídalo desde Plataforma; pídeselo a tu contacto de Valídalo.',
     incluidas: 'Validaciones incluidas',
     incluidasValor: '{{usadas}} de {{incluidas}}',
     incluidasAccesible: '{{usadas}} de {{incluidas}} validaciones incluidas usadas ({{porcentaje}})',

@@ -18,8 +18,8 @@
   },
   "emitidoEn": "2026-11-09T00:02:30.7897957+00:00",
   "vigenteHasta": "2026-12-08",
-  "huella": "7bbd·48b2·3712",
-  "hashContenido": "7bbd48b237123fdeb39b67323e48bb4613016fafd469ed9a48b0cc14e2d14e9b",
+  "huella": "7677·9868·8971",
+  "hashContenido": "767798688971b1cf9c209ac99171d288336419c5454718eac5777b9e51192d53",
   "contenidoCanonico": {
     "areas": [
       {
@@ -47,7 +47,7 @@
       },
       "nombre": "Constructora Verificación S.A.S."
     },
-    "esquema": "avalasoft.certificado.v1",
+    "esquema": "validalo.certificado.v1",
     "flujo": {
       "codigo": "VERIFICACION",
       "nombre": "Flujo de verificación",
@@ -100,13 +100,13 @@
     "verificaciones": [],
     "vigenteHasta": "2026-12-08"
   },
-  "urlVerificacion": "http://localhost:5181/verificar/VERIF-C-2026-000001-1?huella=7bbd48b23712",
+  "urlVerificacion": "http://localhost:5181/verificar/VERIF-C-2026-000001-1?huella=767798688971",
   "pendientes": [],
   "firma": {
     "algoritmo": "Ed25519",
     "kid": "vs-desarrollo-solo-local",
-    "clavePublicaUrl": "http://localhost:5181/.well-known/avalasoft-certificados.json",
-    "valor": "A6hTXkWKNtTjaz2P4M0MrRWWZ1jMF6xppr7lNf8v6y0uE2YLzA+0UydkUbk7eLOURaIYm9Y3pzV+V35VC3sLCg=="
+    "clavePublicaUrl": "http://localhost:5181/.well-known/validalo-certificados.json",
+    "valor": "6CmLHLieiwZk+96Bo5OD43F9tFNIbVveJPtgTiuEcCh04szZfwOPoBozACR66kqUBKKCrQz8T9kqiauxItupAQ=="
   },
   "estadoDesde": "2026-11-09T00:02:30.7897957+00:00",
   "reemplazadoPor": null,

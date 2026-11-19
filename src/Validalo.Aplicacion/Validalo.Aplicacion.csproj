@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Marten" />
+    <PackageReference Include="WolverineFx.Http" />
+    <!-- Sello Ed25519 de los certificados (CE-4): .NET 10 no expone Ed25519. -->
+    <PackageReference Include="BouncyCastle.Cryptography" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Logotipo y GIF de éxito de los correos (MA-1): los genera `marca/generar.mjs`; viajan dentro del mensaje (cid:). -->
+    <EmbeddedResource Include="Comun\RecursosDeMarca\*" LogicalName="Validalo.Marca.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Validalo.Dominio\Validalo.Dominio.csproj" />
+    <ProjectReference Include="..\Validalo.Contratos\Validalo.Contratos.csproj" />
+  </ItemGroup>
+</Project>

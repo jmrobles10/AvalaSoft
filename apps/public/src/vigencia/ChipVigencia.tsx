@@ -1,6 +1,6 @@
 import { Alert, Stack, Typography } from '@mui/material';
-import type { VigenciaDto } from '@avalasoft/api-client';
-import { ChipEstado } from '@avalasoft/ui';
+import type { VigenciaDto } from '@validalo/api-client';
+import { ChipEstado } from '@validalo/ui';
 import { useTranslation } from 'react-i18next';
 import { avisoDeVigencia, ESTADO_DEL_CHIP, estadoDeVigencia, textoVigencia } from './vigencia';
 

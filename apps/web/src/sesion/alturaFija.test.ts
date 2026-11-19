@@ -96,7 +96,7 @@ describe('contenedorConScroll', () => {
   });
 });
 
-describe('vigiarMarco: ¿el contenedor le hace caso a avalasoft:resize?', () => {
+describe('vigiarMarco: ¿el contenedor le hace caso a validalo:resize?', () => {
   afterEach(() => {
     vi.useRealTimers();
   });

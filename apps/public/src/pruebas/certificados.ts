@@ -1,4 +1,4 @@
-import type { CertificadoPublicoDto, ClavesDeCertificadosDto, JsonElement } from '@avalasoft/api-client';
+import type { CertificadoPublicoDto, ClavesDeCertificadosDto, JsonElement } from '@validalo/api-client';
 import { aHex, sha256 } from '../verificacion/cripto';
 import { bytesCanonicos } from '../verificacion/jcs';
 import certificadoReal from './vector-dorado/certificado.json';

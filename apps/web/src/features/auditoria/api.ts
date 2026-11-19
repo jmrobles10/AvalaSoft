@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getListarAuditoriaQueryOptions, type ListarAuditoriaParams } from '@avalasoft/api-client';
+import { getListarAuditoriaQueryOptions, type ListarAuditoriaParams } from '@validalo/api-client';
 import { conEmpresa } from '../../shared/consultas';
 
 /** Auditoría de la empresa activa (`GET /auditoria`, lo más reciente primero); se vuelve a pedir al abrir la pantalla. */

@@ -8,7 +8,7 @@ resumen: "El outbox de Wolverine, las colas locales durables, los procesos peri�
 
 El outbox de Wolverine, las colas locales durables, los procesos periódicos, la suscripción de eventos públicos con sus webhooks y el tiempo real por SSE.
 
-AvalaSoft separa lo que debe ser inmediato (la transacción de quien pide) de lo que puede esperar segundos (correos, análisis, vigencias, webhooks). Lo hace con **Wolverine** sobre Marten (ADR-0002): un caso de uso confirma sus eventos, sus documentos y los mensajes que genera **en una sola transacción de PostgreSQL**, y Wolverine despacha esos mensajes solo después del commit.
+Valídalo separa lo que debe ser inmediato (la transacción de quien pide) de lo que puede esperar segundos (correos, análisis, vigencias, webhooks). Lo hace con **Wolverine** sobre Marten (ADR-0002): un caso de uso confirma sus eventos, sus documentos y los mensajes que genera **en una sola transacción de PostgreSQL**, y Wolverine despacha esos mensajes solo después del commit.
 
 ![Escritura transaccional, colas locales, suscripción de eventos públicos, webhooks, pull y SSE](diagramas/mensajeria.svg)
 

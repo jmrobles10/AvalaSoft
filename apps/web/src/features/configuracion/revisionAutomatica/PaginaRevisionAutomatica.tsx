@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Button, Stack, Typography } from '@mui/material';
-import { SCOPES, type RevisionAutomaticaConfigDto } from '@avalasoft/api-client';
-import { EsqueletoTarjeta } from '@avalasoft/ui';
+import { SCOPES, type RevisionAutomaticaConfigDto } from '@validalo/api-client';
+import { EsqueletoTarjeta } from '@validalo/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';

@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Link, Typography } from '@mui/material';
-import { EncabezadoFijo, ErrorEnLinea, PaginaEstado, TarjetaBloque, type EncabezadoFijoProps } from '@avalasoft/ui';
+import { EncabezadoFijo, ErrorEnLinea, PaginaEstado, TarjetaBloque, type EncabezadoFijoProps } from '@validalo/ui';
 import { ChevronLeft, Lock, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +35,7 @@ export function EnlaceVolver({ a, children }: { a: string; children: ReactNode }
 
 /**
  * Encabezado de página (título, subtítulo y acciones) que queda visible al desplazar el contenido
- * (`EncabezadoFijo` de `@avalasoft/ui`). `antes`: el enlace «‹ Sección» de los detalles, dentro de la franja.
+ * (`EncabezadoFijo` de `@validalo/ui`). `antes`: el enlace «‹ Sección» de los detalles, dentro de la franja.
  */
 export function EncabezadoPagina(props: EncabezadoFijoProps) {
   const { t } = useTranslation();
@@ -44,7 +44,7 @@ export function EncabezadoPagina(props: EncabezadoFijoProps) {
 }
 
 /**
- * Tarjeta de sección (`TarjetaBloque` de `@avalasoft/ui`): encabezado con ícono en el acento, título y ayuda corta en la misma línea, divisor
+ * Tarjeta de sección (`TarjetaBloque` de `@validalo/ui`): encabezado con ícono en el acento, título y ayuda corta en la misma línea, divisor
  * fino y cuerpo con relleno generoso. `nivel`: el encabezado del título (h3 si va dentro de otra sección).
  */
 export function Tarjeta({
@@ -75,8 +75,8 @@ export function Tarjeta({
   );
 }
 
-/** Esqueleto de una línea de tiempo mientras carga el historial (ver `esqueletos.tsx` de `@avalasoft/ui`). */
-export { EsqueletoHistorial } from '@avalasoft/ui';
+/** Esqueleto de una línea de tiempo mientras carga el historial (ver `esqueletos.tsx` de `@validalo/ui`). */
+export { EsqueletoHistorial } from '@validalo/ui';
 
 /** Spinner solo dentro del botón que ejecuta la acción. */
 export function IconoCarga() {

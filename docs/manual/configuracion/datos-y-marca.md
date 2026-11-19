@@ -16,7 +16,7 @@ La administradora actualiza el contacto de soporte, el logo y el color de marca 
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.», sin logo y con el color de marca por omisión.
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 
@@ -43,7 +43,7 @@ La pantalla tiene dos partes. «Datos de la empresa» muestra la razón social, 
 
 ## Paso 2. Escribe el contacto de soporte
 
-El contacto de soporte es un correo. Aparece al pie del portal del tercero y es la dirección de respuesta de los correos que envía AvalaSoft en nombre de la empresa: si el tercero responde a un correo, le llega a esta dirección. Si escribes un correo mal formado, el campo lo marca y el botón «Guardar cambios» no se activa.
+El contacto de soporte es un correo. Aparece al pie del portal del tercero y es la dirección de respuesta de los correos que envía Valídalo en nombre de la empresa: si el tercero responde a un correo, le llega a esta dirección. Si escribes un correo mal formado, el campo lo marca y el botón «Guardar cambios» no se activa.
 
 > **Pantalla:** `/e/{empresa}/datos-marca`
 
@@ -59,7 +59,7 @@ El contacto de soporte es un correo. Aparece al pie del portal del tercero y es 
 
 ## Paso 3. Sube el logo y elige el color de marca
 
-Con «Cambiar logo» subes un archivo SVG o PNG con fondo transparente, de máximo 200 KB. El color de marca se escribe en hexadecimal, por ejemplo #1F6F5C. La caja «Así lo verá el tercero» muestra un botón y un enlace con los colores que AvalaSoft deriva de tu color, ajustados para que el texto se lea bien. El logo y el color se usan en el portal, en los correos y en los PDF que genera AvalaSoft, como el certificado y la declaración PEP.
+Con «Cambiar logo» subes un archivo SVG o PNG con fondo transparente, de máximo 200 KB. El color de marca se escribe en hexadecimal, por ejemplo #1F6F5C. La caja «Así lo verá el tercero» muestra un botón y un enlace con los colores que Valídalo deriva de tu color, ajustados para que el texto se lea bien. El logo y el color se usan en el portal, en los correos y en los PDF que genera Valídalo, como el certificado y la declaración PEP.
 
 > **Pantalla:** `/e/{empresa}/datos-marca`
 
@@ -69,7 +69,7 @@ Con «Cambiar logo» subes un archivo SVG o PNG con fondo transparente, de máxi
 
 - **El archivo pesa más de 200 KB o no es SVG ni PNG:** Aparece el mensaje de error debajo del botón y el logo no cambia.
 - **El color no tiene el formato #RRGGBB:** El campo dice «Usa el formato #RRGGBB» y la vista previa no cambia.
-- **Quitas el logo:** Se usa la marca por omisión de AvalaSoft en el portal y los correos.
+- **Quitas el logo:** Se usa la marca por omisión de Valídalo en el portal y los correos.
 
 ## Paso 4. Guarda los cambios
 

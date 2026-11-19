@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import type { VigenciaDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import type { VigenciaDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { describe, expect, it } from 'vitest';
 import { AvisoVigencia, LineaVigencia } from './ChipVigencia';
 
@@ -18,7 +18,7 @@ const vigencia = (estado: string, vigenteHasta: string, finDeGracia: string): Vi
 
 function montar(v: VigenciaDto) {
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <LineaVigencia vigencia={v} />
       <AvisoVigencia vigencia={v} />
     </ThemeProvider>,

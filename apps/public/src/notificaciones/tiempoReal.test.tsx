@@ -8,9 +8,9 @@ import {
   useCambiosPendientes,
   type BandejaNotificacionesTerceroDto,
   type SesionTerceroDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { crearFetchSse } from '@avalasoft/api-client/pruebas/sse';
+import { crearFetchSse } from '@validalo/api-client/pruebas/sse';
 import { useSesionTercero } from '../sesion/sesionTercero';
 import { useEstadoDeRefresco } from '../shared/useEstadoDeRefresco';
 import { claveBandeja } from './api';

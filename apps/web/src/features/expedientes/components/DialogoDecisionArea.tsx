@@ -1,8 +1,8 @@
 import { Alert, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Stack, TextField, Typography } from '@mui/material';
-import type { ExpedienteDto, MotivoTipificadoDto } from '@avalasoft/api-client';
+import type { ExpedienteDto, MotivoTipificadoDto } from '@validalo/api-client';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
+import { FaltaParaEnviar, FormularioDeDialogo } from '@validalo/ui';
 import { IconoCarga } from '../../../shared/componentes';
 import { mensajeDeError } from '../../../shared/errores';
 import { useAvisos } from '../../../shared/useAvisos';

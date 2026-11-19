@@ -1,6 +1,6 @@
 import { Alert, Box, Button, MenuItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
-import { SCOPES, type VinculoDto } from '@avalasoft/api-client';
-import { formatearFecha } from '@avalasoft/ui';
+import { SCOPES, type VinculoDto } from '@validalo/api-client';
+import { formatearFecha } from '@validalo/ui';
 import { ClipboardPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

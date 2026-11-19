@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { InvitacionPorAprobarDto, InvitacionPorAprobarItemDto, LoteDto } from '@avalasoft/api-client';
+import type { InvitacionPorAprobarDto, InvitacionPorAprobarItemDto, LoteDto } from '@validalo/api-client';
 import { Route, Routes } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';

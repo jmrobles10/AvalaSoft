@@ -52,7 +52,7 @@ recorrido(
     await paso(page, {
       titulo: 'Comprueba el nuevo envío en el detalle',
       explicacion:
-        'AvalaSoft confirma con un aviso que la invitación se envió a ese correo y el detalle actualiza «Invitación» con el número de envíos. ' +
+        'Valídalo confirma con un aviso que la invitación se envió a ese correo y el detalle actualiza «Invitación» con el número de envíos. ' +
         'El historial registra el reenvío con su fecha y quién lo hizo.',
       resaltar: app.getByText(/Envíos: 2/),
       avisos: true,

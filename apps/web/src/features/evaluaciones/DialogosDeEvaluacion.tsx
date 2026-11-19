@@ -17,8 +17,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import type { AjusteDto, EvaluacionDto } from '@avalasoft/api-client';
-import { FaltaParaEnviar, FormularioDeDialogo, MarcoTabla } from '@avalasoft/ui';
+import type { AjusteDto, EvaluacionDto } from '@validalo/api-client';
+import { FaltaParaEnviar, FormularioDeDialogo, MarcoTabla } from '@validalo/ui';
 import { useState, type ReactNode, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../shared/componentes';

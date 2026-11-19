@@ -1,6 +1,6 @@
 import { Button, Typography } from '@mui/material';
-import { SCOPES, type CampaniaDto } from '@avalasoft/api-client';
-import { EstadoVacio, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@avalasoft/ui';
+import { SCOPES, type CampaniaDto } from '@validalo/api-client';
+import { EstadoVacio, formatearFecha, TablaConCursor, usePaginacionCursor, type ColumnaTabla } from '@validalo/ui';
 import { Megaphone } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

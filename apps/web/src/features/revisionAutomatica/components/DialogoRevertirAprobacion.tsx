@@ -1,5 +1,5 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from '@mui/material';
-import { FaltaParaEnviar, FormularioDeDialogo } from '@avalasoft/ui';
+import { FaltaParaEnviar, FormularioDeDialogo } from '@validalo/ui';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconoCarga } from '../../../shared/componentes';

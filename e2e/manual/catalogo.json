@@ -22,7 +22,7 @@
     { "slug": "privacidad", "nombre": "Datos personales", "descripcion": "Habeas data: solicitudes de consulta, corrección y supresión; consentimientos y privacidad." },
     { "slug": "plataforma", "nombre": "Consola de Plataforma", "descripcion": "Grupos, empresas, planes, operadores, secretos, listas y accesos de soporte." },
     { "slug": "integracion", "nombre": "Integración", "descripcion": "API, llaves, sistemas integradores, webhooks, eventos, sandbox, SSO de sistemas e importación." },
-    { "slug": "embebido", "nombre": "Uso embebido", "descripcion": "AvalaSoft dentro de otro sistema: app de la empresa en un iframe y sesiones del tercero embebidas." },
+    { "slug": "embebido", "nombre": "Uso embebido", "descripcion": "Valídalo dentro de otro sistema: app de la empresa en un iframe y sesiones del tercero embebidas." },
     { "slug": "publico", "nombre": "Verificación pública", "descripcion": "Páginas sin sesión: verificación de certificados y enlaces públicos." },
     { "slug": "movil", "nombre": "Experiencia móvil", "descripcion": "Recorridos pensados para el celular: navegación, subida de documentos y avisos." }
   ]

@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { PaginaEstado } from '@avalasoft/ui';
+import { PaginaEstado } from '@validalo/ui';
 import { CloudOff, Hourglass, RotateCcw, SearchX, ShieldQuestion, WifiOff, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { falloDeConsulta, falloReintentable, type FalloDeConsulta } from './estadoCertificado';

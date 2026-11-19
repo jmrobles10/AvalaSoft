@@ -1,4 +1,4 @@
-import { ErrorApi } from '@avalasoft/api-client';
+import { ErrorApi } from '@validalo/api-client';
 import { describe, expect, it } from 'vitest';
 import { mensajeFallo, mensajeProblema } from '../boveda/mensajesSubida';
 import { REGLAS_GLOBALES } from '../boveda/subida';

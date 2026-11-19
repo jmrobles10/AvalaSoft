@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { reiniciarCliente, type EmpresaDeGrupoDto, type GrupoDto, type SistemaIntegradoDto, type TenantDto, type UsuarioDto } from '@avalasoft/api-client';
+import { reiniciarCliente, type EmpresaDeGrupoDto, type GrupoDto, type SistemaIntegradoDto, type TenantDto, type UsuarioDto } from '@validalo/api-client';
 import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { montarPantalla } from '../../pruebas/montar';
@@ -108,7 +108,7 @@ describe('Ficha del grupo: los datos del alta en solo lectura', () => {
 
     const ingreso = seccion('Cómo entran sus personas');
     expect(within(ingreso).getByText('Desde el sistema integrado')).toBeInTheDocument();
-    expect(within(ingreso).getByText('Directo a AvalaSoft')).toBeInTheDocument();
+    expect(within(ingreso).getByText('Directo a Valídalo')).toBeInTheDocument();
     expect(within(ingreso).getByText('8 horas')).toBeInTheDocument();
     expect(within(ingreso).getByText('30 minutos')).toBeInTheDocument();
 
@@ -402,7 +402,7 @@ describe('Ficha del grupo: ingreso, empresas y sistemas reutilizan lo que ya exi
     await usuario.click(screen.getByRole('button', { name: 'Editar cómo entran' }));
     const dialogo = await screen.findByRole('dialog', { name: /Editar cómo entran/ });
     expect(within(dialogo).getByRole('button', { name: 'Guardar' })).toBeDisabled();
-    await usuario.click(within(dialogo).getByRole('checkbox', { name: 'Directo a AvalaSoft' }));
+    await usuario.click(within(dialogo).getByRole('checkbox', { name: 'Directo a Valídalo' }));
     expect(within(dialogo).getByText(/se cierran las sesiones directas abiertas/)).toBeInTheDocument();
     await usuario.click(within(dialogo).getByRole('button', { name: 'Guardar' }));
 
@@ -419,7 +419,7 @@ describe('Ficha del grupo: ingreso, empresas y sistemas reutilizan lo que ya exi
     await usuario.click(screen.getByRole('button', { name: 'Editar cómo entran' }));
     const dialogo = await screen.findByRole('dialog', { name: /Editar cómo entran/ });
 
-    await usuario.click(within(dialogo).getByRole('checkbox', { name: 'Directo a AvalaSoft' }));
+    await usuario.click(within(dialogo).getByRole('checkbox', { name: 'Directo a Valídalo' }));
     await usuario.click(within(dialogo).getByRole('checkbox', { name: 'Desde el sistema integrado' }));
 
     expect(within(dialogo).getByRole('button', { name: 'Guardar' })).toBeDisabled();

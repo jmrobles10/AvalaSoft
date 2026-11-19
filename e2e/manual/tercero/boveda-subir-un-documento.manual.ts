@@ -38,7 +38,7 @@ recorrido(
     await paso(page, {
       titulo: 'Elige el tipo de documento',
       explicacion:
-        'En «Tipo de documento» eliges qué vas a subir. Solo aparecen los tipos que AvalaSoft acepta en la bóveda. Al elegirlo, debajo ves qué debe contener el archivo. ' +
+        'En «Tipo de documento» eliges qué vas a subir. Solo aparecen los tipos que Valídalo acepta en la bóveda. Al elegirlo, debajo ves qué debe contener el archivo. ' +
         'Si una empresa te pide ese documento más adelante, se lo compartimos sin que lo vuelvas a cargar.',
       resaltar: tipo,
     });
@@ -52,12 +52,12 @@ recorrido(
     await paso(page, {
       titulo: 'Sube el archivo y revisa el resultado',
       explicacion:
-        'Elige el archivo o arrástralo a la zona. AvalaSoft lo guarda como la versión 1 del documento, y el resultado te dice si alguna empresa lo está pidiendo. ' +
+        'Elige el archivo o arrástralo a la zona. Valídalo lo guarda como la versión 1 del documento, y el resultado te dice si alguna empresa lo está pidiendo. ' +
         'Aquí ninguna empresa la exige, así que queda en tu bóveda para cuando la pidan. Desde «Ver mi bóveda» la encuentras con su fecha de carga.',
       resaltar: page.getByText('Listo. Es tu versión 1 de Cámara de comercio.'),
       variantes: [
         { cuando: 'Una empresa ya te pide ese documento', entonces: 'El resultado dice «Ya la tiene» seguido del nombre de la empresa, y la empresa empieza a revisarla.' },
-        { cuando: 'Subes el mismo archivo que ya tienes', entonces: 'AvalaSoft lo detecta y no lo vuelve a guardar: indica que es idéntico a tu versión vigente.' },
+        { cuando: 'Subes el mismo archivo que ya tienes', entonces: 'Valídalo lo detecta y no lo vuelve a guardar: indica que es idéntico a tu versión vigente.' },
       ],
     });
   },

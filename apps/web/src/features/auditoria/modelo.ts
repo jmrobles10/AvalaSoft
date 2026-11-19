@@ -1,4 +1,4 @@
-import type { ActorAuditoriaDto, ListarAuditoriaParams } from '@avalasoft/api-client';
+import type { ActorAuditoriaDto, ListarAuditoriaParams } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 
 /** Tipos que la API responde hoy; `Dominio` da 422 `tipo-no-disponible` (los eventos de dominio están en el historial de cada vínculo y expediente) y no se ofrece. */

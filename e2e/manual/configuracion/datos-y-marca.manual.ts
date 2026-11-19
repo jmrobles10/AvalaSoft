@@ -15,7 +15,7 @@ recorrido(
       'La administradora actualiza el contacto de soporte, el logo y el color de marca de la empresa. Esos datos son lo que el tercero ve en su portal y en los correos, y lo que aparece en los PDF.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.», sin logo y con el color de marca por omisión.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/plantillas-de-correo', 'configuracion/dominio-de-correo'],
   },
@@ -45,7 +45,7 @@ recorrido(
     await paso(page, {
       titulo: 'Escribe el contacto de soporte',
       explicacion:
-        'El contacto de soporte es un correo. Aparece al pie del portal del tercero y es la dirección de respuesta de los correos que envía AvalaSoft en nombre de la empresa: si el tercero responde a un correo, le llega a esta dirección. ' +
+        'El contacto de soporte es un correo. Aparece al pie del portal del tercero y es la dirección de respuesta de los correos que envía Valídalo en nombre de la empresa: si el tercero responde a un correo, le llega a esta dirección. ' +
         'Si escribes un correo mal formado, el campo lo marca y el botón «Guardar cambios» no se activa.',
       resaltar: app.getByRole('textbox', { name: /Contacto de soporte/ }),
       variantes: [{ cuando: 'El correo no es válido', entonces: 'El campo dice «Escribe un correo válido» y no se puede guardar.' }],
@@ -65,12 +65,12 @@ recorrido(
       titulo: 'Sube el logo y elige el color de marca',
       explicacion:
         'Con «Cambiar logo» subes un archivo SVG o PNG con fondo transparente, de máximo 200 KB. El color de marca se escribe en hexadecimal, por ejemplo #1F6F5C. ' +
-        'La caja «Así lo verá el tercero» muestra un botón y un enlace con los colores que AvalaSoft deriva de tu color, ajustados para que el texto se lea bien. El logo y el color se usan en el portal, en los correos y en los PDF que genera AvalaSoft, como el certificado y la declaración PEP.',
+        'La caja «Así lo verá el tercero» muestra un botón y un enlace con los colores que Valídalo deriva de tu color, ajustados para que el texto se lea bien. El logo y el color se usan en el portal, en los correos y en los PDF que genera Valídalo, como el certificado y la declaración PEP.',
       resaltar: [app.getByRole('img', { name: 'Logo de Constructora Sur S.A.S.' }), app.getByRole('group', { name: 'Así lo verá el tercero' })],
       variantes: [
         { cuando: 'El archivo pesa más de 200 KB o no es SVG ni PNG', entonces: 'Aparece el mensaje de error debajo del botón y el logo no cambia.' },
         { cuando: 'El color no tiene el formato #RRGGBB', entonces: 'El campo dice «Usa el formato #RRGGBB» y la vista previa no cambia.' },
-        { cuando: 'Quitas el logo', entonces: 'Se usa la marca por omisión de AvalaSoft en el portal y los correos.' },
+        { cuando: 'Quitas el logo', entonces: 'Se usa la marca por omisión de Valídalo en el portal y los correos.' },
       ],
     });
 

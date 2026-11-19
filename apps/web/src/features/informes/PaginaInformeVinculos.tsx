@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material';
-import { SCOPES } from '@avalasoft/api-client';
-import { BarraFiltros, EstadoVacio, FiltroMenu, TablaConCursor, usePaginacionCursor } from '@avalasoft/ui';
+import { SCOPES } from '@validalo/api-client';
+import { BarraFiltros, EstadoVacio, FiltroMenu, TablaConCursor, usePaginacionCursor } from '@validalo/ui';
 import { Download } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';

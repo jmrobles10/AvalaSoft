@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Chip, MenuItem, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { SCOPES, type ListasRestrictivasConfigDto, type ProveedorListasDto } from '@avalasoft/api-client';
-import { CampoNumero, Dato, RejillaDatos } from '@avalasoft/ui';
+import { SCOPES, type ListasRestrictivasConfigDto, type ProveedorListasDto } from '@validalo/api-client';
+import { CampoNumero, Dato, RejillaDatos } from '@validalo/ui';
 import { Skeleton } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

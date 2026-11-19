@@ -8,8 +8,8 @@ import { defineConfig, loadEnv } from 'vite';
  */
 export default defineConfig(({ mode }) => {
   const entorno = loadEnv(mode, import.meta.dirname, '');
-  const api = entorno.AVALASOFT_API_URL ?? 'http://localhost:5080';
-  const mailpit = entorno.AVALASOFT_MAILPIT_URL ?? 'http://localhost:8025';
+  const api = entorno.VALIDALO_API_URL ?? 'http://localhost:5080';
+  const mailpit = entorno.VALIDALO_MAILPIT_URL ?? 'http://localhost:8025';
   // `Set-Cookie` pasa tal cual (la cookie `vs_tercero` de la sesión, Path=/public/v1/sesion); sin `Domain`, queda en el
   // origen de Vite (:5181), el mismo que la app, así que SameSite=Lax basta y el navegador la manda al renovar.
   // `/.well-known`: claves públicas del sello de los certificados, que la página de verificación lee del mismo origen

@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { EsqueletoTabla, EstadoVacio } from '@avalasoft/ui';
+import { EsqueletoTabla, EstadoVacio } from '@validalo/ui';
 import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ErrorRecuperable } from '../../../shared/componentes';

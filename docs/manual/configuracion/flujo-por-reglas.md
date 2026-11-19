@@ -16,7 +16,7 @@ Ana, administradora de Constructora Sur, agrega a un flujo de proveedores una re
 **Antes de empezar**
 
 - Un grupo con Constructora Sur, su área «Revisión» con miembros y un flujo por defecto de proveedores que pide el RUT.
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 
@@ -27,7 +27,7 @@ Ana, administradora de Constructora Sur, agrega a un flujo de proveedores una re
 
 ## Paso 1. Abre la selección automática del flujo
 
-La tarjeta «Selección automática» decide cuándo el sistema usa este flujo sin que nadie lo elija a mano. Al abrir un expediente sin flujo indicado, AvalaSoft revisa los flujos publicados del tipo de vínculo por prioridad (la menor primero) y usa el primero cuya condición cumpla el tercero. Si ninguno cumple, usa el flujo por defecto del tipo de vínculo.
+La tarjeta «Selección automática» decide cuándo el sistema usa este flujo sin que nadie lo elija a mano. Al abrir un expediente sin flujo indicado, Valídalo revisa los flujos publicados del tipo de vínculo por prioridad (la menor primero) y usa el primero cuya condición cumpla el tercero. Si ninguno cumple, usa el flujo por defecto del tipo de vínculo.
 
 > **Pantalla:** `/e/{empresa}/flujos/nuevo`
 

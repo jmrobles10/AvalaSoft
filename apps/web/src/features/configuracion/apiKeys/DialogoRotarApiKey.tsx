@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Stack, Typography } from '@mui/material';
-import type { ApiKeyDto } from '@avalasoft/api-client';
+import type { ApiKeyDto } from '@validalo/api-client';
 import { RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

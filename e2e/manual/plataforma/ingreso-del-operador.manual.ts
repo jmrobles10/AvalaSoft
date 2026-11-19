@@ -4,7 +4,7 @@ import { autenticadorVirtual } from '../../soporte/autenticador';
 import { codigo, esperarCorreo } from '../../soporte/correo';
 import { expect, paso, recorrido } from '../nucleo';
 
-const ASUNTO_CODIGO = /Tu código para ingresar a AvalaSoft/;
+const ASUNTO_CODIGO = /Tu código para ingresar a Valídalo/;
 
 recorrido(
   {
@@ -17,16 +17,16 @@ recorrido(
     relacionados: ['plataforma/operadores', 'plataforma/ingresos-de-los-operadores', 'acceso/ingreso-con-passkey'],
   },
   async ({ page }) => {
-    const correo = `paula.${randomUUID().replace(/-/g, '').slice(0, 8)}@e2e.avalasoft.co`;
+    const correo = `paula.${randomUUID().replace(/-/g, '').slice(0, 8)}@e2e.validalo.co`;
     await llamar('POST', '/api/v1/plataforma/operadores', { llave: CLAVE_PLATAFORMA, cuerpo: { nombre: 'Paula Plataforma', correo } });
     await autenticadorVirtual(page);
 
     await page.goto('/app/');
-    await expect(page.getByRole('heading', { name: 'Ingresa a AvalaSoft' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Ingresa a Valídalo' })).toBeVisible();
     await paso(page, {
       titulo: 'Escribe tu correo',
       explicacion:
-        'AvalaSoft no usa contraseña para los operadores. Escribe el correo con el que te dieron de alta y pulsa «Continuar». ' +
+        'Valídalo no usa contraseña para los operadores. Escribe el correo con el que te dieron de alta y pulsa «Continuar». ' +
         'Si el correo no corresponde a un operador de ingreso directo, la pantalla responde lo mismo que para cualquier otro correo: así no se revela quién tiene acceso.',
       resaltar: page.getByLabel('Correo'),
       configuracion: {
@@ -42,7 +42,7 @@ recorrido(
     await paso(page, {
       titulo: 'Revisa tu correo',
       explicacion:
-        'AvalaSoft te envía un correo con un código de seis casillas. Ábrelo y copia el código: vence pronto y, si te equivocas varias veces, hay que pedir uno nuevo. ' +
+        'Valídalo te envía un correo con un código de seis casillas. Ábrelo y copia el código: vence pronto y, si te equivocas varias veces, hay que pedir uno nuevo. ' +
         'El código no es tu contraseña: sirve solo para este ingreso.',
       resaltar: page.getByRole('heading', { name: 'Revisa tu correo' }),
       variantes: [

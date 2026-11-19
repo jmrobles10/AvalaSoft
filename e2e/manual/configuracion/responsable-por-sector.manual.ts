@@ -12,7 +12,7 @@ recorrido(
       'Cuando el tercero cambie su tributaria después de aprobada, la actualización llega solo a esa área y no a todas las del flujo.',
     precondiciones: [
       'Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y su área «Revisión» con miembros.',
-      'Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.',
+      'Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.',
     ],
     relacionados: ['configuracion/flujo-secciones-de-la-ficha', 'tercero/ficha-cambio-tras-aprobar'],
   },

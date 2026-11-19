@@ -1,5 +1,5 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import type { TipoVinculoResumenDto } from '@avalasoft/api-client';
+import type { TipoVinculoResumenDto } from '@validalo/api-client';
 import { FolderOpen } from 'lucide-react';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import { cerrarSesionTercero, esErrorApi, renovarSesionTercero, solicitarAcceso as solicitarAccesoApi, type SesionTerceroDto, type SolicitudRecibidaDto } from '@avalasoft/api-client';
+import { cerrarSesionTercero, esErrorApi, renovarSesionTercero, solicitarAcceso as solicitarAccesoApi, type SesionTerceroDto, type SolicitudRecibidaDto } from '@validalo/api-client';
 
 /**
  * Reingreso del tercero (`feature/H2-reingreso`):
@@ -6,17 +6,17 @@ import { cerrarSesionTercero, esErrorApi, renovarSesionTercero, solicitarAcceso 
  *   `correo-invalido` solo si está mal formado). El enlace pedido así vence en 1 h.
  * - Al canjear el enlace o el OTP, la API deja la cookie `vs_tercero` (HttpOnly, SameSite=Lax, Path=/public/v1/sesion,
  *   8 h como máximo desde el canje). `POST /public/v1/sesion/renovar` la cambia por un access nuevo de 30 min y la
- *   **rota**; `POST /public/v1/sesion/cerrar` la borra. Ambas exigen `X-Avalasoft-Cliente: public`.
+ *   **rota**; `POST /public/v1/sesion/cerrar` la borra. Ambas exigen `X-Validalo-Cliente: public`.
  * - Sin periodo de gracia: presentar una cookie ya rotada cuenta como reuso y revoca la sesión (401
  *   `sesion-revocada`). Por eso las renovaciones se serializan entre pestañas (Web Locks) y un 409
  *   `renovacion-concurrente` (otra renovación ganó con la misma cookie) se reintenta una sola vez.
  *
  * El navegador manda la cookie solo (mismo origen); por eso estas llamadas van sin `Authorization`.
  */
-export const CABECERA_CLIENTE = { 'X-Avalasoft-Cliente': 'public' } as const;
+export const CABECERA_CLIENTE = { 'X-Validalo-Cliente': 'public' } as const;
 const SIN_SESION = { token: null, empresa: null, headers: CABECERA_CLIENTE } as const;
 /** Nombre del candado compartido por todas las pestañas del mismo origen. */
-export const CANDADO_RENOVACION = 'avalasoft-tercero-renovacion';
+export const CANDADO_RENOVACION = 'validalo-tercero-renovacion';
 /** Espera antes de reintentar tras `renovacion-concurrente`: la respuesta ganadora ya dejó la cookie nueva. */
 export const ESPERA_REINTENTO_CONCURRENTE_MS = 300;
 

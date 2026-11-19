@@ -1,5 +1,5 @@
 import { Chip, Tooltip } from '@mui/material';
-import type { ExencionDeVinculoDto, ExencionResumenDto } from '@avalasoft/api-client';
+import type { ExencionDeVinculoDto, ExencionResumenDto } from '@validalo/api-client';
 import { ShieldOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatearFechaDeclarada } from '../../documentos/formatoDatos';

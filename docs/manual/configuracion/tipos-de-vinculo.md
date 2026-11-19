@@ -16,7 +16,7 @@ La administradora crea el tipo de vínculo «Contratista» con dos exigencias: c
 **Antes de empezar**
 
 - Un grupo empresarial con la empresa «Constructora Sur S.A.S.» y los tipos de vínculo base (Proveedor, Cliente).
-- Una persona con el rol Administrador que entra a AvalaSoft desde el sistema integrado.
+- Una persona con el rol Administrador que entra a Valídalo desde el sistema integrado.
 
 **Pasos**
 

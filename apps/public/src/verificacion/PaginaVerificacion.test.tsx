@@ -2,8 +2,8 @@ import { ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configurarCliente, reiniciarCliente, type CertificadoPublicoDto, type ClavesDeCertificadosDto } from '@avalasoft/api-client';
-import { createAvalasoftTheme } from '@avalasoft/ui';
+import { configurarCliente, reiniciarCliente, type CertificadoPublicoDto, type ClavesDeCertificadosDto } from '@validalo/api-client';
+import { createValidaloTheme } from '@validalo/ui';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CERTIFICADO_REAL, CLAVES_REAL, certificadoSellado } from '../pruebas/certificados';
@@ -24,7 +24,7 @@ function montar(ruta: string, certificado: Respuesta, claves: Respuesta) {
   const fetch = vi.fn((entrada: RequestInfo | URL) => Promise.resolve(urlDe(entrada).includes('/.well-known/') ? claves() : certificado()));
   configurarCliente({ fetch });
   render(
-    <ThemeProvider theme={createAvalasoftTheme('light', { app: 'public' })}>
+    <ThemeProvider theme={createValidaloTheme('light', { app: 'public' })}>
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
         <MemoryRouter initialEntries={[ruta]}>
           <Routes>
@@ -57,16 +57,16 @@ describe('verificación pública del certificado', () => {
     expect(screen.getByText('Emisión 1')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Descargar PDF' })).toBeEnabled();
 
-    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló AvalaSoft.')).toBeInTheDocument();
+    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló Valídalo.')).toBeInTheDocument();
     expect(screen.getByText('El contenido sellado da exactamente la huella del certificado.')).toBeInTheDocument();
     expect(screen.getByText(/La huella del enlace \([0-9a-f]{12}\) es la de este contenido\./)).toBeInTheDocument();
-    expect(screen.getByText('Lo selló la clave vigente de AvalaSoft (vs-prueba).')).toBeInTheDocument();
+    expect(screen.getByText('Lo selló la clave vigente de Valídalo (vs-prueba).')).toBeInTheDocument();
     expect(screen.getByText('La firma digital (Ed25519) corresponde a este contenido.')).toBeInTheDocument();
 
     // La consulta lleva el folio y la huella del QR; las claves salen de la ruta fija de esta página.
     const urls = fetch.mock.calls.map(([entrada]) => urlDe(entrada));
     expect(urls).toContain(`/public/v1/verificar/VERIF-C-2026-000001-1?huella=${certificado.hashContenido.slice(0, 12)}`);
-    expect(urls).toContain('/.well-known/avalasoft-certificados.json');
+    expect(urls).toContain('/.well-known/validalo-certificados.json');
   });
 
   it('el certificado real de la API (vector dorado): vigente, con el NIT enmascarado y auténtico en los cuatro pasos', async () => {
@@ -77,7 +77,7 @@ describe('verificación pública del certificado', () => {
     expect(screen.getByText(/NIT \d{2}\*+\d{2}/)).toBeInTheDocument();
     expect(screen.queryByText(/@/)).not.toBeInTheDocument();
 
-    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló AvalaSoft.')).toBeInTheDocument();
+    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló Valídalo.')).toBeInTheDocument();
     for (const comprobacion of ['Contenido íntegro', 'Huella del enlace', 'Clave de la plataforma', 'Sello válido'])
       expect(screen.getByText(new RegExp(`^${comprobacion}`)).closest('li')).toHaveTextContent('Correcto');
   });
@@ -121,7 +121,7 @@ describe('verificación pública del certificado', () => {
     expect(screen.getByText('Dejó de valer el 20/11/2026 y no puede volver a usarse. Constructora Verificación S.A.S. puede decirte el motivo.')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Descargar PDF' })).not.toBeInTheDocument();
     expect(screen.getByText('El PDF solo se entrega mientras el certificado está vigente.')).toBeInTheDocument();
-    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló AvalaSoft.')).toBeInTheDocument();
+    expect(await screen.findByText('Auténtico: el contenido está íntegro y lo selló Valídalo.')).toBeInTheDocument();
   });
 
   it('reemplazado: enlace a la emisión actual', async () => {
@@ -147,7 +147,7 @@ describe('verificación pública del certificado', () => {
     montar(ruta(certificado), () => json(certificado), () => new Response('<!doctype html>', { headers: { 'Content-Type': 'text/html' } }));
 
     expect(await screen.findByText('No pudimos completar la verificación del sello. Inténtalo de nuevo en unos minutos.')).toBeInTheDocument();
-    expect(screen.getByText('No pudimos obtener las claves públicas de AvalaSoft.')).toBeInTheDocument();
+    expect(screen.getByText('No pudimos obtener las claves públicas de Valídalo.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Reintentar' })).toBeInTheDocument();
   });
 

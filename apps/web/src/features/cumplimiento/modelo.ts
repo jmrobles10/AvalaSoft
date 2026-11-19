@@ -10,7 +10,7 @@ import {
   type RespuestaDeMatrizDto,
   type ResultadoDeMatrizDto,
   type VerificacionDto,
-} from '@avalasoft/api-client';
+} from '@validalo/api-client';
 
 /**
  * Reglas de la pantalla de verificaciones (VE-5…VE-16), las mismas que valida la API: qué puede hacer quien mira y qué

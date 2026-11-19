@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { eximirVinculo, revocarExencionVinculo, type EximirVinculoDto } from '@avalasoft/api-client';
+import { eximirVinculo, revocarExencionVinculo, type EximirVinculoDto } from '@validalo/api-client';
 import { invalidarRuta } from '../../../shared/consultas';
 
 /** Lo que cambia al eximir o revocar: el vínculo (y su historial), los vencimientos, los expedientes (lo abierto se exime en el acto) y los certificados. */

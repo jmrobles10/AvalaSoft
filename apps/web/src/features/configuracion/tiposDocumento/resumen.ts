@@ -1,4 +1,4 @@
-import type { TipoDocumentoTenantDto } from '@avalasoft/api-client';
+import type { TipoDocumentoTenantDto } from '@validalo/api-client';
 import type { TFunction } from 'i18next';
 import { megas, nombreDeFormato } from './modelo';
 

@@ -1,7 +1,7 @@
 import { Alert, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { getListarExpedientesQueryOptions, SCOPES, type ExpedienteDto, type VinculoDto } from '@avalasoft/api-client';
-import { EsqueletoTarjeta, EstadoVacio, formatearFecha } from '@avalasoft/ui';
+import { getListarExpedientesQueryOptions, SCOPES, type ExpedienteDto, type VinculoDto } from '@validalo/api-client';
+import { EsqueletoTarjeta, EstadoVacio, formatearFecha } from '@validalo/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';

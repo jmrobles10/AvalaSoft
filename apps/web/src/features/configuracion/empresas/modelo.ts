@@ -1,4 +1,4 @@
-import type { CorregirEmpresaDto, CrearEmpresaDto, IdentificacionDto, TextoLegalDto, TextosLegalesEmpresaDto, TipoIdentificacionDto } from '@avalasoft/api-client';
+import type { CorregirEmpresaDto, CrearEmpresaDto, IdentificacionDto, TextoLegalDto, TextosLegalesEmpresaDto, TipoIdentificacionDto } from '@validalo/api-client';
 
 /**
  * Empresas del grupo (ADR-0008) y sus textos legales. Misma validación que el dominio (`Empresa.Crear`,

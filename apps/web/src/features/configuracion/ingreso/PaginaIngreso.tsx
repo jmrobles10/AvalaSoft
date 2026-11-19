@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Checkbox, FormControlLabel, MenuItem, Skeleton, Stack, Switch, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { actualizarConfiguracionIngreso, getObtenerConfiguracionIngresoQueryOptions, SCOPES, type ConfiguracionDeIngresoDto } from '@avalasoft/api-client';
-import { DosColumnas } from '@avalasoft/ui';
+import { actualizarConfiguracionIngreso, getObtenerConfiguracionIngresoQueryOptions, SCOPES, type ConfiguracionDeIngresoDto } from '@validalo/api-client';
+import { DosColumnas } from '@validalo/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EncabezadoPagina, ErrorRecuperable, IconoCarga, SinPermiso, Tarjeta } from '../../../shared/componentes';

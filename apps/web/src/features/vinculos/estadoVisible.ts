@@ -1,4 +1,4 @@
-import type { EstadoVinculo, ListarVinculosParams, VinculoDto } from '@avalasoft/api-client';
+import type { EstadoVinculo, ListarVinculosParams, VinculoDto } from '@validalo/api-client';
 
 /**
  * Lo que la empresa ve de un vínculo (VR-1): con una actualización abierta (el tercero actualizó información que ya había aprobado) se

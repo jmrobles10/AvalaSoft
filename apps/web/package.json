@@ -1,5 +1,5 @@
 {
-  "name": "@avalasoft/web",
+  "name": "@validalo/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,9 +12,9 @@
     "semilla:plataforma": "node scripts/semilla-dev.mjs --solo-plataforma"
   },
   "dependencies": {
-    "@avalasoft/api-client": "workspace:*",
-    "@avalasoft/sdk": "workspace:*",
-    "@avalasoft/ui": "workspace:*",
+    "@validalo/api-client": "workspace:*",
+    "@validalo/sdk": "workspace:*",
+    "@validalo/ui": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource-variable/geist": "^5.2.0",

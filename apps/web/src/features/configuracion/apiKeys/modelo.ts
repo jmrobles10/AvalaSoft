@@ -1,4 +1,4 @@
-import type { ApiKeyDto, CrearApiKeyDto, EmpresaDto } from '@avalasoft/api-client';
+import type { ApiKeyDto, CrearApiKeyDto, EmpresaDto } from '@validalo/api-client';
 import { SCOPES_DEL_TENANT } from './scopes';
 
 /**

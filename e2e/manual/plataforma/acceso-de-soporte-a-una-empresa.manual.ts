@@ -6,10 +6,10 @@ recorrido(
   {
     dominio: 'plataforma',
     actor: 'Administrador de empresa',
-    titulo: 'Concede a soporte de AvalaSoft un acceso temporal y lo revoca',
+    titulo: 'Concede a soporte de Valídalo un acceso temporal y lo revoca',
     resumen:
-      'La administradora de una empresa concede al soporte de AvalaSoft un acceso temporal de lectura: por una empresa, por unas horas y con una razón. Mientras está vigente, el soporte puede leer la configuración, los flujos, los vínculos y los expedientes, pero nunca documentos. Puede revocarlo antes de que venza.',
-    precondiciones: ['Una empresa del grupo con su administradora en AvalaSoft.', 'Sin accesos de soporte vigentes.'],
+      'La administradora de una empresa concede al soporte de Valídalo un acceso temporal de lectura: por una empresa, por unas horas y con una razón. Mientras está vigente, el soporte puede leer la configuración, los flujos, los vínculos y los expedientes, pero nunca documentos. Puede revocarlo antes de que venza.',
+    precondiciones: ['Una empresa del grupo con su administradora en Valídalo.', 'Sin accesos de soporte vigentes.'],
     relacionados: ['plataforma/ingresos-de-los-operadores', 'plataforma/operadores'],
   },
   async ({ page }) => {
@@ -21,7 +21,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre Accesos de soporte',
       explicacion:
-        'El soporte de AvalaSoft no ve nada de tu grupo salvo que se lo concedas. Aquí quedan registrados los accesos temporales que concediste, con su estado y cuándo expiran. ' +
+        'El soporte de Valídalo no ve nada de tu grupo salvo que se lo concedas. Aquí quedan registrados los accesos temporales que concediste, con su estado y cuándo expiran. ' +
         'Mientras no concedas ninguno, la lista está vacía.',
       resaltar: app.getByRole('button', { name: 'Conceder acceso' }),
       configuracion: {

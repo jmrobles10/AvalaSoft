@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import { EstadoVacio } from '@avalasoft/ui';
+import { EstadoVacio } from '@validalo/ui';
 import { FolderOpen, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
