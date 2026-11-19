@@ -67,13 +67,15 @@ export interface FiltroMenuProps {
   onCambiar: (valor: string) => void;
   /** Texto cuando no hay filtro ("Todos"). */
   textoTodos: string;
+  /** Ocupa todo el ancho de su contenedor (una rejilla de filtros del mismo ancho): el valor queda a la izquierda y la flecha a la derecha. */
+  fullWidth?: boolean;
 }
 
 /**
  * Filtro de la barra: botón "Estado · Todos ▾" que abre un menú. Activo, se tiñe con el acento y el valor va en
  * negrita, así se ve qué filtra la tabla sin abrirlo.
  */
-export function FiltroMenu({ etiqueta, valor, opciones, onCambiar, textoTodos }: FiltroMenuProps) {
+export function FiltroMenu({ etiqueta, valor, opciones, onCambiar, textoTodos, fullWidth = false }: FiltroMenuProps) {
   const [ancla, setAncla] = useState<HTMLElement | null>(null);
   const idMenu = useId();
   const activo = valor !== '';
@@ -95,6 +97,7 @@ export function FiltroMenu({ etiqueta, valor, opciones, onCambiar, textoTodos }:
           height: ALTO_CONTROL,
           pl: 1.25,
           pr: 1,
+          ...(fullWidth && { width: '100%', minWidth: 0, justifyContent: 'flex-start', textAlign: 'left' }),
           border: 1,
           borderColor: activo ? 'acento.main' : 'borde.control',
           borderRadius: (t) => `${String(t.radio.sm)}px`,
@@ -107,10 +110,13 @@ export function FiltroMenu({ etiqueta, valor, opciones, onCambiar, textoTodos }:
         <Box component="span" sx={{ color: activo ? 'text.primary' : 'text.secondary' }}>
           {etiqueta}
         </Box>
-        <Box component="span" sx={{ fontWeight: 600, color: activo ? 'acento.main' : 'text.primary', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <Box
+          component="span"
+          sx={{ fontWeight: 600, color: activo ? 'acento.main' : 'text.primary', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', ...(fullWidth && { flex: 1, minWidth: 0, maxWidth: 'none' }) }}
+        >
           {elegida?.etiqueta ?? textoTodos}
         </Box>
-        <ChevronDown size={14} strokeWidth={1.75} aria-hidden />
+        <ChevronDown size={14} strokeWidth={1.75} aria-hidden style={{ flex: 'none' }} />
       </ButtonBase>
       <Menu id={idMenu} anchorEl={ancla} open={Boolean(ancla)} onClose={() => setAncla(null)} slotProps={{ paper: { sx: { minWidth: 200 } } }}>
         {[{ valor: '', etiqueta: textoTodos } as OpcionFiltro, ...opciones].map((o) => (

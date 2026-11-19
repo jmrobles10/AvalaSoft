@@ -1,22 +1,22 @@
-import { Box, Button } from '@mui/material';
 import { SCOPES } from '@validalo/api-client';
-import { BarraFiltros, EstadoVacio, FiltroMenu, TablaConCursor, usePaginacionCursor } from '@validalo/ui';
-import { Download } from 'lucide-react';
+import { EstadoVacio, FiltroMenu, MiniBarra, SeccionPlana, TablaConCursor, usePaginacionCursor } from '@validalo/ui';
+import { CalendarX, ClipboardList, Clock, ShieldCheck, Users } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router';
-import { EncabezadoPagina, SinPermiso } from '../../shared/componentes';
+import { SinPermiso } from '../../shared/componentes';
 import { mensajeDeError } from '../../shared/errores';
-import { useAvisos } from '../../shared/useAvisos';
 import { usePermisos } from '../../shared/usePermisos';
 import { useEmpresaActiva } from '../empresas/useEmpresas';
-import { Cifra, GrupoCifras } from '../inicio/Cifras';
-import { guardarArchivo } from '../vencimientos/api';
 import { useTiposVinculo } from '../vinculos/api';
-import { useDescarga, useInformeVinculos } from './api';
+import { AccionesDescarga } from './AccionesDescarga';
+import { useInformeVinculos } from './api';
+import { BarraFiltrosInforme } from './BarraFiltrosInforme';
 import { useColumnasVinculos } from './columnas';
-import { ESTADOS_VINCULO, leerFiltrosVinculos, parametrosVinculos, RUTAS } from './modelo';
-import { PestanasInformes } from './PestanasInformes';
+import { MarcoInforme } from './MarcoInforme';
+import { ESTADOS_VINCULO, leerFiltrosVinculos, parametrosVinculos, RUTAS, tonoDeAlerta } from './modelo';
+import { ResumenKpis, type KpiInforme } from './ResumenKpis';
+import { useFiltrosEnUrl } from './useFiltrosEnUrl';
 
 const TAMANO_PAGINA = 50;
 
@@ -30,13 +30,12 @@ export function PaginaInformeVinculos() {
   const { empresa } = useEmpresaActiva();
   const permisos = usePermisos(empresa.id);
   const puede = permisos.puede(SCOPES.vinculosLeer);
-  const mostrar = useAvisos((s) => s.mostrar);
-  const [parametros, setParametros] = useSearchParams();
+  const [parametros] = useSearchParams();
+  const { cambiar, limpiar } = useFiltrosEnUrl();
   const filtros = leerFiltrosVinculos(parametros);
   const paginacion = usePaginacionCursor();
   const { reiniciar } = paginacion;
   const columnas = useColumnasVinculos();
-  const descarga = useDescarga(empresa.id);
   const tipos = useTiposVinculo(empresa.id, permisos.puede(SCOPES.configuracionLeer));
 
   useEffect(() => {
@@ -48,40 +47,46 @@ export function PaginaInformeVinculos() {
 
   if (!puede) return <SinPermiso seccion={t('nav.informes')} />;
 
-  const cambiar = (clave: 'estado' | 'tipoVinculoId', valor: string) =>
-    setParametros(
-      (previos) => {
-        const nuevos = new URLSearchParams(previos);
-        if (valor) nuevos.set(clave, valor);
-        else nuevos.delete(clave);
-        return nuevos;
-      },
-      { replace: true },
-    );
-  const descargar = () =>
-    descarga.mutate(
-      { url: RUTAS.vinculosExcel, params },
-      {
-        onSuccess: (archivo) => guardarArchivo(archivo, t('informes.vinculos.excelNombre')),
-        onError: (error) => mostrar(`${t('informes.descargaError')} ${mensajeDeError(error, t)}`, 'error'),
-      },
-    );
   const resumen = consulta.data?.resumen;
+  const kpis: KpiInforme[] | undefined = resumen && [
+    { clave: 'total', icono: Users, tono: 'cian', titulo: t('informes.vinculos.kpi.total'), valor: String(resumen.total), detalle: t('informes.vinculos.kpi.totalDetalle') },
+    {
+      clave: 'certificado',
+      icono: ShieldCheck,
+      tono: 'verde',
+      titulo: t('informes.vinculos.kpi.certificado'),
+      valor: String(resumen.conCertificadoVigente),
+      detalle: t('informes.vinculos.kpi.certificadoDetalle'),
+      grafica: (
+        <MiniBarra
+          valor={resumen.conCertificadoVigente}
+          total={resumen.total}
+          tono="verde"
+          etiqueta={t('informes.vinculos.kpi.certificadoBarra', { conCertificado: String(resumen.conCertificadoVigente), total: String(resumen.total) })}
+        />
+      ),
+    },
+    { clave: 'porVencer', icono: Clock, tono: 'ambar', titulo: t('informes.vinculos.kpi.porVencer'), valor: String(resumen.conDocumentosPorVencer), detalle: t('informes.vinculos.kpi.porVencerDetalle') },
+    {
+      clave: 'vencidos',
+      icono: CalendarX,
+      tono: tonoDeAlerta(resumen.conDocumentosVencidos),
+      titulo: t('informes.vinculos.kpi.vencidos'),
+      valor: String(resumen.conDocumentosVencidos),
+      detalle: t('informes.vinculos.kpi.vencidosDetalle'),
+    },
+    { clave: 'secciones', icono: ClipboardList, tono: 'violeta', titulo: t('informes.vinculos.kpi.secciones'), valor: String(resumen.conSeccionesPendientes), detalle: t('informes.vinculos.kpi.seccionesDetalle') },
+  ];
 
   return (
-    <>
-      <EncabezadoPagina
-        titulo={t('informes.titulo')}
-        subtitulo={t('informes.subtitulo', { empresa: empresa.nombre })}
-        acciones={
-          <Button variant="outlined" startIcon={<Download size={16} aria-hidden />} disabled={descarga.isPending || resumen?.total === 0} onClick={descargar}>
-            {t('informes.excel')}
-          </Button>
-        }
-      />
-      <PestanasInformes empresaId={empresa.id} actual="vinculos" />
-      <BarraFiltros>
+    <MarcoInforme
+      empresa={empresa}
+      actual="vinculos"
+      acciones={<AccionesDescarga empresaId={empresa.id} params={params} descargas={[{ formato: 'excel', url: RUTAS.vinculosExcel, nombre: t('informes.vinculos.excelNombre') }]} deshabilitado={resumen?.total === 0} />}
+    >
+      <BarraFiltrosInforme hayFiltros={Boolean(filtros.estado || filtros.tipoVinculoId)} onLimpiar={limpiar}>
         <FiltroMenu
+          fullWidth
           etiqueta={t('informes.vinculos.filtros.estado')}
           textoTodos={t('comun.todos')}
           valor={filtros.estado}
@@ -90,6 +95,7 @@ export function PaginaInformeVinculos() {
         />
         {tipos.data && (
           <FiltroMenu
+            fullWidth
             etiqueta={t('informes.vinculos.filtros.tipoVinculo')}
             textoTodos={t('comun.todos')}
             valor={filtros.tipoVinculoId}
@@ -97,34 +103,26 @@ export function PaginaInformeVinculos() {
             opciones={tipos.data.map((tv) => ({ valor: tv.id, etiqueta: tv.nombre }))}
           />
         )}
-      </BarraFiltros>
+      </BarraFiltrosInforme>
 
-      {resumen && (
-        <Box sx={{ mb: 2 }}>
-          <GrupoCifras titulo={t('informes.estado.resumen.titulo')}>
-            <Cifra etiqueta={t('informes.vinculos.resumen.total')} valor={String(resumen.total)} />
-            <Cifra etiqueta={t('informes.vinculos.resumen.certificado')} valor={String(resumen.conCertificadoVigente)} />
-            <Cifra etiqueta={t('informes.vinculos.resumen.porVencer')} valor={String(resumen.conDocumentosPorVencer)} />
-            <Cifra etiqueta={t('informes.vinculos.resumen.vencidos')} valor={String(resumen.conDocumentosVencidos)} />
-            <Cifra etiqueta={t('informes.vinculos.resumen.secciones')} valor={String(resumen.conSeccionesPendientes)} />
-          </GrupoCifras>
-        </Box>
-      )}
+      {!(consulta.isError && !resumen) && <ResumenKpis etiqueta={t('informes.vinculos.kpi.etiqueta')} kpis={kpis} actualizando={consulta.isPlaceholderData} />}
 
-      <TablaConCursor
-        etiqueta={t('informes.pestanas.vinculos')}
-        columnas={columnas}
-        filas={consulta.data?.datos}
-        claveFila={(f) => f.vinculoId}
-        cargando={consulta.isPending || (consulta.isFetching && consulta.isPlaceholderData)}
-        error={consulta.isError ? `${t('informes.vinculos.errorLista')} ${mensajeDeError(consulta.error, t)}` : null}
-        onReintentar={() => void consulta.refetch()}
-        paginacion={paginacion}
-        siguienteCursor={consulta.data?.siguienteCursor}
-        onFila={(f) => void navegar(`/e/${empresa.id}/vinculos/${f.vinculoId}`)}
-        etiquetaFila={(f) => t('informes.vinculos.abrir', { tercero: f.tercero.nombre })}
-        vacio={<EstadoVacio compacto titulo={t('informes.vinculos.vacio')} />}
-      />
-    </>
+      <SeccionPlana titulo={t('informes.vinculos.seccion.titulo')} ayuda={t('informes.vinculos.seccion.ayuda')} icono={Users}>
+        <TablaConCursor
+          etiqueta={t('informes.pestanas.vinculos')}
+          columnas={columnas}
+          filas={consulta.data?.datos}
+          claveFila={(f) => f.vinculoId}
+          cargando={consulta.isPending || (consulta.isFetching && consulta.isPlaceholderData)}
+          error={consulta.isError ? `${t('informes.vinculos.errorLista')} ${mensajeDeError(consulta.error, t)}` : null}
+          onReintentar={() => void consulta.refetch()}
+          paginacion={paginacion}
+          siguienteCursor={consulta.data?.siguienteCursor}
+          onFila={(f) => void navegar(`/e/${empresa.id}/vinculos/${f.vinculoId}`)}
+          etiquetaFila={(f) => t('informes.vinculos.abrir', { tercero: f.tercero.nombre })}
+          vacio={<EstadoVacio compacto titulo={t('informes.vinculos.vacio')} />}
+        />
+      </SeccionPlana>
+    </MarcoInforme>
   );
 }

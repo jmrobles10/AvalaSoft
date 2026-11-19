@@ -1,37 +1,25 @@
 import { Button } from '@mui/material';
 import { SCOPES } from '@validalo/api-client';
-import { BarraFiltros, CampoFecha, FiltroMenu } from '@validalo/ui';
+import { CampoFecha, FiltroMenu } from '@validalo/ui';
 import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router';
 import { usePermisos } from '../../shared/usePermisos';
 import { useAreas } from '../configuracion/areas/api';
 import { useFlujos } from '../flujos/api';
 import { useTiposVinculo } from '../vinculos/api';
+import { BarraFiltrosInforme, GrupoFechas } from './BarraFiltrosInforme';
 import { CAMPOS_FECHA, ESTADOS_EXPEDIENTE, hayFiltrosEstado, rangoInvalido, TIPOS_EXPEDIENTE, type FiltrosEstado } from './modelo';
-
-type Clave = 'estado' | 'tipo' | 'areaId' | 'flujoId' | 'tipoVinculoId' | 'fecha' | 'desde' | 'hasta' | 'terceroId';
+import { useFiltrosEnUrl } from './useFiltrosEnUrl';
 
 /** Filtros del informe de estado: todo vive en la URL (se comparte el enlace y la descarga usa los mismos). */
 export function FiltrosEstadoExpedientes({ empresaId, filtros }: { empresaId: string; filtros: FiltrosEstado }) {
   const { t } = useTranslation();
-  const [, setParametros] = useSearchParams();
+  const { cambiar, limpiar } = useFiltrosEnUrl();
   const permisos = usePermisos(empresaId);
   const areas = useAreas(empresaId, permisos.puede(SCOPES.configuracionLeer));
   const flujos = useFlujos(empresaId, undefined, permisos.puede(SCOPES.flujosLeer));
   const tipos = useTiposVinculo(empresaId, permisos.puede(SCOPES.configuracionLeer));
   const errorRango = rangoInvalido(filtros);
-
-  const cambiar = (clave: Clave, valor: string) =>
-    setParametros(
-      (previos) => {
-        const nuevos = new URLSearchParams(previos);
-        if (valor && !(clave === 'fecha' && valor === 'Apertura')) nuevos.set(clave, valor);
-        else nuevos.delete(clave);
-        return nuevos;
-      },
-      { replace: true },
-    );
 
   const campoFecha = (clave: 'desde' | 'hasta') => (
     <CampoFecha
@@ -40,13 +28,14 @@ export function FiltrosEstadoExpedientes({ empresaId, filtros }: { empresaId: st
       onCambiar={(iso) => cambiar(clave, iso)}
       error={errorRango}
       ayuda={errorRango && clave === 'hasta' ? t('informes.estado.filtros.rangoInvalido') : undefined}
-      sx={{ width: 160 }}
+      fullWidth
     />
   );
 
   return (
-    <BarraFiltros>
+    <BarraFiltrosInforme hayFiltros={hayFiltrosEstado(filtros)} onLimpiar={limpiar}>
       <FiltroMenu
+        fullWidth
         etiqueta={t('informes.estado.filtros.estado')}
         textoTodos={t('comun.todos')}
         valor={filtros.estado}
@@ -54,6 +43,7 @@ export function FiltrosEstadoExpedientes({ empresaId, filtros }: { empresaId: st
         opciones={ESTADOS_EXPEDIENTE.map((e) => ({ valor: e, etiqueta: t(`informes.estado.estados.${e}`) }))}
       />
       <FiltroMenu
+        fullWidth
         etiqueta={t('informes.estado.filtros.tipo')}
         textoTodos={t('comun.todos')}
         valor={filtros.tipo}
@@ -62,6 +52,7 @@ export function FiltrosEstadoExpedientes({ empresaId, filtros }: { empresaId: st
       />
       {areas.data && (
         <FiltroMenu
+          fullWidth
           etiqueta={t('informes.estado.filtros.area')}
           textoTodos={t('comun.todas')}
           valor={filtros.areaId}
@@ -71,6 +62,7 @@ export function FiltrosEstadoExpedientes({ empresaId, filtros }: { empresaId: st
       )}
       {tipos.data && (
         <FiltroMenu
+          fullWidth
           etiqueta={t('informes.estado.filtros.tipoVinculo')}
           textoTodos={t('comun.todos')}
           valor={filtros.tipoVinculoId}
@@ -80,6 +72,7 @@ export function FiltrosEstadoExpedientes({ empresaId, filtros }: { empresaId: st
       )}
       {flujos.data && (
         <FiltroMenu
+          fullWidth
           etiqueta={t('informes.estado.filtros.flujo')}
           textoTodos={t('comun.todos')}
           valor={filtros.flujoId}
@@ -88,24 +81,22 @@ export function FiltrosEstadoExpedientes({ empresaId, filtros }: { empresaId: st
         />
       )}
       <FiltroMenu
+        fullWidth
         etiqueta={t('informes.estado.filtros.fecha')}
         textoTodos={t('informes.estado.filtros.fechas.Apertura')}
         valor={filtros.fecha === 'Cierre' ? 'Cierre' : ''}
         onCambiar={(v) => cambiar('fecha', v)}
         opciones={CAMPOS_FECHA.filter((c) => c !== 'Apertura').map((c) => ({ valor: c, etiqueta: t(`informes.estado.filtros.fechas.${c}`) }))}
       />
-      {campoFecha('desde')}
-      {campoFecha('hasta')}
+      <GrupoFechas>
+        {campoFecha('desde')}
+        {campoFecha('hasta')}
+      </GrupoFechas>
       {filtros.terceroId && (
-        <Button variant="outlined" size="small" endIcon={<X size={14} aria-hidden />} onClick={() => cambiar('terceroId', '')}>
+        <Button variant="outlined" endIcon={<X size={14} aria-hidden />} onClick={() => cambiar('terceroId', '')} sx={{ justifyContent: 'space-between' }}>
           {t('informes.estado.filtros.tercero')}
         </Button>
       )}
-      {hayFiltrosEstado(filtros) && (
-        <Button variant="text" onClick={() => setParametros(new URLSearchParams(), { replace: true })}>
-          {t('informes.limpiar')}
-        </Button>
-      )}
-    </BarraFiltros>
+    </BarraFiltrosInforme>
   );
 }

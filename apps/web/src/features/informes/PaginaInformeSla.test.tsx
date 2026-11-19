@@ -72,9 +72,15 @@ describe('Informe de cumplimiento del plazo de revisión', () => {
 
     expect(await screen.findByRole('tab', { name: 'Plazo de revisión', selected: true })).toHaveAttribute('href', '/e/emp/informes/sla');
     const resumen = await screen.findByRole('region', { name: 'Cumplimiento del plazo de revisión' });
-    expect(within(resumen).getByText('85 %')).toBeInTheDocument();
-    expect(within(resumen).getByText('Vencidos ahora').closest('div')).toHaveTextContent('2');
-    expect(within(resumen).getByText('Revisiones con plazo').closest('div')).toHaveTextContent('20');
+    const tarjeta = (nombre: string) => within(resumen).getByRole('group', { name: nombre });
+    expect(tarjeta('Cumplimiento')).toHaveTextContent('85 %');
+    expect(tarjeta('Cumplimiento')).toHaveTextContent('17 de 20 a tiempo');
+    expect(within(tarjeta('Cumplimiento')).getByRole('img', { name: 'Cumplimiento del plazo de revisión: 85 %' })).toBeInTheDocument();
+    expect(tarjeta('Vencidos ahora')).toHaveTextContent('2');
+    expect(tarjeta('Revisiones con plazo')).toHaveTextContent('20');
+    expect(tarjeta('Revisiones con plazo')).toHaveTextContent('En 14 expedientes');
+    expect(tarjeta('A tiempo')).toHaveTextContent('17');
+    expect(tarjeta('Fuera de plazo')).toHaveTextContent('3');
 
     const areas = screen.getByRole('table', { name: 'Cumplimiento por área' });
     const compras = within(areas).getByRole('row', { name: /Compras/ });
@@ -117,7 +123,9 @@ describe('Informe de cumplimiento del plazo de revisión', () => {
     expect(screen.getByText('Ninguna revisión está vencida ahora.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Descargar Excel' })).toBeDisabled();
     const resumen = screen.getByRole('region', { name: 'Cumplimiento del plazo de revisión' });
-    expect(within(resumen).getByText('Cumplimiento').closest('div')).toHaveTextContent('—');
+    expect(within(resumen).getByRole('group', { name: 'Cumplimiento' })).toHaveTextContent('—');
+    expect(within(resumen).getByRole('group', { name: 'Cumplimiento' })).toHaveTextContent('Sin revisiones con plazo');
+    expect(within(resumen).getByRole('group', { name: 'Vencidos ahora' })).toHaveTextContent('0');
   });
 
   it('un rango al revés no consulta y lo avisa', async () => {

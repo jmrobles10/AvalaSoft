@@ -1,5 +1,12 @@
-import type { EstadoExpediente, EstadoVinculo, ObtenerInformeEstadoExpedientesParams, ObtenerInformeVinculosParams, TipoExpediente } from '@validalo/api-client';
-import { LOCALE } from '@validalo/ui';
+import type {
+  EstadoExpediente,
+  EstadoVinculo,
+  ObtenerInformeEstadoExpedientesParams,
+  ObtenerInformeVinculosParams,
+  ResumenEstadoExpedientesDto,
+  TipoExpediente,
+} from '@validalo/api-client';
+import { LOCALE, type TonoKpi } from '@validalo/ui';
 
 export const ESTADOS_EXPEDIENTE: readonly EstadoExpediente[] = ['Abierto', 'EnRevision', 'Observado', 'Aprobado', 'Rechazado', 'Anulado', 'Caducado'];
 export const TIPOS_EXPEDIENTE: readonly TipoExpediente[] = ['Inicial', 'Renovacion', 'Actualizacion'];
@@ -16,6 +23,7 @@ export const RUTAS = {
   estadoPdf: '/api/v1/informes/estado-expedientes/pdf',
   vinculosExcel: '/api/v1/informes/vinculos/excel',
   slaExcel: '/api/v1/informes/sla/excel',
+  evaluacionesExcel: '/api/v1/informes/evaluaciones/excel',
   auditoriaExcel: '/api/v1/auditoria/excel',
   expedienteZip: (id: string) => `/api/v1/expedientes/${id}/exportar`,
 } as const;
@@ -114,4 +122,35 @@ export function fechaNegocio(dias = 0, ahora = new Date()): string {
 export function rutaInformeDeVentana(empresaId: string, dias: number, ahora = new Date()): string {
   const desde = fechaNegocio(dias - 1, ahora);
   return `/e/${empresaId}/informes/estado-expedientes?fecha=Cierre&estado=Aprobado&desde=${desde}`;
+}
+
+export type FaseTiempo = 'carga' | 'tercero' | 'revision';
+
+export interface TiempoDeFase {
+  fase: FaseTiempo;
+  /** Promedio de días en la fase; `null` si no hay dato. */
+  dias: number | null;
+  /** Peso de la fase sobre la suma de las tres, de 0 a 100 (0 si no hay nada que repartir). */
+  porcentaje: number;
+}
+
+/** El tiempo de apertura a aprobación repartido en carga, con el tercero y en revisión, con el peso de cada fase. */
+export function tiemposPorFase(r: Pick<ResumenEstadoExpedientesDto, 'promedioEnCargaDias' | 'promedioConTerceroDias' | 'promedioEnRevisionDias'>): TiempoDeFase[] {
+  const fases: { fase: FaseTiempo; dias: number | null }[] = [
+    { fase: 'carga', dias: aNumero(r.promedioEnCargaDias) },
+    { fase: 'tercero', dias: aNumero(r.promedioConTerceroDias) },
+    { fase: 'revision', dias: aNumero(r.promedioEnRevisionDias) },
+  ];
+  const suma = fases.reduce((total, f) => total + Math.max(0, f.dias ?? 0), 0);
+  return fases.map((f) => ({ ...f, porcentaje: suma > 0 ? (Math.max(0, f.dias ?? 0) / suma) * 100 : 0 }));
+}
+
+/** El máximo de días de las áreas: el tope común de las barras, para que se comparen entre sí. */
+export function topeDeAreas(areas: readonly Pick<ResumenEstadoExpedientesDto['porArea'][number], 'promedioDias' | 'maximoDias'>[]): number {
+  return areas.reduce((tope, a) => Math.max(tope, aNumero(a.maximoDias) ?? 0, aNumero(a.promedioDias) ?? 0), 0);
+}
+
+/** El tono de una cifra que es una alerta cuando es mayor que cero (lo vencido, lo incumplido): rojo si hay, verde si no. */
+export function tonoDeAlerta(cantidad: number): TonoKpi {
+  return cantidad > 0 ? 'rojo' : 'verde';
 }

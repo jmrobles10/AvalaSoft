@@ -56,8 +56,9 @@ recorrido(
     await irASeccion(app, 'Informes');
     await app.getByRole('tab', { name: 'Plazo de revisión', exact: true }).or(app.getByRole('link', { name: 'Plazo de revisión', exact: true })).click();
     await expect(app.getByRole('heading', { level: 1, name: 'Informes' })).toBeVisible();
-    await expect(app.getByRole('heading', { level: 2, name: 'Cumplimiento del plazo de revisión' }).or(app.getByText('Cumplimiento del plazo de revisión', { exact: true }))).toBeVisible();
-    const resumen = app.getByText('Cumplimiento', { exact: true }).first();
+    // El resumen son tarjetas de cifras: la región «Cumplimiento del plazo de revisión» las agrupa y la tarjeta «Cumplimiento» trae el porcentaje.
+    await expect(app.getByRole('region', { name: 'Cumplimiento del plazo de revisión' })).toBeVisible();
+    const resumen = app.getByRole('group', { name: 'Cumplimiento', exact: true });
     await expect(resumen).toBeVisible();
     await paso(page, {
       titulo: 'Abre el informe de plazo de revisión',
