@@ -1,7 +1,7 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, Stack, Typography } from '@mui/material';
 import { SCOPES, type AreaExpedienteDto, type ExpedienteDto } from '@validalo/api-client';
 import { ChipEstado } from '@validalo/ui';
-import { Check, TriangleAlert } from 'lucide-react';
+import { Check, TriangleAlert, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tarjeta } from '../../../shared/componentes';
@@ -42,7 +42,10 @@ export function PanelDecisionArea({
   const [seccionAbierta, setSeccionAbierta] = useState<string | null>(null);
   if (!tieneRequisitos(expediente) || !['EnRevision', 'Observado'].includes(expediente.estado)) return null;
   const etapa = expediente.etapas.find((e) => e.orden === expediente.etapaActual);
-  const areas = (etapa?.areas ?? []).filter((a) => documentosDelArea(expediente, a.areaId).length > 0);
+  // Las áreas de quien revisa van primero y marcadas con «Tu área»: así sabe de entrada dónde le toca decidir.
+  const areas = (etapa?.areas ?? [])
+    .filter((a) => documentosDelArea(expediente, a.areaId).length > 0)
+    .sort((a, b) => Number(contexto(b).esMiembro === true) - Number(contexto(a).esMiembro === true));
   const puedeVer = contexto(null).scopes.has(SCOPES.documentosDescargar);
   const puedeLeerDocumentos = contexto(null).scopes.has(SCOPES.documentosLeer);
   const requisitoAbierto = seccionAbierta ? requisitosDe(expediente).find((r) => r.id === seccionAbierta) : undefined;
@@ -58,11 +61,14 @@ export function PanelDecisionArea({
           const explicar = seExplica(bloqueo) && ctx.scopes.has(SCOPES.expedientesRevisar) ? bloqueo : null;
           return (
             <Box key={area.areaId} component="section" aria-label={area.nombre} sx={{ border: 1, borderColor: 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5 }}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+              <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', mb: 1 }}>
                 <Typography component="h4" sx={{ fontWeight: 600, fontSize: 14 }}>
                   {area.nombre}
                 </Typography>
-                <ChipEstadoArea estado={area.estado} desde={area.pendienteDesde} />
+                {ctx.esMiembro === true && <Chip size="small" color="primary" variant="outlined" icon={<UserRound size={13} aria-hidden />} label={t('expedientes.decisionArea.tuArea')} />}
+                <Box sx={{ ml: 'auto' }}>
+                  <ChipEstadoArea estado={area.estado} desde={area.pendienteDesde} />
+                </Box>
               </Stack>
               <Stack component="ul" spacing={0.75} sx={{ p: 0, m: 0, listStyle: 'none' }}>
                 {documentosDelArea(expediente, area.areaId).map(({ requisito, areaRequisito }) => {
@@ -79,7 +85,8 @@ export function PanelDecisionArea({
                         )}
                       </Typography>
                       {version?.vigencia && <ChipVigencia vigencia={version.vigencia} />}
-                      {areaRequisito.estado !== 'Esperando' && <ChipEstado estado={areaRequisito.estado} />}
+                      {/* «Pendiente» ya lo dice el chip del área: el del documento solo aparece cuando ya tiene una decisión. */}
+                      {areaRequisito.estado !== 'Esperando' && areaRequisito.estado !== 'Pendiente' && <ChipEstado estado={areaRequisito.estado} />}
                       {documento && <BotonVerVersion documento={documento} puedeVerArchivo={puedeVer} variante="text" onVer={requisito.seccion ? () => setSeccionAbierta(requisito.id) : setAbierto} />}
                     </Stack>
                   );

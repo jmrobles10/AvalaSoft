@@ -321,6 +321,7 @@ export const expedientes = {
   },
   decisionArea: {
     titulo: 'Decisión de cada área',
+    tuArea: 'Tu área',
     aprobar_one: 'Aprobar área ({{count}} documento)',
     aprobar_other: 'Aprobar área ({{count}} documentos)',
     observar: 'Observar',
