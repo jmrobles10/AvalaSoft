@@ -34,11 +34,11 @@ export function CuentasPorEmpresa({ vinculos, cuentas }: { vinculos: readonly Vi
 
   return (
     <Box component="section" aria-labelledby="titulo-por-empresa" sx={{ mt: 3 }}>
-      <Typography id="titulo-por-empresa" component="h2" variant="h4" sx={{ mb: 0.5 }}>
+      <Typography id="titulo-por-empresa" component="h2" variant="h6" sx={{ mb: 0.5 }}>
         {t('cuentas.porEmpresa.titulo')}
       </Typography>
       {elegibles.length === 0 ? (
-        <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px' }}>
+        <Typography sx={{ color: 'text.secondary' }}>
           {t('cuentas.porEmpresa.sinVinculos')}
         </Typography>
       ) : (

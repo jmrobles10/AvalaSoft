@@ -58,7 +58,7 @@ export function DrawerWebhook({
     <Drawer anchor="right" open onClose={guardar.isPending ? undefined : onCerrar} slotProps={{ paper: { sx: { width: 560, maxWidth: '100%' } } }} aria-labelledby="titulo-webhook">
       <Box component="form" onSubmit={enviar} noValidate sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography id="titulo-webhook" variant="h4" component="h2">
+          <Typography id="titulo-webhook" variant="h6" component="h2">
             {webhook ? t('webhooks.editar') : t('webhooks.nuevo')}
           </Typography>
           <IconButton aria-label={t('comun.cerrar')} onClick={onCerrar} disabled={guardar.isPending}>
@@ -103,7 +103,7 @@ export function DrawerWebhook({
           <TextField label={t('webhooks.campos.descripcion')} value={b.descripcion} onChange={(e) => setB({ ...b, descripcion: e.target.value })} helperText={t('webhooks.campos.descripcionAyuda')} />
 
           <Box component="fieldset" sx={{ border: 0, m: 0, p: 0 }}>
-            <Typography component="legend" sx={{ fontSize: 14, fontWeight: 600 }}>
+            <Typography variant="subtitle1" component="legend">
               {t('webhooks.campos.eventos')}
             </Typography>
             <FormControlLabel
@@ -123,7 +123,7 @@ export function DrawerWebhook({
                       control={<Checkbox size="small" checked={todosLosTipos || b.tipos.includes(tipo.tipo)} onChange={() => setB({ ...b, tipos: alternarTipo(b.tipos, tipo.tipo, tipos) })} />}
                       label={
                         <Box>
-                          <Typography component="span" variant="mono" sx={{ fontSize: 13, display: 'block' }}>
+                          <Typography component="span" variant="mono" sx={{ display: 'block' }}>
                             {tipo.tipo}
                           </Typography>
                           <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
@@ -139,7 +139,7 @@ export function DrawerWebhook({
           </Box>
 
           <Box component="fieldset" sx={{ border: 0, m: 0, p: 0 }}>
-            <Typography component="legend" sx={{ fontSize: 14, fontWeight: 600 }}>
+            <Typography variant="subtitle1" component="legend">
               {t('webhooks.campos.empresas')}
             </Typography>
             <RadioGroup value={todasLasEmpresas ? 'todas' : 'algunas'} onChange={(e) => setB({ ...b, empresas: e.target.value === 'todas' ? [TODOS] : [] })}>

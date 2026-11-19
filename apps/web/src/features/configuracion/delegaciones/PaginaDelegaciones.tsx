@@ -112,7 +112,7 @@ export function PaginaDelegaciones() {
                 {delegaciones.map((d) => (
                   <TableRow key={d.id}>
                     <TableCell>
-                      <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', fontWeight: 500 }}>
+                      <Stack direction="row" spacing={0.75} sx={{ typography: 'subtitle2', alignItems: 'center' }}>
                         <span>{nombre(d.deUsuarioId, d.de)}</span>
                         <ArrowRight size={14} strokeWidth={1.75} aria-hidden />
                         <Box component="span" sx={visualmenteOculto}>

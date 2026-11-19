@@ -53,7 +53,7 @@ export function TarjetasDeNivel({ valor, onCambiar, automaticoDisponible, deshab
               <Stack spacing={0.75}>
                 <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                   <Icono size={16} strokeWidth={1.75} aria-hidden />
-                  <Typography component="span" sx={{ fontWeight: 600, fontSize: 15, lineHeight: '22px' }}>
+                  <Typography variant="subtitle1" component="span">
                     {t(`revisionAutomatica.niveles.${nivel}`)}
                   </Typography>
                   {bloqueado && <Chip size="small" variant="outlined" label={t('revisionAutomatica.config.nivel.noDisponible')} sx={{ borderRadius: (th) => `${String(th.radio.xs)}px` }} />}

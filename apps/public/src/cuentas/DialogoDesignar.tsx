@@ -77,10 +77,10 @@ export function DialogoDesignar({ vinculo, cuentas, onCerrar }: { vinculo: Vincu
                   sx={{ alignItems: 'flex-start', py: 0.5, '& .MuiRadio-root': { mt: -0.75 } }}
                   label={
                     <>
-                      <Typography component="span" sx={{ display: 'block', fontSize: 14, lineHeight: '20px' }}>
+                      <Typography component="span" sx={{ display: 'block' }}>
                         {t('cuentas.designar.opcion', { banco: c.banco, tipo: esTipoCuenta(c.tipoCuenta) ? t(`cuentas.tipos.${c.tipoCuenta}`) : c.tipoCuenta, numero: c.numeroEnmascarado })}
                       </Typography>
-                      <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 13, lineHeight: '18px' }}>
+                      <Typography component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                         {detalle(c)}
                       </Typography>
                     </>

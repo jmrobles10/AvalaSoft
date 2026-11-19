@@ -28,7 +28,7 @@ export const plantillas = {
   variablesAyuda: 'Se reemplazan por el dato real en cada correo. Haz clic para insertarla donde está el cursor.',
   nombresVariables: {
     empresa: 'Nombre de la empresa',
-    folio: 'Folio de la validación o del certificado',
+    folio: 'Código del expediente (en los correos del certificado, su folio)',
     tipoVinculo: 'Tipo de vínculo (Proveedor, Cliente…)',
     documento: 'Nombre del documento',
     fecha: 'Fecha de vencimiento de la validación',

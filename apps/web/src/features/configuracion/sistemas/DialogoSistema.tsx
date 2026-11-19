@@ -91,7 +91,7 @@ export function DialogoSistema({ edicion, onCerrar, onListo }: { edicion: Edicio
               helperText={t('sistemas.clavePublicaAyuda')}
               value={pem}
               onChange={(e) => setPem(e.target.value)}
-              sx={{ '& textarea': { fontFamily: (th) => th.typography.mono.fontFamily, fontSize: 12 } }}
+              sx={{ '& textarea': { typography: 'mono' } }}
             />
             {creando && (
               <TextField
@@ -108,7 +108,7 @@ export function DialogoSistema({ edicion, onCerrar, onListo }: { edicion: Edicio
                     : t('sistemas.origenes.alRegistrarAyuda')
                 }
                 slotProps={{ htmlInput: { spellCheck: false, autoCapitalize: 'none' } }}
-                sx={{ '& textarea': { fontFamily: (th) => th.typography.mono.fontFamily, fontSize: 12 } }}
+                sx={{ '& textarea': { typography: 'mono' } }}
               />
             )}
           </Stack>

@@ -47,7 +47,7 @@ function FilaCambio({ fila }: { fila: FilaDeCambio }) {
   const vacio = t('fichaEmpresa.comparacion.vacio');
   return (
     <TableRow data-tipo-cambio={fila.tipo} aria-label={`${fila.campo}: ${t(`fichaEmpresa.comparacion.tipos.${fila.tipo}`)}`}>
-      <TableCell sx={{ borderLeft: 3, borderLeftColor: `estado.${tono}.borde`, fontWeight: 500 }}>{fila.campo}</TableCell>
+      <TableCell sx={{ borderLeft: 3, borderLeftColor: `estado.${tono}.borde`, typography: 'subtitle2' }}>{fila.campo}</TableCell>
       <TableCell sx={{ color: 'text.secondary', textDecoration: fila.tipo === 'Quitado' ? 'line-through' : undefined }}>{fila.antes ?? vacio}</TableCell>
       <TableCell sx={fila.tipo === 'Quitado' ? { color: 'text.secondary' } : { color: `estado.${tono}.texto`, bgcolor: `estado.${tono}.fondo` }}>{fila.ahora ?? vacio}</TableCell>
     </TableRow>

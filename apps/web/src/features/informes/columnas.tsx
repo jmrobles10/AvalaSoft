@@ -127,7 +127,7 @@ export function useColumnasEvaluaciones(): ColumnaTabla<FilaInformeEvaluacionDto
         encabezado: t('evaluaciones.lista.columnas.tercero'),
         celda: (f) => (
           <>
-            <Typography variant="h4" component="span" sx={{ display: 'block' }}>
+            <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
               {f.tercero.nombre}
             </Typography>
             <Typography component="span" variant="caption" sx={{ color: 'text.secondary' }}>

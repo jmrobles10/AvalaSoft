@@ -26,7 +26,7 @@ export function DialogoResolverCoincidencia({ coincidencia: c, decision, ocupado
     <Dialog open onClose={ocupado ? undefined : onCerrar} maxWidth={false} slotProps={{ paper: { sx: { width: 520, maxWidth: 'calc(100% - 32px)' } } }} aria-labelledby="titulo-resolver">
       <DialogTitle id="titulo-resolver">{confirmar ? t('cumplimiento.resolver.tituloConfirmar') : t('cumplimiento.resolver.tituloDescartar')}</DialogTitle>
       <DialogContent>
-        <Typography sx={{ fontWeight: 500, mb: 1 }}>
+        <Typography variant="subtitle2" component="p" sx={{ mb: 1 }}>
           {t('cumplimiento.resolver.coincidencia', {
             persona: c.persona,
             rol: t(`cumplimiento.roles.${c.rol as 'Tercero'}`, { defaultValue: c.rol }),

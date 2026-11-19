@@ -22,10 +22,10 @@ export function RejillaDatos({ children, columnas = 3 }: { children: ReactNode; 
 export function Dato({ etiqueta, children, ancho = false }: { etiqueta: string; children: ReactNode; ancho?: boolean }) {
   return (
     <Stack spacing={0.25} sx={{ minWidth: 0, gridColumn: ancho ? '1 / -1' : undefined }}>
-      <Typography component="dt" variant="caption" sx={{ color: 'text.secondary', fontWeight: 400 }}>
+      <Typography component="dt" variant="caption" sx={{ color: 'text.secondary' }}>
         {etiqueta}
       </Typography>
-      <Typography component="dd" variant="body1" sx={{ m: 0, overflowWrap: 'anywhere' }}>
+      <Typography component="dd" variant="body2" sx={{ m: 0, overflowWrap: 'anywhere' }}>
         {children}
       </Typography>
     </Stack>
@@ -63,14 +63,13 @@ export function ReferenciaExterna({ sistema, id }: { sistema: string; id: string
     <Box
       component="span"
       sx={{
+        typography: 'caption',
         display: 'inline-block',
         px: 0.75,
         py: '1px',
         borderRadius: (t) => `${String(t.radio.xs)}px`,
         bgcolor: 'superficie.nivel2',
         color: 'text.secondary',
-        fontSize: 12,
-        lineHeight: '18px',
         whiteSpace: 'nowrap',
       }}
     >

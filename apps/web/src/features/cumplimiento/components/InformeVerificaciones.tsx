@@ -83,7 +83,7 @@ export function InformeVerificaciones({ empresaId }: { empresaId: string }) {
                     {informe.filas.map((f) => (
                       <TableRow key={`${f.expedienteId}-${f.verificacion}`}>
                         <TableCell>
-                          <Typography component="span" variant="mono">
+                          <Typography component="span" variant="monoTabla">
                             {f.folio}
                           </Typography>
                         </TableCell>

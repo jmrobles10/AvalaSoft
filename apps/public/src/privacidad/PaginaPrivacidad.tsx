@@ -33,10 +33,10 @@ export function PaginaPrivacidad() {
         <Box component="section" aria-labelledby="privacidad-solicitudes">
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { sm: 'center' }, justifyContent: 'space-between', mb: 1.5 }}>
             <Box sx={{ minWidth: 0 }}>
-              <Typography id="privacidad-solicitudes" variant="h3" component="h2">
+              <Typography id="privacidad-solicitudes" variant="h6" component="h2">
                 {t('privacidad.solicitudes.titulo')}
               </Typography>
-              <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px' }}>{t('privacidad.solicitudes.texto')}</Typography>
+              <Typography sx={{ color: 'text.secondary' }}>{t('privacidad.solicitudes.texto')}</Typography>
             </Box>
             <Button variant="contained" onClick={() => setCreando(true)} startIcon={<Plus size={18} aria-hidden />} sx={{ width: { xs: '100%', sm: 'auto' }, flex: 'none' }}>
               {t('privacidad.solicitudes.nueva')}

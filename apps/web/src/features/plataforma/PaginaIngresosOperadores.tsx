@@ -126,7 +126,7 @@ export function PaginaIngresosOperadores() {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography noWrap sx={{ fontSize: 14 }}>
+                    <Typography noWrap>
                       {f.correo ?? '—'}
                     </Typography>
                   </TableCell>
@@ -147,7 +147,7 @@ export function PaginaIngresosOperadores() {
                     <Typography variant="monoTabla">{f.ip ?? '—'}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography noWrap title={f.dispositivo ?? undefined} sx={{ fontSize: 13 }}>
+                    <Typography noWrap title={f.dispositivo ?? undefined}>
                       {dispositivoLegible(f.dispositivo)}
                     </Typography>
                   </TableCell>

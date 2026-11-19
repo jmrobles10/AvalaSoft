@@ -79,11 +79,11 @@ export function TarjetaDocumento({ documento, empresaId = null }: { documento: D
           <FileText size={15} strokeWidth={1.75} />
         </Box>
         <Box sx={{ minWidth: 0 }}>
-          <Typography id={`doc-${documento.id}`} component="h2" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" id={`doc-${documento.id}`} component="h2">
             {titulo}
           </Typography>
-          {/* Una línea gris de 12 px (`caption`: un `Typography` con `fontSize` suelto vuelve a 14 px en escritorio por el tamaño responsivo del tema): «Versión 7 · cargada el …» y «Vence el …» no se parten por dentro; si no caben juntos, el vencimiento baja. */}
-          <Typography variant="caption" component="div" sx={{ color: 'text.secondary', fontWeight: 400 }}>
+          {/* Una línea gris auxiliar (`caption`): «Versión 7 · cargada el …» y «Vence el …» no se parten por dentro; si no caben juntos, el vencimiento baja. */}
+          <Typography variant="caption" component="div" sx={{ color: 'text.secondary' }}>
             <Box component="span" sx={{ whiteSpace: 'nowrap' }}>
               {actual ? t('boveda.cargadaEl', { n: String(actual.n), fecha: formatearFecha(actual.cargadaEn) }) : t('boveda.sinVigente')}
               {vence && ' ·'}
@@ -110,7 +110,7 @@ export function TarjetaDocumento({ documento, empresaId = null }: { documento: D
             </Button>
           )}
           {masProxima && (
-            <Typography variant="caption" component="p" sx={{ m: 0, mt: 0.25, color: 'text.secondary', fontWeight: 400 }}>
+            <Typography variant="caption" component="p" sx={{ m: 0, mt: 0.25, color: 'text.secondary' }}>
               {t('boveda.venceDistinto', { empresa: masProxima })}
             </Typography>
           )}

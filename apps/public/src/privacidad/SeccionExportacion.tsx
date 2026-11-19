@@ -52,18 +52,18 @@ function FilaExportacion({ exportacion }: { exportacion: ExportacionBovedaDto })
       }}
     >
       <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>{t('privacidad.exportacion.pedidaEl', { fecha: formatearFechaHora(exportacion.solicitadaEn) })}</Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>{detalle}</Typography>
+        <Typography variant="subtitle1" component="p">{t('privacidad.exportacion.pedidaEl', { fecha: formatearFechaHora(exportacion.solicitadaEn) })}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{detalle}</Typography>
         {lista && exportacion.sha256 && (
-          <Box component="details" sx={{ mt: 0.5, fontSize: 12, color: 'text.secondary' }}>
+          <Box component="details" sx={{ typography: 'caption', mt: 0.5, color: 'text.secondary' }}>
             <Box component="summary" sx={{ cursor: 'pointer' }}>
               {t('privacidad.exportacion.comoVerificar')}
             </Box>
-            <Typography sx={{ fontSize: 12, mt: 0.5 }}>{t('privacidad.exportacion.comoVerificarTexto', { kid: exportacion.kid ?? '—' })}</Typography>
-            <Typography variant="mono" component="p" sx={{ fontSize: 11, overflowWrap: 'anywhere', mt: 0.5 }}>
+            <Typography variant="caption" component="p" sx={{ mt: 0.5 }}>{t('privacidad.exportacion.comoVerificarTexto', { kid: exportacion.kid ?? '—' })}</Typography>
+            <Typography variant="mono" component="p" sx={{ overflowWrap: 'anywhere', mt: 0.5 }}>
               SHA-256 ZIP: {exportacion.sha256}
             </Typography>
-            <Typography variant="mono" component="p" sx={{ fontSize: 11, overflowWrap: 'anywhere' }}>
+            <Typography variant="mono" component="p" sx={{ overflowWrap: 'anywhere' }}>
               SHA-256 manifiesto: {exportacion.hashManifiesto}
             </Typography>
           </Box>
@@ -110,10 +110,10 @@ export function SeccionExportacion() {
           <PackageOpen size={20} />
         </Box>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography id="privacidad-exportacion" component="h2" sx={{ fontWeight: 600, fontSize: 16, lineHeight: '22px' }}>
+          <Typography variant="h6" id="privacidad-exportacion" component="h2">
             {t('privacidad.exportacion.titulo')}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px' }}>{t('privacidad.exportacion.texto')}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{t('privacidad.exportacion.texto')}</Typography>
         </Box>
         <Button
           variant="contained"

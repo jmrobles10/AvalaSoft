@@ -77,11 +77,11 @@ export function ProveedorSso({ config, formulario, alCambiar, accionDeSecreto, s
           </Box>
         )}
         <Stack spacing={0.5}>
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          <Typography component="p" variant="subtitle2">
             {t('sso.proveedor.urlDeRetorno')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Box component="code" sx={{ flex: 1, minWidth: 0, px: 1, py: 0.5, borderRadius: (th) => `${String(th.radio.sm)}px`, bgcolor: 'superficie.nivel2', fontFamily: (th) => th.typography.mono.fontFamily, fontSize: 12, wordBreak: 'break-all' }}>
+            <Box component="code" sx={{ typography: 'caption', flex: 1, minWidth: 0, px: 1, py: 0.5, borderRadius: (th) => `${String(th.radio.sm)}px`, bgcolor: 'superficie.nivel2', fontFamily: (th) => th.typography.mono.fontFamily, wordBreak: 'break-all' }}>
               {config.urlDeRetorno}
             </Box>
             <Button size="small" variant="text" startIcon={<Copy size={14} aria-hidden />} onClick={copiar}>

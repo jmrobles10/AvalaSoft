@@ -86,7 +86,7 @@ export function EditorDeContactos({ contactos, onCambiar, roles, etiquetas, erro
 
   return (
     <Stack spacing={1.5}>
-      {contactos.length === 0 && <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{etiquetas.vacio}</Typography>}
+      {contactos.length === 0 && <Typography sx={{ color: 'text.secondary' }}>{etiquetas.vacio}</Typography>}
       {contactos.map((c, i) => {
         const e = errores[i] ?? {};
         return (

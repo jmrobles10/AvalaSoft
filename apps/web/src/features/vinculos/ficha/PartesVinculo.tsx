@@ -52,13 +52,13 @@ export function Encabezado({
       titulo={
         // «‹ Vínculos / Nombre» en una sola línea (miga de pan): el enlace de volver no gasta una línea propia.
         <Box component="span" sx={{ display: 'flex', alignItems: 'baseline', gap: 1, minWidth: 0 }}>
-          <Box component="span" sx={{ flex: 'none', fontSize: 14, fontWeight: 400, '& a': { mb: 0 } }}>
+          <Box component="span" sx={{ typography: 'body2', flex: 'none', '& a': { mb: 0 } }}>
             {antes}
           </Box>
-          <Box component="span" aria-hidden sx={{ flex: 'none', color: 'text.disabled', fontWeight: 400 }}>
+          <Box component="span" aria-hidden sx={{ flex: 'none', color: 'text.disabled' }}>
             /
           </Box>
-          <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', fontSize: 18 }}>
+          <Box component="span" sx={{ typography: 'h5', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {tercero.data?.nombre ?? (tercero.isPending ? <Skeleton width={280} sx={{ display: 'inline-block' }} /> : t('vinculos.terceroDesconocido'))}
           </Box>
           {/* NIT, tipo y estado en la misma línea del nombre: el encabezado fijo ocupa una sola fila y deja el alto a la ficha. */}
@@ -67,7 +67,7 @@ export function Encabezado({
             direction="row"
             spacing={1}
             useFlexGap
-            sx={{ flex: 'none', alignSelf: 'center', alignItems: 'center', ml: 1, fontSize: 13, fontWeight: 400, color: 'text.secondary', whiteSpace: 'nowrap' }}
+            sx={{ typography: 'body2', flex: 'none', alignSelf: 'center', alignItems: 'center', ml: 1, color: 'text.secondary', whiteSpace: 'nowrap' }}
           >
             {tercero.data && <Mono>{identificacionDe(tercero.data)}</Mono>}
             {tercero.data && <span aria-hidden>·</span>}
@@ -130,7 +130,7 @@ export function Encabezado({
                         <ListItemText
                           primary={t(`acciones.${d.accion}.boton`)}
                           secondary={t(`acciones.${d.accion}.resumen`)}
-                          slotProps={{ primary: { sx: { fontSize: 14 } }, secondary: { sx: { fontSize: 12, lineHeight: '16px', whiteSpace: 'normal' } } }}
+                          slotProps={{ secondary: { sx: { whiteSpace: 'normal' } } }}
                           sx={{ my: 0 }}
                         />
                       </MenuItem>
@@ -208,10 +208,10 @@ export function ReferenciasVinculo({ vinculo }: { vinculo: VinculoDto }) {
           <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse', '& th, & td': { height: 36, px: 1.5, textAlign: 'left', borderBottom: 1, borderColor: 'divider' }, '& tr:last-child td': { borderBottom: 0 } }}>
             <thead>
               <tr>
-                <Box component="th" scope="col" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+                <Box component="th" scope="col" sx={{ typography: 'caption', color: 'text.secondary' }}>
                   {t('vinculos.detalle.sistema')}
                 </Box>
-                <Box component="th" scope="col" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+                <Box component="th" scope="col" sx={{ typography: 'caption', color: 'text.secondary' }}>
                   {t('vinculos.detalle.referencia')}
                 </Box>
               </tr>

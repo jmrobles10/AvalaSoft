@@ -24,10 +24,10 @@ export function NombreTercero({ terceroId, conFicha = false }: { terceroId: stri
 
   const nombre = (
     <Box component="span" sx={{ display: 'inline-flex', alignItems: 'baseline', gap: 1, minWidth: 0, maxWidth: '100%' }}>
-      <Typography component="span" noWrap sx={{ fontWeight: 500 }}>
+      <Typography variant="subtitle2" component="span" noWrap>
         {data.nombre}
       </Typography>
-      <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+      <Typography variant="caption" component="span" sx={{ color: 'text.secondary', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
         {identificacionDe(data)}
       </Typography>
     </Box>

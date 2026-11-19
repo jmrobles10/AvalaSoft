@@ -69,17 +69,17 @@ export function SelectorSoporte({ definicion, soportes, retirados = [], onCambia
         {retirados.length > 0 && (
           <Alert severity="warning" sx={{ mb: 1.5 }}>
             {retirados.map((s) => (
-              <Typography key={`${s.documentoId}-${String(s.version)}`} sx={{ fontSize: 14 }}>
+              <Typography key={`${s.documentoId}-${String(s.version)}`}>
                 {t('ficha.soporte.retirado', { tipo: s.nombre ?? s.tipoDocumento ?? '', n: String(s.version) })}
               </Typography>
             ))}
-            <Typography sx={{ fontSize: 14 }}>{t('ficha.soporte.retiradoAyuda')}</Typography>
+            <Typography>{t('ficha.soporte.retiradoAyuda')}</Typography>
           </Alert>
         )}
         {boveda.isPending ? (
           <Skeleton variant="rounded" height={44} />
         ) : opciones.length === 0 ? (
-          <Typography sx={{ color: 'text.secondary', fontSize: 14, mb: 1 }}>{t('ficha.soporte.ninguno')}</Typography>
+          <Typography sx={{ color: 'text.secondary', mb: 1 }}>{t('ficha.soporte.ninguno')}</Typography>
         ) : (
           <FormGroup>
             {opciones.map((o) => (
@@ -101,7 +101,7 @@ export function SelectorSoporte({ definicion, soportes, retirados = [], onCambia
       <Button component={RouterLink} to={subir} variant="text" startIcon={<Upload size={18} aria-hidden />} sx={{ mt: 1 }}>
         {t('ficha.soporte.subir')}
       </Button>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('ficha.soporte.subirAyuda')}</Typography>
+      <Typography sx={{ color: 'text.secondary' }}>{t('ficha.soporte.subirAyuda')}</Typography>
     </SeccionPlana>
   );
 }

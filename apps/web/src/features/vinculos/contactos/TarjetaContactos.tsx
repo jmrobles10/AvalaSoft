@@ -36,18 +36,18 @@ export function TarjetaContactos({ vinculo }: { vinculo: Pick<VinculoDto, 'id' |
       }
     >
       {contactos.length === 0 ? (
-        <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('vinculos.contactos.vacio')}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{t('vinculos.contactos.vacio')}</Typography>
       ) : (
         <Stack component="ul" spacing={1} sx={{ p: 0, m: 0, listStyle: 'none' }}>
           {contactos.map((c) => (
             <Box component="li" key={`${c.correo}|${c.rol}`} sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0,1fr)', sm: '120px minmax(0,1fr)' }, columnGap: 2 }}>
-              <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '20px' }}>{t(`vinculos.contactos.roles.${c.rol}`, { defaultValue: c.rol })}</Typography>
+              <Typography sx={{ color: 'text.secondary' }}>{t(`vinculos.contactos.roles.${c.rol}`, { defaultValue: c.rol })}</Typography>
               <Box sx={{ minWidth: 0 }}>
-                <Typography sx={{ fontSize: 14, lineHeight: '20px' }}>
+                <Typography>
                   {c.nombre}
                   {c.cargo ? ` · ${c.cargo}` : ''}
                 </Typography>
-                <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', overflowWrap: 'anywhere' }}>
+                <Typography sx={{ color: 'text.secondary', overflowWrap: 'anywhere' }}>
                   {c.correo}
                   {c.telefono ? ` · ${c.telefono}` : ''}
                 </Typography>

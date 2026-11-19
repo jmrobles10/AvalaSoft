@@ -72,6 +72,36 @@ export default tseslint.config(
     rules: { 'react-refresh/only-export-components': 'off' },
   },
   {
+    // La tipografía sale del tema (escala de Sinco: títulos 16, subtítulos 14, texto 13, auxiliares 11): ni las pantallas ni los componentes fijan
+    // `fontSize` ni `fontWeight` con un literal (número o texto como «12px»). Se elige la variante (`<Typography variant="body2|caption|subtitle2|h6…">`,
+    // o `sx={{ typography: 'caption' }}` donde no hay un Typography). La escala vive en `packages/ui/src/tokens.ts` y se aplica en `packages/ui/src/tema.ts`.
+    files: ['apps/*/src/**/*.{ts,tsx}', 'packages/*/src/**/*.{ts,tsx}'],
+    ignores: [
+      'packages/ui/src/tema.ts',
+      'packages/ui/src/tokens.ts',
+      '**/*.test.{ts,tsx}',
+      '**/pruebas/**',
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        ...['fontSize', 'fontWeight'].flatMap((nombre) => {
+          const clave = `:matches([key.name='${nombre}'], [key.value='${nombre}'])`;
+          // `fontSize` admite palabras sin dígitos (`inherit`); `fontWeight`, ningún literal (tampoco `bold`).
+          const literal = nombre === 'fontSize' ? 'Literal[raw=/\\d/]' : 'Literal';
+          const mensaje = `Tipografía fuera del tema: no fijes ${nombre} con un literal. Usa una variante de Typography (variant="body2", "caption", "subtitle2", "h6"…) o sx={{ typography: '…' }}; la escala está en packages/ui/src/tokens.ts.`;
+          return [
+            `Property${clave} > ${literal}`,
+            `Property${clave} > ObjectExpression > Property > ${literal}`,
+            `Property${clave} > ConditionalExpression > ${literal}`,
+            `JSXAttribute[name.name='${nombre}'] > ${literal}`,
+            `JSXAttribute[name.name='${nombre}'] > JSXExpressionContainer > ${literal}`,
+          ].map((selector) => ({ selector, message: mensaje }));
+        }),
+      ],
+    },
+  },
+  {
     files: ['**/*.test.{ts,tsx}', '**/pruebas/**'],
     rules: {
       'no-restricted-imports': 'off',

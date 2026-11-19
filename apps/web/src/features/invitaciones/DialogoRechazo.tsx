@@ -42,7 +42,7 @@ export function DialogoRechazo({
       <FormularioDeDialogo onSubmit={enviar}>
         <DialogTitle id="titulo-rechazo">
           {tipo === 'lote' ? t('invitaciones.rechazo.tituloLote') : t('invitaciones.rechazo.tituloInvitacion')}
-          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
             {subtitulo}
           </Typography>
         </DialogTitle>

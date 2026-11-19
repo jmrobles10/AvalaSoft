@@ -15,19 +15,19 @@ export function ConsultasAnteriores({ empresaId, expedienteId, anteriores, puede
   const mostrar = useAvisos((s) => s.mostrar);
   const descarga = useDescargarEvidencia(empresaId);
   return (
-    <Box component="details" sx={{ '& > summary': { cursor: 'pointer', color: 'text.secondary', fontSize: 12 } }}>
+    <Box component="details" sx={{ '& > summary': { typography: 'caption', cursor: 'pointer', color: 'text.secondary' } }}>
       <summary>{t('cumplimiento.panel.anteriores', { count: anteriores.length })}</summary>
       <Stack component="ul" spacing={0.75} sx={{ listStyle: 'none', p: 0, m: 0, mt: 1 }}>
         {anteriores.map((a) => (
           <Stack key={`${a.referenciaExterna}-${a.fecha}`} component="li" direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-            <Typography component="span" sx={{ fontSize: 13 }}>
+            <Typography component="span">
               {formatearFecha(a.fecha)}
             </Typography>
-            <Typography component="span" sx={{ fontSize: 13 }}>
+            <Typography component="span">
               {a.proveedor}
             </Typography>
             {fuenteManual(a.proveedor) !== null && <Chip size="small" variant="outlined" label={t('cumplimiento.panel.manual')} />}
-            <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+            <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
               {t('cumplimiento.panel.anteriorCoincidencias', { count: a.coincidencias })}
             </Typography>
             {puedeDescargar && a.conEvidencia && (

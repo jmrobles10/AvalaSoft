@@ -16,7 +16,7 @@ import { HORAS_DE_SESION, minutosDeInactividad, sinCambios } from './modelo';
 function Modo({ marcado, titulo, ayuda, onCambiar }: { marcado: boolean; titulo: string; ayuda: string; onCambiar: (valor: boolean) => void }) {
   return (
     <Box>
-      <FormControlLabel control={<Checkbox checked={marcado} onChange={(e) => onCambiar(e.target.checked)} />} label={<Typography sx={{ fontWeight: 600 }}>{titulo}</Typography>} />
+      <FormControlLabel control={<Checkbox checked={marcado} onChange={(e) => onCambiar(e.target.checked)} />} label={<Typography variant="subtitle2" component="p">{titulo}</Typography>} />
       <Typography variant="body2" sx={{ color: 'text.secondary', ml: 4 }}>
         {ayuda}
       </Typography>

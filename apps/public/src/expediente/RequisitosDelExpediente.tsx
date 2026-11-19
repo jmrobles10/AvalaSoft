@@ -19,13 +19,13 @@ export function RequisitosDelExpediente({ expediente, vinculoId, soloLectura = f
 
   return (
     <Box component="section" aria-labelledby="titulo-documentos" sx={{ mb: 2 }}>
-      <Typography id="titulo-documentos" component="h2" variant="h4" sx={{ mb: 1 }}>
+      <Typography id="titulo-documentos" component="h2" variant="h6" sx={{ mb: 1 }}>
         {t('expediente.documentos.titulo', { empresa })}
       </Typography>
       <Stack spacing={1.5}>
         {GRUPOS.filter((g) => grupos[g].length > 0).map((grupo) => (
           <Box key={grupo}>
-            <Typography component="h3" sx={{ fontWeight: 600, fontSize: 11, lineHeight: '16px', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'text.secondary', mb: 0.75 }}>
+            <Typography variant="overline" component="h3" sx={{ color: 'text.secondary', mb: 0.75 }}>
               {t(`expediente.documentos.grupos.${grupo}`, { empresa })}
             </Typography>
             <Box

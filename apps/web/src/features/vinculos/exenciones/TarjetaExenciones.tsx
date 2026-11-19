@@ -62,7 +62,7 @@ export function TarjetaExenciones({ vinculo, empresaId }: { vinculo: VinculoDto;
                   <Box sx={{ minWidth: 0 }}>
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
                       <Chip size="small" color={COLOR_ESTADO[e.estado]} variant={e.estado === 'Vigente' ? 'filled' : 'outlined'} label={t(`exenciones.estados.${e.estado}`)} />
-                      <Typography component="span" variant="body2" sx={{ fontWeight: 600 }}>
+                      <Typography component="span" variant="subtitle2">
                         {alcanceDe(e, t)}
                       </Typography>
                     </Stack>

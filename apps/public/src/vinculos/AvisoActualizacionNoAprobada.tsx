@@ -23,7 +23,7 @@ export function AvisoActualizacionNoAprobada({
     <Alert severity="warning" sx={{ mt: 1.5 }}>
       <AlertTitle>{t('actualizacionNoAprobada.titulo')}</AlertTitle>
       {!breve && (
-        <Typography sx={{ fontSize: 14 }}>
+        <Typography>
           {t(`actualizacionNoAprobada.${aviso.resultado === 'Anulado' ? 'Anulado' : 'Rechazado'}`, {
             empresa,
             cuando: aviso.fecha ? t('actualizacionNoAprobada.el', { fecha: formatearFecha(aviso.fecha) }) : '',
@@ -32,17 +32,17 @@ export function AvisoActualizacionNoAprobada({
       )}
       {aviso.motivos.length > 0 && (
         <Box sx={{ mt: 0.5 }}>
-          <Typography sx={{ fontSize: 14, fontWeight: 600 }}>{t('actualizacionNoAprobada.motivos')}</Typography>
+          <Typography variant="subtitle1" component="p">{t('actualizacionNoAprobada.motivos')}</Typography>
           <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
             {aviso.motivos.map((m) => (
               <li key={m.codigo}>
-                <Typography sx={{ fontSize: 14 }}>{m.texto}</Typography>
+                <Typography>{m.texto}</Typography>
               </li>
             ))}
           </Box>
         </Box>
       )}
-      {!breve && <Typography sx={{ fontSize: 14, mt: 0.5 }}>{t('actualizacionNoAprobada.sigueVigente', { empresa })}</Typography>}
+      {!breve && <Typography sx={{ mt: 0.5 }}>{t('actualizacionNoAprobada.sigueVigente', { empresa })}</Typography>}
     </Alert>
   );
 }

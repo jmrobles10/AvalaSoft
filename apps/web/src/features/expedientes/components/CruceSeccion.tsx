@@ -71,7 +71,7 @@ export function TablaCruce({ cruce }: { cruce: CruceDeSeccionDto }) {
               const resultado = esResultadoCruce(campo.resultado) ? t(`cruce.resultados.${campo.resultado}`) : campo.resultado;
               return (
                 <TableRow key={`${campo.campo}-${String(i)}`} data-resultado={campo.resultado} aria-label={`${campo.etiqueta}: ${resultado}`}>
-                  <TableCell sx={{ borderLeft: 3, borderLeftColor: `estado.${color}.borde`, fontWeight: 500 }}>
+                  <TableCell sx={{ borderLeft: 3, borderLeftColor: `estado.${color}.borde`, typography: 'subtitle2' }}>
                     {campo.etiqueta}
                     {campo.critico && <Chip size="small" variant="outlined" label={t('cruce.critico')} sx={{ ml: 1 }} />}
                   </TableCell>

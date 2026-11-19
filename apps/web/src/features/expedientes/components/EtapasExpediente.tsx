@@ -33,7 +33,7 @@ export interface EtapasExpedienteProps {
 export function EtapasExpediente({ expediente, contexto, nombres, motivos, onAccion }: EtapasExpedienteProps) {
   const { t } = useTranslation();
   return (
-    <Tarjeta titulo={t('expedientes.etapas.titulo')} acciones={<Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('expedientes.etapas.paralelo')}</Typography>}>
+    <Tarjeta titulo={t('expedientes.etapas.titulo')} acciones={<Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('expedientes.etapas.paralelo')}</Typography>}>
       <Stack spacing={2}>
         {expediente.etapas.map((etapa) => (
           <Box key={etapa.orden} component="section" aria-label={t('expedientes.etapas.etapa', { orden: String(etapa.orden) })}>
@@ -41,7 +41,7 @@ export function EtapasExpediente({ expediente, contexto, nombres, motivos, onAcc
               <Typography variant="overline" component="h3" sx={{ color: 'text.secondary' }}>
                 {t('expedientes.etapas.etapa', { orden: String(etapa.orden) })}
               </Typography>
-              <Typography component="span" sx={{ fontSize: 12, color: etapa.estado === 'Activa' ? 'acento.main' : 'text.secondary' }}>
+              <Typography variant="caption" component="span" sx={{ color: etapa.estado === 'Activa' ? 'acento.main' : 'text.secondary' }}>
                 · {t(`expedientes.etapas.estadoEtapa.${etapa.estado}`)}
               </Typography>
               {puedeReabrirEtapa(expediente, etapa, contexto(null).scopes, contexto(null).vinculoBloqueado) && (
@@ -107,7 +107,7 @@ function TarjetaArea({
     >
       <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Box sx={{ minWidth: 0 }}>
-          <Typography component="h4" sx={{ fontWeight: 600, fontSize: 14, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" component="h4">
             {area.nombre}
           </Typography>
           <Stack direction="row" spacing={0.5} useFlexGap sx={{ flexWrap: 'wrap', mt: 0.5 }}>
@@ -147,18 +147,18 @@ function TarjetaArea({
       <Stack direction="row" spacing={1.5} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 1.25 }}>
         <Aprobaciones aprobaciones={area.aprobaciones} requeridas={area.aprobadoresRequeridos} />
         {porDocumento && (area.requisitosPorDecidir ?? 0) > 0 && area.estado !== 'Esperando' && (
-          <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
             {t('expedientes.requisitos.porDecidir', { count: area.requisitosPorDecidir ?? 0 })}
           </Typography>
         )}
         {!porDocumento && area.aprobacionesFaltantes > 0 && area.estado !== 'Esperando' && (
-          <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
             {t('expedientes.etapas.faltan', { count: area.aprobacionesFaltantes })}
           </Typography>
         )}
       </Stack>
       {pendientes.length > 0 && area.estado === 'Pendiente' && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5 }}>
           {t('expedientes.etapas.porPronunciarse', { nombres: [...new Set(pendientes)].join(', ') })}
         </Typography>
       )}
@@ -173,7 +173,7 @@ function TarjetaArea({
             </Button>
           )}
           <AccionesDecisionArea area={area} puedeDecidir={decide} puedeRechazar={rechaza} onAccion={onAccion} />
-          {textoBloqueo && <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{textoBloqueo}</Typography>}
+          {textoBloqueo && <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{textoBloqueo}</Typography>}
         </Stack>
       )}
     </Box>
@@ -198,9 +198,9 @@ function Veredictos({ veredictos, nombre, motivos }: { veredictos: readonly Vere
           <Box component="li" key={v.id} sx={{ display: 'flex', gap: 1, opacity: inactivo ? 0.65 : 1 }}>
             <AvatarActor tipo={v.origen === 'Sistema' ? 'sistema' : 'persona'} nombre={quien} tamano={24} />
             <Box sx={{ minWidth: 0 }}>
-              <Typography sx={{ fontSize: 13, lineHeight: '18px', textDecoration: v.anulado || v.revertido ? 'line-through' : 'none' }}>
+              <Typography sx={{ textDecoration: v.anulado || v.revertido ? 'line-through' : 'none' }}>
                 {accion}
-                <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+                <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
                   {' · '}
                   {formatearFecha(v.fecha)}
                   {v.superado ? ` · ${t('expedientes.veredictos.superado')}` : ''}
@@ -216,7 +216,7 @@ function Veredictos({ veredictos, nombre, motivos }: { veredictos: readonly Vere
                 </Stack>
               )}
               {(v.observacion ?? v.justificacion) && (
-                <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5, fontStyle: 'italic', whiteSpace: 'pre-wrap' }}>
+                <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5, fontStyle: 'italic', whiteSpace: 'pre-wrap' }}>
                   “{v.observacion ?? v.justificacion}”
                 </Typography>
               )}

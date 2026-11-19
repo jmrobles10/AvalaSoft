@@ -78,7 +78,7 @@ export function PaginaCuestionarios() {
                 >
                   <TableCell>
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                      <Typography component="span" sx={{ fontWeight: 500 }}>
+                      <Typography variant="subtitle2" component="span">
                         {c.nombre}
                       </Typography>
                       <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>

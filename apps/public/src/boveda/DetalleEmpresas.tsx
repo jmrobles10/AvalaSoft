@@ -18,7 +18,7 @@ export function DetalleEmpresas({ id, grupos, referencia }: { id: string; grupos
         const visibles = buscarEnGrupos(grupos, busqueda);
         if (visibles.length === 0) {
           return (
-            <Typography variant="caption" component="p" sx={{ m: 0, color: 'text.secondary', fontWeight: 400 }}>
+            <Typography variant="caption" component="p" sx={{ m: 0, color: 'text.secondary' }}>
               {t('boveda.detalle.sinCoincidencias', { texto: busqueda.trim() })}
             </Typography>
           );
@@ -30,8 +30,8 @@ export function DetalleEmpresas({ id, grupos, referencia }: { id: string; grupos
             </Typography>
             <Box component="ul" sx={{ p: 0, m: 0, listStyle: 'none' }}>
               {g.empresas.map((c) => (
-                <Box key={c.vinculoId} component="li" sx={{ py: 0.25, fontSize: 13, lineHeight: '18px', overflowWrap: 'anywhere' }}>
-                  <Box component="span" sx={{ fontWeight: 500 }}>
+                <Box key={c.vinculoId} component="li" sx={{ typography: 'body2', py: 0.25, overflowWrap: 'anywhere' }}>
+                  <Box component="span" sx={{ typography: 'subtitle2' }}>
                     {c.empresa.nombre}
                   </Box>
                   <Box component="span" sx={{ color: 'text.secondary' }}>{` · ${detalleComparticion(c, t, referencia)}`}</Box>

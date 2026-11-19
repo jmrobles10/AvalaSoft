@@ -37,7 +37,7 @@ function FilaDominio({ dominio }: { dominio: DominioDeSsoDto }) {
   return (
     <Box sx={{ py: 1, borderTop: 1, borderColor: 'divider', '&:first-of-type': { borderTop: 0 } }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: 1 }}>
-        <Typography sx={{ fontWeight: 600, flex: '1 1 160px', minWidth: 0, overflowWrap: 'anywhere' }}>
+        <Typography variant="subtitle2" component="p" sx={{ flex: '1 1 160px', minWidth: 0, overflowWrap: 'anywhere' }}>
           @{dominio.dominio}
         </Typography>
         {dominio.verificado ? (
@@ -60,7 +60,7 @@ function FilaDominio({ dominio }: { dominio: DominioDeSsoDto }) {
             {t('sso.dominios.instruccion', { ruta: `https://${dominio.dominio}/.well-known/validalo-verificacion.txt` })}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Box component="code" sx={{ flex: 1, minWidth: 0, px: 1, py: 0.5, borderRadius: (th) => `${String(th.radio.sm)}px`, bgcolor: 'superficie.nivel2', fontFamily: (th) => th.typography.mono.fontFamily, fontSize: 12, wordBreak: 'break-all' }}>
+            <Box component="code" sx={{ typography: 'caption', flex: 1, minWidth: 0, px: 1, py: 0.5, borderRadius: (th) => `${String(th.radio.sm)}px`, bgcolor: 'superficie.nivel2', fontFamily: (th) => th.typography.mono.fontFamily, wordBreak: 'break-all' }}>
               {dominio.token}
             </Box>
             <Button size="small" variant="text" startIcon={<Copy size={14} aria-hidden />} onClick={copiar}>

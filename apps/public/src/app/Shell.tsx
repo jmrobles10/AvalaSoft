@@ -52,9 +52,7 @@ function PildoraDeSeccion({ ruta, icono: Icono, activa, children }: { ruta: stri
         height: 36,
         px: 1.5,
         borderRadius: '10px',
-        fontSize: 14,
-        lineHeight: '20px',
-        fontWeight: activa ? 500 : 400,
+        typography: activa ? 'subtitle2' : 'body2',
         whiteSpace: 'nowrap',
         color: activa ? 'text.primary' : 'text.secondary',
         bgcolor: activa ? t.palette.background.paper : 'transparent',
@@ -77,6 +75,7 @@ function AccionDeBarra({ icono: Icono, etiqueta, onClick }: { icono: LucideIcon;
       onClick={onClick}
       aria-label={etiqueta}
       sx={(t: Theme) => ({
+        typography: 'body2',
         display: 'inline-flex',
         alignItems: 'center',
         gap: 1,
@@ -84,8 +83,6 @@ function AccionDeBarra({ icono: Icono, etiqueta, onClick }: { icono: LucideIcon;
         height: 36,
         px: 1.5,
         borderRadius: '10px',
-        fontSize: 14,
-        lineHeight: '20px',
         color: 'text.secondary',
         '&:hover': { bgcolor: t.palette.superficie.nivel2, color: 'text.primary' },
       })}
@@ -149,7 +146,7 @@ function ShellNormal() {
           <Logo tamano={22} titulo={t('comun.marca')} />
           {/* Con sesión las secciones de la barra ya dicen dónde está la persona: el rótulo solo acompaña al logotipo en las pantallas de entrada y verificación. */}
           {!activa && (
-            <Typography noWrap sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '16px', borderLeft: 1, borderColor: 'divider', pl: 1.5, minWidth: 0 }}>
+            <Typography noWrap sx={{ color: 'text.secondary', borderLeft: 1, borderColor: 'divider', pl: 1.5, minWidth: 0 }}>
               {verificando ? t('verificacion.marca') : t('comun.misDocumentos')}
             </Typography>
           )}
@@ -188,7 +185,7 @@ function ShellNormal() {
       </Box>
 
       <Box component="footer" sx={{ display: activa ? { xs: 'none', md: 'block' } : 'block' }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 0.5, sm: 1 }} sx={{ alignItems: 'center', justifyContent: 'center', py: 2, px: 2, color: 'text.secondary', fontSize: 13, textAlign: 'center' }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 0.5, sm: 1 }} sx={{ typography: 'body2', alignItems: 'center', justifyContent: 'center', py: 2, px: 2, color: 'text.secondary', textAlign: 'center' }}>
           <span>{t('comun.pie')}</span>
           <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
             <Logo variante="icono" tamano={14} decorativo />

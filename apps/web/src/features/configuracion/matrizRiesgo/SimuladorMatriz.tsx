@@ -12,11 +12,11 @@ export function SimuladorMatriz({ borrador }: { borrador: BorradorMatriz }) {
   const factores = borrador.factores.filter((f) => f.opciones.length > 0);
   const resultado = calcularEjemplo(borrador, elecciones);
 
-  if (!resultado) return <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('matrizRiesgo.prueba.sinFactores')}</Typography>;
+  if (!resultado) return <Typography sx={{ color: 'text.secondary' }}>{t('matrizRiesgo.prueba.sinFactores')}</Typography>;
 
   return (
     <Stack spacing={2}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('matrizRiesgo.prueba.ayuda')}</Typography>
+      <Typography sx={{ color: 'text.secondary' }}>{t('matrizRiesgo.prueba.ayuda')}</Typography>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
         {factores.map((f) => (
           <TextField
@@ -43,7 +43,7 @@ export function SimuladorMatriz({ borrador }: { borrador: BorradorMatriz }) {
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             {t('matrizRiesgo.prueba.puntaje')}
           </Typography>
-          <Typography sx={{ fontSize: 20, fontWeight: 600 }}>{formatearPuntaje(resultado.puntaje)}</Typography>
+          <Typography variant="h4" component="p">{formatearPuntaje(resultado.puntaje)}</Typography>
         </Stack>
         <Stack spacing={0.5} sx={{ alignItems: 'flex-start' }}>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -55,11 +55,11 @@ export function SimuladorMatriz({ borrador }: { borrador: BorradorMatriz }) {
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             {t('matrizRiesgo.prueba.debida')}
           </Typography>
-          <Typography sx={{ fontSize: 14 }}>{t(`cumplimiento.debida.${resultado.debidaDiligencia}`)}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('matrizRiesgo.prueba.revision', { meses: String(resultado.mesesRevision) })}</Typography>
+          <Typography>{t(`cumplimiento.debida.${resultado.debidaDiligencia}`)}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('matrizRiesgo.prueba.revision', { meses: String(resultado.mesesRevision) })}</Typography>
         </Stack>
         {resultado.forzadoPor && (
-          <Typography sx={{ gridColumn: '1 / -1', color: 'text.secondary', fontSize: 12 }}>
+          <Typography variant="caption" component="p" sx={{ gridColumn: '1 / -1', color: 'text.secondary' }}>
             {t('matrizRiesgo.prueba.piso', { causa: resultado.forzadoPor, nivel: t(`cumplimiento.riesgos.${claveRiesgo(resultado.nivelPorPuntaje)}`) })}
           </Typography>
         )}

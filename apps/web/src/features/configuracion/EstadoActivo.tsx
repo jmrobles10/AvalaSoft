@@ -8,7 +8,7 @@ import { Ban, CircleCheck, type LucideIcon } from 'lucide-react';
 export function EstadoActivo({ activo, texto, icono }: { activo: boolean; texto: string; icono?: LucideIcon }) {
   const Icono = icono ?? (activo ? CircleCheck : Ban);
   return (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 13, whiteSpace: 'nowrap', '& svg': { color: activo ? 'estado.exito.texto' : 'text.secondary' } }}>
+    <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75, whiteSpace: 'nowrap', '& svg': { color: activo ? 'estado.exito.texto' : 'text.secondary' } }}>
       <Icono size={14} strokeWidth={1.75} aria-hidden />
       {texto}
     </Box>

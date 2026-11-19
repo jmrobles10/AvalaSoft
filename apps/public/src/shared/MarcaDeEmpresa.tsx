@@ -18,13 +18,13 @@ export function MarcaDeEmpresa({ empresa, children }: { empresa: EmpresaPublicaD
     <>
       <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', mb: 1.5 }}>
         <LogoEmpresa nombre={empresa.nombre} logoUrl={empresa.logoUrl} tamano={32} />
-        <Typography component="span" sx={{ fontSize: 14, color: 'text.secondary' }}>
+        <Typography component="span" sx={{ color: 'text.secondary' }}>
           {empresa.nombre}
         </Typography>
       </Stack>
       {children}
       {empresa.contactoSoporte && (
-        <Box component="p" sx={{ m: 0, mt: 3, fontSize: 13, color: 'text.secondary', textAlign: 'center' }}>
+        <Box component="p" sx={{ typography: 'body2', m: 0, mt: 3, color: 'text.secondary', textAlign: 'center' }}>
           {t('marca.soporte', { empresa: empresa.nombre })}{' '}
           <Link href={`mailto:${empresa.contactoSoporte}`}>{empresa.contactoSoporte}</Link>
         </Box>

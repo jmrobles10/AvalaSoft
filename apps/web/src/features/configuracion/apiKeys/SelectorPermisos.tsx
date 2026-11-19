@@ -20,7 +20,7 @@ export function SelectorPermisos({ valor, onCambiar, excluir = [], etiqueta, ayu
   const grupos = GRUPOS_PERMISOS.map(({ grupo, claves }) => ({ grupo, claves: claves.filter((c) => !excluir.includes(c)) })).filter((g) => g.claves.length > 0);
   return (
     <Box component="fieldset" disabled={soloLectura} sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-      <Typography component="legend" sx={{ fontSize: 14, fontWeight: 600 }}>
+      <Typography variant="subtitle1" component="legend">
         {etiqueta ?? t('apiKeys.campos.permisos')}
       </Typography>
       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
@@ -32,7 +32,7 @@ export function SelectorPermisos({ valor, onCambiar, excluir = [], etiqueta, ayu
           return (
             <Box key={grupo} sx={{ px: 1.5, py: 0.75, borderTop: i === 0 ? 0 : 1, borderColor: 'divider' }}>
               <FormControlLabel
-                sx={{ mx: 0, '& .MuiFormControlLabel-label': { fontSize: 13, fontWeight: 600 } }}
+                sx={{ mx: 0, '& .MuiFormControlLabel-label': { typography: 'subtitle2' } }}
                 control={
                   <Checkbox
                     size="small"

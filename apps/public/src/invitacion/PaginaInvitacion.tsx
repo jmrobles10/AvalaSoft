@@ -122,7 +122,7 @@ export function PaginaInvitacion() {
     <Box component="form" onSubmit={enviar} noValidate>
       <CabeceraPagina titulo={t('invitacion.titulo', { empresa })} sub={t('invitacion.sub', { empresa, tipo: invitacion.vinculo.tipoVinculo.nombre.toLowerCase() })} />
 
-      <Typography component="h2" sx={{ fontWeight: 600, fontSize: 13, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'text.secondary', mb: 1 }}>
+      <Typography variant="overline" component="h2" sx={{ color: 'text.secondary', mb: 1 }}>
         {t('invitacion.textos')}
       </Typography>
       <Stack spacing={1.5} sx={{ mb: 2.5 }}>
@@ -130,16 +130,16 @@ export function PaginaInvitacion() {
           const clave = claveTexto(texto);
           return (
             <Card key={clave} component="section" aria-labelledby={`texto-${clave}`} sx={{ p: 2 }}>
-              <Typography id={`texto-${clave}`} component="h3" sx={{ fontWeight: 600, fontSize: 16 }}>
+              <Typography variant="h6" id={`texto-${clave}`} component="h3">
                 {t(`invitacion.tipos.${texto.tipo}`, { empresa })}
               </Typography>
-              <Typography sx={{ color: 'text.secondary', fontSize: 13, mb: 1 }}>
+              <Typography sx={{ color: 'text.secondary', mb: 1 }}>
                 {t('invitacion.versionPublicada', { version: String(texto.textoVersion), fecha: formatearFecha(texto.publicadoEn) })}
               </Typography>
               <Box
                 tabIndex={0}
                 aria-label={t(`invitacion.tipos.${texto.tipo}`, { empresa })}
-                sx={{ maxHeight: 220, overflowY: 'auto', p: 1.5, borderRadius: 1, bgcolor: 'superficie.nivel2', fontSize: 14, lineHeight: '21px', whiteSpace: 'pre-wrap' }}
+                sx={{ typography: 'body2', maxHeight: 220, overflowY: 'auto', p: 1.5, borderRadius: 1, bgcolor: 'superficie.nivel2', whiteSpace: 'pre-wrap' }}
               >
                 {texto.contenido}
               </Box>
@@ -157,7 +157,7 @@ export function PaginaInvitacion() {
         {fallo && fallo !== 'otro' && <Alert severity={fallo === 'ya-aceptada' ? 'info' : 'warning'}>{t(`invitacion.fallos.${fallo}`)}</Alert>}
         {fallo === 'otro' && <Alert severity="error">{mensajeDeError(aceptacion.error, t)}</Alert>}
         {intentado && !listo && <Alert severity="info">{t('invitacion.marcaTodos')}</Alert>}
-        <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
+        <Typography sx={{ color: 'text.secondary' }}>
           {t('invitacion.ayudaAceptar', { empresa })}
         </Typography>
         {aislada && <Alert severity="info">{t('accesoAislado.aviso.enInvitacion', { empresa })}</Alert>}

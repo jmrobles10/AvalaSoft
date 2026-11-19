@@ -66,9 +66,9 @@ export function LineaDeTiempo({ eventos, zonaHoraria = ZONA_HORARIA_POR_DEFECTO,
     <Stack spacing={2.5}>
       {grupos.map((grupo) => (
         <Box component="section" key={grupo.clave} aria-label={grupo.etiqueta}>
-          <Typography
+          <Typography variant="caption"
             component="h3"
-            sx={{ mb: 1, color: 'text.secondary', fontSize: 12, lineHeight: '16px', fontWeight: 600, letterSpacing: '0.04em', fontVariantNumeric: 'tabular-nums' }}
+            sx={{ mb: 1, color: 'text.secondary', letterSpacing: '0.04em', fontVariantNumeric: 'tabular-nums' }}
           >
             {grupo.etiqueta}
           </Typography>
@@ -91,7 +91,7 @@ export function LineaDeTiempo({ eventos, zonaHoraria = ZONA_HORARIA_POR_DEFECTO,
                   <AvatarActor tipo={evento.actor.tipo} nombre={evento.actor.nombre} />
                 </Box>
                 <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{evento.titulo}</Typography>
+                  <Typography variant="subtitle2" component="p">{evento.titulo}</Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }} component="p">
                     {evento.actor.nombre}
                     {evento.sistema && (
@@ -123,7 +123,7 @@ export function LineaDeTiempo({ eventos, zonaHoraria = ZONA_HORARIA_POR_DEFECTO,
                   {evento.motivo && (
                     <Box
                       component="blockquote"
-                      sx={{ m: 0, px: 1.25, py: 0.75, borderRadius: (t) => `${String(t.radio.sm)}px`, bgcolor: 'superficie.nivel2', fontSize: 13, lineHeight: '18px' }}
+                      sx={{ typography: 'body2', m: 0, px: 1.25, py: 0.75, borderRadius: (t) => `${String(t.radio.sm)}px`, bgcolor: 'superficie.nivel2' }}
                     >
                       {evento.motivo}
                     </Box>

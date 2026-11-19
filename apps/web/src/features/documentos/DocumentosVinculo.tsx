@@ -48,14 +48,14 @@ export function DocumentosVinculo({ vinculo }: { vinculo: VinculoDto }) {
               <Stack component="li" key={documento.documentoId} direction="row" spacing={1.25} sx={{ alignItems: 'center', py: 0.5, minHeight: 44 }}>
                 <FileText size={18} strokeWidth={1.75} aria-hidden style={{ flex: 'none', opacity: 0.7 }} />
                 <Stack sx={{ minWidth: 0, flex: 1 }}>
-                  <Typography sx={{ fontWeight: 500 }} noWrap>
+                  <Typography variant="subtitle2" component="p" noWrap>
                     {documento.tipo.nombre}
                   </Typography>
                   {version && (
-                    <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                    <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
                       {t('documentos.version', { n: String(version.n), fecha: formatearFecha(version.cargadaEn) })}
                       {' · '}
-                      <Typography component="span" variant="mono" title={version.sha256} sx={{ fontSize: 12 }}>
+                      <Typography component="span" variant="mono" title={version.sha256}>
                         {t('documentos.hash', { hash: hashCorto(version.sha256) })}
                       </Typography>
                     </Typography>

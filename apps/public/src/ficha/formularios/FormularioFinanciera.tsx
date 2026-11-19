@@ -58,15 +58,15 @@ export function FormularioFinanciera({ datos, onCambiar, mensaje, deshabilitado,
         ))}
       </Rejilla>
       <Paper variant="outlined" role="status" aria-label={t('ficha.financiera.cuadreTitulo')} sx={{ p: 1.5, border: 0, bgcolor: 'superficie.nivel2' }}>
-        <Typography sx={{ fontWeight: 500, fontSize: 14 }}>{t('ficha.financiera.cuadreTitulo')}</Typography>
+        <Typography variant="subtitle1" component="p">{t('ficha.financiera.cuadreTitulo')}</Typography>
         {balance ? (
-          <Typography sx={{ fontSize: 14, color: balance.cuadra ? 'success.main' : 'warning.main' }}>
+          <Typography sx={{ color: balance.cuadra ? 'success.main' : 'warning.main' }}>
             {t('ficha.financiera.cuadre', { activos: formatearPesos(datos.activos ?? 0), suma: formatearPesos(balance.suma) })}
             {' · '}
             {balance.diferencia === 0 || balance.cuadra ? t('ficha.financiera.cuadra') : t('ficha.financiera.noCuadra', { diferencia: formatearPesos(Math.abs(balance.diferencia)) })}
           </Typography>
         ) : (
-          <Typography sx={{ fontSize: 14, color: 'text.secondary' }}>{t('ficha.financiera.cuadreIncompleto')}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{t('ficha.financiera.cuadreIncompleto')}</Typography>
         )}
       </Paper>
       <CampoSiNo

@@ -17,7 +17,7 @@ recorrido(
     actor: 'Administrador de empresa',
     titulo: 'Consulta el estado de los expedientes y sus tiempos',
     resumen:
-      'La administradora de Constructora Sur abre el informe de estado de expedientes: ve cada expediente con su folio y cuánto tardó cada área en decidir. Filtra por estado y baja el resultado en Excel con los mismos filtros.',
+      'La administradora de Constructora Sur abre el informe de estado de expedientes: ve cada expediente con su código y cuánto tardó cada área en decidir. Filtra por estado y baja el resultado en Excel con los mismos filtros.',
     precondiciones: [
       'Un grupo con Constructora Sur y su área Revisión con Sofía como miembro; el certificado de seguridad y salud en el trabajo es requisito del flujo de proveedor.',
       'Un proveedor cuyo expediente ya fue aprobado por Revisión, para que el informe muestre tiempos reales.',
@@ -45,7 +45,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre el informe de estado de expedientes',
       explicacion:
-        'Informes muestra un expediente por fila, con su folio, el tercero, el estado y cuántos de sus requisitos están aprobados («2 de 2»). ' +
+        'Informes muestra un expediente por fila, con su código (columna «Expediente»), el tercero, el estado y cuántos de sus requisitos están aprobados («2 de 2»). ' +
         'Las pestañas de arriba llevan a los terceros y vínculos y al plazo de revisión. Haz clic en una fila para llegar al expediente.',
       resaltar: fila,
       configuracion: {

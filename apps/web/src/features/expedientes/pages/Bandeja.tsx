@@ -99,12 +99,12 @@ export function Bandeja() {
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
             <ChipEstadoArea estado={f.estadoArea} desde={f.desde} />
             {f.estadoExpediente === 'Observado' && f.estadoArea !== 'Observada' && (
-              <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, whiteSpace: 'nowrap' }}>
+              <Typography variant="caption" component="span" sx={{ color: 'text.secondary', whiteSpace: 'nowrap' }}>
                 {t('bandeja.devuelto')}
               </Typography>
             )}
             {f.desaprobado && (
-              <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, whiteSpace: 'nowrap' }}>
+              <Typography variant="caption" component="span" sx={{ color: 'text.secondary', whiteSpace: 'nowrap' }}>
                 {t('bandeja.reabierto')}
               </Typography>
             )}

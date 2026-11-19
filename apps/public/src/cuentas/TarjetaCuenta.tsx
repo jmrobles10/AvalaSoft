@@ -26,13 +26,13 @@ export function TarjetaCuenta({ cuenta }: { cuenta: CuentaBancariaPublicaDto }) 
           <Landmark size={17} strokeWidth={1.75} />
         </Box>
         <Box sx={{ minWidth: 0, flex: '1 1 180px' }}>
-          <Typography id={`cuenta-${cuenta.id}`} component="h2" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" id={`cuenta-${cuenta.id}`} component="h2">
             {cuenta.banco}
           </Typography>
-          <Typography variant="mono" component="p" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+          <Typography variant="mono" component="p" sx={{ color: 'text.secondary' }}>
             {t('cuentas.resumen', { tipo, numero: cuenta.numeroEnmascarado, moneda: cuenta.moneda })}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
             {t('cuentas.titularCon', { titular: cuenta.titular, identificacion: cuenta.identificacionTitular })}
           </Typography>
         </Box>
@@ -48,7 +48,7 @@ export function TarjetaCuenta({ cuenta }: { cuenta: CuentaBancariaPublicaDto }) 
 
       <Box component="ul" aria-label={t('cuentas.empresas')} sx={{ p: 0, m: 0, mt: 0.75, pl: { sm: 6 } }}>
         {designaciones.length === 0 ? (
-          <Typography component="li" sx={{ color: 'text.secondary', fontSize: 13, listStyle: 'none' }}>
+          <Typography component="li" sx={{ color: 'text.secondary', listStyle: 'none' }}>
             {t('cuentas.sinEmpresas')}
           </Typography>
         ) : (

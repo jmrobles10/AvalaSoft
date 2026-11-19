@@ -120,9 +120,9 @@ export function AppShell() {
           // El texto completo solo cabe en pantallas anchas: en las demás queda el ícono con el texto en un tooltip (y
           // oculto solo a la vista, para los lectores de pantalla), así caben más pestañas antes de pasar a «Más».
           <Tooltip title={persona ? t('app.sesionDePersona', { persona, sistema }) : t('app.sesionDe', { sistema })}>
-            <Typography
+            <Typography variant="caption"
               component="span"
-              sx={{ color: 'text.secondary', display: { xs: 'none', md: 'inline-flex' }, flex: 'none', alignItems: 'center', gap: 0.5, fontSize: 12, lineHeight: '16px', whiteSpace: 'nowrap' }}
+              sx={{ color: 'text.secondary', display: { xs: 'none', md: 'inline-flex' }, flex: 'none', alignItems: 'center', gap: 0.5, whiteSpace: 'nowrap' }}
             >
               <Link2 size={14} strokeWidth={1.75} aria-hidden />
               <Box component="span" sx={{ display: 'inline', '@media (max-width: 1535.95px)': visualmenteOculto }}>

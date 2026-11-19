@@ -16,7 +16,7 @@ function FilaDePersona({ persona }: { persona: PersonaDelVinculoDto }) {
     <Box component="li" sx={{ border: 1, borderColor: 'divider', borderRadius: 1, p: 1.25, listStyle: 'none' }} aria-label={persona.nombre}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', flexWrap: 'wrap', rowGap: 0.5 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography sx={{ fontWeight: 600, fontSize: 14, overflowWrap: 'anywhere' }}>{persona.nombre}</Typography>
+          <Typography variant="subtitle1" component="p" sx={{ overflowWrap: 'anywhere' }}>{persona.nombre}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {persona.identificacion.tipo} {persona.identificacion.numero} · {textoDelRol(persona.tipo, t)}
             {participacion !== null && Number.isFinite(participacion) && ` · ${t('personasRelacionadas.participacion', { valor: participacion.toLocaleString('es-CO') })}`}
@@ -35,7 +35,7 @@ function FilaDePersona({ persona }: { persona: PersonaDelVinculoDto }) {
             const version = versionVisible(d);
             return (
               <Stack component="li" key={d.documentoId} direction="row" spacing={1} sx={{ alignItems: 'center', py: 0.25 }}>
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                <Typography component="p" variant="subtitle2">
                   {d.tipo.nombre}
                 </Typography>
                 {version && (

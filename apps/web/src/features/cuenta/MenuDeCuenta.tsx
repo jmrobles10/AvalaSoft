@@ -54,7 +54,7 @@ function MenuDeLaPersona({ rutaMiCuenta, nombreEnSesion, chip }: { rutaMiCuenta:
       )}
       <Menu anchorEl={ancla} open={ancla !== null} onClose={() => setAncla(null)} slotProps={{ paper: { sx: { minWidth: 240 } } }}>
         <Box sx={{ px: 2, py: 1 }}>
-          <Typography noWrap sx={{ fontWeight: 600 }}>
+          <Typography variant="subtitle2" component="p" noWrap>
             {nombre}
           </Typography>
           {cuenta.data?.correo && (

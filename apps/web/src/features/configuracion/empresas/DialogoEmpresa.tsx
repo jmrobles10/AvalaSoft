@@ -71,7 +71,7 @@ export function DialogoEmpresa({ claveIdempotencia = '', onCerrar, onGuardada, m
         <DialogTitle id="titulo-empresa">
           {t(editando ? 'empresasGrupo.editar' : 'empresasGrupo.nueva')}
           {subtitulo && (
-            <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+            <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
               {subtitulo}
             </Typography>
           )}

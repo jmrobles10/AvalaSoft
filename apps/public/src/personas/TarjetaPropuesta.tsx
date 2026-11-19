@@ -24,15 +24,15 @@ export function TarjetaPropuesta({ relacion }: { relacion: RelacionEntreTerceros
   return (
     <Alert severity="info" component="li" sx={{ listStyle: 'none' }} role="group" aria-label={relacion.nombre}>
       <AlertTitle>{t('personas.propuesta.titulo')}</AlertTitle>
-      <Typography sx={{ fontSize: 14 }}>
+      <Typography>
         {t('personas.propuesta.texto', { nombre: relacion.nombre, rol: rol.toLowerCase(), confianza: String(confianza ?? '—') })}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 0.25 }}>
+      <Typography sx={{ color: 'text.secondary', mt: 0.25 }}>
         {relacion.identificacion.tipo} {relacion.identificacion.numero}
         {relacion.reemplaza && ` · ${t('personas.propuesta.reemplaza', { nombre: relacion.reemplaza.nombre })}`}
       </Typography>
       {error !== null && (
-        <Typography role="alert" sx={{ color: 'error.main', fontSize: 13, mt: 0.5 }}>
+        <Typography role="alert" sx={{ color: 'error.main', mt: 0.5 }}>
           {mensajeDeError(error, t)}
         </Typography>
       )}

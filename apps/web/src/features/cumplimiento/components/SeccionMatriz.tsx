@@ -44,8 +44,8 @@ export function SeccionMatriz({ matriz, factores, borrador, cambiar, resultado, 
   return (
     <Stack spacing={2} component="section" aria-label={t('cumplimiento.matriz.titulo')}>
       <Box>
-        <Typography sx={{ fontSize: 13, fontWeight: 500 }}>{t('cumplimiento.matriz.titulo')}</Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('cumplimiento.matriz.ayuda')}</Typography>
+        <Typography variant="subtitle2" component="p">{t('cumplimiento.matriz.titulo')}</Typography>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('cumplimiento.matriz.ayuda')}</Typography>
       </Box>
       {factores.length > 0 && (
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
@@ -75,7 +75,7 @@ export function SeccionMatriz({ matriz, factores, borrador, cambiar, resultado, 
       {visible('respuestas-incompletas') && <FormHelperText error>{t('cumplimiento.errores.respuestas-incompletas')}</FormHelperText>}
 
       {!completas ? (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.matriz.responde')}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.matriz.responde')}</Typography>
       ) : errorDeCalculo !== null && errorDeCalculo !== undefined && !resultado ? (
         <Alert severity="error">{`${t('cumplimiento.matriz.errorCalculo')} ${mensajeDeError(errorDeCalculo, t)}`}</Alert>
       ) : resultado ? (
@@ -97,12 +97,12 @@ export function SeccionMatriz({ matriz, factores, borrador, cambiar, resultado, 
               label={t('cumplimiento.matriz.ajustar')}
               sx={{ mx: 0 }}
             />
-            <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('cumplimiento.matriz.ajustarAyuda')}</Typography>
+            <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('cumplimiento.matriz.ajustarAyuda')}</Typography>
           </Box>
           {borrador.ajustarNivel && (
             <Stack spacing={1.5}>
               <Box>
-                <FormLabel id="nivel-ajustado" sx={{ fontSize: 13 }}>
+                <FormLabel id="nivel-ajustado" sx={{ typography: 'subtitle2' }}>
                   {t('cumplimiento.matriz.nivelAjustado')}
                 </FormLabel>
                 <ToggleButtonGroup

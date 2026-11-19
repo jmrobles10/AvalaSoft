@@ -21,10 +21,10 @@ export function SeccionSesiones() {
 
   return (
     <Box component="section" aria-labelledby="privacidad-sesiones">
-      <Typography id="privacidad-sesiones" variant="h3" component="h2">
+      <Typography id="privacidad-sesiones" variant="h6" component="h2">
         {t('sesiones.titulo')}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px', mb: 1.5 }}>{t('sesiones.texto')}</Typography>
+      <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>{t('sesiones.texto')}</Typography>
       {consulta.isPending ? (
         <EsqueletoTarjetas cantidad={2} lineas={2} />
       ) : consulta.isError ? (
@@ -67,15 +67,15 @@ function TarjetaSesion({ sesion }: { sesion: SesionActivaDto }) {
     <Card component="li" sx={{ p: 2 }}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ minWidth: 0 }}>
-          <Typography component="h3" sx={{ fontSize: 15, lineHeight: '22px' }}>
+          <Typography variant="subtitle1" component="h3">
             {dispositivo}
             {sesion.esActual && <Chip size="small" label={t('sesiones.esta')} sx={{ ml: 1 }} />}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', overflowWrap: 'anywhere' }}>
+          <Typography sx={{ color: 'text.secondary', overflowWrap: 'anywhere' }}>
             {sesion.correo}
             {sesion.ip ? ` · ${sesion.ip}` : ''}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+          <Typography sx={{ color: 'text.secondary' }}>
             {t('sesiones.abierta', { fecha: formatearFechaHora(sesion.creadaEn) })}
             {sesion.ultimoUsoEn ? ` · ${t('sesiones.ultimoUso', { fecha: formatearFechaHora(sesion.ultimoUsoEn) })}` : ''}
           </Typography>

@@ -63,7 +63,7 @@ export function DrawerMotivo({ empresaId, motivo, onCerrar }: { empresaId: strin
     <Drawer anchor="right" open onClose={mutacion.isPending ? undefined : onCerrar} slotProps={{ paper: { sx: { width: 460, maxWidth: '100%' } } }} aria-labelledby="titulo-motivo">
       <Box component="form" onSubmit={enviar} noValidate sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography id="titulo-motivo" variant="h4" component="h2">
+          <Typography id="titulo-motivo" variant="h6" component="h2">
             {titulo}
           </Typography>
           <IconButton aria-label={t('comun.cerrar')} onClick={onCerrar} disabled={mutacion.isPending}>

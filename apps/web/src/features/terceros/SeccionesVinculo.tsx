@@ -10,7 +10,6 @@ import { formatearFechaDeclarada } from '../documentos/formatoDatos';
 import { ChipVigencia } from '../documentos/VigenciaDocumento';
 import { DatosCuenta } from '../vinculos/cuentaDesignada/DatosCuenta';
 import { esEstadoCuenta } from '../vinculos/cuentaDesignada/modelo';
-import { Mono } from './DatosTercero';
 
 /** Subsección de la tarjeta de un vínculo (sobretítulo + contenido). */
 export function SeccionFicha({ titulo, chip, children }: { titulo: string; chip?: ReactNode; children: ReactNode }) {
@@ -48,7 +47,7 @@ export function CertificadoEnFicha({ certificado }: { certificado: CertificadoDe
       ) : (
         <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
           {esEstadoCertificado(visible) ? <ChipEstado estado={visible} bloqueante={actual.bloqueante} /> : <Typography variant="body2">{actual.estado}</Typography>}
-          <Mono>{actual.folio}</Mono>
+          <Typography component="span" variant="monoTabla">{actual.folio}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {actual.vigenteHasta ? t('terceros.ficha.certificado.vigenteHasta', { fecha: formatearFechaDeclarada(actual.vigenteHasta) }) : t('terceros.ficha.certificado.sinVencimiento')}
           </Typography>
@@ -88,7 +87,7 @@ export function DocumentosEnFicha({ documentos }: { documentos: DocumentoVistaEm
                 <FileText size={18} strokeWidth={1.75} aria-hidden style={{ flex: 'none', opacity: 0.7 }} />
                 <Stack sx={{ minWidth: 0, flex: 1 }}>
                   <Typography noWrap>{documento.tipo.nombre}</Typography>
-                  <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                  <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
                     {version ? t('terceros.ficha.documentos.version', { n: String(version.n) }) : t('terceros.ficha.documentos.sinVersion')}
                   </Typography>
                 </Stack>

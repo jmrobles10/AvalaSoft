@@ -81,7 +81,7 @@ export function PasoCorreo({ correoInicial = '', alCodigo, alResultado }: PasoCo
     <Box component="form" onSubmit={enviar} noValidate>
       <Stack spacing={2.5}>
         <Box>
-          <Typography variant="h2" component="h1" sx={{ mb: 0.5 }}>
+          <Typography variant="h5" component="h1" sx={{ mb: 0.5 }}>
             {t('ingreso.titulo')}
           </Typography>
           <Typography sx={{ color: 'text.secondary' }}>{soloSso ? t('ingreso.sso.subtituloExclusivo', { nombre: sso.nombre ?? '' }) : t('ingreso.subtitulo')}</Typography>

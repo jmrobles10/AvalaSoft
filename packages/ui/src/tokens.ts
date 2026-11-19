@@ -161,20 +161,55 @@ export const MOVIMIENTO = { "duracionCorta": '120ms', "duracionMedia": '200ms', 
 
 export const FUENTE = { sans: "'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif", mono: "'Geist Mono Variable', 'Geist Mono', ui-monospace, 'Cascadia Mono', monospace" } as const;
 
+/**
+ * Escala tipográfica (la del tema de Sinco React del SRM, en tamaño y peso; las familias son las de Valídalo). El peso viaja EN la variante: ni
+ * las pantallas ni los componentes fijan `fontSize` ni `fontWeight` sueltos (lo prohíbe ESLint fuera de `tema.ts` y este archivo), eligen la variante:
+ *
+ *   título de página  `h5`  18 px / 600     título de tarjeta o sección  `h6`  16 px / 600
+ *   subtítulo         `subtitle1` 14 px / 500   (`subtitle2` 13 px / 500 para rótulos y énfasis dentro del texto)
+ *   texto normal      `body2`  13 px / 400   (es la variante por omisión de `Typography`)
+ *   auxiliar          `caption` 11 px / 400  (ayudas, metadatos, pie de campo)      sobretítulo  `overline` 11 px
+ *   código            `mono`/`monoTabla` 12 px (la monoespaciada se ve más grande que la proporcional)   cifras  `h4` 22 px / `kpi` 22 px mono
+ *
+ * `h1`–`h3` y `body1` existen por paridad con Sinco y no se usan en las pantallas. En el tercero (`public`) y por debajo de 600 px la escala
+ * sube un píxel (`TIPOGRAFIA_MOVIL`, como Sinco por debajo de 885 px) y los campos pasan a 16 px, el mínimo con el que iOS no amplía la página al enfocar.
+ */
+export const PESO = { ligero: 300, regular: 400, medio: 500, fuerte: 600 } as const;
+
+/** Los cuatro escalones del pedido (px), para lo que no es `Typography` ni admite una variante (p. ej. el texto de un campo en un `styleOverrides`). */
+export const TAMANO_TEXTO = { titulo: 16, subtitulo: 14, texto: 13, auxiliar: 11 } as const;
+
 export const TIPOGRAFIA = {
-  titulo1: { fontSize: 28, lineHeight: '36px', fontWeight: 600, letterSpacing: '-0.02em' },
-  titulo2: { fontSize: 22, lineHeight: '30px', fontWeight: 500, letterSpacing: '-0.01em' },
-  titulo3: { fontSize: 16, lineHeight: '24px', fontWeight: 500 },
-  titulo4: { fontSize: 15, lineHeight: '22px', fontWeight: 500 },
-  cuerpo: { fontSize: 14, lineHeight: '20px', fontWeight: 400 },
-  cuerpo2: { fontSize: 13, lineHeight: '18px', fontWeight: 400 },
-  etiqueta: { fontSize: 12, lineHeight: '16px', fontWeight: 500 },
-  boton: { fontSize: 14, lineHeight: '20px', fontWeight: 500 },
-  sobretitulo: { fontSize: 11, lineHeight: '16px', fontWeight: 600, letterSpacing: '0.08em' },
-  publicoTitulo: { fontSize: 20, lineHeight: '26px', fontWeight: 500, letterSpacing: '-0.01em' },
-  publicoCuerpo: { fontSize: 16, lineHeight: '24px', fontWeight: 400 },
-  publicoEtiqueta: { fontSize: 14, lineHeight: '20px', fontWeight: 500 },
-  mono: { fontSize: 13, lineHeight: '18px', fontWeight: 400, fontFamily: FUENTE.mono, fontVariantNumeric: 'tabular-nums' },
-  monoTabla: { fontSize: 12, lineHeight: '16px', fontWeight: 400, fontFamily: FUENTE.mono, fontVariantNumeric: 'tabular-nums' },
-  monoKpi: { fontSize: 28, lineHeight: '32px', fontWeight: 500, letterSpacing: '-0.01em', fontFamily: FUENTE.mono, fontVariantNumeric: 'tabular-nums' },
+  h1: { fontSize: 40, lineHeight: '48px', fontWeight: PESO.ligero },
+  h2: { fontSize: 32, lineHeight: '40px', fontWeight: PESO.regular },
+  h3: { fontSize: 28, lineHeight: '32px', fontWeight: PESO.medio },
+  h4: { fontSize: 22, lineHeight: '24px', fontWeight: PESO.fuerte },
+  h5: { fontSize: 18, lineHeight: '24px', fontWeight: PESO.fuerte },
+  h6: { fontSize: TAMANO_TEXTO.titulo, lineHeight: '24px', fontWeight: PESO.fuerte },
+  subtitle1: { fontSize: TAMANO_TEXTO.subtitulo, lineHeight: '20px', fontWeight: PESO.medio },
+  subtitle2: { fontSize: TAMANO_TEXTO.texto, lineHeight: '18px', fontWeight: PESO.medio },
+  body1: { fontSize: TAMANO_TEXTO.subtitulo, lineHeight: '20px', fontWeight: PESO.regular },
+  body2: { fontSize: TAMANO_TEXTO.texto, lineHeight: '18px', fontWeight: PESO.regular },
+  caption: { fontSize: TAMANO_TEXTO.auxiliar, lineHeight: '14px', fontWeight: PESO.regular },
+  boton: { fontSize: TAMANO_TEXTO.texto, lineHeight: '20px', fontWeight: PESO.medio },
+  overline: { fontSize: TAMANO_TEXTO.auxiliar, lineHeight: '16px', fontWeight: PESO.regular, letterSpacing: '1px' },
+  mono: { fontSize: 12, lineHeight: '18px', fontWeight: PESO.regular, fontFamily: FUENTE.mono, fontVariantNumeric: 'tabular-nums' },
+  // Códigos y cifras de las celdas (folios, prefijos, fechas): nunca se parten en renglones (los guiones de «CON-E-2026-000002» son puntos de corte para el navegador).
+  monoTabla: { fontSize: 12, lineHeight: '16px', fontWeight: PESO.regular, fontFamily: FUENTE.mono, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' },
+  monoKpi: { fontSize: 22, lineHeight: '28px', fontWeight: PESO.medio, letterSpacing: '-0.01em', fontFamily: FUENTE.mono, fontVariantNumeric: 'tabular-nums' },
+} as const;
+
+/** En el tercero, por debajo de 600 px: un píxel más en lo que se lee (como Sinco por debajo de 885 px); los títulos de página crecen para conservar la jerarquía. */
+export const TIPOGRAFIA_MOVIL = {
+  h5: { fontSize: 20, lineHeight: '26px' },
+  h6: { fontSize: 17, lineHeight: '24px' },
+  subtitle1: { fontSize: 15, lineHeight: '22px' },
+  subtitle2: { fontSize: 14, lineHeight: '20px' },
+  body1: { fontSize: 15, lineHeight: '22px' },
+  body2: { fontSize: 14, lineHeight: '20px' },
+  caption: { fontSize: 12, lineHeight: '16px' },
+  boton: { fontSize: 15, lineHeight: '20px' },
+  overline: { fontSize: 12, lineHeight: '16px' },
+  /** Texto de los campos: 16 px evita que iOS amplíe la página al enfocar uno. */
+  campo: { fontSize: 16 },
 } as const;

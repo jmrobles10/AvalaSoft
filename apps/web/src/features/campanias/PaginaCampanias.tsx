@@ -35,7 +35,7 @@ export function PaginaCampanias() {
         encabezado: t('campanias.columnas.nombre'),
         celda: (c) => (
           <>
-            <Typography component="span" sx={{ display: 'block', fontWeight: 500 }}>
+            <Typography variant="subtitle2" component="span" sx={{ display: 'block' }}>
               {c.nombre}
             </Typography>
             <Typography component="span" variant="caption" sx={{ color: 'text.secondary' }}>

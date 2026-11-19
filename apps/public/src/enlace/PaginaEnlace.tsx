@@ -112,10 +112,10 @@ export function PaginaEnlace() {
 
   return (
     <Box component="form" onSubmit={enviar} noValidate sx={{ maxWidth: 420, mx: 'auto' }}>
-      <Typography variant="h2" component="h1" sx={{ mb: 1 }}>
+      <Typography variant="h5" component="h1" sx={{ mb: 1 }}>
         {t('enlace.otpTitulo')}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', mb: 3, fontSize: 15, lineHeight: '22px' }}>
+      <Typography sx={{ color: 'text.secondary', mb: 3 }}>
         {canje.correo
           ? t('enlace.otpTexto', { correo: canje.correo, hora: formatearHora(canje.expira) })
           : t('enlace.otpTextoSinCorreo', { hora: formatearHora(canje.expira) })}
@@ -130,7 +130,7 @@ export function PaginaEnlace() {
         <Button type="submit" variant="contained" size="large" fullWidth disabled={codigo.length !== 6 || verificacion.isPending}>
           {t('enlace.otpVerificar')}
         </Button>
-        <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
+        <Typography sx={{ color: 'text.secondary' }}>
           {t('enlace.otpSpam')}
         </Typography>
       </Stack>

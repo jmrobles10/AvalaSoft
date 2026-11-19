@@ -66,7 +66,7 @@ export function TablaSagrilaft({ filas, empresaId }: { filas: readonly FilaTerce
               </Button>
             )}
             <Box sx={{ flex: 1 }} />
-            <Typography role="status" sx={{ color: 'text.secondary', fontSize: 12 }}>
+            <Typography variant="caption" component="p" role="status" sx={{ color: 'text.secondary' }}>
               {t('cumplimiento.sagrilaft.tabla.cuenta', { n: String(Math.min(visibles, filtradas.length)), total: String(filtradas.length) })}
             </Typography>
           </Stack>

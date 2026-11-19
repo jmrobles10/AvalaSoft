@@ -103,16 +103,16 @@ function TarjetaEmpresa({ vinculo: v }: { vinculo: VinculoPublicoDto }) {
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minWidth: 0 }}>
         <LogoEmpresa nombre={v.empresa.nombre} logoUrl={v.empresa.logoUrl} tamano={32} />
         <Box sx={{ minWidth: 0 }}>
-          <Typography component="h2" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" component="h2">
             {v.empresa.nombre}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>{v.tipoVinculo.nombre}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{v.tipoVinculo.nombre}</Typography>
         </Box>
       </Stack>
       <Box sx={{ justifySelf: 'start' }}>
         {avance ? <ChipAvance avance={avance} /> : v.reintento ? <ChipEstado estado="Rechazado" /> : !esperando && <ChipEstado estado={v.estado} />}
       </Box>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', display: conAviso ? 'none' : 'block' }}>{textoDeAvance}</Typography>
+      <Typography sx={{ color: 'text.secondary', display: conAviso ? 'none' : 'block' }}>{textoDeAvance}</Typography>
       <Stack direction="row" useFlexGap sx={{ flexWrap: 'wrap', gap: 1, justifyContent: { md: 'flex-end' } }}>
         {situacion === 'vigente' && !v.invitacionAceptada && (
           <Button component={RouterLink} to={`/empresas/${v.id}`} variant="contained" size="small" endIcon={<ChevronRight size={18} aria-hidden />}>

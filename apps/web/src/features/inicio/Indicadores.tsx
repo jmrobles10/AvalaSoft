@@ -70,7 +70,7 @@ export function Indicadores({ empresaId, puedeVerVinculos, puedeVerCertificados 
   return (
     <Box component="section" aria-labelledby="titulo-indicadores">
       <Stack direction="row" useFlexGap sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-        <Typography variant="h3" component="h2" id="titulo-indicadores">
+        <Typography variant="h6" component="h2" id="titulo-indicadores">
           {t('inicio.indicadores.titulo')}
         </Typography>
         <SelectorVentana valor={dias} onCambiar={cambiarVentana} />

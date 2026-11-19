@@ -34,8 +34,8 @@ export function DireccionPorPartes({ valor, onCambiar, mensaje, deshabilitado }:
     <Accordion disableGutters elevation={0} defaultExpanded={Boolean(valor) || conError} sx={{ border: 0, bgcolor: 'transparent', '&, &:first-of-type, &:last-of-type': { borderRadius: 0 } }}>
       <AccordionSummary expandIcon={<ChevronDown size={16} strokeWidth={1.75} aria-hidden />} sx={{ minHeight: 32, px: 0, justifyContent: 'flex-start', '& .MuiAccordionSummary-content': { flexGrow: 0, my: 0.5, mr: 1 } }}>
         <Stack direction="row" useFlexGap sx={{ alignItems: 'baseline', flexWrap: 'wrap', columnGap: 1 }}>
-          <Typography sx={{ fontWeight: 500, fontSize: 14, color: (th) => th.palette.acento.main }}>{t('ficha.general.estructurada')}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('ficha.general.estructuradaAyuda')}</Typography>
+          <Typography variant="subtitle1" component="p" sx={{ color: (th) => th.palette.acento.main }}>{t('ficha.general.estructurada')}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{t('ficha.general.estructuradaAyuda')}</Typography>
         </Stack>
       </AccordionSummary>
       <AccordionDetails sx={{ px: 0, pt: 1.5, pb: 0 }}>

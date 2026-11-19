@@ -29,10 +29,10 @@ export function TarjetaRequisitoSeccion({ requisito, expediente, conAccion }: { 
           <ClipboardList size={16} />
         </Box>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography component="h4" sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" component="h4">
             {requisito.tipoDocumento.nombre}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
             {requisito.ratificadoEn
               ? t('expediente.seccion.ratificada', { fecha: formatearFecha(requisito.ratificadoEn) })
               : version
@@ -41,7 +41,7 @@ export function TarjetaRequisitoSeccion({ requisito, expediente, conAccion }: { 
           </Typography>
           {/* Por qué se le pide esta sección: lo que declaró en su ficha y la hizo aplicar (EF-6). */}
           {(requisito.porQue?.length ?? 0) > 0 && (
-            <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', mt: 0.25 }} data-por-que="">
+            <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.25 }} data-por-que="">
               {t('expediente.documentos.porQue', { empresa, motivos: textoDelPorQue(requisito.porQue ?? []) })}
             </Typography>
           )}
@@ -51,10 +51,10 @@ export function TarjetaRequisitoSeccion({ requisito, expediente, conAccion }: { 
 
       {faltantes.length > 0 && (
         <Box sx={(th) => ({ mt: 1, py: 1, px: 1.5, borderRadius: `${String(th.radio.sm)}px`, bgcolor: 'superficie.nivel2' })}>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', mb: 0.25 }}>{t('expediente.seccion.faltanTitulo', { empresa })}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mb: 0.25 }}>{t('expediente.seccion.faltanTitulo', { empresa })}</Typography>
           <Stack component="ul" spacing={0.5} sx={{ p: 0, m: 0, listStyle: 'none' }}>
             {faltantes.map((f, i) => (
-              <Typography component="li" key={`${f.campo ?? f.regla ?? ''}-${String(i)}`} sx={{ fontSize: 14, lineHeight: '20px' }}>
+              <Typography component="li" key={`${f.campo ?? f.regla ?? ''}-${String(i)}`}>
                 {f.mensaje}
               </Typography>
             ))}
@@ -69,7 +69,7 @@ export function TarjetaRequisitoSeccion({ requisito, expediente, conAccion }: { 
       {requisito.puedeRatificar && conAccion && (
         // Renovación periódica (VV-3): la sección que la empresa ya aceptó se ratifica (sigue igual) o se actualiza.
         <Box sx={{ mt: 1, pl: 3.25 }}>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>{t('expediente.seccion.ratificarAyuda', { empresa })}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('expediente.seccion.ratificarAyuda', { empresa })}</Typography>
           <Stack direction="row" spacing={1} useFlexGap sx={{ mt: 1, flexWrap: 'wrap', alignItems: 'center' }}>
             <ConfirmarRatificacion
               tipo="seccion"
@@ -88,7 +88,7 @@ export function TarjetaRequisitoSeccion({ requisito, expediente, conAccion }: { 
 
       {boton && !requisito.puedeRatificar && (
         <Box sx={{ mt: 1, pl: 3.25 }}>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>{t('expediente.seccion.ayuda')}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('expediente.seccion.ayuda')}</Typography>
           <Button
             component={RouterLink}
             to={enlaceDeSeccion(requisito)}

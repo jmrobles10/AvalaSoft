@@ -24,10 +24,10 @@ export function SeccionDeclaracion({ titulo, ayuda, children }: { titulo: string
   return (
     <Box component="section" aria-labelledby={id} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <Box>
-        <Typography id={id} variant="h3" component="h2" sx={{ fontSize: 16, lineHeight: '24px', fontWeight: 600 }}>
+        <Typography id={id} variant="h6" component="h2">
           {titulo}
         </Typography>
-        {ayuda && <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px', mt: 0.25 }}>{ayuda}</Typography>}
+        {ayuda && <Typography sx={{ color: 'text.secondary', mt: 0.25 }}>{ayuda}</Typography>}
       </Box>
       {children}
     </Box>

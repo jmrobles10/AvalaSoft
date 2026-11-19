@@ -44,10 +44,10 @@ export function SeccionCondicion({ d, cambiar, mensaje, hoy }: PropsSeccion) {
         />
       )}
       <Stack spacing={1.5}>
-        <Typography component="h3" sx={{ fontWeight: 500 }}>
+        <Typography variant="subtitle2" component="h3">
           {t('ficha.pep.conyuge.titulo')}
         </Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 14, mt: -1 }}>{t('ficha.pep.conyuge.ayuda')}</Typography>
+        <Typography sx={{ color: 'text.secondary', mt: -1 }}>{t('ficha.pep.conyuge.ayuda')}</Typography>
         <Rejilla>
           <CampoTexto etiqueta={t('ficha.pep.conyuge.nombre')} valor={conyuge.nombre} onCambiar={(v) => cambiarConyuge({ nombre: v })} mensaje={mensaje('conyuge.nombre')} maxLength={MAXIMO.nombre} />
           <CampoTipoDocumento etiqueta={t('ficha.pep.conyuge.tipoDocumento')} valor={conyuge.tipo_identificacion} onCambiar={(v) => cambiarConyuge({ tipo_identificacion: v })} mensaje={mensaje('conyuge.tipo_identificacion')} />

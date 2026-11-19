@@ -85,7 +85,7 @@ export function FormularioSesionDev({ vencida = false }: { vencida?: boolean }) 
     <Card sx={{ maxWidth: 640, mx: 'auto', my: 4, borderRadius: (th) => `${String(th.radio.md)}px` }}>
       <CardContent component="form" onSubmit={(e) => void enviar(e)}>
         <Stack spacing={2}>
-          <Typography variant="h2" component="h1">
+          <Typography variant="h5" component="h1">
             {t('sesion.dev.titulo')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -121,7 +121,7 @@ export function FormularioSesionDev({ vencida = false }: { vencida?: boolean }) 
             multiline
             minRows={3}
             maxRows={6}
-            slotProps={{ htmlInput: { style: { fontFamily: 'monospace', fontSize: 11 } } }}
+            sx={{ '& textarea': { typography: 'mono' } }}
           />
           <TextField label={t('sesion.dev.asercion')} value={asercion} onChange={(e) => setAsercion(e.target.value)} />
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>

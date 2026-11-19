@@ -15,7 +15,7 @@ interface Props {
 function Interruptor({ marcado, titulo, ayuda, alCambiar }: { marcado: boolean; titulo: ReactNode; ayuda: string; alCambiar: (valor: boolean) => void }) {
   return (
     <Box>
-      <FormControlLabel control={<Switch checked={marcado} onChange={(e) => alCambiar(e.target.checked)} />} label={<Typography sx={{ fontWeight: 600 }}>{titulo}</Typography>} />
+      <FormControlLabel control={<Switch checked={marcado} onChange={(e) => alCambiar(e.target.checked)} />} label={<Typography variant="subtitle2" component="p">{titulo}</Typography>} />
       <Typography variant="body2" sx={{ color: 'text.secondary', ml: 6 }}>
         {ayuda}
       </Typography>
@@ -60,7 +60,7 @@ export function AprovisionamientoSso({ formulario, empresas, alCambiar }: Props 
       <Stack spacing={2.5}>
         <Interruptor marcado={formulario.aprovisionamientoJit} titulo={t('sso.aprovisionamiento.jit')} ayuda={t('sso.aprovisionamiento.jitAyuda')} alCambiar={(aprovisionamientoJit) => alCambiar({ aprovisionamientoJit })} />
         <Stack spacing={1}>
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          <Typography component="p" variant="subtitle2">
             {t('sso.aprovisionamiento.rolesPorOmision')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -69,7 +69,7 @@ export function AprovisionamientoSso({ formulario, empresas, alCambiar }: Props 
           <RolesPorOmision filas={formulario.rolesPorOmision} empresas={empresas} alCambiar={(rolesPorOmision) => alCambiar({ rolesPorOmision })} />
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          <Typography component="p" variant="subtitle2">
             {t('sso.aprovisionamiento.reglas')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>

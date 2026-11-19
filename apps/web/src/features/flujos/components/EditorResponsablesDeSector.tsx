@@ -29,7 +29,7 @@ export function EditorResponsablesDeSector({ responsables, etapas, areas, onCamb
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('responsablesPorSector.ayuda')}</Typography>
+      <Typography sx={{ color: 'text.secondary' }}>{t('responsablesPorSector.ayuda')}</Typography>
       {areasDelFlujo.length === 0 && (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {t('responsablesPorSector.sinAreas')}

@@ -91,10 +91,10 @@ export function BarraDeAcciones({ prevista, errorPrevista, sinRevision, pendient
                 {icono}
               </Box>
               <Box sx={{ minWidth: 0 }}>
-                <Typography key={texto} sx={{ fontSize: 14, lineHeight: '20px', fontWeight: 500, animation: `${aparicion} 200ms ease-out` }}>
+                <Typography variant="subtitle1" component="p" key={texto} sx={{ animation: `${aparicion} 200ms ease-out` }}>
                   {texto}
                 </Typography>
-                {sinGuardar && <Typography sx={{ fontSize: 12, lineHeight: '16px', color: 'text.secondary' }}>{t('ficha.barra.sinGuardar')}</Typography>}
+                {sinGuardar && <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('ficha.barra.sinGuardar')}</Typography>}
               </Box>
             </>
           )}

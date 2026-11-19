@@ -22,7 +22,7 @@ export function PasoCuenta({ desafio, cuentas, alResultado }: PasoCuentaProps) {
   return (
     <Stack spacing={2.5}>
       <Box>
-        <Typography variant="h2" component="h1" sx={{ mb: 0.5 }}>
+        <Typography variant="h5" component="h1" sx={{ mb: 0.5 }}>
           {t('ingreso.cuentaTitulo')}
         </Typography>
         <Typography sx={{ color: 'text.secondary' }}>{t('ingreso.cuentaTexto')}</Typography>
@@ -55,7 +55,7 @@ export function PasoCuenta({ desafio, cuentas, alResultado }: PasoCuentaProps) {
             >
               <AvatarActor tipo={cuenta.tipo === 'Operador' ? 'persona' : 'tercero'} nombre={cuenta.grupo ?? cuenta.nombre} tamano={36} />
               <Box sx={{ minWidth: 0, flex: 1 }}>
-                <Typography noWrap sx={{ fontWeight: 600 }}>
+                <Typography variant="subtitle2" component="p" noWrap>
                   {cuenta.grupo ?? t('ingreso.cuentaPlataforma')}
                 </Typography>
                 <Typography noWrap variant="body2" sx={{ color: 'text.secondary' }}>

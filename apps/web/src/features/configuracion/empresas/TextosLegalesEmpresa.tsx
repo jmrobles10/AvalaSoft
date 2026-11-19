@@ -15,7 +15,7 @@ export function TextosLegalesEmpresa({ empresa, puedeLeer, puedeEscribir }: { em
 
   return (
     <Box component="section" aria-labelledby={`textos-${empresa.id}`}>
-      <Typography id={`textos-${empresa.id}`} component="h3" sx={{ fontSize: 14, fontWeight: 600 }}>
+      <Typography variant="subtitle1" id={`textos-${empresa.id}`} component="h3">
         {t('empresasGrupo.textos.titulo')}
       </Typography>
       <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, mb: 1, maxWidth: 720 }}>

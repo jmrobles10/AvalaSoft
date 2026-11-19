@@ -70,7 +70,7 @@ function Contenido({ empresaId, datos, puedeEscribir }: { empresaId: string; dat
             </MenuItem>
           ))}
         </TextField>
-        <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 1 }}>{t('cumplimiento.configuracion.habeasData')}</Typography>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 1 }}>{t('cumplimiento.configuracion.habeasData')}</Typography>
       </Tarjeta>
       {datos.proveedores
         .filter((p) => p.real)
@@ -83,7 +83,7 @@ function Contenido({ empresaId, datos, puedeEscribir }: { empresaId: string; dat
         )}
       <Tarjeta titulo={t('cumplimiento.configuracion.uso', { mes: datos.uso[0]?.mes ?? '' })}>
         {datos.uso.length === 0 ? (
-          <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.configuracion.usoVacio')}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.configuracion.usoVacio')}</Typography>
         ) : (
           <Table size="small" aria-label={t('cumplimiento.configuracion.uso', { mes: datos.uso[0]?.mes ?? '' })}>
             <TableHead>
@@ -139,7 +139,7 @@ function CuentaDeLaPlataforma({ proveedor: p }: { proveedor: ProveedorListasDto 
       }
     >
       <Stack spacing={1}>
-        <Typography sx={{ fontSize: 13 }}>{p.configurado ? t('cumplimiento.configuracion.cuentaDeLaPlataformaAyuda') : t('cumplimiento.configuracion.noDisponibleAyuda')}</Typography>
+        <Typography>{p.configurado ? t('cumplimiento.configuracion.cuentaDeLaPlataformaAyuda') : t('cumplimiento.configuracion.noDisponibleAyuda')}</Typography>
         <RejillaDatos columnas={3}>
           <Dato etiqueta={t('cumplimiento.configuracion.cuotaDeLaEmpresa')}>
             {p.cuotaMensual === null ? t('cumplimiento.configuracion.sinTope') : t('cumplimiento.configuracion.cuotaBusquedas', { cuota: String(p.cuotaMensual) })}
@@ -178,7 +178,7 @@ function Credenciales({ empresaId, proveedor: p, puedeEscribir }: { empresaId: s
         </Box>
       }
       acciones={
-        <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
           {p.configurado ? t('cumplimiento.configuracion.configurada', { ultimos: p.ultimosCuatroClave ?? '' }) : t('cumplimiento.configuracion.sinCredenciales')}
         </Typography>
       }

@@ -48,10 +48,10 @@ export function VisorSeccionRequisito({ empresaId, vinculoId, terceroId, requisi
       >
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', px: 2, py: 1, borderBottom: 1, borderColor: 'divider' }}>
           <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography id="titulo-visor-seccion" variant="h4" component="h2" noWrap>
+            <Typography id="titulo-visor-seccion" variant="h6" component="h2" noWrap>
               {titulo}
             </Typography>
-            <Typography sx={{ color: 'text.secondary', fontSize: 12 }} noWrap>
+            <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }} noWrap>
               {t('expedientes.datosDeclarados.seccionDeLaFicha')}
             </Typography>
           </Box>

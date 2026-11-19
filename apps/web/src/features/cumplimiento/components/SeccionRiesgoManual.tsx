@@ -15,7 +15,7 @@ export function SeccionRiesgoManual({ borrador, cambiar, visible }: SeccionRiesg
   return (
     <Stack spacing={2.5}>
       <Box>
-        <FormLabel id="riesgo" sx={{ fontSize: 13 }}>
+        <FormLabel id="riesgo" sx={{ typography: 'subtitle2' }}>
           {t('cumplimiento.panel.estudio.riesgo')}
         </FormLabel>
         <ToggleButtonGroup

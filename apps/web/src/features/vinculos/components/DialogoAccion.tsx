@@ -103,7 +103,7 @@ export function DialogoAccion({ definicion, vinculo, empresaId, onCerrar }: Dial
     <DialogTitle id="titulo-accion">
       {titulo}
       {subtitulo && (
-        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
           {subtitulo}
         </Typography>
       )}
@@ -173,10 +173,10 @@ export function DialogoAccion({ definicion, vinculo, empresaId, onCerrar }: Dial
                         sx={{ alignItems: 'flex-start', mx: 0, py: 0.25 }}
                         label={
                           <Box sx={{ pt: '5px' }}>
-                            <Typography component="span" sx={{ display: 'block', fontWeight: 600, fontSize: 14 }}>
+                            <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                               {t('acciones.reintegrar.revalidar')}
                             </Typography>
-                            <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 13 }}>
+                            <Typography component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                               {t('acciones.reintegrar.revalidarAyuda')}
                             </Typography>
                           </Box>
@@ -189,10 +189,10 @@ export function DialogoAccion({ definicion, vinculo, empresaId, onCerrar }: Dial
                         sx={{ alignItems: 'flex-start', mx: 0, py: 0.25 }}
                         label={
                           <Box sx={{ pt: '5px' }}>
-                            <Typography component="span" sx={{ display: 'block', fontWeight: 600, fontSize: 14 }}>
+                            <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                               {t('acciones.reintegrar.sinRevalidar')}
                             </Typography>
-                            <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 13 }}>
+                            <Typography component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                               {t('acciones.reintegrar.sinRevalidarAyuda')}
                             </Typography>
                           </Box>
@@ -206,7 +206,7 @@ export function DialogoAccion({ definicion, vinculo, empresaId, onCerrar }: Dial
                     ) : (
                       !puedeSinRevalidar && (
                         <Alert severity="info" sx={{ mt: 1 }}>
-                          <Typography component="span" sx={{ display: 'block', fontSize: 13, fontWeight: 600 }}>
+                          <Typography variant="subtitle2" component="span" sx={{ display: 'block' }}>
                             {t('acciones.reintegrar.noSePuede')}
                           </Typography>
                           <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
@@ -279,7 +279,7 @@ export function DialogoAccion({ definicion, vinculo, empresaId, onCerrar }: Dial
             <FaltaParaEnviar>{pendiente}</FaltaParaEnviar>
           ) : (
             conTexto && (
-              <Typography variant="caption" sx={{ color: 'text.secondary', mr: 'auto', fontWeight: 400 }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', mr: 'auto' }}>
                 {t('acciones.registro')}
               </Typography>
             )

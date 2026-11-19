@@ -23,8 +23,8 @@ function FilaDeDocumento({ documento, personaId }: { documento: DocumentoDePerso
         <FileText size={16} />
       </Box>
       <Box sx={{ minWidth: 0, flex: 1 }}>
-        <Typography sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px' }}>{nombre}</Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+        <Typography variant="subtitle1" component="p">{nombre}</Typography>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
           {tiene && documento.cargadaEn
             ? t('personas.documentos.cargado', { n: String(documento.version), fecha: formatearFecha(documento.cargadaEn) })
             : documento.pedido
@@ -64,10 +64,10 @@ export function TarjetaPersona({ relacion, onQuitar }: { relacion: RelacionEntre
     <Paper variant="outlined" component="li" sx={{ p: { xs: 1.5, sm: 2 }, listStyle: 'none' }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', flexWrap: 'wrap', rowGap: 0.5 }}>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography component="h3" variant="h4" sx={{ overflowWrap: 'anywhere' }}>
+          <Typography component="h3" variant="subtitle1" sx={{ overflowWrap: 'anywhere' }}>
             {relacion.nombre}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
+          <Typography sx={{ color: 'text.secondary' }}>
             {documento} · {rol}
             {participacion !== null && ` · ${t('personas.participacion', { valor: participacion.toLocaleString('es-CO') })}`}
             {relacion.cargo && ` · ${t('personas.cargo', { cargo: relacion.cargo })}`}
@@ -86,7 +86,7 @@ export function TarjetaPersona({ relacion, onQuitar }: { relacion: RelacionEntre
       </Box>
 
       {relacion.deFicha ? (
-        <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>{t('personas.deFicha')}</Typography>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5 }}>{t('personas.deFicha')}</Typography>
       ) : (
         <Button color="error" size="small" startIcon={<UserRoundX size={16} aria-hidden />} onClick={() => onQuitar(relacion)} sx={{ mt: 0.5 }}>
           {t('personas.terminar.boton')}

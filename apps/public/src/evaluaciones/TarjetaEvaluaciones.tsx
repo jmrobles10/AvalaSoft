@@ -45,7 +45,7 @@ export function TarjetaEvaluaciones({ evaluaciones, vinculoId, empresa }: { eval
   if (!evaluaciones || evaluaciones.length === 0) return null;
   return (
     <Box component="section" aria-labelledby="titulo-evaluaciones" sx={{ mb: 2 }}>
-      <Typography id="titulo-evaluaciones" component="h2" sx={{ fontWeight: 600, fontSize: 13, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'text.secondary', mb: 1 }}>
+      <Typography variant="overline" id="titulo-evaluaciones" component="h2" sx={{ color: 'text.secondary', mb: 1 }}>
         {t('evaluaciones.tarjeta.titulo', { empresa })}
       </Typography>
       <Stack spacing={1.5}>
@@ -56,12 +56,12 @@ export function TarjetaEvaluaciones({ evaluaciones, vinculoId, empresa }: { eval
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: { sm: 'center' }, justifyContent: 'space-between' }}>
                 <Box sx={{ minWidth: 0 }}>
                   <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                    <Typography component="h3" sx={{ fontWeight: 600, fontSize: 15 }}>
+                    <Typography variant="subtitle1" component="h3">
                       {e.cuestionario}
                     </Typography>
                     <Chip size="small" color={pendiente ? 'warning' : 'success'} label={pendiente ? t('evaluaciones.tarjeta.pendiente') : t('evaluaciones.tarjeta.enviada')} />
                   </Stack>
-                  <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 0.5 }}>
+                  <Typography sx={{ color: 'text.secondary', mt: 0.5 }}>
                     {pendiente ? t('evaluaciones.tarjeta.pedidaEl', { fecha: formatearFecha(e.asignadaEn) }) : t('evaluaciones.tarjeta.enviadaEl', { fecha: formatearFecha(e.respondidaEn ?? e.asignadaEn) })}
                   </Typography>
                 </Box>

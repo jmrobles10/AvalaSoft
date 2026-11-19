@@ -17,7 +17,7 @@ export function SelectorVentana({ valor, onCambiar }: { valor: Ventana; onCambia
           value={v}
           selected={v === valor}
           onChange={() => onCambiar(v)}
-          sx={(th) => ({ ...sxPildora(th), border: 0, textTransform: 'none', fontSize: 14, lineHeight: '20px', color: th.palette.text.secondary })}
+          sx={(th) => ({ typography: 'body2', ...sxPildora(th), border: 0, textTransform: 'none', color: th.palette.text.secondary })}
         >
           {t(`inicio.indicadores.ventanas.${v}`)}
         </ToggleButton>

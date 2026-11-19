@@ -31,7 +31,7 @@ export function PaginaSubir() {
     return (
       <>
         <CabeceraPagina titulo={t('formulario.titulo', { tipo: fijo.nombre })} sub={t('formulario.sub', { empresa: delRequisito.expediente.empresa.nombre })} />
-        {tipo.textoAyuda && <Typography sx={{ fontSize: 15, lineHeight: '22px', mb: 2 }}>{tipo.textoAyuda}</Typography>}
+        {tipo.textoAyuda && <Typography sx={{ mb: 2 }}>{tipo.textoAyuda}</Typography>}
         <FormularioRequisito
           tipo={fijo.nombre}
           campos={camposDe(tipo)}

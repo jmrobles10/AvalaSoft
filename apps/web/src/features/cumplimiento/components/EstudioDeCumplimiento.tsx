@@ -49,8 +49,8 @@ export function EstudioDeCumplimiento({
           )
         }
       />
-      {!estudio && <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.panel.pendienteEstudio')}</Typography>}
-      {v.estado === 'Expirada' && <Typography sx={{ color: 'text.secondary', fontSize: 13, mb: 1 }}>{t('cumplimiento.panel.expiradaEstudio')}</Typography>}
+      {!estudio && <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.panel.pendienteEstudio')}</Typography>}
+      {v.estado === 'Expirada' && <Typography sx={{ color: 'text.secondary', mb: 1 }}>{t('cumplimiento.panel.expiradaEstudio')}</Typography>}
       {estudio && (
         <>
           <RejillaDatos columnas={3}>
@@ -83,11 +83,11 @@ export function EstudioDeCumplimiento({
           </RejillaDatos>
           {matriz && (
             <Box sx={{ mt: 1.5 }}>
-              <Typography sx={{ fontSize: 13, fontWeight: 500, mb: 0.5 }}>{t('cumplimiento.panel.estudio.matriz')}</Typography>
+              <Typography variant="subtitle2" component="p" sx={{ mb: 0.5 }}>{t('cumplimiento.panel.estudio.matriz')}</Typography>
               <ResultadoMatriz resultado={matriz} />
               {ajustado && (
-                <Typography sx={{ fontSize: 13, mt: 1 }}>
-                  <Typography component="span" sx={{ fontWeight: 500, fontSize: 13 }}>
+                <Typography sx={{ mt: 1 }}>
+                  <Typography variant="subtitle2" component="span">
                     {t('cumplimiento.matriz.ajustadaDe', { de: t(`cumplimiento.riesgos.${claveRiesgo(matriz.nivel)}`), a: t(`cumplimiento.riesgos.${claveRiesgo(estudio.nivelRiesgo)}`) })}
                   </Typography>
                   {estudio.justificacionDeNivel ? ` — “${estudio.justificacionDeNivel}”` : ''}

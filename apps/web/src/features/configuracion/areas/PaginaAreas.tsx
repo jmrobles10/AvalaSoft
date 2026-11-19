@@ -78,7 +78,7 @@ export function PaginaAreas() {
                           '&:hover': { bgcolor: actual ? 'acento.tinte' : 'superficie.nivel2' },
                         }}
                       >
-                        <Box component="span" sx={{ flex: 1, fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <Box component="span" sx={{ typography: 'subtitle2', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {area.nombre}
                         </Box>
                         <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>
@@ -160,7 +160,7 @@ function DetalleArea({
       titulo={
         <>
           {area.nombre}
-          <Typography component="span" variant="mono" sx={{ color: 'text.secondary', ml: 1, fontWeight: 400 }}>
+          <Typography component="span" variant="mono" sx={{ color: 'text.secondary', ml: 1 }}>
             {area.codigo}
           </Typography>
         </>
@@ -227,7 +227,7 @@ function DetalleArea({
                     <TableCell>
                       <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
                         <AvatarActor tipo="persona" nombre={u?.nombre ?? '?'} />
-                        <span style={{ fontWeight: 500 }}>{nombre}</span>
+                        <Typography component="span" variant="subtitle2">{nombre}</Typography>
                       </Stack>
                     </TableCell>
                     <TableCell>{rolEnEmpresa(u)}</TableCell>

@@ -32,10 +32,10 @@ export function EditorEtapas({ etapas, areas, onCambiar, errores, soloLectura }:
           <Box key={etapa.clave} component="section" aria-label={t('flujos.editor.etapa', { orden })} sx={{ border: 1, borderColor: errorEtapa ? 'error.main' : 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5 }}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
               <Box>
-                <Typography component="h4" sx={{ fontWeight: 600, fontSize: 14 }}>
+                <Typography variant="subtitle1" component="h4">
                   {t('flujos.editor.etapa', { orden })}
                 </Typography>
-                <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+                <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
                   {errorEtapa ? t(`flujos.editor.errores.${errorEtapa.codigo}`) : t('flujos.editor.etapaAyuda')}
                 </Typography>
               </Box>
@@ -112,14 +112,14 @@ export function EditorEtapas({ etapas, areas, onCambiar, errores, soloLectura }:
                       control={<Switch checked={area.puedeRechazarExpediente && !area.automatica} onChange={(e) => cambiarArea(i, j, { puedeRechazarExpediente: e.target.checked })} />}
                       label={t('flujos.editor.puedeRechazar')}
                       disabled={soloLectura || area.automatica}
-                      sx={{ mx: 0, '& .MuiFormControlLabel-label': { fontSize: 13, whiteSpace: 'nowrap' } }}
+                      sx={{ mx: 0, '& .MuiFormControlLabel-label': { whiteSpace: 'nowrap' } }}
                     />
                     <Tooltip title={t('flujos.editor.automaticaAyuda')}>
                       <FormControlLabel
                         control={<Switch checked={area.automatica} onChange={(e) => cambiarArea(i, j, { automatica: e.target.checked, puedeRechazarExpediente: e.target.checked ? false : area.puedeRechazarExpediente })} />}
                         label={t('flujos.editor.automatica')}
                         disabled={soloLectura}
-                        sx={{ mx: 0, '& .MuiFormControlLabel-label': { fontSize: 13, whiteSpace: 'nowrap' } }}
+                        sx={{ mx: 0, '& .MuiFormControlLabel-label': { whiteSpace: 'nowrap' } }}
                       />
                     </Tooltip>
                     {!soloLectura && (
@@ -141,7 +141,7 @@ export function EditorEtapas({ etapas, areas, onCambiar, errores, soloLectura }:
         );
       })}
       {error('etapas') && (
-        <Typography color="error" sx={{ fontSize: 12 }}>
+        <Typography variant="caption" component="p" color="error">
           {t('flujos.editor.errores.etapas-requeridas')}
         </Typography>
       )}

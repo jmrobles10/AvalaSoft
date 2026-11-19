@@ -20,22 +20,22 @@ export function CoincidenciaDeListas({
   return (
     <Box component="li" sx={{ border: 1, borderColor: c.decision ? 'divider' : 'warning.main', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.25 }} aria-label={`${c.persona} · ${c.lista}`}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-        <Typography sx={{ fontWeight: 500, fontSize: 14 }}>{c.persona}</Typography>
-        <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="subtitle1" component="p">{c.persona}</Typography>
+        <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
           {t(`cumplimiento.roles.${c.rol as 'Tercero'}`, { defaultValue: c.rol })} · {c.identificacion}
         </Typography>
         <Chip size="small" variant="outlined" label={c.lista} />
         {c.puntaje !== null && (
-          <Typography component="span" variant="mono" sx={{ fontSize: 12 }}>
+          <Typography component="span" variant="mono">
             {t('cumplimiento.panel.puntaje', { puntaje: String(c.puntaje) })}
           </Typography>
         )}
       </Stack>
-      <Typography sx={{ fontSize: 13, mt: 0.5 }}>
+      <Typography sx={{ mt: 0.5 }}>
         «{c.nombreEncontrado}»{c.detalle ? ` · ${c.detalle}` : ''}
       </Typography>
       {c.decision ? (
-        <Typography sx={{ fontSize: 12, color: 'text.secondary', mt: 0.5 }}>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5 }}>
           {c.heredada
             ? t('cumplimiento.panel.heredada', { fecha: c.vigenteHasta ? formatearFecha(c.vigenteHasta) : '' })
             : t('cumplimiento.panel.decidida', {

@@ -52,7 +52,7 @@ export function TarjetaEvaluacionesDelVinculo({ vinculo, empresaId }: { vinculo:
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ minWidth: 0 }}>
                 <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Typography component="span" variant="body2" sx={{ fontWeight: 600 }}>
+                  <Typography component="span" variant="subtitle2">
                     {e.cuestionario}
                   </Typography>
                   <ChipEvaluacion estado={e.estado} aprobada={e.aprobada} />

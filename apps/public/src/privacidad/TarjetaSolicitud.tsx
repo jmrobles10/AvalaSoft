@@ -24,8 +24,8 @@ function Constancia({ constancia }: { constancia: ConstanciaHabeasDto }) {
   const { t } = useTranslation();
   return (
     <Stack spacing={1.5}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('privacidad.constancia.ayuda')}</Typography>
-      <Box component="dl" sx={{ m: 0, display: 'grid', gridTemplateColumns: 'max-content minmax(0, 1fr)', columnGap: 2, rowGap: 0.5, fontSize: 14 }}>
+      <Typography sx={{ color: 'text.secondary' }}>{t('privacidad.constancia.ayuda')}</Typography>
+      <Box component="dl" sx={{ typography: 'body2', m: 0, display: 'grid', gridTemplateColumns: 'max-content minmax(0, 1fr)', columnGap: 2, rowGap: 0.5 }}>
         {(
           [
             ['radicado', constancia.radicado],
@@ -37,10 +37,10 @@ function Constancia({ constancia }: { constancia: ConstanciaHabeasDto }) {
           ] as const
         ).map(([clave, valor]) => (
           <Box key={clave} sx={{ display: 'contents' }}>
-            <Typography component="dt" sx={{ color: 'text.secondary', fontSize: 13 }}>
+            <Typography component="dt" sx={{ color: 'text.secondary' }}>
               {t(`privacidad.constancia.campos.${clave}`)}
             </Typography>
-            <Typography component="dd" sx={{ m: 0, fontSize: 14, overflowWrap: 'anywhere' }}>
+            <Typography component="dd" sx={{ m: 0, overflowWrap: 'anywhere' }}>
               {valor}
             </Typography>
           </Box>
@@ -48,10 +48,10 @@ function Constancia({ constancia }: { constancia: ConstanciaHabeasDto }) {
       </Box>
       {constancia.suprimidos.length > 0 && (
         <Box>
-          <Typography component="h3" sx={{ fontWeight: 600, fontSize: 14 }}>
+          <Typography variant="subtitle1" component="h3">
             {t('privacidad.constancia.suprimidos')}
           </Typography>
-          <Box component="ul" sx={{ m: 0, pl: 2.5, fontSize: 14 }}>
+          <Box component="ul" sx={{ typography: 'body2', m: 0, pl: 2.5 }}>
             {constancia.suprimidos.map((e) => (
               <li key={`${e.tipo}-${e.referencia}`}>{e.descripcion}</li>
             ))}
@@ -60,15 +60,15 @@ function Constancia({ constancia }: { constancia: ConstanciaHabeasDto }) {
       )}
       {constancia.retenidos.length > 0 && (
         <Box>
-          <Typography component="h3" sx={{ fontWeight: 600, fontSize: 14 }}>
+          <Typography variant="subtitle1" component="h3">
             {t('privacidad.constancia.retenidos')}
           </Typography>
-          <Box component="ul" sx={{ m: 0, pl: 2.5, fontSize: 14 }}>
+          <Box component="ul" sx={{ typography: 'body2', m: 0, pl: 2.5 }}>
             {constancia.retenidos.map((e) => (
               <li key={`${e.tipo}-${e.referencia}`}>
                 {e.descripcion}
                 {e.retenidaHasta ? ` — ${t('privacidad.constancia.hasta', { fecha: formatearDiaCivil(e.retenidaHasta) })}` : ''}
-                <Typography component="span" sx={{ display: 'block', color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+                <Typography variant="caption" component="span" sx={{ display: 'block', color: 'text.secondary' }}>
                   {e.baseLegal}
                 </Typography>
               </li>
@@ -77,13 +77,13 @@ function Constancia({ constancia }: { constancia: ConstanciaHabeasDto }) {
         </Box>
       )}
       {constancia.anonimizados.length > 0 && (
-        <Typography sx={{ fontSize: 14 }}>
+        <Typography>
           {t('privacidad.constancia.anonimizados')}: {constancia.anonimizados.join(', ')}.
         </Typography>
       )}
       <Box>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('privacidad.constancia.huella')}</Typography>
-        <Typography variant="mono" component="p" sx={{ fontSize: 12, overflowWrap: 'anywhere' }}>
+        <Typography sx={{ color: 'text.secondary' }}>{t('privacidad.constancia.huella')}</Typography>
+        <Typography variant="mono" component="p" sx={{ overflowWrap: 'anywhere' }}>
           {constancia.hash}
         </Typography>
       </Box>
@@ -126,13 +126,13 @@ export function TarjetaSolicitud({ solicitud }: { solicitud: SolicitudHabeasDto 
           <ShieldCheck size={18} />
         </Box>
         <Box sx={{ minWidth: 0, flex: '1 1 200px' }}>
-          <Typography id={`solicitud-${solicitud.id}`} component="h3" sx={{ fontWeight: 600, fontSize: 15, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" id={`solicitud-${solicitud.id}`} component="h3">
             {esTipoDeSolicitud(solicitud.tipo) ? t(`privacidad.solicitud.tipos.${solicitud.tipo}.titulo`) : solicitud.tipo}
           </Typography>
-          <Typography variant="mono" component="p" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+          <Typography variant="mono" component="p" sx={{ color: 'text.secondary' }}>
             {solicitud.radicado}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+          <Typography sx={{ color: 'text.secondary' }}>
             {t('privacidad.solicitud.dirigidaA', { destino: solicitud.destino.nombre })}
             {solicitud.alcance && esAlcanceDeSupresion(solicitud.alcance) ? ` · ${t(`privacidad.solicitud.alcances.${solicitud.alcance}`)}` : ''}
           </Typography>
@@ -143,7 +143,7 @@ export function TarjetaSolicitud({ solicitud }: { solicitud: SolicitudHabeasDto 
       </Stack>
 
       {!resuelta && (
-        <Typography sx={{ mt: 1, fontSize: 14, lineHeight: '20px', color: plazo === 'Vencida' ? 'error.main' : 'text.primary' }}>
+        <Typography sx={{ mt: 1, color: plazo === 'Vencida' ? 'error.main' : 'text.primary' }}>
           {plazo === 'Vencida'
             ? t('privacidad.solicitud.vencida', { fecha: formatearDiaCivil(solicitud.venceEl) })
             : solicitud.diasHabilesRestantes === 0
@@ -153,7 +153,7 @@ export function TarjetaSolicitud({ solicitud }: { solicitud: SolicitudHabeasDto 
       )}
 
       {solicitud.detalle && !resuelta && (
-        <Typography sx={{ mt: 0.75, fontSize: 13, color: 'text.secondary', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{solicitud.detalle}</Typography>
+        <Typography sx={{ mt: 0.75, color: 'text.secondary', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{solicitud.detalle}</Typography>
       )}
 
       {resuelta && (
@@ -165,8 +165,8 @@ export function TarjetaSolicitud({ solicitud }: { solicitud: SolicitudHabeasDto 
           ) : (
             solicitud.respuesta && (
               <Box sx={(th) => ({ borderLeft: 3, borderColor: 'divider', pl: 1.5, borderRadius: `${String(th.radio.sm)}px` })}>
-                <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('privacidad.solicitud.respuesta', { destino: solicitud.destino.nombre })}</Typography>
-                <Typography sx={{ fontSize: 14, lineHeight: '20px', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{solicitud.respuesta}</Typography>
+                <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('privacidad.solicitud.respuesta', { destino: solicitud.destino.nombre })}</Typography>
+                <Typography sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{solicitud.respuesta}</Typography>
               </Box>
             )
           )}

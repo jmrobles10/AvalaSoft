@@ -24,7 +24,7 @@ export function ResultadoMatriz({ resultado: r, recalculando = false }: Resultad
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             {t('cumplimiento.matriz.puntaje')}
           </Typography>
-          <Typography sx={{ fontSize: 20, fontWeight: 600, lineHeight: '28px' }}>{t('cumplimiento.matriz.puntajeDe', { puntaje: formatearPuntaje(r.puntaje) })}</Typography>
+          <Typography variant="h4" component="p">{t('cumplimiento.matriz.puntajeDe', { puntaje: formatearPuntaje(r.puntaje) })}</Typography>
         </Stack>
         <Stack spacing={0.5} sx={{ alignItems: 'flex-start' }}>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -36,16 +36,16 @@ export function ResultadoMatriz({ resultado: r, recalculando = false }: Resultad
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             {t('cumplimiento.matriz.debida')}
           </Typography>
-          <Typography sx={{ fontSize: 14 }}>{t(`cumplimiento.debida.${r.debidaDiligencia}`)}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('cumplimiento.matriz.revision', { meses: String(r.mesesRevision) })}</Typography>
+          <Typography>{t(`cumplimiento.debida.${r.debidaDiligencia}`)}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('cumplimiento.matriz.revision', { meses: String(r.mesesRevision) })}</Typography>
         </Stack>
       </Box>
       {r.forzadoPor && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 1 }}>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 1 }}>
           {t('cumplimiento.matriz.piso', { causa: r.forzadoPor, nivel: t(`cumplimiento.riesgos.${claveRiesgo(r.nivelPorPuntaje)}`) })}
         </Typography>
       )}
-      <Box component="details" sx={{ mt: 1.5, '& > summary': { cursor: 'pointer', color: 'text.secondary', fontSize: 13 } }}>
+      <Box component="details" sx={{ mt: 1.5, '& > summary': { typography: 'body2', cursor: 'pointer', color: 'text.secondary' } }}>
         <summary>{t('cumplimiento.matriz.verCalculo')}</summary>
         <Box sx={{ overflowX: 'auto', mt: 1 }}>
           <Table size="small" aria-label={t('cumplimiento.matriz.verCalculo')}>
@@ -64,7 +64,7 @@ export function ResultadoMatriz({ resultado: r, recalculando = false }: Resultad
                   <TableCell>
                     {d.factorNombre}
                     {d.origen === 'Automatico' && (
-                      <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+                      <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
                         {` · ${t('cumplimiento.matriz.automatico')}`}
                       </Typography>
                     )}
@@ -77,7 +77,7 @@ export function ResultadoMatriz({ resultado: r, recalculando = false }: Resultad
             </TableBody>
           </Table>
         </Box>
-        <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>{t('cumplimiento.matriz.version', { version: String(r.versionMatriz) })}</Typography>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5 }}>{t('cumplimiento.matriz.version', { version: String(r.versionMatriz) })}</Typography>
       </Box>
     </Box>
   );

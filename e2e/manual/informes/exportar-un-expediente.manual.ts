@@ -46,7 +46,7 @@ recorrido(
     await paso(page, {
       titulo: 'Abre el expediente aprobado',
       explicacion:
-        'Desde el informe, un clic en la fila lleva al expediente. Con el expediente aprobado abierto, el botón «Exportar expediente» genera el paquete completo de ese expediente, con su folio.',
+        'Desde el informe, un clic en la fila lleva al expediente. Con el expediente aprobado abierto, el botón «Exportar expediente» genera el paquete completo de ese expediente, con su código.',
       resaltar: boton,
     });
 
@@ -57,7 +57,7 @@ recorrido(
     await paso(page, {
       titulo: 'Descarga el expediente en ZIP',
       explicacion:
-        'El archivo ZIP se llama «expediente» seguido del folio. Trae el resumen en PDF, un índice, la línea de tiempo del expediente en JSON y cada documento incluido con su versión (aquí, el RUT y el certificado de seguridad y salud en el trabajo). ' +
+        'El archivo ZIP se llama «expediente» seguido del código del expediente. Trae el resumen en PDF, un índice, la línea de tiempo del expediente en JSON y cada documento incluido con su versión (aquí, el RUT y el certificado de seguridad y salud en el trabajo). ' +
         'Cada documento que se incluye también queda registrado en la auditoría.',
       resaltar: boton,
       avisos: true,
@@ -70,7 +70,7 @@ recorrido(
     await paso(page, {
       titulo: 'Revisa el registro en la auditoría',
       explicacion:
-        'En Auditoría, la pestaña «Accesos» registra quién exportó el expediente y cuándo: una fila «Exportado» con el folio, y una fila «Descargado» por cada documento que se incluyó. Así la empresa sabe qué información salió del sistema y quién la sacó.',
+        'En Auditoría, la pestaña «Accesos» registra quién exportó el expediente y cuándo: una fila «Exportado» con el código del expediente, y una fila «Descargado» por cada documento que se incluyó. Así la empresa sabe qué información salió del sistema y quién la sacó.',
       resaltar: app.getByRole('row').filter({ hasText: 'Exportado' }).first(),
     });
   },

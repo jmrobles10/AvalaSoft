@@ -25,7 +25,7 @@ export function EditorAtributos({
 
   return (
     <Box component="fieldset" sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-      <Typography component="legend" sx={{ fontSize: 14, fontWeight: 600 }}>
+      <Typography variant="subtitle1" component="legend">
         {t('tiposVinculo.atributos.titulo')}
       </Typography>
       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>

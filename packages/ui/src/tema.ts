@@ -4,7 +4,7 @@ import { esES } from '@mui/material/locale';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
 import { ChevronDown, X } from 'lucide-react';
 import { createElement, type CSSProperties } from 'react';
-import { BORDE, COLOR, DENSIDAD, FUENTE, MOVIMIENTO, RADIO, SOMBRA, TIPOGRAFIA, type Modo, type TokenColor } from './tokens';
+import { BORDE, COLOR, DENSIDAD, FUENTE, MOVIMIENTO, PESO, RADIO, SOMBRA, TIPOGRAFIA, TIPOGRAFIA_MOVIL, type Modo, type TokenColor } from './tokens';
 import type { TonoEstado } from './estados';
 import { OpcionesEnCarga } from './esqueletos';
 import { derivarPaletaEmpresa, type PaletaEmpresa } from './marcaEmpresa';
@@ -96,7 +96,7 @@ const ESCRITORIO = '@media (min-width:600px)';
 const MOVIL = '@media (max-width:599.95px)';
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-/** Alto de un campo y relleno de su texto: todos son «small» de MUI (`size="small"` por omisión): 36 px y texto de 14 px en las dos apps y en todos los anchos. */
+/** Alto de un campo y relleno de su texto: todos son «small» de MUI (`size="small"` por omisión): 36 px (texto de 13 px y renglón de 20) en las dos apps y en todos los anchos. */
 const RELLENO_CAMPO = '8px 12px';
 
 /** Chevron de trazo fino de los desplegables (Select, Autocomplete): 16 px, en el color secundario; MUI lo gira al abrir. */
@@ -151,7 +151,16 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
   const tonoDeColor = { primary: 'encurso', success: 'exito', warning: 'advertencia', error: 'error', info: 'info' } as const;
   const relleno = RELLENO_CAMPO;
   const verticalCampo = '8px';
-  const textoCampo = { fontSize: 14, lineHeight: '20px' };
+  /** Una variante de la escala: en el tercero, por debajo de 600 px, sube un píxel (`TIPOGRAFIA_MOVIL`). */
+  const variante = <K extends keyof typeof TIPOGRAFIA>(clave: K) =>
+    web || !(clave in TIPOGRAFIA_MOVIL) ? TIPOGRAFIA[clave] : { ...TIPOGRAFIA[clave], [MOVIL]: TIPOGRAFIA_MOVIL[clave as keyof typeof TIPOGRAFIA_MOVIL] };
+  const body2 = variante('body2');
+  const subtitle1 = variante('subtitle1');
+  const subtitle2 = variante('subtitle2');
+  const caption = variante('caption');
+  /** Tamaño del texto de los botones: lo fija cada tamaño porque MUI le da 13 y 15 px a `small` y `large` por su cuenta. */
+  const textoBoton = { fontSize: TIPOGRAFIA.boton.fontSize, ...(web ? {} : { [MOVIL]: { fontSize: TIPOGRAFIA_MOVIL.boton.fontSize } }) };
+  const textoCampo = { fontSize: TIPOGRAFIA.body2.fontSize, lineHeight: '20px', ...(web ? {} : { [MOVIL]: TIPOGRAFIA_MOVIL.campo }) };
   /** El campo se pinta con el borde y el relleno de la referencia: etiqueta encogida sobre el borde (el «notch» del outlined). */
   const marcoDeCampo = (clase: string) => ({
     borderRadius: radioControl,
@@ -198,22 +207,24 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
       scrim: c.scrim,
       empresa,
     },
+    // La escala tipográfica (tamaño y peso) vive en `TIPOGRAFIA` (tokens.ts): las pantallas eligen la variante, no fijan `fontSize` ni `fontWeight`.
+    // La base de MUI queda en 14 para no encoger los íconos que MUI dimensiona con `pxToRem` (casillas, chevrones, cerrar).
     typography: {
       fontFamily: FUENTE.sans,
       fontSize: 14,
-      h1: TIPOGRAFIA.titulo1,
-      h2: web ? TIPOGRAFIA.titulo2 : { ...TIPOGRAFIA.publicoTitulo, [ESCRITORIO]: TIPOGRAFIA.titulo2 },
-      h3: TIPOGRAFIA.titulo3,
-      h4: TIPOGRAFIA.titulo4,
-      h5: TIPOGRAFIA.titulo4,
-      h6: TIPOGRAFIA.titulo4,
-      body1: web ? TIPOGRAFIA.cuerpo : { ...TIPOGRAFIA.publicoCuerpo, [ESCRITORIO]: { fontSize: 14, lineHeight: '20px' } },
-      body2: web ? TIPOGRAFIA.cuerpo2 : TIPOGRAFIA.publicoEtiqueta,
-      subtitle1: TIPOGRAFIA.titulo4,
-      subtitle2: TIPOGRAFIA.etiqueta,
-      caption: TIPOGRAFIA.etiqueta,
-      button: { ...TIPOGRAFIA.boton, textTransform: 'none', ...(web ? {} : { fontSize: 15, [ESCRITORIO]: { fontSize: 14 } }) },
-      overline: { ...TIPOGRAFIA.sobretitulo, textTransform: 'uppercase' },
+      h1: TIPOGRAFIA.h1,
+      h2: TIPOGRAFIA.h2,
+      h3: TIPOGRAFIA.h3,
+      h4: TIPOGRAFIA.h4,
+      h5: variante('h5'),
+      h6: variante('h6'),
+      body1: variante('body1'),
+      body2,
+      subtitle1,
+      subtitle2,
+      caption,
+      button: { ...variante('boton'), textTransform: 'none' },
+      overline: { ...variante('overline'), textTransform: 'uppercase' },
       mono: TIPOGRAFIA.mono,
       monoTabla: TIPOGRAFIA.monoTabla,
       kpi: TIPOGRAFIA.monoKpi,
@@ -225,7 +236,7 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
     components: {
       MuiCssBaseline: {
         styleOverrides: {
-          body: { backgroundColor: c.fondo, color: c.textoPrimario, WebkitFontSmoothing: 'antialiased' },
+          body: { ...body2, backgroundColor: c.fondo, color: c.textoPrimario, WebkitFontSmoothing: 'antialiased' },
           // Sin salto lateral al pasar de una pantalla con barra de desplazamiento a una sin ella: el espacio de la barra
           // queda reservado siempre (invisible). Los diálogos y menús de MUI bloquean el scroll del documento y le suman
           // al body un `padding-right` del ancho de la barra para que no se corra; con el espacio ya reservado ese
@@ -251,20 +262,27 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
           root: {
             borderRadius: radioControl,
             gap: 6,
-            fontWeight: 500,
             whiteSpace: 'nowrap',
             '& .MuiButton-startIcon, & .MuiButton-endIcon': { margin: 0 },
             ...(web ? {} : { [MOVIL]: { '&::after': { content: '""', position: 'absolute', left: 0, right: 0, top: '50%', height: DENSIDAD.objetivoTactil, transform: 'translateY(-50%)' } } }),
           },
-          sizeSmall: web
-            ? { minHeight: 30, padding: '4px 10px', fontSize: 13, lineHeight: '18px' }
-            : { minHeight: 32, padding: '5px 12px', fontSize: 14, lineHeight: '20px', [ESCRITORIO]: { minHeight: 30, padding: '4px 12px', fontSize: 13, lineHeight: '18px' } },
-          sizeMedium: web
-            ? { minHeight: control, padding: '7px 14px', fontSize: 14, lineHeight: '20px' }
-            : { minHeight: 40, padding: '9px 16px', [ESCRITORIO]: { minHeight: control, padding: '9px 16px', fontSize: 14, lineHeight: '20px' } },
-          sizeLarge: web
-            ? { minHeight: DENSIDAD.controlAmplio, padding: '9px 18px', fontSize: 14, lineHeight: '20px' }
-            : { minHeight: DENSIDAD.objetivoTactil, padding: '11px 20px', fontSize: 15, lineHeight: '22px', [ESCRITORIO]: { minHeight: DENSIDAD.controlAmplio, padding: '9px 16px', fontSize: 14, lineHeight: '22px' } },
+          // El texto de los tres tamaños es el de la variante `button` (13 px; 15 px en el celular del tercero): aquí solo el alto y el relleno.
+          sizeSmall: {
+            ...textoBoton,
+            ...(web
+              ? { minHeight: 30, padding: '4px 10px', lineHeight: '18px' }
+              : { minHeight: 32, padding: '5px 12px', [ESCRITORIO]: { minHeight: 30, padding: '4px 12px', lineHeight: '18px' } }),
+          },
+          sizeMedium: {
+            ...textoBoton,
+            ...(web ? { minHeight: control, padding: '7px 14px' } : { minHeight: 40, padding: '9px 16px', [ESCRITORIO]: { minHeight: control, padding: '9px 16px' } }),
+          },
+          sizeLarge: {
+            ...textoBoton,
+            ...(web
+              ? { minHeight: DENSIDAD.controlAmplio, padding: '9px 18px' }
+              : { minHeight: DENSIDAD.objetivoTactil, padding: '11px 20px', lineHeight: '22px', [ESCRITORIO]: { minHeight: DENSIDAD.controlAmplio, padding: '9px 16px', lineHeight: '22px' } }),
+          },
           outlined: {
             backgroundColor: c.superficieNivel1,
             '&.MuiButton-colorPrimary': { borderColor: acentoBorde, color: acento, '&:hover': { borderColor: acento, backgroundColor: acentoTinte } },
@@ -289,7 +307,7 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
       // Rótulo de un grupo de opciones (sí/no, radios): pequeño y gris encima de las opciones.
       MuiFormLabel: {
         styleOverrides: {
-          root: { fontSize: 13, lineHeight: '18px', fontWeight: 500, color: c.textoSecundario, '&.Mui-focused': { color: c.textoSecundario }, '&.Mui-error': { color: c.estadoErrorTexto }, '&.Mui-disabled': { color: c.textoDeshabilitado } },
+          root: { ...subtitle2, color: c.textoSecundario, '&.Mui-focused': { color: c.textoSecundario }, '&.Mui-error': { color: c.estadoErrorTexto }, '&.Mui-disabled': { color: c.textoDeshabilitado } },
           asterisk: { color: c.estadoErrorTexto },
         },
       },
@@ -297,9 +315,8 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
       MuiInputLabel: {
         styleOverrides: {
           root: {
-            fontSize: 14,
-            lineHeight: '20px',
-            fontWeight: 400,
+            ...textoCampo,
+            fontWeight: PESO.regular,
             color: c.textoSecundario,
             '&.MuiInputLabel-shrink': { transform: 'translate(14px, -9px) scale(0.857)', maxWidth: 'calc(116% - 28px)' },
             '&.Mui-focused': { color: acento },
@@ -327,6 +344,7 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
       // Sin los adornos del navegador (UI-7): ni la «x» de limpiar del `type="search"` ni el ojo de Edge en las claves.
       MuiInputBase: {
         styleOverrides: {
+          root: { ...textoCampo },
           input: {
             '&[type="search"]::-webkit-search-cancel-button, &[type="search"]::-webkit-search-decoration': { display: 'none', WebkitAppearance: 'none' },
             '&::-ms-reveal, &::-ms-clear': { display: 'none' },
@@ -355,10 +373,10 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
           paper: { backgroundColor: c.superficieElevada, backgroundImage: 'none', border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: radioMarco, marginTop: 4 },
         },
       },
-      MuiPickersCalendarHeader: { styleOverrides: { label: { ...TIPOGRAFIA.titulo4, textTransform: 'capitalize' } } },
+      MuiPickersCalendarHeader: { styleOverrides: { label: { ...subtitle1, textTransform: 'capitalize' } } },
       MuiFormHelperText: {
         styleOverrides: {
-          root: { margin: '4px 2px 0', fontSize: 12, lineHeight: '16px', color: c.textoSecundario, '&.Mui-error': { color: c.estadoErrorTexto } },
+          root: { margin: '4px 2px 0', ...caption, lineHeight: '16px', color: c.textoSecundario, '&.Mui-error': { color: c.estadoErrorTexto } },
         },
       },
       // El ícono de abrir queda centrado en el alto del campo (la posición por omisión de MUI: `calc(50% - .5em)`).
@@ -369,7 +387,7 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
       MuiAutocomplete: {
         styleOverrides: {
           paper: { backgroundColor: c.superficieElevada, border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.sm },
-          listbox: { padding: 4, '& .MuiAutocomplete-option': { minHeight: control, borderRadius: RADIO.xs, fontSize: 14 } },
+          listbox: { padding: 4, '& .MuiAutocomplete-option': { minHeight: control, borderRadius: RADIO.xs, ...body2, lineHeight: '20px' } },
           tag: { height: 24, borderRadius: RADIO.pill, margin: 2 },
           // MUI 9 ya centra el adorno (`top: 50%` + `translateY(-50%)`): sin tocar `top`, queda dentro del campo y a su altura media.
           endAdornment: { right: 6 },
@@ -426,37 +444,40 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
           track: { boxSizing: 'border-box', borderRadius: 10, backgroundColor: c.superficieNivel1, border: `1.5px solid ${c.bordeControlFuerte}`, opacity: 1 },
         },
       },
-      MuiFormControlLabel: { styleOverrides: { root: { marginLeft: -6, gap: 4 }, label: { fontSize: 14, lineHeight: '20px' } } },
+      MuiFormControlLabel: { styleOverrides: { root: { marginLeft: -6, gap: 4 }, label: { ...body2, lineHeight: '20px' } } },
       MuiTabs: { styleOverrides: { root: { minHeight: web ? 40 : 44 }, indicator: { height: BORDE.grosorIndicador, backgroundColor: acento } } },
       MuiTab: {
         styleOverrides: {
           root: {
-            textTransform: 'none', minWidth: 0, minHeight: web ? 40 : 44, padding: '0 10px', fontSize: 14, fontWeight: 500, color: c.textoSecundario,
-            '&.Mui-selected': { color: acento, fontWeight: 500 },
+            textTransform: 'none', minWidth: 0, minHeight: web ? 40 : 44, padding: '0 10px', color: c.textoSecundario,
+            '&.Mui-selected': { color: acento },
           },
         },
       },
-      MuiBreadcrumbs: { styleOverrides: { root: { fontSize: 13, lineHeight: '18px' }, separator: { marginLeft: 4, marginRight: 4, color: c.textoSecundario } } },
-      MuiLink: { defaultProps: { underline: 'hover' }, styleOverrides: { root: { color: acento, fontWeight: 500, textUnderlineOffset: 3 } } },
+      MuiBreadcrumbs: { styleOverrides: { root: { ...body2 }, separator: { marginLeft: 4, marginRight: 4, color: c.textoSecundario } } },
+      MuiLink: { defaultProps: { underline: 'hover' }, styleOverrides: { root: { color: acento, fontWeight: PESO.medio, textUnderlineOffset: 3 } } },
       MuiDivider: { styleOverrides: { root: { borderColor: c.bordeSutil } } },
       MuiPopover: { styleOverrides: { paper: { backgroundColor: c.superficieElevada, backgroundImage: 'none', border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.md } } },
       MuiMenu: { styleOverrides: { list: { padding: 6 } } },
       MuiMenuItem: {
         styleOverrides: {
           root: {
-            minHeight: control, borderRadius: RADIO.sm, fontSize: 14, gap: 8,
-            ...(web ? {} : { [ESCRITORIO]: { minHeight: control, fontSize: 14 } }),
+            ...body2, lineHeight: '20px', minHeight: control, borderRadius: RADIO.sm, gap: 8,
+            ...(web ? {} : { [ESCRITORIO]: { minHeight: control } }),
             '&:hover': { backgroundColor: c.superficieNivel2 },
             '&.Mui-selected, &.Mui-selected:hover': { backgroundColor: acentoTinte },
           },
         },
       },
+      // Texto de las listas: principal `body2` y secundario `caption` (MUI usa `body1` en el principal, y eso sería 14 px).
+      MuiListItemText: { defaultProps: { slotProps: { primary: { variant: 'body2' }, secondary: { variant: 'caption' } } } },
       MuiListItemIcon: { styleOverrides: { root: { minWidth: 0, color: c.textoSecundario } } },
       MuiBackdrop: { styleOverrides: { root: ({ ownerState }) => (ownerState.invisible ? {} : { backgroundColor: c.scrim }) } },
       MuiDialog: {
         styleOverrides: { paper: { borderRadius: radioDialogo, backgroundColor: c.superficieNivel1, backgroundImage: 'none', boxShadow: s.dialogo } },
       },
-      MuiDialogTitle: { styleOverrides: { root: { ...TIPOGRAFIA.titulo3, padding: '18px 24px 4px' } } },
+      MuiDialogTitle: { styleOverrides: { root: { ...variante('h6'), padding: '18px 24px 4px' } } },
+      MuiDialogContentText: { styleOverrides: { root: { ...body2, lineHeight: '20px' } } },
       MuiDialogContent: { styleOverrides: { root: { padding: '12px 24px' } } },
       MuiDialogActions: { styleOverrides: { root: { padding: '12px 24px 20px', gap: 8, flexWrap: 'wrap', '& > :not(style) ~ :not(style)': { marginLeft: 0 } } } },
       MuiDrawer: {
@@ -464,7 +485,7 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
       },
       MuiSnackbarContent: {
         styleOverrides: {
-          root: { backgroundColor: c.superficieElevada, color: c.textoPrimario, border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.md, padding: '6px 12px', fontSize: 14 },
+          root: { backgroundColor: c.superficieElevada, color: c.textoPrimario, border: `1px solid ${c.bordeSutil}`, boxShadow: s.menu, borderRadius: RADIO.md, padding: '6px 12px', ...body2, lineHeight: '20px' },
           action: { marginRight: -4 },
         },
       },
@@ -488,17 +509,17 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
               ...(conAccion && { '& .MuiAlert-message': { padding: '6px 0' } }),
             };
           },
-          message: { fontSize: 14, lineHeight: '20px', padding: '1px 0' },
+          message: { ...body2, lineHeight: '20px', padding: '1px 0' },
           action: { padding: '0 0 0 12px', marginRight: 0, alignItems: 'flex-start' },
         },
       },
-      MuiAlertTitle: { styleOverrides: { root: { fontWeight: 500, fontSize: 14, lineHeight: '20px', marginBottom: 0 } } },
+      MuiAlertTitle: { styleOverrides: { root: { ...subtitle1, marginBottom: 0 } } },
       MuiTooltip: {
         defaultProps: { arrow: false, enterDelay: 400 },
-        styleOverrides: { tooltip: { backgroundColor: c.tooltipFondo, color: c.tooltipTexto, fontSize: 12, lineHeight: '16px', fontWeight: 500, borderRadius: RADIO.sm, padding: '4px 8px' } },
+        styleOverrides: { tooltip: { backgroundColor: c.tooltipFondo, color: c.tooltipTexto, ...body2, borderRadius: RADIO.sm, padding: '4px 8px' } },
       },
-      MuiBadge: { styleOverrides: { badge: { height: 18, minWidth: 18, padding: '0 5px', fontSize: 12, fontWeight: 600 } } },
-      MuiAvatar: { styleOverrides: { root: { width: 28, height: 28, fontSize: 12, fontWeight: 500, backgroundColor: acentoTinte, color: acento } } },
+      MuiBadge: { styleOverrides: { badge: { height: 18, minWidth: 18, padding: '0 5px', ...caption, fontWeight: PESO.fuerte } } },
+      MuiAvatar: { styleOverrides: { root: { width: 28, height: 28, ...caption, fontWeight: PESO.medio, backgroundColor: acentoTinte, color: acento } } },
       // Chips: píldora pequeña. Los de color semántico (`color="success"`…) van tinteados (fondo suave, borde y texto del tono), como los de estado.
       MuiChip: {
         styleOverrides: {
@@ -508,9 +529,9 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
             return {
               borderRadius: RADIO.pill,
               height: web ? 24 : 28,
-              fontSize: web ? 12 : 13,
-              fontWeight: 500,
-              ...(web ? {} : { [ESCRITORIO]: { height: 24, fontSize: 12 } }),
+              ...caption,
+              fontWeight: PESO.medio,
+              ...(web ? {} : { [ESCRITORIO]: { height: 24 } }),
               ...(t
                 ? { backgroundColor: t.fondo, color: t.texto, border: `1px solid ${t.borde}`, '& .MuiChip-icon': { color: t.texto } }
                 : { backgroundColor: c.superficieNivel2, color: c.textoSecundario }),
@@ -543,7 +564,7 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
       },
       MuiAccordionDetails: { styleOverrides: { root: { padding: '8px 16px 16px' } } },
       MuiCard: { defaultProps: { variant: 'outlined' }, styleOverrides: { root: { borderRadius: radioMarco } } },
-      MuiCardHeader: { styleOverrides: { root: { padding: '14px 20px 6px' }, title: TIPOGRAFIA.titulo3, subheader: { fontSize: 13, lineHeight: '18px', color: c.textoSecundario }, action: { margin: 0, alignSelf: 'center' } } },
+      MuiCardHeader: { styleOverrides: { root: { padding: '14px 20px 6px' }, title: variante('h6'), subheader: { ...body2, color: c.textoSecundario }, action: { margin: 0, alignSelf: 'center' } } },
       MuiCardContent: { styleOverrides: { root: { padding: '14px 20px', '&:last-child': { paddingBottom: 16 } } } },
       MuiCardActions: { styleOverrides: { root: { padding: '4px 20px 16px', gap: 8 } } },
       // Tablas: encabezado con fondo cian muy claro y rótulos en versalitas pequeñas; filas con divisores finos.
@@ -553,9 +574,8 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
           head: {
             backgroundColor: c.encabezadoTabla,
             color: c.textoSecundario,
-            fontSize: 11,
-            lineHeight: '16px',
-            fontWeight: 600,
+            ...variante('overline'),
+            fontWeight: PESO.fuerte,
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
           },
@@ -565,7 +585,8 @@ export function createValidaloTheme(modo: Modo = 'light', { app = 'web', colorEm
       MuiTableRow: { styleOverrides: { root: { '&:hover': { backgroundColor: c.superficieNivel2 }, '&.Mui-selected, &.Mui-selected:hover': { backgroundColor: acentoTinte } } } },
       MuiSkeleton: { styleOverrides: { root: { backgroundColor: c.esqueleto, borderRadius: RADIO.xs } } },
       MuiLinearProgress: { styleOverrides: { root: { height: 4, borderRadius: RADIO.pill, backgroundColor: c.superficieNivel2 }, bar: { borderRadius: RADIO.pill } } },
-      MuiTypography: { defaultProps: { variantMapping: { mono: 'span', monoTabla: 'span', kpi: 'span' } } },
+      // `body2` (13 px) es el texto normal: un `Typography` sin variante lo toma; `body1` (14 px) solo si se pide.
+      MuiTypography: { defaultProps: { variant: 'body2', variantMapping: { mono: 'span', monoTabla: 'span', kpi: 'span' } } },
     },
   }, esES, textosPropios);
 }

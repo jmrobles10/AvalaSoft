@@ -98,7 +98,7 @@ export function PaginaApiKeys() {
                   <TableRow key={k.id}>
                     <TableCell>
                       <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', minWidth: 0 }}>
-                        <Typography component="span" noWrap sx={{ fontWeight: 500, fontSize: 14 }}>
+                        <Typography variant="subtitle1" component="span" noWrap>
                           {k.nombre}
                         </Typography>
                         {k.sandbox && <Chip size="small" variant="outlined" label={t('apiKeys.sandbox')} />}

@@ -20,10 +20,10 @@ export function ArchivosGuardados({ empresaId, expedienteId, archivos, puedeDesc
       {archivos.map((a) => (
         <Stack key={a.id} component="li" direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
           <Box sx={{ minWidth: 0 }}>
-            <Typography component="span" sx={{ fontSize: 14, overflowWrap: 'anywhere' }}>
+            <Typography component="span" sx={{ overflowWrap: 'anywhere' }}>
               {a.nombre}
             </Typography>
-            <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12 }}>
+            <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
               {` · ${t('cumplimiento.archivos.pesoYFecha', { peso: formatearPeso(a.tamano), fecha: formatearFecha(a.fecha) })}`}
             </Typography>
           </Box>

@@ -12,7 +12,7 @@ export function DetallesTecnicos({ certificado: c, hashCalculado }: { certificad
     </Typography>
   );
   return (
-    <Box component="details" sx={{ mt: 2, '& > summary': { cursor: 'pointer', color: 'text.secondary', fontSize: 14, py: 0.5 } }}>
+    <Box component="details" sx={{ mt: 2, '& > summary': { typography: 'body2', cursor: 'pointer', color: 'text.secondary', py: 0.5 } }}>
       <summary>{t('verificacion.cripto.detalles')}</summary>
       <Box sx={{ pt: 1.5 }}>
         <RejillaDatos columnas={2}>

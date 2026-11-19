@@ -224,7 +224,7 @@ export function DialogoDecision({ dialogo, expediente, empresaId, motivos, aplic
       <FormularioDeDialogo onSubmit={enviar}>
         <DialogTitle id="titulo-decision">
           {textos.titulo}
-          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
             {expediente.folio} · {expediente.tercero.nombre}
           </Typography>
         </DialogTitle>
@@ -253,10 +253,10 @@ export function DialogoDecision({ dialogo, expediente, empresaId, motivos, aplic
                     sx={{ alignItems: 'flex-start', mx: 0, py: 0.5 }}
                     label={
                       <Box sx={{ pt: '5px' }}>
-                        <Typography component="span" sx={{ display: 'block', fontWeight: 600, fontSize: 14 }}>
+                        <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                           {opcion === 'Aprobado' ? t('expedientes.veredicto.aprobar') : t('expedientes.veredicto.observar')}
                         </Typography>
-                        <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 13 }}>
+                        <Typography component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                           {opcion === 'Aprobado'
                             ? t('expedientes.veredicto.aprobarAyuda')
                             : expediente.politicaDevolucion === 'AlCerrarArea'

@@ -22,7 +22,7 @@ export function EmpresaDelDocumento({ comparticion: c, referencia }: { compartic
           ocultoAAyuda
           label={
             <>
-              <Box component="span" sx={{ fontWeight: 500 }}>
+              <Box component="span" sx={{ typography: 'subtitle2' }}>
                 {c.empresa.nombre}
               </Box>
               {` · ${texto}`}
@@ -33,7 +33,7 @@ export function EmpresaDelDocumento({ comparticion: c, referencia }: { compartic
       {/* Para lectores de pantalla: el nombre de la empresa y la frase completa de lo que tiene. */}
       <Box component="span" sx={visualmenteOculto}>{`${c.empresa.nombre}: ${largo}`}</Box>
       {pideAccion && (
-        <Typography variant="caption" component="span" sx={{ color: 'text.secondary', fontWeight: 400, mt: 0.25 }}>
+        <Typography variant="caption" component="span" sx={{ color: 'text.secondary', mt: 0.25 }}>
           {largo}
         </Typography>
       )}

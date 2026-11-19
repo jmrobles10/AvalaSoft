@@ -59,7 +59,7 @@ export function DrawerTipoVinculo({ tipo, claveIdempotencia, onCerrar }: { tipo:
     <Drawer anchor="right" open onClose={guardar.isPending ? undefined : onCerrar} slotProps={{ paper: { sx: { width: 600, maxWidth: '100%' } } }} aria-labelledby="titulo-tipo-vinculo">
       <Box component="form" onSubmit={enviar} noValidate sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography id="titulo-tipo-vinculo" variant="h4" component="h2">
+          <Typography id="titulo-tipo-vinculo" variant="h6" component="h2">
             {creando ? t('tiposVinculo.nuevo') : t('tiposVinculo.editarNombre', { nombre: tipo.nombre })}
           </Typography>
           <IconButton aria-label={t('comun.cerrar')} onClick={onCerrar} disabled={guardar.isPending}>

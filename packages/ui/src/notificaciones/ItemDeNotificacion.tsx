@@ -58,20 +58,20 @@ export function ItemDeNotificacion<N extends NotificacionVisible>({ notificacion
         {marca ? <Box sx={{ flex: 'none', mt: '2px' }}>{marca.icono}</Box> : <PuntoSinLeer sinLeer={sinLeer} />}
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-            <Typography component="span" sx={{ flex: 1, minWidth: 0, fontSize: 14, lineHeight: '20px', fontWeight: sinLeer ? 600 : 500 }}>
+            <Typography component="span" variant={sinLeer ? 'subtitle1' : 'subtitle2'} sx={{ flex: 1, minWidth: 0 }}>
               {sinLeer && <Box component="span" sx={visualmenteOculto}>{`${textoSinLeer}: `}</Box>}
               {notificacion.titulo}
             </Typography>
-            <Typography
+            <Typography variant="caption"
               component="time"
               dateTime={notificacion.creadaEn}
               title={formatearFechaHora(notificacion.creadaEn)}
-              sx={{ color: 'text.secondary', flex: 'none', fontSize: 12, lineHeight: '16px', whiteSpace: 'nowrap' }}
+              sx={{ color: 'text.secondary', flex: 'none', whiteSpace: 'nowrap' }}
             >
               {haceCuanto(notificacion.creadaEn, ahora)}
             </Typography>
           </Box>
-          <Typography component="span" sx={{ color: 'text.secondary', display: 'block', fontSize: 13, lineHeight: '18px', overflowWrap: 'anywhere' }}>
+          <Typography component="span" sx={{ color: 'text.secondary', display: 'block', overflowWrap: 'anywhere' }}>
             {notificacion.mensaje}
           </Typography>
         </Box>

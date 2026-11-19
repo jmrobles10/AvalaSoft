@@ -49,7 +49,7 @@ export function DrawerRoles({ usuario, empresas, grupos = [], guardando, error, 
       <Box component="form" onSubmit={enviar} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', px: 3, pt: 2.5, pb: 1 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography variant="h3" component="h2" id="titulo-roles">
+          <Typography variant="h6" component="h2" id="titulo-roles">
             {usuario ? t('usuarios.editarRoles') : t('usuarios.nuevo')}
           </Typography>
           {usuario && (
@@ -68,7 +68,7 @@ export function DrawerRoles({ usuario, empresas, grupos = [], guardando, error, 
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <AvatarActor tipo="persona" nombre={usuario.nombre} tamano={40} />
             <Box sx={{ minWidth: 0 }}>
-              <Typography sx={{ fontWeight: 600 }}>{usuario.nombre}</Typography>
+              <Typography variant="subtitle2" component="p">{usuario.nombre}</Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
                 {usuario.correo}
               </Typography>
@@ -84,7 +84,7 @@ export function DrawerRoles({ usuario, empresas, grupos = [], guardando, error, 
         {error !== null && error !== undefined && <Alert severity="error">{mensajeDeError(error, t)}</Alert>}
 
         <Box component="fieldset" sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-          <Typography component="legend" sx={{ fontSize: 13, fontWeight: 500, mb: 1 }}>
+          <Typography variant="subtitle2" component="legend" sx={{ mb: 1 }}>
             {t('usuarios.rolesPorEmpresa')}
           </Typography>
           <Stack spacing={1}>
@@ -146,7 +146,7 @@ export function DrawerRoles({ usuario, empresas, grupos = [], guardando, error, 
         </Box>
 
         <Box component="fieldset" sx={{ border: 0, m: 0, p: 0, minWidth: 0 }}>
-          <Typography component="legend" sx={{ fontSize: 13, fontWeight: 500, mb: 0.5 }}>
+          <Typography variant="subtitle2" component="legend" sx={{ mb: 0.5 }}>
             {t('gruposDeAcceso.asignacion.titulo')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
@@ -230,7 +230,7 @@ export function DrawerRoles({ usuario, empresas, grupos = [], guardando, error, 
             sx={{ alignItems: 'center', justifyContent: 'space-between', px: 1.75, py: 1.5, border: 1, borderColor: 'estado.error.borde', borderRadius: (th) => `${String(th.radio.md)}px` }}
           >
             <Box>
-              <Typography sx={{ fontWeight: 600 }}>{t('usuarios.desactivarA', { nombre: usuario.nombre })}</Typography>
+              <Typography variant="subtitle2" component="p">{t('usuarios.desactivarA', { nombre: usuario.nombre })}</Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {t('usuarios.desactivarAyuda')}
               </Typography>

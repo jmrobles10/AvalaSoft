@@ -125,12 +125,12 @@ export function PaginaDatosMarca() {
               <Typography variant="overline" sx={{ color: 'text.secondary' }} component="p">
                 {t('datosMarca.vistaPrevia')}
               </Typography>
-              <Typography sx={{ fontSize: 14, mb: 1 }}>{t('datosMarca.vistaPreviaTexto', { empresa: empresa.nombre })}</Typography>
+              <Typography sx={{ mb: 1 }}>{t('datosMarca.vistaPreviaTexto', { empresa: empresa.nombre })}</Typography>
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Box component="span" sx={(th) => ({ px: 1.5, py: 0.75, borderRadius: `${String(th.radio.sm)}px`, fontSize: 14, fontWeight: 600, bgcolor: paleta?.accion ?? 'primary.main', color: paleta?.textoAccion ?? 'primary.contrastText' })}>
+                <Box component="span" sx={(th) => ({ typography: 'subtitle1', px: 1.5, py: 0.75, borderRadius: `${String(th.radio.sm)}px`, bgcolor: paleta?.accion ?? 'primary.main', color: paleta?.textoAccion ?? 'primary.contrastText' })}>
                   {t('datosMarca.vistaPreviaBoton')}
                 </Box>
-                <Box component="span" sx={{ fontSize: 14, fontWeight: 500, color: paleta?.enlace ?? 'primary.main' }}>
+                <Box component="span" sx={{ typography: 'subtitle1', color: paleta?.enlace ?? 'primary.main' }}>
                   {t('datosMarca.vistaPreviaEnlace')}
                 </Box>
               </Stack>

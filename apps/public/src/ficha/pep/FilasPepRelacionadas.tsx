@@ -24,11 +24,11 @@ export function FilasPepRelacionadas({ filas, onCambiar, mensaje, hoy }: Props) 
   const lleno = filas.length >= MAXIMO_FILAS;
   return (
     <Stack spacing={1.5}>
-      <Typography component="h3" sx={{ fontWeight: 500 }}>
+      <Typography variant="subtitle2" component="h3">
         {t('ficha.pep.vinculo.titulo')}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', fontSize: 14, mt: -1 }}>{t('ficha.pep.vinculo.ayuda')}</Typography>
-      {mensaje('vinculo_con_pep.vinculos') && <Typography sx={{ color: 'error.main', fontSize: 14 }}>{mensaje('vinculo_con_pep.vinculos')}</Typography>}
+      <Typography sx={{ color: 'text.secondary', mt: -1 }}>{t('ficha.pep.vinculo.ayuda')}</Typography>
+      {mensaje('vinculo_con_pep.vinculos') && <Typography sx={{ color: 'error.main' }}>{mensaje('vinculo_con_pep.vinculos')}</Typography>}
       {filas.length === 0 ? (
         <Typography sx={{ color: 'text.secondary' }}>{t('ficha.pep.vinculo.vacio')}</Typography>
       ) : (
@@ -88,7 +88,7 @@ export function FilasPepRelacionadas({ filas, onCambiar, mensaje, hoy }: Props) 
         <Button variant="outlined" startIcon={<Plus size={16} aria-hidden />} onClick={() => onCambiar([...filas, {}])} disabled={lleno}>
           {t('ficha.pep.vinculo.agregar')}
         </Button>
-        {lleno && <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('ficha.pep.vinculo.maximo', { max: String(MAXIMO_FILAS) })}</Typography>}
+        {lleno && <Typography sx={{ color: 'text.secondary' }}>{t('ficha.pep.vinculo.maximo', { max: String(MAXIMO_FILAS) })}</Typography>}
       </Stack>
     </Stack>
   );

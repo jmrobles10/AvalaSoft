@@ -63,7 +63,7 @@ export function SelectorDeArchivo({ empresaId, expedienteId, proposito, etiqueta
         {subir.isPending ? t('cumplimiento.archivos.subiendo') : etiqueta}
       </Button>
       {aviso && (
-        <Typography role="alert" sx={{ color: 'error.main', fontSize: 12, mt: 0.5 }}>
+        <Typography variant="caption" component="p" role="alert" sx={{ color: 'error.main', mt: 0.5 }}>
           {aviso}
         </Typography>
       )}

@@ -93,7 +93,7 @@ export function CondicionDeAtributo({ condicion, atributos, onCambiar, deshabili
           <ValoresDeAtributo atributo={atributo} modo={actual.modo} valores={actual.valores} onCambiar={(valores) => cambiar({ valores })} deshabilitado={deshabilitado} error={!completa || Boolean(error)} />
         )}
       </Box>
-      <Typography sx={{ color: error || !completa ? 'error.main' : 'text.secondary', fontSize: 12, mt: 0.75 }}>
+      <Typography variant="caption" component="p" sx={{ color: error || !completa ? 'error.main' : 'text.secondary', mt: 0.75 }}>
         {error ?? (completa ? resumen(describirCondicion(condicion, t)) : t('condicionDeAtributo.incompleta'))}
       </Typography>
     </Box>

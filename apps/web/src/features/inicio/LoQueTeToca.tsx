@@ -34,7 +34,7 @@ function TodoAlDia() {
         <CircleCheck size={22} strokeWidth={1.75} />
       </Box>
       <Box sx={{ minWidth: 0 }}>
-        <Typography variant="h3" component="p">
+        <Typography variant="h6" component="p">
           {t('inicio.pendientes.vacio')}
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>

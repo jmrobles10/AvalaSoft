@@ -28,7 +28,7 @@ export function EstadoVacio({ titulo, texto, icono = Inbox, accion, compacto = f
   return (
     <Stack spacing={0.75} sx={{ alignItems: 'center', py: compacto ? 3 : 6, px: 3, textAlign: 'center' }}>
       <CirculoIcono icono={icono} />
-      <Typography sx={{ fontSize: 15, lineHeight: '22px', fontWeight: 600 }}>{titulo}</Typography>
+      <Typography variant="subtitle1" component="p">{titulo}</Typography>
       {texto && (
         <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 380 }}>
           {texto}
@@ -53,10 +53,10 @@ export function PaginaEstado({ icono, titulo, texto, acciones, rol }: PaginaEsta
   return (
     <Stack component="section" role={rol} spacing={1} sx={{ alignItems: 'center', maxWidth: 520, mx: 'auto', px: 3, py: 8, textAlign: 'center' }}>
       <CirculoIcono icono={icono} grande />
-      <Typography variant="h2" component="h1">
+      <Typography variant="h5" component="h1">
         {titulo}
       </Typography>
-      <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
         {texto}
       </Typography>
       {acciones && (

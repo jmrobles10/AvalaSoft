@@ -78,7 +78,7 @@ export const informes = {
     },
     seccion: { titulo: 'Expedientes', ayuda: 'Cada fila abre el expediente.' },
     columnas: {
-      folio: 'Folio',
+      folio: 'Expediente',
       tercero: 'Tercero',
       estado: 'Estado',
       abierto: 'Abierto',

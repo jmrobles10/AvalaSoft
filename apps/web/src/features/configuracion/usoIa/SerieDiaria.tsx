@@ -49,7 +49,7 @@ export function SerieDiaria({ mes, porDia }: { mes: string; porDia: readonly Uso
                   <Box data-barra="adicionales" sx={{ height: `${String((d.adicionales / maximo) * 100)}%`, bgcolor: COLOR_ADICIONALES }} />
                   <Box data-barra="incluidas" sx={{ height: `${String((d.incluidas / maximo) * 100)}%`, bgcolor: COLOR_INCLUIDAS }} />
                 </Box>
-                <Typography component="span" sx={{ display: 'block', textAlign: 'center', fontSize: 10, lineHeight: '16px', color: 'text.secondary' }}>
+                <Typography variant="caption" component="span" sx={{ display: 'block', textAlign: 'center', color: 'text.secondary' }}>
                   {d.dia === 1 || d.dia % 5 === 0 ? d.dia : ''}
                 </Typography>
               </Box>

@@ -102,7 +102,7 @@ function Formulario({ tenantId, uso, grupo }: { tenantId: string; uso: UsoDelGru
         derecha={
           <Tarjeta titulo={t('plataforma.plan.usoActual', { mes: etiquetaMes(uso.mes).toLowerCase() })} icono={Activity}>
             <MedidoresDeUso mediciones={uso.mediciones} />
-            <Typography sx={{ mt: 2, fontSize: 12, color: 'text.secondary', lineHeight: '16px' }}>{t('plataforma.plan.usoNota')}</Typography>
+            <Typography variant="caption" component="p" sx={{ mt: 2, color: 'text.secondary' }}>{t('plataforma.plan.usoNota')}</Typography>
           </Tarjeta>
         }
       />

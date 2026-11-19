@@ -72,8 +72,8 @@ export function ListasRestrictivas({ expediente, empresaId, verificacion: v, acc
           {t('cumplimiento.panel.ultimoError', { error: v.ultimoError, cuando: v.reintentarDesde ? formatearFechaHora(v.reintentarDesde) : '' })}
         </Alert>
       )}
-      {!consultada && <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.panel.pendienteListas')}</Typography>}
-      {v.estado === 'Expirada' && <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.panel.expiradaListas')}</Typography>}
+      {!consultada && <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.panel.pendienteListas')}</Typography>}
+      {v.estado === 'Expirada' && <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.panel.expiradaListas')}</Typography>}
       {v.registradaEn && (
         <Stack spacing={1.5}>
           <RejillaDatos columnas={3}>
@@ -83,7 +83,7 @@ export function ListasRestrictivas({ expediente, empresaId, verificacion: v, acc
                 {fuente !== null && <Chip size="small" variant="outlined" label={t('cumplimiento.panel.manual')} />}
               </Stack>
               {fuente !== null && (
-                <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, display: 'block' }}>
+                <Typography variant="caption" component="span" sx={{ color: 'text.secondary', display: 'block' }}>
                   {t('cumplimiento.manual.delOficial', { quien: quien(v.registradaPor) })}
                 </Typography>
               )}
@@ -95,9 +95,9 @@ export function ListasRestrictivas({ expediente, empresaId, verificacion: v, acc
             </Dato>
           </RejillaDatos>
           <Box>
-            <Typography sx={{ fontSize: 13, fontWeight: 500, mb: 0.5 }}>{t('cumplimiento.panel.coincidencias')}</Typography>
+            <Typography variant="subtitle2" component="p" sx={{ mb: 0.5 }}>{t('cumplimiento.panel.coincidencias')}</Typography>
             {v.coincidencias.length === 0 ? (
-              <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.panel.sinCoincidencias')}</Typography>
+              <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.panel.sinCoincidencias')}</Typography>
             ) : (
               <Stack component="ul" spacing={1} sx={{ listStyle: 'none', p: 0, m: 0 }}>
                 {v.coincidencias.map((c) => (

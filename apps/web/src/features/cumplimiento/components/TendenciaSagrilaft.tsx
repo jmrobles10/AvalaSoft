@@ -30,7 +30,7 @@ export function TendenciaSagrilaft({ meses }: { meses: readonly MesDeCumplimient
   return (
     <Tarjeta titulo={t('cumplimiento.sagrilaft.tendencia.titulo')} etiqueta={t('cumplimiento.sagrilaft.tendencia.titulo')} nivel="h3">
       {maximo === 0 ? (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cumplimiento.sagrilaft.tendencia.sinDatos')}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{t('cumplimiento.sagrilaft.tendencia.sinDatos')}</Typography>
       ) : (
         <>
           <Stack direction="row" spacing={2} sx={{ mb: 1 }}>
@@ -44,7 +44,7 @@ export function TendenciaSagrilaft({ meses }: { meses: readonly MesDeCumplimient
                   <Box data-barra="estudios" sx={{ flex: 1, maxWidth: 14, height: `${String(porcentajeDe(m.estudios, maximo))}%`, bgcolor: COLOR_ESTUDIOS, borderRadius: '3px 3px 0 0' }} />
                   <Box data-barra="consultas" sx={{ flex: 1, maxWidth: 14, height: `${String(porcentajeDe(m.consultas, maximo))}%`, bgcolor: COLOR_CONSULTAS, borderRadius: '3px 3px 0 0' }} />
                 </Box>
-                <Typography component="span" sx={{ display: 'block', textAlign: 'center', fontSize: 10, lineHeight: '16px', color: 'text.secondary', mt: 0.25, whiteSpace: 'nowrap' }}>
+                <Typography variant="caption" component="span" sx={{ display: 'block', textAlign: 'center', color: 'text.secondary', mt: 0.25, whiteSpace: 'nowrap' }}>
                   {etiquetaDeMes(m.mes, i === 0 || m.mes.endsWith('-01'))}
                 </Typography>
               </Box>

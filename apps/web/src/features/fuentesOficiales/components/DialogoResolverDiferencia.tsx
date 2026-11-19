@@ -27,7 +27,7 @@ export function DialogoResolverDiferencia({ campo, decision, ocupado, error, onG
     <Dialog open onClose={ocupado ? undefined : onCerrar} maxWidth={false} slotProps={{ paper: { sx: { width: 520, maxWidth: 'calc(100% - 32px)' } } }} aria-labelledby="titulo-resolver-diferencia">
       <DialogTitle id="titulo-resolver-diferencia">{confirmar ? t('fuentesOficiales.resolver.tituloConfirmar') : t('fuentesOficiales.resolver.tituloAceptar')}</DialogTitle>
       <DialogContent>
-        <Typography sx={{ fontWeight: 500, mb: 1 }}>
+        <Typography variant="subtitle2" component="p" sx={{ mb: 1 }}>
           {t('fuentesOficiales.resolver.diferencia', {
             etiqueta: campo.etiqueta,
             oficial: campo.oficial ?? sinDato,

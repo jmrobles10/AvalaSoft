@@ -44,7 +44,7 @@ export function PaginaAccesos() {
         <Stack spacing={3}>
           {pendientes.length > 0 && (
             <Box component="section" aria-labelledby="accesos-por-decidir">
-              <Typography id="accesos-por-decidir" variant="h3" component="h2" sx={{ mb: 1.5 }}>
+              <Typography id="accesos-por-decidir" variant="h6" component="h2" sx={{ mb: 1.5 }}>
                 {t('accesoAislado.pagina.porDecidir')}
               </Typography>
               <Stack component="ul" spacing={1.5} sx={{ p: 0, m: 0, listStyle: 'none' }}>
@@ -56,7 +56,7 @@ export function PaginaAccesos() {
           )}
           {hechas.length > 0 && (
             <Box component="section" aria-labelledby="accesos-decididos">
-              <Typography id="accesos-decididos" variant="h3" component="h2" sx={{ mb: 1.5 }}>
+              <Typography id="accesos-decididos" variant="h6" component="h2" sx={{ mb: 1.5 }}>
                 {t('accesoAislado.pagina.decididos')}
               </Typography>
               <Stack component="ul" spacing={1.5} sx={{ p: 0, m: 0, listStyle: 'none' }}>
@@ -85,29 +85,29 @@ function TarjetaAcceso({ solicitud, onDecidir }: { solicitud: AccesoSolicitadoDt
     <Card component="li" sx={{ p: 2 }} aria-label={solicitud.correo}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Box sx={{ minWidth: 0 }}>
-          <Typography component="h3" sx={{ fontSize: 16, lineHeight: '22px', overflowWrap: 'anywhere' }}>
+          <Typography variant="h6" component="h3" sx={{ overflowWrap: 'anywhere' }}>
             {solicitud.correo}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px' }}>
+          <Typography sx={{ color: 'text.secondary' }}>
             {t('accesoAislado.tarjeta.invitadoPor', { empresas: listaDeEmpresas(solicitud.empresas) })}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+          <Typography sx={{ color: 'text.secondary' }}>
             {t('accesoAislado.tarjeta.desde', { fecha: formatearFecha(solicitud.desde) })}
           </Typography>
         </Box>
         <ChipEstado estado={estado} etiqueta={t(`accesoAislado.tarjeta.estados.${clave}`)} size="medium" />
       </Stack>
       {solicitud.contactoDesplazado && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', mt: 1 }}>{t('accesoAislado.tarjeta.desplazado')}</Typography>
+        <Typography sx={{ color: 'text.secondary', mt: 1 }}>{t('accesoAislado.tarjeta.desplazado')}</Typography>
       )}
       {decidida && solicitud.decididoEn && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', mt: 1 }}>
+        <Typography sx={{ color: 'text.secondary', mt: 1 }}>
           {decididoPor(solicitud, t)}
           {solicitud.motivo ? ` · ${t('accesoAislado.tarjeta.motivo', { motivo: solicitud.motivo })}` : ''}
         </Typography>
       )}
       {!decidida && !puedoDecidir(solicitud) && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', mt: 1 }}>
+        <Typography sx={{ color: 'text.secondary', mt: 1 }}>
           {solicitud.decideLaPlataforma ? t('accesoAislado.tarjeta.laPlataformaDecide') : t('accesoAislado.tarjeta.soloVerificados')}
         </Typography>
       )}

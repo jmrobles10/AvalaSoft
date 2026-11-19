@@ -32,11 +32,11 @@ export function CabeceraPagina({ titulo, sub, accion }: { titulo: string; sub?: 
   return (
     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { sm: 'flex-end' }, justifyContent: 'space-between', mb: 2.5 }}>
       <Box sx={{ minWidth: 0 }}>
-        <Typography variant="h2" component="h1">
+        <Typography variant="h5" component="h1">
           {titulo}
         </Typography>
         {sub && (
-          <Typography sx={{ color: 'text.secondary', mt: 0.5, fontSize: { xs: 15, sm: 14 }, lineHeight: { xs: '22px', sm: '20px' } }}>
+          <Typography sx={{ color: 'text.secondary', mt: 0.5 }}>
             {sub}
           </Typography>
         )}
@@ -73,12 +73,12 @@ export function FilaEmpresa({ nombre, estado, detalle, accion }: { nombre: strin
         listStyle: 'none',
       }}
     >
-      <Typography component="span" sx={{ fontWeight: 500, fontSize: 13, lineHeight: '18px', minWidth: 0 }}>
+      <Typography variant="subtitle2" component="span" sx={{ minWidth: 0 }}>
         {nombre}
       </Typography>
       <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, justifySelf: { xs: 'end', sm: 'start' } }}>{estado}</Box>
       {detalle ? (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', gridColumn: { xs: '1 / -1', sm: 3 } }}>
+        <Typography sx={{ color: 'text.secondary', gridColumn: { xs: '1 / -1', sm: 3 } }}>
           {detalle}
         </Typography>
       ) : (
@@ -96,6 +96,7 @@ export function LogoEmpresa({ nombre, logoUrl, tamano = 36 }: { nombre: string; 
     <Box
       aria-hidden
       sx={{
+        typography: 'subtitle1',
         width: tamano,
         height: tamano,
         borderRadius: 1,
@@ -104,8 +105,6 @@ export function LogoEmpresa({ nombre, logoUrl, tamano = 36 }: { nombre: string; 
         placeItems: 'center',
         bgcolor: 'superficie.nivel2',
         color: 'text.secondary',
-        fontWeight: 600,
-        fontSize: 15,
       }}
     >
       {nombre.trim().charAt(0).toUpperCase()}

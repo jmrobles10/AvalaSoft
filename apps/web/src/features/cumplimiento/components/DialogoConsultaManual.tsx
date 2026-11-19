@@ -50,19 +50,19 @@ export function DialogoConsultaManual({ expediente, empresaId, ocupado, error, o
     <Dialog open onClose={ocupado ? undefined : onCerrar} maxWidth={false} slotProps={{ paper: { sx: { width: 620, maxWidth: 'calc(100% - 32px)' } } }} aria-labelledby="titulo-consulta-manual">
       <DialogTitle id="titulo-consulta-manual">
         {t('cumplimiento.manual.titulo')}
-        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+        <Typography variant="body2" component="span" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
           {t('cumplimiento.manual.ayuda')}
         </Typography>
       </DialogTitle>
       <DialogContent>
         <Stack spacing={2.5} sx={{ pt: 1 }}>
           <Box>
-            <FormLabel sx={{ fontSize: 13 }}>{t('cumplimiento.manual.archivo')}</FormLabel>
+            <FormLabel sx={{ typography: 'subtitle2' }}>{t('cumplimiento.manual.archivo')}</FormLabel>
             <Stack direction="row" spacing={1.5} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 0.5 }}>
               {adjunto && (
                 <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', minWidth: 0 }}>
                   <FileText size={16} aria-hidden />
-                  <Typography sx={{ fontSize: 14, overflowWrap: 'anywhere' }}>{`${adjunto.nombre} · ${formatearPeso(adjunto.tamano)}`}</Typography>
+                  <Typography sx={{ overflowWrap: 'anywhere' }}>{`${adjunto.nombre} · ${formatearPeso(adjunto.tamano)}`}</Typography>
                 </Stack>
               )}
               <SelectorDeArchivo
@@ -108,7 +108,7 @@ export function DialogoConsultaManual({ expediente, empresaId, ocupado, error, o
             />
           </Box>
           <Box>
-            <FormLabel id="hubo-coincidencias" sx={{ fontSize: 13 }}>
+            <FormLabel id="hubo-coincidencias" sx={{ typography: 'subtitle2' }}>
               {t('cumplimiento.manual.hubo')}
             </FormLabel>
             <ToggleButtonGroup
@@ -157,7 +157,7 @@ export function DialogoConsultaManual({ expediente, empresaId, ocupado, error, o
                       {t('cumplimiento.manual.agregar')}
                     </Button>
                   </Box>
-                  <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+                  <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
                     {t('cumplimiento.manual.personas', { personas: personas.data.personas.map((p) => p.nombre).join(', ') })}
                   </Typography>
                 </>

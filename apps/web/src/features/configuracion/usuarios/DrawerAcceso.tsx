@@ -24,7 +24,7 @@ export function DrawerAcceso({ usuario, onCerrar }: { usuario: UsuarioDto; onCer
     <Drawer anchor="right" open onClose={onCerrar} slotProps={{ paper: { sx: { width: { xs: '100%', sm: 520 } }, 'aria-labelledby': 'titulo-acceso' } }}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', px: 3, pt: 2.5, pb: 1 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography variant="h3" component="h2" id="titulo-acceso">
+          <Typography variant="h6" component="h2" id="titulo-acceso">
             {t('accesoUsuario.titulo', { nombre: usuario.nombre })}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 0.5 }}>

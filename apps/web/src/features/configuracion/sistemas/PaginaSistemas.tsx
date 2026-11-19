@@ -18,7 +18,7 @@ import { OrigenesSistema } from './OrigenesSistema';
 function EstadoSistema({ activo }: { activo: boolean }) {
   const { t } = useTranslation();
   return (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 13, '& svg': { color: activo ? 'estado.exito.texto' : 'text.secondary' } }}>
+    <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75, '& svg': { color: activo ? 'estado.exito.texto' : 'text.secondary' } }}>
       {activo ? <CircleCheck size={14} strokeWidth={1.75} aria-hidden /> : <Ban size={14} strokeWidth={1.75} aria-hidden />}
       {activo ? t('comun.activo') : t('sistemas.desactivado')}
     </Box>
@@ -107,7 +107,7 @@ export function PaginaSistemas() {
                   <TableCell>
                     <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
                       <AvatarActor tipo="integracion" />
-                      <span style={{ fontWeight: 500 }}>{s.nombre}</span>
+                      <Typography component="span" variant="subtitle2">{s.nombre}</Typography>
                       <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>
                         {s.codigo}
                       </Typography>
@@ -144,18 +144,17 @@ export function PaginaSistemas() {
               <OrigenesSistema key={elegido.id} sistema={elegido} />
               <Divider />
               <Box>
-                <Typography sx={{ fontSize: 13, fontWeight: 500, mb: 0.5 }}>{t('sistemas.clavePublica')}</Typography>
+                <Typography variant="subtitle2" component="p" sx={{ mb: 0.5 }}>{t('sistemas.clavePublica')}</Typography>
                 <Box
                   component="pre"
                   sx={{
+                    typography: 'caption',
                     m: 0,
                     px: 1.5,
                     py: 1.25,
                     borderRadius: (th) => `${String(th.radio.sm)}px`,
                     bgcolor: 'superficie.nivel2',
                     fontFamily: (th) => th.typography.mono.fontFamily,
-                    fontSize: 12,
-                    lineHeight: '18px',
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-all',
                     maxHeight: 180,

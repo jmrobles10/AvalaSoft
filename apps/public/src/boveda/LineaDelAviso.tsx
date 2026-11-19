@@ -22,8 +22,8 @@ export function LineaDelAviso({ linea }: { linea: LineaPorRenovar }) {
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, columnGap: 2, rowGap: 0.25 }}>
         <Box sx={{ minWidth: 0, flex: 1, display: 'flex', flexWrap: 'wrap', alignItems: 'center', columnGap: 1, rowGap: 0.25 }}>
           <ChipVigencia vigencia={linea.vigencia} />
-          <Typography component="span" sx={{ fontSize: 14, lineHeight: '20px', minWidth: 0 }}>
-            <Box component="strong" sx={{ fontWeight: 500 }}>{`${linea.documento}:`}</Box> {linea.texto}
+          <Typography component="span" sx={{ minWidth: 0 }}>
+            <Box component="strong" sx={{ typography: 'subtitle2' }}>{`${linea.documento}:`}</Box> {linea.texto}
           </Typography>
         </Box>
         <Stack direction="row" sx={{ flex: 'none', flexWrap: 'wrap', alignItems: 'center', ml: { xs: -1, sm: 0 } }}>

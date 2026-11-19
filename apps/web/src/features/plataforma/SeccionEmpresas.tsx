@@ -58,7 +58,7 @@ export function SeccionEmpresas({ grupo }: { grupo: GrupoDto }) {
                   <TableRow key={e.id}>
                     <TableCell>
                       <Stack spacing={0.25}>
-                        <Typography component="span" sx={{ fontWeight: 500, fontSize: 14 }}>
+                        <Typography variant="subtitle1" component="span">
                           {e.nombre}
                         </Typography>
                         {!e.activa && <EstadoActivo activo={false} texto={t('comun.inactiva')} />}

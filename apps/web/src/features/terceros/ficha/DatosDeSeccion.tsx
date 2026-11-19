@@ -47,7 +47,7 @@ export function DatosDeSeccion({ datos, empresaId, terceroId, seccion, version =
               const declaracion = clave === 'personas' ? declaracionActiva(fila) : null;
               return (
                 <Box component="li" key={`${clave}-${String(i)}`} aria-label={titulo}>
-                  <Typography sx={{ fontWeight: 500, mb: 0.5 }}>{titulo}</Typography>
+                  <Typography variant="subtitle2" component="p" sx={{ mb: 0.5 }}>{titulo}</Typography>
                   <Rejilla datos={resto} />
                   {declaracion && <DeclaracionPep declaracion={declaracion} indice={i} descarga={descarga} />}
                 </Box>

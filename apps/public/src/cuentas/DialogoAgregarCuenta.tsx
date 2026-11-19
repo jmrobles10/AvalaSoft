@@ -124,16 +124,16 @@ export function DialogoAgregarCuenta({ onCerrar }: { onCerrar: () => void }) {
               {campoDeTexto('titular', t('cuentas.nueva.titular'), undefined, { autoComplete: 'name' })}
               {campoDeTexto('identificacionTitular', t('cuentas.nueva.identificacion'), t('cuentas.nueva.identificacionAyuda'), { maxLength: 30 })}
               <Box sx={{ gridColumn: '1 / -1' }}>
-                <Typography component="h3" sx={{ fontWeight: 600, fontSize: 14 }}>
+                <Typography variant="subtitle1" component="h3">
                   {t('cuentas.nueva.contactoPagos')}
                 </Typography>
-                <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('cuentas.nueva.contactoPagosAyuda')}</Typography>
+                <Typography sx={{ color: 'text.secondary' }}>{t('cuentas.nueva.contactoPagosAyuda')}</Typography>
               </Box>
               {campoDeTexto('pagosNombre', t('cuentas.nueva.pagosNombre'), undefined, { autoComplete: 'off', fila: true })}
               {campoDeTexto('pagosCorreo', t('cuentas.nueva.pagosCorreo'), undefined, { autoComplete: 'off' })}
               {campoDeTexto('pagosTelefono', t('cuentas.nueva.pagosTelefono'), undefined, { inputMode: 'text', maxLength: 40 })}
             </Box>
-            <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+            <Typography sx={{ color: 'text.secondary' }}>
               {t('cuentas.nueva.protegido')}
             </Typography>
           </Stack>

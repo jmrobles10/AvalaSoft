@@ -37,7 +37,7 @@ function TablaEmpresas({ grupo, id, onEditar }: { grupo: GrupoDto; id: string; o
               return (
                 <TableRow key={e.id}>
                   <TableCell>
-                    <Typography component="span" sx={{ fontWeight: 500, fontSize: 14 }}>
+                    <Typography variant="subtitle1" component="span">
                       {e.nombre}
                     </Typography>
                   </TableCell>

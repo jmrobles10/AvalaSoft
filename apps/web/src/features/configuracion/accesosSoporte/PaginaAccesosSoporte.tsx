@@ -94,7 +94,7 @@ export function PaginaAccesosSoporte() {
               )}
               {accesos.map((a) => (
                 <TableRow key={a.id}>
-                  <TableCell sx={{ fontWeight: 500 }}>{a.empresa}</TableCell>
+                  <TableCell sx={{ typography: 'subtitle2' }}>{a.empresa}</TableCell>
                   <TableCell>
                     <Typography variant="body2">{a.justificacion}</Typography>
                   </TableCell>

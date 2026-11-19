@@ -67,7 +67,7 @@ export function DialogoPreferencias({ onCerrar }: { onCerrar: () => void }) {
                     }
                     label={
                       <Box sx={{ py: 1.25, pr: 2 }}>
-                        <Typography component="span" sx={{ display: 'block', fontSize: 14, lineHeight: '20px', fontWeight: 500 }}>
+                        <Typography variant="subtitle1" component="span" sx={{ display: 'block' }}>
                           {t(`notificaciones.tipos.${clave}.titulo`)}
                         </Typography>
                         <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block' }}>

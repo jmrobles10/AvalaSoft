@@ -46,9 +46,9 @@ function Rama({ nodo, elegidas, abiertoTodo, onAlternar, deshabilitado, nivel }:
         <Box component="span" aria-hidden sx={{ display: 'inline-flex', mr: 1 }}>
           {visible ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
         </Box>
-        <ListItemText primary={nodo.nombre} slotProps={{ primary: { sx: { fontWeight: nivel === 0 ? 600 : 500 } } }} />
+        <ListItemText primary={nodo.nombre} slotProps={{ primary: { variant: nivel === 0 ? 'subtitle1' : 'subtitle2' } }} />
         {marcadas > 0 && (
-          <Typography component="span" sx={{ color: 'primary.main', fontSize: 13, ml: 1 }}>
+          <Typography component="span" sx={{ color: 'primary.main', ml: 1 }}>
             {t('ficha.especialidades.marcadas', { count: marcadas })}
           </Typography>
         )}

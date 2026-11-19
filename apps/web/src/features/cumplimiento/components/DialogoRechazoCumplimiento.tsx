@@ -44,7 +44,7 @@ export function DialogoRechazoCumplimiento({ expediente, empresaId, ocupado, err
       <FormularioDeDialogo onSubmit={enviar}>
         <DialogTitle id="titulo-rechazo-cumplimiento">
           {t('cumplimiento.rechazo.titulo')}
-          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25, fontWeight: 400 }}>
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
             {expediente.folio} · {expediente.tercero.nombre}
           </Typography>
         </DialogTitle>

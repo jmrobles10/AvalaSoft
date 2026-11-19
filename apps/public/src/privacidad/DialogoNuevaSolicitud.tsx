@@ -74,8 +74,8 @@ export function DialogoNuevaSolicitud({ vinculos, solicitudes, onCerrar }: { vin
                     sx={{ alignItems: 'flex-start', py: 0.5 }}
                     label={
                       <Box>
-                        <Typography sx={{ fontWeight: 500, fontSize: 14 }}>{t(`privacidad.solicitud.tipos.${tipo}.titulo`)}</Typography>
-                        <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+                        <Typography variant="subtitle1" component="p">{t(`privacidad.solicitud.tipos.${tipo}.titulo`)}</Typography>
+                        <Typography sx={{ color: 'text.secondary' }}>
                           {t(`privacidad.solicitud.tipos.${tipo}.texto`, { dias: String(diasHabilesDe(tipo)) })}
                         </Typography>
                       </Box>
@@ -121,7 +121,7 @@ export function DialogoNuevaSolicitud({ vinculos, solicitudes, onCerrar }: { vin
             />
 
             {b.tipo && (
-              <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+              <Typography sx={{ color: 'text.secondary' }}>
                 {t('privacidad.solicitud.queSigue', { destino: destinoNombre, dias: String(diasHabilesDe(b.tipo)) })}
               </Typography>
             )}

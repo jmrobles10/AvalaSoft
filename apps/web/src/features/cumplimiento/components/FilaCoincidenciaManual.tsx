@@ -23,7 +23,7 @@ export function FilaCoincidenciaManual({ numero, coincidencia: c, personas, clav
     <Box component="li" sx={{ border: 1, borderColor: 'divider', borderRadius: (th) => `${String(th.radio.sm)}px`, p: 1.5, listStyle: 'none' }} aria-label={t('cumplimiento.manual.coincidencia', { n: String(numero) })}>
       <Stack spacing={1.5}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 500 }}>{t('cumplimiento.manual.coincidencia', { n: String(numero) })}</Typography>
+          <Typography variant="subtitle2" component="p">{t('cumplimiento.manual.coincidencia', { n: String(numero) })}</Typography>
           <IconButton size="small" aria-label={t('cumplimiento.manual.quitar', { n: String(numero) })} onClick={onQuitar}>
             <Trash2 size={16} aria-hidden />
           </IconButton>

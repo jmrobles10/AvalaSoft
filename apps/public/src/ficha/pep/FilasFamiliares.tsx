@@ -19,11 +19,11 @@ export function FilasFamiliares({ filas, onCambiar, mensaje }: Props) {
   const lleno = filas.length >= MAXIMO_FILAS;
   return (
     <Stack spacing={1.5}>
-      <Typography component="h3" sx={{ fontWeight: 500 }}>
+      <Typography variant="subtitle2" component="h3">
         {t('ficha.pep.familiares.titulo')}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', fontSize: 14, mt: -1 }}>{t('ficha.pep.familiares.ayuda')}</Typography>
-      {mensaje('familiares') && <Typography sx={{ color: 'error.main', fontSize: 14 }}>{mensaje('familiares')}</Typography>}
+      <Typography sx={{ color: 'text.secondary', mt: -1 }}>{t('ficha.pep.familiares.ayuda')}</Typography>
+      {mensaje('familiares') && <Typography sx={{ color: 'error.main' }}>{mensaje('familiares')}</Typography>}
       {filas.length === 0 ? (
         <Typography sx={{ color: 'text.secondary' }}>{t('ficha.pep.familiares.vacio')}</Typography>
       ) : (
@@ -50,7 +50,7 @@ export function FilasFamiliares({ filas, onCambiar, mensaje }: Props) {
         <Button variant="outlined" startIcon={<Plus size={16} aria-hidden />} onClick={() => onCambiar([...filas, {}])} disabled={lleno}>
           {t('ficha.pep.agregarFamiliar')}
         </Button>
-        {lleno && <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>{t('ficha.pep.familiares.maximo', { max: String(MAXIMO_FILAS) })}</Typography>}
+        {lleno && <Typography sx={{ color: 'text.secondary' }}>{t('ficha.pep.familiares.maximo', { max: String(MAXIMO_FILAS) })}</Typography>}
       </Stack>
     </Stack>
   );

@@ -32,7 +32,7 @@ export function RevisionAutomatica({ hechos, tipoEsperado, limite }: RevisionAut
   if (estado === 'nada' || !hechos) return null;
   if (estado === 'sinAnalisis' || !hechos.ia) {
     return (
-      <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12 }}>
+      <Typography component="p" variant="caption" sx={{ color: 'text.secondary' }}>
         {t('ia.revision.sinAnalisis')}
       </Typography>
     );
@@ -81,7 +81,7 @@ function ConAnalisis({ ia, tipoEsperado, limite }: { ia: HechosIaDto; tipoEspera
         )}
         <Box
           component="dl"
-          sx={{ m: 0, display: 'grid', gridTemplateColumns: 'minmax(0, max-content) minmax(0, 1fr)', columnGap: 1.5, rowGap: 0.5, fontSize: 13, lineHeight: '18px' }}
+          sx={{ typography: 'body2', m: 0, display: 'grid', gridTemplateColumns: 'minmax(0, max-content) minmax(0, 1fr)', columnGap: 1.5, rowGap: 0.5 }}
         >
           <Box component="dt" sx={{ color: 'text.secondary' }}>
             {t('ia.revision.legible')}
@@ -99,17 +99,17 @@ function ConAnalisis({ ia, tipoEsperado, limite }: { ia: HechosIaDto; tipoEspera
         {campos.length > 0 ? (
           <CamposIa campos={campos} titulo={t('ia.revision.campos')} limite={limite} />
         ) : (
-          <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 13 }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {t('ia.revision.sinCampos')}
           </Typography>
         )}
         {ia.observaciones && (
-          <Typography variant="body2" sx={{ fontSize: 13 }}>
+          <Typography variant="body2">
             {t('ia.revision.observaciones', { texto: ia.observaciones })}
           </Typography>
         )}
         {recortado && (
-          <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Typography component="p" variant="caption" sx={{ color: 'text.secondary' }}>
             {t('ia.revision.paginasOmitidas', { count: ia.paginasEnviadas ?? 0 })}
           </Typography>
         )}

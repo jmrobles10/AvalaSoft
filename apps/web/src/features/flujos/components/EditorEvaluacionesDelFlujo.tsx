@@ -27,7 +27,7 @@ export function EditorEvaluacionesDelFlujo({ evaluaciones, cuestionarios, onCamb
 
   return (
     <Stack spacing={1.5}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('evaluaciones.flujo.ayuda')}</Typography>
+      <Typography sx={{ color: 'text.secondary' }}>{t('evaluaciones.flujo.ayuda')}</Typography>
       {evaluaciones.length === 0 && (
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {t('evaluaciones.flujo.ninguna')}

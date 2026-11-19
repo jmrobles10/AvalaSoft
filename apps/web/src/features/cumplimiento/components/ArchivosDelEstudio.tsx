@@ -22,8 +22,8 @@ export function ArchivosDelEstudio({ empresaId, expedienteId, archivos, onSubido
   return (
     <Stack spacing={1} component="section" aria-label={t('cumplimiento.archivos.titulo')}>
       <Box>
-        <Typography sx={{ fontSize: 13, fontWeight: 500 }}>{t('cumplimiento.archivos.titulo')}</Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('cumplimiento.archivos.ayuda')}</Typography>
+        <Typography variant="subtitle2" component="p">{t('cumplimiento.archivos.titulo')}</Typography>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('cumplimiento.archivos.ayuda')}</Typography>
       </Box>
       {archivos.length > 0 && (
         <Stack component="ul" spacing={0.75} sx={{ listStyle: 'none', p: 0, m: 0 }}>
@@ -37,8 +37,8 @@ export function ArchivosDelEstudio({ empresaId, expedienteId, archivos, onSubido
             >
               <FileText size={16} aria-hidden />
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography sx={{ fontSize: 14, overflowWrap: 'anywhere' }}>{a.nombre}</Typography>
-                <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('cumplimiento.archivos.pesoYFecha', { peso: formatearPeso(a.tamano), fecha: formatearFecha(a.fecha) })}</Typography>
+                <Typography sx={{ overflowWrap: 'anywhere' }}>{a.nombre}</Typography>
+                <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('cumplimiento.archivos.pesoYFecha', { peso: formatearPeso(a.tamano), fecha: formatearFecha(a.fecha) })}</Typography>
               </Box>
               <IconButton size="small" aria-label={t('cumplimiento.archivos.quitar', { nombre: a.nombre })} onClick={() => onQuitar(a.id)}>
                 <Trash2 size={16} aria-hidden />

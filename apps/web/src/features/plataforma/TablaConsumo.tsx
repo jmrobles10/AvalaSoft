@@ -23,7 +23,7 @@ function FilaEmpresa({ empresa, moneda }: { empresa: ConsumoDeIaEmpresaDto; mone
     <TableRow sx={{ bgcolor: 'superficie.nivel1' }}>
       <TableCell sx={{ pl: 7, verticalAlign: 'top' }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-          <Typography sx={{ fontSize: 14 }}>{empresa.empresa}</Typography>
+          <Typography>{empresa.empresa}</Typography>
           {empresa.precioPropio && (
             <Tooltip title={t('consola.consumo.precioPropioAyuda', { precio: formatearMoneda(empresa.precioAdicional, moneda) })}>
               <Chip size="small" variant="outlined" label={t('consola.consumo.precioPropio')} />
@@ -72,7 +72,7 @@ function FilaGrupo({ grupo, moneda }: { grupo: ConsumoDeIaGrupoDto; moneda: stri
             >
               {abierta ? <ChevronDown size={16} aria-hidden /> : <ChevronRight size={16} aria-hidden />}
             </IconButton>
-            <Typography noWrap sx={{ fontWeight: 600 }}>
+            <Typography variant="subtitle2" component="p" noWrap>
               {grupo.grupo}
             </Typography>
             <Chip size="small" variant="outlined" label={grupo.slug} sx={{ fontFamily: (th) => th.typography.mono.fontFamily }} />

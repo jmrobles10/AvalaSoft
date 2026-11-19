@@ -59,7 +59,7 @@ export function EditorMatriz({ empresaId, nombreEmpresa, matriz, puedeEscribir }
   const acciones = puedeEscribir && (
     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
       {cambios && (
-        <Typography component="span" role="status" sx={{ color: errores.length > 0 ? 'error.main' : 'text.secondary', fontSize: 12 }}>
+        <Typography variant="caption" component="span" role="status" sx={{ color: errores.length > 0 ? 'error.main' : 'text.secondary' }}>
           {errores.length > 0 ? t('matrizRiesgo.guardar.corrige', { count: errores.length }) : t('matrizRiesgo.guardar.pendientes')}
         </Typography>
       )}
@@ -91,7 +91,7 @@ export function EditorMatriz({ empresaId, nombreEmpresa, matriz, puedeEscribir }
               ) : undefined
             }
           >
-            <Typography component="span" sx={{ fontWeight: 600, display: 'block' }}>
+            <Typography variant="subtitle2" component="span" sx={{ display: 'block' }}>
               {t('matrizRiesgo.plantilla.titulo')}
             </Typography>
             {t('matrizRiesgo.plantilla.texto')}
@@ -104,12 +104,12 @@ export function EditorMatriz({ empresaId, nombreEmpresa, matriz, puedeEscribir }
             label={t('matrizRiesgo.uso.etiqueta')}
             sx={{ mx: 0 }}
           />
-          <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{borrador.activa ? t('matrizRiesgo.uso.activa') : t('matrizRiesgo.uso.inactiva')}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>
+          <Typography sx={{ color: 'text.secondary' }}>{borrador.activa ? t('matrizRiesgo.uso.activa') : t('matrizRiesgo.uso.inactiva')}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5 }}>
             {matriz.actualizadaEn ? t('matrizRiesgo.uso.version', { version: String(matriz.version), fecha: formatearFecha(matriz.actualizadaEn) }) : t('matrizRiesgo.uso.sinVersion')}
           </Typography>
           {errores.some((e) => e.codigo === 'sin-factores') && (
-            <Typography role="alert" sx={{ color: 'error.main', fontSize: 12, mt: 0.5 }}>
+            <Typography variant="caption" component="p" role="alert" sx={{ color: 'error.main', mt: 0.5 }}>
               {t('matrizRiesgo.validacion.sin-factores')}
             </Typography>
           )}
@@ -126,7 +126,7 @@ export function EditorMatriz({ empresaId, nombreEmpresa, matriz, puedeEscribir }
             )
           }
         >
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, mb: 1.5 }}>
+          <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
             {t('matrizRiesgo.factores.ayuda')} {t('matrizRiesgo.factores.cuenta', { n: String(factores.length), maximo: String(MAXIMO_FACTORES) })}
           </Typography>
           {factores.length === 0 ? (

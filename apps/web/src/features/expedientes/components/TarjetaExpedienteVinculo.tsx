@@ -35,10 +35,10 @@ export function TarjetaExpedienteVinculo({ vinculo }: { vinculo: VinculoDto }) {
         {abiertoId && (
           <Stack direction="row" spacing={1.5} useFlexGap sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <Typography sx={{ fontWeight: 500 }}>{t('expedientes.enVinculo.enCurso')}</Typography>
+              <Typography variant="subtitle2" component="p">{t('expedientes.enVinculo.enCurso')}</Typography>
               {expediente.data && (
                 <>
-                  <Typography component="span" variant="mono" sx={{ color: 'text.secondary' }}>
+                  <Typography component="span" variant="monoTabla" sx={{ color: 'text.secondary' }}>
                     {expediente.data.folio}
                   </Typography>
                   <ChipEstado estado={expediente.data.estado} fecha={expediente.data.actualizadoEn} />

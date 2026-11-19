@@ -243,7 +243,7 @@ export const cumplimiento = {
   bandeja: {
     vacia: 'No hay nada por atender',
     vaciaAyuda: 'Aquí llegan los expedientes con listas por consultar, coincidencias por analizar, estudios pendientes o vencidos, y los vínculos activos cuyo monitoreo encontró algo nuevo.',
-    columnas: { tercero: 'Tercero', folio: 'Folio', origen: 'Origen', pendientes: 'Por atender', coincidencias: 'Coincidencias', desde: 'Desde' },
+    columnas: { tercero: 'Tercero', folio: 'Expediente', origen: 'Origen', pendientes: 'Por atender', coincidencias: 'Coincidencias', desde: 'Desde' },
     origenes: { Expediente: 'Expediente', Monitoreo: 'Monitoreo del vínculo' },
     soloFalta: 'Solo falta esto para aprobar',
     abrir: 'Abrir',
@@ -273,7 +273,7 @@ export const cumplimiento = {
     pendientesReconsulta: 'Listas por reconsultar',
     vacio: 'No hay verificaciones en el periodo.',
     columnas: {
-      folio: 'Folio',
+      folio: 'Expediente',
       tercero: 'Tercero',
       verificacion: 'Verificación',
       proveedor: 'Proveedor',

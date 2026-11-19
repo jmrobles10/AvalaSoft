@@ -68,10 +68,10 @@ export function PaginaFicha() {
       <AvisoDeRatificaciones pendientes={ratificaciones} />
       {/* La lista, en un solo nivel: el avance en una línea con su barra delgada y cada sección como una fila con divisores finos. */}
       <Stack direction="row" sx={{ alignItems: 'baseline', justifyContent: 'space-between', mb: 0.75 }}>
-        <Typography component="h2" variant="h4">
+        <Typography component="h2" variant="h6">
           {t('ficha.secciones')}
         </Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>{t('ficha.avance', { completas: String(completas), total: String(filas.length) })}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{t('ficha.avance', { completas: String(completas), total: String(filas.length) })}</Typography>
       </Stack>
       <LinearProgress variant="determinate" value={filas.length > 0 ? (completas / filas.length) * 100 : 0} aria-label={t('ficha.avance', { completas: String(completas), total: String(filas.length) })} sx={{ height: 3 }} />
       <Box component="ol" aria-label={t('ficha.titulo')} sx={{ p: 0, m: 0, listStyle: 'none' }}>
@@ -86,10 +86,10 @@ export function PaginaFicha() {
         sx={(th) => ({ mt: 2, px: { xs: 1.5, sm: 2.5 }, py: 1.5, alignItems: { sm: 'center' }, borderRadius: `${String(th.radio.md)}px`, bgcolor: th.palette.superficie.nivel2 })}
       >
         <Box sx={{ flex: 1 }}>
-          <Typography component="h2" variant="h4">
+          <Typography component="h2" variant="h6">
             {t('personas.enlaceDesdeFicha')}
           </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>{t('personas.enlaceDesdeFichaTexto')}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>{t('personas.enlaceDesdeFichaTexto')}</Typography>
         </Box>
         <Button component={RouterLink} to="/personas" variant="outlined" endIcon={<ChevronRight size={18} aria-hidden />}>
           {t('personas.enlaceDesdeFicha')}
@@ -152,11 +152,11 @@ function FilaSeccion({ fila, porRatificar }: { fila: EstadoSeccionFichaDto; porR
       <Box aria-hidden sx={{ display: 'inline-flex', color: estado === 'completa' ? 'success.main' : estado === 'incompleta' ? 'warning.main' : 'text.disabled' }}>
         {estado === 'completa' ? <CheckCircle2 size={20} strokeWidth={1.75} /> : estado === 'incompleta' ? <CircleAlert size={20} strokeWidth={1.75} /> : <Circle size={20} strokeWidth={1.75} />}
       </Box>
-      <Typography sx={{ fontWeight: 500, fontSize: 14, lineHeight: '20px', minWidth: 0 }}>{nombre}</Typography>
+      <Typography variant="subtitle1" component="p" sx={{ minWidth: 0 }}>{nombre}</Typography>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', gridColumn: { xs: '2 / 3', sm: 'auto' }, gridRow: { xs: 2, sm: 'auto' }, minWidth: 0 }}>
         {chip}
         {fila.actualizada && (
-          <Typography component="span" sx={{ color: 'text.secondary', fontSize: 13 }}>
+          <Typography component="span" sx={{ color: 'text.secondary' }}>
             {t('ficha.actualizada', { fecha: formatearFecha(fila.actualizada) })}
           </Typography>
         )}
@@ -178,7 +178,7 @@ function FilaSeccion({ fila, porRatificar }: { fila: EstadoSeccionFichaDto; porR
           {retirados.map((r) => (
             <Stack key={`${r.documentoId}-${String(r.version)}`} direction="row" spacing={0.75} sx={{ alignItems: 'center', color: 'warning.main' }}>
               <TriangleAlert size={16} aria-hidden />
-              <Typography component="span" sx={{ fontSize: 13, color: 'text.primary' }}>
+              <Typography component="span" sx={{ color: 'text.primary' }}>
                 {t('ficha.soporte.retirado', { tipo: r.nombre ?? r.tipoDocumento ?? '', n: String(r.version) })}
               </Typography>
             </Stack>

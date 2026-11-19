@@ -45,7 +45,7 @@ recorrido(
     await paso(page, {
       titulo: 'Mira la bandeja de revisión',
       explicacion:
-        'La bandeja lista un expediente por cada área que debe decidir: el folio, el tercero, el tipo de vínculo, el área, el estado de tu área, las aprobaciones que lleva, los documentos por decidir, desde cuándo espera y su plazo de revisión. ' +
+        'La bandeja lista un expediente por cada área que debe decidir: el expediente, el tercero, el tipo de vínculo, el área, el estado de tu área, las aprobaciones que lleva, los documentos por decidir, desde cuándo espera y su plazo de revisión. ' +
         'Ves solo los expedientes de las áreas de las que eres miembro.',
       resaltar: app.getByRole('table'),
       variantes: [

@@ -94,7 +94,7 @@ export function DetalleAuditoria({ registro, empresaId, onCerrar }: { registro: 
       slotProps={{ paper: { role: 'dialog', 'aria-modal': true, 'aria-labelledby': 'titulo-auditoria', sx: { width: 560, maxWidth: '100%' } } }}
     >
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <Typography id="titulo-auditoria" variant="h4" component="h2">
+        <Typography id="titulo-auditoria" variant="h6" component="h2">
           {t('auditoria.detalle.titulo', { accion: textoAccion(registro.accion, t), entidad })}
         </Typography>
         <IconButton aria-label={t('auditoria.detalle.cerrar')} onClick={onCerrar}>
@@ -127,7 +127,7 @@ export function DetalleAuditoria({ registro, empresaId, onCerrar }: { registro: 
           <DatosIdentidad registro={registro} />
         ) : (
           <Box component="section" aria-labelledby="titulo-cambios">
-            <Typography id="titulo-cambios" variant="h5" component="h3" sx={{ mb: 1 }}>
+            <Typography id="titulo-cambios" variant="subtitle1" component="h3" sx={{ mb: 1 }}>
               {t('auditoria.detalle.cambios')}
             </Typography>
             <DiffAuditoria diff={registro.diff} />

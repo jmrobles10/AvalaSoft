@@ -27,8 +27,8 @@ export function Plantilla({ expedienteId, requisitoId, empresa }: { expedienteId
           <FileSignature size={20} />
         </Box>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography sx={{ fontWeight: 600, fontSize: 15 }}>{t('plantilla.titulo', { empresa })}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" component="p">{t('plantilla.titulo', { empresa })}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>
             {t('plantilla.texto')}
           </Typography>
           <Button variant="outlined" onClick={descargar} disabled={descarga.isPending} startIcon={<Download size={18} aria-hidden />} sx={{ mt: 1 }}>

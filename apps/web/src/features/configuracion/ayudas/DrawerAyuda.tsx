@@ -64,7 +64,7 @@ export function DrawerAyuda({ empresaId, empresaNombre, ayuda, puedeEscribir, on
       <Box component="form" onSubmit={enviar} noValidate sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: 1, borderColor: 'divider' }}>
           <Box sx={{ minWidth: 0 }}>
-            <Typography id="titulo-ayuda" variant="h4" component="h2">
+            <Typography id="titulo-ayuda" variant="h6" component="h2">
               {t('ayudas.drawer.titulo', { nombre: ayuda.nombre })}
             </Typography>
             <Typography variant="monoTabla" sx={{ color: 'text.secondary' }}>

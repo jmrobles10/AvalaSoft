@@ -15,7 +15,7 @@ export interface PropsSeccion {
 export function Seccion({ titulo, ayuda, children }: { titulo: string; ayuda?: string; children: ReactNode }) {
   return (
     <Box component="section" sx={{ pb: 2.5, '& + &': { pt: 2.5, borderTop: 1, borderColor: 'divider' } }}>
-      <Typography component="h3" sx={{ fontSize: 14, fontWeight: 600 }}>
+      <Typography variant="subtitle1" component="h3">
         {titulo}
       </Typography>
       {ayuda && (
@@ -94,7 +94,7 @@ export function SeccionArchivo({ borrador, cambiar, error, canonico, descripcion
   return (
     <Seccion titulo={t('tiposDocumento.secciones.archivo')} ayuda={t('tiposDocumento.archivo.ayuda')}>
       <Box component="fieldset" sx={{ border: 0, m: 0, p: 0 }}>
-        <FormLabel component="legend" sx={{ fontSize: 13, fontWeight: 500, color: 'text.primary', mb: 0.5 }}>
+        <FormLabel component="legend" sx={{ typography: 'subtitle2', color: 'text.primary', mb: 0.5 }}>
           {t('tiposDocumento.archivo.formatos')}
         </FormLabel>
         <FormGroup row>

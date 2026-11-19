@@ -23,7 +23,7 @@ type Edicion = { tipo: 'crear'; clave: string } | { tipo: 'editar'; grupo: Grupo
 function EstadoDelGrupo({ activo }: { activo: boolean }) {
   const { t } = useTranslation();
   return (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontSize: 13, '& svg': { color: activo ? 'estado.exito.texto' : 'text.secondary' } }}>
+    <Box component="span" sx={{ typography: 'body2', display: 'inline-flex', alignItems: 'center', gap: 0.75, '& svg': { color: activo ? 'estado.exito.texto' : 'text.secondary' } }}>
       {activo ? <CircleCheck size={14} strokeWidth={1.75} aria-hidden /> : <Ban size={14} strokeWidth={1.75} aria-hidden />}
       {activo ? t('gruposDeAcceso.activo') : t('gruposDeAcceso.desactivado')}
     </Box>
@@ -150,7 +150,7 @@ export function PaginaGruposDeAcceso() {
                   <TableCell sx={{ height: 52 }}>
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center', minWidth: 0 }}>
                       <Box sx={{ minWidth: 0 }}>
-                        <Typography noWrap sx={{ fontWeight: 500 }}>
+                        <Typography variant="subtitle2" component="p" noWrap>
                           {g.nombre}
                         </Typography>
                         <Typography variant="monoTabla" noWrap sx={{ color: 'text.secondary', display: 'block' }}>
@@ -158,7 +158,7 @@ export function PaginaGruposDeAcceso() {
                         </Typography>
                       </Box>
                       {g.predefinido && (
-                        <Box component="span" title={t('gruposDeAcceso.predefinidoAyuda')} sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', fontSize: 12 }}>
+                        <Box component="span" title={t('gruposDeAcceso.predefinidoAyuda')} sx={{ typography: 'caption', display: 'inline-flex', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
                           <Lock size={12} strokeWidth={1.75} aria-hidden />
                           {t('gruposDeAcceso.predefinido')}
                         </Box>

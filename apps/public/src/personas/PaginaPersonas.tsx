@@ -101,7 +101,7 @@ export function PaginaPersonas() {
         <Stack spacing={3}>
           {grupos.map(({ rol, personas }) => (
             <Box component="section" key={rol} aria-labelledby={`personas-${rol}`}>
-              <Typography id={`personas-${rol}`} component="h2" variant="h4" sx={{ mb: 1 }}>
+              <Typography id={`personas-${rol}`} component="h2" variant="h6" sx={{ mb: 1 }}>
                 {t(`personas.rolPlural.${rol}`)}
               </Typography>
               <Stack component="ul" spacing={1.5} sx={{ listStyle: 'none', m: 0, p: 0 }}>

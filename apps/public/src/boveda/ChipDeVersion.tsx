@@ -32,7 +32,7 @@ export function LineaDeVersionVigente({ version }: { version: VersionParaChip })
     <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 0.5 }}>
       <ChipDeVersion version={version} />
       {texto && (
-        <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+        <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
           {texto}
         </Typography>
       )}

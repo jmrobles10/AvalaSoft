@@ -4,7 +4,7 @@ export const bandeja = {
   titulo: 'Bandeja de revisión',
   subtitulo: 'Expedientes de {{empresa}} que esperan a tus áreas',
   filtros: { area: 'Área', estado: 'Estado del área', limpiar: 'Limpiar filtros' },
-  columnas: { folio: 'Folio', tercero: 'Tercero', tipo: 'Tipo', area: 'Área', estado: 'Estado del área', aprobaciones: 'Aprobaciones', documentos: 'Documentos', desde: 'Desde', seleccion: 'Seleccionar' },
+  columnas: { folio: 'Expediente', tercero: 'Tercero', tipo: 'Tipo', area: 'Área', estado: 'Estado del área', aprobaciones: 'Aprobaciones', documentos: 'Documentos', desde: 'Desde', seleccion: 'Seleccionar' },
   documentos_one: '{{count}} por decidir',
   documentos_other: '{{count}} por decidir',
   documentosAccesible_one: '{{count}} documento por decidir',
@@ -83,7 +83,7 @@ export const expedientes = {
   desaprobacion: {
     titulo: 'Desaprobar expediente',
     ayuda:
-      'El mismo expediente (con su folio e historial) vuelve a revisión, el vínculo pasa a En validación y su certificado se revoca. Si se aprueba de nuevo, se emite uno nuevo.',
+      'El mismo expediente (con su código e historial) vuelve a revisión, el vínculo pasa a En validación y su certificado se revoca. Si se aprueba de nuevo, se emite uno nuevo.',
     desde: 'Se revisa de nuevo desde',
     desdeAyuda: 'Las etapas anteriores conservan su aprobación.',
     ultimaEtapa: 'La última etapa (la que lo cerró)',

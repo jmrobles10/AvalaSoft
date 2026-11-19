@@ -55,14 +55,14 @@ export function FilaExcepcion({ fila, empresaId, ahora, area, puedeRevisar, esMi
       <Stack spacing={0.75} sx={{ minWidth: 0 }}>
         <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}>
           <ChipTipoExcepcion tipo={tipo} />
-          <Typography component="h3" noWrap sx={{ fontWeight: 600, fontSize: 14, lineHeight: '20px', minWidth: 0 }}>
+          <Typography variant="subtitle1" component="h3" noWrap sx={{ minWidth: 0 }}>
             {fila.tercero.nombre}
           </Typography>
-          <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+          <Typography variant="caption" component="span" sx={{ color: 'text.secondary', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
             {identificacionResumida(fila.tercero.identificacion)}
           </Typography>
         </Stack>
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+        <Typography sx={{ color: 'text.secondary' }}>
           <Typography component="span" variant="monoTabla">
             {fila.folio}
           </Typography>
@@ -72,7 +72,7 @@ export function FilaExcepcion({ fila, empresaId, ahora, area, puedeRevisar, esMi
         {tipo === 'Excepcion' ? (
           <ChipsDeMotivos motivos={fila.motivos} etiqueta={t('revisionAutomatica.excepciones.motivos')} />
         ) : (
-          <Typography sx={{ fontSize: 13, lineHeight: '18px' }}>{t('revisionAutomatica.excepciones.aprobadoPorElSistema')}</Typography>
+          <Typography>{t('revisionAutomatica.excepciones.aprobadoPorElSistema')}</Typography>
         )}
       </Stack>
 

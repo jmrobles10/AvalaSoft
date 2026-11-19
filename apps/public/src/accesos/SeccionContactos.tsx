@@ -22,10 +22,10 @@ export function SeccionContactos() {
 
   return (
     <Box component="section" aria-labelledby="contactos-del-tercero">
-      <Typography id="contactos-del-tercero" variant="h3" component="h2" sx={{ mb: 0.5 }}>
+      <Typography id="contactos-del-tercero" variant="h6" component="h2" sx={{ mb: 0.5 }}>
         {t('accesoAislado.contactos.titulo')}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: '20px', mb: 1.5 }}>{t('accesoAislado.contactos.texto')}</Typography>
+      <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>{t('accesoAislado.contactos.texto')}</Typography>
       {consulta.isPending ? (
         <EsqueletoTarjetas cantidad={1} lineas={2} />
       ) : consulta.isError ? (
@@ -65,12 +65,12 @@ function FilaDeContacto({ contacto }: { contacto: ContactoDelTerceroDto }) {
     <Card component="li" sx={{ p: 1.5 }} aria-label={contacto.correo}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Box sx={{ minWidth: 0 }}>
-          <Typography sx={{ fontSize: 15, lineHeight: '22px', overflowWrap: 'anywhere' }}>
+          <Typography sx={{ overflowWrap: 'anywhere' }}>
             {contacto.correo}
             {contacto.esTuCorreo ? ` · ${t('accesoAislado.contactos.tuCorreo')}` : ''}
           </Typography>
           {medio && contacto.verificadoEn && (
-            <Typography sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+            <Typography sx={{ color: 'text.secondary' }}>
               {medio} · {formatearFecha(contacto.verificadoEn)}
             </Typography>
           )}
@@ -86,12 +86,12 @@ function HistorialDeContactos({ entradas }: { entradas: readonly EntradaDeHistor
   if (entradas.length === 0) return null;
   return (
     <Box component="section" aria-labelledby="historial-de-contactos">
-      <Typography id="historial-de-contactos" sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px', mb: 0.5 }}>
+      <Typography id="historial-de-contactos" sx={{ color: 'text.secondary', mb: 0.5 }}>
         {t('accesoAislado.contactos.historial')}
       </Typography>
       <Stack component="ul" spacing={0.25} sx={{ p: 0, m: 0, listStyle: 'none' }}>
         {entradas.slice(0, LINEAS_DE_HISTORIAL).map((e, i) => (
-          <Typography key={`${e.fecha}-${String(i)}`} component="li" sx={{ color: 'text.secondary', fontSize: 13, lineHeight: '18px' }}>
+          <Typography key={`${e.fecha}-${String(i)}`} component="li" sx={{ color: 'text.secondary' }}>
             {formatearFecha(e.fecha)} · {t(`accesoAislado.contactos.entradas.${e.tipo}`, { correo: e.correo, detalle: e.detalle ?? '', defaultValue: `${e.correo}: ${e.tipo}` })}
           </Typography>
         ))}

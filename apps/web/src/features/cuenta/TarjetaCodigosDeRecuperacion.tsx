@@ -33,7 +33,7 @@ function DialogoDeCodigos({ nuevos, onCerrar }: { nuevos: CodigosDeRecuperacionD
             sx={{ listStyle: 'none', m: 0, p: 1.5, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 1, bgcolor: 'superficie.nivel2', borderRadius: (th) => `${String(th.radio.sm)}px` }}
           >
             {nuevos.codigos.map((codigo) => (
-              <Box component="li" key={codigo} data-secreto="" sx={{ fontFamily: (th) => th.typography.mono.fontFamily, fontSize: 14, letterSpacing: 0.5 }}>
+              <Box component="li" key={codigo} data-secreto="" sx={{ typography: 'body2', fontFamily: (th) => th.typography.mono.fontFamily, letterSpacing: 0.5 }}>
                 {codigo}
               </Box>
             ))}

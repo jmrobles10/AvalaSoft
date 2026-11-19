@@ -6,7 +6,7 @@ import { Link as RouterLink } from 'react-router';
 import { estadoCanonico, estadoDeEstudio, estadoDeListas, revisionDe } from '../informeSagrilaft';
 import { ChipNivelRiesgo } from './ChipNivelRiesgo';
 
-const SECUNDARIO = { color: 'text.secondary', fontSize: 12 } as const;
+const SECUNDARIO = { color: 'text.secondary' } as const;
 
 /** Un tercero del informe: sus listas, su estudio, su riesgo, cuándo toca la próxima revisión y sus personas. */
 export function FilaSagrilaft({ fila: f, empresaId, onVerPersonas }: { fila: FilaTerceroSagrilafDto; empresaId: string; onVerPersonas: () => void }) {
@@ -19,31 +19,31 @@ export function FilaSagrilaft({ fila: f, empresaId, onVerPersonas }: { fila: Fil
   return (
     <TableRow hover>
       <TableCell>
-        <Link component={RouterLink} to={`/e/${empresaId}/vinculos/${f.vinculoId}`} aria-label={t('cumplimiento.sagrilaft.tabla.abrir', { tercero: f.tercero })} sx={{ fontWeight: 500, fontSize: 14 }}>
+        <Link component={RouterLink} to={`/e/${empresaId}/vinculos/${f.vinculoId}`} aria-label={t('cumplimiento.sagrilaft.tabla.abrir', { tercero: f.tercero })} sx={{ typography: 'subtitle1' }}>
           {f.tercero}
         </Link>
-        <Typography sx={SECUNDARIO}>{`${f.tipoIdentificacion} ${f.identificacion} · ${f.tipoVinculo}`}</Typography>
-        <Typography component="span" variant="mono" sx={SECUNDARIO}>
+        <Typography variant="caption" component="p" sx={SECUNDARIO}>{`${f.tipoIdentificacion} ${f.identificacion} · ${f.tipoVinculo}`}</Typography>
+        <Typography component="span" variant="monoTabla" sx={SECUNDARIO}>
           {f.folio}
         </Typography>
       </TableCell>
       <TableCell>
         <ChipEstado estado={estadoCanonico(listas)} etiqueta={t(`cumplimiento.sagrilaft.tabla.listas.${listas}`)} />
-        <Typography sx={{ ...SECUNDARIO, mt: 0.5 }}>
+        <Typography variant="caption" component="p" sx={{ ...SECUNDARIO, mt: 0.5 }}>
           {f.ultimaConsultaListas ? t('cumplimiento.sagrilaft.tabla.ultimaConsulta', { fecha: formatearFecha(f.ultimaConsultaListas) }) : t('cumplimiento.sagrilaft.tabla.sinConsulta')}
         </Typography>
         {f.coincidenciasPorAnalizar > 0 && (
-          <Typography sx={{ ...SECUNDARIO, color: 'warning.main' }}>{t('cumplimiento.sagrilaft.tabla.porAnalizar', { count: f.coincidenciasPorAnalizar })}</Typography>
+          <Typography variant="caption" component="p" sx={{ ...SECUNDARIO, color: 'warning.main' }}>{t('cumplimiento.sagrilaft.tabla.porAnalizar', { count: f.coincidenciasPorAnalizar })}</Typography>
         )}
       </TableCell>
       <TableCell>
         <ChipEstado estado={estadoCanonico(estudio)} etiqueta={t(`cumplimiento.sagrilaft.tabla.estudios.${estudio}`)} />
-        <Typography sx={{ ...SECUNDARIO, mt: 0.5 }}>
+        <Typography variant="caption" component="p" sx={{ ...SECUNDARIO, mt: 0.5 }}>
           {f.fechaEstudio && f.concepto
             ? t('cumplimiento.sagrilaft.tabla.estudiadoEl', { concepto: t(`cumplimiento.conceptos.${f.concepto as 'Favorable'}`, { defaultValue: f.concepto }), fecha: formatearFecha(f.fechaEstudio) })
             : t('cumplimiento.sagrilaft.tabla.sinEstudioTexto')}
         </Typography>
-        {f.conflictoDeInteres === true && <Typography sx={{ ...SECUNDARIO, color: 'warning.main' }}>{t('cumplimiento.sagrilaft.tabla.conflicto')}</Typography>}
+        {f.conflictoDeInteres === true && <Typography variant="caption" component="p" sx={{ ...SECUNDARIO, color: 'warning.main' }}>{t('cumplimiento.sagrilaft.tabla.conflicto')}</Typography>}
       </TableCell>
       <TableCell>
         {f.nivelRiesgo === null ? (
@@ -51,7 +51,7 @@ export function FilaSagrilaft({ fila: f, empresaId, onVerPersonas }: { fila: Fil
         ) : (
           <Stack spacing={0.5} sx={{ alignItems: 'flex-start' }}>
             <ChipNivelRiesgo nivel={f.nivelRiesgo} />
-            {debida && <Typography sx={SECUNDARIO}>{t(`cumplimiento.debida.${debida}`, { defaultValue: f.debidaDiligencia ?? '' })}</Typography>}
+            {debida && <Typography variant="caption" component="p" sx={SECUNDARIO}>{t(`cumplimiento.debida.${debida}`, { defaultValue: f.debidaDiligencia ?? '' })}</Typography>}
           </Stack>
         )}
       </TableCell>
@@ -61,7 +61,7 @@ export function FilaSagrilaft({ fila: f, empresaId, onVerPersonas }: { fila: Fil
         ) : (
           <>
             {formatearFecha(f.proximaRevision ?? '')}
-            <Typography sx={{ ...SECUNDARIO, color: revision.tipo === 'vencida' ? 'error.main' : 'text.secondary' }}>
+            <Typography variant="caption" component="p" sx={{ ...SECUNDARIO, color: revision.tipo === 'vencida' ? 'error.main' : 'text.secondary' }}>
               {revision.tipo === 'vencida'
                 ? t('cumplimiento.sagrilaft.tabla.revisionVencida', { count: revision.dias })
                 : revision.tipo === 'hoy'
@@ -79,8 +79,8 @@ export function FilaSagrilaft({ fila: f, empresaId, onVerPersonas }: { fila: Fil
             <Button size="small" variant="text" onClick={onVerPersonas} aria-label={t('cumplimiento.sagrilaft.tabla.verPersonas', { tercero: f.tercero })}>
               {f.personas}
             </Button>
-            {f.pep > 0 && <Typography sx={{ ...SECUNDARIO, color: 'warning.main' }}>{t('cumplimiento.sagrilaft.tabla.pep', { count: f.pep })}</Typography>}
-            {(f.pepSinDeclaracion ?? 0) > 0 && <Typography sx={{ ...SECUNDARIO, color: 'error.main' }}>{t('cumplimiento.sagrilaft.tabla.pepSinDeclaracion', { count: f.pepSinDeclaracion ?? 0 })}</Typography>}
+            {f.pep > 0 && <Typography variant="caption" component="p" sx={{ ...SECUNDARIO, color: 'warning.main' }}>{t('cumplimiento.sagrilaft.tabla.pep', { count: f.pep })}</Typography>}
+            {(f.pepSinDeclaracion ?? 0) > 0 && <Typography variant="caption" component="p" sx={{ ...SECUNDARIO, color: 'error.main' }}>{t('cumplimiento.sagrilaft.tabla.pepSinDeclaracion', { count: f.pepSinDeclaracion ?? 0 })}</Typography>}
           </Stack>
         )}
       </TableCell>

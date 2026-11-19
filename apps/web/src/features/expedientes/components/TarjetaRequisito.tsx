@@ -106,17 +106,17 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <Icono size={18} strokeWidth={1.75} aria-hidden style={{ flex: 'none', marginTop: 2, opacity: 0.7 }} />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography component="h4" sx={{ fontWeight: 600, fontSize: 14, lineHeight: '20px' }}>
+          <Typography variant="subtitle1" component="h4">
             {documento}
           </Typography>
           {/* El documento de una persona relacionada (ADR-0010): de quién es, o que nadie cumple todavía el rol. */}
           {textoDelRequisito(requisito.persona, t) && (
-            <Typography sx={{ fontSize: 13, lineHeight: '18px', fontWeight: 500 }} data-persona-del-requisito="">
+            <Typography variant="subtitle2" component="p" data-persona-del-requisito="">
               {textoDelRequisito(requisito.persona, t)}
             </Typography>
           )}
           <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mt: 0.25 }}>
-            <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }} title={version ? t('expedientes.requisitos.hash', { hash: version.sha256 }) : undefined}>
+            <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }} title={version ? t('expedientes.requisitos.hash', { hash: version.sha256 }) : undefined}>
               {requisito.obligatorio ? t('expedientes.requisitos.obligatorio') : t('expedientes.requisitos.opcional')}
               {version && ` · ${t('expedientes.requisitos.version', { n: String(version.n), fecha: formatearFecha(version.cargadaEn) })}`}
               {visor?.sinArchivo && ` · ${t('expedientes.datosDeclarados.formulario')}`}
@@ -136,7 +136,7 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
 
       {/* Un solo aviso, el más importante: retiro de la versión, discrepancia crítica, vencimiento o falta de lectura automática. */}
       {aviso && (
-        <Alert severity={aviso.severidad} sx={{ mt: 1, py: 0, fontSize: 13 }}>
+        <Alert severity={aviso.severidad} sx={{ typography: 'body2', mt: 1, py: 0 }}>
           {aviso.texto}
         </Alert>
       )}
@@ -155,28 +155,28 @@ export function TarjetaRequisito({ expediente, requisito, areas, contexto, nombr
         </Box>
       )}
       {!seccion && !version && requisito.estado === 'Pendiente' && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }}>
+        <Typography sx={{ color: 'text.secondary', mt: 1 }}>
           {t('expedientes.requisitos.sinVersion')}
         </Typography>
       )}
       {requisito.reenvios > 0 && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }}>
+        <Typography sx={{ color: 'text.secondary', mt: 1 }}>
           {t('expedientes.requisitos.versionesNuevas', { count: requisito.reenvios })}
         </Typography>
       )}
       {/* Lo que de la ficha del tercero hizo que se pida (EF-6), o que ya no aplica porque lo declarado cambió (EF-5). */}
       {requisito.estado !== 'NoAplica' && (requisito.porQue?.length ?? 0) > 0 && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }} data-por-que="">
+        <Typography sx={{ color: 'text.secondary', mt: 1 }} data-por-que="">
           {t('expedientes.requisitos.porQue', { motivos: textoDelPorQue(requisito.porQue ?? []) })}
         </Typography>
       )}
       {requisito.estado === 'NoAplica' && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }} data-no-aplica="">
+        <Typography sx={{ color: 'text.secondary', mt: 1 }} data-no-aplica="">
           {t('expedientes.requisitos.noAplica')}
         </Typography>
       )}
       {requisito.exencion && (
-        <Typography sx={{ fontSize: 13, mt: 1 }}>
+        <Typography sx={{ mt: 1 }}>
           {t('expedientes.requisitos.eximido', {
             persona: nombres.get(requisito.exencion.por) ?? t('expedientes.requisitos.persona'),
             fecha: formatearFecha(requisito.exencion.fecha),
@@ -236,7 +236,7 @@ function AreaDelRequisito({
   return (
     <Box component="li" sx={{ listStyle: 'none' }}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-        <Typography sx={{ fontWeight: 500, fontSize: 13, flex: '1 1 auto' }}>{nombreArea}</Typography>
+        <Typography variant="subtitle2" component="p" sx={{ flex: '1 1 auto' }}>{nombreArea}</Typography>
         {areaRequisito.estado === 'Esperando' ? (
           <Chip size="small" variant="outlined" icon={<Clock size={14} aria-hidden />} label={t('expedientes.requisitos.areaEsperando')} sx={{ color: 'text.secondary' }} />
         ) : (
@@ -257,7 +257,7 @@ function AreaDelRequisito({
         )}
       </Stack>
       {veredictosVigentesDeRequisito(areaRequisito).map((v) => (
-        <Typography key={v.id} sx={{ fontSize: 13, mt: 0.5 }}>
+        <Typography key={v.id} sx={{ mt: 0.5 }}>
           {autor(v)} · {t(`expedientes.veredictos.${v.veredicto}`).toLowerCase()} · {t('expedientes.requisitos.sobreVersion', { n: String(v.sobreVersion ?? '—') })}
           {v.observacion ? ` · “${v.observacion}”` : ''}
           {v.justificacion ? ` · ${v.justificacion}` : ''}
@@ -265,17 +265,17 @@ function AreaDelRequisito({
         </Typography>
       ))}
       {veredictosInvalidados(areaRequisito).map((v) => (
-        <Typography key={v.id} sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5, textDecoration: 'line-through' }}>
+        <Typography variant="caption" component="p" key={v.id} sx={{ color: 'text.secondary', mt: 0.5, textDecoration: 'line-through' }}>
           {autor(v)} · {t(`expedientes.veredictos.${v.veredicto}`).toLowerCase()} · {t('expedientes.requisitos.invalidado', { n: String(v.sobreVersion ?? '—') })}
         </Typography>
       ))}
       {veredictosRevertidos(areaRequisito).map((v) => (
-        <Typography key={v.id} sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5, textDecoration: 'line-through' }}>
+        <Typography variant="caption" component="p" key={v.id} sx={{ color: 'text.secondary', mt: 0.5, textDecoration: 'line-through' }}>
           {autor(v)} · {t(`expedientes.veredictos.${v.veredicto}`).toLowerCase()} · {t('expedientes.requisitos.revertido')}
         </Typography>
       ))}
       {explicar && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 12, mt: 0.5 }}>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary', mt: 0.5 }}>
           {t(`expedientes.requisitos.bloqueos.${explicar}`)}
         </Typography>
       )}

@@ -55,7 +55,7 @@ export function CondicionDeFicha({ condicion, onCambiar, deshabilitado, error }:
       {campos.isPending ? (
         <Skeleton variant="rounded" height={40} />
       ) : campos.isError ? (
-        <Typography color="error" sx={{ fontSize: 12 }}>
+        <Typography variant="caption" component="p" color="error">
           {t('condicionDeFicha.noDisponible')}
         </Typography>
       ) : (
@@ -107,11 +107,11 @@ export function CondicionDeFicha({ condicion, onCambiar, deshabilitado, error }:
           )}
         </Box>
       )}
-      <Typography sx={{ color: error ? 'error.main' : 'text.secondary', fontSize: 12, mt: 0.75 }}>
+      <Typography variant="caption" component="p" sx={{ color: error ? 'error.main' : 'text.secondary', mt: 0.75 }}>
         {error ?? (incompleta ? t('condicionDeFicha.incompleta') : t('condicionDeFicha.ayuda'))}
       </Typography>
       {campo?.jerarquica && !error && (
-        <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>
+        <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
           {t('condicionDeFicha.jerarquica')}
           {campo.catalogo === 'actividades-economicas' ? ` ${t('condicionDeFicha.libre')}` : ''}
         </Typography>

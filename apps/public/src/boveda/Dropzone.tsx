@@ -70,8 +70,8 @@ export function Dropzone({
           <CloudUpload size={22} />
         </Box>
         <Box sx={{ minWidth: 0 }}>
-          <Typography sx={{ fontWeight: 600, fontSize: 15, lineHeight: '20px' }}>{titulo}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>
+          <Typography variant="subtitle1" component="p">{titulo}</Typography>
+          <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
             {textoReglas(reglas, t)}
             <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>
               {' · '}

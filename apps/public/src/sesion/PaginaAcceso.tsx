@@ -33,10 +33,10 @@ export function PaginaAcceso({ motivo = 'sin-sesion' }: { motivo?: Exclude<Estad
         <Box sx={{ color: 'text.secondary' }} aria-hidden>
           <MailCheck size={40} strokeWidth={1.5} />
         </Box>
-        <Typography variant="h2" component="h1">
+        <Typography variant="h5" component="h1">
           {t('acceso.enviadoTitulo')}
         </Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: 15, lineHeight: '22px' }}>
+        <Typography sx={{ color: 'text.secondary' }}>
           {t('acceso.enviado')}
         </Typography>
         <Button variant="text" onClick={() => solicitud.reset()}>
@@ -57,10 +57,10 @@ export function PaginaAcceso({ motivo = 'sin-sesion' }: { motivo?: Exclude<Estad
           {t(`acceso.motivos.${motivo}.texto`)}
         </Alert>
       )}
-      <Typography variant="h2" component="h1" sx={{ mb: 1 }}>
+      <Typography variant="h5" component="h1" sx={{ mb: 1 }}>
         {t('acceso.titulo')}
       </Typography>
-      <Typography sx={{ color: 'text.secondary', mb: 3, fontSize: 15, lineHeight: '22px' }}>
+      <Typography sx={{ color: 'text.secondary', mb: 3 }}>
         {t('acceso.texto')}
       </Typography>
       <Stack spacing={2}>

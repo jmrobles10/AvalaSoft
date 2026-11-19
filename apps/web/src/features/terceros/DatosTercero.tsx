@@ -58,10 +58,10 @@ export function DatosTercero({ tercero }: { tercero: TerceroDto }) {
 function Contacto({ contacto }: { contacto: ContactoDto }) {
   return (
     <Stack component="li" spacing={0.25} sx={{ py: 0.75, minWidth: 0 }}>
-      <Typography sx={{ fontWeight: 500 }}>
+      <Typography variant="subtitle2" component="p">
         {contacto.nombre}
         {contacto.rol && (
-          <Typography component="span" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 400, ml: 1 }}>
+          <Typography variant="caption" component="span" sx={{ color: 'text.secondary', ml: 1 }}>
             {contacto.rol}
           </Typography>
         )}

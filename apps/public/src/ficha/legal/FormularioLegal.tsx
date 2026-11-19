@@ -94,8 +94,8 @@ function TarjetaPersona({ persona, indice, mensaje, hayEnRuta, onEditar, onQuita
     <Paper component="li" variant="outlined" aria-label={nombre} sx={{ p: 1.5, border: 0, bgcolor: 'superficie.nivel2' }}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { sm: 'center' } }}>
         <Stack sx={{ minWidth: 0, flex: 1 }} spacing={0.5}>
-          <Typography sx={{ fontWeight: 500 }}>{nombre}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
+          <Typography variant="subtitle2" component="p">{nombre}</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>
             {[persona.rol && esRol(persona.rol) ? t(`ficha.legal.roles.${persona.rol}`) : null, persona.numero ? `${persona.tipo_identificacion ?? ''} ${persona.numero}`.trim() : null, persona.porcentaje !== null && persona.porcentaje !== undefined ? `${String(persona.porcentaje)} %` : null]
               .filter(Boolean)
               .join(' · ')}
@@ -105,7 +105,7 @@ function TarjetaPersona({ persona, indice, mensaje, hayEnRuta, onEditar, onQuita
             {faltaDeclaracion && <Chip size="small" color="warning" variant="outlined" label={t('ficha.pep.tarjeta.falta')} />}
           </Stack>
           {persona.pep === true && persona.declaracion_pep?.fecha_firma && <Box><BotonDescargarDeclaracion seccion="FICHA_LEGAL" persona={indice} nombre={nombre} variante="text" /></Box>}
-          {errorFila && <Typography sx={{ color: 'error.main', fontSize: 14 }}>{errorFila}</Typography>}
+          {errorFila && <Typography sx={{ color: 'error.main' }}>{errorFila}</Typography>}
         </Stack>
         <Stack direction="row" spacing={1}>
           <Button variant="outlined" startIcon={<Pencil size={16} aria-hidden />} onClick={onEditar} disabled={deshabilitado} aria-label={t('ficha.legal.editarAccesible', { nombre })} sx={{ flex: { xs: 1, sm: 'none' } }}>

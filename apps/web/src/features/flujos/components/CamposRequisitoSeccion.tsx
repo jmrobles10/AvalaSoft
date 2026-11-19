@@ -92,11 +92,11 @@ export function OpcionesSeccion({
         />
       </Stack>
       {!definicion?.porPeriodo && errorPeriodos && (
-        <Typography color="error" sx={{ fontSize: 12 }}>
+        <Typography variant="caption" component="p" color="error">
           {errorPeriodos}
         </Typography>
       )}
-      <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12 }}>
+      <Typography component="p" variant="caption" sx={{ color: 'text.secondary' }}>
         {definicion?.soloJuridica ? t('fichaEmpresa.editor.noAplicaNatural') : t('fichaEmpresa.editor.ayuda')}
       </Typography>
     </Stack>

@@ -13,7 +13,7 @@ export function EvidenciasDelEstudio({ posibles, elegidas, onCambiar }: Evidenci
   const { t } = useTranslation();
   return (
     <Box>
-      <FormLabel sx={{ fontSize: 13 }}>{t('cumplimiento.panel.estudio.evidencias')}</FormLabel>
+      <FormLabel sx={{ typography: 'subtitle2' }}>{t('cumplimiento.panel.estudio.evidencias')}</FormLabel>
       <FormHelperText sx={{ mt: 0 }}>{posibles.length === 0 ? t('cumplimiento.estudio.sinEvidencias') : t('cumplimiento.estudio.evidenciasAyuda')}</FormHelperText>
       <FormGroup>
         {posibles.map((p) => (

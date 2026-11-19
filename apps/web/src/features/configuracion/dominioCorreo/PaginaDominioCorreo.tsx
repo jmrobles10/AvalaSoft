@@ -32,12 +32,12 @@ function RemitenteEnUso({ dominio, empresa }: { dominio: DominioDeCorreoDto; emp
   const estado = estadoDelDominio(dominio);
   return (
     <Tarjeta titulo={t('dominioCorreo.comoSale')}>
-      <Typography sx={{ color: 'text.secondary', fontSize: 12, lineHeight: '16px' }}>{t('dominioCorreo.remitenteHoy', { empresa })}</Typography>
-      <Typography variant="mono" component="p" sx={{ m: 0, mb: 1.25, fontSize: 14, lineHeight: '20px', overflowWrap: 'anywhere' }}>
+      <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('dominioCorreo.remitenteHoy', { empresa })}</Typography>
+      <Typography variant="mono" component="p" sx={{ m: 0, mb: 1.25, overflowWrap: 'anywhere' }}>
         {dominio.remitenteEnUso}
       </Typography>
       {estado === 'Verificado' ? (
-        <Typography sx={{ fontSize: 13, lineHeight: '18px', color: 'text.secondary' }}>{t('dominioCorreo.propioActivo')}</Typography>
+        <Typography sx={{ color: 'text.secondary' }}>{t('dominioCorreo.propioActivo')}</Typography>
       ) : (
         <Alert severity="info">{t('dominioCorreo.respaldo', { plataforma: dominio.remitenteDeLaPlataforma })}</Alert>
       )}
@@ -128,9 +128,9 @@ function Formulario({ empresaId, empresa, dominio }: { empresaId: string; empres
                     />
                   </Box>
                   {vistaPrevia && cambios && (
-                    <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
+                    <Typography sx={{ color: 'text.secondary' }}>
                       {t('dominioCorreo.saldraDe')}{' '}
-                      <Typography variant="mono" component="span" sx={{ fontSize: 13, color: 'text.primary', overflowWrap: 'anywhere' }}>
+                      <Typography variant="mono" component="span" sx={{ color: 'text.primary', overflowWrap: 'anywhere' }}>
                         {b.nombre.trim() || empresa} &lt;{vistaPrevia}&gt;
                       </Typography>
                     </Typography>
@@ -138,7 +138,7 @@ function Formulario({ empresaId, empresa, dominio }: { empresaId: string; empres
                   {fijar.isError && <Alert severity="error">{mensajeDeError(fijar.error, t)}</Alert>}
                   <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
                     {tocado && errores[0] && <FaltaParaEnviar>{mensajeDeDominio(errores[0])}</FaltaParaEnviar>}
-                    {cambios && estado !== 'sin-dominio' && <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>{t('dominioCorreo.cambiarReinicia')}</Typography>}
+                    {cambios && estado !== 'sin-dominio' && <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>{t('dominioCorreo.cambiarReinicia')}</Typography>}
                     <Button type="submit" variant="contained" disabled={fijar.isPending || !cambios} startIcon={fijar.isPending ? <IconoCarga /> : undefined}>
                       {estado === 'sin-dominio' ? t('dominioCorreo.registrar') : t('dominioCorreo.guardar')}
                     </Button>
@@ -152,10 +152,10 @@ function Formulario({ empresaId, empresa, dominio }: { empresaId: string; empres
                 titulo={t('dominioCorreo.registros')}
                 acciones={<ChipEstado estado={chipDeDominio(estado)} etiqueta={t(`dominioCorreo.estados.${estado}`)} />}
               >
-                <Typography sx={{ fontSize: 14, lineHeight: '20px', color: 'text.secondary', mb: 1.25 }}>{t('dominioCorreo.registrosAyuda', { dominio: dominio.dominio ?? '' })}</Typography>
+                <Typography sx={{ color: 'text.secondary', mb: 1.25 }}>{t('dominioCorreo.registrosAyuda', { dominio: dominio.dominio ?? '' })}</Typography>
                 <RegistrosDns dominio={dominio} />
                 <Stack direction="row" spacing={1.5} useFlexGap sx={{ mt: 1.5, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                  <Typography sx={{ fontSize: 12, lineHeight: '16px', color: 'text.secondary' }}>
+                  <Typography variant="caption" component="p" sx={{ color: 'text.secondary' }}>
                     {dominio.ultimaVerificacionEn
                       ? t('dominioCorreo.ultimaVerificacion', { fecha: formatearFechaHora(dominio.ultimaVerificacionEn), count: registrosPendientes(dominio) })
                       : t('dominioCorreo.sinVerificar')}
@@ -183,7 +183,7 @@ function Formulario({ empresaId, empresa, dominio }: { empresaId: string; empres
           <>
             <RemitenteEnUso dominio={dominio} empresa={empresa} />
             <Tarjeta titulo={t('dominioCorreo.paraQue')}>
-              <Stack component="ul" spacing={0.75} sx={{ m: 0, pl: 2.25, fontSize: 14, lineHeight: '20px' }}>
+              <Stack component="ul" spacing={0.75} sx={{ typography: 'body2', m: 0, pl: 2.25 }}>
                 {(['spf', 'dkim', 'dmarc'] as const).map((clave) => (
                   <li key={clave}>{t(`dominioCorreo.explicacion.${clave}`)}</li>
                 ))}

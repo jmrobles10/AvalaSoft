@@ -31,9 +31,9 @@ export function ResultadoDeEvaluacion({ evaluacion, onAbrirArchivo, nombreDe }: 
       <Tarjeta titulo={t('evaluaciones.detalle.resultado')}>
         <Stack spacing={1.5}>
           <Stack direction="row" spacing={1.5} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-            <Typography component="p" variant="h4" sx={{ fontSize: 32, fontWeight: 600, lineHeight: 1 }}>
+            <Typography component="p" variant="h3" sx={{ lineHeight: 1 }}>
               {formatearPuntaje(resultado.puntaje)}
-              <Typography component="span" sx={{ color: 'text.secondary', fontSize: 14, ml: 0.75 }}>
+              <Typography component="span" sx={{ color: 'text.secondary', ml: 0.75 }}>
                 / 100
               </Typography>
             </Typography>
@@ -160,7 +160,7 @@ export function ResultadoDeEvaluacion({ evaluacion, onAbrirArchivo, nombreDe }: 
             <Box component="li" key={c.numero} sx={{ border: 1, borderColor: 'divider', borderRadius: 1, p: 1.25 }}>
               <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                 <Chip size="small" variant="outlined" label={textoDeOrigen(c.origen, t)} />
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                <Typography component="p" variant="subtitle2">
                   {formatearPuntaje(c.resultado.puntaje)} · {t(c.resultado.aprobada ? 'evaluaciones.veredicto.aprobada' : 'evaluaciones.veredicto.reprobada')}
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
